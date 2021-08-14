@@ -5,7 +5,7 @@ WARN_FLAGS := -Wall -Wextra -pedantic
 DEBUG_FLAGS := -std=c++20 -Og -ggdb $(WARN_FLAGS)
 FLAGS := -std=c++20 -DNDEBUG -O3 -fwhole-program $(WARN_FLAGS)
 
-SRC := test/genetic_algorithm.cpp
+SRC := test/benchmark.cpp
 BIN := benchmark
 
 
