@@ -4,6 +4,10 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
+*.vcxproj
+*.filters
+*.user
+*.hint
 *.rsuser
 *.suo
 *.user
@@ -21,6 +25,9 @@
 x64/
 x86/
 bld/
+refs/
+docs/html/
+docs/TODO.txt
 [Bb]in/
 [Oo]bj/
 [Ll]og/
