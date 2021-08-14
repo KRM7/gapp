@@ -14,45 +14,45 @@
 
 int main()
 {
-	binaryRastriginTest();
-	binaryRosenbrockTest();
-	binarySchwefelTest();
-	binaryGriewankTest();
-	binaryAckleyTest();
+    binaryRastriginTest();
+    binaryRosenbrockTest();
+    binarySchwefelTest();
+    binaryGriewankTest();
+    binaryAckleyTest();
 
-	realRastriginTest();
-	realRosenbrockTest();
-	realSchwefelTest();
-	realGriewankTest();
-	realAckleyTest();
+    realRastriginTest();
+    realRosenbrockTest();
+    realSchwefelTest();
+    realGriewankTest();
+    realAckleyTest();
 
-	perm52Test();
-	perm124Test();
-	perm226Test();
-	perm439Test();
+    perm52Test();
+    perm124Test();
+    perm226Test();
+    perm439Test();
 
-	integerTest1();
-	integerTest2();
+    integerTest1();
+    integerTest2();
 
-	nsga2KurTest();
-	nsga2Zdt2Test();
-	nsga2Zdt3Test();
-	nsga2Zdt6Test();
+    nsga2KurTest();
+    nsga2Zdt2Test();
+    nsga2Zdt3Test();
+    nsga2Zdt6Test();
 
-	nsga3KurTest();
-	nsga3Zdt2Test();
-	nsga3Zdt3Test();
-	nsga3Zdt6Test();
+    nsga3KurTest();
+    nsga3Zdt2Test();
+    nsga3Zdt3Test();
+    nsga3Zdt6Test();
 
-	nsga2Dtlz1Test();
-	nsga2Dtlz2Test();
+    nsga2Dtlz1Test();
+    nsga2Dtlz2Test();
 
-	nsga3Dtlz1Test();
-	nsga3Dtlz2Test();
+    nsga3Dtlz1Test();
+    nsga3Dtlz2Test();
 
-	timeGA();
+    timeGA();
 
-	std::getchar();
+    std::getchar();
 
     return 0;
 }
