@@ -28,7 +28,7 @@ bld/
 refs/
 docs/html/
 docs/TODO.txt
-[Bb]in/
+bin/*.exe
 [Oo]bj/
 [Ll]og/
 
