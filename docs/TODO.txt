@@ -1,0 +1,40 @@
+GENERAL:
+
+after multi-objective is done:
+	-reorganize files
+	-documentation (start the readme with 1-2 sentence explanation and an example, list features)
+
+
+DESIGN:
+
+separate the crossover, mutation, selection, etc functions into separate namespaces and simply use a pointer in the ga to set which one to use
+eg. namespace mutation
+		namespace binary
+		namespace real
+	namespace crossover
+	namespace selection
+	etc.
+the parameters which are not part of the ptr signature can be template parameters. (or fields in a wrapper class with operator () for the crossover)
+[calcWeightFunction, SelectFunction, ReplacementFunction] = Mode pack
+the issue is: how to deal with RCGA crossover bounds param, derived classes, etc. (the bounds checking can be done in a wrapper function (mutate()), with everything else)
+^^^this stuff would probably make the library look nicer but be less simple to use, probably not neccesary with some cleanup
+the operators could also just be made into classes with params as fields
+
+
+FEATURES:
+
+*customization examples :
+	-custom encoding example
+
+*island models (something simple)
+
+*constrained optimization (tournament selection only?)
+
+*2-opt repair function for TSP439 as an example for using a repair function to get a memetic algorithm (can be same
+as current permutation example, but with 2-opt on top)
+
+*better ref point generation for the NSGA-III (mirror transformation in N-dimensions with R2 quasi-random number generator)
+
+*look at NSGA-II normalization, and why it doesn't do well on DTLZ1
+
+*can the nadir point estimation be improved in the NSGA-III without implementing matrix inversions?

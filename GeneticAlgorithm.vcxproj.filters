@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="test\fitness_functions.h" />
+    <ClInclude Include="src\genetic_algorithm.h" />
+    <ClInclude Include="test\utils.h" />
+    <ClInclude Include="test\binary_tests.h" />
+    <ClInclude Include="test\real_tests.h" />
+    <ClInclude Include="test\permutational_tests.h" />
+    <ClInclude Include="test\time_test.h" />
+    <ClInclude Include="test\integer_tests.h" />
+    <ClInclude Include="test\nsga2_tests.h" />
+    <ClInclude Include="test\nsga3_tests.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test\genetic_algorithm.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="docs\TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+</Project>
