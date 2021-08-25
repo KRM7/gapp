@@ -642,22 +642,27 @@ namespace genetic_algorithm
         /**
         * @returns A vector of the pareto optimal solutions found while running the algorithm.
         */
-        CandidateVec solutions() const { return solutions_; }
+        [[nodiscard]] CandidateVec solutions() const { return solutions_; }
 
         /**
         * @returns The number of fitness evaluations performed while running the algorithm.
         */
-        size_t num_fitness_evals() const { return static_cast<size_t>(num_fitness_evals_); }
+        [[nodiscard]] size_t num_fitness_evals() const { return static_cast<size_t>(num_fitness_evals_); }
+
+        /**
+        * @returns The current value of the generation counter.
+        */
+        [[nodiscard]] size_t generation_cntr() const { return generation_cntr_; }
 
         /**
         * @returns The population of the final generation in the algorithm.
         */
-        Population population() const { return population_; }
+        [[nodiscard]] Population population() const { return population_; }
 
         /**
         * @returns A History object containing stats from each generation of the single objective genetic algorithm.
         */
-        History soga_history() const { return soga_history_; }
+        [[nodiscard]] History soga_history() const { return soga_history_; }
 
 
         /**
@@ -671,7 +676,7 @@ namespace genetic_algorithm
 
             mode_ = mode;
         }
-        Mode mode() const { return mode_; }
+        [[nodiscard]] Mode mode() const { return mode_; }
 
         /**
         * Sets the length of the chromosomes (number of genes) of the Candidate solutions used in the algorithm to @p len. \n
@@ -685,7 +690,7 @@ namespace genetic_algorithm
 
             chrom_len_ = len;
         }
-        size_t chrom_len() const { return chrom_len_; }
+        [[nodiscard]] size_t chrom_len() const { return chrom_len_; }
 
         /**
         * Sets the number of Candidates used in the population to @p size. \n
@@ -699,7 +704,7 @@ namespace genetic_algorithm
 
             population_size_ = size;
         }
-        size_t population_size() const { return population_size_; }
+        [[nodiscard]] size_t population_size() const { return population_size_; }
 
         /**
         * Sets the crossover rate used in the algorithm to @p pc. \n
@@ -713,7 +718,7 @@ namespace genetic_algorithm
 
             crossover_rate_ = pc;
         }
-        double crossover_rate() const { return crossover_rate_; }
+        [[nodiscard]] double crossover_rate() const { return crossover_rate_; }
 
         /**
         * Sets the mutation rate used in the algorithm to @p pm. \n
@@ -727,7 +732,7 @@ namespace genetic_algorithm
 
             mutation_rate_ = pm;
         }
-        double mutation_rate() const { return mutation_rate_; }
+        [[nodiscard]] double mutation_rate() const { return mutation_rate_; }
 
         /**
         * Sets the selection method used in the single-objective algorithm to @p method. \n
@@ -741,7 +746,7 @@ namespace genetic_algorithm
 
             selection_method_ = method;
         }
-        SogaSelection selection_method() const { return selection_method_; }
+        [[nodiscard]] SogaSelection selection_method() const { return selection_method_; }
         /**
         * Sets the selection function used in the single-objective algorithm to @p f. \n
         * The selection function set is ignored in the other algorithm types. @see Mode
@@ -769,7 +774,7 @@ namespace genetic_algorithm
 
             tournament_size_ = size;
         }
-        size_t tournament_size() const { return tournament_size_; }
+        [[nodiscard]] size_t tournament_size() const { return tournament_size_; }
 
         /**
         * Sets the minimum and maximum selection weights used during rank selection if the rank selection method is
@@ -794,7 +799,7 @@ namespace genetic_algorithm
             rank_sel_min_w_ = min_weight;
             rank_sel_max_w_ = max_weight;
         }
-        std::pair<double, double> rank_sel_weights() const { return std::make_pair(rank_sel_min_w_, rank_sel_max_w_); }
+        [[nodiscard]] std::pair<double, double> rank_sel_weights() const { return { rank_sel_min_w_, rank_sel_max_w_ }; }
 
         /**
         * Sets the minimum and maximum temperature values used during boltzmann selection if the boltzmann
@@ -819,7 +824,7 @@ namespace genetic_algorithm
             boltzmann_tmin_ = tmin;
             boltzmann_tmax_ = tmax;
         }
-        std::pair<double, double> boltzmann_temps() const { return std::make_pair(boltzmann_tmin_, boltzmann_tmax_); }
+        [[nodiscard]] std::pair<double, double> boltzmann_temps() const { return { boltzmann_tmin_, boltzmann_tmax_ }; }
 
         /**
         * Sets the scaling parameter used during selection to @p scale if the sigma selection method is
@@ -838,7 +843,7 @@ namespace genetic_algorithm
 
             sigma_scale_ = scale;
         }
-        double sigma_scale() const { return sigma_scale_; }
+        [[nodiscard]] double sigma_scale() const { return sigma_scale_; }
 
         /**
         * Sets the stop condition used in the algorithm to @p condition. Some of the stop conditions
@@ -854,7 +859,7 @@ namespace genetic_algorithm
 
             stop_condition_ = condition;
         }
-        StopCondition stop_condition() const { return stop_condition_; }
+        [[nodiscard]] StopCondition stop_condition() const { return stop_condition_; }
 
         /**
         * Sets the maximum number of generations the algorithm runs for to @p max_gen. The
@@ -871,7 +876,7 @@ namespace genetic_algorithm
 
             max_gen_ = max_gen;
         }
-        size_t max_gen() const { return max_gen_; }
+        [[nodiscard]] size_t max_gen() const { return max_gen_; }
 
         /**
         * Sets the maximum number of fitness evaluations the algorithm runs for to @p max_evals if
@@ -888,7 +893,7 @@ namespace genetic_algorithm
 
             max_fitness_evals_ = max_evals;
         }
-        size_t max_fitness_evals() const { return max_fitness_evals_; }
+        [[nodiscard]] size_t max_fitness_evals() const { return max_fitness_evals_; }
 
         /**
         * Sets the reference fitness value for the fitness_value stop condition to @p ref. \n
@@ -911,7 +916,7 @@ namespace genetic_algorithm
 
             fitness_reference_ = ref;
         }
-        std::vector<double> fitness_threshold() const { return fitness_reference_; }
+        [[nodiscard]] std::vector<double> fitness_threshold() const { return fitness_reference_; }
 
         /**
         * Sets the number of generations to look back when evaluating the stall stop conditions. \n
@@ -926,7 +931,7 @@ namespace genetic_algorithm
 
             stall_gen_count_ = count;
         }
-        size_t stall_gen_count() const { return stall_gen_count_; }
+        [[nodiscard]] size_t stall_gen_count() const { return stall_gen_count_; }
 
         /**
         * Sets the value of the stall threshold to @p threshold for the stall stop conditions. \n
@@ -941,7 +946,7 @@ namespace genetic_algorithm
 
             stall_threshold_ = threshold;
         }
-        double stall_threshold() const { return stall_threshold_; }
+        [[nodiscard]] double stall_threshold() const { return stall_threshold_; }
 
         /**
         * Sets the initial population to be used in the algorithm to @p pop instead of randomly generating it. \n
@@ -974,6 +979,11 @@ namespace genetic_algorithm
 
             fitnessFunction = f;
         }
+
+        /* Some getters for the NSGA-III algorithm. */
+        [[nodiscard]] std::vector<std::vector<double>> ref_points() const { return ref_points_; };
+        [[nodiscard]] std::vector<double> ideal_point() const { return ideal_point_; };
+        [[nodiscard]] std::vector<double> nadir_point() const { return nadir_point_; };
 
     protected:
 
@@ -2142,19 +2152,6 @@ namespace genetic_algorithm
         BinaryGA(const BinaryGA& o) : GA(o.chrom_len_, o.fitnessFunction) {};
 
         /**
-        * Sets the crossover method used in the algorithm to @p method.
-        * @see CrossoverMethod
-        *
-        * @param method The crossover method to use.
-        */
-        void crossover_method(CrossoverMethod method)
-        {
-            if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
-
-            crossover_method_ = method;
-        }
-        CrossoverMethod crossover_method() const { return crossover_method_; }
-        /**
         * Sets the crossover function used in the algorithm to @f.
         * @see CrossoverMethod
         *
@@ -2169,18 +2166,19 @@ namespace genetic_algorithm
         }
 
         /**
-        * Sets the mutation method used in the algorithm to @p method.
-        * @see MutationMethod
+        * Sets the crossover method used in the algorithm to @p method.
+        * @see CrossoverMethod
         *
-        * @param method The mutation method to use.
+        * @param method The crossover method to use.
         */
-        void mutation_method(MutationMethod method)
+        void crossover_method(CrossoverMethod method)
         {
-            if (static_cast<size_t>(method) > 1) throw std::invalid_argument("Invalid mutation method selected.");
+            if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
 
-            mutation_method_ = method;
+            crossover_method_ = method;
         }
-        MutationMethod mutation_method() const { return mutation_method_; }
+        [[nodiscard]] CrossoverMethod crossover_method() const { return crossover_method_; }
+
         /**
         * Sets the mutation function used in the algorithm to @f.
         * @see MutationMethod
@@ -2196,6 +2194,20 @@ namespace genetic_algorithm
         }
 
         /**
+        * Sets the mutation method used in the algorithm to @p method.
+        * @see MutationMethod
+        *
+        * @param method The mutation method to use.
+        */
+        void mutation_method(MutationMethod method)
+        {
+            if (static_cast<size_t>(method) > 1) throw std::invalid_argument("Invalid mutation method selected.");
+
+            mutation_method_ = method;
+        }
+        [[nodiscard]] MutationMethod mutation_method() const { return mutation_method_; }
+
+        /**
         * Sets the number of crossover points used in the crossovers to @p n if the n_point crossover method selected. \n
         * The number of crossover points must be at least 1.
         * @see crossover_method @see CrossoverMethod
@@ -2208,7 +2220,7 @@ namespace genetic_algorithm
 
             num_crossover_points_ = n;
         }
-        size_t num_crossover_points() const { return num_crossover_points_; }
+        [[nodiscard]] size_t num_crossover_points() const { return num_crossover_points_; }
 
     private:
         
@@ -2458,19 +2470,6 @@ namespace genetic_algorithm
         }
 
         /**
-        * Sets the crossover method used in the algorithm to @p method.
-        * @see CrossoverMethod
-        *
-        * @param method The crossover method to use.
-        */
-        void crossover_method(CrossoverMethod method)
-        {
-            if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
-
-            crossover_method_ = method;
-        }
-        CrossoverMethod crossover_method() const { return crossover_method_; }
-        /**
         * Sets the crossover function used in the algorithm to @f.
         * @see CrossoverMethod
         *
@@ -2485,18 +2484,19 @@ namespace genetic_algorithm
         }
 
         /**
-        * Sets the mutation method used in the algorithm to @p method.
-        * @see MutationMethod
+        * Sets the crossover method used in the algorithm to @p method.
+        * @see CrossoverMethod
         *
-        * @param method The mutation method to use.
+        * @param method The crossover method to use.
         */
-        void mutation_method(MutationMethod method)
+        void crossover_method(CrossoverMethod method)
         {
-            if (static_cast<size_t>(method) > 5) throw std::invalid_argument("Invalid mutation method selected.");
+            if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
 
-            mutation_method_ = method;
+            crossover_method_ = method;
         }
-        MutationMethod mutation_method() const { return mutation_method_; }
+        [[nodiscard]] CrossoverMethod crossover_method() const { return crossover_method_; }
+
         /**
         * Sets the mutation function used in the algorithm to @f.
         * @see MutationMethod
@@ -2510,6 +2510,20 @@ namespace genetic_algorithm
             mutation_method_ = MutationMethod::custom;
             customMutate = f;
         }
+
+        /**
+        * Sets the mutation method used in the algorithm to @p method.
+        * @see MutationMethod
+        *
+        * @param method The mutation method to use.
+        */
+        void mutation_method(MutationMethod method)
+        {
+            if (static_cast<size_t>(method) > 5) throw std::invalid_argument("Invalid mutation method selected.");
+
+            mutation_method_ = method;
+        }
+        [[nodiscard]] MutationMethod mutation_method() const { return mutation_method_; }
 
         /**
         * Sets the boundaries of the real-coded genes. \n
@@ -2533,7 +2547,7 @@ namespace genetic_algorithm
 
             limits_ = limits;
         }
-        limits_t limits() const { return limits_; }
+        [[nodiscard]] limits_t limits() const { return limits_; }
 
         /**
         * Sets the alpha parameter of the BLX-alpha crossover method. \n
@@ -2552,7 +2566,7 @@ namespace genetic_algorithm
 
             blx_crossover_param_ = alpha;
         }
-        double blx_crossover_param() const { return blx_crossover_param_; }
+        [[nodiscard]] double blx_crossover_param() const { return blx_crossover_param_; }
 
         /**
         * Sets the shape parameter (eta) of the simulated binary crossover method. \n
@@ -2571,7 +2585,7 @@ namespace genetic_algorithm
 
             sim_binary_crossover_param_ = eta;
         }
-        double sim_binary_crossover_param() const { return sim_binary_crossover_param_; }
+        [[nodiscard]] double sim_binary_crossover_param() const { return sim_binary_crossover_param_; }
 
         /**
         * Sets the time parameter of the non-uniform mutation operator. \n
@@ -2592,7 +2606,7 @@ namespace genetic_algorithm
 
             nonuniform_mutation_param_ = b;
         }
-        double nonuniform_mutation_param() const { return nonuniform_mutation_param_; }
+        [[nodiscard]] double nonuniform_mutation_param() const { return nonuniform_mutation_param_; }
 
         /**
         * Sets the parameter of the polynomial mutation operator. \n
@@ -2611,7 +2625,7 @@ namespace genetic_algorithm
 
             polynomial_mutation_param_ = eta;
         }
-        double polynomial_mutation_param() const { return polynomial_mutation_param_; }
+        [[nodiscard]] double polynomial_mutation_param() const { return polynomial_mutation_param_; }
 
         /**
         * Sets the parameter of the gauss mutation operator. \n
@@ -2631,7 +2645,7 @@ namespace genetic_algorithm
 
             gauss_mutation_param_ = sigmas;
         }
-        double gauss_mutation_param() const { return gauss_mutation_param_; }
+        [[nodiscard]] double gauss_mutation_param() const { return gauss_mutation_param_; }
 
     private:
 
@@ -2993,19 +3007,6 @@ namespace genetic_algorithm
         PermutationGA(const PermutationGA& o) : GA(o.chrom_len_, o.fitnessFunction) {};
 
         /**
-        * Sets the crossover method used in the algorithm to @p method.
-        * @see CrossoverMethod
-        *
-        * @param method The crossover method to use.
-        */
-        void crossover_method(CrossoverMethod method)
-        {
-            if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
-
-            crossover_method_ = method;
-        }
-        CrossoverMethod crossover_method() const { return crossover_method_; }
-        /**
         * Sets the crossover function used in the algorithm to @f.
         * @see CrossoverMethod
         *
@@ -3020,18 +3021,19 @@ namespace genetic_algorithm
         }
 
         /**
-        * Sets the mutation method used in the algorithm to @p method.
-        * @see MutationMethod
+        * Sets the crossover method used in the algorithm to @p method.
+        * @see CrossoverMethod
         *
-        * @param method The mutation method to use.
+        * @param method The crossover method to use.
         */
-        void mutation_method(MutationMethod method)
+        void crossover_method(CrossoverMethod method)
         {
-            if (static_cast<size_t>(method) > 3) throw std::invalid_argument("Invalid mutation method selected.");
+            if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
 
-            mutation_method_ = method;
+            crossover_method_ = method;
         }
-        MutationMethod mutation_method() const { return mutation_method_; }
+        [[nodiscard]] CrossoverMethod crossover_method() const { return crossover_method_; }
+
         /**
         * Sets the mutation function used in the algorithm to @f.
         * @see MutationMethod
@@ -3045,6 +3047,20 @@ namespace genetic_algorithm
             mutation_method_ = MutationMethod::custom;
             customMutate = f;
         }
+
+        /**
+        * Sets the mutation method used in the algorithm to @p method.
+        * @see MutationMethod
+        *
+        * @param method The mutation method to use.
+        */
+        void mutation_method(MutationMethod method)
+        {
+            if (static_cast<size_t>(method) > 3) throw std::invalid_argument("Invalid mutation method selected.");
+
+            mutation_method_ = method;
+        }
+        [[nodiscard]] MutationMethod mutation_method() const { return mutation_method_; }
 
     private:
 
@@ -3583,19 +3599,6 @@ namespace genetic_algorithm
         IntegerGA(const IntegerGA& o) : GA(o.chrom_len_, o.fitnessFunction) {};
 
         /**
-        * Sets the crossover method used in the algorithm to @p method.
-        * @see CrossoverMethod
-        *
-        * @param method The crossover method to use.
-        */
-        void crossover_method(CrossoverMethod method)
-        {
-            if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
-
-            crossover_method_ = method;
-        }
-        CrossoverMethod crossover_method() const { return crossover_method_; }
-        /**
         * Sets the crossover function used in the algorithm to @f.
         * @see CrossoverMethod
         *
@@ -3610,18 +3613,19 @@ namespace genetic_algorithm
         }
 
         /**
-        * Sets the mutation method used in the algorithm to @p method.
-        * @see MutationMethod
+        * Sets the crossover method used in the algorithm to @p method.
+        * @see CrossoverMethod
         *
-        * @param method The mutation method to use.
+        * @param method The crossover method to use.
         */
-        void mutation_method(MutationMethod method)
+        void crossover_method(CrossoverMethod method)
         {
-            if (static_cast<size_t>(method) > 1) throw std::invalid_argument("Invalid mutation method selected.");
+            if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
 
-            mutation_method_ = method;
+            crossover_method_ = method;
         }
-        MutationMethod mutation_method() const { return mutation_method_; }
+        [[nodiscard]] CrossoverMethod crossover_method() const { return crossover_method_; }
+
         /**
         * Sets the mutation function used in the algorithm to @f.
         * @see MutationMethod
@@ -3637,6 +3641,20 @@ namespace genetic_algorithm
         }
 
         /**
+        * Sets the mutation method used in the algorithm to @p method.
+        * @see MutationMethod
+        *
+        * @param method The mutation method to use.
+        */
+        void mutation_method(MutationMethod method)
+        {
+            if (static_cast<size_t>(method) > 1) throw std::invalid_argument("Invalid mutation method selected.");
+
+            mutation_method_ = method;
+        }
+        [[nodiscard]] MutationMethod mutation_method() const { return mutation_method_; }
+
+        /**
         * Sets the number of crossover points used in the crossovers to @p n if the n_point crossover method selected. \n
         * The number of crossover points must be at least 1.
         * @see crossover_method @see CrossoverMethod
@@ -3649,7 +3667,7 @@ namespace genetic_algorithm
 
             num_crossover_points_ = n;
         }
-        size_t num_crossover_points() const { return num_crossover_points_; }
+        [[nodiscard]] size_t num_crossover_points() const { return num_crossover_points_; }
 
         /**
         * Sets the number of values a gene can take to @p base. \n
@@ -3664,7 +3682,7 @@ namespace genetic_algorithm
 
             base_ = base;
         }
-        size_t base() const { return base_; }
+        [[nodiscard]] size_t base() const { return base_; }
 
         /**
         * Sets the probability of a single swap occuring during the mutation of a Candidate to @p ps. \n
@@ -3678,7 +3696,7 @@ namespace genetic_algorithm
 
             swap_rate_ = ps;
         }
-        double swap_rate() const { return swap_rate_; }
+        [[nodiscard]] double swap_rate() const { return swap_rate_; }
 
         /**
         * Sets the probability of inversion during the mutation of a Candidate to @p pi. \n
@@ -3692,7 +3710,7 @@ namespace genetic_algorithm
 
             inversion_rate_ = pi;
         }
-        double inversion_rate() const { return inversion_rate_; }
+        [[nodiscard]] double inversion_rate() const { return inversion_rate_; }
 
     private:
 
