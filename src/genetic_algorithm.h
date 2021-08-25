@@ -31,18 +31,19 @@
 #ifndef GENETIC_ALGORITHM_H
 #define GENETIC_ALGORITHM_H
 
-#include <cmath>
-#include <random>
 #include <vector>
 #include <unordered_set>
 #include <algorithm>
+#include <random>
 #include <functional>
 #include <numeric>
 #include <limits>
 #include <execution>
 #include <atomic>
-#include <cassert>
+#include <cmath>
+#include <cstdlib>
 #include <cstddef>
+#include <cassert>
 #include <stdexcept>
 
 /** Genetic algorithms and random number generation. */
@@ -241,7 +242,7 @@ namespace genetic_algorithm
             double sum = 0.0;
             for (size_t i = 0; i < dim; i++)
             {
-                vec.push_back(-log(distribution(engine)));
+                vec.push_back(-std::log(distribution(engine)));
                 sum += vec.back();
             }
             for (size_t i = 0; i < dim; i++)
@@ -278,7 +279,7 @@ namespace genetic_algorithm
             double d = 0.0;
             for (size_t i = 0; i < v1.size(); i++)
             {
-                d += pow(v1[i] - v2[i], 2);
+                d += std::pow(v1[i] - v2[i], 2);
             }
 
             return d;
@@ -342,7 +343,7 @@ namespace genetic_algorithm
             double dist = 0.0;
             for (size_t i = 0; i < ref.size(); i++)
             {
-                dist += pow(p[i] - k * ref[i], 2);
+                dist += std::pow(p[i] - k * ref[i], 2);
             }
 
             return dist;
@@ -351,7 +352,7 @@ namespace genetic_algorithm
         /* Find the index and distance of the closest reference line to the point p. */
         inline std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p)
         {
-            size_t idx = 0;
+            size_t argmin = 0;
             double dmin = perpendicularDistanceSq(refs[0], p);
             for (size_t i = 1; i < refs.size(); i++)
             {
@@ -359,11 +360,11 @@ namespace genetic_algorithm
                 if (d < dmin)
                 {
                     dmin = d;
-                    idx = i;
+                    argmin = i;
                 }
             }
 
-            return std::make_pair(idx, dmin);
+            return std::make_pair(argmin, dmin);
         }
 
         /* Achievement scalarization function. */
@@ -372,13 +373,13 @@ namespace genetic_algorithm
             assert(!f.empty());
             assert(f.size() == z.size() && f.size() == w.size());
 
-            double d = std::abs(f[0] - z[0]) / w[0];
+            double dmax = std::abs(f[0] - z[0]) / w[0];
             for (size_t j = 1; j < f.size(); j++)
             {
-                d = std::max(d, std::abs(f[j] - z[j]) / w[j]);
+                dmax = std::max(dmax, std::abs(f[j] - z[j]) / w[j]);
             }
 
-            return d;
+            return dmax;
         }
 
     } // namespace detail
@@ -1054,9 +1055,9 @@ namespace genetic_algorithm
                 throw std::invalid_argument("The custom selection function is a nullptr.");
             }
             /* Check mode. */
-            Candidate dummy = generateCandidate();
-            dummy.fitness = fitnessFunction(dummy.chromosome);
-            num_objectives_ = dummy.fitness.size();
+            Candidate temp = generateCandidate();
+            temp.fitness = fitnessFunction(temp.chromosome);
+            num_objectives_ = temp.fitness.size();
             if (mode_ == Mode::single_objective && num_objectives_ != 1)
             {
                 throw std::invalid_argument("The size of the fitness vector must be 1 for single-objective optimization.");
@@ -1297,6 +1298,7 @@ namespace genetic_algorithm
                     {
                         metric_now = soga_history_.fitness_mean[generation_cntr_];
                         metric_old = soga_history_.fitness_mean[generation_cntr_ - stall_gen_count_];
+
                         return (metric_now - metric_old) < stall_threshold_;
                     }
                     else return false;
@@ -1333,13 +1335,13 @@ namespace genetic_algorithm
             assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
 
             /* Roulette selection wouldn't work for negative fitness values. */
-            bool has_negative_fitness = std::any_of(pop.begin(), pop.end(), [](const Candidate& sol) {return sol.fitness[0] < 0.0; });
+            bool has_negative_fitness = std::any_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness[0] < 0.0; });
             double offset = fitnessMin(pop)[0] * has_negative_fitness;
 
             double pdf_mean = 0.0;
             for (auto& sol : pop)
             {
-                sol.selection_pdf = sol.fitness[0] - 2 * offset;
+                sol.selection_pdf = sol.fitness[0] - 2.0 * offset;
                 pdf_mean += sol.selection_pdf / pop.size();
             }
 
@@ -1422,7 +1424,7 @@ namespace genetic_algorithm
             assert(t_max >= t);
             assert(temp_max > temp_min && temp_min > 0.1);
 
-            double temperature = -temp_max / (1.0 + exp(-10.0 * (double(t) / t_max) + 3.0)) + temp_max + temp_min;
+            double temperature = -temp_max / (1.0 + std::exp(-10.0 * (double(t) / t_max) + 3.0)) + temp_max + temp_min;
 
             double fmax = fitnessMax(pop)[0];
             double fmin = fitnessMin(pop)[0];
@@ -1627,7 +1629,15 @@ namespace genetic_algorithm
             using namespace std;
             assert(!pop.empty());
             
-            for_each(execution::seq, pfronts.begin(), pfronts.end(),
+            for (const auto& pfront : pfronts)
+            {
+                for (const auto& idx : pfront)
+                {
+                    pop[idx].distance = 0.0;
+                }
+            }
+
+            for_each(execution::par_unseq, pfronts.begin(), pfronts.end(),
             [&pop](vector<size_t>& pfront)
             {
                 /* Calc the distances in each fitness dimension. */
@@ -1642,11 +1652,6 @@ namespace genetic_algorithm
                     /* Calc the crowding distance for each solution. */
                     double finterval = pop[pfront.back()].fitness[d] - pop[pfront.front()].fitness[d];
                     finterval = max(finterval, 1E-6);
-
-                    for (const auto& idx : pfront)
-                    {
-                        pop[idx].distance = 0.0;
-                    }
 
                     pop[pfront.front()].distance = numeric_limits<double>::infinity();
                     pop[pfront.back()].distance = numeric_limits<double>::infinity();
@@ -1809,6 +1814,7 @@ namespace genetic_algorithm
 
             updateIdealPoint(pop);
             updateNadirPoint(pop);
+
             vector<vector<double>> fnorms(pop.size(), vector<double>(pop[0].fitness.size(), 0.0));	/* Don't change the actual fitness values. */
 
             transform(execution::par_unseq, pop.begin(), pop.end(), fnorms.begin(), fnorms.begin(),
@@ -1835,7 +1841,7 @@ namespace genetic_algorithm
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */
         static std::vector<size_t> calcNicheCounts(Population& pop, const std::vector<std::vector<double>>& ref_points)
         {
-            std::vector<size_t> niche_counts(ref_points.size(), 0);
+            std::vector<size_t> niche_counts(ref_points.size(), 0U);
             for (const auto& sol : pop)
             {
                 niche_counts[sol.ref_idx]++;
@@ -1955,10 +1961,10 @@ namespace genetic_algorithm
 
             CandidateVec optimal_sols;
 
-            double max_fitness = fitnessMax(pop)[0]; /* There might be multiple solutions with this max fitness value. */
+            double fmax = fitnessMax(pop)[0]; /* There might be multiple solutions with this max fitness value. */
             for (const auto& sol : pop)
             {
-                if (sol.fitness[0] == max_fitness) optimal_sols.push_back(sol);
+                if (sol.fitness[0] == fmax) optimal_sols.push_back(sol);
             }
 
             return optimal_sols;
@@ -2019,7 +2025,7 @@ namespace genetic_algorithm
             iota(indices.begin(), indices.end(), 0U);
             
             /* Sort the pop indices into descending order based on first fitness value (needed for Kung's). */
-            sort(indices.begin(), indices.end(), [&pop](size_t lidx, size_t ridx) {return pop[lidx].fitness[0] > pop[ridx].fitness[0]; });
+            sort(indices.begin(), indices.end(), [&pop](size_t lidx, size_t ridx) { return pop[lidx].fitness[0] > pop[ridx].fitness[0]; });
             indices = pfront(indices.begin(), indices.end());
 
             CandidateVec optimal_sols;
@@ -2041,17 +2047,17 @@ namespace genetic_algorithm
             assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
             assert(std::all_of(pop.begin(), pop.end(), [&pop](const Candidate& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
-            std::vector<double> min = pop[0].fitness;
+            std::vector<double> fmin = pop[0].fitness;
 
             for (size_t i = 1; i < pop.size(); i++)
             {
-                for (size_t j = 0; j < min.size(); j++)
+                for (size_t j = 0; j < fmin.size(); j++)
                 {
-                    min[j] = std::min(min[j], pop[i].fitness[j]);
+                    fmin[j] = std::min(fmin[j], pop[i].fitness[j]);
                 }
             }
 
-            return min;
+            return fmin;
         }
 
         /* Find the maximum fitness along each objective in the population. */
@@ -2061,17 +2067,17 @@ namespace genetic_algorithm
             assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
             assert(std::all_of(pop.begin(), pop.end(), [&pop](const Candidate& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
-            std::vector<double> max = pop[0].fitness;
+            std::vector<double> fmax = pop[0].fitness;
 
             for (size_t i = 1; i < pop.size(); i++)
             {
-                for (size_t j = 0; j < max.size(); j++)
+                for (size_t j = 0; j < fmax.size(); j++)
                 {
-                    max[j] = std::max(max[j], pop[i].fitness[j]);
+                    fmax[j] = std::max(fmax[j], pop[i].fitness[j]);
                 }
             }
 
-            return max;
+            return fmax;
         }
 
         /* Find the mean of the fitness values of the population along the first objective. */
@@ -2099,10 +2105,10 @@ namespace genetic_algorithm
             long double variance = std::accumulate(pop.begin(), pop.end(), 0.0L,
             [&pop, mean](long double sum, const Candidate& sol)
             {
-                return sum + pow(sol.fitness[0] - mean, 2) / (pop.size() - 1.0);
+                return sum + std::pow(sol.fitness[0] - mean, 2) / (pop.size() - 1.0);
             });
 
-            return double(sqrt(variance));
+            return double(std::sqrt(variance));
         }
 
     };
@@ -2358,7 +2364,7 @@ namespace genetic_algorithm
 
             /* Calc number of mutated genes. */
             double mean = child.chromosome.size() * pm;
-            double SD = child.chromosome.size() * pm * (1 - pm);
+            double SD = child.chromosome.size() * pm * (1.0 - pm);
 
             size_t mutation_count = size_t(round(rng::generateRandomNorm(mean, SD)));
             mutation_count = std::clamp(mutation_count, size_t{ 0 }, child.chromosome.size());
@@ -2449,7 +2455,7 @@ namespace genetic_algorithm
             {
                 throw std::invalid_argument("The size of the bounds must be the same as the number of genes.");
             }
-            if (std::any_of(bounds.begin(), bounds.end(), [](std::pair<double, double> b) {return b.first > b.second; }))
+            if (std::any_of(bounds.begin(), bounds.end(), [](std::pair<double, double> b) { return b.first > b.second; }))
             {
                 throw std::invalid_argument("The lower bound must be lower than the upper bound for each gene.");
             }
@@ -2463,7 +2469,7 @@ namespace genetic_algorithm
         friend bool operator==(const Candidate& lhs, const Candidate& rhs)
         {
             return std::equal(lhs.chromosome.begin(), lhs.chromosome.end(), rhs.chromosome.begin(),
-            [](double lhs, double rhs) -> bool 
+            [](double lhs, double rhs) 
             {
                 return std::abs(lhs - rhs) <= std::numeric_limits<double>::epsilon() * std::max(std::abs(lhs), std::abs(rhs));
             });
@@ -2692,8 +2698,8 @@ namespace genetic_algorithm
                 double alpha = rng::generateRandomDouble();
                 for (size_t i = 0; i < parent1.chromosome.size(); i++)
                 {
-                    child1.chromosome[i] = alpha * parent1.chromosome[i] + (1 - alpha) * parent2.chromosome[i];
-                    child2.chromosome[i] = (1 - alpha) * parent1.chromosome[i] + alpha * parent2.chromosome[i];
+                    child1.chromosome[i] = alpha * parent1.chromosome[i] + (1.0 - alpha) * parent2.chromosome[i];
+                    child2.chromosome[i] = (1.0 - alpha) * parent1.chromosome[i] + alpha * parent2.chromosome[i];
                 }
                 child1.is_evaluated = false;
                 child2.is_evaluated = false;
@@ -2735,8 +2741,6 @@ namespace genetic_algorithm
 
         static CandidatePair simulatedBinaryCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double b, const limits_t& bounds)
         {
-            /* See: Deb, et al. "Simulated binary crossover for continuous search space." Complex systems 9.2 (1995): 115-148. */
-
             assert(parent1.chromosome.size() == parent2.chromosome.size());
             assert(parent1.chromosome.size() == bounds.size());
             assert(0.0 <= pc && pc <= 1.0);
@@ -2749,7 +2753,7 @@ namespace genetic_algorithm
             {
                 /* Generate beta from the distribution. */
                 double u = rng::generateRandomDouble(0.0, 1.0);
-                double beta = (u <= 0.5) ? pow(2*u, 1/(b + 1)) : pow(1/(2*(1 - u)), 1/(b + 1));
+                double beta = (u <= 0.5) ? std::pow(2.0 * u, 1.0/(b + 1.0)) : std::pow(1.0/(2.0 * (1.0 - u)), 1.0/(b + 1.0));
 
                 /* Perform crossover. */
                 for (size_t i = 0; i < parent1.chromosome.size(); i++)
@@ -2851,9 +2855,9 @@ namespace genetic_algorithm
                 {
                     double interval = bounds[i].second - bounds[i].first;
                     double r = rng::generateRandomDouble();
-                    double sign = pow(-1.0, int(rng::generateRandomBool()));
+                    double sign = rng::generateRandomBool() ? 1.0 : -1.0;
 
-                    child.chromosome[i] += sign * interval * (1 - pow(r, pow(1 - double(time) / time_max, b)));
+                    child.chromosome[i] += sign * interval * (1.0 - std::pow(r, std::pow(1.0 - double(time) / time_max, b)));
                     child.is_evaluated = false;
 
                     /* The mutated gene might be outside the allowed range. */
@@ -2864,9 +2868,6 @@ namespace genetic_algorithm
 
         static void polynomialMutate(Candidate& child, double pm, double eta, const limits_t& bounds)
         {
-            /* See: Deb, et al. "Analysing mutation schemes for real-parameter genetic algorithms."
-            * International Journal of Artificial Intelligence and Soft Computing 4.1 (2014): 1-28. */
-
             assert(0.0 <= pm && pm <= 1.0);
             assert(child.chromosome.size() == bounds.size());
             assert(eta >= 0.0);
@@ -2879,12 +2880,12 @@ namespace genetic_algorithm
                     double u = rng::generateRandomDouble();
                     if (u <= 0.5)
                     {
-                        double delta = pow(2.0 * u, 1.0 / (1.0 + eta)) - 1.0;
+                        double delta = std::pow(2.0 * u, 1.0 / (1.0 + eta)) - 1.0;
                         child.chromosome[i] += delta * (child.chromosome[i] - bounds[i].first);
                     }
                     else
                     {
-                        double delta = 1.0 - pow(2 - 2 * u, 1.0 / (1.0 + eta));
+                        double delta = 1.0 - std::pow(2.0 - 2.0 * u, 1.0 / (1.0 + eta));
                         child.chromosome[i] += delta * (bounds[i].second - child.chromosome[i]);
                     }
                     child.is_evaluated = false;
@@ -3260,7 +3261,7 @@ namespace genetic_algorithm
                     /* Append X to the child, and remove X from all neighbour lists. */
                     child1.chromosome.push_back(X);
                     not_in_child.erase(remove(not_in_child.begin(), not_in_child.end(), X), not_in_child.end());
-                    for (auto& elem : nl1) { elem.erase(X); }
+                    for (auto& elem : nl1) elem.erase(X);
 
                     /* Determine next X that will be added to the child. */
                     if (child1.chromosome.size() != parent1.chromosome.size())
@@ -3274,7 +3275,7 @@ namespace genetic_algorithm
                         {
                             /* Find X's neighbour with fewest neighbours. */
                             size_t nb = *min_element(nl1[X].begin(), nl1[X].end(),
-                            [&](const size_t& lhs, const size_t& rhs)
+                            [&nl1](const size_t& lhs, const size_t& rhs)
                             {
                                 return (nl1[lhs].size() < nl1[rhs].size());
                             });
@@ -3309,7 +3310,7 @@ namespace genetic_algorithm
                         else
                         {
                             size_t nb = *min_element(nl2[X].begin(), nl2[X].end(),
-                            [&](const size_t& lhs, const size_t& rhs)
+                            [&nl2](const size_t& lhs, const size_t& rhs)
                             {
                                 return (nl2[lhs].size() < nl2[rhs].size());
                             });
@@ -3434,6 +3435,7 @@ namespace genetic_algorithm
                     assert(false);	/* Invalid crossover method. Shouldn't get here. */
                     abort();
             }
+
             /* Check if the evaluation of the children can be skipped. */
             /* 
             * These checks decrease fitness evals by a lot for short chromosomes:
@@ -3854,9 +3856,9 @@ namespace genetic_algorithm
 
             /* Calc number of mutated genes. */
             double mean = child.chromosome.size() * pm;
-            double SD = child.chromosome.size() * pm * (1 - pm);
+            double SD = child.chromosome.size() * pm * (1.0 - pm);
 
-            size_t mutation_count = size_t(round(rng::generateRandomNorm(mean, SD)));
+            size_t mutation_count = size_t(std::round(rng::generateRandomNorm(mean, SD)));
             mutation_count = std::clamp(mutation_count, size_t{ 0 }, child.chromosome.size());
 
             /* The child will (very likely) be changed, and will need to be evaluated. */
