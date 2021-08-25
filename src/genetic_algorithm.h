@@ -1,21 +1,21 @@
 /*
 *  MIT License
 *
-*  Copyright(c) 2021 Krisztián Rugási
+*  Copyright (c) 2021 Krisztián Rugási
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
-*  of this softwareand associated documentation files(the "Software"), to deal
+*  of this softwareand associated documentation files (the "Software"), to deal
 *  in the Software without restriction, including without limitation the rights
-*  to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 *  copies of the Software, and to permit persons to whom the Software is
-*  furnished to do so, subject to the following conditions :
+*  furnished to do so, subject to the following conditions:
 *
 *  The above copyright noticeand this permission notice shall be included in all
 *  copies or substantial portions of the Software.
 *
 *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -42,7 +42,8 @@
 #include <execution>
 #include <atomic>
 #include <cassert>
-#include <exception>
+#include <cstddef>
+#include <stdexcept>
 
 /** Genetic algorithms and random number generation. */
 namespace genetic_algorithm
@@ -132,7 +133,7 @@ namespace genetic_algorithm
         * 
         * @return The generated random number.
         */
-        double generateRandomDouble()
+        inline double generateRandomDouble()
         {
             static thread_local PRNG engine{ std::random_device{}() };
             std::uniform_real_distribution<double> distribution{ 0.0, 1.0 };
@@ -147,7 +148,7 @@ namespace genetic_algorithm
         * @param u_bound The upper bound of the interval.
         * @return The generated random number.
         */
-        double generateRandomDouble(double l_bound, double u_bound)
+        inline double generateRandomDouble(double l_bound, double u_bound)
         {
             assert(l_bound <= u_bound);
 
@@ -166,7 +167,7 @@ namespace genetic_algorithm
         * @return The generated random number.
         */
         template<typename T>
-        T generateRandomInt(T l_bound, T u_bound)
+        inline T generateRandomInt(T l_bound, T u_bound)
         {
             assert(l_bound <= u_bound);
 
@@ -183,7 +184,7 @@ namespace genetic_algorithm
         * @param c_size The size of the container.
         * @return The generated random number.
         */
-        size_t generateRandomIdx(size_t c_size)
+        inline size_t generateRandomIdx(size_t c_size)
         {
             static thread_local PRNG engine{ std::random_device{}() };
             std::uniform_int_distribution<size_t> distribution{ 0, c_size - 1 };
@@ -196,7 +197,7 @@ namespace genetic_algorithm
         *
         * @return The generated random boolean.
         */
-        bool generateRandomBool()
+        inline bool generateRandomBool()
         {
             static thread_local PRNG engine{ std::random_device{}() };
             std::uniform_int_distribution<int> distribution{ 0, 1 };
@@ -211,7 +212,7 @@ namespace genetic_algorithm
         * @param SD The standard deviation of the normal distribution.
         * @return The generated random number.
         */
-        double generateRandomNorm(double mean = 0.0, double SD = 1.0)
+        inline double generateRandomNorm(double mean = 0.0, double SD = 1.0)
         {
             assert(SD > 0.0);
 
@@ -227,7 +228,7 @@ namespace genetic_algorithm
         * @param dim The number of elements in the generated vector.
         * @returns The generated random point/vector.
         */
-        std::vector<double> generateRandomSimplexPoint(size_t dim)
+        inline std::vector<double> generateRandomSimplexPoint(size_t dim)
         {
             assert(dim > 0);
 
@@ -256,7 +257,7 @@ namespace genetic_algorithm
     namespace detail
     {
         /* Return true if lhs is dominated by rhs (lhs < rhs) assuming maximization. */
-        bool paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs)
+        inline bool paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs)
         {
             assert(lhs.size() == rhs.size());
 
@@ -270,7 +271,7 @@ namespace genetic_algorithm
         }
 
         /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
-        double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2)
+        inline double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2)
         {
             assert(v1.size() == v2.size());
 
@@ -284,7 +285,7 @@ namespace genetic_algorithm
         }
 
         /* Generate n reference points in dim dimensions for the NSGA-III algorithm. */
-        std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim)
+        inline std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim)
         {
             using namespace std;
             assert(n > 0);
@@ -326,7 +327,7 @@ namespace genetic_algorithm
         }
 
         /* Calculate the square of the perpendicular distance between the line ref and the point p. */
-        double perpendicularDistanceSq(const std::vector<double>& ref, const std::vector<double>& p)
+        inline double perpendicularDistanceSq(const std::vector<double>& ref, const std::vector<double>& p)
         {
             assert(ref.size() == p.size());
 
@@ -348,7 +349,7 @@ namespace genetic_algorithm
         }
 
         /* Find the index and distance of the closest reference line to the point p. */
-        std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p)
+        inline std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p)
         {
             size_t idx = 0;
             double dmin = perpendicularDistanceSq(refs[0], p);
@@ -366,7 +367,7 @@ namespace genetic_algorithm
         }
 
         /* Achievement scalarization function. */
-        double ASF(const std::vector<double>& f, const std::vector<double>& z, const std::vector<double>& w)
+        inline double ASF(const std::vector<double>& f, const std::vector<double>& z, const std::vector<double>& w)
         {
             assert(!f.empty());
             assert(f.size() == z.size() && f.size() == w.size());
@@ -461,12 +462,12 @@ namespace genetic_algorithm
         */
         struct CandidateHasher
         {
-            size_t operator()(const Candidate& c) const
+            size_t operator()(const Candidate& c) const noexcept
             {
                 size_t seed = c.chromosome.size();
-                for (size_t i = 0; i < c.chromosome.size(); i++)
+                for (const auto& gene : c.chromosome)
                 {
-                    seed ^= std::hash<geneType>()(c.chromosome[i]) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+                    seed ^= std::hash<geneType>()(gene) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
                 }
                 return seed;
             }
@@ -2619,16 +2620,16 @@ namespace genetic_algorithm
         * closer to the original genes.
         * @see mutation_method @see MutationMethod
         *
-        * @param sigma The parameter of the gauss mutation.
+        * @param sigmas The parameter of the gauss mutation.
         */
-        void gauss_mutation_param(double sigma)
+        void gauss_mutation_param(double sigmas)
         {
-            if (!(0.0 < sigma && sigma <= std::numeric_limits<double>::max()))
+            if (!(0.0 < sigmas && sigmas <= std::numeric_limits<double>::max()))
             {
                 throw std::invalid_argument("Eta must be a nonnegative, finite value.");
             }
 
-            gauss_mutation_param_ = sigma;
+            gauss_mutation_param_ = sigmas;
         }
         double gauss_mutation_param() const { return gauss_mutation_param_; }
 
@@ -2702,11 +2703,11 @@ namespace genetic_algorithm
                 for (size_t i = 0; i < parent1.chromosome.size(); i++)
                 {
                     /* Calc interval to generate the childrens genes on. */
-                    auto [interval_min, interval_max] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
-                    double interval_len = interval_max - interval_min;
+                    auto [range_min, range_max] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
+                    double range_ext = alpha * (range_max - range_min);
                     /* Generate genes from an uniform distribution on the interval. */
-                    child1.chromosome[i] = rng::generateRandomDouble(interval_min - interval_len * alpha, interval_max + interval_len * alpha);
-                    child2.chromosome[i] = rng::generateRandomDouble(interval_min - interval_len * alpha, interval_max + interval_len * alpha);
+                    child1.chromosome[i] = rng::generateRandomDouble(range_min - range_ext, range_max + range_ext);
+                    child2.chromosome[i] = rng::generateRandomDouble(range_min - range_ext, range_max + range_ext);
                     /* The generated genes might be outside the allowed interval. */
                     child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
                     child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
