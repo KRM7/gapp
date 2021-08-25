@@ -33,6 +33,7 @@
 
 #include <vector>
 #include <unordered_set>
+#include <utility>
 #include <algorithm>
 #include <random>
 #include <functional>
@@ -485,6 +486,7 @@ namespace genetic_algorithm
         using crossoverFunction_t = std::function<CandidatePair(const Candidate&, const Candidate&, double)>;	/**< The type of the crossover function. */
         using mutationFunction_t = std::function<void(Candidate&, double)>;					/**< The type of the mutation function. */
         using repairFunction_t = std::function<Chromosome(const Chromosome&)>;				/**< The type of the repair function. */
+        using callbackFunction_t = std::function<void(const GA*)>;
 
         /**
         * The type of the genetic algorithm used, depending on the problem type (single- or multi-objective optimization). \n
@@ -548,6 +550,8 @@ namespace genetic_algorithm
         * This can be used to perform local search after the mutations, implementing a memetic algorithm.
         */
         repairFunction_t repairFunction = nullptr;
+
+        callbackFunction_t endOfGenerationCallback = nullptr;
 
         /**
         * Standard constructor for the GA.
@@ -631,6 +635,8 @@ namespace genetic_algorithm
                 /* Overwrite the current population with the children. */
                 evaluate(children);
                 population_ = updatePopulation(population_, children);	
+
+                if (endOfGenerationCallback != nullptr) endOfGenerationCallback(this);
                 generation_cntr_++;
 
                 updateStats(population_);
