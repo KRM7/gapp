@@ -175,10 +175,7 @@ namespace genetic_algorithm
         */
         inline size_t generateRandomIdx(size_t c_size)
         {
-            static thread_local PRNG engine{ std::random_device{}() };
-            std::uniform_int_distribution<size_t> distribution{ 0, c_size - 1 };
-
-            return distribution(engine);
+            return generateRandomInt(size_t{ 0 }, c_size - 1);
         }
 
         /**
