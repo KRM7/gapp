@@ -339,3 +339,15 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+test/mo_results/nsga2_dtlz1_sols.txt
+test/mo_results/nsga2_dtlz2_sols.txt
+test/mo_results/nsga2_kur_sols.txt
+test/mo_results/nsga2_zdt2_sols.txt
+test/mo_results/nsga2_zdt3_sols.txt
+test/mo_results/nsga2_zdt6_sols.txt
+test/mo_results/nsga3_dtlz1_sols.txt
+test/mo_results/nsga3_dtlz2_sols.txt
+test/mo_results/nsga3_kur_sols.txt
+test/mo_results/nsga3_zdt2_sols.txt
+test/mo_results/nsga3_zdt3_sols.txt
+test/mo_results/nsga3_zdt6_sols.txt
