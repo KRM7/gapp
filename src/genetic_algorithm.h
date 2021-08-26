@@ -111,7 +111,7 @@ namespace genetic_algorithm
 
             static constexpr result_type min() noexcept
             {
-                return std::numeric_limits<result_type>::min();
+                return std::numeric_limits<result_type>::lowest();
             }
             static constexpr result_type max() noexcept
             {
@@ -185,10 +185,7 @@ namespace genetic_algorithm
         */
         inline bool generateRandomBool()
         {
-            static thread_local PRNG engine{ std::random_device{}() };
-            std::uniform_int_distribution<int> distribution{ 0, 1 };
-
-            return distribution(engine);
+            return bool(generateRandomInt(size_t{ 0 }, size_t{ 1 }));
         }
 
         /**
