@@ -131,26 +131,13 @@ namespace genetic_algorithm
         using PRNG = xoroshiro128p;
 
         /**
-        * Generates a random double on the interval [0.0, 1.0).
-        * 
-        * @return The generated random number.
-        */
-        inline double generateRandomDouble()
-        {
-            static thread_local PRNG engine{ std::random_device{}() };
-            std::uniform_real_distribution<double> distribution{ 0.0, 1.0 };
-
-            return distribution(engine);
-        }
-
-        /**
         * Generates a random double on the interval [l_bound, u_bound).
         * 
         * @param l_bound The lower bound of the interval.
         * @param u_bound The upper bound of the interval.
         * @return The generated random number.
         */
-        inline double generateRandomDouble(double l_bound, double u_bound)
+        inline double generateRandomDouble(double l_bound = 0.0, double u_bound = 1.0)
         {
             assert(l_bound <= u_bound);
 
