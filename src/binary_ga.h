@@ -138,7 +138,8 @@ namespace genetic_algorithm
         static void standardMutate(Candidate& child, double pm);
 
     };
-}
+
+} // namespace genetic_algorithm
 
 
 /* IMPLEMENTATION */
@@ -146,6 +147,7 @@ namespace genetic_algorithm
 #include <algorithm>
 #include <unordered_set>
 #include <utility>
+#include <stdexcept>
 #include <cmath>
 #include <cassert>
 #include <cstdlib>
@@ -158,6 +160,60 @@ namespace genetic_algorithm
         : GA(chrom_len, fitness_function) 
     {
     }
+
+
+    void BinaryGA::crossover_method(crossoverFunction_t f)
+    {
+        if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
+
+        crossover_method_ = CrossoverMethod::custom;
+        customCrossover = f;
+    }
+
+    void BinaryGA::crossover_method(CrossoverMethod method)
+    {
+        if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
+
+        crossover_method_ = method;
+    }
+
+    BinaryGA::CrossoverMethod BinaryGA::crossover_method() const
+    {
+        return crossover_method_;
+    }
+
+    void BinaryGA::mutation_method(mutationFunction_t f)
+    {
+        if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
+
+        mutation_method_ = MutationMethod::custom;
+        customMutate = f;
+    }
+
+    void BinaryGA::mutation_method(MutationMethod method)
+    {
+        if (static_cast<size_t>(method) > 1) throw std::invalid_argument("Invalid mutation method selected.");
+
+        mutation_method_ = method;
+    }
+
+    BinaryGA::MutationMethod BinaryGA::mutation_method() const
+    {
+        return mutation_method_;
+    }
+
+    void BinaryGA::num_crossover_points(size_t n)
+    {
+        if (n == 0) throw std::invalid_argument("The number of crossover points must be at least 1.");
+
+        num_crossover_points_ = n;
+    }
+
+    size_t BinaryGA::num_crossover_points() const
+    {
+        return num_crossover_points_;
+    }
+
 
     BinaryGA::Candidate BinaryGA::generateCandidate() const
     {
@@ -314,6 +370,7 @@ namespace genetic_algorithm
             child.chromosome[idx] = !child.chromosome[idx];
         }
     }
-}
+
+} // namespace genetic_algorithm
 
 #endif // !GA_BINARY_GA_H
