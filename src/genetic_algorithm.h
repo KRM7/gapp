@@ -425,7 +425,7 @@ namespace genetic_algorithm
 
             bool is_evaluated = false;			/**< False if the candidate's fitness value needs to be computed. */
 
-            Candidate() {}
+            Candidate();
             Candidate(const std::vector<geneType>& chrom) : chromosome(chrom) {}
             Candidate(std::vector<geneType>&& chrom) noexcept : chromosome(std::move(chrom)) {}
 
