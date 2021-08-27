@@ -36,6 +36,7 @@
 #include <unordered_set>
 #include <utility>
 #include <functional>
+#include <atomic>
 #include <cstddef>
 
 namespace genetic_algorithm
