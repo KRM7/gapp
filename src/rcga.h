@@ -23,7 +23,7 @@
 */
 
 /**
-* This file contains the binary genetic algorithm class.
+* This file contains the real encoded genetic algorithm class.
 *
 * @file rcga.h
 */
