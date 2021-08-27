@@ -2141,9 +2141,6 @@ namespace genetic_algorithm
         */
         BinaryGA(size_t chrom_len, fitnessFunction_t fitness_function) : GA(chrom_len, fitness_function) {}
 
-        /** Copy constructor. */
-        BinaryGA(const BinaryGA& o) : GA(o.chrom_len_, o.fitnessFunction) {}
-
         /**
         * Sets the crossover function used in the algorithm to @f.
         * @see CrossoverMethod
@@ -2986,10 +2983,7 @@ namespace genetic_algorithm
         * @param chrom_len The number of genes in the chromosomes.
         * @param fitness_function The fitness function used in the algorithm to find the maximum of.
         */
-        PermutationGA(size_t chrom_len, fitnessFunction_t fitnessFunction) : GA(chrom_len, fitnessFunction) {};
-
-        /** Copy constructor. */
-        PermutationGA(const PermutationGA& o) : GA(o.chrom_len_, o.fitnessFunction) {};
+        PermutationGA(size_t chrom_len, fitnessFunction_t fitnessFunction) : GA(chrom_len, fitnessFunction) {}
 
         /**
         * Sets the crossover function used in the algorithm to @f.
@@ -3579,10 +3573,7 @@ namespace genetic_algorithm
         IntegerGA(size_t chrom_len, fitnessFunction_t fitnessFunction, size_t base) : GA(chrom_len, fitnessFunction), base_(base) 
         {
             if (base < 2) throw std::invalid_argument("The base must be at least 2.");
-        };
-
-        /** Copy contructor. */
-        IntegerGA(const IntegerGA& o) : GA(o.chrom_len_, o.fitnessFunction) {};
+        }
 
         /**
         * Sets the crossover function used in the algorithm to @f.
