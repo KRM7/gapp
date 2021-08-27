@@ -1,6 +1,6 @@
 /* Simple example showing the usage of the permutationGA. */
 
-#include "../src/genetic_algorithm.h"
+#include "../src/permutation_ga.h"
 #include "../test/fitness_functions.h" /* For the fitness function that will be used. */
 
 #include <cstdio>

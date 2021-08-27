@@ -1,6 +1,7 @@
 /* Example showing the usage of the GA with a custom gene type. */
 
-#include "../src/genetic_algorithm.h"
+#include "../src/base_ga.h"
+#include "../src/rng.h"
 
 using namespace std;
 using namespace genetic_algorithm;

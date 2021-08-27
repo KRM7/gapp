@@ -1,6 +1,6 @@
 /* Example showing the usage of user-defined genetic operators in the algorithms. */
 
-#include "../src/genetic_algorithm.h"
+#include "../src/binary_ga.h"
 #include "../test/fitness_functions.h"  /* For the fitness function that will be used in the example. */
 
 #include <cstdio>

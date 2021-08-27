@@ -1,6 +1,6 @@
 /* Example showing the basics through a single-objective genetic algorithm using binary encoding. */
 
-#include "../src/genetic_algorithm.h"
+#include "../src/binary_ga.h"
 #include "../test/fitness_functions.h" /* For the fitness function used, and for converting the binary chromosomes to reals. */
 
 #include <cstdio>

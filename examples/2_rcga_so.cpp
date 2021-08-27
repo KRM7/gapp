@@ -1,6 +1,6 @@
 /* Simple example showing the usage of the RCGA (real-coded genetic algorithm). */
 
-#include "../src/genetic_algorithm.h"
+#include "../src/real_ga.h"
 #include "../test/fitness_functions.h" /* For the fitness function that will be used. */
 
 #include <cstdio>

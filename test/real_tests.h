@@ -9,7 +9,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "../src/rcga.h"
+#include "../src/real_ga.h"
 #include "fitness_functions.h"
 #include "utils.h"
 

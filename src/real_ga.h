@@ -25,7 +25,7 @@
 /**
 * This file contains the real encoded genetic algorithm class.
 *
-* @file rcga.h
+* @file real_ga.h
 */
 
 #ifndef GA_RCGA_H

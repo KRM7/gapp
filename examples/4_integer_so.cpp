@@ -1,6 +1,6 @@
 /* Simple example showing the usage of the integerGA. */
 
-#include "../src/genetic_algorithm.h"
+#include "../src/integer_ga.h"
 
 #include <cstdio>
 #include <cstddef>
