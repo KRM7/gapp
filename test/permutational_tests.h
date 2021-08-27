@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <chrono>
 
-#include "../src/genetic_algorithm.h"
+#include "../src/permutation_ga.h"
 #include "fitness_functions.h"
 #include "utils.h"
 

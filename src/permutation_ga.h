@@ -203,6 +203,22 @@ namespace genetic_algorithm
     }
 
 
+    PermutationGA::Candidate PermutationGA::generateCandidate() const
+    {
+        assert(chrom_len_ > 0);
+
+        Candidate sol;
+        static thread_local rng::PRNG engine{ std::random_device{}() };
+
+        std::vector<size_t> chrom(chrom_len_);
+        std::iota(chrom.begin(), chrom.end(), 0U);
+        std::shuffle(chrom.begin(), chrom.end(), engine);
+
+        sol.chromosome = chrom;
+
+        return sol;
+    }
+
     PermutationGA::CandidatePair PermutationGA::crossover(const Candidate& parent1, const Candidate& parent2) const
     {
         using namespace std;

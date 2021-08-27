@@ -287,6 +287,21 @@ namespace genetic_algorithm
     }
 
 
+    IntegerGA::Candidate IntegerGA::generateCandidate() const
+    {
+        assert(chrom_len_ > 0);
+        assert(base_ > 1);
+
+        Candidate sol;
+        sol.chromosome.reserve(chrom_len_);
+        for (size_t i = 0; i < chrom_len_; i++)
+        {
+            sol.chromosome.push_back(rng::generateRandomInt(size_t{ 0 }, base_ - 1));
+        }
+
+        return sol;
+    }
+
     IntegerGA::CandidatePair IntegerGA::crossover(const Candidate& parent1, const Candidate& parent2) const
     {
         /* Edge case. No point in performing the mutations if the parents are the same. */

@@ -1,5 +1,3 @@
-#include "../src/genetic_algorithm.h"
-
 #include "time_test.h"
 
 #include "binary_tests.h"

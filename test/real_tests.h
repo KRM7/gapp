@@ -9,7 +9,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "../src/genetic_algorithm.h"
+#include "../src/rcga.h"
 #include "fitness_functions.h"
 #include "utils.h"
 

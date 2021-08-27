@@ -9,7 +9,7 @@
 #include <iomanip>
 #include <chrono>
 
-#include "../src/genetic_algorithm.h"
+#include "../src/binary_ga.h"
 
 using namespace std;
 using namespace genetic_algorithm;

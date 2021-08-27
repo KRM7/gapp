@@ -7,7 +7,7 @@
 #include <chrono>
 #include <iostream>
 
-#include "../src/genetic_algorithm.h"
+#include "../src/integer_ga.h"
 #include "fitness_functions.h"
 #include "utils.h"
 
