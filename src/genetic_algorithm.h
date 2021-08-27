@@ -2139,10 +2139,10 @@ namespace genetic_algorithm
         * @param chrom_len The length of the binary chromosomes.
         * @param fitness_function The fitness function to find the maximum of in the algorithm.
         */
-        BinaryGA(size_t chrom_len, fitnessFunction_t fitness_function) : GA(chrom_len, fitness_function) {};
+        BinaryGA(size_t chrom_len, fitnessFunction_t fitness_function) : GA(chrom_len, fitness_function) {}
 
         /** Copy constructor. */
-        BinaryGA(const BinaryGA& o) : GA(o.chrom_len_, o.fitnessFunction) {};
+        BinaryGA(const BinaryGA& o) : GA(o.chrom_len_, o.fitnessFunction) {}
 
         /**
         * Sets the crossover function used in the algorithm to @f.
@@ -2447,10 +2447,7 @@ namespace genetic_algorithm
                 throw std::invalid_argument("The lower bound must be lower than the upper bound for each gene.");
             }
 
-        };
-
-        /** Copy constructor. */
-        RCGA(const RCGA& o) : GA(o.chrom_len_, o.fitnessFunction) {};
+        }
 
         /** Comparison operator for the real-coded candidates. */
         friend bool operator==(const Candidate& lhs, const Candidate& rhs)

@@ -25,7 +25,7 @@
 /**
 * This file contains the base genetic algorithm class and some functions used by it.
 *
-* @file genetic_algorithm.h
+* @file base_ga.h
 */
 
 #ifndef GA_BASE_GA_H
@@ -184,11 +184,6 @@ namespace genetic_algorithm
         */
         GA(size_t chrom_len, fitnessFunction_t fitness_function);
 
-        GA() = delete;
-        GA(const GA&) = default;
-        GA& operator=(const GA&) = default;
-        GA(GA&&) = default;
-        GA& operator=(GA&&) = default;
         virtual ~GA() = default;
 
         /**
@@ -770,7 +765,7 @@ namespace genetic_algorithm
     template<typename geneType>
     bool GA<geneType>::Candidate::operator!=(const Candidate& rhs) const
     {
-        return *this != rhs;
+        return !(this->chromosome == rhs.chromosome);
     }
 
     template<typename geneType>
