@@ -208,11 +208,10 @@ namespace genetic_algorithm
         assert(chrom_len_ > 0);
 
         Candidate sol;
-        static thread_local rng::PRNG engine{ std::random_device{}() };
 
         std::vector<size_t> chrom(chrom_len_);
         std::iota(chrom.begin(), chrom.end(), 0U);
-        std::shuffle(chrom.begin(), chrom.end(), engine);
+        std::shuffle(chrom.begin(), chrom.end(), rng::prng);
 
         sol.chromosome = chrom;
 
@@ -675,8 +674,7 @@ namespace genetic_algorithm
             size_t r2 = rng::generateRandomIdx(child.chromosome.size());
             auto [idx1, idx2] = std::minmax(r1, r2);
 
-            static thread_local rng::PRNG engine{ std::random_device{}() };
-            std::shuffle(child.chromosome.begin() + idx1, child.chromosome.begin() + idx2 + 1, engine);
+            std::shuffle(child.chromosome.begin() + idx1, child.chromosome.begin() + idx2 + 1, rng::prng);
 
             /* If the indices are different, the child was very likely changed and will need evaluation. */
             if (r1 != r2) child.is_evaluated = false;

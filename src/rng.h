@@ -32,6 +32,7 @@
 #ifndef GA_RANDOM_H
 #define GA_RANDOM_H
 
+#include <random>
 #include <cstdint>
 #include <cstddef>
 
@@ -76,9 +77,11 @@ namespace genetic_algorithm::rng
         static state_type rotl(state_type x, int k) noexcept;
     };
 
-    /** The PRNG used in the genetic algorithm. */
+    /** The PRNG type used in the genetic algorithm. */
     using PRNG = xoroshiro128p;
 
+    /** Global PRNG used in the algorithm. */
+    thread_local inline PRNG prng{ std::random_device{}() };
 
     /** Generates a random double on the interval [l_bound, u_bound). */
     inline double generateRandomDouble(double l_bound = 0.0, double u_bound = 1.0);
@@ -104,7 +107,6 @@ namespace genetic_algorithm::rng
 
 /* IMPLEMENTATION */
 
-#include <random>
 #include <limits>
 #include <cassert>
 
@@ -165,10 +167,9 @@ namespace genetic_algorithm::rng
     {
         assert(l_bound <= u_bound);
 
-        static thread_local PRNG engine{ std::random_device{}() };
         std::uniform_real_distribution<double> distribution{ l_bound, u_bound };
 
-        return distribution(engine);
+        return distribution(prng);
     }
 
     template<typename T>
@@ -176,30 +177,32 @@ namespace genetic_algorithm::rng
     {
         assert(l_bound <= u_bound);
 
-        static thread_local PRNG engine{ std::random_device{}() };
         std::uniform_int_distribution<T> distribution{ l_bound, u_bound };
 
-        return distribution(engine);
+        return distribution(prng);
     }
 
     size_t generateRandomIdx(size_t c_size)
     {
-        return generateRandomInt(size_t{ 0 }, c_size - 1);
+        std::uniform_int_distribution<size_t> distribution{ 0, c_size - 1 };
+
+        return distribution(prng);
     }
 
     bool generateRandomBool()
     {
-        return bool(generateRandomInt(size_t{ 0 }, size_t{ 1 }));
+        std::uniform_int_distribution<int> distribution{ 0, 1 };
+        
+        return distribution(prng);
     }
 
     double generateRandomNorm(double mean, double SD)
     {
         assert(SD > 0.0);
 
-        static thread_local PRNG engine{ std::random_device{}() };
         std::normal_distribution<double> distribution{ mean, SD };
 
-        return distribution(engine);
+        return distribution(prng);
     }
 
 }
