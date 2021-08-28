@@ -569,7 +569,7 @@ namespace genetic_algorithm
 namespace genetic_algorithm
 {
     template<typename geneType>
-    void GA<geneType>::History::clear() noexcept
+    inline void GA<geneType>::History::clear() noexcept
     {
         fitness_mean.clear();
         fitness_sd.clear();
@@ -578,7 +578,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::History::reserve(size_t new_capacity)
+    inline void GA<geneType>::History::reserve(size_t new_capacity)
     {
         fitness_mean.reserve(new_capacity);
         fitness_sd.reserve(new_capacity);
@@ -587,7 +587,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::History::add(double mean, double sd, double min, double max)
+    inline void GA<geneType>::History::add(double mean, double sd, double min, double max)
     {
         fitness_mean.push_back(mean);
         fitness_sd.push_back(sd);
@@ -596,36 +596,36 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    GA<geneType>::Candidate::Candidate()
+    inline GA<geneType>::Candidate::Candidate()
     {
     }
 
     template<typename geneType>
-    GA<geneType>::Candidate::Candidate(const std::vector<geneType>& chrom)
+    inline GA<geneType>::Candidate::Candidate(const std::vector<geneType>& chrom)
         : chromosome(chrom)
     {
     }
 
     template<typename geneType>
-    GA<geneType>::Candidate::Candidate(std::vector<geneType>&& chrom) noexcept
+    inline GA<geneType>::Candidate::Candidate(std::vector<geneType>&& chrom) noexcept
         : chromosome(std::move(chrom))
     {
     }
 
     template<typename geneType>
-    bool GA<geneType>::Candidate::operator==(const Candidate& rhs) const
+    inline bool GA<geneType>::Candidate::operator==(const Candidate& rhs) const
     {
         return (this->chromosome == rhs.chromosome);
     }
 
     template<typename geneType>
-    bool GA<geneType>::Candidate::operator!=(const Candidate& rhs) const
+    inline bool GA<geneType>::Candidate::operator!=(const Candidate& rhs) const
     {
         return !(this->chromosome == rhs.chromosome);
     }
 
     template<typename geneType>
-    size_t GA<geneType>::CandidateHasher::operator()(const Candidate& c) const noexcept
+    inline size_t GA<geneType>::CandidateHasher::operator()(const Candidate& c) const noexcept
     {
         size_t seed = c.chromosome.size();
         for (const auto& gene : c.chromosome)
@@ -636,7 +636,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    GA<geneType>::GA(size_t chrom_len, fitnessFunction_t fitness_function)
+    inline GA<geneType>::GA(size_t chrom_len, fitnessFunction_t fitness_function)
         : chrom_len_(chrom_len), mutation_rate_(1.0 / chrom_len), fitnessFunction(fitness_function)
     {
         if (chrom_len == 0)
@@ -650,37 +650,37 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::CandidateVec GA<geneType>::solutions() const
+    inline typename GA<geneType>::CandidateVec GA<geneType>::solutions() const
     {
         return solutions_;
     }
 
     template<typename geneType>
-    size_t GA<geneType>::num_fitness_evals() const
+    inline size_t GA<geneType>::num_fitness_evals() const
     {
         return static_cast<size_t>(num_fitness_evals_);
     }
 
     template<typename geneType>
-    size_t GA<geneType>::generation_cntr() const
+    inline size_t GA<geneType>::generation_cntr() const
     {
         return generation_cntr_;
     }
 
     template<typename geneType>
-    typename GA<geneType>::Population GA<geneType>::population() const
+    inline typename GA<geneType>::Population GA<geneType>::population() const
     {
         return population_;
     }
 
     template<typename geneType>
-    typename GA<geneType>::History GA<geneType>::soga_history() const
+    inline typename GA<geneType>::History GA<geneType>::soga_history() const
     {
         return soga_history_;
     }
 
     template<typename geneType>
-    void GA<geneType>::mode(Mode mode)
+    inline void GA<geneType>::mode(Mode mode)
     {
         if (static_cast<size_t>(mode) > 2) throw std::invalid_argument("Invalid algorithm mode selected.");
 
@@ -688,13 +688,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Mode GA<geneType>::mode() const
+    inline typename GA<geneType>::Mode GA<geneType>::mode() const
     {
         return mode_;
     }
 
     template<typename geneType>
-    void GA<geneType>::chrom_len(size_t len)
+    inline void GA<geneType>::chrom_len(size_t len)
     {
         if (len == 0) throw std::invalid_argument("The chromosome length must be at least 1.");
 
@@ -702,13 +702,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    size_t GA<geneType>::chrom_len() const
+    inline size_t GA<geneType>::chrom_len() const
     {
         return chrom_len_;
     }
 
     template<typename geneType>
-    void GA<geneType>::population_size(size_t size)
+    inline void GA<geneType>::population_size(size_t size)
     {
         if (size == 0) throw std::invalid_argument("The population size must be at least 1.");
 
@@ -716,13 +716,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    size_t GA<geneType>::population_size() const
+    inline size_t GA<geneType>::population_size() const
     {
         return population_size_;
     }
 
     template<typename geneType>
-    void GA<geneType>::crossover_rate(double pc)
+    inline void GA<geneType>::crossover_rate(double pc)
     {
         if (!(0.0 <= pc && pc <= 1.0)) throw std::invalid_argument("The crossover probability must be in the range [0, 1].");
 
@@ -730,13 +730,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    double GA<geneType>::crossover_rate() const
+    inline double GA<geneType>::crossover_rate() const
     {
         return crossover_rate_;
     }
 
     template<typename geneType>
-    void GA<geneType>::mutation_rate(double pm)
+    inline void GA<geneType>::mutation_rate(double pm)
     {
         if (!(0.0 <= pm && pm <= 1.0)) throw std::invalid_argument("The mutation probability must be in the range [0, 1].");
 
@@ -744,13 +744,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    double GA<geneType>::mutation_rate() const
+    inline double GA<geneType>::mutation_rate() const
     {
         return mutation_rate_;
     }
 
     template<typename geneType>
-    void GA<geneType>::selection_method(selectionFunction_t f)
+    inline void GA<geneType>::selection_method(selectionFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The selection function can't be a nullptr.");
 
@@ -759,7 +759,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::selection_method(SogaSelection method)
+    inline void GA<geneType>::selection_method(SogaSelection method)
     {
         if (static_cast<size_t>(method) > 5) throw std::invalid_argument("Invalid soga selection method selected.");
 
@@ -767,13 +767,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::SogaSelection GA<geneType>::selection_method() const
+    inline typename GA<geneType>::SogaSelection GA<geneType>::selection_method() const
     {
         return selection_method_;
     }
 
     template<typename geneType>
-    void GA<geneType>::tournament_size(size_t size)
+    inline void GA<geneType>::tournament_size(size_t size)
     {
         if (size < 2) throw std::invalid_argument("The tournament size must be at least 2.");
 
@@ -781,13 +781,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    size_t GA<geneType>::tournament_size() const
+    inline size_t GA<geneType>::tournament_size() const
     {
         return tournament_size_;
     }
 
     template<typename geneType>
-    void GA<geneType>::rank_sel_weights(double min_weight, double max_weight)
+    inline void GA<geneType>::rank_sel_weights(double min_weight, double max_weight)
     {
         if (!(0.0 <= min_weight && min_weight <= max_weight))
         {
@@ -803,13 +803,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    std::pair<double, double> GA<geneType>::rank_sel_weights() const
+    inline std::pair<double, double> GA<geneType>::rank_sel_weights() const
     {
         return { rank_sel_min_w_, rank_sel_max_w_ };
     }
 
     template<typename geneType>
-    void GA<geneType>::boltzmann_temps(double tmin, double tmax)
+    inline void GA<geneType>::boltzmann_temps(double tmin, double tmax)
     {
         if (!(0.1 <= tmin && tmin < tmax))
         {
@@ -825,13 +825,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    std::pair<double, double> GA<geneType>::boltzmann_temps() const
+    inline std::pair<double, double> GA<geneType>::boltzmann_temps() const
     {
         return { boltzmann_tmin_, boltzmann_tmax_ };
     }
 
     template<typename geneType>
-    void GA<geneType>::sigma_scale(double scale)
+    inline void GA<geneType>::sigma_scale(double scale)
     {
         if (!(1.0 <= scale && scale <= std::numeric_limits<double>::max()))
         {
@@ -842,13 +842,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    double GA<geneType>::sigma_scale() const
+    inline double GA<geneType>::sigma_scale() const
     {
         return sigma_scale_;
     }
 
     template<typename geneType>
-    void GA<geneType>::stop_condition(StopCondition condition)
+    inline void GA<geneType>::stop_condition(StopCondition condition)
     {
         if (static_cast<size_t>(condition) > 4) throw std::invalid_argument("Invalid stop condition selected.");
 
@@ -856,13 +856,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::StopCondition GA<geneType>::stop_condition() const
+    inline typename GA<geneType>::StopCondition GA<geneType>::stop_condition() const
     {
         return stop_condition_;
     }
 
     template<typename geneType>
-    void GA<geneType>::max_gen(size_t max_gen)
+    inline void GA<geneType>::max_gen(size_t max_gen)
     {
         if (max_gen == 0) throw std::invalid_argument("The maximum number of generations must be at least 1.");
 
@@ -870,13 +870,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    size_t GA<geneType>::max_gen() const
+    inline size_t GA<geneType>::max_gen() const
     {
         return max_gen_;
     }
 
     template<typename geneType>
-    void GA<geneType>::max_fitness_evals(size_t max_evals)
+    inline void GA<geneType>::max_fitness_evals(size_t max_evals)
     {
         if (max_evals == 0) throw std::invalid_argument("The maximum number of fitness evaluations must be at least 1.");
 
@@ -884,13 +884,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    size_t GA<geneType>::max_fitness_evals() const
+    inline size_t GA<geneType>::max_fitness_evals() const
     {
         return max_fitness_evals_;
     }
 
     template<typename geneType>
-    void GA<geneType>::fitness_threshold(std::vector<double> ref)
+    inline void GA<geneType>::fitness_threshold(std::vector<double> ref)
     {
         if (ref.empty())
         {
@@ -905,13 +905,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    std::vector<double> GA<geneType>::fitness_threshold() const
+    inline std::vector<double> GA<geneType>::fitness_threshold() const
     {
         return fitness_reference_;
     }
 
     template<typename geneType>
-    void GA<geneType>::stall_gen_count(size_t count)
+    inline void GA<geneType>::stall_gen_count(size_t count)
     {
         if (count == 0) throw std::invalid_argument("The stall generation count must be at least 1.");
 
@@ -919,13 +919,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    size_t GA<geneType>::stall_gen_count() const
+    inline size_t GA<geneType>::stall_gen_count() const
     {
         return stall_gen_count_;
     }
 
     template<typename geneType>
-    void GA<geneType>::stall_threshold(double threshold)
+    inline void GA<geneType>::stall_threshold(double threshold)
     {
         if (!std::isfinite(threshold)) throw std::invalid_argument("The stall threshold must be finite.");
 
@@ -933,13 +933,13 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    double GA<geneType>::stall_threshold() const
+    inline double GA<geneType>::stall_threshold() const
     {
         return stall_threshold_;
     }
 
     template<typename geneType>
-    void GA<geneType>::presetInitialPopulation(const Population& pop)
+    inline void GA<geneType>::presetInitialPopulation(const Population& pop)
     {
         if (!std::all_of(pop.begin(), pop.end(), [this](const Candidate& c) { return c.chromosome.size() == chrom_len_; }))
         {
@@ -950,7 +950,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::setFitnessFunction(fitnessFunction_t f)
+    inline void GA<geneType>::setFitnessFunction(fitnessFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The fitness function can't be a nullptr.");
 
@@ -958,26 +958,26 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    std::vector<std::vector<double>> GA<geneType>::ref_points() const
+    inline std::vector<std::vector<double>> GA<geneType>::ref_points() const
     {
         return ref_points_;
     }
 
     template<typename geneType>
-    std::vector<double> GA<geneType>::ideal_point() const
+    inline std::vector<double> GA<geneType>::ideal_point() const
     {
         return ideal_point_;
     }
 
     template<typename geneType>
-    std::vector<double> GA<geneType>::nadir_point() const
+    inline std::vector<double> GA<geneType>::nadir_point() const
     {
         return nadir_point_;
     }
 
 
     template<typename geneType>
-    typename GA<geneType>::CandidateVec GA<geneType>::run()
+    inline typename GA<geneType>::CandidateVec GA<geneType>::run()
     {
         using namespace std;
 
@@ -1044,7 +1044,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::init()
+    inline void GA<geneType>::init()
     {
         /* Check stop condition. */
         if (mode_ != Mode::single_objective)
@@ -1098,7 +1098,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Population GA<geneType>::generateInitialPopulation() const
+    inline typename GA<geneType>::Population GA<geneType>::generateInitialPopulation() const
     {
         assert(population_size_ > 0);
 
@@ -1127,7 +1127,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::evaluate(Population& pop)
+    inline void GA<geneType>::evaluate(Population& pop)
     {
         assert(fitnessFunction != nullptr);
 
@@ -1157,7 +1157,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const
+    inline void GA<geneType>::updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
 
@@ -1178,7 +1178,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::prepSelections(Population& pop) const
+    inline void GA<geneType>::prepSelections(Population& pop) const
     {
         switch (mode_)
         {
@@ -1198,7 +1198,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Candidate GA<geneType>::select(const Population& pop) const
+    inline typename GA<geneType>::Candidate GA<geneType>::select(const Population& pop) const
     {
         switch (mode_)
         {
@@ -1215,7 +1215,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::repair(Population& pop) const
+    inline void GA<geneType>::repair(Population& pop) const
     {
         /* This function doesn't do anything unless a repair function is specified. */
         if (repairFunction == nullptr) return;
@@ -1241,7 +1241,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Population GA<geneType>::updatePopulation(Population& old_pop, CandidateVec& children)
+    inline typename GA<geneType>::Population GA<geneType>::updatePopulation(Population& old_pop, CandidateVec& children)
     {
         switch (mode_)
         {
@@ -1258,7 +1258,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    bool GA<geneType>::stopCondition() const
+    inline bool GA<geneType>::stopCondition() const
     {
         if (mode_ != Mode::single_objective && stop_condition_ == StopCondition::fitness_best_stall)
         {
@@ -1317,7 +1317,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::updateStats(const Population& pop)
+    inline void GA<geneType>::updateStats(const Population& pop)
     {
         switch (mode_)
         {
@@ -1335,7 +1335,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::sogaCalcRouletteWeights(Population& pop)
+    inline void GA<geneType>::sogaCalcRouletteWeights(Population& pop)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
 
@@ -1362,7 +1362,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::sogaCalcRankWeights(Population& pop, double weight_min, double weight_max)
+    inline void GA<geneType>::sogaCalcRankWeights(Population& pop, double weight_min, double weight_max)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
         assert(0.0 <= weight_min && weight_min < weight_max&& weight_max <= std::numeric_limits<double>::max());
@@ -1397,7 +1397,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::sogaCalcSigmaWeights(Population& pop, double scale)
+    inline void GA<geneType>::sogaCalcSigmaWeights(Population& pop, double scale)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
         assert(scale > 1.0);
@@ -1428,7 +1428,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::sogaCalcBoltzmannWeights(Population& pop, size_t t, size_t t_max, double temp_min, double temp_max)
+    inline void GA<geneType>::sogaCalcBoltzmannWeights(Population& pop, size_t t, size_t t_max, double temp_min, double temp_max)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
         assert(t_max >= t);
@@ -1461,7 +1461,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::sogaCalcWeights(Population& pop) const
+    inline void GA<geneType>::sogaCalcWeights(Population& pop) const
     {
         switch (selection_method_)
         {
@@ -1489,7 +1489,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Candidate GA<geneType>::sogaWeightProportionalSelect(const Population& pop)
+    inline typename GA<geneType>::Candidate GA<geneType>::sogaWeightProportionalSelect(const Population& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
@@ -1505,7 +1505,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Candidate GA<geneType>::sogaTournamentSelect(const Population& pop, size_t tourney_size)
+    inline typename GA<geneType>::Candidate GA<geneType>::sogaTournamentSelect(const Population& pop, size_t tourney_size)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
@@ -1530,7 +1530,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Candidate GA<geneType>::sogaSelect(const Population& pop) const
+    inline typename GA<geneType>::Candidate GA<geneType>::sogaSelect(const Population& pop) const
     {
         switch (selection_method_)
         {
@@ -1553,7 +1553,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Population GA<geneType>::updateSogaPopulation(Population& old_pop, CandidateVec& children) const
+    inline typename GA<geneType>::Population GA<geneType>::updateSogaPopulation(Population& old_pop, CandidateVec& children) const
     {
         assert(old_pop.size() == population_size_);
         assert(!children.empty());
@@ -1572,7 +1572,7 @@ namespace genetic_algorithm
     }
     
     template<typename geneType>
-    std::vector<std::vector<size_t>> GA<geneType>::nonDominatedSort(Population& pop)
+    inline std::vector<std::vector<size_t>> GA<geneType>::nonDominatedSort(Population& pop)
     {
         using namespace std;
 
@@ -1635,7 +1635,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::calcCrowdingDistances(Population& pop, std::vector<std::vector<size_t>>& pfronts)
+    inline void GA<geneType>::calcCrowdingDistances(Population& pop, std::vector<std::vector<size_t>>& pfronts)
     {
         using namespace std;
         assert(!pop.empty());
@@ -1675,7 +1675,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    bool GA<geneType>::crowdedCompare(const Candidate& lhs, const Candidate& rhs)
+    inline bool GA<geneType>::crowdedCompare(const Candidate& lhs, const Candidate& rhs)
     {
         if (rhs.rank > lhs.rank) return true;
         else if (lhs.rank == rhs.rank) return lhs.distance > rhs.distance;
@@ -1683,7 +1683,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Candidate GA<geneType>::nsga2Select(const Population& pop)
+    inline typename GA<geneType>::Candidate GA<geneType>::nsga2Select(const Population& pop)
     {
         assert(!pop.empty());
 
@@ -1694,7 +1694,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Population GA<geneType>::updateNsga2Population(Population& old_pop, CandidateVec& children) const
+    inline typename GA<geneType>::Population GA<geneType>::updateNsga2Population(Population& old_pop, CandidateVec& children) const
     {
         using namespace std;
         assert(old_pop.size() == population_size_);
@@ -1748,7 +1748,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::updateIdealPoint(const Population& pop)
+    inline void GA<geneType>::updateIdealPoint(const Population& pop)
     {
         assert(std::all_of(pop.begin(), pop.end(), [this](const Candidate& sol) { return sol.fitness.size() == ideal_point_.size(); }));
 
@@ -1762,7 +1762,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::updateNadirPoint(const Population& pop)
+    inline void GA<geneType>::updateNadirPoint(const Population& pop)
     {
         using namespace std;
         assert(!pop.empty());
@@ -1817,7 +1817,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    void GA<geneType>::associatePopToRefs(Population& pop, const std::vector<std::vector<double>>& ref_points)
+    inline void GA<geneType>::associatePopToRefs(Population& pop, const std::vector<std::vector<double>>& ref_points)
     {
         using namespace std;
         assert(!pop.empty());
@@ -1850,7 +1850,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    std::vector<size_t> GA<geneType>::calcNicheCounts(Population& pop, const std::vector<std::vector<double>>& ref_points)
+    inline std::vector<size_t> GA<geneType>::calcNicheCounts(Population& pop, const std::vector<std::vector<double>>& ref_points)
     {
         std::vector<size_t> niche_counts(ref_points.size(), 0U);
         for (const auto& sol : pop)
@@ -1868,7 +1868,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    bool GA<geneType>::nichedCompare(const Candidate& lhs, const Candidate& rhs)
+    inline bool GA<geneType>::nichedCompare(const Candidate& lhs, const Candidate& rhs)
     {
         if (rhs.rank > lhs.rank) return true;
         else if (lhs.rank == rhs.rank) return lhs.niche_count < rhs.niche_count;
@@ -1877,7 +1877,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Candidate GA<geneType>::nsga3Select(const Population& pop)
+    inline typename GA<geneType>::Candidate GA<geneType>::nsga3Select(const Population& pop)
     {
         assert(!pop.empty());
 
@@ -1888,7 +1888,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::Population GA<geneType>::updateNsga3Population(Population& old_pop, CandidateVec& children)
+    inline typename GA<geneType>::Population GA<geneType>::updateNsga3Population(Population& old_pop, CandidateVec& children)
     {
         using namespace std;
         assert(old_pop.size() == population_size_);
@@ -1965,7 +1965,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::CandidateVec GA<geneType>::findParetoFront1D(const Population& pop)
+    inline typename GA<geneType>::CandidateVec GA<geneType>::findParetoFront1D(const Population& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1; }));
@@ -1982,7 +1982,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    typename GA<geneType>::CandidateVec GA<geneType>::findParetoFrontKung(const Population& pop)
+    inline typename GA<geneType>::CandidateVec GA<geneType>::findParetoFrontKung(const Population& pop)
     {
         /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476.*/
         /* Doesn't work for d = 1 (single-objective optimization). */
@@ -2051,7 +2051,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    std::vector<double> GA<geneType>::fitnessMin(const Population& pop)
+    inline std::vector<double> GA<geneType>::fitnessMin(const Population& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
@@ -2071,7 +2071,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    std::vector<double> GA<geneType>::fitnessMax(const Population& pop)
+    inline std::vector<double> GA<geneType>::fitnessMax(const Population& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
@@ -2091,7 +2091,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    double GA<geneType>::fitnessMean(const Population& pop)
+    inline double GA<geneType>::fitnessMean(const Population& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
@@ -2104,7 +2104,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    double GA<geneType>::fitnessSD(const Population& pop)
+    inline double GA<geneType>::fitnessSD(const Population& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));

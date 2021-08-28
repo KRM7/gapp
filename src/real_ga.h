@@ -242,7 +242,7 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    RCGA::RCGA(size_t chrom_len, fitnessFunction_t fitnessFunction, limits_t bounds)
+    inline RCGA::RCGA(size_t chrom_len, fitnessFunction_t fitnessFunction, limits_t bounds)
         : GA(chrom_len, fitnessFunction), limits_(bounds)
     {
         if (bounds.size() != chrom_len)
@@ -257,7 +257,7 @@ namespace genetic_algorithm
     }
 
     template<>
-    bool RCGA::Candidate::operator==(const Candidate& rhs) const
+    inline bool RCGA::Candidate::operator==(const Candidate& rhs) const
     {
         return std::equal(this->chromosome.begin(), this->chromosome.end(), rhs.chromosome.begin(),
         [](double lhs, double rhs)
@@ -267,7 +267,7 @@ namespace genetic_algorithm
     }
 
     template<>
-    bool RCGA::Candidate::operator!=(const Candidate& rhs) const
+    inline bool RCGA::Candidate::operator!=(const Candidate& rhs) const
     {
         return !std::equal(this->chromosome.begin(), this->chromosome.end(), rhs.chromosome.begin(),
         [](double lhs, double rhs)
@@ -277,7 +277,7 @@ namespace genetic_algorithm
     }
 
 
-    void RCGA::crossover_method(crossoverFunction_t f)
+    inline void RCGA::crossover_method(crossoverFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
 
@@ -285,19 +285,19 @@ namespace genetic_algorithm
         customCrossover = f;
     }
 
-    void RCGA::crossover_method(CrossoverMethod method)
+    inline void RCGA::crossover_method(CrossoverMethod method)
     {
         if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
 
         crossover_method_ = method;
     }
 
-    RCGA::CrossoverMethod RCGA::crossover_method() const
+    inline RCGA::CrossoverMethod RCGA::crossover_method() const
     {
         return crossover_method_;
     }
 
-    void RCGA::mutation_method(mutationFunction_t f)
+    inline void RCGA::mutation_method(mutationFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
 
@@ -305,19 +305,19 @@ namespace genetic_algorithm
         customMutate = f;
     }
 
-    void RCGA::mutation_method(MutationMethod method)
+    inline void RCGA::mutation_method(MutationMethod method)
     {
         if (static_cast<size_t>(method) > 5) throw std::invalid_argument("Invalid mutation method selected.");
 
         mutation_method_ = method;
     }
 
-    RCGA::MutationMethod RCGA::mutation_method() const
+    inline RCGA::MutationMethod RCGA::mutation_method() const
     {
         return mutation_method_;
     }
 
-    void RCGA::limits(limits_t limits)
+    inline void RCGA::limits(limits_t limits)
     {
         if (limits.size() != chrom_len_)
         {
@@ -331,12 +331,12 @@ namespace genetic_algorithm
         limits_ = limits;
     }
 
-    RCGA::limits_t RCGA::limits() const
+    inline RCGA::limits_t RCGA::limits() const
     {
         return limits_;
     }
 
-    void RCGA::blx_crossover_param(double alpha)
+    inline void RCGA::blx_crossover_param(double alpha)
     {
         if (!(0.0 <= alpha && alpha <= std::numeric_limits<double>::max()))
         {
@@ -346,12 +346,12 @@ namespace genetic_algorithm
         blx_crossover_param_ = alpha;
     }
 
-    double RCGA::blx_crossover_param() const
+    inline double RCGA::blx_crossover_param() const
     {
         return blx_crossover_param_;
     }
 
-    void RCGA::sim_binary_crossover_param(double eta)
+    inline void RCGA::sim_binary_crossover_param(double eta)
     {
         if (!(0.0 <= eta && eta <= std::numeric_limits<double>::max()))
         {
@@ -361,12 +361,12 @@ namespace genetic_algorithm
         sim_binary_crossover_param_ = eta;
     }
 
-    double RCGA::sim_binary_crossover_param() const
+    inline double RCGA::sim_binary_crossover_param() const
     {
         return sim_binary_crossover_param_;
     }
 
-    void RCGA::nonuniform_mutation_param(double b)
+    inline void RCGA::nonuniform_mutation_param(double b)
     {
         if (!(0.0 <= b && b <= std::numeric_limits<double>::max()))
         {
@@ -376,12 +376,12 @@ namespace genetic_algorithm
         nonuniform_mutation_param_ = b;
     }
 
-    double RCGA::nonuniform_mutation_param() const
+    inline double RCGA::nonuniform_mutation_param() const
     {
         return nonuniform_mutation_param_;
     }
 
-    void RCGA::polynomial_mutation_param(double eta)
+    inline void RCGA::polynomial_mutation_param(double eta)
     {
         if (!(0.0 <= eta && eta <= std::numeric_limits<double>::max()))
         {
@@ -391,12 +391,12 @@ namespace genetic_algorithm
         polynomial_mutation_param_ = eta;
     }
 
-    double RCGA::polynomial_mutation_param() const
+    inline double RCGA::polynomial_mutation_param() const
     {
         return polynomial_mutation_param_;
     }
 
-    void RCGA::gauss_mutation_param(double sigmas)
+    inline void RCGA::gauss_mutation_param(double sigmas)
     {
         if (!(0.0 < sigmas && sigmas <= std::numeric_limits<double>::max()))
         {
@@ -406,13 +406,13 @@ namespace genetic_algorithm
         gauss_mutation_param_ = sigmas;
     }
 
-    double RCGA::gauss_mutation_param() const
+    inline double RCGA::gauss_mutation_param() const
     {
         return gauss_mutation_param_;
     }
 
 
-    RCGA::Candidate RCGA::generateCandidate() const
+    inline RCGA::Candidate RCGA::generateCandidate() const
     {
         assert(chrom_len_ > 0);
         assert(chrom_len_ == limits_.size());
@@ -427,7 +427,7 @@ namespace genetic_algorithm
         return sol;
     }
 
-    RCGA::CandidatePair RCGA::crossover(const Candidate& p1, const Candidate& p2) const
+    inline RCGA::CandidatePair RCGA::crossover(const Candidate& p1, const Candidate& p2) const
     {
         switch (crossover_method_)
         {
@@ -447,7 +447,7 @@ namespace genetic_algorithm
         }
     }
 
-    void RCGA::mutate(Candidate& child) const
+    inline void RCGA::mutate(Candidate& child) const
     {
         switch (mutation_method_)
         {
@@ -475,7 +475,7 @@ namespace genetic_algorithm
         }
     }
 
-    RCGA::CandidatePair RCGA::arithmeticCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
+    inline RCGA::CandidatePair RCGA::arithmeticCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
     {
         assert(parent1.chromosome.size() == parent2.chromosome.size());
         assert(0.0 <= pc && pc <= 1.0);
@@ -498,7 +498,7 @@ namespace genetic_algorithm
         return std::make_pair(child1, child2);
     }
 
-    RCGA::CandidatePair RCGA::blxAlphaCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double alpha, const limits_t& bounds)
+    inline RCGA::CandidatePair RCGA::blxAlphaCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double alpha, const limits_t& bounds)
     {
         assert(parent1.chromosome.size() == parent2.chromosome.size());
         assert(parent1.chromosome.size() == bounds.size());
@@ -529,7 +529,7 @@ namespace genetic_algorithm
         return std::make_pair(child1, child2);
     }
 
-    RCGA::CandidatePair RCGA::simulatedBinaryCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double b, const limits_t& bounds)
+    inline RCGA::CandidatePair RCGA::simulatedBinaryCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double b, const limits_t& bounds)
     {
         assert(parent1.chromosome.size() == parent2.chromosome.size());
         assert(parent1.chromosome.size() == bounds.size());
@@ -561,7 +561,7 @@ namespace genetic_algorithm
         return std::make_pair(child1, child2);
     }
 
-    RCGA::CandidatePair RCGA::wrightCrossover(const Candidate& parent1, const Candidate& parent2, double pc, const limits_t& bounds)
+    inline RCGA::CandidatePair RCGA::wrightCrossover(const Candidate& parent1, const Candidate& parent2, double pc, const limits_t& bounds)
     {
         assert(parent1.chromosome.size() == parent2.chromosome.size());
         assert(parent1.chromosome.size() == bounds.size());
@@ -594,7 +594,7 @@ namespace genetic_algorithm
         return std::make_pair(child1, child2);
     }
 
-    void RCGA::randomMutate(Candidate& child, double pm, const limits_t& bounds)
+    inline void RCGA::randomMutate(Candidate& child, double pm, const limits_t& bounds)
     {
         assert(0.0 <= pm && pm <= 1.0);
         assert(child.chromosome.size() == bounds.size());
@@ -610,7 +610,7 @@ namespace genetic_algorithm
         }
     }
 
-    void RCGA::nonuniformMutate(Candidate& child, double pm, size_t time, size_t time_max, double b, const limits_t& bounds)
+    inline void RCGA::nonuniformMutate(Candidate& child, double pm, size_t time, size_t time_max, double b, const limits_t& bounds)
     {
         assert(0.0 <= pm && pm <= 1.0);
         assert(child.chromosome.size() == bounds.size());
@@ -634,7 +634,7 @@ namespace genetic_algorithm
         }
     }
 
-    void RCGA::polynomialMutate(Candidate& child, double pm, double eta, const limits_t& bounds)
+    inline void RCGA::polynomialMutate(Candidate& child, double pm, double eta, const limits_t& bounds)
     {
         assert(0.0 <= pm && pm <= 1.0);
         assert(child.chromosome.size() == bounds.size());
@@ -662,7 +662,7 @@ namespace genetic_algorithm
         }
     }
 
-    void RCGA::boundaryMutate(Candidate& child, double pm, const limits_t& bounds)
+    inline void RCGA::boundaryMutate(Candidate& child, double pm, const limits_t& bounds)
     {
         assert(0.0 <= pm && pm <= 1.0);
         assert(child.chromosome.size() == bounds.size());
@@ -678,7 +678,7 @@ namespace genetic_algorithm
         }
     }
 
-    void RCGA::gaussMutate(Candidate& child, double pm, double scale, const limits_t& bounds)
+    inline void RCGA::gaussMutate(Candidate& child, double pm, double scale, const limits_t& bounds)
     {
         assert(0.0 <= pm && pm <= 1.0);
         assert(child.chromosome.size() == bounds.size());

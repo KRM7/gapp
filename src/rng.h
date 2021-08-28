@@ -48,7 +48,7 @@ namespace genetic_algorithm::rng
         using result_type = uint_fast64_t;
         using state_type = uint_fast64_t;
 
-        splitmix64(state_type seed);
+        explicit splitmix64(state_type seed);
 
         result_type operator()() noexcept;
 
@@ -63,7 +63,7 @@ namespace genetic_algorithm::rng
         using result_type = uint_fast64_t;
         using state_type = uint_fast64_t;
 
-        xoroshiro128p(uint_fast64_t seed);
+        explicit xoroshiro128p(uint_fast64_t seed);
 
         result_type operator()() noexcept;
 
@@ -110,12 +110,12 @@ namespace genetic_algorithm::rng
 
 namespace genetic_algorithm::rng
 {
-    splitmix64::splitmix64(state_type seed)
+    inline splitmix64::splitmix64(state_type seed)
         : state(seed)
     {
     }
 
-    splitmix64::result_type splitmix64::operator()() noexcept
+    inline splitmix64::result_type splitmix64::operator()() noexcept
     {
         state += 0x9e3779b97f4a7c15;
         result_type z = state;
@@ -125,14 +125,14 @@ namespace genetic_algorithm::rng
     }
 
 
-    xoroshiro128p::xoroshiro128p(uint_fast64_t seed)
+    inline xoroshiro128p::xoroshiro128p(uint_fast64_t seed)
     {
         splitmix64 seed_seq_gen(seed);
         state[0] = seed_seq_gen();
         state[1] = seed_seq_gen();
     }
 
-    xoroshiro128p::result_type xoroshiro128p::operator()() noexcept
+    inline xoroshiro128p::result_type xoroshiro128p::operator()() noexcept
     {
         state_type s0 = state[0];
         state_type s1 = state[1];
@@ -145,17 +145,17 @@ namespace genetic_algorithm::rng
         return result;
     }
 
-    constexpr xoroshiro128p::result_type xoroshiro128p::min() noexcept
+    inline constexpr xoroshiro128p::result_type xoroshiro128p::min() noexcept
     {
         return std::numeric_limits<result_type>::lowest();
     }
 
-    constexpr xoroshiro128p::result_type xoroshiro128p::max() noexcept
+    inline constexpr xoroshiro128p::result_type xoroshiro128p::max() noexcept
     {
         return std::numeric_limits<result_type>::max();
     }
 
-    xoroshiro128p::state_type xoroshiro128p::rotl(state_type x, int k) noexcept
+    inline xoroshiro128p::state_type xoroshiro128p::rotl(state_type x, int k) noexcept
     {
         return (x << k) | (x >> (64 - k));
     }

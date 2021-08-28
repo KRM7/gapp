@@ -156,13 +156,13 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    BinaryGA::BinaryGA(size_t chrom_len, fitnessFunction_t fitness_function) 
+    inline BinaryGA::BinaryGA(size_t chrom_len, fitnessFunction_t fitness_function)
         : GA(chrom_len, fitness_function) 
     {
     }
 
 
-    void BinaryGA::crossover_method(crossoverFunction_t f)
+    inline void BinaryGA::crossover_method(crossoverFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
 
@@ -170,19 +170,19 @@ namespace genetic_algorithm
         customCrossover = f;
     }
 
-    void BinaryGA::crossover_method(CrossoverMethod method)
+    inline void BinaryGA::crossover_method(CrossoverMethod method)
     {
         if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
 
         crossover_method_ = method;
     }
 
-    BinaryGA::CrossoverMethod BinaryGA::crossover_method() const
+    inline BinaryGA::CrossoverMethod BinaryGA::crossover_method() const
     {
         return crossover_method_;
     }
 
-    void BinaryGA::mutation_method(mutationFunction_t f)
+    inline void BinaryGA::mutation_method(mutationFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
 
@@ -190,32 +190,32 @@ namespace genetic_algorithm
         customMutate = f;
     }
 
-    void BinaryGA::mutation_method(MutationMethod method)
+    inline void BinaryGA::mutation_method(MutationMethod method)
     {
         if (static_cast<size_t>(method) > 1) throw std::invalid_argument("Invalid mutation method selected.");
 
         mutation_method_ = method;
     }
 
-    BinaryGA::MutationMethod BinaryGA::mutation_method() const
+    inline BinaryGA::MutationMethod BinaryGA::mutation_method() const
     {
         return mutation_method_;
     }
 
-    void BinaryGA::num_crossover_points(size_t n)
+    inline void BinaryGA::num_crossover_points(size_t n)
     {
         if (n == 0) throw std::invalid_argument("The number of crossover points must be at least 1.");
 
         num_crossover_points_ = n;
     }
 
-    size_t BinaryGA::num_crossover_points() const
+    inline size_t BinaryGA::num_crossover_points() const
     {
         return num_crossover_points_;
     }
 
 
-    BinaryGA::Candidate BinaryGA::generateCandidate() const
+    inline BinaryGA::Candidate BinaryGA::generateCandidate() const
     {
         assert(chrom_len_ > 0);
 
@@ -229,7 +229,7 @@ namespace genetic_algorithm
         return sol;
     }
 
-    BinaryGA::CandidatePair BinaryGA::crossover(const Candidate& parent1, const Candidate& parent2) const
+    inline BinaryGA::CandidatePair BinaryGA::crossover(const Candidate& parent1, const Candidate& parent2) const
     {
         /* Edge case. No point in performing the crossover if the parents are the same. */
         if (parent1 == parent2) return std::make_pair(parent1, parent2);
@@ -252,7 +252,7 @@ namespace genetic_algorithm
         }
     }
 
-    void BinaryGA::mutate(Candidate& child) const
+    inline void BinaryGA::mutate(Candidate& child) const
     {
         switch (mutation_method_)
         {
@@ -268,7 +268,7 @@ namespace genetic_algorithm
         }
     }
 
-    BinaryGA::CandidatePair BinaryGA::nPointCrossover(const Candidate& parent1, const Candidate& parent2, double pc, size_t n)
+    inline BinaryGA::CandidatePair BinaryGA::nPointCrossover(const Candidate& parent1, const Candidate& parent2, double pc, size_t n)
     {
         using namespace std;
         assert(parent1.chromosome.size() == parent2.chromosome.size());
@@ -319,7 +319,7 @@ namespace genetic_algorithm
         return make_pair(child1, child2);
     }
 
-    BinaryGA::CandidatePair BinaryGA::uniformCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
+    inline BinaryGA::CandidatePair BinaryGA::uniformCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
     {
         assert(parent1.chromosome.size() == parent2.chromosome.size());
         assert(0.0 <= pc && pc <= 1.0);
@@ -349,7 +349,7 @@ namespace genetic_algorithm
         return std::make_pair(child1, child2);
     }
 
-    void BinaryGA::standardMutate(Candidate& child, double pm)
+    inline void BinaryGA::standardMutate(Candidate& child, double pm)
     {
         assert(0.0 <= pm && pm <= 1.0);
 

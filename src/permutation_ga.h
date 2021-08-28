@@ -154,13 +154,13 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    PermutationGA::PermutationGA(size_t chrom_len, fitnessFunction_t fitnessFunction)
+    inline PermutationGA::PermutationGA(size_t chrom_len, fitnessFunction_t fitnessFunction)
         : GA(chrom_len, fitnessFunction)
     {
     }
 
 
-    void PermutationGA::crossover_method(crossoverFunction_t f)
+    inline void PermutationGA::crossover_method(crossoverFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
 
@@ -168,20 +168,20 @@ namespace genetic_algorithm
         customCrossover = f;
     }
 
-    void PermutationGA::crossover_method(CrossoverMethod method)
+    inline void PermutationGA::crossover_method(CrossoverMethod method)
     {
         if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
 
         crossover_method_ = method;
     }
 
-    PermutationGA::CrossoverMethod PermutationGA::crossover_method() const
+    inline PermutationGA::CrossoverMethod PermutationGA::crossover_method() const
     {
         return crossover_method_;
     }
 
 
-    void PermutationGA::mutation_method(mutationFunction_t f)
+    inline void PermutationGA::mutation_method(mutationFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
 
@@ -190,20 +190,20 @@ namespace genetic_algorithm
     }
 
 
-    void PermutationGA::mutation_method(MutationMethod method)
+    inline void PermutationGA::mutation_method(MutationMethod method)
     {
         if (static_cast<size_t>(method) > 3) throw std::invalid_argument("Invalid mutation method selected.");
 
         mutation_method_ = method;
     }
 
-    PermutationGA::MutationMethod PermutationGA::mutation_method() const
+    inline PermutationGA::MutationMethod PermutationGA::mutation_method() const
     {
         return mutation_method_;
     }
 
 
-    PermutationGA::Candidate PermutationGA::generateCandidate() const
+    inline PermutationGA::Candidate PermutationGA::generateCandidate() const
     {
         assert(chrom_len_ > 0);
 
@@ -219,7 +219,7 @@ namespace genetic_algorithm
         return sol;
     }
 
-    PermutationGA::CandidatePair PermutationGA::crossover(const Candidate& parent1, const Candidate& parent2) const
+    inline PermutationGA::CandidatePair PermutationGA::crossover(const Candidate& parent1, const Candidate& parent2) const
     {
         using namespace std;
 
@@ -283,7 +283,7 @@ namespace genetic_algorithm
         return make_pair(child1, child2);
     }
 
-    void PermutationGA::mutate(Candidate& child) const
+    inline void PermutationGA::mutate(Candidate& child) const
     {
         switch (mutation_method_)
         {
@@ -305,7 +305,7 @@ namespace genetic_algorithm
         }
     }
 
-    PermutationGA::CandidatePair PermutationGA::orderCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
+    inline PermutationGA::CandidatePair PermutationGA::orderCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
     {
         using namespace std;
         assert(parent1.chromosome.size() == parent2.chromosome.size());
@@ -364,7 +364,7 @@ namespace genetic_algorithm
         return make_pair(child1, child2);
     }
 
-    PermutationGA::CandidatePair PermutationGA::cycleCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
+    inline PermutationGA::CandidatePair PermutationGA::cycleCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
     {
         using namespace std;
         assert(parent1.chromosome.size() == parent2.chromosome.size());
@@ -437,7 +437,7 @@ namespace genetic_algorithm
         return make_pair(child1, child2);
     }
 
-    PermutationGA::CandidatePair PermutationGA::edgeCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
+    inline PermutationGA::CandidatePair PermutationGA::edgeCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
     {
         using namespace std;
         using NList = vector<unordered_set<size_t>>;
@@ -566,7 +566,7 @@ namespace genetic_algorithm
         return make_pair(child1, child2);
     }
 
-    PermutationGA::CandidatePair PermutationGA::pmxCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
+    inline PermutationGA::CandidatePair PermutationGA::pmxCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
     {
         using namespace std;
         assert(parent1.chromosome.size() == parent2.chromosome.size());
@@ -645,7 +645,7 @@ namespace genetic_algorithm
         return make_pair(child1, child2);
     }
 
-    void PermutationGA::swapMutate(Candidate& child, double pm)
+    inline void PermutationGA::swapMutate(Candidate& child, double pm)
     {
         assert(0.0 <= pm && pm <= 1.0);
 
@@ -663,7 +663,7 @@ namespace genetic_algorithm
         }
     }
 
-    void PermutationGA::scrambleMutate(Candidate& child, double pm)
+    inline void PermutationGA::scrambleMutate(Candidate& child, double pm)
     {
         assert(0.0 <= pm && pm <= 1.0);
 
@@ -683,7 +683,7 @@ namespace genetic_algorithm
         }
     }
 
-    void PermutationGA::inversionMutate(Candidate& child, double pm)
+    inline void PermutationGA::inversionMutate(Candidate& child, double pm)
     {
         assert(0.0 <= pm && pm <= 1.0);
 

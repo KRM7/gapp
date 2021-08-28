@@ -191,14 +191,14 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    IntegerGA::IntegerGA(size_t chrom_len, fitnessFunction_t fitnessFunction, size_t base)
+    inline IntegerGA::IntegerGA(size_t chrom_len, fitnessFunction_t fitnessFunction, size_t base)
         : GA(chrom_len, fitnessFunction), base_(base)
     {
         if (base < 2) throw std::invalid_argument("The base must be at least 2.");
     }
 
 
-    void IntegerGA::crossover_method(crossoverFunction_t f)
+    inline void IntegerGA::crossover_method(crossoverFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
 
@@ -206,19 +206,19 @@ namespace genetic_algorithm
         customCrossover = f;
     }
 
-    void IntegerGA::crossover_method(CrossoverMethod method)
+    inline void IntegerGA::crossover_method(CrossoverMethod method)
     {
         if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
 
         crossover_method_ = method;
     }
 
-    IntegerGA::CrossoverMethod IntegerGA::crossover_method() const
+    inline IntegerGA::CrossoverMethod IntegerGA::crossover_method() const
     {
         return crossover_method_;
     }
 
-    void IntegerGA::mutation_method(mutationFunction_t f)
+    inline void IntegerGA::mutation_method(mutationFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
 
@@ -226,68 +226,68 @@ namespace genetic_algorithm
         customMutate = f;
     }
 
-    void IntegerGA::mutation_method(MutationMethod method)
+    inline void IntegerGA::mutation_method(MutationMethod method)
     {
         if (static_cast<size_t>(method) > 1) throw std::invalid_argument("Invalid mutation method selected.");
 
         mutation_method_ = method;
     }
 
-    IntegerGA::MutationMethod IntegerGA::mutation_method() const
+    inline IntegerGA::MutationMethod IntegerGA::mutation_method() const
     {
         return mutation_method_;
     }
 
-    void IntegerGA::num_crossover_points(size_t n)
+    inline void IntegerGA::num_crossover_points(size_t n)
     {
         if (n == 0) throw std::invalid_argument("The number of crossover points must be at least 1.");
 
         num_crossover_points_ = n;
     }
 
-    size_t IntegerGA::num_crossover_points() const
+    inline size_t IntegerGA::num_crossover_points() const
     {
         return num_crossover_points_;
     }
 
-    void IntegerGA::base(size_t base)
+    inline void IntegerGA::base(size_t base)
     {
         if (base < 2) throw std::invalid_argument("The base must be at least 2.");
 
         base_ = base;
     }
 
-    size_t IntegerGA::base() const
+    inline size_t IntegerGA::base() const
     {
         return base_;
     }
 
-    void IntegerGA::swap_rate(double ps)
+    inline void IntegerGA::swap_rate(double ps)
     {
         if (!(0.0 <= ps && ps <= 1.0)) throw std::invalid_argument("The probability of a swap must be in [0, 1].");
 
         swap_rate_ = ps;
     }
 
-    double IntegerGA::swap_rate() const
+    inline double IntegerGA::swap_rate() const
     {
         return swap_rate_;
     }
 
-    void IntegerGA::inversion_rate(double pi)
+    inline void IntegerGA::inversion_rate(double pi)
     {
         if (!(0.0 <= pi && pi <= 1.0)) throw std::invalid_argument("The probability of inversion must be in [0, 1].");
 
         inversion_rate_ = pi;
     }
 
-    double IntegerGA::inversion_rate() const
+    inline double IntegerGA::inversion_rate() const
     {
         return inversion_rate_;
     }
 
 
-    IntegerGA::Candidate IntegerGA::generateCandidate() const
+    inline IntegerGA::Candidate IntegerGA::generateCandidate() const
     {
         assert(chrom_len_ > 0);
         assert(base_ > 1);
@@ -302,7 +302,7 @@ namespace genetic_algorithm
         return sol;
     }
 
-    IntegerGA::CandidatePair IntegerGA::crossover(const Candidate& parent1, const Candidate& parent2) const
+    inline IntegerGA::CandidatePair IntegerGA::crossover(const Candidate& parent1, const Candidate& parent2) const
     {
         /* Edge case. No point in performing the mutations if the parents are the same. */
         if (parent1 == parent2) return std::make_pair(parent1, parent2);
@@ -325,7 +325,7 @@ namespace genetic_algorithm
         }
     }
 
-    void IntegerGA::mutate(Candidate& child) const
+    inline void IntegerGA::mutate(Candidate& child) const
     {
         switch (mutation_method_)
         {
@@ -341,7 +341,7 @@ namespace genetic_algorithm
         }
     }
 
-    IntegerGA::CandidatePair IntegerGA::nPointCrossover(const Candidate& parent1, const Candidate& parent2, double pc, size_t n)
+    inline IntegerGA::CandidatePair IntegerGA::nPointCrossover(const Candidate& parent1, const Candidate& parent2, double pc, size_t n)
     {
         using namespace std;
         assert(parent1.chromosome.size() == parent2.chromosome.size());
@@ -391,7 +391,7 @@ namespace genetic_algorithm
         return make_pair(child1, child2);
     }
 
-    IntegerGA::CandidatePair IntegerGA::uniformCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
+    inline IntegerGA::CandidatePair IntegerGA::uniformCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
     {
         assert(parent1.chromosome.size() == parent2.chromosome.size());
         assert(0.0 <= pc && pc <= 1.0);
@@ -421,7 +421,7 @@ namespace genetic_algorithm
         return std::make_pair(child1, child2);
     }
 
-    void IntegerGA::standardMutate(Candidate& child, double pm, double ps, double pi, size_t base_)
+    inline void IntegerGA::standardMutate(Candidate& child, double pm, double ps, double pi, size_t base_)
     {
         assert(0.0 <= pm && pm <= 1.0);
         assert(0.0 <= ps && ps <= 1.0);
