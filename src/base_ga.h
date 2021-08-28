@@ -23,7 +23,7 @@
 */
 
 /**
-* This file contains the base genetic algorithm class and some functions used by it.
+* This file contains the base genetic algorithm class template.
 *
 * @file base_ga.h
 */
@@ -39,10 +39,12 @@
 #include <atomic>
 #include <cstddef>
 
+
+/** Genetic algorithms and random number generation. */
 namespace genetic_algorithm
 {
     /**
-    * Abstract base GA class.
+    * Base GA class.
     *
     * @tparam geneType The type of the genes in the candidates' chromosomes.
     */
@@ -551,29 +553,6 @@ namespace genetic_algorithm
 } // namespace genetic_algorithm
 
 
-namespace genetic_algorithm::detail
-{
-    /* Return true if lhs is dominated by rhs (lhs < rhs) assuming maximization. */
-    inline bool paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs);
-
-    /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
-    inline double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2);
-
-    /* Generate n reference points in dim dimensions for the NSGA-III algorithm. */
-    inline std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim);
-
-    /* Calculate the square of the perpendicular distance between the line ref and the point p. */
-    inline double perpendicularDistanceSq(const std::vector<double>& ref, const std::vector<double>& p);
-
-    /* Find the index and distance of the closest reference line to the point p. */
-    inline std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p);
-
-    /* Achievement scalarization function. */
-    inline double ASF(const std::vector<double>& f, const std::vector<double>& z, const std::vector<double>& w);
-
-} // namespace genetic_algorithm::detail
-
-
 /* IMPLEMENTATION */
 
 #include <execution>
@@ -585,6 +564,8 @@ namespace genetic_algorithm::detail
 #include <cmath>
 
 #include "rng.h"
+#include "reference_points.h"
+#include "mo_detail.h"
 
 namespace genetic_algorithm
 {
@@ -2142,129 +2123,5 @@ namespace genetic_algorithm
     }
 
 } // namespace genetic_algorithm
-
-namespace genetic_algorithm::detail
-{
-    inline bool paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs)
-    {
-        assert(lhs.size() == rhs.size());
-
-        bool has_lower = false;
-        for (size_t i = 0; i < lhs.size(); i++)
-        {
-            if (lhs[i] > rhs[i]) return false;
-            if (lhs[i] < rhs[i]) has_lower = true;
-        }
-        return has_lower;
-    }
-
-    inline double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2)
-    {
-        assert(v1.size() == v2.size());
-
-        double d = 0.0;
-        for (size_t i = 0; i < v1.size(); i++)
-        {
-            d += (v1[i] - v2[i]) * (v1[i] - v2[i]);
-        }
-
-        return d;
-    }
-
-    inline std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim)
-    {
-        using namespace std;
-        assert(n > 0);
-        assert(dim > 1);
-
-        /* Generate reference point candidates randomly. */
-        size_t k = max(size_t{ 10 }, 2 * dim);
-        vector<vector<double>> candidates(k * n - 1);
-        generate(candidates.begin(), candidates.end(), [&dim]() { return rng::generateRandomSimplexPoint(dim); });
-
-        vector<vector<double>> refs;
-        refs.reserve(n);
-
-        /* The first ref point can be random. */
-        refs.push_back(rng::generateRandomSimplexPoint(dim));
-
-        vector<double> min_distances(candidates.size(), numeric_limits<double>::infinity());
-        while (refs.size() < n)
-        {
-            /* Calc the distance of each candidate to the closest ref point. */
-            transform(execution::par_unseq, candidates.begin(), candidates.end(), min_distances.begin(), min_distances.begin(),
-            [&refs](const vector<double>& candidate, double dmin)
-            {
-                double d = euclideanDistanceSq(candidate, refs.back());
-                return min(dmin, d);
-            });
-
-            /* Add the candidate with highest min_distance to the refs. */
-            size_t argmax = static_cast<size_t>(max_element(min_distances.begin(), min_distances.end()) - min_distances.begin());
-            refs.push_back(move(candidates[argmax]));
-
-            /* Remove the added candidate and the corresponding min_distance. */
-            swap(candidates[argmax], candidates.back());
-            candidates.pop_back();
-            swap(min_distances[argmax], min_distances.back());
-            min_distances.pop_back();
-        }
-
-        return refs;
-    }
-
-    inline double perpendicularDistanceSq(const std::vector<double>& ref, const std::vector<double>& p)
-    {
-        assert(ref.size() == p.size());
-
-        double num = 0.0, den = 0.0;
-        for (size_t i = 0; i < ref.size(); i++)
-        {
-            num += ref[i] * p[i];
-            den += ref[i] * ref[i];
-        }
-        double k = num / den;
-
-        double dist = 0.0;
-        for (size_t i = 0; i < ref.size(); i++)
-        {
-            dist += (p[i] - k * ref[i]) * (p[i] - k * ref[i]);
-        }
-
-        return dist;
-    }
-
-    inline std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p)
-    {
-        size_t argmin = 0;
-        double dmin = perpendicularDistanceSq(refs[0], p);
-        for (size_t i = 1; i < refs.size(); i++)
-        {
-            double d = perpendicularDistanceSq(refs[i], p);
-            if (d < dmin)
-            {
-                dmin = d;
-                argmin = i;
-            }
-        }
-
-        return std::make_pair(argmin, dmin);
-    }
-
-    inline double ASF(const std::vector<double>& f, const std::vector<double>& z, const std::vector<double>& w)
-    {
-        assert(!f.empty());
-        assert(f.size() == z.size() && f.size() == w.size());
-
-        double dmax = std::abs(f[0] - z[0]) / w[0];
-        for (size_t j = 1; j < f.size(); j++)
-        {
-            dmax = std::max(dmax, std::abs(f[j] - z[j]) / w[j]);
-        }
-
-        return dmax;
-    }
-
-} // namespace genetic_algorithm::detail
 
 #endif // !GA_BASE_GA_H
