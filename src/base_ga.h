@@ -39,7 +39,6 @@
 #include <atomic>
 #include <cstddef>
 
-
 /** Genetic algorithms and random number generation. */
 namespace genetic_algorithm
 {

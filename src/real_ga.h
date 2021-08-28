@@ -266,6 +266,16 @@ namespace genetic_algorithm
         });
     }
 
+    template<>
+    bool RCGA::Candidate::operator!=(const Candidate& rhs) const
+    {
+        return !std::equal(this->chromosome.begin(), this->chromosome.end(), rhs.chromosome.begin(),
+        [](double lhs, double rhs)
+        {
+            return std::abs(lhs - rhs) <= std::numeric_limits<double>::epsilon() * std::max(std::abs(lhs), std::abs(rhs));
+        });
+    }
+
 
     void RCGA::crossover_method(crossoverFunction_t f)
     {
