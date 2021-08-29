@@ -232,7 +232,7 @@ namespace genetic_algorithm::rng
     bool randomBool()
     {
         static thread_local std::uniform_int_distribution<int> distribution{ 0, 1 };
-        
+
         return distribution(prng);
     }
 

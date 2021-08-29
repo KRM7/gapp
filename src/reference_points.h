@@ -35,10 +35,10 @@
 
 namespace genetic_algorithm::detail
 {
-    /* Sample a point from a uniform distribution on a unit simplex in @p dim dimensions. */
-    inline std::vector<double> generateRandomSimplexPoint(size_t dim);
+    /* Sample a point from a uniform distribution on a unit simplex in dim dimensions. */
+    inline std::vector<double> randomSimplexPoint(size_t dim);
 
-    /* Generate @p n reference points in @p dim dimensions (for the NSGA-III algorithm). */
+    /* Generate n reference points on the unit simplex in dim dimensions (for the NSGA-III algorithm). */
     inline std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim);
 
 } // namespace genetic_algorithm::detail
@@ -57,28 +57,28 @@ namespace genetic_algorithm::detail
 
 namespace genetic_algorithm::detail
 {
-    std::vector<double> generateRandomSimplexPoint(size_t dim)
+    std::vector<double> randomSimplexPoint(size_t dim)
     {
         assert(dim > 0);
 
         static thread_local std::minstd_rand0 engine{ std::random_device{}() };
         std::uniform_real_distribution<double> distribution{ 0.0, 1.0 };
 
-        std::vector<double> vec;
-        vec.reserve(dim);
+        std::vector<double> point;
+        point.reserve(dim);
 
         double sum = 0.0;
         for (size_t i = 0; i < dim; i++)
         {
-            vec.push_back(-std::log(distribution(engine)));
-            sum += vec.back();
+            point.push_back(-std::log(distribution(engine)));
+            sum += point.back();
         }
         for (size_t i = 0; i < dim; i++)
         {
-            vec[i] /= sum;
+            point[i] /= sum;
         }
 
-        return vec;
+        return point;
     }
 
     std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim)
@@ -90,13 +90,13 @@ namespace genetic_algorithm::detail
         /* Generate reference point candidates randomly. */
         size_t k = max(size_t{ 10 }, 2 * dim);
         vector<vector<double>> candidates(k * n - 1);
-        generate(candidates.begin(), candidates.end(), [&dim]() { return generateRandomSimplexPoint(dim); });
+        generate(candidates.begin(), candidates.end(), [&dim]() { return randomSimplexPoint(dim); });
 
         vector<vector<double>> refs;
         refs.reserve(n);
 
         /* The first ref point can be random. */
-        refs.push_back(generateRandomSimplexPoint(dim));
+        refs.push_back(randomSimplexPoint(dim));
 
         vector<double> min_distances(candidates.size(), numeric_limits<double>::infinity());
         while (refs.size() < n)

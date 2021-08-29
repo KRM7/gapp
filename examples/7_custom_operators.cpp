@@ -82,8 +82,8 @@ int main()
 */
 BinaryGA::Candidate mySelection(const BinaryGA::Population& pop)
 {
-    size_t idx1 = rng::generateRandomIdx(pop.size());
-    size_t idx2 = rng::generateRandomIdx(pop.size());
+    size_t idx1 = rng::randomIdx(pop.size());
+    size_t idx2 = rng::randomIdx(pop.size());
 
     return (pop[idx1].fitness > pop[idx2].fitness) ? pop[idx1] : pop[idx2]; /* The algorithm assumes fitness maximization. */
 }
@@ -94,9 +94,9 @@ BinaryGA::CandidatePair myCrossover(const BinaryGA::Candidate& parent1, const Bi
     BinaryGA::Candidate child1(parent1), child2(parent2);   /* Children are same as parents (is_evaluated = true). */
 
     /* Perform crossover with crossover_rate probability. */
-    if (rng::generateRandomDouble() < crossover_rate)   /* The rng namespace has functions for random number generation if needed. */
+    if (rng::randomReal() < crossover_rate)   /* The rng namespace has functions for random number generation if needed. */
     {
-        size_t cx_point = rng::generateRandomInt(size_t{ 1 }, parent1.chromosome.size() - 1);
+        size_t cx_point = rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1);
         for (size_t i = 0; i < cx_point; i++)
         {
             child1.chromosome[i] = parent2.chromosome[i];
@@ -115,7 +115,7 @@ void myMutation(BinaryGA::Candidate& child, double mutation_rate)
     for (auto& gene : child.chromosome)
     {
         /* Flip each gene with mutation_rate probability. */
-        if (rng::generateRandomDouble() < mutation_rate)
+        if (rng::randomDouble() < mutation_rate)
         {
             gene = bool(gene) ? char(0) : char(1);
             child.is_evaluated = false;
