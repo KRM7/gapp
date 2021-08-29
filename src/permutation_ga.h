@@ -315,11 +315,11 @@ namespace genetic_algorithm
         child2.chromosome.reserve(parent1.chromosome.size());
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             /* Pick a random range of genes. */
-            size_t r1 = rng::generateRandomIdx(parent1.chromosome.size());
-            size_t r2 = rng::generateRandomIdx(parent1.chromosome.size());
+            size_t r1 = rng::randomIdx(parent1.chromosome.size());
+            size_t r2 = rng::randomIdx(parent1.chromosome.size());
             const auto [idx1, idx2] = minmax(r1, r2);
 
             /* Edge case. The entire chromosomes are swapped. */
@@ -372,7 +372,7 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             /* Identify all cycles. */
             vector<vector<size_t>> cycles;
@@ -449,7 +449,7 @@ namespace genetic_algorithm
         child2.chromosome.reserve(parent2.chromosome.size());
 
         /* Crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             /* Construct neighbour list based on parents. The first and last genes are not neighbours. */
             size_t len = parent1.chromosome.size();
@@ -489,7 +489,7 @@ namespace genetic_algorithm
                     /* If X's neighbour list is empty, X = random node not already in child. */
                     if (nl1[X].empty())
                     {
-                        X = not_in_child[rng::generateRandomIdx(not_in_child.size())];
+                        X = not_in_child[rng::randomIdx(not_in_child.size())];
                     }
                     else /* X's neighbour list is not empty, X = neighbour of X with fewest neighbours (random if tie). */
                     {
@@ -511,7 +511,7 @@ namespace genetic_algorithm
                             }
                         }
 
-                        X = possible_nodes[rng::generateRandomIdx(possible_nodes.size())];
+                        X = possible_nodes[rng::randomIdx(possible_nodes.size())];
                     }
                 }
             }
@@ -532,7 +532,7 @@ namespace genetic_algorithm
                 {
                     if (nl2[X].empty())
                     {
-                        X = not_in_child[rng::generateRandomIdx(not_in_child.size())];
+                        X = not_in_child[rng::randomIdx(not_in_child.size())];
                     }
                     else
                     {
@@ -551,7 +551,7 @@ namespace genetic_algorithm
                                 possible_nodes.push_back(elem);
                             }
                         }
-                        X = possible_nodes[rng::generateRandomIdx(possible_nodes.size())];
+                        X = possible_nodes[rng::randomIdx(possible_nodes.size())];
                     }
                 }
             }
@@ -574,11 +574,11 @@ namespace genetic_algorithm
         Candidate child1(parent2), child2(parent1);	/* Init so the last step of the crossover can be skipped. */
 
         /* Crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             /* Pick a random range of genes. The bounds of the range may be the same, but its rare for long chromosomes. */
-            size_t r1 = rng::generateRandomIdx(parent1.chromosome.size());
-            size_t r2 = rng::generateRandomIdx(parent1.chromosome.size());
+            size_t r1 = rng::randomIdx(parent1.chromosome.size());
+            size_t r2 = rng::randomIdx(parent1.chromosome.size());
             const auto [idx1, idx2] = minmax(r1, r2);
 
             /* Edge case. The entire chromosomes are copied directly. */
@@ -649,11 +649,11 @@ namespace genetic_algorithm
         assert(0.0 <= pm && pm <= 1.0);
 
         /* Perform mutation with pm probability. */
-        if (rng::generateRandomDouble() <= pm)
+        if (rng::randomReal() <= pm)
         {
             /* r1 and r2 might be the same index, but its rare for long chromosomes. */
-            size_t r1 = rng::generateRandomIdx(child.chromosome.size());
-            size_t r2 = rng::generateRandomIdx(child.chromosome.size());
+            size_t r1 = rng::randomIdx(child.chromosome.size());
+            size_t r2 = rng::randomIdx(child.chromosome.size());
 
             std::swap(child.chromosome[r1], child.chromosome[r2]);
 
@@ -667,11 +667,11 @@ namespace genetic_algorithm
         assert(0.0 <= pm && pm <= 1.0);
 
         /* Perform mutation with pm probability. */
-        if (rng::generateRandomDouble() <= pm)
+        if (rng::randomReal() <= pm)
         {
             /* Pick a random range of genes. The bounds may be the same, but its rare for long chromosomes. */
-            size_t r1 = rng::generateRandomIdx(child.chromosome.size());
-            size_t r2 = rng::generateRandomIdx(child.chromosome.size());
+            size_t r1 = rng::randomIdx(child.chromosome.size());
+            size_t r2 = rng::randomIdx(child.chromosome.size());
             auto [idx1, idx2] = std::minmax(r1, r2);
 
             std::shuffle(child.chromosome.begin() + idx1, child.chromosome.begin() + idx2 + 1, rng::prng);
@@ -686,11 +686,11 @@ namespace genetic_algorithm
         assert(0.0 <= pm && pm <= 1.0);
 
         /* Perform mutation with pm probability. */
-        if (rng::generateRandomDouble() <= pm)
+        if (rng::randomReal() <= pm)
         {
             /* Pick a random range of genes. The bounds of the range may be the same, but its rare for long chromosomes. */
-            size_t r1 = rng::generateRandomIdx(child.chromosome.size());
-            size_t r2 = rng::generateRandomIdx(child.chromosome.size());
+            size_t r1 = rng::randomIdx(child.chromosome.size());
+            size_t r2 = rng::randomIdx(child.chromosome.size());
             auto [idx1, idx2] = std::minmax(r1, r2);
 
             std::reverse(child.chromosome.begin() + idx1, child.chromosome.begin() + idx2 + 1);

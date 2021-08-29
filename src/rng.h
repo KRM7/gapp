@@ -24,7 +24,7 @@
 
 /**
 * This file contains the PRNG classes and functions used for generating random numbers
-* in the genetic algorithms.
+* in the genetic algorithms. The rng functions are thread safe.
 *
 * @file rng.h
 */
@@ -80,27 +80,37 @@ namespace genetic_algorithm::rng
     /** The PRNG type used in the genetic algorithm. */
     using PRNG = xoroshiro128p;
 
-    /** Global PRNG used in the algorithm. */
+    /** Global PRNG instance(s) used in the genetic algorithm. */
     thread_local inline PRNG prng{ std::random_device{}() };
 
-    /** Generates a random double on the interval [l_bound, u_bound). */
-    inline double generateRandomDouble(double l_bound = 0.0, double u_bound = 1.0);
+    /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
+    template<typename RealType = double>
+    inline RealType randomReal();
 
-    /** Generates a random integer of type T on the closed interval [l_bound, u_bound]. */
-    template<typename T>
-    inline T generateRandomInt(T l_bound, T u_bound);
+    /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [l_bound, u_bound). */
+    template<typename RealType = double>
+    inline RealType randomReal(RealType l_bound, RealType u_bound);
+
+    /** Generates a random floating-point value of type RealType from a standard normal distribution. */
+    template<typename RealType = double>
+    inline RealType randomNormal();
+
+    /** Generates a random floating-point value of type RealType from a normal distribution with the parameters mean and SD. */
+    template<typename RealType = double>
+    inline RealType randomNormal(RealType mean, RealType SD);
+
+    /** Generates a random integer of type IntType from a uniform distribution on the closed interval [l_bound, u_bound]. */
+    template<typename IntType = int>
+    inline IntType randomInt(IntType l_bound, IntType u_bound);
 
     /**
-    * Generates a random unsigned integer on the closed interval [0, c_size-1]. \n
+    * Generates a random unsigned integer from a uniform distribution on the closed interval [0, c_size-1]. \n
     * Used to generate a random index for containers, with c_size being the size of the container.
     */
-    inline size_t generateRandomIdx(size_t c_size);
+    inline size_t randomIdx(size_t c_size);
 
-    /** Generates a random boolean value. */
-    inline bool generateRandomBool();
-
-    /** Generates a random double from a normal distribution with the parameters mean and SD. */
-    inline double generateRandomNorm(double mean = 0.0, double SD = 1.0);
+    /** Generates a random boolean value from a uniform distribution. */
+    inline bool randomBool();
 
 } // namespace genetic_algorithm::rng
 
@@ -123,6 +133,7 @@ namespace genetic_algorithm::rng
         result_type z = state;
         z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
         z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
+
         return z ^ (z >> 31);
     }
 
@@ -163,45 +174,65 @@ namespace genetic_algorithm::rng
     }
 
 
-    double generateRandomDouble(double l_bound, double u_bound)
+    template<typename RealType>
+    inline RealType randomReal()
     {
-        assert(l_bound <= u_bound);
-
-        std::uniform_real_distribution<double> distribution{ l_bound, u_bound };
+        static thread_local std::uniform_real_distribution<RealType> distribution{ 0.0, 1.0 };
 
         return distribution(prng);
     }
 
-    template<typename T>
-    T generateRandomInt(T l_bound, T u_bound)
+    template<typename RealType>
+    RealType randomReal(RealType l_bound, RealType u_bound)
     {
         assert(l_bound <= u_bound);
 
-        std::uniform_int_distribution<T> distribution{ l_bound, u_bound };
+        std::uniform_real_distribution<RealType> distribution{ l_bound, u_bound };
 
         return distribution(prng);
     }
 
-    size_t generateRandomIdx(size_t c_size)
+    template<typename RealType>
+    RealType randomNormal()
     {
+        static thread_local std::normal_distribution<RealType> distribution{ 0.0, 1.0 };
+
+        return distribution(prng);
+    }
+
+    template<typename RealType>
+    RealType randomNormal(RealType mean, RealType SD)
+    {
+        assert(SD > 0.0);
+
+        std::normal_distribution<RealType> distribution{ mean, SD };
+
+        return distribution(prng);
+    }
+
+    template<typename IntType>
+    IntType randomInt(IntType l_bound, IntType u_bound)
+    {
+        assert(l_bound <= u_bound);
+
+        std::uniform_int_distribution<IntType> distribution{ l_bound, u_bound };
+
+        return distribution(prng);
+    }
+
+    size_t randomIdx(size_t c_size)
+    {
+        assert(c_size > 0); /* There are no valid indices otherwise. */
+
         std::uniform_int_distribution<size_t> distribution{ 0, c_size - 1 };
 
         return distribution(prng);
     }
 
-    bool generateRandomBool()
+    bool randomBool()
     {
-        std::uniform_int_distribution<int> distribution{ 0, 1 };
+        static thread_local std::uniform_int_distribution<int> distribution{ 0, 1 };
         
-        return distribution(prng);
-    }
-
-    double generateRandomNorm(double mean, double SD)
-    {
-        assert(SD > 0.0);
-
-        std::normal_distribution<double> distribution{ mean, SD };
-
         return distribution(prng);
     }
 

@@ -1494,7 +1494,7 @@ namespace genetic_algorithm
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
 
-        double threshold = rng::generateRandomDouble();
+        double threshold = rng::randomReal();
         auto it = std::lower_bound(pop.begin(), pop.end(), threshold,
         [](const Candidate& sol, double threshold)
         {
@@ -1516,7 +1516,7 @@ namespace genetic_algorithm
         indices.reserve(tourney_size);
         for (size_t i = 0; i < tourney_size; i++)
         {
-            indices.push_back(rng::generateRandomIdx(pop.size()));
+            indices.push_back(rng::randomIdx(pop.size()));
         }
 
         /* Find the best of the picked candidates. */
@@ -1687,8 +1687,8 @@ namespace genetic_algorithm
     {
         assert(!pop.empty());
 
-        size_t idx1 = rng::generateRandomIdx(pop.size());
-        size_t idx2 = rng::generateRandomIdx(pop.size());
+        size_t idx1 = rng::randomIdx(pop.size());
+        size_t idx2 = rng::randomIdx(pop.size());
 
         return crowdedCompare(pop[idx1], pop[idx2]) ? pop[idx1] : pop[idx2];
     }
@@ -1881,8 +1881,8 @@ namespace genetic_algorithm
     {
         assert(!pop.empty());
 
-        size_t idx1 = rng::generateRandomIdx(pop.size());
-        size_t idx2 = rng::generateRandomIdx(pop.size());
+        size_t idx1 = rng::randomIdx(pop.size());
+        size_t idx2 = rng::randomIdx(pop.size());
 
         return nichedCompare(pop[idx1], pop[idx2]) ? pop[idx1] : pop[idx2];
     }
@@ -1936,7 +1936,7 @@ namespace genetic_algorithm
                     refs.push_back(ref);
                 }
             }
-            size_t ref = refs[rng::generateRandomIdx(refs.size())];
+            size_t ref = refs[rng::randomIdx(refs.size())];
 
             /* Find the idx of the closest sol in the partial front associated with this ref point. */
             size_t sol_idx = partial_front[0];

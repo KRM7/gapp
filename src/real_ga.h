@@ -421,7 +421,7 @@ namespace genetic_algorithm
         sol.chromosome.reserve(chrom_len_);
         for (size_t i = 0; i < chrom_len_; i++)
         {
-            sol.chromosome.push_back(rng::generateRandomDouble(limits_[i].first, limits_[i].second));
+            sol.chromosome.push_back(rng::randomReal(limits_[i].first, limits_[i].second));
         }
 
         return sol;
@@ -483,9 +483,9 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
-            double alpha = rng::generateRandomDouble();
+            double alpha = rng::randomReal();
             for (size_t i = 0; i < parent1.chromosome.size(); i++)
             {
                 child1.chromosome[i] = alpha * parent1.chromosome[i] + (1.0 - alpha) * parent2.chromosome[i];
@@ -508,7 +508,7 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             for (size_t i = 0; i < parent1.chromosome.size(); i++)
             {
@@ -516,8 +516,8 @@ namespace genetic_algorithm
                 auto [range_min, range_max] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
                 double range_ext = alpha * (range_max - range_min);
                 /* Generate genes from an uniform distribution on the interval. */
-                child1.chromosome[i] = rng::generateRandomDouble(range_min - range_ext, range_max + range_ext);
-                child2.chromosome[i] = rng::generateRandomDouble(range_min - range_ext, range_max + range_ext);
+                child1.chromosome[i] = rng::randomReal(range_min - range_ext, range_max + range_ext);
+                child2.chromosome[i] = rng::randomReal(range_min - range_ext, range_max + range_ext);
                 /* The generated genes might be outside the allowed interval. */
                 child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
                 child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
@@ -539,10 +539,10 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             /* Generate beta from the distribution. */
-            double u = rng::generateRandomDouble(0.0, 1.0);
+            double u = rng::randomReal();
             double beta = (u <= 0.5) ? std::pow(2.0 * u, 1.0 / (b + 1.0)) : std::pow(1.0 / (2.0 * (1.0 - u)), 1.0 / (b + 1.0));
 
             /* Perform crossover. */
@@ -570,14 +570,14 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             /* p1 is always the better parent. */
             const Candidate* p1 = detail::paretoCompare(parent1.fitness, parent2.fitness) ? &parent2 : &parent1;
             const Candidate* p2 = detail::paretoCompare(parent1.fitness, parent2.fitness) ? &parent1 : &parent2;
             /* Get random weights. */
-            double w1 = rng::generateRandomDouble();
-            double w2 = rng::generateRandomDouble();
+            double w1 = rng::randomReal();
+            double w2 = rng::randomReal();
             /* Perform crossover. */
             for (size_t i = 0; i < p1->chromosome.size(); i++)
             {
@@ -602,9 +602,9 @@ namespace genetic_algorithm
         for (size_t i = 0; i < child.chromosome.size(); i++)
         {
             /* Mutate the gene with pm probability. */
-            if (rng::generateRandomDouble() <= pm)
+            if (rng::randomReal() <= pm)
             {
-                child.chromosome[i] = rng::generateRandomDouble(bounds[i].first, bounds[i].second);
+                child.chromosome[i] = rng::randomReal(bounds[i].first, bounds[i].second);
                 child.is_evaluated = false;
             }
         }
@@ -619,11 +619,11 @@ namespace genetic_algorithm
         for (size_t i = 0; i < child.chromosome.size(); i++)
         {
             /* Perform mutation on the gene with pm probability. */
-            if (rng::generateRandomDouble() <= pm)
+            if (rng::randomReal() <= pm)
             {
                 double interval = bounds[i].second - bounds[i].first;
-                double r = rng::generateRandomDouble();
-                double sign = rng::generateRandomBool() ? 1.0 : -1.0;
+                double r = rng::randomReal();
+                double sign = rng::randomBool() ? 1.0 : -1.0;
 
                 child.chromosome[i] += sign * interval * (1.0 - std::pow(r, std::pow(1.0 - double(time) / time_max, b)));
                 child.is_evaluated = false;
@@ -643,9 +643,9 @@ namespace genetic_algorithm
         for (size_t i = 0; i < child.chromosome.size(); i++)
         {
             /* Perform mutation on the gene with pm probability. */
-            if (rng::generateRandomDouble() <= pm)
+            if (rng::randomReal() <= pm)
             {
-                double u = rng::generateRandomDouble();
+                double u = rng::randomReal();
                 if (u <= 0.5)
                 {
                     double delta = std::pow(2.0 * u, 1.0 / (1.0 + eta)) - 1.0;
@@ -670,9 +670,9 @@ namespace genetic_algorithm
         for (size_t i = 0; i < child.chromosome.size(); i++)
         {
             /* Perform mutation on the gene with pm probability. */
-            if (rng::generateRandomDouble() <= pm)
+            if (rng::randomReal() <= pm)
             {
-                child.chromosome[i] = rng::generateRandomBool() ? bounds[i].first : bounds[i].second;
+                child.chromosome[i] = rng::randomBool() ? bounds[i].first : bounds[i].second;
                 child.is_evaluated = false;
             }
         }
@@ -687,10 +687,10 @@ namespace genetic_algorithm
         for (size_t i = 0; i < child.chromosome.size(); i++)
         {
             /* Perform mutation on the gene with pm probability. */
-            if (rng::generateRandomDouble() <= pm)
+            if (rng::randomReal() <= pm)
             {
                 double SD = (bounds[i].second - bounds[i].first) / scale;
-                child.chromosome[i] += rng::generateRandomNorm(0.0, SD);
+                child.chromosome[i] += rng::randomNormal(0.0, SD);
                 child.is_evaluated = false;
                 /* The mutated gene might be outside the allowed range. */
                 child.chromosome[i] = std::clamp(child.chromosome[i], bounds[i].first, bounds[i].second);

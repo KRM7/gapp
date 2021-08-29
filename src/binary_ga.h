@@ -223,7 +223,7 @@ namespace genetic_algorithm
         sol.chromosome.reserve(chrom_len_);
         for (size_t i = 0; i < chrom_len_; i++)
         {
-            sol.chromosome.push_back(char(rng::generateRandomBool()));
+            sol.chromosome.push_back(char(rng::randomBool()));
         }
 
         return sol;
@@ -277,13 +277,13 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             /* Generate n (or less, but at least 1) number of unique random loci. */
             unordered_set<size_t> loci;
             for (size_t i = 0; i < n; i++)
             {
-                loci.insert(rng::generateRandomInt(size_t{ 1 }, parent1.chromosome.size() - 1));
+                loci.insert(rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1));
             }
 
             /* Count how many loci are after each gene. */
@@ -327,12 +327,12 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             for (size_t i = 0; i < parent1.chromosome.size(); i++)
             {
                 /* Swap each gene with 0.5 probability. */
-                if (rng::generateRandomBool())
+                if (rng::randomBool())
                 {
                     child1.chromosome[i] = parent2.chromosome[i];
                     child2.chromosome[i] = parent1.chromosome[i];
@@ -357,7 +357,7 @@ namespace genetic_algorithm
         double mean = child.chromosome.size() * pm;
         double SD = child.chromosome.size() * pm * (1.0 - pm);
 
-        size_t mutation_count = size_t(std::round(rng::generateRandomNorm(mean, SD)));
+        size_t mutation_count = size_t(std::round(rng::randomNormal(mean, SD)));
         mutation_count = std::clamp(mutation_count, size_t{ 0 }, child.chromosome.size());
 
         /* The child will (very likely) be changed, and will need to be evaluated. */
@@ -366,7 +366,7 @@ namespace genetic_algorithm
         /* Flip mutation_count number of random genes. One gene may be flipped multiple times, but uncommon for long chromosomes. */
         for (size_t i = 0; i < mutation_count; i++)
         {
-            size_t idx = rng::generateRandomIdx(child.chromosome.size());
+            size_t idx = rng::randomIdx(child.chromosome.size());
             child.chromosome[idx] = !child.chromosome[idx];
         }
     }

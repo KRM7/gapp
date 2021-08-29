@@ -296,7 +296,7 @@ namespace genetic_algorithm
         sol.chromosome.reserve(chrom_len_);
         for (size_t i = 0; i < chrom_len_; i++)
         {
-            sol.chromosome.push_back(rng::generateRandomInt(size_t{ 0 }, base_ - 1));
+            sol.chromosome.push_back(rng::randomInt(size_t{ 0 }, base_ - 1));
         }
 
         return sol;
@@ -350,13 +350,13 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             /* Generate n (or less, but at least 1) number of random loci. */
             unordered_set<size_t> loci;
             for (size_t i = 0; i < n; i++)
             {
-                loci.insert(rng::generateRandomInt(size_t{ 1 }, parent1.chromosome.size() - 1));
+                loci.insert(rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1));
             }
 
             /* Count how many loci are after each gene. */
@@ -399,12 +399,12 @@ namespace genetic_algorithm
         Candidate child1(parent1), child2(parent2);
 
         /* Perform crossover with pc probability. */
-        if (rng::generateRandomDouble() <= pc)
+        if (rng::randomReal() <= pc)
         {
             for (size_t i = 0; i < parent1.chromosome.size(); i++)
             {
                 /* Swap each bit with 0.5 probability. */
-                if (rng::generateRandomBool())
+                if (rng::randomBool())
                 {
                     child1.chromosome[i] = parent2.chromosome[i];
                     child2.chromosome[i] = parent1.chromosome[i];
@@ -432,7 +432,7 @@ namespace genetic_algorithm
         double mean = child.chromosome.size() * pm;
         double SD = child.chromosome.size() * pm * (1.0 - pm);
 
-        size_t mutation_count = size_t(std::round(rng::generateRandomNorm(mean, SD)));
+        size_t mutation_count = size_t(std::round(rng::randomNormal(mean, SD)));
         mutation_count = std::clamp(mutation_count, size_t{ 0 }, child.chromosome.size());
 
         /* The child will (very likely) be changed, and will need to be evaluated. */
@@ -444,27 +444,27 @@ namespace genetic_algorithm
         */
         for (size_t i = 0; i < mutation_count; i++)
         {
-            size_t idx = rng::generateRandomIdx(child.chromosome.size());
-            child.chromosome[idx] = rng::generateRandomInt(size_t{ 0 }, base_ - 1);
+            size_t idx = rng::randomIdx(child.chromosome.size());
+            child.chromosome[idx] = rng::randomInt(size_t{ 0 }, base_ - 1);
         }
 
         /* Perform swap with ps probability. */
-        if (rng::generateRandomDouble() <= ps)
+        if (rng::randomReal() <= ps)
         {
             /* r1 and r2 might be the same index, but its rare for long chromosomes. */
-            size_t r1 = rng::generateRandomIdx(child.chromosome.size());
-            size_t r2 = rng::generateRandomIdx(child.chromosome.size());
+            size_t r1 = rng::randomIdx(child.chromosome.size());
+            size_t r2 = rng::randomIdx(child.chromosome.size());
             std::swap(child.chromosome[r1], child.chromosome[r2]);
 
             if (child.chromosome[r1] != child.chromosome[r2]) child.is_evaluated = false;
         }
 
         /* Perform inversion with pi probability. */
-        if (rng::generateRandomDouble() <= pi)
+        if (rng::randomReal() <= pi)
         {
             /* Pick a random range of genes. The bounds of the range may be the same, but its rare for long chromosomes. */
-            size_t r1 = rng::generateRandomIdx(child.chromosome.size());
-            size_t r2 = rng::generateRandomIdx(child.chromosome.size());
+            size_t r1 = rng::randomIdx(child.chromosome.size());
+            size_t r2 = rng::randomIdx(child.chromosome.size());
             auto [idx1, idx2] = std::minmax(r1, r2);
 
             std::reverse(child.chromosome.begin() + idx1, child.chromosome.begin() + idx2 + 1);
