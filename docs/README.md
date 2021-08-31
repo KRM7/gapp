@@ -62,8 +62,6 @@ of the encoding. These algorithms are:
 * Non-Dominated Sorting Genetic Algorithm II (NSGA-II)
 * Non-Dominated Sorting Genetic Algorithm III (NSGA-III)
 
-These algorithms can be used regardless of the encoding type used in the algorithm.
-
 
 ## Genetic operators
 
