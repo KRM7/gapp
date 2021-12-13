@@ -136,8 +136,119 @@ namespace genetic_algorithm::detail
 
 namespace genetic_algorithm::crossover
 {
+    template<regular_hashable GeneType>
+    inline Crossover<GeneType>::Crossover(double pc)
+    {
+        crossover_rate(pc);
+    }
+
+    template<regular_hashable GeneType>
+    inline void Crossover<GeneType>::crossover_rate(double pc)
+    {
+        if (!(0.0 <= pc && pc <= 1.0))
+        {
+            throw std::invalid_argument("The crossover probability must be in the closed range [0.0, 1.0].");
+        }
+
+        pc_ = pc;
+    }
+
+    template<regular_hashable T>
+    inline std::pair<Candidate<T>, Candidate<T>> Crossover<T>::operator()(const Candidate<T>& parent1, const Candidate<T>& parent2)
+    {
+        /* If the parents are the same, the crossover doesn't need to be performed. */
+        if (parent1 == parent2)
+        {
+            return { parent1, parent2 };
+        }
+        /* Only need to perform the crossover with the set pc probability. (Return early with (1 - pc) probability.) */
+        if (rng::randomReal() >= pc_)
+        {
+            return { parent1, parent2 };
+        }
+
+        /* Perform the actual crossover. */
+        auto [child1, child2] = crossover(parent1, parent2);
+
+        child1.is_evaluated = false;
+        child2.is_evaluated = false;
+
+        /* Check if either of the children are the same as one of the parents, and won't need to be evaluated. */
+        if (child1 == parent1)
+        {
+            child1.fitness = parent1.fitness;
+            child1.is_evaluated = true;
+        }
+        else if (child1 == parent2)
+        {
+            child1.fitness = parent2.fitness;
+            child1.is_evaluated = true;
+        }
+        if (child2 == parent1)
+        {
+            child2.fitness = parent1.fitness;
+            child2.is_evaluated = true;
+        }
+        else if (child2 == parent2)
+        {
+            child2.fitness = parent2.fitness;
+            child2.is_evaluated = true;
+        }
+
+        return std::make_pair(child1, child2);
+    }
+
     namespace binary
     {
+        inline std::pair<Candidate<char>, Candidate<char>> SinglePoint::crossover(const Candidate<char>& parent1, const Candidate<char>& parent2) const
+        {
+            return detail::nPointCrossoverImpl(parent1, parent2, 1);
+        }
+
+        inline std::pair<Candidate<char>, Candidate<char>> TwoPoint::crossover(const Candidate<char>& parent1, const Candidate<char>& parent2) const
+        {
+            return detail::nPointCrossoverImpl(parent1, parent2, 2);
+        }
+
+        inline std::pair<Candidate<char>, Candidate<char>> NPoint::crossover(const Candidate<char>& parent1, const Candidate<char>& parent2) const
+        {
+            return detail::nPointCrossoverImpl(parent1, parent2, n_);
+        }
+
+        inline NPoint::NPoint(double pc, size_t n)
+        {
+            crossover_rate(pc);
+            num_crossover_points(n);
+        }
+
+        inline void NPoint::num_crossover_points(size_t n)
+        {
+            if (n == 0)
+            {
+                throw std::invalid_argument("The number of crossover points must be at least 1.");
+            }
+
+            n_ = n;
+        }
+
+        inline std::pair<Candidate<char>, Candidate<char>> Uniform::crossover(const Candidate<char>& parent1, const Candidate<char>& parent2) const
+        {
+            assert(parent1.chromosome.size() == parent2.chromosome.size());
+
+            Candidate<char> child1(parent1), child2(parent2);
+
+            for (size_t i = 0; i < parent1.chromosome.size(); i++)
+            {
+                /* Swap each gene with 0.5 probability. */
+                if (rng::randomBool())
+                {
+                    child1.chromosome[i] = parent2.chromosome[i];
+                    child2.chromosome[i] = parent1.chromosome[i];
+                }
+            }
+
+            return std::make_pair(child1, child2);
+        }
     }
 
     namespace real
@@ -158,6 +269,44 @@ namespace genetic_algorithm::crossover
 
 namespace genetic_algorithm::detail
 {
+    template<typename T>
+    inline std::pair<Candidate<T>, Candidate<T>> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t n)
+    {
+        assert(parent1.chromosome.size() == parent2.chromosome.size());
+
+        Candidate<T> child1(parent1), child2(parent2);
+
+        /* Generate n (or less, but at least 1) number of unique random loci. */
+        std::unordered_set<size_t> loci;
+        for (size_t i = 0; i < std::min(n, parent1.chromosome.size()); i++)
+        {
+            loci.insert(rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1));
+        }
+
+        /* Count how many loci are after each gene. */
+        std::vector<size_t> loci_after;
+        loci_after.reserve(parent1.chromosome.size());
+
+        size_t loci_left = loci.size();
+        for (size_t i = 0; i < parent1.chromosome.size(); i++)
+        {
+            if (loci_left > 0 && loci.contains(i)) loci_left--;
+            loci_after.push_back(loci_left);
+        }
+
+        for (size_t i = 0; i < parent1.chromosome.size(); i++)
+        {
+            /* Swap the genes if there are an odd number of loci after the gene. */
+            if (loci_after[i] % 2)
+            {
+                child1.chromosome[i] = parent2.chromosome[i];
+                child2.chromosome[i] = parent1.chromosome[i];
+            }
+        }
+
+        return { child1, child2 };
+    }
+
 } // namespace genetic_algorithm::detail
 
 #endif // !GA_CROSSOVER_H
