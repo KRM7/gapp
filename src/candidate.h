@@ -130,8 +130,8 @@ namespace genetic_algorithm
     template<hashable GeneType>
     inline size_t CandidateHasher<GeneType>::operator()(const Candidate<GeneType>& candidate) const noexcept
     {
-        size_t seed = c.chromosome.size();
-        for (const auto& gene : c.chromosome)
+        size_t seed = candidate.chromosome.size();
+        for (const auto& gene : candidate.chromosome)
         {
             seed ^= std::hash<GeneType>()(gene) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
         }
