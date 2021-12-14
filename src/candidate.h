@@ -74,8 +74,12 @@ namespace genetic_algorithm
         bool is_evaluated = false;          /**< False if the candidate's fitness value needs to be computed. */
 
         Candidate() = default;
-        Candidate(const std::vector<Gene>& chrom) : chromosome(chrom) {}
+        explicit Candidate(const std::vector<Gene>& chrom) : chromosome(chrom) {}
     };
+
+    /** A pair of candidates. */
+    template<regular_hashable GeneType>
+    using CandidatePair = std::pair<Candidate<GeneType>, Candidate<GeneType>>;
 
     /** Two candidates are considered equal if they have the same chromosomes. */
     template<typename T>
