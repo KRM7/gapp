@@ -505,17 +505,13 @@ namespace genetic_algorithm::crossover
             }
 
             /* Count how many loci are after each gene. */
-            std::vector<size_t> loci_after{ parent1.chromosome.size(), 0 };
+            std::vector<size_t> loci_after;
+            loci_after.reserve(parent1.chromosome.size());
 
             for (size_t i = 0, loci_left = loci.size(); i < parent1.chromosome.size(); i++)
             {
-                if (loci.contains(i))
-                {
-                    loci_left--;
-                }
-                if (loci_left == 0) break; // Every other position would be 0.
-
-                loci_after[i] = loci_left;
+                if (loci_left > 0 && loci.contains(i)) loci_left--;
+                loci_after.push_back(loci_left);
             }
 
             for (size_t i = 0; i < parent1.chromosome.size(); i++)
