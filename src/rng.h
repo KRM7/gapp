@@ -32,6 +32,7 @@
 #ifndef GA_RANDOM_H
 #define GA_RANDOM_H
 
+#include <vector>
 #include <random>
 #include <cstdint>
 #include <cstddef>
@@ -112,12 +113,18 @@ namespace genetic_algorithm::rng
     /** Generates a random boolean value from a uniform distribution. */
     inline bool randomBool();
 
+    /** Generates n unique integers from the range [0, u_bound). */
+    template<typename IntType>
+    inline std::vector<IntType> sampleUnique(IntType u_bound, size_t n);
+
 } // namespace genetic_algorithm::rng
 
 
 /* IMPLEMENTATION */
 
 #include <limits>
+#include <utility>
+#include <numeric>
 #include <cassert>
 
 namespace genetic_algorithm::rng
@@ -177,7 +184,7 @@ namespace genetic_algorithm::rng
     template<typename RealType>
     inline RealType randomReal()
     {
-        static thread_local std::uniform_real_distribution<RealType> distribution{ 0.0, 1.0 };
+        std::uniform_real_distribution<RealType> distribution{ 0.0, 1.0 };
 
         return distribution(prng);
     }
@@ -195,7 +202,7 @@ namespace genetic_algorithm::rng
     template<typename RealType>
     RealType randomNormal()
     {
-        static thread_local std::normal_distribution<RealType> distribution{ 0.0, 1.0 };
+        std::normal_distribution<RealType> distribution{ 0.0, 1.0 };
 
         return distribution(prng);
     }
@@ -231,9 +238,24 @@ namespace genetic_algorithm::rng
 
     bool randomBool()
     {
-        static thread_local std::uniform_int_distribution<int> distribution{ 0, 1 };
+        std::uniform_int_distribution<int> distribution{ 0, 1 };
 
         return distribution(prng);
+    }
+
+    template<typename IntType>
+    std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
+    {
+        std::vector<IntType> nums(u_bound);
+        std::iota(nums.begin(), nums.end(), IntType{ 0 });
+
+        for (size_t i = 0; i < n; i++)
+        {
+            size_t idx = randomIdx(nums.size() - i);
+            std::swap(nums[idx], *(nums.end() - 1 - i));
+        }
+
+        return std::vector(nums.end() - n, nums.end());
     }
 
 }
