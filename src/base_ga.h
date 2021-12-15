@@ -370,6 +370,7 @@ namespace genetic_algorithm
         [[nodiscard]] std::vector<double> nadir_point() const;
 
         template<typename CrossoverType>
+        requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>> && std::copy_constructible<CrossoverType>
         void crossover_method(const CrossoverType& f)
         {
             crossover = std::make_unique<CrossoverType>(f);
