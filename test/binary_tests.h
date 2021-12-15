@@ -10,6 +10,7 @@
 #include <iomanip>
 
 #include "../src/binary_ga.h"
+#include "../src/crossover.h"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -25,10 +26,9 @@ void binaryRastriginTest()
     
     /* Set some optional parameters. */
     GA.population_size(400);
-    GA.crossover_rate(0.75);
     GA.mutation_rate(0.015);
     GA.selection_method(BinaryGA::SogaSelection::roulette);
-    GA.crossover_method(BinaryGA::CrossoverMethod::two_point);
+    GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
 
     GA.max_gen(1500);
     GA.stop_condition(BinaryGA::StopCondition::fitness_mean_stall);
@@ -74,11 +74,9 @@ void binaryRosenbrockTest()
 
     /* Set some optional parameters. */
     GA.population_size(300);
-    GA.crossover_rate(0.8);
     GA.mutation_rate(0.01);
     GA.selection_method(BinaryGA::SogaSelection::tournament);
-    GA.crossover_method(BinaryGA::CrossoverMethod::n_point);
-    GA.num_crossover_points(2);
+    GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.max_gen(1500);
 
     /* Run the GA with a timer. */
@@ -120,10 +118,9 @@ void binarySchwefelTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.crossover_rate(0.7);
     GA.mutation_rate(0.01);
     GA.selection_method(BinaryGA::SogaSelection::rank);
-    GA.crossover_method(BinaryGA::CrossoverMethod::uniform);
+    GA.crossover_method(crossover::binary::Uniform{ 0.7 });
     
     GA.max_gen(1500);
     GA.stop_condition(BinaryGA::StopCondition::fitness_evals);
@@ -168,11 +165,9 @@ void binaryGriewankTest()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.crossover_rate(0.75);
     GA.mutation_rate(0.04);
     GA.selection_method(BinaryGA::SogaSelection::sigma);
-    GA.crossover_method(BinaryGA::CrossoverMethod::n_point);
-    GA.num_crossover_points(3);
+    GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
 
     GA.max_gen(2500);
     GA.stop_condition(BinaryGA::StopCondition::fitness_value);
@@ -217,10 +212,9 @@ void binaryAckleyTest()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.crossover_rate(0.75);
     GA.mutation_rate(0.04);
     GA.selection_method(BinaryGA::SogaSelection::boltzmann);
-    GA.crossover_method(BinaryGA::CrossoverMethod::single_point);
+    GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
     
     GA.max_gen(2500);
     GA.stop_condition(BinaryGA::StopCondition::fitness_best_stall);

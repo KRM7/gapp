@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "../src/integer_ga.h"
+#include "../src/crossover.h"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -23,11 +24,8 @@ void integerTest1()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_rate(0.85);
     GA.selection_method(IntegerGA::SogaSelection::tournament);
-    GA.crossover_method(IntegerGA::CrossoverMethod::n_point);
-    GA.num_crossover_points(3);
-
+    GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
     GA.max_gen(500);
 
     /* Run the GA with a timer. */
@@ -65,11 +63,10 @@ void integerTest2()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.crossover_rate(0.8);
     GA.swap_rate(0.3);
     GA.inversion_rate(0.2);
     GA.selection_method(IntegerGA::SogaSelection::boltzmann);
-    GA.crossover_method(IntegerGA::CrossoverMethod::uniform);
+    GA.crossover_method(crossover::integer::Uniform{ 0.8 });
     GA.max_gen(1000);
 
     /* Run the GA with a timer. */

@@ -53,21 +53,6 @@ namespace genetic_algorithm
         using limits_t = std::vector<std::pair<double, double>>;
 
         /**
-        * Possible crossover operators that can be used in the RCGA. \n
-        * Includes commonly used crossover operators in real-coded genetic algorithms, but a custom function
-        * can also be used to perform the crossovers with the custom option. \n
-        * Set the crossover method used in the algorithm with @ref crossover_method.
-        */
-        enum class CrossoverMethod
-        {
-            arithmetic,          /**< Arithmetic crossover operator. Uses no parameters. */
-            blx_a,               /**< BLX-alpha (blend) crossover operator. @see blx_crossover_param */
-            simulated_binary,    /**< Simulated binary crossover (SBX) operator. @see sim_binary_crossover_param */
-            wright,              /**< Wright heuristic crossover (HX) operator. Uses no parameters. */
-            custom               /**< Custom crossover operator defined by the user. @see setCrossoverFunction */
-        };
-
-        /**
         * Possible mutation operators that can be used in the RCGA. \n
         * Includes commonly used mutation operators in real-coded genetic algorithms, but a custom function
         * can also be used to perform the mutations with the custom option. \n
@@ -91,23 +76,6 @@ namespace genetic_algorithm
         * @param bounds The boundaries of the real coded genes (their min and max values).
         */
         RCGA(size_t chrom_len, fitnessFunction_t fitnessFunction, limits_t bounds);
-
-        /**
-        * Sets the crossover function used in the algorithm to @f.
-        * @see CrossoverMethod
-        *
-        * @param method The crossover function to use.
-        */
-        void crossover_method(crossoverFunction_t f);
-
-        /**
-        * Sets the crossover method used in the algorithm to @p method.
-        * @see CrossoverMethod
-        *
-        * @param method The crossover method to use.
-        */
-        void crossover_method(CrossoverMethod method);
-        [[nodiscard]] CrossoverMethod crossover_method() const;
 
         /**
         * Sets the mutation function used in the algorithm to @f.
@@ -137,28 +105,6 @@ namespace genetic_algorithm
         */
         void limits(limits_t limits);
         [[nodiscard]] limits_t limits() const;
-
-        /**
-        * Sets the alpha parameter of the BLX-alpha crossover method. \n
-        * The parameter controls the length of the interval the children's genes are randomly chosen from, larger alpha -> larger interval. \n
-        * Must be nonnegative, with the ideal being around 0.5.
-        * @see crossover_method @see CrossoverMethod
-        *
-        * @param alpha The alpha parameter of the BLX-alpha crossover.
-        */
-        void blx_crossover_param(double alpha);
-        [[nodiscard]] double blx_crossover_param() const;
-
-        /**
-        * Sets the shape parameter (eta) of the simulated binary crossover method. \n
-        * Must be nonnegative, typical values are 1-5. \n
-        * Larger values will lead to the children's genes to be closer to the parents' genes.
-        * @see crossover_method @see CrossoverMethod
-        *
-        * @param eta The parameter of the simulated binary crossover.
-        */
-        void sim_binary_crossover_param(double eta);
-        [[nodiscard]] double sim_binary_crossover_param() const;
 
         /**
         * Sets the time parameter of the non-uniform mutation operator. \n
@@ -200,23 +146,13 @@ namespace genetic_algorithm
 
         limits_t limits_;
 
-        CrossoverMethod crossover_method_ = CrossoverMethod::blx_a;
-        double blx_crossover_param_ = 0.5;
-        double sim_binary_crossover_param_ = 4.0;
-
         MutationMethod mutation_method_ = MutationMethod::random;
         double nonuniform_mutation_param_ = 2.0;
         double polynomial_mutation_param_ = 40.0;
         double gauss_mutation_param_ = 6.0;
 
         Candidate generateCandidate() const override;
-        CandidatePair crossover(const Candidate& p1, const Candidate& p2) const override;
         void mutate(Candidate& child) const override;
-
-        static CandidatePair arithmeticCrossover(const Candidate& parent1, const Candidate& parent2, double pc);
-        static CandidatePair blxAlphaCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double alpha, const limits_t& bounds);
-        static CandidatePair simulatedBinaryCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double b, const limits_t& bounds);
-        static CandidatePair wrightCrossover(const Candidate& parent1, const Candidate& parent2, double pc, const limits_t& bounds);
 
         static void randomMutate(Candidate& child, double pm, const limits_t& bounds);
         static void nonuniformMutate(Candidate& child, double pm, size_t time, size_t time_max, double b, const limits_t& bounds);
@@ -256,47 +192,6 @@ namespace genetic_algorithm
 
     }
 
-    template<>
-    inline bool RCGA::Candidate::operator==(const Candidate& rhs) const
-    {
-        return std::equal(this->chromosome.begin(), this->chromosome.end(), rhs.chromosome.begin(),
-        [](double lhs, double rhs)
-        {
-            return std::abs(lhs - rhs) <= std::numeric_limits<double>::epsilon() * std::max(std::abs(lhs), std::abs(rhs));
-        });
-    }
-
-    template<>
-    inline bool RCGA::Candidate::operator!=(const Candidate& rhs) const
-    {
-        return !std::equal(this->chromosome.begin(), this->chromosome.end(), rhs.chromosome.begin(),
-        [](double lhs, double rhs)
-        {
-            return std::abs(lhs - rhs) <= std::numeric_limits<double>::epsilon() * std::max(std::abs(lhs), std::abs(rhs));
-        });
-    }
-
-
-    inline void RCGA::crossover_method(crossoverFunction_t f)
-    {
-        if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
-
-        crossover_method_ = CrossoverMethod::custom;
-        customCrossover = f;
-    }
-
-    inline void RCGA::crossover_method(CrossoverMethod method)
-    {
-        if (static_cast<size_t>(method) > 4) throw std::invalid_argument("Invalid crossover method selected.");
-
-        crossover_method_ = method;
-    }
-
-    inline RCGA::CrossoverMethod RCGA::crossover_method() const
-    {
-        return crossover_method_;
-    }
-
     inline void RCGA::mutation_method(mutationFunction_t f)
     {
         if (f == nullptr) throw std::invalid_argument("The function used for the crossovers can't be a nullptr.");
@@ -334,36 +229,6 @@ namespace genetic_algorithm
     inline RCGA::limits_t RCGA::limits() const
     {
         return limits_;
-    }
-
-    inline void RCGA::blx_crossover_param(double alpha)
-    {
-        if (!(0.0 <= alpha && alpha <= std::numeric_limits<double>::max()))
-        {
-            throw std::invalid_argument("Alpha must be a nonnegative, finite value.");
-        }
-
-        blx_crossover_param_ = alpha;
-    }
-
-    inline double RCGA::blx_crossover_param() const
-    {
-        return blx_crossover_param_;
-    }
-
-    inline void RCGA::sim_binary_crossover_param(double eta)
-    {
-        if (!(0.0 <= eta && eta <= std::numeric_limits<double>::max()))
-        {
-            throw std::invalid_argument("Eta must be a nonnegative, finite value.");
-        }
-
-        sim_binary_crossover_param_ = eta;
-    }
-
-    inline double RCGA::sim_binary_crossover_param() const
-    {
-        return sim_binary_crossover_param_;
     }
 
     inline void RCGA::nonuniform_mutation_param(double b)
@@ -427,26 +292,6 @@ namespace genetic_algorithm
         return sol;
     }
 
-    inline RCGA::CandidatePair RCGA::crossover(const Candidate& p1, const Candidate& p2) const
-    {
-        switch (crossover_method_)
-        {
-            case CrossoverMethod::arithmetic:
-                return arithmeticCrossover(p1, p2, crossover_rate_);
-            case CrossoverMethod::blx_a:
-                return blxAlphaCrossover(p1, p2, crossover_rate_, blx_crossover_param_, limits_);
-            case CrossoverMethod::simulated_binary:
-                return simulatedBinaryCrossover(p1, p2, crossover_rate_, sim_binary_crossover_param_, limits_);
-            case CrossoverMethod::wright:
-                return wrightCrossover(p1, p2, crossover_rate_, limits_);
-            case CrossoverMethod::custom:
-                return customCrossover(p1, p2, crossover_rate_);
-            default:
-                assert(false);    /* Invalid crossover method. Shouldn't get here. */
-                std::abort();
-        }
-    }
-
     inline void RCGA::mutate(Candidate& child) const
     {
         switch (mutation_method_)
@@ -473,125 +318,6 @@ namespace genetic_algorithm
                 assert(false);    /* Invalid mutation method. Shouldnt get here. */
                 std::abort();
         }
-    }
-
-    inline RCGA::CandidatePair RCGA::arithmeticCrossover(const Candidate& parent1, const Candidate& parent2, double pc)
-    {
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(0.0 <= pc && pc <= 1.0);
-
-        Candidate child1(parent1), child2(parent2);
-
-        /* Perform crossover with pc probability. */
-        if (rng::randomReal() <= pc)
-        {
-            double alpha = rng::randomReal();
-            for (size_t i = 0; i < parent1.chromosome.size(); i++)
-            {
-                child1.chromosome[i] = alpha * parent1.chromosome[i] + (1.0 - alpha) * parent2.chromosome[i];
-                child2.chromosome[i] = (1.0 - alpha) * parent1.chromosome[i] + alpha * parent2.chromosome[i];
-            }
-            child1.is_evaluated = false;
-            child2.is_evaluated = false;
-        }
-
-        return std::make_pair(child1, child2);
-    }
-
-    inline RCGA::CandidatePair RCGA::blxAlphaCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double alpha, const limits_t& bounds)
-    {
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(parent1.chromosome.size() == bounds.size());
-        assert(0.0 <= pc && pc <= 1.0);
-        assert(alpha >= 0.0);
-
-        Candidate child1(parent1), child2(parent2);
-
-        /* Perform crossover with pc probability. */
-        if (rng::randomReal() <= pc)
-        {
-            for (size_t i = 0; i < parent1.chromosome.size(); i++)
-            {
-                /* Calc interval to generate the childrens genes on. */
-                auto [range_min, range_max] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
-                double range_ext = alpha * (range_max - range_min);
-                /* Generate genes from an uniform distribution on the interval. */
-                child1.chromosome[i] = rng::randomReal(range_min - range_ext, range_max + range_ext);
-                child2.chromosome[i] = rng::randomReal(range_min - range_ext, range_max + range_ext);
-                /* The generated genes might be outside the allowed interval. */
-                child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
-                child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
-            }
-            child1.is_evaluated = false;
-            child2.is_evaluated = false;
-        }
-
-        return std::make_pair(child1, child2);
-    }
-
-    inline RCGA::CandidatePair RCGA::simulatedBinaryCrossover(const Candidate& parent1, const Candidate& parent2, double pc, double b, const limits_t& bounds)
-    {
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(parent1.chromosome.size() == bounds.size());
-        assert(0.0 <= pc && pc <= 1.0);
-        assert(b > 0.0);
-
-        Candidate child1(parent1), child2(parent2);
-
-        /* Perform crossover with pc probability. */
-        if (rng::randomReal() <= pc)
-        {
-            /* Generate beta from the distribution. */
-            double u = rng::randomReal();
-            double beta = (u <= 0.5) ? std::pow(2.0 * u, 1.0 / (b + 1.0)) : std::pow(1.0 / (2.0 * (1.0 - u)), 1.0 / (b + 1.0));
-
-            /* Perform crossover. */
-            for (size_t i = 0; i < parent1.chromosome.size(); i++)
-            {
-                child1.chromosome[i] = 0.5 * ((1 - beta) * parent1.chromosome[i] + (1 + beta) * parent2.chromosome[i]);
-                child2.chromosome[i] = 0.5 * ((1 + beta) * parent1.chromosome[i] + (1 - beta) * parent2.chromosome[i]);
-                /* The childrens genes may be outside the allowed interval. */
-                child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
-                child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
-            }
-            child1.is_evaluated = false;
-            child2.is_evaluated = false;
-        }
-
-        return std::make_pair(child1, child2);
-    }
-
-    inline RCGA::CandidatePair RCGA::wrightCrossover(const Candidate& parent1, const Candidate& parent2, double pc, const limits_t& bounds)
-    {
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(parent1.chromosome.size() == bounds.size());
-        assert(0.0 <= pc && pc <= 1.0);
-
-        Candidate child1(parent1), child2(parent2);
-
-        /* Perform crossover with pc probability. */
-        if (rng::randomReal() <= pc)
-        {
-            /* p1 is always the better parent. */
-            const Candidate* p1 = detail::paretoCompare(parent1.fitness, parent2.fitness) ? &parent2 : &parent1;
-            const Candidate* p2 = detail::paretoCompare(parent1.fitness, parent2.fitness) ? &parent1 : &parent2;
-            /* Get random weights. */
-            double w1 = rng::randomReal();
-            double w2 = rng::randomReal();
-            /* Perform crossover. */
-            for (size_t i = 0; i < p1->chromosome.size(); i++)
-            {
-                child1.chromosome[i] = w1 * (p1->chromosome[i] - p2->chromosome[i]) + p1->chromosome[i];
-                child2.chromosome[i] = w2 * (p1->chromosome[i] - p2->chromosome[i]) + p1->chromosome[i];
-                /* The generated childrens genes may be outside the allowed intervals. */
-                child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
-                child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
-            }
-            child1.is_evaluated = false;
-            child2.is_evaluated = false;
-        }
-
-        return std::make_pair(child1, child2);
     }
 
     inline void RCGA::randomMutate(Candidate& child, double pm, const limits_t& bounds)

@@ -39,6 +39,10 @@
 #include <atomic>
 #include <cstddef>
 
+#include <memory>
+#include "crossover.h"
+#include "candidate.h"
+
 /** Genetic algorithms and random number generation. */
 namespace genetic_algorithm
 {
@@ -65,48 +69,17 @@ namespace genetic_algorithm
             void add(double mean, double sd, double min, double max);
         };
 
-        /** The candidates used in the algorithm, each representing a solution to the problem. */
-        struct Candidate
-        {
-            std::vector<geneType> chromosome;   /**< The chromosome encoding the solution. */
-            std::vector<double> fitness;        /**< The fitness values of the candidate solution. */
+        using GeneType = geneType;
+        using Candidate = Candidate<GeneType>;  /**< The candidates used in the algorithm, each representing a solution to the problem. */
 
-            double selection_pdf = 0.0;         /**< The probability of selecting the candidate (SOGA). */
-            double selection_cdf = 0.0;         /**< The value of the cumulative distribution function for the candidate (SOGA). */
-
-            size_t rank = 0;                    /**< Non-domination rank (used in both the NSGA-II and NSGA-III). */
-            double distance = 0.0;              /**< Crowding distance (NSGA-II), or the distance to closest reference point (NSGA-III). */
-            size_t ref_idx = 0;                 /**< Index of the associated reference point (NSGA-III). */
-            size_t niche_count = 0;             /**< Number of candidates associated with the same reference point as this candidate (NSGA-III). */
-
-            bool is_evaluated = false;          /**< False if the candidate's fitness value needs to be computed. */
-
-            Candidate();
-            Candidate(const std::vector<geneType>& chrom);
-            Candidate(std::vector<geneType>&& chrom) noexcept;
-
-            bool operator==(const Candidate& rhs) const;
-            bool operator!=(const Candidate& rhs) const;
-        };
-
-        /**
-        * Hasher for the candidates so they can be stored in an unordered set. \n
-        * A hash function must be defined for the geneType for this to work.
-        */
-        struct CandidateHasher
-        {
-            size_t operator()(const Candidate& c) const noexcept;
-        };
-
-        using Chromosome = std::vector<geneType>;                               /**< . */
-        using CandidatePair = std::pair<Candidate, Candidate>;                  /**< . */
-        using CandidateVec = std::vector<Candidate>;                            /**< . */
-        using CandidateSet = std::unordered_set<Candidate, CandidateHasher>;    /**< . */
-        using Population = std::vector<Candidate>;                              /**< . */
+        using Chromosome = std::vector<GeneType>;                                           /**< . */
+        using CandidatePair = CandidatePair<GeneType>;                                      /**< . */
+        using CandidateVec = std::vector<Candidate>;                                        /**< . */
+        using CandidateSet = std::unordered_set<Candidate, CandidateHasher<GeneType>>;      /**< . */
+        using Population = std::vector<Candidate>;                                          /**< . */
 
         using fitnessFunction_t = std::function<std::vector<double>(const Chromosome&)>;    /**< The type of the fitness function. */
         using selectionFunction_t = std::function<Candidate(const Population&)>;            /**< The type of the selection function. */
-        using crossoverFunction_t = std::function<CandidatePair(const Candidate&, const Candidate&, double)>;    /**< The type of the crossover function. */
         using mutationFunction_t = std::function<void(Candidate&, double)>;                 /**< The type of the mutation function. */
         using repairFunction_t = std::function<Chromosome(const Chromosome&)>;              /**< The type of the repair function. */
         using callbackFunction_t = std::function<void(const GA*)>;
@@ -234,15 +207,6 @@ namespace genetic_algorithm
         */
         void population_size(size_t size);
         [[nodiscard]] size_t population_size() const;
-
-        /**
-        * Sets the crossover rate used in the algorithm to @p pc. \n
-        * The crossover rate must be on the closed interval [0.0, 1.0].
-        *
-        * @param pc The probability of crossover being performed on 2 selected individuals.
-        */
-        void crossover_rate(double pc);
-        [[nodiscard]] double crossover_rate() const;
 
         /**
         * Sets the mutation rate used in the algorithm to @p pm. \n
@@ -405,6 +369,12 @@ namespace genetic_algorithm
         [[nodiscard]] std::vector<double> ideal_point() const;
         [[nodiscard]] std::vector<double> nadir_point() const;
 
+        template<typename CrossoverType>
+        void crossover_method(const CrossoverType& f)
+        {
+            crossover = std::make_unique<CrossoverType>(f);
+        }
+
     protected:
 
         Population population_;
@@ -426,7 +396,6 @@ namespace genetic_algorithm
         Mode mode_ = Mode::single_objective;
         size_t chrom_len_;
         size_t population_size_ = 100;
-        double crossover_rate_ = 0.8;
         double mutation_rate_ = 0.01;
 
         /* Single-objective GA selection settings. */
@@ -452,7 +421,8 @@ namespace genetic_algorithm
         /* User supplied functions used in the GA. All of these are optional except for the fitness function. */
         fitnessFunction_t fitnessFunction;
         selectionFunction_t customSelection = nullptr;
-        crossoverFunction_t customCrossover = nullptr;
+
+        std::unique_ptr<crossover::Crossover<GeneType>> crossover;
         mutationFunction_t customMutate = nullptr;
 
 
@@ -465,7 +435,6 @@ namespace genetic_algorithm
         void updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const;
         void prepSelections(Population& pop) const;
         Candidate select(const Population& pop) const;
-        virtual CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const = 0;
         virtual void mutate(Candidate& child) const = 0;
         void repair(Population& pop) const;      
         Population updatePopulation(Population& old_pop, CandidateVec& children);       
@@ -595,48 +564,8 @@ namespace genetic_algorithm
         fitness_max.push_back(max);
     }
 
-    template<typename geneType>
-    inline GA<geneType>::Candidate::Candidate()
-    {
-    }
-
-    template<typename geneType>
-    inline GA<geneType>::Candidate::Candidate(const std::vector<geneType>& chrom)
-        : chromosome(chrom)
-    {
-    }
-
-    template<typename geneType>
-    inline GA<geneType>::Candidate::Candidate(std::vector<geneType>&& chrom) noexcept
-        : chromosome(std::move(chrom))
-    {
-    }
-
-    template<typename geneType>
-    inline bool GA<geneType>::Candidate::operator==(const Candidate& rhs) const
-    {
-        return (this->chromosome == rhs.chromosome);
-    }
-
-    template<typename geneType>
-    inline bool GA<geneType>::Candidate::operator!=(const Candidate& rhs) const
-    {
-        return !(this->chromosome == rhs.chromosome);
-    }
-
-    template<typename geneType>
-    inline size_t GA<geneType>::CandidateHasher::operator()(const Candidate& c) const noexcept
-    {
-        size_t seed = c.chromosome.size();
-        for (const auto& gene : c.chromosome)
-        {
-            seed ^= std::hash<geneType>()(gene) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-        }
-        return seed;
-    }
-
-    template<typename geneType>
-    inline GA<geneType>::GA(size_t chrom_len, fitnessFunction_t fitness_function)
+    template<typename T>
+    inline GA<T>::GA(size_t chrom_len, fitnessFunction_t fitness_function)
         : chrom_len_(chrom_len), mutation_rate_(1.0 / chrom_len), fitnessFunction(fitness_function)
     {
         if (chrom_len == 0)
@@ -649,26 +578,26 @@ namespace genetic_algorithm
         }
     }
 
-    template<typename geneType>
-    inline typename GA<geneType>::CandidateVec GA<geneType>::solutions() const
+    template<typename T>
+    inline typename GA<T>::CandidateVec GA<T>::solutions() const
     {
         return solutions_;
     }
 
-    template<typename geneType>
-    inline size_t GA<geneType>::num_fitness_evals() const
+    template<typename T>
+    inline size_t GA<T>::num_fitness_evals() const
     {
         return static_cast<size_t>(num_fitness_evals_);
     }
 
-    template<typename geneType>
-    inline size_t GA<geneType>::generation_cntr() const
+    template<typename T>
+    inline size_t GA<T>::generation_cntr() const
     {
         return generation_cntr_;
     }
 
-    template<typename geneType>
-    inline typename GA<geneType>::Population GA<geneType>::population() const
+    template<typename T>
+    inline typename GA<T>::Population GA<T>::population() const
     {
         return population_;
     }
@@ -719,20 +648,6 @@ namespace genetic_algorithm
     inline size_t GA<geneType>::population_size() const
     {
         return population_size_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::crossover_rate(double pc)
-    {
-        if (!(0.0 <= pc && pc <= 1.0)) throw std::invalid_argument("The crossover probability must be in the range [0, 1].");
-
-        crossover_rate_ = pc;
-    }
-
-    template<typename geneType>
-    inline double GA<geneType>::crossover_rate() const
-    {
-        return crossover_rate_;
     }
 
     template<typename geneType>
@@ -1008,7 +923,7 @@ namespace genetic_algorithm
             for_each(execution::par_unseq, parent_pairs.begin(), parent_pairs.end(),
             [this](CandidatePair& p) -> void
             {
-                p = crossover(p.first, p.second);
+                p = (*crossover)(p.first, p.second);
             });
 
             vector<Candidate> children;

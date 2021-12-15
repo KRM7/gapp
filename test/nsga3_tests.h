@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "../src/real_ga.h"
+#include "../src/crossover.h"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -31,8 +32,7 @@ void nsga3KurTest()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_rate(0.8);
-    GA.crossover_method(RCGA::CrossoverMethod::simulated_binary);
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8, limits });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(250);
 
@@ -66,8 +66,7 @@ void nsga3Zdt2Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_rate(0.8);
-    GA.crossover_method(RCGA::CrossoverMethod::simulated_binary);
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8, limits });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(250);
 
@@ -101,8 +100,7 @@ void nsga3Zdt3Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_rate(0.8);
-    GA.crossover_method(RCGA::CrossoverMethod::simulated_binary);
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8, limits });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(250);
 
@@ -136,8 +134,7 @@ void nsga3Zdt6Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_rate(0.8);
-    GA.crossover_method(RCGA::CrossoverMethod::simulated_binary);
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8, limits });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(250);
 
@@ -171,9 +168,7 @@ void nsga3Dtlz1Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_rate(0.9);
-    GA.crossover_method(RCGA::CrossoverMethod::simulated_binary);
-    GA.sim_binary_crossover_param(15.0);
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, limits, 15.0 });
     GA.mutation_method(RCGA::MutationMethod::random);
     GA.max_gen(1500);
 
@@ -207,9 +202,7 @@ void nsga3Dtlz2Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_rate(0.9);
-    GA.crossover_method(RCGA::CrossoverMethod::simulated_binary);
-    GA.sim_binary_crossover_param(15.0);
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, limits, 15.0 });
     GA.mutation_method(RCGA::MutationMethod::random);
     GA.max_gen(1500);
 

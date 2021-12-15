@@ -10,6 +10,7 @@
 #include <iomanip>
 
 #include "../src/real_ga.h"
+#include "../src/crossover.h"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -28,11 +29,9 @@ void realRastriginTest()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_rate(0.6);
     GA.mutation_rate(0.05);
     GA.selection_method(RCGA::SogaSelection::roulette);
-    GA.crossover_method(RCGA::CrossoverMethod::simulated_binary);
-    GA.sim_binary_crossover_param(4.0);
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.6, limits, 4.0 });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     
     GA.max_gen(1000);
@@ -78,9 +77,8 @@ void realRosenbrockTest()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.crossover_rate(0.9);
     GA.selection_method(RCGA::SogaSelection::tournament);
-    GA.crossover_method(RCGA::CrossoverMethod::blx_a);
+    GA.crossover_method(crossover::real::BLXa{ 0.9, limits });
     GA.mutation_method(RCGA::MutationMethod::random);
     
     GA.max_gen(2000);
@@ -126,9 +124,8 @@ void realSchwefelTest()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.crossover_rate(0.7);
     GA.selection_method(RCGA::SogaSelection::sigma);
-    GA.crossover_method(RCGA::CrossoverMethod::blx_a);
+    GA.crossover_method(crossover::real::BLXa{ 0.7, limits });
     GA.mutation_method(RCGA::MutationMethod::nonuniform);
     
     GA.max_gen(1000);
@@ -175,10 +172,9 @@ void realGriewankTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.crossover_rate(0.85);
     GA.mutation_rate(0.05);
     GA.selection_method(RCGA::SogaSelection::boltzmann);
-    GA.crossover_method(RCGA::CrossoverMethod::wright);
+    GA.crossover_method(crossover::real::Wright{ 0.85, limits });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(1500);
 
@@ -221,9 +217,8 @@ void realAckleyTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.crossover_rate(0.85);
     GA.selection_method(RCGA::SogaSelection::boltzmann);
-    GA.crossover_method(RCGA::CrossoverMethod::arithmetic);
+    GA.crossover_method(crossover::real::Arithmetic{ 0.85, limits });
     GA.mutation_method(RCGA::MutationMethod::polynomial);
     GA.polynomial_mutation_param(60);
     

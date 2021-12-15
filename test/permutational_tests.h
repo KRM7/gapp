@@ -9,6 +9,7 @@
 #include <chrono>
 
 #include "../src/permutation_ga.h"
+#include "../src/crossover.h"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -25,10 +26,9 @@ void perm52Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.crossover_rate(0.9);
     GA.mutation_rate(0.05);
     GA.selection_method(PermutationGA::SogaSelection::sigma);
-    GA.crossover_method(PermutationGA::CrossoverMethod::edge);
+    GA.crossover_method(crossover::perm::Edge{ 0.9 });
     GA.mutation_method(PermutationGA::MutationMethod::inversion);
     GA.max_gen(1250);
 
@@ -59,10 +59,9 @@ void perm124Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.crossover_rate(0.95);
     GA.mutation_rate(0.5);
     GA.selection_method(PermutationGA::SogaSelection::boltzmann);
-    GA.crossover_method(PermutationGA::CrossoverMethod::order);
+    GA.crossover_method(crossover::perm::Order{ 0.95 });
     GA.mutation_method(PermutationGA::MutationMethod::swap);
     GA.max_gen(1500);
 
@@ -93,10 +92,9 @@ void perm226Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.crossover_rate(0.9);
     GA.mutation_rate(0.6);
     GA.selection_method(PermutationGA::SogaSelection::roulette);
-    GA.crossover_method(PermutationGA::CrossoverMethod::cycle);
+    GA.crossover_method(crossover::perm::Cycle{ 0.9 });
     GA.mutation_method(PermutationGA::MutationMethod::scramble);
     GA.max_gen(1000);
 
@@ -127,10 +125,9 @@ void perm439Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.crossover_rate(0.9);
     GA.mutation_rate(0.3);
     GA.selection_method(PermutationGA::SogaSelection::boltzmann);
-    GA.crossover_method(PermutationGA::CrossoverMethod::order);
+    GA.crossover_method(crossover::perm::Order{ 0.9 });
     GA.mutation_method(PermutationGA::MutationMethod::inversion);
     GA.max_gen(1000);
 

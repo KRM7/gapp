@@ -113,7 +113,7 @@ namespace genetic_algorithm
     {
         if constexpr (std::is_floating_point_v<GeneType>)
         {
-            std::equal(lhs.chromosome.begin(), lhs.chromosome.end(), rhs.chromosome.begin(),
+            return std::equal(lhs.chromosome.begin(), lhs.chromosome.end(), rhs.chromosome.begin(),
             [](const GeneType& lhs, const GeneType& rhs)
             {
                 return std::abs(lhs - rhs) <= std::numeric_limits<double>::epsilon() * std::max(std::abs(lhs), std::abs(rhs));
