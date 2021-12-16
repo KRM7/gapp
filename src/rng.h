@@ -195,6 +195,7 @@ namespace genetic_algorithm::rng
     }
 
     inline splitmix64::result_type SeedGenerator::operator()()
+    inline splitmix64::result_type SeedGenerator::operator()() noexcept
     {
         static std::mutex m;
         std::lock_guard<std::mutex> lock(m);
