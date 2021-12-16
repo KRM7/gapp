@@ -24,7 +24,7 @@
 
 /**
 * This file contains the PRNG classes and functions used for generating random numbers
-* in the genetic algorithms. The rng functions are thread safe.
+* in the genetic algorithms. All of the rng functions are thread safe.
 *
 * @file rng.h
 */
@@ -45,28 +45,28 @@ namespace genetic_algorithm::rng
     * Splitmix64 PRNG adapted from https://prng.di.unimi.it/splitmix64.c \n
     * Only used for seeding the other PRNGs.
     */
-    class splitmix64
+    class Splitmix64
     {
     public:
         using result_type = uint_fast64_t;
         using state_type = uint_fast64_t;
 
-        explicit splitmix64(state_type seed);
+        explicit Splitmix64(state_type seed);
 
         result_type operator()() noexcept;
 
     private:
-        state_type state;
+        state_type state_;
     };
 
     /** xoroshiro128+ PRNG adapted from https://prng.di.unimi.it/xoroshiro128plus.c */
-    class xoroshiro128p
+    class Xoroshiro128p
     {
     public:
         using result_type = uint_fast64_t;
         using state_type = uint_fast64_t;
 
-        explicit xoroshiro128p(uint_fast64_t seed);
+        explicit Xoroshiro128p(uint_fast64_t seed);
 
         result_type operator()() noexcept;
 
@@ -74,9 +74,9 @@ namespace genetic_algorithm::rng
         static constexpr result_type max() noexcept;
 
     private:
-        state_type state[2];
+        state_type state_[2];
 
-        static state_type rotl(state_type x, int k) noexcept;
+        static state_type rotl64(state_type value, unsigned shift) noexcept;
     };
 
     /** Thread-safe seed generator for seeding PRNGs created on different threads. */
@@ -84,18 +84,18 @@ namespace genetic_algorithm::rng
     {
     public:
         /** Generate a new seed that can be used to initialize a PRNG. */
-        splitmix64::result_type operator()();
+        Splitmix64::result_type operator()();
     private:
-        splitmix64 gen_ = splitmix64{ ::std::random_device{}() };
+        Splitmix64 gen_ = Splitmix64{ ::std::random_device{}() };
     };
 
     /** Global seed generator used in the genetic algorithms to seed PRNGs. */
     inline SeedGenerator seed_gen{};
 
     /** The PRNG type used in the genetic algorithms. */
-    using PRNG = xoroshiro128p;
+    using PRNG = Xoroshiro128p;
 
-    /** PRNG instance(s) used in the genetic algorithm. */
+    /** PRNG instance(s) used in the genetic algorithms. */
     thread_local inline PRNG prng{ seed_gen() };
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
@@ -125,7 +125,7 @@ namespace genetic_algorithm::rng
     inline size_t randomIdx(size_t c_size);
 
     /** Generates a random boolean value from a uniform distribution. */
-    inline bool randomBool();
+    inline bool randomBool() noexcept;
 
     /** Generates n unique integers from the range [0, u_bound). */
     template<std::integral IntType>
@@ -140,19 +140,20 @@ namespace genetic_algorithm::rng
 #include <utility>
 #include <numeric>
 #include <mutex>
+#include <climits>
 #include <cassert>
 
 namespace genetic_algorithm::rng
 {
-    inline splitmix64::splitmix64(state_type seed)
-        : state(seed)
+    inline Splitmix64::Splitmix64(state_type seed)
+        : state_(seed)
     {
     }
 
-    inline splitmix64::result_type splitmix64::operator()() noexcept
+    inline Splitmix64::result_type Splitmix64::operator()() noexcept
     {
-        state += 0x9e3779b97f4a7c15;
-        result_type z = state;
+        state_ += 0x9e3779b97f4a7c15;
+        result_type z = state_;
         z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
         z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
 
@@ -160,42 +161,43 @@ namespace genetic_algorithm::rng
     }
 
 
-    inline xoroshiro128p::xoroshiro128p(uint_fast64_t seed)
+    inline Xoroshiro128p::Xoroshiro128p(uint_fast64_t seed)
     {
-        splitmix64 seed_seq_gen(seed);
-        state[0] = seed_seq_gen();
-        state[1] = seed_seq_gen();
+        Splitmix64 seed_seq_gen(seed);
+        state_[0] = seed_seq_gen();
+        state_[1] = seed_seq_gen();
     }
 
-    inline xoroshiro128p::result_type xoroshiro128p::operator()() noexcept
+    inline Xoroshiro128p::result_type Xoroshiro128p::operator()() noexcept
     {
-        state_type s0 = state[0];
-        state_type s1 = state[1];
+        state_type s0 = state_[0];
+        state_type s1 = state_[1];
         result_type result = s0 + s1;
 
         s1 ^= s0;
-        state[0] = rotl(s0, 24) ^ s1 ^ (s1 << 16);
-        state[1] = rotl(s1, 37);
+        state_[0] = rotl64(s0, 24) ^ s1 ^ (s1 << 16);
+        state_[1] = rotl64(s1, 37);
 
         return result;
     }
 
-    inline constexpr xoroshiro128p::result_type xoroshiro128p::min() noexcept
+    inline constexpr Xoroshiro128p::result_type Xoroshiro128p::min() noexcept
     {
         return std::numeric_limits<result_type>::lowest();
     }
 
-    inline constexpr xoroshiro128p::result_type xoroshiro128p::max() noexcept
+    inline constexpr Xoroshiro128p::result_type Xoroshiro128p::max() noexcept
     {
         return std::numeric_limits<result_type>::max();
     }
 
-    inline xoroshiro128p::state_type xoroshiro128p::rotl(state_type x, int k) noexcept
+    inline Xoroshiro128p::state_type Xoroshiro128p::rotl64(state_type value, unsigned shift) noexcept
     {
-        return (x << k) | (x >> (64 - k));
+        return (value << shift) | (value >> (64U - shift));
     }
 
-    inline splitmix64::result_type SeedGenerator::operator()()
+
+    inline Splitmix64::result_type SeedGenerator::operator()()
     {
         static std::mutex m;
         std::lock_guard<std::mutex> lock(m);
@@ -259,7 +261,7 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    bool randomBool()
+    bool randomBool() noexcept
     {
         std::uniform_int_distribution<int> distribution{ 0, 1 };
 
