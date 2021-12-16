@@ -369,11 +369,25 @@ namespace genetic_algorithm
         [[nodiscard]] std::vector<double> ideal_point() const;
         [[nodiscard]] std::vector<double> nadir_point() const;
 
+
+        /* Placeholders */
         template<typename CrossoverType>
         requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>> && std::copy_constructible<CrossoverType>
         void crossover_method(const CrossoverType& f)
         {
-            crossover = std::make_unique<CrossoverType>(f);
+            crossover_ = std::make_unique<CrossoverType>(f);
+        }     
+        void crossover_method(std::unique_ptr<crossover::Crossover<GeneType>>&& f)
+        {
+            if (f == nullptr) throw std::invalid_argument("The crossover method can't be a nullptr.");
+
+            crossover_ = std::move(f);
+        }
+        template<typename CrossoverType = crossover::Crossover<GeneType>>
+        requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>
+        CrossoverType& crossover_method()
+        {
+            return dynamic_cast<CrossoverType&>(*crossover_);
         }
 
     protected:
@@ -423,7 +437,7 @@ namespace genetic_algorithm
         fitnessFunction_t fitnessFunction;
         selectionFunction_t customSelection = nullptr;
 
-        std::unique_ptr<crossover::Crossover<GeneType>> crossover;
+        std::unique_ptr<crossover::Crossover<GeneType>> crossover_;
         mutationFunction_t customMutate = nullptr;
 
 
@@ -924,7 +938,7 @@ namespace genetic_algorithm
             for_each(execution::par_unseq, parent_pairs.begin(), parent_pairs.end(),
             [this](CandidatePair& p) -> void
             {
-                p = (*crossover)(*this, p.first, p.second);
+                p = (*crossover_)(*this, p.first, p.second);
             });
 
             vector<Candidate> children;
