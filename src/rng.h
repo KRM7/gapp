@@ -36,6 +36,7 @@
 #include <random>
 #include <cstdint>
 #include <cstddef>
+#include <concepts>
 
 /** Contains the PRNG classes and functions for generating random numbers. */
 namespace genetic_algorithm::rng
@@ -83,7 +84,7 @@ namespace genetic_algorithm::rng
     {
     public:
         /** Generate a new seed that can be used to initialize a PRNG. */
-        splitmix64::result_type operator()() noexcept;
+        splitmix64::result_type operator()();
     private:
         splitmix64 gen_ = splitmix64{ ::std::random_device{}() };
     };
@@ -98,23 +99,23 @@ namespace genetic_algorithm::rng
     thread_local inline PRNG prng{ seed_gen() };
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
-    template<typename RealType = double>
+    template<std::floating_point RealType = double>
     inline RealType randomReal();
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [l_bound, u_bound). */
-    template<typename RealType = double>
+    template<std::floating_point RealType = double>
     inline RealType randomReal(RealType l_bound, RealType u_bound);
 
     /** Generates a random floating-point value of type RealType from a standard normal distribution. */
-    template<typename RealType = double>
+    template<std::floating_point RealType = double>
     inline RealType randomNormal();
 
     /** Generates a random floating-point value of type RealType from a normal distribution with the parameters mean and SD. */
-    template<typename RealType = double>
+    template<std::floating_point RealType = double>
     inline RealType randomNormal(RealType mean, RealType SD);
 
     /** Generates a random integer of type IntType from a uniform distribution on the closed interval [l_bound, u_bound]. */
-    template<typename IntType = int>
+    template<std::integral IntType = int>
     inline IntType randomInt(IntType l_bound, IntType u_bound);
 
     /**
@@ -127,7 +128,7 @@ namespace genetic_algorithm::rng
     inline bool randomBool();
 
     /** Generates n unique integers from the range [0, u_bound). */
-    template<typename IntType>
+    template<std::integral IntType>
     inline std::vector<IntType> sampleUnique(IntType u_bound, size_t n);
 
 } // namespace genetic_algorithm::rng
@@ -195,7 +196,6 @@ namespace genetic_algorithm::rng
     }
 
     inline splitmix64::result_type SeedGenerator::operator()()
-    inline splitmix64::result_type SeedGenerator::operator()() noexcept
     {
         static std::mutex m;
         std::lock_guard<std::mutex> lock(m);
@@ -204,7 +204,7 @@ namespace genetic_algorithm::rng
     }
 
 
-    template<typename RealType>
+    template<std::floating_point RealType>
     inline RealType randomReal()
     {
         std::uniform_real_distribution<RealType> distribution{ 0.0, 1.0 };
@@ -212,7 +212,7 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    template<typename RealType>
+    template<std::floating_point RealType>
     RealType randomReal(RealType l_bound, RealType u_bound)
     {
         assert(l_bound <= u_bound);
@@ -222,7 +222,7 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    template<typename RealType>
+    template<std::floating_point RealType>
     RealType randomNormal()
     {
         std::normal_distribution<RealType> distribution{ 0.0, 1.0 };
@@ -230,7 +230,7 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    template<typename RealType>
+    template<std::floating_point RealType>
     RealType randomNormal(RealType mean, RealType SD)
     {
         assert(SD > 0.0);
@@ -240,7 +240,7 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    template<typename IntType>
+    template<std::integral IntType>
     IntType randomInt(IntType l_bound, IntType u_bound)
     {
         assert(l_bound <= u_bound);
@@ -266,11 +266,11 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    template<typename IntType>
+    template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
     {
         std::vector<IntType> nums(u_bound);
-        std::iota(nums.begin(), nums.end(), IntType{ 0 });
+        std::iota(nums.begin(), nums.end(), IntType{ 0 });  // [0, u_bound)
 
         for (size_t i = 0; i < n; i++)
         {
