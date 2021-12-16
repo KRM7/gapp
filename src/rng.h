@@ -78,11 +78,24 @@ namespace genetic_algorithm::rng
         static state_type rotl(state_type x, int k) noexcept;
     };
 
-    /** The PRNG type used in the genetic algorithm. */
+    /** Thread-safe seed generator for seeding PRNGs created on different threads. */
+    class SeedGenerator
+    {
+    public:
+        /** Generate a new seed that can be used to initialize a PRNG. */
+        splitmix64::result_type operator()() noexcept;
+    private:
+        splitmix64 gen_ = splitmix64{ ::std::random_device{}() };
+    };
+
+    /** Global seed generator used in the genetic algorithms to seed PRNGs. */
+    inline SeedGenerator seed_gen{};
+
+    /** The PRNG type used in the genetic algorithms. */
     using PRNG = xoroshiro128p;
 
-    /** Global PRNG instance(s) used in the genetic algorithm. */
-    thread_local inline PRNG prng{ std::random_device{}() };
+    /** PRNG instance(s) used in the genetic algorithm. */
+    thread_local inline PRNG prng{ seed_gen() };
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
     template<typename RealType = double>
@@ -125,6 +138,7 @@ namespace genetic_algorithm::rng
 #include <limits>
 #include <utility>
 #include <numeric>
+#include <mutex>
 #include <cassert>
 
 namespace genetic_algorithm::rng
@@ -178,6 +192,14 @@ namespace genetic_algorithm::rng
     inline xoroshiro128p::state_type xoroshiro128p::rotl(state_type x, int k) noexcept
     {
         return (x << k) | (x >> (64 - k));
+    }
+
+    inline splitmix64::result_type SeedGenerator::operator()()
+    {
+        static std::mutex m;
+        std::lock_guard<std::mutex> lock(m);
+
+        return gen_();
     }
 
 
