@@ -24,9 +24,9 @@
 
 /**
 * This file contains all the crossover operators for the algorithms.
-* Consists of the base Crossover classes that provide the interface for all the crossover operators,
-* and implementations of some commonly used crossover operators for all of the encoding types used
-* in the algorithms (binary, real, permutation, integer).
+* Includes the base crossover classes that provide the interface for all the crossover operators,
+* and implementations of some commonly used crossover operators for all of the implemented encoding types
+* used in the algorithms (binary, real, permutation, integer).
 *
 * @file crossover.h
 */
@@ -34,17 +34,23 @@
 #ifndef GA_CROSSOVER_H
 #define GA_CROSSOVER_H
 
-
 #include <utility>
 #include <cstddef>
 #include "candidate.h"
+
+
+namespace genetic_algorithm
+{
+    template<typename GeneType>
+    class GA;
+}
 
 /** Crossover operators for the algorithms. */
 namespace genetic_algorithm::crossover
 {
     /**
-    * Base class used for all of the crossovers. \n
-    * Every crossover operator should take 2 Candidates (parents), and return 2 children.
+    * Base class used for all of the crossover operators. \n
+    * Every crossover operator takes 2 Candidates (parents), and returns 2 children.
     */
     template<regular_hashable GeneType>
     class Crossover
@@ -54,9 +60,9 @@ namespace genetic_algorithm::crossover
         Crossover() = default;
 
         /**
-        * Construct a crossover operator with @p pc as the crossover rate.
+        * Construct a crossover operator that will use @p pc as the crossover rate.
         * 
-        * @param pc The crossover probability.
+        * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
         explicit Crossover(double pc);
 
@@ -70,7 +76,7 @@ namespace genetic_algorithm::crossover
         */
         void crossover_rate(double pc);
 
-        /** @returns The crossover rate set for the crossover operator. */
+        /** @returns The crossover rate set for this crossover operator. */
         [[nodiscard]]
         double crossover_rate() const noexcept { return pc_; }
 
@@ -81,19 +87,19 @@ namespace genetic_algorithm::crossover
         * @param parent2 The second parent.
         * @returns The pair of children resulting from the crossover.
         */
-        CandidatePair<GeneType> operator()(const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const;
+        CandidatePair<GeneType> operator()(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const;
 
     protected:
 
         /* The actual crossover function. Performs the crossover every time and does nothing else. */
-        virtual CandidatePair<GeneType> crossover(const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const = 0;
+        virtual CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const = 0;
 
         double pc_ = 0.8;   /* The crossover rate used with the crossover operator. */
     };
 
-    /** 
-    * Base class used for the crossover operators where each gene has a lower and upper bound.
-    * Used for the real coded crossover operators.
+    /**
+    * Base class used for the crossover operators where each gene has a lower and upper bound. \n
+    * Used for the operators that perform crossover on real encoded chromosomes.
     */
     template<regular_hashable GeneType>
     class BoundedCrossover : public Crossover<GeneType>
@@ -111,8 +117,6 @@ namespace genetic_algorithm::crossover
         * and @p pc as the crossover probability.
         */
         BoundedCrossover(double pc, const std::vector<std::pair<GeneType, GeneType>>& bounds);
-
-        virtual ~BoundedCrossover() = default;
 
         /**
         * Sets the boundaries of the genes. \n
@@ -134,7 +138,7 @@ namespace genetic_algorithm::crossover
         std::vector<std::pair<GeneType, GeneType>> bounds_;     /* The lower and upper bounds for each gene of the chromosome. */
     };
 
-    /** Crossover operator templates for any gene type. */
+    /** Crossover operator templates for crossovers that work for any gene type. */
     namespace generic
     {
         /* General n-point crossover template for any gene type. */
@@ -144,17 +148,17 @@ namespace genetic_algorithm::crossover
         public:
             using Crossover<GeneType>::Crossover;
         private:
-            CandidatePair<GeneType> crossover(const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+            CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
         };
 
-        /* General uniform crossover template for any gene type. */
+        /* Uniform crossover operator template for any gene type. */
         template<regular_hashable GeneType>
         class UniformCrossoverTempl : public Crossover<GeneType>
         {
         public:
             using Crossover<GeneType>::Crossover;
         private:
-            CandidatePair<GeneType> crossover(const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+            CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
         };
     }
 
@@ -194,7 +198,7 @@ namespace genetic_algorithm::crossover
         public:
             using BoundedCrossover::BoundedCrossover;
         private:
-            CandidatePair<double> crossover(const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+            CandidatePair<double> crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
         };
 
         /**
@@ -234,7 +238,7 @@ namespace genetic_algorithm::crossover
             double alpha() const noexcept { return alpha_; }
 
         private:
-            CandidatePair<double> crossover(const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+            CandidatePair<double> crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
 
             double alpha_ = 0.5;        /* The range parameter (alpha) of the BLX-alpha crossover. */
         };
@@ -257,7 +261,7 @@ namespace genetic_algorithm::crossover
             * 
             * @param pc The crossover probability used.
             * @param limits The lower and upper bounds of each gene.
-            * @param eta
+            * @param eta The shape parameter of the crossover operator.
             */
             SimulatedBinary(double pc, const std::vector<std::pair<double, double>>& limits, double eta = 4.0);
 
@@ -275,7 +279,7 @@ namespace genetic_algorithm::crossover
             double eta() const noexcept { return eta_; }
 
         private:
-            CandidatePair<double> crossover(const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+            CandidatePair<double> crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
 
             double eta_ = 4.0;          /* The shape parameter (eta) of the simulated binary crossover. */
         };
@@ -288,7 +292,7 @@ namespace genetic_algorithm::crossover
         public:
             using BoundedCrossover::BoundedCrossover;
         private:
-            CandidatePair<double> crossover(const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+            CandidatePair<double> crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
         };
     }
 
@@ -304,7 +308,7 @@ namespace genetic_algorithm::crossover
         public:
             using Crossover::Crossover;
         private:
-            CandidatePair<size_t> crossover(const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+            CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
         };
 
         /**
@@ -316,7 +320,7 @@ namespace genetic_algorithm::crossover
         public:
             using Crossover::Crossover;
         private:
-            CandidatePair<size_t> crossover(const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+            CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
         };
 
         /**
@@ -328,7 +332,7 @@ namespace genetic_algorithm::crossover
         public:
             using Crossover::Crossover;
         private:
-            CandidatePair<size_t> crossover(const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+            CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
         };
 
         /**
@@ -340,7 +344,7 @@ namespace genetic_algorithm::crossover
         public:
             using Crossover::Crossover;
         private:
-            CandidatePair<size_t> crossover(const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+            CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
         };
     }
 
@@ -375,6 +379,7 @@ namespace genetic_algorithm::crossover
 /* IMPLEMENTATION */
 
 #include <algorithm>
+#include <numeric>
 #include <vector>
 #include <unordered_set>
 #include <limits>
@@ -382,6 +387,7 @@ namespace genetic_algorithm::crossover
 #include <cassert>
 #include "rng.h"
 #include "mo_detail.h"
+#include "utils.h"
 
 namespace genetic_algorithm::crossover
 {
@@ -403,7 +409,7 @@ namespace genetic_algorithm::crossover
     }
 
     template<regular_hashable T>
-    inline CandidatePair<T> Crossover<T>::operator()(const Candidate<T>& parent1, const Candidate<T>& parent2) const
+    inline CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         assert(0.0 <= pc_ && pc_ <= 1.0);
 
@@ -425,7 +431,7 @@ namespace genetic_algorithm::crossover
         }
 
         /* Perform the actual crossover. */
-        auto [child1, child2] = crossover(parent1, parent2);
+        auto [child1, child2] = crossover(ga, parent1, parent2);
 
         child1.is_evaluated = false;
         child2.is_evaluated = false;
@@ -489,20 +495,14 @@ namespace genetic_algorithm::crossover
     namespace generic
     {
         template<regular_hashable T, size_t N>
-        inline CandidatePair<T> NPointCrossoverTempl<T, N>::crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const
+        inline CandidatePair<T> NPointCrossoverTempl<T, N>::crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
         {
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
 
             Candidate<T> child1{ parent1 }, child2{ parent2 };
 
-            /* No reason to have more loci than genes. */
-            size_t num_loci = std::min(N, parent1.chromosome.size());
-            /* Generate n (or less, but at least 1) number of unique random loci. */
-            std::unordered_set<size_t> loci;
-            for (size_t i = 0; i < num_loci; i++)
-            {
-                loci.insert(rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1));
-            }
+            std::vector<size_t> loci = rng::sampleUnique(parent1.chromosome.size(), std::min(N, parent1.chromosome.size()));
 
             /* Count how many loci are after each gene. */
             std::vector<size_t> loci_after;
@@ -510,7 +510,10 @@ namespace genetic_algorithm::crossover
 
             for (size_t i = 0, loci_left = loci.size(); i < parent1.chromosome.size(); i++)
             {
-                if (loci_left > 0 && loci.contains(i)) loci_left--;
+                if (loci_left > 0 && std::find(loci.begin(), loci.end(), i) != loci.end())
+                {
+                    loci_left--;
+                }
                 loci_after.push_back(loci_left);
             }
 
@@ -528,8 +531,9 @@ namespace genetic_algorithm::crossover
         }
 
         template<regular_hashable T>
-        inline CandidatePair<T> UniformCrossoverTempl<T>::crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const
+        inline CandidatePair<T> UniformCrossoverTempl<T>::crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
         {
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
 
             Candidate child1{ parent1 }, child2{ parent2 };
@@ -590,8 +594,9 @@ namespace genetic_algorithm::crossover
             eta_ = eta;
         }
 
-        inline CandidatePair<double> Arithmetic::crossover(const Candidate<double>& parent1, const Candidate<double>& parent2) const
+        inline CandidatePair<double> Arithmetic::crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const
         {
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
 
             Candidate child1{ parent1 }, child2{ parent2 };
@@ -607,8 +612,9 @@ namespace genetic_algorithm::crossover
             return { child1, child2 };
         }
 
-        inline CandidatePair<double> BLXa::crossover(const Candidate<double>& parent1, const Candidate<double>& parent2) const
+        inline CandidatePair<double> BLXa::crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const
         {
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
             assert(parent1.chromosome.size() == bounds_.size());
             assert(alpha_ >= 0.0);
@@ -631,8 +637,9 @@ namespace genetic_algorithm::crossover
             return { child1, child2 };
         }
 
-        inline CandidatePair<double> SimulatedBinary::crossover(const Candidate<double>& parent1, const Candidate<double>& parent2) const
+        inline CandidatePair<double> SimulatedBinary::crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const
         {
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
             assert(parent1.chromosome.size() == bounds_.size());
             assert(eta_ > 0.0);
@@ -657,8 +664,9 @@ namespace genetic_algorithm::crossover
             return { child1, child2 };
         }
 
-        inline CandidatePair<double> Wright::crossover(const Candidate<double>& parent1, const Candidate<double>& parent2) const
+        inline CandidatePair<double> Wright::crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const
         {
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
             assert(parent1.chromosome.size() == bounds_.size());
 
@@ -687,15 +695,15 @@ namespace genetic_algorithm::crossover
 
     namespace perm
     {
-        inline CandidatePair<size_t> Order::crossover(const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+        inline CandidatePair<size_t> Order::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
         {
-            using namespace std;
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
 
             /* Pick a random range of genes. */
             size_t r1 = rng::randomIdx(parent1.chromosome.size());
             size_t r2 = rng::randomIdx(parent1.chromosome.size());
-            const auto [idx1, idx2] = minmax(r1, r2);
+            const auto [idx1, idx2] = std::minmax(r1, r2);
 
             /* Edge case. The entire chromosomes are swapped. */
             if (idx1 == 0 && idx2 == parent1.chromosome.size() - 1)
@@ -704,13 +712,13 @@ namespace genetic_algorithm::crossover
             }
 
             /* Gather the genes that will go directly from parent1 -> child1, and parent2 -> child2. (Not using the constructor is intentional.) */
-            unordered_set<size_t> direct1, direct2;
+            std::unordered_set<size_t> direct1, direct2;
             for (auto gene = parent1.chromosome.begin() + idx1; gene != parent1.chromosome.begin() + idx2 + 1; gene++) direct1.insert(*gene);
             for (auto gene = parent2.chromosome.begin() + idx1; gene != parent2.chromosome.begin() + idx2 + 1; gene++) direct2.insert(*gene);
 
             /* Gather the remaining genes (not in the range) from the other parent. */
-            vector<size_t> cross1;    /* Segment gathered from parent2 -> child1. */
-            vector<size_t> cross2;    /* Segment gathered from parent1 -> child2. */
+            std::vector<size_t> cross1;    /* Segment gathered from parent2 -> child1. */
+            std::vector<size_t> cross2;    /* Segment gathered from parent1 -> child2. */
             cross1.reserve(parent2.chromosome.size() - idx2 + idx1 - 1);
             cross2.reserve(parent1.chromosome.size() - idx2 + idx1 - 1);
             for (size_t i = 0; i < parent1.chromosome.size(); i++)
@@ -736,19 +744,18 @@ namespace genetic_algorithm::crossover
             return { child1, child2 };
         }
 
-        inline CandidatePair<size_t> Cycle::crossover(const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+        inline CandidatePair<size_t> Cycle::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
         {
-            using namespace std;
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
 
             /* Identify all cycles. */
-            vector<vector<size_t>> cycles;
-            /* Copies of parent chromosomes so they can be changed without issues. */
-            vector<size_t> chrom1 = parent1.chromosome;
-            vector<size_t> chrom2 = parent2.chromosome;
+            std::vector<std::vector<size_t>> cycles;
+            std::vector<size_t> chrom1(parent1.chromosome), chrom2(parent2.chromosome);
+
             while (!chrom1.empty())
             {
-                vector<size_t> cycle;
+                std::vector<size_t> cycle;
                 /* Always start the cycle at chrom1[0]. Old cycles are removed the chromosomes. */
                 size_t cur_pos = 0;
                 size_t top_val = chrom1[cur_pos];
@@ -757,7 +764,7 @@ namespace genetic_algorithm::crossover
                 while (chrom2[cur_pos] != chrom1[0])
                 {
                     /* Look for the bottom value at this pos (chrom2[pos]) in chrom1. This is the new pos and top value. */
-                    cur_pos = static_cast<size_t>(find(chrom1.begin(), chrom1.end(), chrom2[cur_pos]) - chrom1.begin());
+                    cur_pos = static_cast<size_t>(std::find(chrom1.begin(), chrom1.end(), chrom2[cur_pos]) - chrom1.begin());
                     top_val = chrom1[cur_pos];
                     /* Add the new top value to the cycle. */
                     cycle.push_back(top_val);
@@ -767,8 +774,8 @@ namespace genetic_algorithm::crossover
                 /* Delete the values in this cycle from chrom1 and chrom2. (Without changing the order of the remaining genes.) */
                 for (size_t i = 0; i < cycle.size(); i++)
                 {
-                    chrom1.erase(find(chrom1.begin(), chrom1.end(), cycle[i]));
-                    chrom2.erase(find(chrom2.begin(), chrom2.end(), cycle[i]));
+                    chrom1.erase(std::find(chrom1.begin(), chrom1.end(), cycle[i]));
+                    chrom2.erase(std::find(chrom2.begin(), chrom2.end(), cycle[i]));
                 }
                 /* Add this cycle to the cycles. */
                 cycles.push_back(cycle);
@@ -783,7 +790,7 @@ namespace genetic_algorithm::crossover
                 size_t cycle_num = 0;
                 for (size_t j = 0; j < cycles.size(); j++)
                 {
-                    if (find(cycles[j].begin(), cycles[j].end(), parent1.chromosome[i]) != cycles[j].end())
+                    if (std::find(cycles[j].begin(), cycles[j].end(), parent1.chromosome[i]) != cycles[j].end())
                     {
                         cycle_num = j + 1;
                         break;
@@ -801,12 +808,11 @@ namespace genetic_algorithm::crossover
             return { child1, child2 };
         }
 
-        inline CandidatePair<size_t> Edge::crossover(const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+        inline CandidatePair<size_t> Edge::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
         {
-            using namespace std;
-            using NList = vector<unordered_set<size_t>>;
-
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
+            using NList = std::vector<std::unordered_set<size_t>>;
 
             Candidate<size_t> child1, child2;
             child1.chromosome.reserve(parent1.chromosome.size());
@@ -832,14 +838,14 @@ namespace genetic_algorithm::crossover
             NList nl2 = nl1;    /* Copy for child2. */
 
             /* Generate child1. */
+            std::vector<size_t> remaining_genes = parent1.chromosome;
             size_t gene = parent1.chromosome[0];
-            vector<size_t> remaining_genes = parent1.chromosome;
 
             while (child1.chromosome.size() != parent1.chromosome.size())
             {
                 /* Append gene to the child, and remove it from all neighbour lists. */
                 child1.chromosome.push_back(gene);
-                remaining_genes.erase(remove(remaining_genes.begin(), remaining_genes.end(), gene), remaining_genes.end());
+                remaining_genes.erase(std::remove(remaining_genes.begin(), remaining_genes.end(), gene), remaining_genes.end());
                 for (auto& neighbours : nl1)
                 {
                     neighbours.erase(gene);
@@ -855,7 +861,7 @@ namespace genetic_algorithm::crossover
                 else /* gene's neighbour list is not empty, gene = neighbour of gene with fewest neighbours (random if tie). */
                 {
                     /* Find gene's neighbour with fewest neighbours. */
-                    size_t nb = *min_element(nl1[gene].begin(), nl1[gene].end(),
+                    size_t nb = *std::min_element(nl1[gene].begin(), nl1[gene].end(),
                     [&nl1](const size_t& lhs, const size_t& rhs)
                     {
                         return (nl1[lhs].size() < nl1[rhs].size());
@@ -863,7 +869,7 @@ namespace genetic_algorithm::crossover
                     size_t min_neighbour_count = nl1[nb].size();
 
                     /* Determine possible nodes (neighbours of gene with min_neighbour_count neighbours). */
-                    vector<size_t> possible_nodes;
+                    std::vector<size_t> possible_nodes;
                     for (const auto& neighbour : nl1[gene])
                     {
                         if (nl1[neighbour].size() == min_neighbour_count)
@@ -877,12 +883,12 @@ namespace genetic_algorithm::crossover
             }
 
             /* Same process to get child2. */
-            gene = parent2.chromosome[0];
             remaining_genes = parent2.chromosome;
+            gene = parent2.chromosome[0];
             while (child2.chromosome.size() != parent2.chromosome.size())
             {
                 child2.chromosome.push_back(gene);
-                remaining_genes.erase(remove(remaining_genes.begin(), remaining_genes.end(), gene), remaining_genes.end());
+                remaining_genes.erase(std::remove(remaining_genes.begin(), remaining_genes.end(), gene), remaining_genes.end());
                 for (auto& neighbours : nl2)
                 {
                     neighbours.erase(gene);
@@ -895,14 +901,14 @@ namespace genetic_algorithm::crossover
                 }
                 else
                 {
-                    size_t nb = *min_element(nl2[gene].begin(), nl2[gene].end(),
+                    size_t nb = *std::min_element(nl2[gene].begin(), nl2[gene].end(),
                     [&nl2](const size_t& lhs, const size_t& rhs)
                     {
                         return (nl2[lhs].size() < nl2[rhs].size());
                     });
                     size_t min_neighbour_count = nl2[nb].size();
 
-                    vector<size_t> possible_nodes;
+                    std::vector<size_t> possible_nodes;
                     for (const auto& neighbour : nl2[gene])
                     {
                         if (nl2[neighbour].size() == min_neighbour_count)
@@ -918,9 +924,9 @@ namespace genetic_algorithm::crossover
             return { child1, child2 };
         }
 
-        inline CandidatePair<size_t> PMX::crossover(const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+        inline CandidatePair<size_t> PMX::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
         {
-            using namespace std;
+            UNUSED(ga);
             assert(parent1.chromosome.size() == parent2.chromosome.size());
 
             /* Init children so the last step of the crossover can be skipped. */
@@ -929,7 +935,7 @@ namespace genetic_algorithm::crossover
             /* Pick a random range of genes. The bounds of the range may be the same, but its rare for long chromosomes. */
             size_t r1 = rng::randomIdx(parent1.chromosome.size());
             size_t r2 = rng::randomIdx(parent1.chromosome.size());
-            const auto [idx1, idx2] = minmax(r1, r2);
+            const auto [idx1, idx2] = std::minmax(r1, r2);
 
             /* Edge case. The entire chromosomes are copied directly. */
             if (idx1 == 0 && idx2 == parent1.chromosome.size() - 1)
@@ -944,7 +950,7 @@ namespace genetic_algorithm::crossover
                 child2.chromosome[i] = parent2.chromosome[i];
             }
             /* Note ranges that were copied from parents to check if they contain an element. (Not using the constructor is intentional.) */
-            unordered_set<size_t> p1_range, p2_range;
+            std::unordered_set<size_t> p1_range, p2_range;
             for (auto gene = parent1.chromosome.begin() + idx1; gene != parent1.chromosome.begin() + idx2 + 1; gene++) p1_range.insert(*gene);
             for (auto gene = parent2.chromosome.begin() + idx1; gene != parent2.chromosome.begin() + idx2 + 1; gene++) p2_range.insert(*gene);
 
@@ -958,7 +964,7 @@ namespace genetic_algorithm::crossover
                     while (idx1 <= cur_pos && cur_pos <= idx2)
                     {
                         size_t val = parent1.chromosome[cur_pos];
-                        cur_pos = static_cast<size_t>(find(parent2.chromosome.begin(), parent2.chromosome.end(), val) - parent2.chromosome.begin());
+                        cur_pos = static_cast<size_t>(std::find(parent2.chromosome.begin(), parent2.chromosome.end(), val) - parent2.chromosome.begin());
                     }
                     child1.chromosome[cur_pos] = parent2.chromosome[i];
                 }
@@ -969,7 +975,7 @@ namespace genetic_algorithm::crossover
                     while (idx1 <= cur_pos && cur_pos <= idx2)
                     {
                         size_t val = parent2.chromosome[cur_pos];
-                        cur_pos = static_cast<size_t>(find(parent1.chromosome.begin(), parent1.chromosome.end(), val) - parent1.chromosome.begin());
+                        cur_pos = static_cast<size_t>(std::find(parent1.chromosome.begin(), parent1.chromosome.end(), val) - parent1.chromosome.begin());
                     }
                     child2.chromosome[cur_pos] = parent1.chromosome[i];
                 }

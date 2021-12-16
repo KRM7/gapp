@@ -924,7 +924,7 @@ namespace genetic_algorithm
             for_each(execution::par_unseq, parent_pairs.begin(), parent_pairs.end(),
             [this](CandidatePair& p) -> void
             {
-                p = (*crossover)(p.first, p.second);
+                p = (*crossover)(*this, p.first, p.second);
             });
 
             vector<Candidate> children;
