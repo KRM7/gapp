@@ -29,6 +29,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <cmath>
 #include <stdexcept>
 #include <cassert>
 
@@ -138,16 +139,34 @@ namespace genetic_algorithm::crossover::real
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
-        /* Generate beta from the appropriate distribution. */
-        double u = rng::randomReal();
-        double beta = (u <= 0.5) ? std::pow(2.0 * u, 1.0 / (eta_ + 1.0)) :
-                                   std::pow(1.0 / (2.0 * (1.0 - u)), 1.0 / (eta_ + 1.0));
-
         /* Perform crossover. */
         for (size_t i = 0; i < parent1.chromosome.size(); i++)
         {
-            child1.chromosome[i] = 0.5 * ((1 - beta) * parent1.chromosome[i] + (1 + beta) * parent2.chromosome[i]);
-            child2.chromosome[i] = 0.5 * ((1 + beta) * parent1.chromosome[i] + (1 - beta) * parent2.chromosome[i]);
+            auto [gene_low, gene_high] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
+
+            /* Handle the edge case where the 2 genes are equal. */
+            if ((gene_high - gene_low) <= std::numeric_limits<double>::epsilon() * std::max(std::abs(gene_low), std::abs(gene_high)))
+            {
+                continue;
+            }
+
+            double beta1 = 1.0 + 2.0 * (gene_low - bounds_[i].first) / (gene_high - gene_low);
+            double beta2 = 1.0 + 2.0 * (bounds_[i].second - gene_high) / (gene_high - gene_low);
+
+            double alpha1 = 2.0 - std::pow(beta1, -(eta_ + 1.0));
+            double alpha2 = 2.0 - std::pow(beta2, -(eta_ + 1.0));
+
+            double u = rng::randomReal();
+            double beta1_prime = (u <= 1.0 / alpha1) ? std::pow(u * alpha1, -(eta_ + 1.0)) :
+                                                       std::pow(1.0 / (2.0 - u * alpha1), -(eta_ + 1.0));
+
+            u = rng::randomReal();
+            double beta2_prime = (u <= 1.0 / alpha2) ? std::pow(u * alpha2, -(eta_ + 1.0)) :
+                                                       std::pow(1.0 / (2.0 - u * alpha2), -(eta_ - 1.0));
+
+            child1.chromosome[i] = 0.5 * (parent1.chromosome[i] + parent2.chromosome[i] - beta1_prime * std::abs(parent1.chromosome[i] - parent2.chromosome[i]));
+            child2.chromosome[i] = 0.5 * (parent1.chromosome[i] + parent2.chromosome[i] + beta2_prime * std::abs(parent1.chromosome[i] - parent2.chromosome[i]));
+
             /* The children's genes might be outside the allowed interval. */
             child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds_[i].first, bounds_[i].second);
             child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds_[i].first, bounds_[i].second);
