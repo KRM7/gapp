@@ -2,6 +2,7 @@
 #define GA_BASE_GA_IMPL_HPP
 
 #include "base_ga.decl.hpp"
+#include "crossover/crossover_base.decl.hpp"
 #include "rng.h"
 #include "reference_points.h"
 #include "mo_detail.h"
@@ -371,8 +372,8 @@ namespace genetic_algorithm
 
     template<typename GeneType>
     template<typename CrossoverType>
-    requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>&& std::copy_constructible<CrossoverType>
-        void GA<GeneType>::crossover_method(const CrossoverType& f)
+    //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>> && std::copy_constructible<CrossoverType>
+    void GA<GeneType>::crossover_method(const CrossoverType& f)
     {
         crossover_ = std::make_unique<CrossoverType>(f);
     }
@@ -387,8 +388,8 @@ namespace genetic_algorithm
 
     template<typename GeneType>
     template<typename CrossoverType>
-    requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>
-        CrossoverType& GA<GeneType>::crossover_method()
+    //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>
+    CrossoverType& GA<GeneType>::crossover_method()
     {
         return dynamic_cast<CrossoverType&>(*crossover_);
     }

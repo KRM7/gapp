@@ -11,12 +11,18 @@
 #include <cstddef>
 
 #include <memory>
-#include "crossover.h"
 #include "candidate.h"
 
 
 namespace genetic_algorithm
 {
+    namespace crossover
+    {
+        template<regular_hashable GeneType>
+        class Crossover;
+    }
+
+
     /**
     * Base GA class.
     *
@@ -341,15 +347,14 @@ namespace genetic_algorithm
         [[nodiscard]] std::vector<double> nadir_point() const;
 
 
-        /* Placeholders */
         template<typename CrossoverType>
-        requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>&& std::copy_constructible<CrossoverType>
+        //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>> && std::copy_constructible<CrossoverType>
         void crossover_method(const CrossoverType& f);
 
         void crossover_method(std::unique_ptr<crossover::Crossover<GeneType>>&& f);
 
         template<typename CrossoverType = crossover::Crossover<GeneType>>
-        requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>
+        //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>
         CrossoverType& crossover_method();
 
     protected:
