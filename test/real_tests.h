@@ -31,7 +31,7 @@ void realRastriginTest()
     GA.population_size(100);
     GA.mutation_rate(0.05);
     GA.selection_method(RCGA::SogaSelection::roulette);
-    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.6, 4.0 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.6, 2.0 });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     
     GA.max_gen(1000);

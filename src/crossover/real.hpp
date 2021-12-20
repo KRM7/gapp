@@ -96,7 +96,13 @@ namespace genetic_algorithm::crossover::real
     };
 
     /**
-    * Simulated binary crossover operator for the RCGA.
+    * Simulated binary crossover (SBX) operator for the RCGA.
+    * The operator is based on the single-point crossover used in the binary encoded algorithms.
+    * 
+    * This crossover operator has one parameter, eta, which controls the shape of the probability
+    * distribution the child genes are picked from. Larger eta values lead to children further away
+    * from the parents, while smaller values will result in the children being closer to the parents.
+    * Typical values for eta are [1.0, 5.0].
     */
     class SimulatedBinary final : public BoundedCrossover<double>
     {
