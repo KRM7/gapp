@@ -34,12 +34,9 @@
 #include <cstdlib>
 #include <cassert>
 
-namespace genetic_algorithm
-{
-    template<typename T>
-    inline constexpr void UNUSED(T&& arg) { (void)arg; }
 
-    [[noreturn]] inline void UNREACHABLE() { (assert(!"Unreachable code."), std::abort()); }
-}
+#define GA_UNUSED(arg) (void(arg))
+
+#define GA_UNREACHABLE (assert(!"Unreachable code."), std::abort())
 
 #endif // !GA_UTILS_H
