@@ -39,13 +39,13 @@ namespace genetic_algorithm::mutation::binary
         GA_UNUSED(ga);
 
         size_t flip_cnt;
-        if (candidate.chromosome.size() * pm_ >= 3.0)
+        if (candidate.chromosome.size() * pm_ >= 2.0)
         {
             double mean = candidate.chromosome.size() * pm_;
             double SD = std::sqrt(mean * (1.0 - pm_));
 
             double res = rng::randomNormal(mean, SD);
-            while (res < 0.0) { res = rng::randomNormal(mean, SD); }
+            while (res <= -0.5) { res = rng::randomNormal(mean, SD); }
 
             flip_cnt = std::min(size_t{ std::round(res) }, candidate.chromosome.size());
         }
