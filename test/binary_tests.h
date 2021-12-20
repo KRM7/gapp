@@ -10,7 +10,7 @@
 #include <iomanip>
 
 #include "../src/binary_ga.h"
-#include "../src/crossover.h"
+#include "../src/crossover/binary.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 

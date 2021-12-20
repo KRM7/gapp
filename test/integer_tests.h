@@ -8,7 +8,7 @@
 #include <iostream>
 
 #include "../src/integer_ga.h"
-#include "../src/crossover.h"
+#include "../src/crossover/integer.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 

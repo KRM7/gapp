@@ -9,7 +9,7 @@
 #include <chrono>
 
 #include "../src/permutation_ga.h"
-#include "../src/crossover.h"
+#include "../src/crossover/permutation.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -61,7 +61,7 @@ void perm124Test()
     GA.population_size(500);
     GA.mutation_rate(0.5);
     GA.selection_method(PermutationGA::SogaSelection::boltzmann);
-    GA.crossover_method(crossover::perm::Order{ 0.95 });
+    GA.crossover_method(crossover::perm::Position{ 0.95 });
     GA.mutation_method(PermutationGA::MutationMethod::swap);
     GA.max_gen(1500);
 
@@ -127,7 +127,7 @@ void perm439Test()
     GA.population_size(500);
     GA.mutation_rate(0.3);
     GA.selection_method(PermutationGA::SogaSelection::boltzmann);
-    GA.crossover_method(crossover::perm::Order{ 0.9 });
+    GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(PermutationGA::MutationMethod::inversion);
     GA.max_gen(1000);
 

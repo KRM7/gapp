@@ -12,7 +12,7 @@
 #include <iostream>
 
 #include "../src/real_ga.h"
-#include "../src/crossover.h"
+#include "../src/crossover/real.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -32,7 +32,7 @@ void nsga2KurTest()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8, limits });
+    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(250);
 
@@ -66,7 +66,7 @@ void nsga2Zdt2Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8, limits });
+    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(250);
 
@@ -100,7 +100,7 @@ void nsga2Zdt3Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8, limits });
+    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(250);
 
@@ -134,7 +134,7 @@ void nsga2Zdt6Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8, limits });
+    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(RCGA::MutationMethod::gauss);
     GA.max_gen(250);
 
@@ -168,7 +168,7 @@ void nsga2Dtlz1Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, limits, 15.0 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
     GA.mutation_method(RCGA::MutationMethod::random);
     GA.max_gen(1500);
 
@@ -202,7 +202,7 @@ void nsga2Dtlz2Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, limits, 15.0 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
     GA.mutation_method(RCGA::MutationMethod::random);
     GA.max_gen(1500);
 

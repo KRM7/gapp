@@ -10,7 +10,7 @@
 #include <chrono>
 
 #include "../src/binary_ga.h"
-#include "../src/crossover.h"
+#include "../src/crossover/binary.hpp"
 
 using namespace std;
 using namespace genetic_algorithm;
