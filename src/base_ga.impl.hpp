@@ -2,7 +2,7 @@
 #define GA_BASE_GA_IMPL_HPP
 
 #include "base_ga.decl.hpp"
-#include "crossover/crossover_base.decl.hpp"
+#include "crossover/crossover_base.hpp"
 #include "rng.h"
 #include "reference_points.h"
 #include "mo_detail.h"

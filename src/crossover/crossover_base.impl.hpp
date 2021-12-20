@@ -26,6 +26,7 @@
 #define GA_CROSSOVER_BASE_IMPL_HPP
 
 #include "crossover_base.decl.hpp"
+#include "../base_ga.h"
 #include "../rng.h"
 
 #include <algorithm>
@@ -36,13 +37,13 @@
 namespace genetic_algorithm::crossover
 {
     template<regular_hashable GeneType>
-    inline Crossover<GeneType>::Crossover(double pc)
+    Crossover<GeneType>::Crossover(double pc)
     {
         crossover_rate(pc);
     }
 
     template<regular_hashable GeneType>
-    inline void Crossover<GeneType>::crossover_rate(double pc)
+    void Crossover<GeneType>::crossover_rate(double pc)
     {
         if (!(0.0 <= pc && pc <= 1.0))
         {
@@ -53,7 +54,7 @@ namespace genetic_algorithm::crossover
     }
 
     template<regular_hashable T>
-    inline CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
+    CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         assert(0.0 <= pc_ && pc_ <= 1.0);
 
@@ -113,14 +114,14 @@ namespace genetic_algorithm::crossover
 
 
     template<regular_hashable GeneType>
-    inline BoundedCrossover<GeneType>::BoundedCrossover(const std::vector<std::pair<GeneType, GeneType>>& bounds, double pc)
+    BoundedCrossover<GeneType>::BoundedCrossover(const std::vector<std::pair<GeneType, GeneType>>& bounds, double pc)
         : Crossover<GeneType>(pc)
     {
         this->bounds(bounds);
     }
 
     template<regular_hashable GeneType>
-    inline void BoundedCrossover<GeneType>::bounds(const std::vector<std::pair<GeneType, GeneType>>& bounds)
+    void BoundedCrossover<GeneType>::bounds(const std::vector<std::pair<GeneType, GeneType>>& bounds)
     {
         if (std::any_of(bounds.begin(), bounds.end(), [](std::pair<double, double> bound) {return bound.first > bound.second; }))
         {
