@@ -22,7 +22,6 @@
 *  SOFTWARE.
 */
 
-
 /** Implementations of commonly used mutation operators for the binary encoded genetic algorithms. */
 
 #ifndef GA_MUTATION_BINARY_HPP
@@ -32,6 +31,10 @@
 
 namespace genetic_algorithm::mutation::binary
 {
+    /**
+    * Standard flip mutation for the binary encoded genetic algorithm.
+    * Each gene of the chromosome is flipped with the specified mutation probability.
+    */
     class Flip final : public Mutation<char>
     {
     public:
