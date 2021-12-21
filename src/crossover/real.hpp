@@ -22,7 +22,6 @@
 *  SOFTWARE.
 */
 
-
 /** Implementations of commonly used crossover operators for real encoded genetic algorithms (RCGAs). */
 
 #ifndef GA_CROSSOVER_REAL_HPP
