@@ -37,6 +37,7 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
+/** Mutation operators used in the algorithms. */
 namespace genetic_algorithm::mutation
 {
     template<regular_hashable GeneType>

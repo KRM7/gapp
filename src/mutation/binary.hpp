@@ -29,6 +29,7 @@
 
 #include "mutation_base.hpp"
 
+/** Predefined mutation operators for the binary encoded genetic algorithm. */
 namespace genetic_algorithm::mutation::binary
 {
     /**

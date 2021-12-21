@@ -32,6 +32,7 @@
 #include <vector>
 #include <utility>
 
+/** Predefined mutation operators for the real encoded genetic algorithm (RCGA). */
 namespace genetic_algorithm::mutation::real
 {
     /**
