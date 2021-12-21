@@ -49,6 +49,8 @@ namespace genetic_algorithm::mutation::integer
 
     void Uniform::mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const
     {
+        GA_UNUSED(ga);
+
         size_t mutate_cnt;
         if (candidate.chromosome.size() * pm_ >= 2.0)
         {

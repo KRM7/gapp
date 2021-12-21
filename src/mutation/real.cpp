@@ -113,6 +113,8 @@ namespace genetic_algorithm::mutation::real
 
     void Gauss::mutate(const GA<double>& ga, Candidate<double>& candidate) const
     {
+        GA_UNUSED(ga);
+
         if (candidate.chromosome.size() != bounds_.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Gauss mutation.");
