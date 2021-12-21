@@ -3,6 +3,7 @@
 
 #include "base_ga.decl.hpp"
 #include "crossover/crossover_base.hpp"
+#include "mutation//mutation_base.hpp"
 #include "rng.h"
 #include "reference_points.h"
 #include "mo_detail.h"
@@ -46,7 +47,7 @@ namespace genetic_algorithm
 
     template<typename T>
     inline GA<T>::GA(size_t chrom_len, fitnessFunction_t fitness_function)
-        : chrom_len_(chrom_len), mutation_rate_(1.0 / chrom_len), fitnessFunction(fitness_function)
+        : chrom_len_(chrom_len), fitnessFunction(fitness_function)
     {
         if (chrom_len == 0)
         {
@@ -128,20 +129,6 @@ namespace genetic_algorithm
     inline size_t GA<geneType>::population_size() const
     {
         return population_size_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::mutation_rate(double pm)
-    {
-        if (!(0.0 <= pm && pm <= 1.0)) throw std::invalid_argument("The mutation probability must be in the range [0, 1].");
-
-        mutation_rate_ = pm;
-    }
-
-    template<typename geneType>
-    inline double GA<geneType>::mutation_rate() const
-    {
-        return mutation_rate_;
     }
 
     template<typename geneType>
@@ -389,9 +376,33 @@ namespace genetic_algorithm
     template<typename GeneType>
     template<typename CrossoverType>
     //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>
-    CrossoverType& GA<GeneType>::crossover_method()
+    CrossoverType& GA<GeneType>::crossover_method() const
     {
         return dynamic_cast<CrossoverType&>(*crossover_);
+    }
+
+    template<typename GeneType>
+    template<typename MutationType>
+    //requires std::derived_from<MutationType, mutation::Mutation<GeneType>> && std::copy_constructible<MutationType>
+    void GA<GeneType>::mutation_method(const MutationType& f)
+    {
+        mutation_ = std::make_unique<MutationType>(f);
+    }
+
+    template<typename GeneType>
+    void GA<GeneType>::mutation_method(std::unique_ptr<mutation::Mutation<GeneType>>&& f)
+    {
+        if (f == nullptr) throw std::invalid_argument("The mutation method can't be a nullptr.");
+
+        mutation_ = std::move(f);
+    }
+
+    template<typename GeneType>
+    template<typename MutationType>
+    //requires std::derived_from<MutationType, mutation::Crossover<GeneType>>
+    MutationType& GA<GeneType>::mutation_method() const
+    {
+        return dynamic_cast<MutationType&>(*mutation_);
     }
 
 
@@ -442,7 +453,7 @@ namespace genetic_algorithm
             for_each(execution::par_unseq, children.begin(), children.end(),
             [this](Candidate& c) -> void
             {
-                mutate(c);
+                (*mutation_)(*this, c);
             });
 
             /* Apply repair function to the children if set. */
