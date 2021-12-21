@@ -51,7 +51,7 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    NonUniform::NonUniform(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double beta = 2.0) :
+    NonUniform::NonUniform(const std::vector<std::pair<double, double>>& bounds, double pm, double beta) :
         BoundedMutation(bounds, pm)
     {
         this->beta(beta);
@@ -95,7 +95,7 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    Gauss::Gauss(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double sigma = 6.0) :
+    Gauss::Gauss(const std::vector<std::pair<double, double>>& bounds, double pm, double sigma) :
         BoundedMutation(bounds, pm)
     {
         this->sigma(sigma);
@@ -105,7 +105,7 @@ namespace genetic_algorithm::mutation::real
     {
         if (!(0.0 < sigma && sigma <= std::numeric_limits<double>::max()))
         {
-            throw std::invalid_argument("Sigma must be a nonnegative, finite value.");
+            throw std::invalid_argument("Sigma must be a positive, finite value.");
         }
 
         sigma_ = sigma;
@@ -113,23 +113,43 @@ namespace genetic_algorithm::mutation::real
 
     void Gauss::mutate(const GA<double>& ga, Candidate<double>& candidate) const
     {
+        if (candidate.chromosome.size() != bounds_.size())
+        {
+            throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Gauss mutation.");
+        }
 
+        for (size_t i = 0; i < candidate.chromosome.size(); i++)
+        {
+            if (rng::randomReal() <= pm_)
+            {
+                double SD = (bounds_[i].second - bounds_[i].first) / sigma_;
+
+                double delta = rng::randomNormal(0.0, SD);
+                unsigned cntr = 1;
+                while ((candidate.chromosome[i] + delta) < bounds_[i].first || bounds_[i].second < (candidate.chromosome[i] + delta))
+                {
+                    delta = rng::randomNormal(0.0, SD);
+                    if (++cntr == 5) break;
+                }
+                candidate.chromosome[i] = std::clamp(candidate.chromosome[i] + delta, bounds_[i].first, bounds_[i].second);
+            }
+        }
     }
 
-    Polynomial::Polynomial(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double param = 6.0)
+    Polynomial::Polynomial(const std::vector<std::pair<double, double>>& bounds, double pm, double eta)
         : BoundedMutation(bounds, pm)
     {
-        this->param(param);
+        this->eta(eta);
     }
 
-    void Polynomial::param(double param)
+    void Polynomial::eta(double eta)
     {
-        if (!(0.0 <= param && param <= std::numeric_limits<double>::max()))
+        if (!(0.0 <= eta && eta <= std::numeric_limits<double>::max()))
         {
             throw std::invalid_argument("Eta must be a nonnegative, finite value.");
         }
 
-        param_ = param;
+        eta_ = eta;
     }
 
     void Polynomial::mutate(const GA<double>& ga, Candidate<double>& candidate) const
@@ -145,18 +165,19 @@ namespace genetic_algorithm::mutation::real
         {
             if (rng::randomReal() < pm_)
             {
-                double rand = rng::randomReal();
-                if (rand < 0.5)
+                double alpha = rng::randomReal();
+                if (alpha <= 0.5)
                 {
-                    double delta = std::pow(2.0 * rand, 1.0 / (1.0 + param_)) - 1.0;
+                    double delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
                     candidate.chromosome[i] += delta * (candidate.chromosome[i] - bounds_[i].first);
                 }
                 else
                 {
-                    double delta = 1.0 - std::pow(2.0 - 2.0 * rand, 1.0 / (1.0 + param_));
+                    double delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
                     candidate.chromosome[i] += delta * (bounds_[i].second - candidate.chromosome[i]);
                 }
-                /* The mutated gene will always be in the allowed range. */
+                /* The mutated gene might be outside the allowed range. */
+                candidate.chromosome[i] = std::clamp(candidate.chromosome[i], bounds_[i].first, bounds_[i].second);
             }
         }
     }
