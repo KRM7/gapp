@@ -11,6 +11,7 @@
 
 #include "../src/binary_ga.h"
 #include "../src/crossover/binary.hpp"
+#include "../src/mutation/binary.hpp"
 
 using namespace std;
 using namespace genetic_algorithm;
@@ -29,6 +30,7 @@ void timeGA(size_t num_runs = 50)
     GA.population_size(100);
     GA.selection_method(BinaryGA::SogaSelection::tournament);
     GA.crossover_method(crossover::binary::TwoPoint{ 0.6 });
+    GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.max_gen(1000);
 
     /* Run the GA with a timer. */

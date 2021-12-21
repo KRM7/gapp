@@ -9,6 +9,7 @@
 
 #include "../src/integer_ga.h"
 #include "../src/crossover/integer.hpp"
+#include "../src/mutation/integer.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -26,6 +27,7 @@ void integerTest1()
     GA.population_size(100);
     GA.selection_method(IntegerGA::SogaSelection::tournament);
     GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
+    GA.mutation_method(mutation::integer::Uniform{ 96, 0.01 });
     GA.max_gen(500);
 
     /* Run the GA with a timer. */
@@ -63,10 +65,9 @@ void integerTest2()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.swap_rate(0.3);
-    GA.inversion_rate(0.2);
     GA.selection_method(IntegerGA::SogaSelection::boltzmann);
     GA.crossover_method(crossover::integer::Uniform{ 0.8 });
+    GA.mutation_method(mutation::integer::Uniform{ 96, 5.0 / 250 });
     GA.max_gen(1000);
 
     /* Run the GA with a timer. */

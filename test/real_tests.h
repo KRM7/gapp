@@ -11,6 +11,7 @@
 
 #include "../src/real_ga.h"
 #include "../src/crossover/real.hpp"
+#include "../src/mutation/real.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -29,10 +30,9 @@ void realRastriginTest()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.mutation_rate(0.05);
     GA.selection_method(RCGA::SogaSelection::roulette);
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.6, 2.0 });
-    GA.mutation_method(RCGA::MutationMethod::gauss);
+    GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     
     GA.max_gen(1000);
     GA.stop_condition(RCGA::StopCondition::fitness_value);
@@ -79,7 +79,7 @@ void realRosenbrockTest()
     GA.population_size(500);
     GA.selection_method(RCGA::SogaSelection::tournament);
     GA.crossover_method(crossover::real::BLXa{ limits, 0.9 });
-    GA.mutation_method(RCGA::MutationMethod::random);
+    GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / rosenbrockFunction.num_vars });
     
     GA.max_gen(2000);
     GA.stop_condition(RCGA::StopCondition::fitness_evals);
@@ -126,7 +126,7 @@ void realSchwefelTest()
     GA.population_size(500);
     GA.selection_method(RCGA::SogaSelection::sigma);
     GA.crossover_method(crossover::real::BLXa{ limits, 0.7 });
-    GA.mutation_method(RCGA::MutationMethod::nonuniform);
+    GA.mutation_method(mutation::real::NonUniform{ limits, 1.0 / schwefelFunction.num_vars });
     
     GA.max_gen(1000);
     GA.stop_condition(RCGA::StopCondition::fitness_mean_stall);
@@ -172,10 +172,9 @@ void realGriewankTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.mutation_rate(0.05);
     GA.selection_method(RCGA::SogaSelection::boltzmann);
     GA.crossover_method(crossover::real::Wright{ limits, 0.85 });
-    GA.mutation_method(RCGA::MutationMethod::gauss);
+    GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     GA.max_gen(1500);
 
     /* Run the GA with a timer. */
@@ -219,8 +218,7 @@ void realAckleyTest()
     GA.population_size(200);
     GA.selection_method(RCGA::SogaSelection::boltzmann);
     GA.crossover_method(crossover::real::Arithmetic{ limits, 0.85 });
-    GA.mutation_method(RCGA::MutationMethod::polynomial);
-    GA.polynomial_mutation_param(60);
+    GA.mutation_method(mutation::real::Polynomial{ limits, 1.0 / ackleyFunction.num_vars, 60.0 });
     
     GA.max_gen(1000);
     GA.stop_condition(RCGA::StopCondition::fitness_best_stall);

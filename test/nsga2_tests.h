@@ -13,6 +13,7 @@
 
 #include "../src/real_ga.h"
 #include "../src/crossover/real.hpp"
+#include "../src/mutation/real.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -33,7 +34,7 @@ void nsga2KurTest()
     /* Set some optional parameters. */
     GA.population_size(100);
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
-    GA.mutation_method(RCGA::MutationMethod::gauss);
+    GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
 
     /* Run the GA with a timer. */
@@ -67,7 +68,7 @@ void nsga2Zdt2Test()
     /* Set some optional parameters. */
     GA.population_size(100);
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
-    GA.mutation_method(RCGA::MutationMethod::gauss);
+    GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
 
     /* Run the GA with a timer. */
@@ -101,7 +102,7 @@ void nsga2Zdt3Test()
     /* Set some optional parameters. */
     GA.population_size(100);
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
-    GA.mutation_method(RCGA::MutationMethod::gauss);
+    GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
 
     /* Run the GA with a timer. */
@@ -135,7 +136,7 @@ void nsga2Zdt6Test()
     /* Set some optional parameters. */
     GA.population_size(100);
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
-    GA.mutation_method(RCGA::MutationMethod::gauss);
+    GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
 
     /* Run the GA with a timer. */
@@ -169,7 +170,7 @@ void nsga2Dtlz1Test()
     /* Set some optional parameters. */
     GA.population_size(100);
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
-    GA.mutation_method(RCGA::MutationMethod::random);
+    GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
     GA.max_gen(1500);
 
     /* Run the GA with a timer. */
@@ -203,7 +204,7 @@ void nsga2Dtlz2Test()
     /* Set some optional parameters. */
     GA.population_size(100);
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
-    GA.mutation_method(RCGA::MutationMethod::random);
+    GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
     GA.max_gen(1500);
 
     /* Run the GA with a timer. */

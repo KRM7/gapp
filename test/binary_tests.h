@@ -11,6 +11,7 @@
 
 #include "../src/binary_ga.h"
 #include "../src/crossover/binary.hpp"
+#include "../src/mutation/binary.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -26,9 +27,9 @@ void binaryRastriginTest()
     
     /* Set some optional parameters. */
     GA.population_size(400);
-    GA.mutation_rate(0.015);
     GA.selection_method(BinaryGA::SogaSelection::roulette);
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
+    GA.mutation_method(mutation::binary::Flip{ 0.015 });
 
     GA.max_gen(1500);
     GA.stop_condition(BinaryGA::StopCondition::fitness_mean_stall);
@@ -74,9 +75,9 @@ void binaryRosenbrockTest()
 
     /* Set some optional parameters. */
     GA.population_size(300);
-    GA.mutation_rate(0.01);
     GA.selection_method(BinaryGA::SogaSelection::tournament);
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
+    GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.max_gen(1500);
 
     /* Run the GA with a timer. */
@@ -118,9 +119,9 @@ void binarySchwefelTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.mutation_rate(0.01);
     GA.selection_method(BinaryGA::SogaSelection::rank);
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
+    GA.mutation_method(mutation::binary::Flip{ 0.01 });
     
     GA.max_gen(1500);
     GA.stop_condition(BinaryGA::StopCondition::fitness_evals);
@@ -165,9 +166,9 @@ void binaryGriewankTest()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.mutation_rate(0.04);
     GA.selection_method(BinaryGA::SogaSelection::sigma);
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
+    GA.mutation_method(mutation::binary::Flip{ 0.04 });
 
     GA.max_gen(2500);
     GA.stop_condition(BinaryGA::StopCondition::fitness_value);
@@ -212,9 +213,9 @@ void binaryAckleyTest()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.mutation_rate(0.04);
     GA.selection_method(BinaryGA::SogaSelection::boltzmann);
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
+    GA.mutation_method(mutation::binary::Flip{ 0.04 });
     
     GA.max_gen(2500);
     GA.stop_condition(BinaryGA::StopCondition::fitness_best_stall);
