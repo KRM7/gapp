@@ -22,6 +22,9 @@
 *  SOFTWARE.
 */
 
+
+/** Implementations of commonly used mutation operators for the binary encoded genetic algorithms. */
+
 #ifndef GA_MUTATION_BINARY_HPP
 #define GA_MUTATION_BINARY_HPP
 
