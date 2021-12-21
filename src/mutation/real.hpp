@@ -71,7 +71,7 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param beta The beta parameter of the non-uniform crossover. Must be >= 0.0.
         */
-        NonUniform(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double beta = 2.0);
+        explicit NonUniform(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double beta = 2.0);
         
         /**
         * Sets the beta parameter for the crossover.
@@ -110,7 +110,7 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param sigma The sigma parameter of the gauss crossover. Must be > 0.0.
         */
-        Gauss(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double sigma = 6.0);
+        explicit Gauss(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double sigma = 6.0);
 
         /**
         * Sets the sigma parameter for the crossover.
@@ -148,7 +148,7 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param eta The eta parameter of the polynomial mutation. Must be >= 0.0.
         */
-        Polynomial(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double eta = 40.0);
+        explicit Polynomial(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double eta = 40.0);
 
         /**
         * Sets the eta parameter for the crossover.

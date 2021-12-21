@@ -48,7 +48,7 @@ namespace genetic_algorithm::mutation::integer
         * @param base The number of values a gene can take. Genes can be integers in the range [0, base-1].
         * @param The mutation probability used.
         */
-        Uniform(size_t base, double pm = 0.01);
+        explicit Uniform(size_t base, double pm = 0.01);
 
         /**
         * Sets the base for this crossover operator.

@@ -74,7 +74,7 @@ namespace genetic_algorithm::crossover::real
         * @param pc The crossover probability used.
         * @param alpha The alpha parameter of the BLX-alpha crossover. Must be >= 0.0.
         */
-        BLXa(const std::vector<std::pair<double, double>>& bounds, double pc = 0.8, double alpha = 0.5);
+        explicit BLXa(const std::vector<std::pair<double, double>>& bounds, double pc = 0.8, double alpha = 0.5);
 
         /**
         * Sets the alpha parameter for the crossover.
@@ -112,7 +112,7 @@ namespace genetic_algorithm::crossover::real
         * @param pc The crossover probability used.
         * @param eta The shape parameter of the simulated binary crossover.
         */
-        SimulatedBinary(const std::vector<std::pair<double, double>>& bounds, double pc = 0.8, double eta = 4.0);
+        explicit SimulatedBinary(const std::vector<std::pair<double, double>>& bounds, double pc = 0.8, double eta = 4.0);
 
         /**
         * Sets the shape parameter (eta) of the simulated binary crossover.

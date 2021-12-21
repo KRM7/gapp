@@ -101,7 +101,7 @@ namespace genetic_algorithm::crossover
         * @param bounds The (lower and upper) bounds of the genes. Must be the same length as the chromosomes used in the algorithm.
         * @param pc The crossover probability.
         */
-        BoundedCrossover(const std::vector<std::pair<GeneType, GeneType>>& bounds, double pc = 0.8);
+        explicit BoundedCrossover(const std::vector<std::pair<GeneType, GeneType>>& bounds, double pc = 0.8);
 
         /**
         * Sets the boundaries of the genes.
