@@ -22,7 +22,6 @@
 *  SOFTWARE.
 */
 
-
 #ifndef GA_CROSSOVER_BASE_DECL_HPP
 #define GA_CROSSOVER_BASE_DECL_HPP
 
@@ -37,6 +36,7 @@ namespace genetic_algorithm
     class GA;
 }
 
+/** Crossover operators used in the algorithms. */
 namespace genetic_algorithm::crossover
 {
     /**

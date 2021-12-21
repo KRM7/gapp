@@ -33,7 +33,6 @@
 #include <stdexcept>
 #include <cassert>
 
-
 namespace genetic_algorithm::crossover
 {
     template<regular_hashable GeneType>

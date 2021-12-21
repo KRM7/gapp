@@ -33,7 +33,6 @@
 #include <vector>
 #include <utility>
 
-
 /** Predefined crossover operators for the real encoded genetic algorithms (RCGA). */
 namespace genetic_algorithm::crossover::real
 {

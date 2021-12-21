@@ -22,7 +22,6 @@
 *  SOFTWARE.
 */
 
-
 /** Implementations of commonly used crossover operators for integer encoded genetic algorithms. */
 
 #ifndef GA_CROSSOVER_INTEGER_HPP
@@ -32,7 +31,6 @@
 #include "../candidate.h"
 
 #include <cstddef>
-
 
 /** Predefined crossover operators for the integer encoded genetic algorithms (IntegerGA). */
 namespace genetic_algorithm::crossover::integer

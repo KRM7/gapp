@@ -22,7 +22,6 @@
 *  SOFTWARE.
 */
 
-
 /** Implementations of commonly used crossover operators for permutation encoded genetic algorithms. */
 
 #ifndef GA_CROSSOVER_PERMUTATION_HPP
@@ -32,7 +31,6 @@
 #include "../candidate.h"
 
 #include <cstddef>
-
 
 /** Predefined crossover operators for the permutation encoded GAs (PermutationGA), designed specifically for combinatorial problems. */
 namespace genetic_algorithm::crossover::perm
