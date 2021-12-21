@@ -39,11 +39,11 @@ namespace genetic_algorithm::mutation::perm
 
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {
-            size_t len = rng::randomInt<size_t>(2, std::max<size_t>(0.75 * candidate.chromosome.size(), 2));
+            size_t len = rng::randomInt(size_t{ 2 }, std::max(size_t(0.75 * candidate.chromosome.size()), size_t{ 2 }));
             size_t first = rng::randomInt<size_t>(0, candidate.chromosome.size() - len);
             size_t last = first + len;
 
-            std::reverse(candidate.chromosome.begin() + first, candidate.chromosome.end() + last);
+            std::reverse(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last);
         }
     }
 
@@ -86,7 +86,7 @@ namespace genetic_algorithm::mutation::perm
 
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {
-            size_t len = rng::randomInt<size_t>(2, std::max<size_t>(0.5 * candidate.chromosome.size(), 2));
+            size_t len = rng::randomInt(size_t{ 2 }, std::max(size_t(0.5 * candidate.chromosome.size()), size_t{ 2 }));
             size_t first = rng::randomInt<size_t>(0, candidate.chromosome.size() - len);
             size_t last = first + len;
 
@@ -100,14 +100,14 @@ namespace genetic_algorithm::mutation::perm
 
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {
-            size_t len = rng::randomInt<size_t>(2, std::max<size_t>(0.75 * candidate.chromosome.size(), 2));
+            size_t len = rng::randomInt(size_t{ 2 }, std::max(size_t(0.75 * candidate.chromosome.size()), size_t{ 2 }));
             size_t first = rng::randomInt<size_t>(0, candidate.chromosome.size() - len);
             size_t last = first + len;
 
             std::vector<size_t> moved_elements(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last);
             candidate.chromosome.erase(candidate.chromosome.begin() + first, candidate.chromosome.end() + last);
 
-            size_t new_pos = rng::randomInt<size_t>(0, candidate.chromosome.size());
+            size_t new_pos = rng::randomInt(size_t{ 0 }, candidate.chromosome.size());
             candidate.chromosome.insert(candidate.chromosome.begin() + new_pos, moved_elements.begin(), moved_elements.end());
         }
     }

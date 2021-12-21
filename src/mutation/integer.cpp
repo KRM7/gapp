@@ -60,7 +60,7 @@ namespace genetic_algorithm::mutation::integer
             double res = rng::randomNormal(mean, SD);
             while (res <= -0.5) { res = rng::randomNormal(mean, SD); }
 
-            mutate_cnt = std::min(size_t{ std::round(res) }, candidate.chromosome.size());
+            mutate_cnt = std::min(size_t(std::round(res)), candidate.chromosome.size());
         }
         else
         {
