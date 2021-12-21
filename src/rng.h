@@ -215,7 +215,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::floating_point RealType>
-    RealType randomReal(RealType l_bound, RealType u_bound)
+    inline RealType randomReal(RealType l_bound, RealType u_bound)
     {
         assert(l_bound <= u_bound);
 
@@ -225,7 +225,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::floating_point RealType>
-    RealType randomNormal()
+    inline RealType randomNormal()
     {
         std::normal_distribution<RealType> distribution{ 0.0, 1.0 };
 
@@ -233,7 +233,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::floating_point RealType>
-    RealType randomNormal(RealType mean, RealType SD)
+    inline RealType randomNormal(RealType mean, RealType SD)
     {
         assert(SD > 0.0);
 
@@ -243,7 +243,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::integral IntType>
-    IntType randomInt(IntType l_bound, IntType u_bound)
+    inline IntType randomInt(IntType l_bound, IntType u_bound)
     {
         assert(l_bound <= u_bound);
 
@@ -252,7 +252,7 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    size_t randomIdx(size_t c_size)
+    inline size_t randomIdx(size_t c_size)
     {
         assert(c_size > 0); /* There are no valid indices otherwise. */
 
@@ -261,15 +261,15 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    bool randomBool() noexcept
+    inline bool randomBool() noexcept
     {
-        std::uniform_int_distribution<int> distribution{ 0, 1 };
+        std::uniform_int_distribution distribution{ 0, 1 };
 
         return distribution(prng);
     }
 
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
+    inline std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
     {
         std::vector<IntType> nums(u_bound);
         std::iota(nums.begin(), nums.end(), IntType{ 0 });  // [0, u_bound)
