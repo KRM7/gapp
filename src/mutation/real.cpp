@@ -76,16 +76,19 @@ namespace genetic_algorithm::mutation::real
 
         for (size_t i = 0; i < candidate.chromosome.size(); i++)
         {
-            /* Perform mutation on the gene with pm probability. */
             if (rng::randomReal() < pm_)
             {
-                double interval = bounds_[i].second - bounds_[i].first;
                 double rand = rng::randomReal();
-                double sign = rng::randomBool() ? 1.0 : -1.0;
                 double exponent = std::pow(1.0 - double(ga.generation_cntr()) / ga.max_gen(), beta_);
 
-                candidate.chromosome[i] += sign * interval * (1.0 - std::pow(rand, exponent));
-
+                if (rng::randomBool())
+                {
+                    candidate.chromosome[i] += (bounds_[i].second - candidate.chromosome[i]) * (1.0 - std::pow(rand, exponent));
+                }
+                else
+                {
+                    candidate.chromosome[i] -= (candidate.chromosome[i] - bounds_[i].first) * (1.0 - std::pow(rand, exponent));
+                }
                 /* The mutated gene might be outside the allowed range. */
                 candidate.chromosome[i] = std::clamp(candidate.chromosome[i], bounds_[i].first, bounds_[i].second);
             }
