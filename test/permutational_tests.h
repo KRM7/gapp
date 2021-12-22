@@ -17,7 +17,6 @@
 using namespace std;
 using namespace genetic_algorithm;
 
-
 void perm52Test()
 {
     /* Init GA. */
@@ -50,6 +49,38 @@ void perm52Test()
     //displayStats(GA.soga_history());
 }
 
+void perm76Test()
+{
+    /* Init GA. */
+    TSP tsp76("test/tsp_data/tsp76.txt");
+
+    PermutationGA GA(tsp76.num_vars(), tsp76);
+
+    /* Set some optional parameters. */
+    GA.population_size(400);
+    GA.selection_method(PermutationGA::SogaSelection::tournament);
+    GA.crossover_method(crossover::perm::Order1{ 0.9 });
+    GA.mutation_method(mutation::perm::Shift{ 0.1 });
+    GA.max_gen(1000);
+
+    /* Run the GA with a timer. */
+    auto tbegin = chrono::high_resolution_clock::now();
+    auto sols = GA.run();
+    auto tend = chrono::high_resolution_clock::now();
+
+    auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
+    double time_spent = double(duration) / 1E+6;
+
+    /* Print the results. */
+    cout << "\n\nThe number of optimal sols found for the TSP76: " << sols.size() << "\n";
+    cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp76.optimal_value() << ").\n";
+    cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
+    cout << "Time taken: " << time_spent << " s\n\n";
+
+    /* Print the results. */
+    //displayStats(GA.soga_history());
+}
+
 void perm124Test()
 {
     /* Init GA. */
@@ -60,8 +91,8 @@ void perm124Test()
     /* Set some optional parameters. */
     GA.population_size(500);
     GA.selection_method(PermutationGA::SogaSelection::boltzmann);
-    GA.crossover_method(crossover::perm::Position{ 0.95 });
-    GA.mutation_method(mutation::perm::Swap2{ 0.5 });
+    GA.crossover_method(crossover::perm::Position{ 0.9 });
+    GA.mutation_method(mutation::perm::Swap3{ 0.4 });
     GA.max_gen(1500);
 
     /* Run the GA with a timer. */
@@ -82,6 +113,38 @@ void perm124Test()
     //displayStats(GA.soga_history());
 }
 
+void perm152Test()
+{
+    /* Init GA. */
+    TSP tsp152("test/tsp_data/tsp152.txt");
+
+    PermutationGA GA(tsp152.num_vars(), tsp152);
+
+    /* Set some optional parameters. */
+    GA.population_size(500);
+    GA.selection_method(PermutationGA::SogaSelection::tournament);
+    GA.crossover_method(crossover::perm::PMX{ 0.9 });
+    GA.mutation_method(mutation::perm::Shift{ 0.6 });
+    GA.max_gen(1250);
+
+    /* Run the GA with a timer. */
+    auto tbegin = chrono::high_resolution_clock::now();
+    auto sols = GA.run();
+    auto tend = chrono::high_resolution_clock::now();
+
+    auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
+    double time_spent = double(duration) / 1E+6;
+
+    /* Print the results. */
+    cout << "\n\nThe number of optimal sols found for the TSP152: " << sols.size() << "\n";
+    cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp152.optimal_value() << ").\n";
+    cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
+    cout << "Time taken: " << time_spent << " s\n\n";
+
+    /* Print the results. */
+    //displayStats(GA.soga_history());
+}
+
 void perm226Test()
 {
     /* Init GA. */
@@ -93,8 +156,8 @@ void perm226Test()
     GA.population_size(500);
     GA.selection_method(PermutationGA::SogaSelection::roulette);
     GA.crossover_method(crossover::perm::Cycle{ 0.9 });
-    GA.mutation_method(mutation::perm::Shuffle{ 0.6 });
-    GA.max_gen(1000);
+    GA.mutation_method(mutation::perm::Shuffle{ 0.2 });
+    GA.max_gen(1250);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -107,6 +170,38 @@ void perm226Test()
     /* Print the results. */
     cout << "\n\nThe number of optimal sols found for the TSP226: " << sols.size() << "\n";
     cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp226.optimal_value() << ").\n";
+    cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
+    cout << "Time taken: " << time_spent << " s\n\n";
+
+    /* Print the results. */
+    //displayStats(GA.soga_history());
+}
+
+void perm299Test()
+{
+    /* Init GA. */
+    TSP tsp299("test/tsp_data/tsp299.txt");
+
+    PermutationGA GA(tsp299.num_vars(), tsp299);
+
+    /* Set some optional parameters. */
+    GA.population_size(500);
+    GA.selection_method(PermutationGA::SogaSelection::boltzmann);
+    GA.crossover_method(crossover::perm::Order2{ 0.9 });
+    GA.mutation_method(mutation::perm::Inversion{ 0.3 });
+    GA.max_gen(1000);
+
+    /* Run the GA with a timer. */
+    auto tbegin = chrono::high_resolution_clock::now();
+    auto sols = GA.run();
+    auto tend = chrono::high_resolution_clock::now();
+
+    auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
+    double time_spent = double(duration) / 1E+6;
+
+    /* Print the results. */
+    cout << "\n\nThe number of optimal sols found for the TSP299: " << sols.size() << "\n";
+    cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp299.optimal_value() << ").\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
 
