@@ -675,7 +675,7 @@ private:
 
     size_t num_vars_ = 0;
     vector<pair<double, double>> coords;
-
+    vector<vector<double>> dmat;
 public:
 
     TSP(string fname)
@@ -695,6 +695,14 @@ public:
         file.close();
 
         num_vars_ = coords.size();
+
+        vector<vector<double>> mat(coords.size(), vector<double>(coords.size()));
+        for (size_t i = 0; i < mat.size(); i++)
+        for (size_t j = 0; j < mat[i].size(); j++)
+        {
+            mat[i][j] = std::sqrt(std::pow(coords[i].first - coords[j].first, 2) + std::pow(coords[i].second - coords[j].second, 2));
+        }
+        dmat = mat;
     }
 
     vector<double> operator()(const vector<size_t>& x) const
@@ -703,16 +711,10 @@ public:
 
         double distance = 0.0;
         for (size_t i = 0; i < x.size() - 1; i++)
-        {
-            pair<double, double> node1 = coords[x[i]];
-            pair<double, double> node2 = coords[x[i + 1]];
-            
-            distance += sqrt(pow(node1.first - node2.first, 2) + pow(node1.second - node2.second, 2));
+        {       
+            distance += dmat[x[i]][x[i + 1]];
         }
-        pair<double, double> node1 = coords[x.front()];
-        pair<double, double> node2 = coords[x.back()];
-
-        distance += sqrt(pow(node1.first - node2.first, 2) + pow(node1.second - node2.second, 2));
+        distance += dmat[x.front()][x.back()];
 
         return { -distance };
     }
@@ -725,10 +727,16 @@ public:
         {
             case 52:
                 return -7542.0;
+            case 76:
+                return -108159.0;
             case 124:
                 return -59030.0;
+            case 152:
+                return -73682.0;
             case 226:
                 return -80369.0;
+            case 299:
+                return -48191.0;
             case 439:
                 return -107217.0;
             default:
