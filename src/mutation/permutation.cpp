@@ -105,7 +105,7 @@ namespace genetic_algorithm::mutation::perm
             size_t last = first + len;
 
             std::vector<size_t> moved_elements(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last);
-            candidate.chromosome.erase(candidate.chromosome.begin() + first, candidate.chromosome.end() + last);
+            candidate.chromosome.erase(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last);
 
             size_t new_pos = rng::randomInt(size_t{ 0 }, candidate.chromosome.size());
             candidate.chromosome.insert(candidate.chromosome.begin() + new_pos, moved_elements.begin(), moved_elements.end());
