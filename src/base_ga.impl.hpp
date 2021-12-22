@@ -4,7 +4,7 @@
 #include "base_ga.decl.hpp"
 #include "crossover/crossover_base.hpp"
 #include "mutation//mutation_base.hpp"
-#include "rng.h"
+#include "rng.hpp"
 #include "reference_points.h"
 #include "mo_detail.h"
 

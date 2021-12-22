@@ -24,7 +24,7 @@
 
 #include "real.hpp"
 #include "../utils.h"
-#include "../rng.h"
+#include "../rng.hpp"
 
 #include <algorithm>
 #include <cmath>

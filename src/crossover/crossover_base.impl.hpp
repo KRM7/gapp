@@ -27,7 +27,7 @@
 
 #include "crossover_base.decl.hpp"
 #include "../base_ga.h"
-#include "../rng.h"
+#include "../rng.hpp"
 
 #include <algorithm>
 #include <stdexcept>

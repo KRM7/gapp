@@ -24,7 +24,7 @@
 
 #include "binary.hpp"
 #include "../utils.h"
-#include "../rng.h"
+#include "../rng.hpp"
 
 #include <vector>
 #include <cstddef>

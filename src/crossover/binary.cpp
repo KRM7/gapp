@@ -25,7 +25,7 @@
 #include "binary.hpp"
 #include "../candidate.h"
 #include "../utils.h"
-#include "../rng.h"
+#include "../rng.hpp"
 
 #include <algorithm>
 #include <vector>

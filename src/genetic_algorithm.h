@@ -27,7 +27,7 @@
 #ifndef GA_GENETIC_ALGORITHM_H
 #define GA_GENETIC_ALGORITHM_H
 
-#include "rng.h"
+#include "rng.hpp"
 #include "base_ga.h"
 #include "binary_ga.h"
 #include "real_ga.h"

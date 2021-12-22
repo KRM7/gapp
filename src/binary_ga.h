@@ -64,7 +64,7 @@ namespace genetic_algorithm
 #include <cassert>
 #include <cstdlib>
 
-#include "rng.h"
+#include "rng.hpp"
 
 namespace genetic_algorithm
 {

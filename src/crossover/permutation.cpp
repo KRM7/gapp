@@ -23,7 +23,7 @@
 */
 
 #include "permutation.hpp"
-#include "../rng.h"
+#include "../rng.hpp"
 #include "../utils.h"
 
 #include <algorithm>
