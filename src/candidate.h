@@ -116,7 +116,9 @@ namespace genetic_algorithm
             return std::equal(lhs.chromosome.begin(), lhs.chromosome.end(), rhs.chromosome.begin(),
             [](const GeneType& lhs, const GeneType& rhs)
             {
-                return std::abs(lhs - rhs) <= std::numeric_limits<double>::epsilon() * std::max(std::abs(lhs), std::abs(rhs));
+                double scale = std::max(std::abs(lhs), std::abs(rhs));
+
+                return scale == 0.0 ? true : (std::abs(lhs - rhs) / scale) <= std::numeric_limits<double>::epsilon();
             });
         }
         else
