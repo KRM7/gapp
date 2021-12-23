@@ -60,7 +60,7 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    inline typename GA<T>::CandidateVec GA<T>::solutions() const
+    inline typename const GA<T>::CandidateVec& GA<T>::solutions() const
     {
         return solutions_;
     }
@@ -78,13 +78,13 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    inline typename GA<T>::Population GA<T>::population() const
+    inline typename const GA<T>::Population& GA<T>::population() const
     {
         return population_;
     }
 
     template<typename geneType>
-    inline typename GA<geneType>::History GA<geneType>::soga_history() const
+    inline typename const GA<geneType>::History& GA<geneType>::soga_history() const
     {
         return soga_history_;
     }
@@ -407,7 +407,7 @@ namespace genetic_algorithm
 
 
     template<typename geneType>
-    inline typename GA<geneType>::CandidateVec GA<geneType>::run()
+    inline typename const GA<geneType>::CandidateVec& GA<geneType>::run()
     {
         using namespace std;
 

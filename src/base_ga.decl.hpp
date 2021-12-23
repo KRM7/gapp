@@ -145,11 +145,11 @@ namespace genetic_algorithm
         *
         * @returns The optimal solutions.
         */
-        [[maybe_unused]] CandidateVec run();
+        [[maybe_unused]] const CandidateVec& run();
 
 
         /** @returns A vector of the pareto optimal solutions found while running the algorithm. */
-        [[nodiscard]] CandidateVec solutions() const;
+        [[nodiscard]] const CandidateVec& solutions() const;
 
         /** @returns The number of fitness evaluations performed while running the algorithm. */
         [[nodiscard]] size_t num_fitness_evals() const;
@@ -158,10 +158,10 @@ namespace genetic_algorithm
         [[nodiscard]] size_t generation_cntr() const;
 
         /** @returns The population of the final generation in the algorithm. */
-        [[nodiscard]] Population population() const;
+        [[nodiscard]] const Population& population() const;
 
         /** @returns A History object containing stats from each generation of the single objective genetic algorithm. */
-        [[nodiscard]] History soga_history() const;
+        [[nodiscard]] const History& soga_history() const;
 
         /**
         * Set the type of the problem/genetic algorithm that will be used (single-/multi-objective).
