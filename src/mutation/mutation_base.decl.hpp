@@ -25,7 +25,7 @@
 #ifndef GA_MUTATION_BASE_DECL_HPP
 #define GA_MUTATION_BASE_DECL_HPP
 
-#include "../candidate.h"
+#include "../candidate.hpp"
 
 #include <vector>
 #include <utility>

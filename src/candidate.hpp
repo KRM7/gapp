@@ -4,13 +4,13 @@
 *  Copyright (c) 2021 Krisztián Rugási
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
-*  of this softwareand associated documentation files (the "Software"), to deal
+*  of this software and associated documentation files (the "Software"), to deal
 *  in the Software without restriction, including without limitation the rights
 *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 *  copies of the Software, and to permit persons to whom the Software is
 *  furnished to do so, subject to the following conditions:
 *
-*  The above copyright noticeand this permission notice shall be included in all
+*  The above copyright notice and this permission notice shall be included in all
 *  copies or substantial portions of the Software.
 *
 *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -81,11 +81,11 @@ namespace genetic_algorithm
     template<regular_hashable GeneType>
     using CandidatePair = std::pair<Candidate<GeneType>, Candidate<GeneType>>;
 
-    /** Two candidates are considered equal if they have the same chromosomes. */
+    /** Two candidates are considered equal if their chromosomes are the same. */
     template<typename T>
     inline bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs);
 
-    /** Two candidates are considered not equal if they have different chromosomes. */
+    /** Two candidates are considered not equal if their chromosomes are different. */
     template<typename T>
     inline bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs);
 

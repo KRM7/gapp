@@ -11,7 +11,7 @@
 #include <cstddef>
 
 #include <memory>
-#include "candidate.h"
+#include "candidate.hpp"
 
 
 namespace genetic_algorithm
