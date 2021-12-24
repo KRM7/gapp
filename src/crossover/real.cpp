@@ -191,8 +191,8 @@ namespace genetic_algorithm::crossover::real
         Candidate child1(parent1), child2(parent2);
 
         /* p1 is always the better parent. */
-        const Candidate<double>* p1 = detail::paretoCompare(parent1.fitness, parent2.fitness) ? &parent2 : &parent1;
-        const Candidate<double>* p2 = detail::paretoCompare(parent1.fitness, parent2.fitness) ? &parent1 : &parent2;
+        const Candidate<double>* p1 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? &parent2 : &parent1;
+        const Candidate<double>* p2 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? &parent1 : &parent2;
         /* Get random weights. */
         double w1 = rng::randomReal();
         double w2 = rng::randomReal();
