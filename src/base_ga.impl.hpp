@@ -714,7 +714,7 @@ namespace genetic_algorithm
                 return std::any_of(population_.begin(), population_.end(),
                 [this](const Candidate& sol)
                 {
-                    return detail::paretoCompare(fitness_reference_, sol.fitness);
+                    return detail::paretoCompareLess(fitness_reference_, sol.fitness);
                 });
 
             case StopCondition::fitness_evals:
@@ -1014,12 +1014,12 @@ namespace genetic_algorithm
         {
             for (size_t j = 0; j < i; j++)
             {
-                if (detail::paretoCompare(pop[j].fitness, pop[i].fitness))
+                if (detail::paretoCompareLess(pop[j].fitness, pop[i].fitness))
                 {
                     dom_count[j]++;
                     dom_list[i].push_back(j);
                 }
-                else if (detail::paretoCompare(pop[i].fitness, pop[j].fitness))
+                else if (detail::paretoCompareLess(pop[i].fitness, pop[j].fitness))
                 {
                     dom_count[i]++;
                     dom_list[j].push_back(i);
