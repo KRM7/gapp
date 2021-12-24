@@ -23,7 +23,7 @@
 */
 
 #include "binary.hpp"
-#include "../candidate.h"
+#include "../candidate.hpp"
 #include "../utils.h"
 #include "../rng.hpp"
 
