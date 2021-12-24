@@ -33,7 +33,6 @@
 
 #include <cstddef>
 #include "base_ga.h"
-#include "candidate.h"
 
 namespace genetic_algorithm
 {
