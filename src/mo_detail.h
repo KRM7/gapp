@@ -36,7 +36,7 @@
 namespace genetic_algorithm::detail
 {
     /* Return true if lhs is dominated by rhs (lhs < rhs) assuming maximization. */
-    inline bool paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs, double tolerance = 1E-12);
+    inline bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, double tolerance = 1E-8);
 
     /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
     inline double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2);
@@ -63,7 +63,7 @@ namespace genetic_algorithm::detail
 
 namespace genetic_algorithm::detail
 {
-    bool paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs, double tolerance)
+    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, double tolerance)
     {
         assert(lhs.size() == rhs.size());
         assert(tolerance >= 0.0);
