@@ -33,10 +33,13 @@
 
 #include <cstdlib>
 #include <cassert>
+#include <limits>
 
 
 #define GA_UNUSED(arg) (void(arg))
 
 #define GA_UNREACHABLE (assert(!"Unreachable code."), std::abort())
+
+#define GA_DEFAULT_EPSILON (2 * std::numeric_limits<double>::epsilon())
 
 #endif // !GA_UTILS_H
