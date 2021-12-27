@@ -26,6 +26,11 @@ namespace genetic_algorithm
         template<regular_hashable GeneType>
         class Mutation;
     }
+    namespace stopping
+    {
+        template<regular_hashable GeneType>
+        class StopCondition;
+    }
 
     /**
     * Base GA class.
@@ -74,21 +79,6 @@ namespace genetic_algorithm
             single_objective,           /**< Simple single-objective genetic algorithm. */
             multi_objective_sorting,    /**< Non-dominated sorting genetic algorithm (NSGA-II) for multi-objective optimization. */
             multi_objective_decomp      /**< NSGA-III algorithm for many-objective optimization. */
-        };
-
-        /**
-        * The possible stop conditions used in the algorithm. The algorithm always stops when @ref max_gen has been reached,
-        * regardless of the stop condition selected. \n
-        * Some of the stop condition do not work for multi-objective problems (fitness_mean_stall and fitness_best_stall).
-        * Choose the stop condition with @ref stop_condition. \n
-        */
-        enum class StopCondition
-        {
-            max_gen,               /**< Only stop when @ref max_gen is reached. */
-            fitness_value,         /**< Stop when a solution was found which dominates a reference fitness value. @see fitness_threshold */
-            fitness_evals,         /**< Stop when the fitness function has been evaluated a set number of times. @see max_fitness_evals */
-            fitness_mean_stall,    /**< Stop when the mean fitness of the population doesn't improve at least @ref stall_threshold over @ref stall_gen_count. */
-            fitness_best_stall     /**< Stop when the highest fitness of the population doesn't improve at least @ref stall_threshold over @ref stall_gen_count. */
         };
 
         /**
@@ -162,6 +152,8 @@ namespace genetic_algorithm
 
         /** @returns A History object containing stats from each generation of the single objective genetic algorithm. */
         [[nodiscard]] const History& soga_history() const;
+
+        [[nodiscard]] size_t num_objectives() const;
 
         /**
         * Set the type of the problem/genetic algorithm that will be used (single-/multi-objective).
@@ -252,17 +244,6 @@ namespace genetic_algorithm
         [[nodiscard]] double sigma_scale() const;
 
         /**
-        * Sets the stop condition used in the algorithm to @p condition. Some of the stop conditions
-        * only work with the single-objective algorithm. @see StopCondition \n
-        * The algorithm always stops when the set max_gen generation has been reached regardless of the stop condition
-        * set. @see max_gen
-        *
-        * @param condition The stop condition used in the algorithm.
-        */
-        void stop_condition(StopCondition condition);
-        [[nodiscard]] StopCondition stop_condition() const;
-
-        /**
         * Sets the maximum number of generations the algorithm runs for to @p max_gen. The
         * algorithm will always stop when this generation has been reached regardless of what stop
         * condition was set, but it can stop earlier when another stop condition is selected.
@@ -273,49 +254,6 @@ namespace genetic_algorithm
         */
         void max_gen(size_t max_gen);
         [[nodiscard]] size_t max_gen() const;
-
-        /**
-        * Sets the maximum number of fitness evaluations the algorithm runs for to @p max_evals if
-        * the fitness_evals stop condition is selected. @see stop_condition @see StopCondition \n
-        * The algorithm may evaluate the fitness function more times than the maximum set since the
-        * stop condition is only checked at the end of each generation. \n
-        * The value of @p max_evals must be at least 1.
-        *
-        * @param max_evals
-        */
-        void max_fitness_evals(size_t max_evals);
-        [[nodiscard]] size_t max_fitness_evals() const;
-
-        /**
-        * Sets the reference fitness value for the fitness_value stop condition to @p ref. \n
-        * The algorithm will stop running if a solution has been found which dominates this reference point. \n
-        * The size of the reference vector should be equal to the number of objectives. \n
-        * @see stop_condition @see StopCondition
-        *
-        * @param ref The fitness reference used.
-        */
-        void fitness_threshold(std::vector<double> ref);
-        [[nodiscard]] std::vector<double> fitness_threshold() const;
-
-        /**
-        * Sets the number of generations to look back when evaluating the stall stop conditions. \n
-        * Only relevant for the single-objective algorithm. @see stop_condition @see StopCondition \n
-        * Must be at least 1.
-        *
-        * @param count The number of generations to look back when checking the stall conditions.
-        */
-        void stall_gen_count(size_t count);
-        [[nodiscard]] size_t stall_gen_count() const;
-
-        /**
-        * Sets the value of the stall threshold to @p threshold for the stall stop conditions. \n
-        * Only relevant for the single-objective algorithm. @see stop_condition @see StopCondition \n
-        * May be negative if the deterioration of the stall metric can be allowed.
-        *
-        * @param threshold The stall threshold to use.
-        */
-        void stall_threshold(double threshold);
-        [[nodiscard]] double stall_threshold() const;
 
         /**
         * Sets the initial population to be used in the algorithm to @p pop instead of randomly generating it. \n
@@ -364,6 +302,20 @@ namespace genetic_algorithm
         //requires std::derived_from<MutationType, mutation::Crossover<GeneType>>
         MutationType& mutation_method() const;
 
+
+        /* STOP CONDITION */
+        /* The algorithm always stops when the set max_gen generation has been reached regardless of the stop condition
+        set. */
+        template<typename StopType>
+        //requires std::derived_from<StopType, stopping::StopCondition<GeneType>> && std::copy_constructible<StopType>
+        void stop_condition(const StopType& f);
+
+        void stop_condition(std::unique_ptr<stopping::StopCondition<GeneType>>&& f);
+
+        template<typename StopType = stopping::StopCondition<GeneType>>
+        //requires std::derived_from<StopType, stopping::StopCondition<GeneType>>
+        StopType& stop_condition() const;
+
     protected:
 
         Population population_;
@@ -396,12 +348,7 @@ namespace genetic_algorithm
         double sigma_scale_ = 3.0;
 
         /* Stop condition settings. */
-        StopCondition stop_condition_ = StopCondition::max_gen;
         size_t max_gen_ = 500;
-        size_t max_fitness_evals_ = 5000;
-        std::vector<double> fitness_reference_;
-        size_t stall_gen_count_ = 20;
-        double stall_threshold_ = 1e-6;
 
         /* Initial population settings. */
         Population initial_population_preset_;
@@ -411,7 +358,8 @@ namespace genetic_algorithm
         selectionFunction_t customSelection = nullptr;
 
         std::unique_ptr<crossover::Crossover<GeneType>> crossover_;
-        std::unique_ptr<mutation::Mutation<geneType>> mutation_;
+        std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
+        std::unique_ptr<stopping::StopCondition<GeneType>> stop_condition_;
 
 
         /* General functions for the genetic algorithms. */
@@ -419,13 +367,13 @@ namespace genetic_algorithm
         void init();
         virtual Candidate generateCandidate() const = 0;
         Population generateInitialPopulation() const;
+        bool stopCondition();
         void evaluate(Population& pop);
         void updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const;
         void prepSelections(Population& pop) const;
         Candidate select(const Population& pop) const;
         void repair(Population& pop) const;
         Population updatePopulation(Population& old_pop, CandidateVec& children);
-        bool stopCondition() const;
         void updateStats(const Population& pop);
 
 
@@ -487,21 +435,6 @@ namespace genetic_algorithm
 
         /* Create the population of the next generation from the old population and the children. */
         Population updateNsga3Population(Population& old_pop, CandidateVec& children);
-
-        /* Functions used to find the optimal solutions in the population. */
-        static CandidateVec findParetoFront1D(const Population& pop);
-        static CandidateVec findParetoFrontKung(const Population& pop);
-
-
-        /* Utility functions. */
-
-        /* Find the minimum/maximum fitness along each objective in the population. */
-        static std::vector<double> fitnessMin(const Population& pop);
-        static std::vector<double> fitnessMax(const Population& pop);
-
-        /* Find the mean/standard deviation of the fitness values of the population along the first objective. */
-        static double fitnessMean(const Population& pop);
-        static double fitnessSD(const Population& pop);
     };
 
 } // namespace genetic_algorithm

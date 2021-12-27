@@ -12,6 +12,7 @@
 #include "../src/real_ga.h"
 #include "../src/crossover/real.hpp"
 #include "../src/mutation/real.hpp"
+#include "../src/stop_condition/stop_condition.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -35,8 +36,7 @@ void realRastriginTest()
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     
     GA.max_gen(1000);
-    GA.stop_condition(RCGA::StopCondition::fitness_value);
-    GA.fitness_threshold({ -0.01 });
+    GA.stop_condition(stopping::FitnessValue<double>{ {-0.01} });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -82,8 +82,7 @@ void realRosenbrockTest()
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / rosenbrockFunction.num_vars });
     
     GA.max_gen(2000);
-    GA.stop_condition(RCGA::StopCondition::fitness_evals);
-    GA.max_fitness_evals(500 * 1000);
+    GA.stop_condition(stopping::FitnessEvals<double>{ 500 * 1000 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -129,9 +128,7 @@ void realSchwefelTest()
     GA.mutation_method(mutation::real::NonUniform{ limits, 1.0 / schwefelFunction.num_vars });
     
     GA.max_gen(1000);
-    GA.stop_condition(RCGA::StopCondition::fitness_mean_stall);
-    GA.stall_gen_count(75);
-    GA.stall_threshold(0.01);
+    GA.stop_condition(stopping::FitnessMeanStall<double>{ 75, 0.01 });
 
     /* Run GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -221,9 +218,7 @@ void realAckleyTest()
     GA.mutation_method(mutation::real::Polynomial{ limits, 1.0 / ackleyFunction.num_vars, 60.0 });
     
     GA.max_gen(1000);
-    GA.stop_condition(RCGA::StopCondition::fitness_best_stall);
-    GA.stall_gen_count(75);
-    GA.stall_threshold(0.002);
+    GA.stop_condition(stopping::FitnessBestStall<double>{ 75, 0.002 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();

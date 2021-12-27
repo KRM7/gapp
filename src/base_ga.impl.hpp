@@ -3,10 +3,13 @@
 
 #include "base_ga.decl.hpp"
 #include "crossover/crossover_base.hpp"
-#include "mutation//mutation_base.hpp"
+#include "mutation/mutation_base.hpp"
+#include "stop_condition/stop_condition_base.hpp"
 #include "rng.hpp"
 #include "reference_points.h"
 #include "mo_detail.h"
+#include "math.hpp"
+#include "population.hpp"
 
 #include <execution>
 #include <numeric>
@@ -87,6 +90,12 @@ namespace genetic_algorithm
     inline typename const GA<geneType>::History& GA<geneType>::soga_history() const
     {
         return soga_history_;
+    }
+
+    template<typename GeneType>
+    [[nodiscard]] size_t GA<GeneType>::num_objectives() const
+    {
+        return num_objectives_;
     }
 
     template<typename geneType>
@@ -230,20 +239,6 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline void GA<geneType>::stop_condition(StopCondition condition)
-    {
-        if (static_cast<size_t>(condition) > 4) throw std::invalid_argument("Invalid stop condition selected.");
-
-        stop_condition_ = condition;
-    }
-
-    template<typename geneType>
-    inline typename GA<geneType>::StopCondition GA<geneType>::stop_condition() const
-    {
-        return stop_condition_;
-    }
-
-    template<typename geneType>
     inline void GA<geneType>::max_gen(size_t max_gen)
     {
         if (max_gen == 0) throw std::invalid_argument("The maximum number of generations must be at least 1.");
@@ -255,69 +250,6 @@ namespace genetic_algorithm
     inline size_t GA<geneType>::max_gen() const
     {
         return max_gen_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::max_fitness_evals(size_t max_evals)
-    {
-        if (max_evals == 0) throw std::invalid_argument("The maximum number of fitness evaluations must be at least 1.");
-
-        max_fitness_evals_ = max_evals;
-    }
-
-    template<typename geneType>
-    inline size_t GA<geneType>::max_fitness_evals() const
-    {
-        return max_fitness_evals_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::fitness_threshold(std::vector<double> ref)
-    {
-        if (ref.empty())
-        {
-            throw std::invalid_argument("The reference vector is empty.");
-        }
-        if (!std::all_of(ref.begin(), ref.end(), [](double val) { return std::isfinite(val); }))
-        {
-            throw std::invalid_argument("Invalid value in the reference vector.");
-        }
-
-        fitness_reference_ = ref;
-    }
-
-    template<typename geneType>
-    inline std::vector<double> GA<geneType>::fitness_threshold() const
-    {
-        return fitness_reference_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::stall_gen_count(size_t count)
-    {
-        if (count == 0) throw std::invalid_argument("The stall generation count must be at least 1.");
-
-        stall_gen_count_ = count;
-    }
-
-    template<typename geneType>
-    inline size_t GA<geneType>::stall_gen_count() const
-    {
-        return stall_gen_count_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::stall_threshold(double threshold)
-    {
-        if (!std::isfinite(threshold)) throw std::invalid_argument("The stall threshold must be finite.");
-
-        stall_threshold_ = threshold;
-    }
-
-    template<typename geneType>
-    inline double GA<geneType>::stall_threshold() const
-    {
-        return stall_threshold_;
     }
 
     template<typename geneType>
@@ -405,6 +337,41 @@ namespace genetic_algorithm
         return dynamic_cast<MutationType&>(*mutation_);
     }
 
+    template<typename GeneType>
+    template<typename StopType>
+    //requires std::derived_from<StopType, stopping::StopCondition<GeneType>> && std::copy_constructible<StopType>
+    void GA<GeneType>::stop_condition(const StopType& f)
+    {
+        stop_condition_ = std::make_unique<StopType>(f);
+    }
+
+    template<typename GeneType>
+    void GA<GeneType>::stop_condition(std::unique_ptr<stopping::StopCondition<GeneType>>&& f)
+    {
+        stop_condition_ = std::move(f);
+    }
+
+    template<typename GeneType>
+    template<typename StopType>
+    //requires std::derived_from<StopType, stopping::StopCondition<GeneType>>
+    StopType& GA<GeneType>::stop_condition() const
+    {
+        return dynamic_cast<StopType&>(*stop_condition_);
+    }
+
+    template<typename GeneType>
+    bool GA<GeneType>::stopCondition()
+    {
+        if (stop_condition_ != nullptr)
+        {
+            return (generation_cntr_ >= (max_gen_ - 1)) || (*stop_condition_)(*this);
+        }
+        else
+        {
+            return (generation_cntr_ >= (max_gen_ - 1));
+        }
+    }
+
 
     template<typename geneType>
     inline typename const GA<geneType>::CandidateVec& GA<geneType>::run()
@@ -476,14 +443,6 @@ namespace genetic_algorithm
     template<typename geneType>
     inline void GA<geneType>::init()
     {
-        /* Check stop condition. */
-        if (mode_ != Mode::single_objective)
-        {
-            if (stop_condition_ == StopCondition::fitness_mean_stall || stop_condition_ == StopCondition::fitness_best_stall)
-            {
-                throw std::invalid_argument("The stall stop conditions only work for the single-objective algorithm.");
-            }
-        }
         /* Check selection method. */
         if (selection_method_ == SogaSelection::custom && customSelection == nullptr)
         {
@@ -688,71 +647,12 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline bool GA<geneType>::stopCondition() const
-    {
-        if (mode_ != Mode::single_objective && stop_condition_ == StopCondition::fitness_best_stall)
-        {
-            throw std::invalid_argument("The stall stop conditions only work with the single-objective algorithm.");
-        }
-        else if (mode_ != Mode::single_objective && stop_condition_ == StopCondition::fitness_mean_stall)
-        {
-            throw std::invalid_argument("The stall stop conditions only work with the single-objective algorithm.");
-        }
-
-        /* Always stop when reaching max_gen regardless of stop condition. */
-        if (generation_cntr_ >= max_gen_ - 1) return true;
-
-        /* Early-stop conditions. */
-        double metric_now, metric_old;
-        switch (stop_condition_)
-        {
-            case StopCondition::max_gen:
-                /* Already checked above. */
-                return false;
-
-            case StopCondition::fitness_value:
-                return std::any_of(population_.begin(), population_.end(),
-                [this](const Candidate& sol)
-                {
-                    return detail::paretoCompareLess(fitness_reference_, sol.fitness);
-                });
-
-            case StopCondition::fitness_evals:
-                return num_fitness_evals_ >= max_fitness_evals_;
-
-            case StopCondition::fitness_mean_stall:
-                if (generation_cntr_ >= stall_gen_count_)
-                {
-                    metric_now = soga_history_.fitness_mean[generation_cntr_];
-                    metric_old = soga_history_.fitness_mean[generation_cntr_ - stall_gen_count_];
-
-                    return (metric_now - metric_old) < stall_threshold_;
-                }
-                else return false;
-
-            case StopCondition::fitness_best_stall:
-                if (generation_cntr_ >= stall_gen_count_)
-                {
-                    metric_now = soga_history_.fitness_mean[generation_cntr_];
-                    metric_old = soga_history_.fitness_mean[generation_cntr_ - stall_gen_count_];
-
-                    return (metric_now - metric_old) < stall_threshold_;
-                }
-                else return false;
-
-            default:
-                assert(false);    /* Invalid stop condition. Shouldn't get here. */
-                std::abort();
-        }
-    }
-
-    template<typename geneType>
     inline void GA<geneType>::updateStats(const Population& pop)
     {
         switch (mode_)
         {
             case Mode::single_objective:
-                soga_history_.add(fitnessMean(pop), fitnessSD(pop), fitnessMin(pop)[0], fitnessMax(pop)[0]);
+                soga_history_.add(populationFitnessMean(pop)[0], populationFitnessSD(pop)[0], populationFitnessMin(pop)[0], populationFitnessMax(pop)[0]);
                 break;
             case Mode::multi_objective_sorting:
                 break;
@@ -771,7 +671,7 @@ namespace genetic_algorithm
 
         /* Roulette selection wouldn't work for negative fitness values. */
         bool has_negative_fitness = std::any_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness[0] < 0.0; });
-        double offset = fitnessMin(pop)[0] * has_negative_fitness;
+        double offset = populationFitnessMin(pop)[0] * has_negative_fitness;
 
         double pdf_mean = 0.0;
         for (auto& sol : pop)
@@ -832,8 +732,8 @@ namespace genetic_algorithm
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
         assert(scale > 1.0);
 
-        double fitness_mean = fitnessMean(pop);
-        double fitness_sd = fitnessSD(pop);
+        double fitness_mean = populationFitnessMean(pop)[0];
+        double fitness_sd = populationFitnessSD(pop)[0];
 
         double pdf_mean = 0.0;
         for (auto& sol : pop)
@@ -866,8 +766,8 @@ namespace genetic_algorithm
 
         double temperature = -temp_max / (1.0 + std::exp(-10.0 * (double(t) / t_max) + 3.0)) + temp_max + temp_min;
 
-        double fmax = fitnessMax(pop)[0];
-        double fmin = fitnessMin(pop)[0];
+        double fmax = populationFitnessMax(pop)[0];
+        double fmin = populationFitnessMin(pop)[0];
 
         double pdf_mean = 0.0;
         for (auto& sol : pop)
@@ -1392,163 +1292,6 @@ namespace genetic_algorithm
         }
 
         return new_pop;
-    }
-
-    template<typename geneType>
-    inline typename GA<geneType>::CandidateVec GA<geneType>::findParetoFront1D(const Population& pop)
-    {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.fitness.size() == 1; }));
-
-        CandidateVec optimal_sols;
-
-        double fmax = fitnessMax(pop)[0]; /* There might be multiple solutions with this max fitness value. */
-        for (const auto& sol : pop)
-        {
-            if (sol.fitness[0] == fmax) optimal_sols.push_back(sol);
-        }
-
-        return optimal_sols;
-    }
-
-    template<typename geneType>
-    inline typename GA<geneType>::CandidateVec GA<geneType>::findParetoFrontKung(const Population& pop)
-    {
-        /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476.*/
-        /* Doesn't work for d = 1 (single-objective optimization). */
-
-        using namespace std;
-        using iter = vector<size_t>::iterator;
-
-        assert(!pop.empty());
-        assert(all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
-        assert(all_of(pop.begin(), pop.end(), [&pop](const Candidate& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
-
-        size_t dim = pop[0].fitness.size();    /* The number of objectives. */
-
-        /* Find the indices of pareto optimal solutions in the population (Kung's algorithm) assuming fitness maximization. */
-        function<vector<size_t>(iter, iter)> pfront = [&pfront, &pop, &dim](iter first, iter last) -> vector<size_t>
-        {
-            if (distance(first, last) == 1) return { *first };
-
-            vector<size_t> R = pfront(first, first + distance(first, last) / 2);    /* Top half. */
-            vector<size_t> S = pfront(first + distance(first, last) / 2, last);     /* Bottom half. */
-
-            /* T = Find all non-dominated elements of the bottom half. */
-            vector<size_t> T;
-            for (const auto& s : S)
-            {
-                /* Check if s is dominated by any solution in R. */
-                bool is_dominated = false;
-                for (const auto& r : R)
-                {
-                    /* Pareto compare s and r. */
-                    /* The first dimension (d = 0) of the fitness vectors doesn't need to be compared since the pop is already sorted. */
-                    for (size_t d = 1; d < dim; d++)
-                    {
-                        if (pop[s].fitness[d] > pop[r].fitness[d])
-                        {
-                            is_dominated = false;
-                            break;
-                        }
-                        if (pop[s].fitness[d] < pop[r].fitness[d]) is_dominated = true;
-                    }
-                    if (is_dominated) break;
-                }
-                if (!is_dominated) T.push_back(s);
-            }
-            R.insert(R.end(), T.begin(), T.end());
-
-            return R;
-        };
-
-        /* Find the indices of the pareto optimal candidates. */
-        vector<size_t> indices(pop.size());
-        iota(indices.begin(), indices.end(), 0U);
-
-        /* Sort the pop indices into descending order based on first fitness value (needed for Kung's). */
-        sort(indices.begin(), indices.end(), [&pop](size_t lidx, size_t ridx) { return pop[lidx].fitness[0] > pop[ridx].fitness[0]; });
-        indices = pfront(indices.begin(), indices.end());
-
-        CandidateVec optimal_sols;
-        optimal_sols.reserve(indices.size());
-        for (const auto& idx : indices)
-        {
-            optimal_sols.push_back(pop[idx]);
-        }
-
-        return optimal_sols;
-    }
-
-    template<typename geneType>
-    inline std::vector<double> GA<geneType>::fitnessMin(const Population& pop)
-    {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
-        assert(std::all_of(pop.begin(), pop.end(), [&pop](const Candidate& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
-
-        std::vector<double> fmin = pop[0].fitness;
-
-        for (size_t i = 1; i < pop.size(); i++)
-        {
-            for (size_t j = 0; j < fmin.size(); j++)
-            {
-                fmin[j] = std::min(fmin[j], pop[i].fitness[j]);
-            }
-        }
-
-        return fmin;
-    }
-
-    template<typename geneType>
-    inline std::vector<double> GA<geneType>::fitnessMax(const Population& pop)
-    {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
-        assert(std::all_of(pop.begin(), pop.end(), [&pop](const Candidate& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
-
-        std::vector<double> fmax = pop[0].fitness;
-
-        for (size_t i = 1; i < pop.size(); i++)
-        {
-            for (size_t j = 0; j < fmax.size(); j++)
-            {
-                fmax[j] = std::max(fmax[j], pop[i].fitness[j]);
-            }
-        }
-
-        return fmax;
-    }
-
-    template<typename geneType>
-    inline double GA<geneType>::fitnessMean(const Population& pop)
-    {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
-
-        return std::accumulate(pop.begin(), pop.end(), 0.0,
-        [&pop](double sum, const Candidate& sol)
-        {
-            return sum + sol.fitness[0] / pop.size();
-        });
-    }
-
-    template<typename geneType>
-    inline double GA<geneType>::fitnessSD(const Population& pop)
-    {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return !sol.fitness.empty(); }));
-
-        if (pop.size() == 1) return 0.0;
-
-        double mean = fitnessMean(pop);
-        long double variance = std::accumulate(pop.begin(), pop.end(), 0.0L,
-        [&pop, mean](long double sum, const Candidate& sol)
-        {
-            return sum + std::pow(sol.fitness[0] - mean, 2) / (pop.size() - 1.0);
-        });
-
-        return double(std::sqrt(variance));
     }
 
 } // namespace genetic_algorithm

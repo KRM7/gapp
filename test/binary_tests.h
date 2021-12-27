@@ -12,6 +12,7 @@
 #include "../src/binary_ga.h"
 #include "../src/crossover/binary.hpp"
 #include "../src/mutation/binary.hpp"
+#include "../src/stop_condition/stop_condition.hpp"
 #include "fitness_functions.h"
 #include "utils.h"
 
@@ -32,9 +33,7 @@ void binaryRastriginTest()
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
 
     GA.max_gen(1500);
-    GA.stop_condition(BinaryGA::StopCondition::fitness_mean_stall);
-    GA.stall_gen_count(50);
-    GA.stall_threshold(0.005);
+    GA.stop_condition(stopping::FitnessMeanStall<char>{ 50, 0.005 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -124,8 +123,7 @@ void binarySchwefelTest()
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     
     GA.max_gen(1500);
-    GA.stop_condition(BinaryGA::StopCondition::fitness_evals);
-    GA.max_fitness_evals(200 * 650);
+    GA.stop_condition(stopping::FitnessEvals<char>{ 200 * 1000 });
 
     /* Run GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -171,8 +169,7 @@ void binaryGriewankTest()
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
 
     GA.max_gen(2500);
-    GA.stop_condition(BinaryGA::StopCondition::fitness_value);
-    GA.fitness_threshold({ -0.1 });
+    GA.stop_condition(stopping::FitnessValue<char>{ {-0.1} });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -218,9 +215,7 @@ void binaryAckleyTest()
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
     
     GA.max_gen(2500);
-    GA.stop_condition(BinaryGA::StopCondition::fitness_best_stall);
-    GA.stall_gen_count(50);
-    GA.stall_threshold(0.002);
+    GA.stop_condition(stopping::FitnessBestStall<char>{50, 0.002});
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
