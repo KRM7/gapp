@@ -1,10 +1,8 @@
 #include "time_test.h"
-
 #include "binary_tests.h"
 #include "real_tests.h"
 #include "permutational_tests.h"
 #include "integer_tests.h"
-
 #include "nsga2_tests.h"
 #include "nsga3_tests.h"
 

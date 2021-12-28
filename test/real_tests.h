@@ -36,7 +36,7 @@ void realRastriginTest()
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     
     GA.max_gen(1000);
-    GA.stop_condition(stopping::FitnessValue<double>{ {-0.01} });
+    GA.stop_condition(stopping::FitnessValue<double>{ { -0.01 } });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
