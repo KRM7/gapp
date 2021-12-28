@@ -31,6 +31,7 @@
 #ifndef GA_CANDIDATE_H
 #define GA_CANDIDATE_H
 
+#include "math.hpp"
 
 #include <vector>
 #include <functional>
@@ -116,9 +117,7 @@ namespace genetic_algorithm
             return std::equal(lhs.chromosome.begin(), lhs.chromosome.end(), rhs.chromosome.begin(),
             [](const GeneType& lhs, const GeneType& rhs)
             {
-                double scale = std::max(std::abs(lhs), std::abs(rhs));
-
-                return scale == 0.0 ? true : (std::abs(lhs - rhs) / scale) <= std::numeric_limits<double>::epsilon();
+                return detail::floatIsEqual(lhs, rhs);
             });
         }
         else
