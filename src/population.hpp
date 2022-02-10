@@ -31,27 +31,35 @@
 
 namespace genetic_algorithm
 {
+    /** The Population type used in all of the genetic algorithms. */
     template<regular_hashable GeneType>
     using Population = std::vector<Candidate<GeneType>>;
 
+    /** A vector of Candidates. */
     template<regular_hashable GeneType>
     using CandidateVec = std::vector<Candidate<GeneType>>;
 
+    /** Return the minimum fitness value of the population along each objective axis. */
     template<regular_hashable GeneType>
     std::vector<double> populationFitnessMin(const Population<GeneType>& pop);
 
+    /** Return the maximum fitness value of the population along each objective axis. */
     template<regular_hashable GeneType>
     std::vector<double> populationFitnessMax(const Population<GeneType>& pop);
 
+    /** Return the mean fitness value of the population along each objective axis. */
     template<regular_hashable GeneType>
     std::vector<double> populationFitnessMean(const Population<GeneType>& pop);
 
+    /** Return the standard deviation of the fitness values of the population along each objective axis. */
     template<regular_hashable GeneType>
     std::vector<double> populationFitnessSD(const Population<GeneType>& pop);
 
+    /** Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
     template<regular_hashable GeneType>
     CandidateVec<GeneType> findParetoFront1D(const Population<GeneType>& pop);
 
+    /** Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
     template<regular_hashable GeneType>
     CandidateVec<GeneType> findParetoFrontKung(const Population<GeneType>& pop);
 
