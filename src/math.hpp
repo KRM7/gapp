@@ -22,6 +22,8 @@
 *  SOFTWARE.
 */
 
+/** Math utility functions. */
+
 #ifndef GA_MATH_HPP
 #define GA_MATH_HPP
 
