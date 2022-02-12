@@ -9,8 +9,8 @@
 #include <functional>
 #include <atomic>
 #include <cstddef>
-
 #include <memory>
+#include <concepts>
 #include "candidate.hpp"
 
 
@@ -31,6 +31,27 @@ namespace genetic_algorithm
         template<regular_hashable GeneType>
         class StopCondition;
     }
+
+    template<typename geneType>
+    class GA;
+
+    namespace detail
+    {
+        template<template<class...> class BaseTempl, class... TArgs>
+        void derivedFromSpecializationOfImpl(const BaseTempl<TArgs...>&);
+
+        /* Types that are derived from a specialization of the BaseTempl class template. */
+        template<class Derived, template<class...> class BaseTempl>
+        concept derived_from_specialization_of = requires(const Derived& arg)
+        {
+            derivedFromSpecializationOfImpl<BaseTempl>(arg);
+        };
+
+    } // namespace detail
+
+    /** Genetic algorithm types. (Types that are derived from the GA class.) */
+    template<class GaType>
+    concept genetic_algorithm = detail::derived_from_specialization_of<GaType, GA>;
 
     /**
     * Base GA class.
