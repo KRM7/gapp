@@ -29,6 +29,8 @@
 
 #include "stop_condition_base.hpp"
 #include "../candidate.hpp"
+#include "../base_ga.decl.hpp"
+#include "../concepts.hpp"
 
 #include <vector>
 #include <cstddef>
@@ -43,8 +45,8 @@ namespace genetic_algorithm::stopping
     * The stop-condition is only checked at the end of each generation, so the number of
     * actual fitness function evaluations might be higher than the limit that was set.
     */
-    template<regular_hashable GeneType>
-    class FitnessEvals final : public StopCondition<GeneType>
+    template<gene T>
+    class FitnessEvals final : public StopCondition<T>
     {
     public:
         /**
@@ -54,8 +56,16 @@ namespace genetic_algorithm::stopping
         */
         explicit FitnessEvals(size_t max_fitness_evals);
 
+        /**
+        * Create a stop condition with the specified parameters.
+        *
+        * @param ga The context.
+        * @param max_fitness_evals The maximum number of fitness function evaluations to perform.
+        */
+        FitnessEvals(const GA<T>& ga, size_t max_fitness_evals);
+
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GA<GeneType>& ga) override;
+        bool operator()(const GA<T>& ga) override;
 
         /**
         * Set the maximum number of fitness function evaluations allowed in the algorithm.
@@ -79,8 +89,8 @@ namespace genetic_algorithm::stopping
     * fitness threshold vector.
     * (Assuming fitness maximization.)
     */
-    template<regular_hashable GeneType>
-    class FitnessValue final : public StopCondition<GeneType>
+    template<gene T>
+    class FitnessValue final : public StopCondition<T>
     {
     public:
         /**
@@ -90,8 +100,16 @@ namespace genetic_algorithm::stopping
         */
         explicit FitnessValue(const std::vector<double>& fitness_threshold);
 
+        /**
+        * Create a stop condition with the specified parameters.
+        *
+        * @param ga The context.
+        * @param fitness_threshold The fitness threshold vector used for checking the stop condition.
+        */
+        FitnessValue(const GA<T>& ga, const std::vector<double>& fitness_threshold);
+
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GA<GeneType>& ga) override;
+        bool operator()(const GA<T>& ga) override;
 
         /**
         * Sets the fitness threshold vector used when evaluating the stop condition.
@@ -114,8 +132,8 @@ namespace genetic_algorithm::stopping
     * For multi-objective problems, the mean fitness vector is considered better if it's better
     * in at least one coordinate. (Assuming fitness maximization.)
     */
-    template<regular_hashable GeneType>
-    class FitnessMeanStall final : public StopCondition<GeneType>
+    template<gene T>
+    class FitnessMeanStall final : public StopCondition<T>
     {
     public:
         /**
@@ -126,8 +144,17 @@ namespace genetic_algorithm::stopping
         */
         explicit FitnessMeanStall(size_t patience = 0, double delta = 1E-6);
 
+        /**
+        * Create a stop condition with the specified parameters.
+        *
+        * @param ga The context.
+        * @param patience The number of generations to wait without stopping even if there is no improvement.
+        * @param delta The minimum fitness difference considered an improvement.
+        */
+        explicit FitnessMeanStall(const GA<T>& ga, size_t patience = 0, double delta = 1E-6);
+
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GA<GeneType>& ga) override;
+        bool operator()(const GA<T>& ga) override;
 
         /**
         * Sets the patience value used for the stop condition.
@@ -166,8 +193,8 @@ namespace genetic_algorithm::stopping
     * For multi-objective problems, the best fitness vector is considered better if it's better
     * in at least one coordinate than the previous best. (Assuming fitness maximization.)
     */
-    template<regular_hashable GeneType>
-    class FitnessBestStall final : public StopCondition<GeneType>
+    template<gene T>
+    class FitnessBestStall final : public StopCondition<T>
     {
     public:
         /**
@@ -178,8 +205,17 @@ namespace genetic_algorithm::stopping
         */
         explicit FitnessBestStall(size_t patience = 0, double delta = 1E-6);
 
+        /**
+        * Create a stop condition with the specified parameters.
+        *
+        * @param ga The context.
+        * @param patience The number of generations to wait without stopping even if there is no improvement.
+        * @param delta The minimum fitness difference considered an improvement.
+        */
+        explicit FitnessBestStall(const GA<T>& ga, size_t patience = 0, double delta = 1E-6);
+
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GA<GeneType>& ga) override;
+        bool operator()(const GA<T>& ga) override;
 
         /**
         * Sets the patience value used for the stop condition.
@@ -213,4 +249,4 @@ namespace genetic_algorithm::stopping
 
 }
 
-#endif
+#endif // !GA_STOP_CONDITION_DECL_HPP

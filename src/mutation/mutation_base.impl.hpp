@@ -33,14 +33,14 @@
 
 namespace genetic_algorithm::mutation
 {
-    template<regular_hashable GeneType>
-    inline Mutation<GeneType>::Mutation(double pm)
+    template<gene T>
+    inline Mutation<T>::Mutation(double pm)
     {
         mutation_rate(pm);
     }
 
-    template<regular_hashable GeneType>
-    inline void Mutation<GeneType>::mutation_rate(double pm)
+    template<gene T>
+    inline void Mutation<T>::mutation_rate(double pm)
     {
         if (!(0.0 <= pm && pm <= 1.0))
         {
@@ -50,8 +50,8 @@ namespace genetic_algorithm::mutation
         pm_ = pm;
     }
 
-    template<regular_hashable GeneType>
-    inline void Mutation<GeneType>::operator()(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
+    template<gene T>
+    inline void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
     {
         auto old_chrom = candidate.chromosome;
 
@@ -63,15 +63,15 @@ namespace genetic_algorithm::mutation
         }
     }
 
-    template<regular_hashable GeneType>
-    inline BoundedMutation<GeneType>::BoundedMutation(const std::vector<std::pair<GeneType, GeneType>>& bounds, double pm) :
-        Mutation<GeneType>(pm)
+    template<gene T>
+    inline BoundedMutation<T>::BoundedMutation(const std::vector<std::pair<T, T>>& bounds, double pm) :
+        Mutation<T>(pm)
     {
         this->bounds(bounds);
     }
 
-    template<regular_hashable GeneType>
-    inline void BoundedMutation<GeneType>::bounds(const std::vector<std::pair<GeneType, GeneType>>& bounds)
+    template<gene T>
+    inline void BoundedMutation<T>::bounds(const std::vector<std::pair<T, T>>& bounds)
     {
         if (std::any_of(bounds.begin(), bounds.end(), [](std::pair<double, double> bound) {return bound.first > bound.second; }))
         {

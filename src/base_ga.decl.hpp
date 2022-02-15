@@ -10,25 +10,25 @@
 #include <atomic>
 #include <cstddef>
 #include <memory>
-#include <concepts>
 #include "candidate.hpp"
+#include "concepts.hpp"
 
 
 namespace genetic_algorithm
 {
     namespace crossover
     {
-        template<regular_hashable GeneType>
+        template<gene T>
         class Crossover;
     }
     namespace mutation
     {
-        template<regular_hashable GeneType>
+        template<gene T>
         class Mutation;
     }
     namespace stopping
     {
-        template<regular_hashable GeneType>
+        template<gene T>
         class StopCondition;
     }
 

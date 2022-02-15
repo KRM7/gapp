@@ -29,41 +29,60 @@
 #include "../base_ga.h"
 #include "../population.hpp"
 #include "../math.hpp"
+#include "../utils.h"
 
 #include <algorithm>
 #include <stdexcept>
 
 namespace genetic_algorithm::stopping
 {
-    template<regular_hashable GeneType>
-    FitnessEvals<GeneType>::FitnessEvals(size_t max_fitness_evals)
-        : StopCondition<GeneType>()
+    template<gene T>
+    FitnessEvals<T>::FitnessEvals(size_t max_fitness_evals)
+        : StopCondition<T>()
     {
         this->max_fitness_evals(max_fitness_evals);
     }
 
-    template<regular_hashable GeneType>
-    void FitnessEvals<GeneType>::max_fitness_evals(size_t max_fitness_evals)
+    template<gene T>
+    FitnessEvals<T>::FitnessEvals(const GA<T>& ga, size_t max_fitness_evals)
+        : StopCondition<T>()
+    {
+        GA_UNUSED(ga);
+
+        this->max_fitness_evals(max_fitness_evals);
+    }
+
+    template<gene T>
+    void FitnessEvals<T>::max_fitness_evals(size_t max_fitness_evals)
     {
         max_fitness_evals_ = max_fitness_evals;
     }
 
-    template<regular_hashable GeneType>
-    bool FitnessEvals<GeneType>::operator()(const GA<GeneType>& ga)
+    template<gene T>
+    bool FitnessEvals<T>::operator()(const GA<T>& ga)
     {
         return (ga.num_fitness_evals() >= max_fitness_evals_);
     }
 
 
-    template<regular_hashable GeneType>
-    FitnessValue<GeneType>::FitnessValue(const std::vector<double>& fitness_threshold) :
-        StopCondition<GeneType>()
+    template<gene T>
+    FitnessValue<T>::FitnessValue(const std::vector<double>& fitness_threshold) :
+        StopCondition<T>()
     {
         this->fitness_threshold(fitness_threshold);
     }
 
-    template<regular_hashable GeneType>
-    void FitnessValue<GeneType>::fitness_threshold(const std::vector<double>& fitness_threshold)
+    template<gene T>
+    FitnessValue<T>::FitnessValue(const GA<T>& ga, const std::vector<double>& fitness_threshold) :
+        StopCondition<T>()
+    {
+        GA_UNUSED(ga);
+
+        this->fitness_threshold(fitness_threshold);
+    }
+
+    template<gene T>
+    void FitnessValue<T>::fitness_threshold(const std::vector<double>& fitness_threshold)
     {
         if (fitness_threshold.empty())
         {
@@ -73,8 +92,8 @@ namespace genetic_algorithm::stopping
         fitness_threshold_ = fitness_threshold;
     }
 
-    template<regular_hashable GeneType>
-    bool FitnessValue<GeneType>::operator()(const GA<GeneType>& ga)
+    template<gene T>
+    bool FitnessValue<T>::operator()(const GA<T>& ga)
     {
         if (ga.num_objectives() != fitness_threshold_.size())
         {
@@ -82,42 +101,52 @@ namespace genetic_algorithm::stopping
         }
 
         return std::any_of(ga.population().begin(), ga.population().end(),
-        [this](const Candidate<GeneType>& sol)
+        [this](const Candidate<T>& sol)
         {
             return detail::paretoCompareLess(fitness_threshold_, sol.fitness);
         });
     }
 
 
-    template<regular_hashable GeneType>
-    FitnessMeanStall<GeneType>::FitnessMeanStall(size_t patience, double delta)
-        : StopCondition<GeneType>()
+    template<gene T>
+    FitnessMeanStall<T>::FitnessMeanStall(size_t patience, double delta)
+        : StopCondition<T>()
     {
         this->patience(patience);
         this->delta(delta);
     }
 
-    template<regular_hashable GeneType>
-    void FitnessMeanStall<GeneType>::patience(size_t patience)
+    template<gene T>
+    FitnessMeanStall<T>::FitnessMeanStall(const GA<T>& ga, size_t patience, double delta)
+        : StopCondition<T>()
+    {
+        GA_UNUSED(ga);
+
+        this->patience(patience);
+        this->delta(delta);
+    }
+
+    template<gene T>
+    void FitnessMeanStall<T>::patience(size_t patience)
     {
         patience_ = patience;
         resetCntr();
     }
 
-    template<regular_hashable GeneType>
-    void FitnessMeanStall<GeneType>::delta(double delta)
+    template<gene T>
+    void FitnessMeanStall<T>::delta(double delta)
     {
         delta_ = delta;
     }
 
-    template<regular_hashable GeneType>
-    void FitnessMeanStall<GeneType>::resetCntr()
+    template<gene T>
+    void FitnessMeanStall<T>::resetCntr()
     {
         cntr_ = patience_ + 1;
     }
 
-    template<regular_hashable GeneType>
-    bool FitnessMeanStall<GeneType>::operator()(const GA<GeneType>& ga)
+    template<gene T>
+    bool FitnessMeanStall<T>::operator()(const GA<T>& ga)
     {
         auto current_mean = populationFitnessMean(ga.population());
 
@@ -153,35 +182,45 @@ namespace genetic_algorithm::stopping
     }
 
 
-    template<regular_hashable GeneType>
-    FitnessBestStall<GeneType>::FitnessBestStall(size_t patience, double delta) :
-        StopCondition<GeneType>()
+    template<gene T>
+    FitnessBestStall<T>::FitnessBestStall(size_t patience, double delta) :
+        StopCondition<T>()
     {
         this->patience(patience);
         this->delta(delta);
     }
 
-    template<regular_hashable GeneType>
-    void FitnessBestStall<GeneType>::patience(size_t patience)
+    template<gene T>
+    FitnessBestStall<T>::FitnessBestStall(const GA<T>& ga, size_t patience, double delta) :
+        StopCondition<T>()
+    {
+        GA_UNUSED(ga);
+
+        this->patience(patience);
+        this->delta(delta);
+    }
+
+    template<gene T>
+    void FitnessBestStall<T>::patience(size_t patience)
     {
         patience_ = patience;
         resetCntr();
     }
 
-    template<regular_hashable GeneType>
-    void FitnessBestStall<GeneType>::delta(double delta)
+    template<gene T>
+    void FitnessBestStall<T>::delta(double delta)
     {
         delta_ = delta;
     }
 
-    template<regular_hashable GeneType>
-    void FitnessBestStall<GeneType>::resetCntr()
+    template<gene T>
+    void FitnessBestStall<T>::resetCntr()
     {
         cntr_ = patience_ + 1;
     }
 
-    template<regular_hashable GeneType>
-    bool FitnessBestStall<GeneType>::operator()(const GA<GeneType>& ga)
+    template<gene T>
+    bool FitnessBestStall<T>::operator()(const GA<T>& ga)
     {
         auto current_max = populationFitnessMax(ga.population());
 

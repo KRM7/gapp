@@ -26,13 +26,8 @@
 #define GA_STOP_CONDITION_BASE_HPP
 
 #include "../candidate.hpp"
-
-namespace genetic_algorithm
-{
-    template<typename GeneType>
-    class GA;
-
-} // namespace genetic_algorithm
+#include "../base_ga.decl.hpp"
+#include "../concepts.hpp"
 
 /** Early stop conditions used in the algorithms. */
 namespace genetic_algorithm::stopping
@@ -42,7 +37,7 @@ namespace genetic_algorithm::stopping
     * The stop condition will be evaluated only once per generation and
     * should return true if the algorithm should be stopped.
     */
-    template<regular_hashable GeneType>
+    template<gene T>
     class StopCondition
     {
     public:
@@ -51,7 +46,7 @@ namespace genetic_algorithm::stopping
         virtual ~StopCondition() = default;
 
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        virtual bool operator()(const GA<GeneType>& ga) = 0;
+        virtual bool operator()(const GA<T>& ga) = 0;
     };
 
 } // namespace genetic_algorithm::stopping

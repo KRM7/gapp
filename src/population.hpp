@@ -26,42 +26,43 @@
 #define GA_POPULATION_HPP
 
 #include "candidate.hpp"
+#include "concepts.hpp"
 
 #include <vector>
 
 namespace genetic_algorithm
 {
     /** The Population type used in all of the genetic algorithms. */
-    template<regular_hashable GeneType>
-    using Population = std::vector<Candidate<GeneType>>;
+    template<gene T>
+    using Population = std::vector<Candidate<T>>;
 
     /** A vector of Candidates. */
-    template<regular_hashable GeneType>
-    using CandidateVec = std::vector<Candidate<GeneType>>;
+    template<gene T>
+    using CandidateVec = std::vector<Candidate<T>>;
 
     /** Return the minimum fitness value of the population along each objective axis. */
-    template<regular_hashable GeneType>
-    std::vector<double> populationFitnessMin(const Population<GeneType>& pop);
+    template<gene T>
+    std::vector<double> populationFitnessMin(const Population<T>& pop);
 
     /** Return the maximum fitness value of the population along each objective axis. */
-    template<regular_hashable GeneType>
-    std::vector<double> populationFitnessMax(const Population<GeneType>& pop);
+    template<gene T>
+    std::vector<double> populationFitnessMax(const Population<T>& pop);
 
     /** Return the mean fitness value of the population along each objective axis. */
-    template<regular_hashable GeneType>
-    std::vector<double> populationFitnessMean(const Population<GeneType>& pop);
+    template<gene T>
+    std::vector<double> populationFitnessMean(const Population<T>& pop);
 
     /** Return the standard deviation of the fitness values of the population along each objective axis. */
-    template<regular_hashable GeneType>
-    std::vector<double> populationFitnessSD(const Population<GeneType>& pop);
+    template<gene T>
+    std::vector<double> populationFitnessSD(const Population<T>& pop);
 
     /** Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
-    template<regular_hashable GeneType>
-    CandidateVec<GeneType> findParetoFront1D(const Population<GeneType>& pop);
+    template<gene T>
+    CandidateVec<T> findParetoFront1D(const Population<T>& pop);
 
     /** Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
-    template<regular_hashable GeneType>
-    CandidateVec<GeneType> findParetoFrontKung(const Population<GeneType>& pop);
+    template<gene T>
+    CandidateVec<T> findParetoFrontKung(const Population<T>& pop);
 
 } // namespace genetic_algorithm
 
@@ -80,14 +81,14 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    template<regular_hashable GeneType>
-    std::vector<double> populationFitnessMin(const Population<GeneType>& pop)
+    template<gene T>
+    std::vector<double> populationFitnessMin(const Population<T>& pop)
     {
         if (pop.empty())
         {
             throw std::invalid_argument("Can't calculate min fitness for an empty population.");
         }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<GeneType>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
+        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
         {
             throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the minimum.");
         }
@@ -104,14 +105,14 @@ namespace genetic_algorithm
         return min_fitness;
     }
 
-    template<regular_hashable GeneType>
-    std::vector<double> populationFitnessMax(const Population<GeneType>& pop)
+    template<gene T>
+    std::vector<double> populationFitnessMax(const Population<T>& pop)
     {
         if (pop.empty())
         {
             throw std::invalid_argument("Can't calculate max fitness for an empty population.");
         }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<GeneType>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
+        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
         {
             throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the maximum.");
         }
@@ -128,14 +129,14 @@ namespace genetic_algorithm
         return max_fitness;
     }
 
-    template<regular_hashable GeneType>
-    std::vector<double> populationFitnessMean(const Population<GeneType>& pop)
+    template<gene T>
+    std::vector<double> populationFitnessMean(const Population<T>& pop)
     {
         if (pop.empty())
         {
             throw std::invalid_argument("Can't calculate mean fitness for an empty population.");
         }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<GeneType>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
+        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
         {
             throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the mean.");
         }
@@ -152,14 +153,14 @@ namespace genetic_algorithm
         return fitness_mean;
     }
 
-    template<regular_hashable GeneType>
-    std::vector<double> populationFitnessSD(const Population<GeneType>& pop)
+    template<gene T>
+    std::vector<double> populationFitnessSD(const Population<T>& pop)
     {
         if (pop.empty())
         {
             throw std::invalid_argument("Can't calculate fitness SD for an empty population.");
         }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<GeneType>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
+        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
         {
             throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the SD.");
         }
@@ -189,10 +190,10 @@ namespace genetic_algorithm
         return variance;
     }
 
-    template<regular_hashable GeneType>
-    CandidateVec<GeneType> findParetoFront1D(const Population<GeneType>& pop)
+    template<gene T>
+    CandidateVec<T> findParetoFront1D(const Population<T>& pop)
     {
-        if (!std::all_of(pop.begin(), pop.end(), [](const Candidate<GeneType>& sol) { return sol.fitness.size() == 1; }))
+        if (!std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }))
         {
             throw std::invalid_argument("The size of the fitness vectors of the population must be 1 for this algorithm.");
         }
@@ -202,7 +203,7 @@ namespace genetic_algorithm
             return {};
         }
 
-        CandidateVec<GeneType> optimal_sols;
+        CandidateVec<T> optimal_sols;
 
         /* Even for a single-objective problem, there might be different solutions with the same fitness value. */
         double max_fitness = populationFitnessMax(pop)[0];
@@ -216,8 +217,8 @@ namespace genetic_algorithm
         return optimal_sols;
     }
 
-    template<regular_hashable GeneType>
-    CandidateVec<GeneType> findParetoFrontKung(const Population<GeneType>& pop)
+    template<gene T>
+    CandidateVec<T> findParetoFrontKung(const Population<T>& pop)
     {
         /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476.*/
         /* Doesn't work for d = 1 (single-objective optimization). */
@@ -226,8 +227,8 @@ namespace genetic_algorithm
         using iter = vector<size_t>::iterator;
 
         assert(!pop.empty());
-        assert(all_of(pop.begin(), pop.end(), [](const Candidate<GeneType>& sol) { return sol.fitness.size() > 1; }));
-        assert(all_of(pop.begin(), pop.end(), [&pop](const Candidate<GeneType>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
+        assert(all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() > 1; }));
+        assert(all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
         size_t dim = pop[0].fitness.size();    /* The number of objectives. */
 
@@ -239,8 +240,8 @@ namespace genetic_algorithm
             vector<size_t> R = pfront(first, first + distance(first, last) / 2);    /* Top half. */
             vector<size_t> S = pfront(first + distance(first, last) / 2, last);     /* Bottom half. */
 
-            /* T = Find all non-dominated elements of the bottom half. */
-            vector<size_t> T;
+            /* Q = Find all non-dominated elements of the bottom half. */
+            vector<size_t> Q;
             for (const auto& s : S)
             {
                 /* Check if s is dominated by any solution in R. */
@@ -263,9 +264,9 @@ namespace genetic_algorithm
                     }
                     if (is_dominated) break;
                 }
-                if (!is_dominated) T.push_back(s);
+                if (!is_dominated) Q.push_back(s);
             }
-            R.insert(R.end(), T.begin(), T.end());
+            R.insert(R.end(), Q.begin(), Q.end());
 
             return R;
         };
@@ -278,7 +279,7 @@ namespace genetic_algorithm
         sort(indices.begin(), indices.end(), [&pop](size_t lidx, size_t ridx) { return pop[lidx].fitness[0] > pop[ridx].fitness[0]; });
         indices = pfront(indices.begin(), indices.end());
 
-        CandidateVec<GeneType> optimal_sols;
+        CandidateVec<T> optimal_sols;
         optimal_sols.reserve(indices.size());
         for (const auto& idx : indices)
         {

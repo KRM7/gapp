@@ -32,34 +32,21 @@
 #define GA_CANDIDATE_H
 
 #include "math.hpp"
+#include "concepts.hpp"
 
 #include <vector>
-#include <functional>
-#include <concepts>
 #include <cstddef>
 
 namespace genetic_algorithm
 {
-    /** Types that std::hash is specialized for. */
-    template<typename T>
-    concept hashable = requires(T arg)
-    {
-        { std::hash<T>{}(arg) } -> std::convertible_to<size_t>;
-    };
-
-    /** Types that are regular and std::hash is specialized for. */
-    template<typename T>
-    concept regular_hashable =  std::regular<T> && hashable<T>;
-
-
     /**
     * The Candidate class that is used to represent solutions in the genetic algorithms.
     * This is used as the general purpose candidate type in all of the algorithms (SOGA, NSGA-II, NSGA-III).
     */
-    template<regular_hashable GeneType>
+    template<gene T>
     struct Candidate
     {
-        using Gene = GeneType;
+        using Gene = T;
 
         std::vector<Gene> chromosome;       /**< The chromosome encoding the solution. */
         std::vector<double> fitness;        /**< The fitness values (for each objective) of the solution. */
@@ -79,8 +66,8 @@ namespace genetic_algorithm
     };
 
     /** A pair of candidates. */
-    template<regular_hashable GeneType>
-    using CandidatePair = std::pair<Candidate<GeneType>, Candidate<GeneType>>;
+    template<gene T>
+    using CandidatePair = std::pair<Candidate<T>, Candidate<T>>;
 
     /** Two candidates are considered equal if their chromosomes are the same. */
     template<typename T>
@@ -91,7 +78,7 @@ namespace genetic_algorithm
     inline bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs);
 
     /** Hash function for the Candidate so they can be stored in an unordered set/map. */
-    template<hashable T>
+    template<detail::hashable T>
     struct CandidateHasher
     {
         size_t operator()(const Candidate<T>& candidate) const noexcept;
@@ -132,7 +119,7 @@ namespace genetic_algorithm
         return !(lhs == rhs);
     }
 
-    template<hashable GeneType>
+    template<detail::hashable GeneType>
     inline size_t CandidateHasher<GeneType>::operator()(const Candidate<GeneType>& candidate) const noexcept
     {
         size_t seed = candidate.chromosome.size();

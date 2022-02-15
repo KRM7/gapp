@@ -339,7 +339,7 @@ namespace genetic_algorithm
 
     template<typename GeneType>
     template<typename StopType>
-    //requires std::derived_from<StopType, stopping::StopCondition<GeneType>> && std::copy_constructible<StopType>
+    //requires std::derived_from<StopType, stopping::StopCondition<GA<GeneType>>> && std::copy_constructible<StopType>
     void GA<GeneType>::stop_condition(const StopType& f)
     {
         stop_condition_ = std::make_unique<StopType>(f);
