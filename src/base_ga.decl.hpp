@@ -312,7 +312,7 @@ namespace genetic_algorithm
         void stop_condition(const StopType& f);
 
         void stop_condition(std::unique_ptr<stopping::StopCondition<GeneType>>&& f);
-
+        
         template<typename StopType = stopping::StopCondition<GeneType>>
         //requires std::derived_from<StopType, stopping::StopCondition<GeneType>>
         StopType& stop_condition() const;
