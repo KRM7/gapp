@@ -25,11 +25,11 @@
 /**
 * Some utilities.
 *
-* @file utils.h
+* @file utils.hpp
 */
 
-#ifndef GA_UTILS_H
-#define GA_UTILS_H
+#ifndef GA_UTILS_HPP
+#define GA_UTILS_HPP
 
 #include <cstdlib>
 #include <cassert>
@@ -42,4 +42,4 @@
 
 #define GA_DEFAULT_EPSILON (2 * std::numeric_limits<double>::epsilon())
 
-#endif // !GA_UTILS_H
+#endif // !GA_UTILS_HPP

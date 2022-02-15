@@ -27,7 +27,7 @@
 #ifndef GA_MATH_HPP
 #define GA_MATH_HPP
 
-#include "utils.h"
+#include "utils.hpp"
 
 #include <vector>
 #include <limits>

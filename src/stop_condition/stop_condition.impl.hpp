@@ -29,7 +29,7 @@
 #include "../base_ga.h"
 #include "../population.hpp"
 #include "../math.hpp"
-#include "../utils.h"
+#include "../utils.hpp"
 
 #include <algorithm>
 #include <stdexcept>

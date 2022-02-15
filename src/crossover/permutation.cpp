@@ -24,7 +24,7 @@
 
 #include "permutation.hpp"
 #include "../rng.hpp"
-#include "../utils.h"
+#include "../utils.hpp"
 
 #include <algorithm>
 #include <unordered_set>

@@ -23,7 +23,7 @@
 */
 
 #include "real.hpp"
-#include "../utils.h"
+#include "../utils.hpp"
 #include "../rng.hpp"
 #include "../mo_detail.h"
 #include "../math.hpp"
