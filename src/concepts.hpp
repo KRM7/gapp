@@ -62,7 +62,7 @@ namespace genetic_algorithm
 
         /* Types that are derived from a specialization of a class template. */
         template<typename Derived, template<typename...> class BaseTempl>
-        concept derived_from_specialization_of = requires(const Derived & arg)
+        concept derived_from_specialization_of = requires(const Derived& arg)
         {
             derivedFromSpecializationOfImpl<BaseTempl>(arg);
         };
