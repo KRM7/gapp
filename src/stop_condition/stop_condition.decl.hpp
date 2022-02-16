@@ -29,7 +29,6 @@
 
 #include "stop_condition_base.hpp"
 #include "../candidate.hpp"
-#include "../base_ga.decl.hpp"
 #include "../concepts.hpp"
 
 #include <vector>

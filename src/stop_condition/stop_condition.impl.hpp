@@ -26,7 +26,7 @@
 #define GA_STOP_CONDITION_IMPL_HPP
 
 #include "stop_condition.hpp"
-#include "../base_ga.h"
+#include "../base_ga.decl.hpp"
 #include "../population.hpp"
 #include "../math.hpp"
 #include "../utils.hpp"
