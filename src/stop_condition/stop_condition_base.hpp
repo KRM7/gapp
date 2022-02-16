@@ -26,8 +26,14 @@
 #define GA_STOP_CONDITION_BASE_HPP
 
 #include "../candidate.hpp"
-#include "../base_ga.decl.hpp"
 #include "../concepts.hpp"
+
+namespace genetic_algorithm
+{
+    template<typename T>
+    class GA;
+
+} // namespace genetic_algorithm
 
 /** Early stop conditions used in the algorithms. */
 namespace genetic_algorithm::stopping
