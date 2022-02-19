@@ -45,6 +45,16 @@ namespace genetic_algorithm::selection
     };
 
     template<gene T>
+    class Tournament final : public Selection<T>
+    {
+    public:
+        using Selection<T>::Selection;
+
+        void prepare(const GA<T>& ga) override;
+        Candidate<T> select(const GA<T>& ga) override;
+    };
+
+    template<gene T>
     class Rank final : public Selection<T>
     {
     public:
