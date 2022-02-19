@@ -131,7 +131,25 @@ namespace genetic_algorithm::selection
         //std::function<double(double)> temperature_;
     };
 
-    // TODO: add multi-objective selection methods: NSGA2, NSGA3
+    template<gene T>
+    class NSGA2 final : public Selection<T>
+    {
+    public:
+        using Selection<T>::Selection;
+
+        void prepare(const GA<T>& ga) override;
+        Candidate<T> select(const GA<T>& ga) override;
+    };
+
+    template<gene T>
+    class NSGA3 final : public Selection<T>
+    {
+    public:
+        using Selection<T>::Selection;
+
+        void prepare(const GA<T>& ga) override;
+        Candidate<T> select(const GA<T>& ga) override;
+    };
 
 } // namespace genetic_algorithm::selection
 
