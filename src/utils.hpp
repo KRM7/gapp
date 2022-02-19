@@ -42,7 +42,7 @@
 
 #define GA_UNREACHABLE (assert(!"Unreachable code."), std::terminate())
 
-#define GA_DEFAULT_EPSILON (2 * std::numeric_limits<double>::epsilon())
+#define GA_DEFAULT_EPSILON (3 * std::numeric_limits<double>::epsilon())
 
 #ifndef GA_SEQ_EXECUTION
 #define GA_EXECUTION_UNSEQ std::execution::par_unseq
