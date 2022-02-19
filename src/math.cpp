@@ -25,6 +25,8 @@
 #include "math.hpp"
 
 #include <algorithm>
+#include <numeric>
+#include <functional>
 #include <cmath>
 #include <cstddef>
 #include <cassert>
@@ -79,13 +81,9 @@ namespace genetic_algorithm::detail
     {
         assert(v1.size() == v2.size());
 
-        double dist = 0.0;
-        for (size_t i = 0; i < v1.size(); i++)
-        {
-            dist += (v1[i] - v2[i]) * (v1[i] - v2[i]);
-        }
-
-        return dist;
+        return std::transform_reduce(v1.begin(), v1.end(), v2.begin(), 0.0,
+                                     std::plus<double>(),
+                                     [](double lhs, double rhs) { return std::pow(lhs - rhs, 2); });
     }
 
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point)
@@ -93,20 +91,11 @@ namespace genetic_algorithm::detail
         assert(line.size() == point.size());
         assert(!line.empty());
 
-        double num = 0.0, den = 0.0;
-        for (size_t i = 0; i < line.size(); i++)
-        {
-            num += line[i] * point[i];
-            den += line[i] * line[i];
-        }
-        double k = num / den;
+        double k = std::inner_product(line.begin(), line.end(), point.begin(), 0.0) /
+                   std::inner_product(line.begin(), line.end(), line.begin(), 0.0);
 
-        double dist = 0.0;
-        for (size_t i = 0; i < line.size(); i++)
-        {
-            dist += (point[i] - k * line[i]) * (point[i] - k * line[i]);
-        }
-
-        return dist;
+        return std::transform_reduce(point.begin(), point.end(), line.begin(), 0.0,
+                                     std::plus<double>(),
+                                     [k](double p, double l) { return std::pow(p - k * l, 2); });
     }
 }
