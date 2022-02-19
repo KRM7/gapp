@@ -34,6 +34,8 @@
 #include <cstdlib>
 #include <cassert>
 #include <limits>
+#include <execution>
+#include <random>
 
 
 #define GA_UNUSED(arg) (void(arg))
@@ -41,5 +43,11 @@
 #define GA_UNREACHABLE (assert(!"Unreachable code."), std::abort())
 
 #define GA_DEFAULT_EPSILON (2 * std::numeric_limits<double>::epsilon())
+
+#ifndef GA_PRESET_SEED
+#define GA_SEED (std::random_device{}())
+#else
+#define GA_SEED (0x12345678);
+#endif
 
 #endif // !GA_UTILS_HPP

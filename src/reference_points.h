@@ -54,6 +54,7 @@ namespace genetic_algorithm::detail
 #include <cassert>
 
 #include "mo_detail.h"
+#include "utils.hpp"
 
 namespace genetic_algorithm::detail
 {
@@ -61,7 +62,7 @@ namespace genetic_algorithm::detail
     {
         assert(dim > 0);
 
-        static thread_local std::minstd_rand0 engine{ std::random_device{}() };
+        static thread_local std::minstd_rand0 engine{ GA_SEED };
         std::uniform_real_distribution<double> distribution{ 0.0, 1.0 };
 
         std::vector<double> point;

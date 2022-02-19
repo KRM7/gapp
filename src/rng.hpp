@@ -32,6 +32,8 @@
 #ifndef GA_RANDOM_H
 #define GA_RANDOM_H
 
+#include "utils.hpp"
+
 #include <vector>
 #include <random>
 #include <cstdint>
@@ -86,7 +88,7 @@ namespace genetic_algorithm::rng
         /** Generate a new seed that can be used to initialize a PRNG. */
         Splitmix64::result_type operator()();
     private:
-        Splitmix64 gen_ = Splitmix64{ ::std::random_device{}() };
+        Splitmix64 gen_ = Splitmix64{ GA_SEED };
     };
 
     /** Global seed generator used in the genetic algorithms to seed PRNGs. */
