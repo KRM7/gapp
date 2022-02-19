@@ -103,7 +103,7 @@ namespace genetic_algorithm::detail
         while (refs.size() < n)
         {
             /* Calc the distance of each candidate to the closest ref point. */
-            transform(execution::par_unseq, candidates.begin(), candidates.end(), min_distances.begin(), min_distances.begin(),
+            transform(GA_EXECUTION_UNSEQ, candidates.begin(), candidates.end(), min_distances.begin(), min_distances.begin(),
             [&refs](const vector<double>& candidate, double dmin)
             {
                 double d = euclideanDistanceSq(candidate, refs.back());

@@ -44,6 +44,14 @@
 
 #define GA_DEFAULT_EPSILON (2 * std::numeric_limits<double>::epsilon())
 
+#ifndef GA_SEQ_EXECUTION
+#define GA_EXECUTION_UNSEQ std::execution::par_unseq
+#define GA_EXECUTION_SEQ std::execution::par
+#else
+#define GA_EXECUTION_UNSEQ std::execution::unseq
+#define GA_EXECUTION_SEQ std::execution::seq
+#endif
+
 #ifndef GA_PRESET_SEED
 #define GA_SEED (std::random_device{}())
 #else

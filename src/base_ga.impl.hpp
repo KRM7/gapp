@@ -10,6 +10,7 @@
 #include "mo_detail.h"
 #include "math.hpp"
 #include "population.hpp"
+#include "utils.hpp"
 
 #include <execution>
 #include <numeric>
@@ -395,14 +396,14 @@ namespace genetic_algorithm
             if (archive_optimal_solutions) updateOptimalSolutions(solutions_, population_);
 
             /* Selections. */
-            generate(execution::par_unseq, parent_pairs.begin(), parent_pairs.end(),
+            generate(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
             [this]() -> CandidatePair
             {
                 return make_pair(select(population_), select(population_));
             });
 
             /* Crossovers. */
-            for_each(execution::par_unseq, parent_pairs.begin(), parent_pairs.end(),
+            for_each(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
             [this](CandidatePair& p) -> void
             {
                 p = (*crossover_)(*this, p.first, p.second);
@@ -417,7 +418,7 @@ namespace genetic_algorithm
             }
 
             /* Mutations. */
-            for_each(execution::par_unseq, children.begin(), children.end(),
+            for_each(GA_EXECUTION_UNSEQ, children.begin(), children.end(),
             [this](Candidate& c) -> void
             {
                 (*mutation_)(*this, c);
@@ -520,7 +521,7 @@ namespace genetic_algorithm
     {
         assert(fitnessFunction != nullptr);
 
-        std::for_each(std::execution::par_unseq, pop.begin(), pop.end(),
+        std::for_each(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(),
         [this](Candidate& sol)
         {
             if (changing_fitness_func || !sol.is_evaluated)
@@ -609,7 +610,7 @@ namespace genetic_algorithm
         /* This function doesn't do anything unless a repair function is specified. */
         if (repairFunction == nullptr) return;
 
-        std::for_each(std::execution::par_unseq, pop.begin(), pop.end(),
+        std::for_each(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(),
         [this](Candidate& sol)
         {
             Chromosome improved_chrom = repairFunction(sol.chromosome);
@@ -978,7 +979,7 @@ namespace genetic_algorithm
             }
         }
 
-        for_each(execution::par_unseq, pfronts.begin(), pfronts.end(),
+        for_each(GA_EXECUTION_UNSEQ, pfronts.begin(), pfronts.end(),
         [&pop](vector<size_t>& pfront)
         {
             /* Calc the distances in each fitness dimension. */
@@ -1158,7 +1159,7 @@ namespace genetic_algorithm
 
         vector<vector<double>> fnorms(pop.size(), vector<double>(pop[0].fitness.size(), 0.0));    /* Don't change the actual fitness values. */
 
-        transform(execution::par_unseq, pop.begin(), pop.end(), fnorms.begin(), fnorms.begin(),
+        transform(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(), fnorms.begin(), fnorms.begin(),
         [this](const Candidate& sol, vector<double>& fnorm) -> vector<double>
         {
             for (size_t i = 0; i < sol.fitness.size(); i++)
@@ -1171,7 +1172,7 @@ namespace genetic_algorithm
         });
 
         /* Associate each candidate with the closest reference point. */
-        transform(execution::par_unseq, pop.begin(), pop.end(), fnorms.begin(), pop.begin(),
+        transform(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(), fnorms.begin(), pop.begin(),
         [&ref_points](Candidate& sol, const vector<double>& f) -> Candidate
         {
             tie(sol.ref_idx, sol.distance) = detail::findClosestRef(ref_points, f);
