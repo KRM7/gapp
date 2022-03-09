@@ -891,7 +891,7 @@ namespace genetic_algorithm
         assert(std::all_of(old_pop.begin(), old_pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
         assert(std::all_of(children.begin(), children.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
 
-        old_pop.insert(old_pop.end(), make_move_iterator(children.begin()), make_move_iterator(children.end()));
+        old_pop.insert(old_pop.end(), std::make_move_iterator(children.begin()), std::make_move_iterator(children.end()));
         std::partial_sort(old_pop.begin(), old_pop.begin() + population_size_, old_pop.end(),
         [](const Candidate& lhs, const Candidate& rhs)
         {
