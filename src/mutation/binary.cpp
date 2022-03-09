@@ -23,7 +23,6 @@
 */
 
 #include "binary.hpp"
-#include "../utils.hpp"
 #include "../rng.hpp"
 
 #include <vector>
@@ -34,10 +33,8 @@
 
 namespace genetic_algorithm::mutation::binary
 {
-    void Flip::mutate(const GA<char>& ga, Candidate<char>& candidate) const
+    void Flip::mutate(const GA<char>&, Candidate<char>& candidate) const
     {
-        GA_UNUSED(ga);
-
         size_t flip_cnt;
         if (candidate.chromosome.size() * pm_ >= 2.0)
         {

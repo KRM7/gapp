@@ -24,7 +24,6 @@
 
 #include "binary.hpp"
 #include "../candidate.hpp"
-#include "../utils.hpp"
 #include "../rng.hpp"
 
 #include <algorithm>
@@ -73,24 +72,18 @@ namespace genetic_algorithm::crossover::binary
         return { child1, child2 };
     }
 
-    CandidatePair<char> SinglePoint::crossover(const GA<char>& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const
+    CandidatePair<char> SinglePoint::crossover(const GA<char>&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
     {
-        GA_UNUSED(ga);
-
         return nPointCrossoverImpl(parent1, parent2, 1U);
     }
 
-    CandidatePair<char> TwoPoint::crossover(const GA<char>& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const
+    CandidatePair<char> TwoPoint::crossover(const GA<char>&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
     {
-        GA_UNUSED(ga);
-
         return nPointCrossoverImpl(parent1, parent2, 2U);
     }
 
-    CandidatePair<char> Uniform::crossover(const GA<char>& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const
+    CandidatePair<char> Uniform::crossover(const GA<char>&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
     {
-        GA_UNUSED(ga);
-
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the uniform crossover.");

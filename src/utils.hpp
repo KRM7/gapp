@@ -38,8 +38,6 @@
 #include <random>
 
 
-#define GA_UNUSED(arg) (void(arg))
-
 #define GA_UNREACHABLE (assert(!"Unreachable code."), std::terminate())
 
 #define GA_DEFAULT_EPSILON (3 * std::numeric_limits<double>::epsilon())

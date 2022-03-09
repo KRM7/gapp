@@ -29,7 +29,6 @@
 #include "../base_ga.decl.hpp"
 #include "../population.hpp"
 #include "../math.hpp"
-#include "../utils.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -44,11 +43,9 @@ namespace genetic_algorithm::stopping
     }
 
     template<gene T>
-    FitnessEvals<T>::FitnessEvals(const GA<T>& ga, size_t max_fitness_evals)
+    FitnessEvals<T>::FitnessEvals(const GA<T>&, size_t max_fitness_evals)
         : StopCondition<T>()
     {
-        GA_UNUSED(ga);
-
         this->max_fitness_evals(max_fitness_evals);
     }
 
@@ -73,11 +70,9 @@ namespace genetic_algorithm::stopping
     }
 
     template<gene T>
-    FitnessValue<T>::FitnessValue(const GA<T>& ga, const std::vector<double>& fitness_threshold) :
+    FitnessValue<T>::FitnessValue(const GA<T>&, const std::vector<double>& fitness_threshold) :
         StopCondition<T>()
     {
-        GA_UNUSED(ga);
-
         this->fitness_threshold(fitness_threshold);
     }
 
@@ -117,11 +112,9 @@ namespace genetic_algorithm::stopping
     }
 
     template<gene T>
-    FitnessMeanStall<T>::FitnessMeanStall(const GA<T>& ga, size_t patience, double delta)
+    FitnessMeanStall<T>::FitnessMeanStall(const GA<T>&, size_t patience, double delta)
         : StopCondition<T>()
     {
-        GA_UNUSED(ga);
-
         this->patience(patience);
         this->delta(delta);
     }
@@ -191,11 +184,9 @@ namespace genetic_algorithm::stopping
     }
 
     template<gene T>
-    FitnessBestStall<T>::FitnessBestStall(const GA<T>& ga, size_t patience, double delta) :
+    FitnessBestStall<T>::FitnessBestStall(const GA<T>&, size_t patience, double delta) :
         StopCondition<T>()
     {
-        GA_UNUSED(ga);
-
         this->patience(patience);
         this->delta(delta);
     }

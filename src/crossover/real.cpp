@@ -23,7 +23,6 @@
 */
 
 #include "real.hpp"
-#include "../utils.hpp"
 #include "../rng.hpp"
 #include "../mo_detail.h"
 #include "../math.hpp"
@@ -70,10 +69,8 @@ namespace genetic_algorithm::crossover::real
     }
 
 
-    CandidatePair<double> Arithmetic::crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const
+    CandidatePair<double> Arithmetic::crossover(const GA<double>&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
-        GA_UNUSED(ga);
-        
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the arithmetic crossover.");
@@ -92,9 +89,8 @@ namespace genetic_algorithm::crossover::real
         return { child1, child2 };
     }
 
-    CandidatePair<double> BLXa::crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const
+    CandidatePair<double> BLXa::crossover(const GA<double>&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
-        GA_UNUSED(ga);
         assert(alpha_ >= 0.0);
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
@@ -124,9 +120,8 @@ namespace genetic_algorithm::crossover::real
         return { child1, child2 };
     }
 
-    CandidatePair<double> SimulatedBinary::crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const
+    CandidatePair<double> SimulatedBinary::crossover(const GA<double>&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
-        GA_UNUSED(ga);
         assert(eta_ > 0.0);
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
@@ -176,10 +171,8 @@ namespace genetic_algorithm::crossover::real
         return { child1, child2 };
     }
 
-    CandidatePair<double> Wright::crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const
+    CandidatePair<double> Wright::crossover(const GA<double>&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
-        GA_UNUSED(ga);
-
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the Wright crossover.");

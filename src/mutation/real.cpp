@@ -23,7 +23,6 @@
 */
 
 #include "real.hpp"
-#include "../utils.hpp"
 #include "../rng.hpp"
 
 #include <algorithm>
@@ -33,10 +32,8 @@
 
 namespace genetic_algorithm::mutation::real
 {
-    void Uniform::mutate(const GA<double>& ga, Candidate<double>& candidate) const
+    void Uniform::mutate(const GA<double>&, Candidate<double>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() != bounds_.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Uniform mutation.");
@@ -111,10 +108,8 @@ namespace genetic_algorithm::mutation::real
         sigma_ = sigma;
     }
 
-    void Gauss::mutate(const GA<double>& ga, Candidate<double>& candidate) const
+    void Gauss::mutate(const GA<double>&, Candidate<double>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() != bounds_.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Gauss mutation.");
@@ -154,10 +149,8 @@ namespace genetic_algorithm::mutation::real
         eta_ = eta;
     }
 
-    void Polynomial::mutate(const GA<double>& ga, Candidate<double>& candidate) const
+    void Polynomial::mutate(const GA<double>&, Candidate<double>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() != bounds_.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Polynomial mutation.");
@@ -184,10 +177,8 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    void Boundary::mutate(const GA<double>& ga, Candidate<double>& candidate) const
+    void Boundary::mutate(const GA<double>&, Candidate<double>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() != bounds_.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Boundary mutation.");

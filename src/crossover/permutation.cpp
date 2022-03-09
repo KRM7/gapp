@@ -24,17 +24,14 @@
 
 #include "permutation.hpp"
 #include "../rng.hpp"
-#include "../utils.hpp"
 
 #include <algorithm>
 #include <unordered_set>
 
 namespace genetic_algorithm::crossover::perm
 {
-    CandidatePair<size_t> Order1::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Order1::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
-        GA_UNUSED(ga);
-
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the Order1 crossover.");
@@ -99,10 +96,8 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Order2::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Order2::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
-        GA_UNUSED(ga);
-
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the Order2 crossover.");
@@ -150,10 +145,8 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Position::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Position::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
-        GA_UNUSED(ga);
-
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the Position crossover.");
@@ -201,10 +194,8 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Cycle::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Cycle::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
-        GA_UNUSED(ga);
-
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the Cycle crossover.");
@@ -269,9 +260,8 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Edge::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Edge::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
-        GA_UNUSED(ga);
         using NList = std::vector<std::unordered_set<size_t>>;
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
@@ -393,10 +383,8 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> PMX::crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> PMX::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
-        GA_UNUSED(ga);
-
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the PMX crossover.");

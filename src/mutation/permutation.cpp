@@ -23,7 +23,6 @@
 */
 
 #include "permutation.hpp"
-#include "../utils.hpp"
 #include "../rng.hpp"
 
 #include <algorithm>
@@ -33,10 +32,8 @@
 
 namespace genetic_algorithm::mutation::perm
 {
-    void Inversion::mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const
+    void Inversion::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {
             size_t len = rng::randomInt(size_t{ 2 }, std::max(size_t(0.75 * candidate.chromosome.size()), size_t{ 2 }));
@@ -47,10 +44,8 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Swap2::mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const
+    void Swap2::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() < 2)
         {
             throw std::invalid_argument("The chromosome must have at least 2 genes for the Swap2 mutation.");
@@ -63,10 +58,8 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Swap3::mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const
+    void Swap3::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() < 3)
         {
             throw std::invalid_argument("The chromosome must have at least 3 genes for the Swap3 mutation.");
@@ -80,10 +73,8 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Shuffle::mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const
+    void Shuffle::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {
             size_t len = rng::randomInt(size_t{ 2 }, std::max(size_t(0.5 * candidate.chromosome.size()), size_t{ 2 }));
@@ -94,10 +85,8 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Shift::mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const
+    void Shift::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
     {
-        GA_UNUSED(ga);
-
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {
             size_t len = rng::randomInt(size_t{ 2 }, std::max(size_t(0.75 * candidate.chromosome.size()), size_t{ 2 }));

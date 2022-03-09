@@ -10,6 +10,7 @@
 
 int main()
 {
+
     binaryRastriginTest();
     binaryRosenbrockTest();
     binarySchwefelTest();
