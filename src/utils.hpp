@@ -51,9 +51,9 @@
 #endif
 
 #ifndef GA_PRESET_SEED
-#define GA_SEED (std::random_device{}())
+#define GA_SEED() (std::random_device{}())
 #else
-#define GA_SEED (0x12345678);
+#define GA_SEED() (0x12345678);
 #endif
 
 #endif // !GA_UTILS_HPP

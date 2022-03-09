@@ -88,7 +88,7 @@ namespace genetic_algorithm::rng
         /** Generate a new seed that can be used to initialize a PRNG. */
         Splitmix64::result_type operator()();
     private:
-        Splitmix64 gen_ = Splitmix64{ GA_SEED };
+        Splitmix64 gen_ = Splitmix64{ GA_SEED() };
     };
 
     /** Global seed generator used in the genetic algorithms to seed PRNGs. */
