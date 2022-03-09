@@ -26,9 +26,7 @@
 #define GA_SELECTION_BASE_HPP
 
 #include "../concepts.hpp"
-
-#include <vector>
-#include <cstddef>
+#include "../population.hpp"
 
 namespace genetic_algorithm
 {
@@ -47,13 +45,43 @@ namespace genetic_algorithm::selection
         Selection(const GA<T>& ga) {};
         virtual ~Selection() = default;
 
-        virtual void prepare(const GA<T>& ga) = 0;
-        virtual Candidate<T> select(const GA<T>& ga) = 0;
-
-    private:
-        std::vector<double> pdf_;   /* Discrete selection probability distribution function of the population. */
-        std::vector<double> cdf_;   /* Discrete cumulative distribution function of the population. */
+        virtual void prepare(const GA<T>& ga, const Population<T>& pop) = 0;
+        virtual Candidate<T> select(const GA<T>& ga, const Population<T>& pop) = 0;
+        virtual Population<T> nextPopulation(const GA<T>& ga, Population<T>& old_pop, CandidateVec<T>& children) const;
     };
+
+} // namespace genetic_algorithm::selection
+
+
+/* IMPLEMENTATION */
+
+#include <algorithm>
+#include <iterator>
+#include <cstddef>
+#include <cassert>
+
+namespace genetic_algorithm::selection
+{
+    template<gene T>
+    inline Population<T> Selection<T>::nextPopulation(const GA<T>&, Population<T>& old_pop, CandidateVec<T>& children) const
+    {
+        assert(!children.empty());
+
+        size_t pop_size = old_pop.size();
+        old_pop.insert(old_pop.end(), std::make_move_iterator(children.begin()),
+                                      std::make_move_iterator(children.end()));
+
+        assert(std::all_of(old_pop.begin(), old_pop.end(), [](const Candidate<T>& sol) { return sol.is_evaluated && sol.fitness.size() > 0; }));
+
+        std::partial_sort(old_pop.begin(), old_pop.begin() + pop_size, old_pop.end(),
+        [](const Candidate<T>& lhs, const Candidate<T>& rhs)
+        {
+            return detail::paretoCompareLess(rhs.fitness, lhs.fitness);
+        });
+        old_pop.resize(pop_size);
+
+        return old_pop;
+    }
 
 } // namespace genetic_algorithm::selection
 
