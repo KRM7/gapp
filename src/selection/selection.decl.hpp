@@ -29,6 +29,7 @@
 #include "../candidate.hpp"
 #include "../concepts.hpp"
 
+#include <vector>
 #include <utility>
 #include <functional>
 
@@ -40,8 +41,10 @@ namespace genetic_algorithm::selection
     public:
         using Selection<T>::Selection;
 
-        void prepare(const GA<T>& ga) override;
-        Candidate<T> select(const GA<T>& ga) override;
+        void prepare(const GA<T>& ga, const Population<T>& pop) override;
+        Candidate<T> select(const GA<T>& ga, const Population<T>& pop) override;
+    private:
+        std::vector<double> cdf_;
     };
 
     template<gene T>
@@ -50,8 +53,8 @@ namespace genetic_algorithm::selection
     public:
         using Selection<T>::Selection;
 
-        void prepare(const GA<T>& ga) override;
-        Candidate<T> select(const GA<T>& ga) override;
+        void prepare(const GA<T>& ga, const Population<T>& pop) override;
+        Candidate<T> select(const GA<T>& ga, const Population<T>& pop) override;
     };
 
     template<gene T>
@@ -69,16 +72,14 @@ namespace genetic_algorithm::selection
         [[nodiscard]]
         double max_weight() const noexcept { return max_weight_; }
 
-        void weights(double min_weight, double max_weight);
-        [[nodiscard]]
-        std::pair<double, double> weights() const noexcept { return { min_weight_, max_weight }; }
-
-        void prepare(const GA<T>& ga) override;
-        Candidate<T> select(const GA<T>& ga) override;
+        void prepare(const GA<T>& ga, const Population<T>& pop) override;
+        Candidate<T> select(const GA<T>& ga, const Population<T>& pop) override;
 
     private:
         double min_weight_ = 0.1;
         double max_weight_ = 1.1;
+
+        std::vector<double> cdf_;
     };
 
     template<gene T>
@@ -92,22 +93,21 @@ namespace genetic_algorithm::selection
         [[nodiscard]]
         double scale() const noexcept { return scale_; }
 
-        void prepare(const GA<T>& ga) override;
-        Candidate<T> select(const GA<T>& ga) override;
+        void prepare(const GA<T>& ga, const Population<T>& pop) override;
+        Candidate<T> select(const GA<T>& ga, const Population<T>& pop) override;
 
     private:
         double scale_ = 3.0;
+
+        std::vector<double> cdf_;
     };
 
     template<gene T>
     class Boltzmann final : public Selection<T>
     {
     public:
-        // TODO: default values for the temperatures
-        explicit Boltzmann(double t_min, double t_max);
-        explicit Boltzmann(const GA<T>& ga, double t_min, double t_max);
-
-        // TODO: add temperature function, schedulers?
+        explicit Boltzmann(double t_min = 0.25, double t_max = 4.0);
+        explicit Boltzmann(const GA<T>& ga, double t_min = 0.25, double t_max = 4.0);
 
         void t_min(double t_min);
         [[nodiscard]]
@@ -117,18 +117,15 @@ namespace genetic_algorithm::selection
         [[nodiscard]]
         double t_max() const noexcept { return t_max_; }
 
-        void temps(double t_min, double t_max);
-        [[nodiscard]]
-        std::pair<double, double> temps() const noexcept { return { t_min_, t_max_ }; }
-
-        void prepare(const GA<T>& ga) override;
-        Candidate<T> select(const GA<T>& ga) override;
+        void prepare(const GA<T>& ga, const Population<T>& pop) override;
+        Candidate<T> select(const GA<T>& ga, const Population<T>& pop) override;
 
     private:
         double t_min_;
         double t_max_;
-
         //std::function<double(double)> temperature_;
+
+        std::vector<double> cdf_;
     };
 
     template<gene T>
@@ -137,8 +134,13 @@ namespace genetic_algorithm::selection
     public:
         using Selection<T>::Selection;
 
-        void prepare(const GA<T>& ga) override;
-        Candidate<T> select(const GA<T>& ga) override;
+        void prepare(const GA<T>& ga, const Population<T>& pop) override;
+        Candidate<T> select(const GA<T>& ga, const Population<T>& pop) override;
+        Population<T> nextPopulation(const GA<T>& ga, Population<T>& old_pop, CandidateVec<T>& children) const override;
+
+    private:
+        std::vector<size_t> rank_;
+        std::vector<double> crowd_dist_;
     };
 
     template<gene T>
@@ -147,8 +149,15 @@ namespace genetic_algorithm::selection
     public:
         using Selection<T>::Selection;
 
-        void prepare(const GA<T>& ga) override;
-        Candidate<T> select(const GA<T>& ga) override;
+        void prepare(const GA<T>& ga, const Population<T>& pop) override;
+        Candidate<T> select(const GA<T>& ga, const Population<T>& pop) override;
+        Population<T> nextPopulation(const GA<T>& ga, Population<T>& old_pop, CandidateVec<T>& children) const override;
+
+    private:
+        std::vector<size_t> rank_;
+        std::vector<size_t> ref_idx_;
+        std::vector<double> ref_dist_;
+        std::vector<size_t> niche_cnt_;
     };
 
 } // namespace genetic_algorithm::selection
