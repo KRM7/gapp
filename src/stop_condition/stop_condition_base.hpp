@@ -32,8 +32,7 @@ namespace genetic_algorithm
 {
     template<typename T>
     class GA;
-
-} // namespace genetic_algorithm
+}
 
 /** Early stop conditions used in the algorithms. */
 namespace genetic_algorithm::stopping
