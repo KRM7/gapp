@@ -22,12 +22,6 @@
 *  SOFTWARE.
 */
 
-/**
-* Some utilities.
-*
-* @file utils.hpp
-*/
-
 #ifndef GA_UTILS_HPP
 #define GA_UTILS_HPP
 
