@@ -255,8 +255,6 @@ namespace genetic_algorithm::selection
 
         /* Add entire fronts while possible. */
         size_t front_idx = 0;
-        while (new_pop.size() < ga.population_size() &&
-               new_pop.size() + pfronts.idxs[front_idx].size() <= ga.population_size())
         while (new_pop.size() + pfronts.idxs[front_idx].size() <= ga.population_size())
         {
             for (const auto& idx : pfronts.idxs[front_idx])
@@ -531,6 +529,8 @@ namespace genetic_algorithm::selection
     template<gene T>
     inline Population<T> NSGA3<T>::nextPopulation(const GA<T>& ga, Population<T>& old_pop, CandidateVec<T>& children)
     {
+        assert(!children.empty());
+
         updateIdealPoint(ideal_point_, old_pop);
         updateExtremePoints(extreme_points_, old_pop, ideal_point_);
         nadir_point_ = nadirPoint(extreme_points_);
@@ -540,10 +540,15 @@ namespace genetic_algorithm::selection
 
         old_pop.insert(old_pop.end(), std::make_move_iterator(children.begin()),
                                       std::make_move_iterator(children.end()));
+        sol_props_.resize(old_pop.size());
 
         assert(std::all_of(old_pop.begin(), old_pop.end(), [](const Candidate<T>& sol) { return sol.is_evaluated; }));
 
         auto pfronts = dtl::nonDominatedSort(fitnessMatrix(old_pop));
+        for (size_t i = 0; i < sol_props_.size(); i++)
+        {
+            sol_props_[i].rank = pfronts.ranks[i];
+        }
         associatePopWithRefs(old_pop);
 
         std::vector<CandidateInfo> new_props;
@@ -551,8 +556,7 @@ namespace genetic_algorithm::selection
 
         /* Add entire fronts while possible. */
         size_t front_idx = 0;
-        while (new_pop.size() < ga.population_size() &&
-               new_pop.size() + pfronts.idxs[front_idx].size() <= ga.population_size())
+        while (new_pop.size() + pfronts.idxs[front_idx].size() <= ga.population_size())
         {
             for (const auto& idx : pfronts.idxs[front_idx])
             {
@@ -575,7 +579,7 @@ namespace genetic_algorithm::selection
             }
 
             /* Find the reference points with minimal niche counts, and pick one. */
-            std::vector<size_t> refs = {};
+            std::vector<size_t> refs;
             for (const auto& idx : partial_front)
             {
                 size_t ref = sol_props_[idx].ref_idx;
@@ -588,7 +592,7 @@ namespace genetic_algorithm::selection
 
             /* Find the idx of the closest sol in the partial front associated with this ref point. */
             size_t sol_idx = partial_front[0];
-            double min_distance = std::numeric_limits<double>::infinity();
+            double min_distance = std::numeric_limits<double>::max();
             for (const auto& idx : partial_front)
             {
                 if (sol_props_[idx].ref_idx == ref && sol_props_[idx].ref_dist < min_distance)
@@ -604,14 +608,10 @@ namespace genetic_algorithm::selection
             partial_front.erase(std::remove(partial_front.begin(), partial_front.end(), sol_idx), partial_front.end());
 
             ref_niche_counts[ref]++;
-            for (auto& sol : sol_props_)
-            {
-                if (sol.ref_idx == ref) sol.niche_count++;
-            }
         }
 
-        sol_props_ = std::move(new_props);
-        ref_niche_counts_ = std::move(ref_niche_counts);
+        ref_niche_counts_ = calcNicheCounts(ga, new_pop, new_props);
+        sol_props_ = new_props;
 
         return new_pop;
     }
