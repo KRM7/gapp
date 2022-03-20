@@ -7,8 +7,6 @@
 #include "mutation/mutation_base.hpp"
 #include "stop_condition/stop_condition_base.hpp"
 #include "rng.hpp"
-#include "reference_points.h"
-#include "mo_detail.h"
 #include "math.hpp"
 #include "population.hpp"
 #include "utils.hpp"
