@@ -233,6 +233,8 @@ namespace genetic_algorithm::selection
     template<gene T>
     inline Population<T> NSGA2<T>::nextPopulation(const GA<T>& ga, Population<T>& old_pop, CandidateVec<T>& children)
     {
+        assert(!children.empty());
+
         Population<T> new_pop;
         new_pop.reserve(ga.population_size());
 
@@ -255,6 +257,7 @@ namespace genetic_algorithm::selection
         size_t front_idx = 0;
         while (new_pop.size() < ga.population_size() &&
                new_pop.size() + pfronts.idxs[front_idx].size() <= ga.population_size())
+        while (new_pop.size() + pfronts.idxs[front_idx].size() <= ga.population_size())
         {
             for (const auto& idx : pfronts.idxs[front_idx])
             {
