@@ -49,7 +49,7 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    inline GA<T>::GA(size_t chrom_len, fitnessFunction_t fitness_function)
+    inline GA<T>::GA(size_t chrom_len, FitnessFunction fitness_function)
         : chrom_len_(chrom_len), fitnessFunction(fitness_function)
     {
         if (chrom_len == 0)

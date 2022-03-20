@@ -70,11 +70,11 @@ namespace genetic_algorithm
         using CandidateSet = std::unordered_set<Candidate, CandidateHasher<GeneType>>;      /**< . */
         using Population = std::vector<Candidate>;                                          /**< . */
 
-        using fitnessFunction_t = std::function<std::vector<double>(const Chromosome&)>;    /**< The type of the fitness function. */
-        using selectionFunction_t = std::function<Candidate(const Population&)>;            /**< The type of the selection function. */
-        using mutationFunction_t = std::function<void(Candidate&, double)>;                 /**< The type of the mutation function. */
-        using repairFunction_t = std::function<Chromosome(const Chromosome&)>;              /**< The type of the repair function. */
-        using callbackFunction_t = std::function<void(const GA*)>;
+        using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;      /**< The type of the fitness function. */
+        using SelectionFunction = std::function<Candidate(const Population&)>;              /**< The type of the selection function. */
+        using MutationFunction = std::function<void(Candidate&, double)>;                   /**< The type of the mutation function. */
+        using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
+        using CallbackFunction = std::function<void(const GA&)>;
 
         /**
         * Should be set to false if the fitness function does not change over time. \n

@@ -52,7 +52,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function used in the algorithm.
         * @param base The number of values a gene can take. Must be > 1. If 2, same as the @ref BinaryGA.
         */
-        IntegerGA(size_t chrom_len, fitnessFunction_t fitnessFunction, size_t base);
+        IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, size_t base);
 
         /**
         * Sets the number of values a gene can take to @p base. \n
@@ -82,7 +82,7 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    inline IntegerGA::IntegerGA(size_t chrom_len, fitnessFunction_t fitnessFunction, size_t base)
+    inline IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, size_t base)
         : GA(chrom_len, fitnessFunction), base_(base)
     {
         if (base < 2) throw std::invalid_argument("The base must be at least 2.");

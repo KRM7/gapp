@@ -58,7 +58,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function to find the maximum of with the algorithm.
         * @param bounds The boundaries of the real coded genes (their min and max values).
         */
-        RCGA(size_t chrom_len, fitnessFunction_t fitnessFunction, limits_t bounds);
+        RCGA(size_t chrom_len, FitnessFunction fitnessFunction, limits_t bounds);
 
         /**
         * Sets the boundaries of the real-coded genes. \n
@@ -93,7 +93,7 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    inline RCGA::RCGA(size_t chrom_len, fitnessFunction_t fitnessFunction, limits_t bounds)
+    inline RCGA::RCGA(size_t chrom_len, FitnessFunction fitnessFunction, limits_t bounds)
         : GA(chrom_len, fitnessFunction), limits_(bounds)
     {
         if (bounds.size() != chrom_len)

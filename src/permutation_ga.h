@@ -50,7 +50,7 @@ namespace genetic_algorithm
         * @param chrom_len The number of genes in the chromosomes.
         * @param fitness_function The fitness function used in the algorithm to find the maximum of.
         */
-        PermutationGA(size_t chrom_len, fitnessFunction_t fitnessFunction);
+        PermutationGA(size_t chrom_len, FitnessFunction fitnessFunction);
 
     private:
         Candidate generateCandidate() const override;
@@ -71,7 +71,7 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    inline PermutationGA::PermutationGA(size_t chrom_len, fitnessFunction_t fitnessFunction)
+    inline PermutationGA::PermutationGA(size_t chrom_len, FitnessFunction fitnessFunction)
         : GA(chrom_len, fitnessFunction)
     {
     }

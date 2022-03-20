@@ -49,7 +49,7 @@ namespace genetic_algorithm
         * @param chrom_len The length of the binary chromosomes.
         * @param fitness_function The fitness function to find the maximum of in the algorithm.
         */
-        BinaryGA(size_t chrom_len, fitnessFunction_t fitness_function);
+        BinaryGA(size_t chrom_len, FitnessFunction fitness_function);
 
     private:
         Candidate generateCandidate() const override;
@@ -67,7 +67,7 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    inline BinaryGA::BinaryGA(size_t chrom_len, fitnessFunction_t fitness_function)
+    inline BinaryGA::BinaryGA(size_t chrom_len, FitnessFunction fitness_function)
         : GA(chrom_len, fitness_function) 
     {
     }
