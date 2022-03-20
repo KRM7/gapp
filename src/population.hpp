@@ -56,6 +56,10 @@ namespace genetic_algorithm
     template<gene T>
     std::vector<double> populationFitnessSD(const Population<T>& pop);
 
+    /** Return the standard deviation of the fitness values of the population along each objective axis. */
+    template<gene T>
+    std::vector<double> populationFitnessSD(const Population<T>& pop, const std::vector<double>& mean);
+
     /** Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
     template<gene T>
     CandidateVec<T> findParetoFront1D(const Population<T>& pop);
@@ -63,6 +67,14 @@ namespace genetic_algorithm
     /** Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
     template<gene T>
     CandidateVec<T> findParetoFrontKung(const Population<T>& pop);
+
+    /** Get the fitness vector of the population (single-objective). */
+    template<gene T>
+    std::vector<double> fitnessVector(const Population<T>& pop);
+
+    /** Get the fitness matrix of the population (multi-objective). */
+    template<gene T>
+    std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop);
 
 } // namespace genetic_algorithm
 
@@ -172,7 +184,6 @@ namespace genetic_algorithm
 
         auto mean = populationFitnessMean(pop);
 
-        //auto variance = std::vector<long double>(pop[0].fitness.size(), 0.0);
         auto variance = std::vector<double>(pop[0].fitness.size(), 0.0);
         for (const auto& sol : pop)
         {
@@ -186,7 +197,39 @@ namespace genetic_algorithm
             elem = std::sqrt(elem);
         }
 
-        //return std::vector<double>(variance.begin(), variance.end());
+        return variance;
+    }
+
+    template<gene T>
+    std::vector<double> populationFitnessSD(const Population<T>& pop, const std::vector<double>& mean)
+    {
+        if (pop.empty())
+        {
+            throw std::invalid_argument("Can't calculate fitness SD for an empty population.");
+        }
+        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
+        {
+            throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the SD.");
+        }
+
+        if (pop.size() == 1)
+        {
+            return std::vector<double>(pop[0].fitness.size(), 0.0);
+        }
+
+        auto variance = std::vector<double>(pop[0].fitness.size(), 0.0);
+        for (const auto& sol : pop)
+        {
+            for (size_t i = 0; i < variance.size(); i++)
+            {
+                variance[i] += std::pow(sol.fitness[i] - mean[i], 2) / (pop.size() - 1.0);
+            }
+        }
+        for (auto& elem : variance)
+        {
+            elem = std::sqrt(elem);
+        }
+
         return variance;
     }
 
@@ -287,6 +330,36 @@ namespace genetic_algorithm
         }
 
         return optimal_sols;
+    }
+
+    template<gene T>
+    std::vector<double> fitnessVector(const Population<T>& pop)
+    {
+        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
+
+        std::vector<double> fvec;
+        fvec.reserve(pop.size());
+
+        for (const auto& sol : pop)
+        {
+            fvec.push_back(sol.fitness[0]);
+        }
+
+        return fvec;
+    }
+
+    template<gene T>
+    std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop)
+    {
+        std::vector<std::vector<double>> fmat;
+        fmat.reserve(pop.size());
+
+        for (const auto& sol : pop)
+        {
+            fmat.push_back(sol.fitness);
+        }
+
+        return fmat;
     }
 
 } // namespace genetic_algorithm
