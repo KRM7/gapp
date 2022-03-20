@@ -51,14 +51,6 @@ namespace genetic_algorithm
         std::vector<Gene> chromosome;       /**< The chromosome encoding the solution. */
         std::vector<double> fitness;        /**< The fitness values (for each objective) of the solution. */
 
-        double selection_pdf = 0.0;         /**< The probability of selecting the candidate (SOGA). [0.0, 1.0] */
-        double selection_cdf = 0.0;         /**< The value of the cumulative distribution function for the candidate (SOGA). [0.0, 1.0] */
-
-        size_t rank = 0;                    /**< Non-domination rank (used in both the NSGA-II and NSGA-III). */
-        double distance = 0.0;              /**< Crowding distance (NSGA-II), or the distance to closest reference point (NSGA-III). */
-        size_t ref_idx = 0;                 /**< Index of the associated reference point (NSGA-III). */
-        size_t niche_count = 0;             /**< Number of candidates associated with the same reference point as this candidate (NSGA-III). */
-
         bool is_evaluated = false;          /**< False if the candidate's fitness value needs to be computed. */
 
         Candidate() = default;
