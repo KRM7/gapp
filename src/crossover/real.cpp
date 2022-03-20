@@ -24,7 +24,6 @@
 
 #include "real.hpp"
 #include "../rng.hpp"
-#include "../mo_detail.h"
 #include "../math.hpp"
 
 #include <algorithm>
