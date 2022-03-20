@@ -133,6 +133,9 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     inline std::vector<IntType> sampleUnique(IntType u_bound, size_t n);
 
+    /** Sample a point from a uniform distribution on a unit simplex in dim dimensions. */
+    inline std::vector<double> randomSimplexPoint(size_t dim);
+
 } // namespace genetic_algorithm::rng
 
 
@@ -283,6 +286,30 @@ namespace genetic_algorithm::rng
         }
 
         return std::vector(nums.end() - n, nums.end());
+    }
+
+    std::vector<double> randomSimplexPoint(size_t dim)
+    {
+        assert(dim > 0);
+
+        static thread_local std::minstd_rand0 rng{ GA_SEED() };
+        std::uniform_real_distribution<double> dist{ 0.0, 1.0 };
+
+        std::vector<double> point;
+        point.reserve(dim);
+
+        double sum = 0.0;
+        for (size_t i = 0; i < dim; i++)
+        {
+            point.push_back(-std::log(dist(rng)));
+            sum += point.back();
+        }
+        for (size_t i = 0; i < dim; i++)
+        {
+            point[i] /= sum;
+        }
+
+        return point;
     }
 
 }
