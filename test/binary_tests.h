@@ -10,6 +10,7 @@
 #include <iomanip>
 
 #include "../src/binary_ga.h"
+#include "../src/selection/selection.hpp"
 #include "../src/crossover/binary.hpp"
 #include "../src/mutation/binary.hpp"
 #include "../src/stop_condition/stop_condition.hpp"
@@ -28,7 +29,7 @@ void binaryRastriginTest()
     
     /* Set some optional parameters. */
     GA.population_size(400);
-    GA.selection_method(BinaryGA::SogaSelection::roulette);
+    GA.selection_method(selection::Roulette{ GA });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
 
@@ -74,7 +75,7 @@ void binaryRosenbrockTest()
 
     /* Set some optional parameters. */
     GA.population_size(300);
-    GA.selection_method(BinaryGA::SogaSelection::tournament);
+    GA.selection_method(selection::Tournament{ GA });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.max_gen(1500);
@@ -118,7 +119,7 @@ void binarySchwefelTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.selection_method(BinaryGA::SogaSelection::rank);
+    GA.selection_method(selection::Rank{ GA });
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     
@@ -164,7 +165,7 @@ void binaryGriewankTest()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.selection_method(BinaryGA::SogaSelection::sigma);
+    GA.selection_method(selection::Sigma{ GA });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
 
@@ -210,7 +211,7 @@ void binaryAckleyTest()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.selection_method(BinaryGA::SogaSelection::boltzmann);
+    GA.selection_method(selection::Boltzmann{ GA });
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
     

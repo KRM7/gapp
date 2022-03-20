@@ -10,6 +10,7 @@
 #include <iomanip>
 
 #include "../src/real_ga.h"
+#include "../src/selection/selection.hpp"
 #include "../src/crossover/real.hpp"
 #include "../src/mutation/real.hpp"
 #include "../src/stop_condition/stop_condition.hpp"
@@ -31,7 +32,7 @@ void realRastriginTest()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(RCGA::SogaSelection::roulette);
+    GA.selection_method(selection::Roulette{ GA });
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.6, 2.0 });
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     
@@ -77,7 +78,7 @@ void realRosenbrockTest()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(RCGA::SogaSelection::tournament);
+    GA.selection_method(selection::Tournament{ GA });
     GA.crossover_method(crossover::real::BLXa{ limits, 0.9 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / rosenbrockFunction.num_vars });
     
@@ -123,7 +124,7 @@ void realSchwefelTest()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(RCGA::SogaSelection::sigma);
+    GA.selection_method(selection::Sigma{ GA });
     GA.crossover_method(crossover::real::BLXa{ limits, 0.7 });
     GA.mutation_method(mutation::real::NonUniform{ limits, 1.0 / schwefelFunction.num_vars });
     
@@ -169,7 +170,7 @@ void realGriewankTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.selection_method(RCGA::SogaSelection::boltzmann);
+    GA.selection_method(selection::Boltzmann{ GA });
     GA.crossover_method(crossover::real::Wright{ limits, 0.85 });
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     GA.max_gen(1500);
@@ -213,7 +214,7 @@ void realAckleyTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.selection_method(RCGA::SogaSelection::boltzmann);
+    GA.selection_method(selection::Boltzmann{ GA });
     GA.crossover_method(crossover::real::Arithmetic{ limits, 0.85 });
     GA.mutation_method(mutation::real::Polynomial{ limits, 1.0 / ackleyFunction.num_vars, 60.0 });
     

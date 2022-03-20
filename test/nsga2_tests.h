@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "../src/real_ga.h"
+#include "../src/selection/selection.hpp"
 #include "../src/crossover/real.hpp"
 #include "../src/mutation/real.hpp"
 #include "fitness_functions.h"
@@ -29,10 +30,10 @@ void nsga2KurTest()
     vector<pair<double, double>> limits(kurFunction.num_vars, limit);
 
     RCGA GA(kurFunction.num_vars, kurFunction, limits);
-    GA.mode(RCGA::Mode::multi_objective_sorting);
 
     /* Set some optional parameters. */
     GA.population_size(100);
+    GA.selection_method(selection::NSGA2{ GA });
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
@@ -63,10 +64,10 @@ void nsga2Zdt2Test()
     vector<pair<double, double>> limits(zdt2Function.num_vars, limit);
     
     RCGA GA(zdt2Function.num_vars, zdt2Function, limits);
-    GA.mode(RCGA::Mode::multi_objective_sorting);
 
     /* Set some optional parameters. */
     GA.population_size(100);
+    GA.selection_method(selection::NSGA2{ GA });
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
@@ -97,10 +98,10 @@ void nsga2Zdt3Test()
     vector<pair<double, double>> limits(zdt3Function.num_vars, limit);
 
     RCGA GA(zdt3Function.num_vars, zdt3Function, limits);
-    GA.mode(RCGA::Mode::multi_objective_sorting);
 
     /* Set some optional parameters. */
     GA.population_size(100);
+    GA.selection_method(selection::NSGA2{ GA });
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
@@ -131,10 +132,10 @@ void nsga2Zdt6Test()
     vector<pair<double, double>> limits(zdt6Function.num_vars, limit);
     
     RCGA GA(zdt6Function.num_vars, zdt6Function, limits);
-    GA.mode(RCGA::Mode::multi_objective_sorting);
 
     /* Set some optional parameters. */
     GA.population_size(100);
+    GA.selection_method(selection::NSGA2{ GA });
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
@@ -165,10 +166,10 @@ void nsga2Dtlz1Test()
     vector<pair<double, double>> limits(dtlz1Function.num_vars, limit);
 
     RCGA GA(dtlz1Function.num_vars, dtlz1Function, limits);
-    GA.mode(RCGA::Mode::multi_objective_sorting);
 
     /* Set some optional parameters. */
     GA.population_size(100);
+    GA.selection_method(selection::NSGA2{ GA });
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
     GA.max_gen(1500);
@@ -199,10 +200,10 @@ void nsga2Dtlz2Test()
     vector<pair<double, double>> limits(dtlz2Function.num_vars, limit);
 
     RCGA GA(dtlz2Function.num_vars, dtlz2Function, limits);
-    GA.mode(RCGA::Mode::multi_objective_sorting);
 
     /* Set some optional parameters. */
     GA.population_size(100);
+    GA.selection_method(selection::NSGA2{ GA });
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
     GA.max_gen(1500);
