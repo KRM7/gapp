@@ -49,7 +49,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /**
-        * Create a stop condition with the specified parameters.
+        * Create a stop condition based on the number of fitness evaluations performed.
         *
         * @param max_fitness_evals The maximum number of fitness function evaluations to perform.
         */
@@ -93,7 +93,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /**
-        * Create a stop condition with the specified parameters.
+        * Create a stop condition based on reaching a fitness threshold.
         *
         * @param fitness_threshold The fitness threshold vector used for checking the stop condition.
         */
@@ -136,7 +136,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /**
-        * Create a stop condition with the specified parameters.
+        * Create a stop condition based on the mean fitness values of the population.
         *
         * @param patience The number of generations to wait without stopping even if there is no improvement.
         * @param delta The minimum fitness difference considered an improvement.
@@ -197,7 +197,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /**
-        * Create a stop condition with the specified parameters.
+        * Create a stop condition based on the best fitness values of the population.
         *
         * @param patience The number of generations to wait without stopping even if there is no improvement.
         * @param delta The minimum fitness difference considered an improvement.
