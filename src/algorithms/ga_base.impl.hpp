@@ -1,15 +1,17 @@
-#ifndef GA_BASE_GA_IMPL_HPP
-#define GA_BASE_GA_IMPL_HPP
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include "base_ga.decl.hpp"
-#include "selection/selection_base.hpp"
-#include "crossover/crossover_base.hpp"
-#include "mutation/mutation_base.hpp"
-#include "stop_condition/stop_condition_base.hpp"
-#include "rng.hpp"
-#include "math.hpp"
-#include "population.hpp"
-#include "utils.hpp"
+#ifndef GA_GA_BASE_IMPL_HPP
+#define GA_GA_BASE_IMPL_HPP
+
+#include "ga_base.decl.hpp"
+#include "../selection/selection_base.hpp"
+#include "../crossover/crossover_base.hpp"
+#include "../mutation/mutation_base.hpp"
+#include "../stop_condition/stop_condition_base.hpp"
+#include "../rng.hpp"
+#include "../math.hpp"
+#include "../population.hpp"
+#include "../utils.hpp"
 
 #include <execution>
 #include <numeric>
@@ -478,4 +480,4 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-#endif // !GA_BASE_GA_IMPL_HPP
+#endif // !GA_GA_BASE_IMPL_HPP

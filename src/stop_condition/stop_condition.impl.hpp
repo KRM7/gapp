@@ -4,7 +4,7 @@
 #define GA_STOP_CONDITION_IMPL_HPP
 
 #include "stop_condition.hpp"
-#include "../base_ga.decl.hpp"
+#include "../algorithms/ga_base.decl.hpp"
 #include "../population.hpp"
 #include "../math.hpp"
 

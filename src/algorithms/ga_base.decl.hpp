@@ -1,6 +1,7 @@
-#ifndef GA_BASE_GA_DECL_HPP
-#define GA_BASE_GA_DECL_HPP
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
+#ifndef GA_GA_BASE_DECL_HPP
+#define GA_GA_BASE_DECL_HPP
 
 #include <algorithm>
 #include <vector>
@@ -11,8 +12,8 @@
 #include <atomic>
 #include <cstddef>
 #include <memory>
-#include "candidate.hpp"
-#include "concepts.hpp"
+#include "../candidate.hpp"
+#include "../concepts.hpp"
 
 
 namespace genetic_algorithm
@@ -285,4 +286,4 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-#endif // !GA_BASE_GA_DECL_HPP
+#endif // !GA_GA_BASE_DECL_HPP

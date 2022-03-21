@@ -1,39 +1,10 @@
-/*
-*  MIT License
-*
-*  Copyright (c) 2021 Krisztián Rugási
-*
-*  Permission is hereby granted, free of charge, to any person obtaining a copy
-*  of this softwareand associated documentation files (the "Software"), to deal
-*  in the Software without restriction, including without limitation the rights
-*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*  copies of the Software, and to permit persons to whom the Software is
-*  furnished to do so, subject to the following conditions:
-*
-*  The above copyright noticeand this permission notice shall be included in all
-*  copies or substantial portions of the Software.
-*
-*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-*  SOFTWARE.
-*/
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-/**
-* This file contains the integer coded genetic algorithm class.
-*
-* @file integer_ga.h
-*/
+#ifndef GA_INTEGER_GA_HPP
+#define GA_INTEGER_GA_HPP
 
-#ifndef GA_INTEGER_GA_H
-#define GA_INTEGER_GA_H
-
+#include "ga_base.hpp"
 #include <cstddef>
-
-#include "base_ga.h"
 
 namespace genetic_algorithm
 {
@@ -75,10 +46,9 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
+#include "../rng.hpp"
 #include <stdexcept>
 #include <cassert>
-
-#include "rng.hpp"
 
 namespace genetic_algorithm
 {
@@ -117,4 +87,4 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-#endif // !GA_INTEGER_GA_H
+#endif // !GA_INTEGER_GA_HPP

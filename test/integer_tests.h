@@ -7,7 +7,7 @@
 #include <chrono>
 #include <iostream>
 
-#include "../src/integer_ga.h"
+#include "../src/algorithms/integer_ga.hpp"
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/integer.hpp"
 #include "../src/mutation/integer.hpp"

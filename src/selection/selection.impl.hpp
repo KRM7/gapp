@@ -6,7 +6,7 @@
 #include "../population.hpp"
 #include "selection_dtl.hpp"
 #include "../rng.hpp"
-#include "../base_ga.decl.hpp"
+#include "../algorithms/ga_base.decl.hpp"
 
 #include <vector>
 #include <algorithm>

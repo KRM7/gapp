@@ -11,7 +11,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "../src/real_ga.h"
+#include "../src/algorithms/real_ga.hpp"
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/real.hpp"
 #include "../src/mutation/real.hpp"

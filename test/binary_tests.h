@@ -9,7 +9,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "../src/binary_ga.h"
+#include "../src/algorithms/binary_ga.hpp"
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/binary.hpp"
 #include "../src/mutation/binary.hpp"

@@ -26,7 +26,7 @@
 #define GA_CROSSOVER_BASE_IMPL_HPP
 
 #include "crossover_base.decl.hpp"
-#include "../base_ga.h"
+#include "../algorithms/ga_base.hpp"
 #include "../rng.hpp"
 
 #include <algorithm>

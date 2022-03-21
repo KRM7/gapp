@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <chrono>
 
-#include "../src/permutation_ga.h"
+#include "../src/algorithms/permutation_ga.hpp"
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/permutation.hpp"
 #include "../src/mutation/permutation.hpp"

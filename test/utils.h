@@ -8,7 +8,7 @@
 #include <fstream>
 #include <iomanip>
 
-#include "../src/base_ga.h"
+#include "../src/algorithms/ga_base.hpp"
 
 using namespace genetic_algorithm;
 
