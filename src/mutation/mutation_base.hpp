@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+
 #ifndef GA_MUTATION_BASE_HPP
 #define GA_MUTATION_BASE_HPP
 
