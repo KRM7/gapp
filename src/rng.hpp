@@ -1,36 +1,7 @@
-/*
-*  MIT License
-*
-*  Copyright (c) 2021 Krisztián Rugási
-*
-*  Permission is hereby granted, free of charge, to any person obtaining a copy
-*  of this softwareand associated documentation files (the "Software"), to deal
-*  in the Software without restriction, including without limitation the rights
-*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*  copies of the Software, and to permit persons to whom the Software is
-*  furnished to do so, subject to the following conditions:
-*
-*  The above copyright noticeand this permission notice shall be included in all
-*  copies or substantial portions of the Software.
-*
-*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-*  SOFTWARE.
-*/
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-/**
-* This file contains the PRNG classes and functions used for generating random numbers
-* in the genetic algorithms. All of the rng functions are thread safe.
-*
-* @file rng.h
-*/
-
-#ifndef GA_RANDOM_H
-#define GA_RANDOM_H
+#ifndef GA_RANDOM_HPP
+#define GA_RANDOM_HPP
 
 #include "utils.hpp"
 
@@ -102,23 +73,23 @@ namespace genetic_algorithm::rng
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
     template<std::floating_point RealType = double>
-    inline RealType randomReal();
+    RealType randomReal();
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [l_bound, u_bound). */
     template<std::floating_point RealType = double>
-    inline RealType randomReal(RealType l_bound, RealType u_bound);
+    RealType randomReal(RealType l_bound, RealType u_bound);
 
     /** Generates a random floating-point value of type RealType from a standard normal distribution. */
     template<std::floating_point RealType = double>
-    inline RealType randomNormal();
+    RealType randomNormal();
 
     /** Generates a random floating-point value of type RealType from a normal distribution with the parameters mean and SD. */
     template<std::floating_point RealType = double>
-    inline RealType randomNormal(RealType mean, RealType SD);
+    RealType randomNormal(RealType mean, RealType SD);
 
     /** Generates a random integer of type IntType from a uniform distribution on the closed interval [l_bound, u_bound]. */
     template<std::integral IntType = int>
-    inline IntType randomInt(IntType l_bound, IntType u_bound);
+    IntType randomInt(IntType l_bound, IntType u_bound);
 
     /**
     * Generates a random unsigned integer from a uniform distribution on the closed interval [0, c_size-1]. \n
@@ -131,7 +102,7 @@ namespace genetic_algorithm::rng
 
     /** Generates n unique integers from the range [0, u_bound). */
     template<std::integral IntType>
-    inline std::vector<IntType> sampleUnique(IntType u_bound, size_t n);
+    std::vector<IntType> sampleUnique(IntType u_bound, size_t n);
 
     /** Sample a point from a uniform distribution on a unit simplex in dim dimensions. */
     inline std::vector<double> randomSimplexPoint(size_t dim);
@@ -212,7 +183,7 @@ namespace genetic_algorithm::rng
 
 
     template<std::floating_point RealType>
-    inline RealType randomReal()
+    RealType randomReal()
     {
         std::uniform_real_distribution<RealType> distribution{ 0.0, 1.0 };
 
@@ -220,7 +191,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::floating_point RealType>
-    inline RealType randomReal(RealType l_bound, RealType u_bound)
+    RealType randomReal(RealType l_bound, RealType u_bound)
     {
         assert(l_bound <= u_bound);
 
@@ -230,7 +201,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::floating_point RealType>
-    inline RealType randomNormal()
+    RealType randomNormal()
     {
         std::normal_distribution<RealType> distribution{ 0.0, 1.0 };
 
@@ -238,7 +209,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::floating_point RealType>
-    inline RealType randomNormal(RealType mean, RealType SD)
+    RealType randomNormal(RealType mean, RealType SD)
     {
         assert(SD > 0.0);
 
@@ -248,7 +219,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::integral IntType>
-    inline IntType randomInt(IntType l_bound, IntType u_bound)
+    IntType randomInt(IntType l_bound, IntType u_bound)
     {
         assert(l_bound <= u_bound);
 
@@ -257,7 +228,7 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    inline size_t randomIdx(size_t c_size)
+    size_t randomIdx(size_t c_size)
     {
         assert(c_size > 0); /* There are no valid indices otherwise. */
 
@@ -266,7 +237,7 @@ namespace genetic_algorithm::rng
         return distribution(prng);
     }
 
-    inline bool randomBool() noexcept
+    bool randomBool() noexcept
     {
         std::uniform_int_distribution distribution{ 0, 1 };
 
@@ -274,7 +245,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::integral IntType>
-    inline std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
+    std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
     {
         std::vector<IntType> nums(u_bound);
         std::iota(nums.begin(), nums.end(), IntType{ 0 });  // [0, u_bound)
@@ -314,4 +285,4 @@ namespace genetic_algorithm::rng
 
 }
 
-#endif // !GA_RANDOM_H
+#endif // !GA_RANDOM_HPP
