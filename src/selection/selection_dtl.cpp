@@ -90,16 +90,6 @@ namespace genetic_algorithm::selection::dtl
         });
     }
 
-    size_t sampleCdf(const std::vector<double>& cdf)
-    {
-        assert(!cdf.empty());
-
-        auto res = std::lower_bound(cdf.begin(), cdf.end(), rng::randomReal());
-        if (res == cdf.end()) { std::advance(res, -1); }
-
-        return size_t(std::distance(cdf.begin(), res));
-    }
-
     ParetoFrontsInfo nonDominatedSort(const std::vector<std::vector<double>>& fmat)
     {
         using namespace std;

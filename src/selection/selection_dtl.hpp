@@ -27,9 +27,6 @@ namespace genetic_algorithm::selection::dtl
     /* Calculate the cumulative distribution function of the population from the selection weights. */
     std::vector<double> weightsToCdf(const std::vector<double>& selection_weights);
 
-    /* Randomly select a candidate index based on the CDF of the population. */
-    size_t sampleCdf(const std::vector<double>& cdf);
-
 
     struct ParetoFrontsInfo
     {

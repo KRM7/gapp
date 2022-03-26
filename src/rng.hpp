@@ -107,6 +107,9 @@ namespace genetic_algorithm::rng
     /** Sample a point from a uniform distribution on a unit simplex in dim dimensions. */
     inline std::vector<double> randomSimplexPoint(size_t dim);
 
+    /** Select an index based on a discrete CDF. */
+    inline size_t sampleCdf(const std::vector<double>& cdf);
+
 } // namespace genetic_algorithm::rng
 
 
@@ -281,6 +284,15 @@ namespace genetic_algorithm::rng
         }
 
         return point;
+    }
+
+    size_t sampleCdf(const std::vector<double>& cdf)
+    {
+        assert(!cdf.empty());
+
+        auto idx = std::lower_bound(cdf.begin(), cdf.end(), rng::randomReal(0.0, cdf.back())) - cdf.begin();
+
+        return size_t(idx);
     }
 
 }

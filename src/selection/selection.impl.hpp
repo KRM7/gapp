@@ -32,7 +32,7 @@ namespace genetic_algorithm::selection
     {
         assert(!pop.empty() && pop.size() == cdf_.size());
 
-        return pop[dtl::sampleCdf(cdf_)];
+        return pop[rng::sampleCdf(cdf_)];
     }
 
     template<gene T>
@@ -131,7 +131,7 @@ namespace genetic_algorithm::selection
     {
         assert(!pop.empty() && pop.size() == cdf_.size());
 
-        return pop[dtl::sampleCdf(cdf_)];
+        return pop[rng::sampleCdf(cdf_)];
     }
 
     template<gene T>
@@ -172,7 +172,7 @@ namespace genetic_algorithm::selection
     {
         assert(pop.size() == cdf_.size());
 
-        return pop[dtl::sampleCdf(cdf_)];
+        return pop[rng::sampleCdf(cdf_)];
     }
 
     template<gene T>
@@ -201,7 +201,7 @@ namespace genetic_algorithm::selection
     {
         assert(!pop.empty() && pop.size() == cdf_.size());
 
-        return pop[dtl::sampleCdf(cdf_)];
+        return pop[rng::sampleCdf(cdf_)];
     }
 
     template<gene T>
