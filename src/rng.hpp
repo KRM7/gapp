@@ -250,16 +250,19 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
     {
+        assert(u_bound >= n);
+
         std::vector<IntType> nums(u_bound);
         std::iota(nums.begin(), nums.end(), IntType{ 0 });  // [0, u_bound)
 
         for (size_t i = 0; i < n; i++)
         {
-            size_t idx = randomIdx(nums.size() - i);
-            std::swap(nums[idx], *(nums.end() - 1 - i));
+            size_t idx = randomInt<size_t>(i, nums.size() - 1);
+            std::swap(nums[idx], nums[i]);
         }
+        nums.resize(n);
 
-        return std::vector(nums.end() - n, nums.end());
+        return nums;
     }
 
     std::vector<double> randomSimplexPoint(size_t dim)
