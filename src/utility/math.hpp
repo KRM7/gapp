@@ -16,7 +16,7 @@ namespace genetic_algorithm::detail
     bool floatIsLess(double lhs, double rhs, double eps = GA_EPSILON) noexcept;
 
     /* Equality comparison for fp vectors. Returns true if the elements of the vectors are approximately equal. */
-    bool floatIsEqual(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps = GA_EPSILON) noexcept;
+    bool floatVecIsEqual(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps = GA_EPSILON) noexcept;
 
     /* Pareto comparison for fp vectors. Returns true if lhs is dominated by rhs (lhs < rhs) assuming maximization. */
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps = GA_EPSILON);

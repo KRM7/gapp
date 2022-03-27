@@ -31,7 +31,7 @@ namespace genetic_algorithm::detail
         return (rhs - lhs) > std::max(std::abs(lhs), std::abs(rhs)) * eps;
     }
 
-    bool floatIsEqual(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps) noexcept
+    bool floatVecIsEqual(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps) noexcept
     {
         assert(0.0 <= eps && eps <= 1.0);
 
