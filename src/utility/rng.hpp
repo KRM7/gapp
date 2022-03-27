@@ -328,7 +328,7 @@ namespace genetic_algorithm::rng
     {
         assert(!cdf.empty());
 
-        auto idx = std::lower_bound(cdf.begin(), cdf.end(), rng::randomReal(0.0, cdf.back())) - cdf.begin();
+        auto idx = std::lower_bound(cdf.begin(), cdf.end(), randomReal(0.0, cdf.back())) - cdf.begin(); // cdf.back() in case not exactly 1.0
 
         return size_t(idx);
     }
