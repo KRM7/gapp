@@ -3,9 +3,9 @@
 #ifndef GA_SELECTION_IMPL_HPP
 #define GA_SELECTION_IMPL_HPP
 
-#include "../population.hpp"
+#include "../population/population.hpp"
 #include "selection_dtl.hpp"
-#include "../rng.hpp"
+#include "../utility/rng.hpp"
 #include "../algorithms/ga_base.decl.hpp"
 
 #include <vector>
@@ -224,8 +224,8 @@ namespace genetic_algorithm::selection
     {
         assert(!pop.empty());
 
-        size_t idx1 = rng::randomIdx(pop.size());
-        size_t idx2 = rng::randomIdx(pop.size());
+        size_t idx1 = rng::randomIdx(pop);
+        size_t idx2 = rng::randomIdx(pop);
 
         return crowdedCompare(idx1, idx2) ? pop[idx1] : pop[idx2];
     }
@@ -470,8 +470,8 @@ namespace genetic_algorithm::selection
     {
         assert(!pop.empty());
 
-        size_t idx1 = rng::randomIdx(pop.size());
-        size_t idx2 = rng::randomIdx(pop.size());
+        size_t idx1 = rng::randomIdx(pop);
+        size_t idx2 = rng::randomIdx(pop);
 
         return nichedCompare(idx1, idx2) ? pop[idx1] : pop[idx2];
     }
@@ -588,7 +588,7 @@ namespace genetic_algorithm::selection
                     refs.push_back(ref);
                 }
             }
-            size_t ref = refs[rng::randomIdx(refs.size())];
+            size_t ref = rng::randomElement(refs);
 
             /* Find the idx of the closest sol in the partial front associated with this ref point. */
             size_t sol_idx = partial_front[0];

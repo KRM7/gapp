@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "../rng.hpp"
+#include "../utility/rng.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -52,7 +52,7 @@ namespace genetic_algorithm::mutation::integer
         {
             /* Make sure the new value for the changed gene can't be the old one. */
             std::swap(alleles[candidate.chromosome[idx]], alleles.back());
-            size_t new_gene = alleles[rng::randomIdx(alleles.size() - 1)];
+            size_t new_gene = alleles[rng::randomInt(size_t{ 0 }, alleles.size() - 2)];
             std::swap(alleles[candidate.chromosome[idx]], alleles.back());
 
             candidate.chromosome[idx] = new_gene;
