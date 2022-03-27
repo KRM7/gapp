@@ -3,6 +3,7 @@
 #ifndef GA_ALGORITHM_HPP
 #define GA_ALGORITHM_HPP
 
+#include "concepts.hpp"
 #include <vector>
 #include <algorithm>
 #include <numeric>
@@ -46,17 +47,17 @@ namespace genetic_algorithm::detail
         };
     }
 
-    template<typename Container, typename F>
-    requires std::invocable<F, const typename Container::value_type>
-    auto map(const Container& cont, F&& f)
+    template<Container C, typename F>
+    requires std::invocable<F, const typename C::value_type>
+    auto map(const C& cont, F&& f)
     {
-        using result_t = std::vector<std::invoke_result_t<F, const typename Container::value_type>>;
-
+        using result_t = std::vector<std::invoke_result_t<F, const typename C::value_type>>;
+        
         result_t result;
         result.reserve(cont.size());
 
         std::transform(std::begin(cont), std::end(cont), std::back_inserter(result),
-        [f = lforward(f)](const Container::value_type& elem)
+        [f = lforward(f)](const C::value_type& elem)
         {
             return std::invoke(f, elem);
         });
@@ -86,7 +87,7 @@ namespace genetic_algorithm::detail
 
     template<std::input_iterator Iter, typename Pred>
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
-    auto find_all(Iter first, Iter last, Pred&& pred)
+    auto find_all(Iter first, Iter last, Pred&& pred) -> std::vector<Iter>
     {
         assert(std::distance(first, last) >= 0);
 
@@ -105,7 +106,7 @@ namespace genetic_algorithm::detail
 
     template<std::input_iterator Iter, typename Pred>
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
-    auto find_all_v(Iter first, Iter last, Pred&& pred)
+    auto find_all_v(Iter first, Iter last, Pred&& pred) -> std::vector<typename std::iterator_traits<Iter>::value_type>
     {
         assert(std::distance(first, last) >= 0);
 
@@ -125,7 +126,7 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    auto argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    auto argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{}) -> size_t
     {
         assert(first < last);
 
@@ -135,7 +136,7 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    auto argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    auto argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{}) -> size_t
     {
         assert(first < last);
 
