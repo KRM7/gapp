@@ -17,7 +17,7 @@
 
 namespace genetic_algorithm::selection
 {
-    template<gene T>
+    template<Gene T>
     inline void Roulette<T>::prepare(const GA<T>&, const Population<T>& pop)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
@@ -27,7 +27,7 @@ namespace genetic_algorithm::selection
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    template<gene T>
+    template<Gene T>
     inline Candidate<T> Roulette<T>::select(const GA<T>&, const Population<T>& pop)
     {
         assert(!pop.empty() && pop.size() == cdf_.size());
@@ -35,19 +35,19 @@ namespace genetic_algorithm::selection
         return pop[rng::sampleCdf(cdf_)];
     }
 
-    template<gene T>
+    template<Gene T>
     inline Tournament<T>::Tournament(size_t size)
     {
         this->size(size);
     }
 
-    template<gene T>
+    template<Gene T>
     inline Tournament<T>::Tournament(const GA<T>&, size_t size)
     {
         this->size(size);
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Tournament<T>::size(size_t size)
     {
         if (size < 2) { throw std::invalid_argument("The tournament size must be at least 2."); }
@@ -55,11 +55,11 @@ namespace genetic_algorithm::selection
         tourney_size_ = size;
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Tournament<T>::prepare(const GA<T>&, const Population<T>&)
     { /* Nothing to do for tournament selection. */ }
 
-    template<gene T>
+    template<Gene T>
     inline Candidate<T> Tournament<T>::select(const GA<T>&, const Population<T>& pop)
     {
         assert(pop.size() >= tourney_size_);
@@ -76,31 +76,31 @@ namespace genetic_algorithm::selection
         return pop[idx];
     }
 
-    template<gene T>
+    template<Gene T>
     inline Rank<T>::Rank(double min_weight, double max_weight)
     {
         this->weights(min_weight, max_weight);
     }
 
-    template<gene T>
+    template<Gene T>
     inline Rank<T>::Rank(const GA<T>&, double min_weight, double max_weight)
     {
         this->weights(min_weight, max_weight);
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Rank<T>::min_weight(double min_weight)
     {
         this->weights(min_weight, max_weight_);
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Rank<T>::max_weight(double max_weight)
     {
         this->weights(min_weight_, max_weight);
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Rank<T>::weights(double min_weight, double max_weight)
     {
         if (!(0.0 <= min_weight && min_weight <= max_weight))
@@ -116,7 +116,7 @@ namespace genetic_algorithm::selection
         max_weight_ = max_weight;
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Rank<T>::prepare(const GA<T>&, const Population<T>& pop)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
@@ -126,7 +126,7 @@ namespace genetic_algorithm::selection
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    template<gene T>
+    template<Gene T>
     inline Candidate<T> Rank<T>::select(const GA<T>&, const Population<T>& pop)
     {
         assert(!pop.empty() && pop.size() == cdf_.size());
@@ -134,19 +134,19 @@ namespace genetic_algorithm::selection
         return pop[rng::sampleCdf(cdf_)];
     }
 
-    template<gene T>
+    template<Gene T>
     inline Sigma<T>::Sigma(double scale)
     {
         this->scale(scale);
     }
 
-    template<gene T>
+    template<Gene T>
     inline Sigma<T>::Sigma(const GA<T>&, double scale)
     {
         this->scale(scale);
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Sigma<T>::scale(double scale)
     {
         if (!(1.0 <= scale && scale <= std::numeric_limits<double>::max()))
@@ -157,7 +157,7 @@ namespace genetic_algorithm::selection
         scale_ = scale;
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Sigma<T>::prepare(const GA<T>&, const Population<T>& pop)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
@@ -167,7 +167,7 @@ namespace genetic_algorithm::selection
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    template<gene T>
+    template<Gene T>
     inline Candidate<T> Sigma<T>::select(const GA<T>&, const Population<T>& pop)
     {
         assert(pop.size() == cdf_.size());
@@ -175,17 +175,17 @@ namespace genetic_algorithm::selection
         return pop[rng::sampleCdf(cdf_)];
     }
 
-    template<gene T>
+    template<Gene T>
     inline Boltzmann<T>::Boltzmann(TemperatureFunction f) : temperature_(std::move(f))
     {}
 
-    template<gene T>
+    template<Gene T>
     inline Boltzmann<T>::Boltzmann(const GA<T>&, TemperatureFunction f) : temperature_(std::move(f))
     {}
 
 
 
-    template<gene T>
+    template<Gene T>
     inline void Boltzmann<T>::prepare(const GA<T>& ga, const Population<T>& pop)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
@@ -196,7 +196,7 @@ namespace genetic_algorithm::selection
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    template<gene T>
+    template<Gene T>
     inline Candidate<T> Boltzmann<T>::select(const GA<T>&, const Population<T>& pop)
     {
         assert(!pop.empty() && pop.size() == cdf_.size());
@@ -204,7 +204,7 @@ namespace genetic_algorithm::selection
         return pop[rng::sampleCdf(cdf_)];
     }
 
-    template<gene T>
+    template<Gene T>
     inline void NSGA2<T>::init(const GA<T>& ga)
     {
         assert(ga.num_objectives() > 1);
@@ -215,11 +215,11 @@ namespace genetic_algorithm::selection
         dists_ = dtl::crowdingDistances(fitnessMatrix(ga.population()), pfronts.idxs);
     }
 
-    template<gene T>
+    template<Gene T>
     inline void NSGA2<T>::prepare(const GA<T>&, const Population<T>&)
     { /* Nothing to do, the ranks and distances from the previous nextPopulation call are fine */ }
 
-    template<gene T>
+    template<Gene T>
     inline Candidate<T> NSGA2<T>::select(const GA<T>&, const Population<T>& pop)
     {
         assert(!pop.empty());
@@ -230,7 +230,7 @@ namespace genetic_algorithm::selection
         return crowdedCompare(idx1, idx2) ? pop[idx1] : pop[idx2];
     }
 
-    template<gene T>
+    template<Gene T>
     inline Population<T> NSGA2<T>::nextPopulation(const GA<T>& ga, Population<T>& old_pop, CandidateVec<T>& children)
     {
         assert(!children.empty());
@@ -304,7 +304,7 @@ namespace genetic_algorithm::selection
         return new_pop;
     }
 
-    template<gene T>
+    template<Gene T>
     inline bool NSGA2<T>::crowdedCompare(size_t lidx, size_t ridx) const
     {
         if (ranks_[lidx] != ranks_[ridx])
@@ -317,7 +317,7 @@ namespace genetic_algorithm::selection
         }
     }
 
-    template<gene T>
+    template<Gene T>
     inline void NSGA3<T>::init(const GA<T>& ga)
     {
         assert(ga.num_objectives() > 1);
@@ -341,7 +341,7 @@ namespace genetic_algorithm::selection
         }
     }
 
-    template<gene T>
+    template<Gene T>
     inline void NSGA3<T>::updateIdealPoint(Point& ideal_point, const Population<T>& pop)
     {
         for (const auto& sol : pop)
@@ -353,7 +353,7 @@ namespace genetic_algorithm::selection
         }
     }
 
-    template<gene T>
+    template<Gene T>
     inline auto NSGA3<T>::initExtremePoints(const Population<T>& pop, const Point& ideal_point) -> std::vector<Point>
     {
         assert(!pop.empty());
@@ -386,7 +386,7 @@ namespace genetic_algorithm::selection
         return extreme_points;
     }
 
-    template<gene T>
+    template<Gene T>
     inline void NSGA3<T>::updateExtremePoints(std::vector<Point>& extreme_points, const Population<T>& pop, const Point& ideal_point)
     {
         assert(!pop.empty());
@@ -426,7 +426,7 @@ namespace genetic_algorithm::selection
         }
     }
 
-    template<gene T>
+    template<Gene T>
     inline auto NSGA3<T>::nadirPoint(const std::vector<Point>& extreme_points) -> Point
     {
         Point nadir(extreme_points.size());
@@ -444,11 +444,11 @@ namespace genetic_algorithm::selection
         return nadir;
     }
 
-    template<gene T>
+    template<Gene T>
     inline void NSGA3<T>::prepare(const GA<T>&, const Population<T>&)
     { /* Nothing to do */ }
 
-    template<gene T>
+    template<Gene T>
     inline bool NSGA3<T>::nichedCompare(size_t lidx, size_t ridx) const
     {
         if (sol_props_[lidx].rank != sol_props_[ridx].rank)
@@ -465,7 +465,7 @@ namespace genetic_algorithm::selection
         }
     }
 
-    template<gene T>
+    template<Gene T>
     inline Candidate<T> NSGA3<T>::select(const GA<T>&, const Population<T>& pop)
     {
         assert(!pop.empty());
@@ -476,7 +476,7 @@ namespace genetic_algorithm::selection
         return nichedCompare(idx1, idx2) ? pop[idx1] : pop[idx2];
     }
 
-    template<gene T>
+    template<Gene T>
     inline void NSGA3<T>::associatePopWithRefs(const Population<T>& pop)
     {
         assert(!pop.empty());
@@ -505,7 +505,7 @@ namespace genetic_algorithm::selection
         });
     }
 
-    template<gene T>
+    template<Gene T>
     inline std::vector<size_t> NSGA3<T>::calcNicheCounts(const GA<T>& ga, const Population<T>& pop, std::vector<CandidateInfo>& props)
     {
         assert(pop.size() == props.size());
@@ -526,7 +526,7 @@ namespace genetic_algorithm::selection
         return ref_niche_counts;
     }
 
-    template<gene T>
+    template<Gene T>
     inline Population<T> NSGA3<T>::nextPopulation(const GA<T>& ga, Population<T>& old_pop, CandidateVec<T>& children)
     {
         assert(!children.empty());

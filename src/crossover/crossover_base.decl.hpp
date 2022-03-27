@@ -24,7 +24,7 @@ namespace genetic_algorithm::crossover
     * The crossover operation is performed on the 2 parents with the set (pc) probability only, the rest of the time
     * the returned children will be the same as the parents.
     */
-    template<gene T>
+    template<Gene T>
     class Crossover
     {
     public:
@@ -70,7 +70,7 @@ namespace genetic_algorithm::crossover
     * Base class used for the crossover operators where each gene has a lower and upper bound.
     * Used for the operators that perform crossover on real encoded chromosomes.
     */
-    template<gene T>
+    template<Gene T>
     class BoundedCrossover : public Crossover<T>
     {
     public:

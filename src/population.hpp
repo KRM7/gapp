@@ -33,47 +33,47 @@
 namespace genetic_algorithm
 {
     /** The Population type used in all of the genetic algorithms. */
-    template<gene T>
+    template<Gene T>
     using Population = std::vector<Candidate<T>>;
 
     /** A vector of Candidates. */
-    template<gene T>
+    template<Gene T>
     using CandidateVec = std::vector<Candidate<T>>;
 
     /** Return the minimum fitness value of the population along each objective axis. */
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessMin(const Population<T>& pop);
 
     /** Return the maximum fitness value of the population along each objective axis. */
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessMax(const Population<T>& pop);
 
     /** Return the mean fitness value of the population along each objective axis. */
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessMean(const Population<T>& pop);
 
     /** Return the standard deviation of the fitness values of the population along each objective axis. */
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessSD(const Population<T>& pop);
 
     /** Return the standard deviation of the fitness values of the population along each objective axis. */
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessSD(const Population<T>& pop, const std::vector<double>& mean);
 
     /** Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
-    template<gene T>
+    template<Gene T>
     CandidateVec<T> findParetoFront1D(const Population<T>& pop);
 
     /** Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
-    template<gene T>
+    template<Gene T>
     CandidateVec<T> findParetoFrontKung(const Population<T>& pop);
 
     /** Get the fitness vector of the population (single-objective). */
-    template<gene T>
+    template<Gene T>
     std::vector<double> fitnessVector(const Population<T>& pop);
 
     /** Get the fitness matrix of the population (multi-objective). */
-    template<gene T>
+    template<Gene T>
     std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop);
 
 } // namespace genetic_algorithm
@@ -93,7 +93,7 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessMin(const Population<T>& pop)
     {
         if (pop.empty())
@@ -117,7 +117,7 @@ namespace genetic_algorithm
         return min_fitness;
     }
 
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessMax(const Population<T>& pop)
     {
         if (pop.empty())
@@ -141,7 +141,7 @@ namespace genetic_algorithm
         return max_fitness;
     }
 
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessMean(const Population<T>& pop)
     {
         if (pop.empty())
@@ -165,7 +165,7 @@ namespace genetic_algorithm
         return fitness_mean;
     }
 
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessSD(const Population<T>& pop)
     {
         if (pop.empty())
@@ -200,7 +200,7 @@ namespace genetic_algorithm
         return variance;
     }
 
-    template<gene T>
+    template<Gene T>
     std::vector<double> populationFitnessSD(const Population<T>& pop, const std::vector<double>& mean)
     {
         if (pop.empty())
@@ -233,7 +233,7 @@ namespace genetic_algorithm
         return variance;
     }
 
-    template<gene T>
+    template<Gene T>
     CandidateVec<T> findParetoFront1D(const Population<T>& pop)
     {
         if (!std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }))
@@ -260,7 +260,7 @@ namespace genetic_algorithm
         return optimal_sols;
     }
 
-    template<gene T>
+    template<Gene T>
     CandidateVec<T> findParetoFrontKung(const Population<T>& pop)
     {
         /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476.*/
@@ -332,7 +332,7 @@ namespace genetic_algorithm
         return optimal_sols;
     }
 
-    template<gene T>
+    template<Gene T>
     std::vector<double> fitnessVector(const Population<T>& pop)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
@@ -348,7 +348,7 @@ namespace genetic_algorithm
         return fvec;
     }
 
-    template<gene T>
+    template<Gene T>
     std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop)
     {
         std::vector<std::vector<double>> fmat;

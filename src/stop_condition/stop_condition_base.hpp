@@ -20,7 +20,7 @@ namespace genetic_algorithm::stopping
     * The stop condition will be evaluated only once per generation and
     * should return true if the algorithm should be stopped.
     */
-    template<gene T>
+    template<Gene T>
     class StopCondition
     {
     public:

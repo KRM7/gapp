@@ -20,22 +20,22 @@ namespace genetic_algorithm
 {
     namespace selection
     {
-        template<gene T>
+        template<Gene T>
         class Selection;
     }
     namespace crossover
     {
-        template<gene T>
+        template<Gene T>
         class Crossover;
     }
     namespace mutation
     {
-        template<gene T>
+        template<Gene T>
         class Mutation;
     }
     namespace stopping
     {
-        template<gene T>
+        template<Gene T>
         class StopCondition;
     }
 

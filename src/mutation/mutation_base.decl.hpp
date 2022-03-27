@@ -24,7 +24,7 @@ namespace genetic_algorithm::mutation
     * Every implemented mutation operator takes a Candidate, and mutates that candidate using the set probability.
     * (This probability can either be per-candidate or per-gene depending on the operator.)
     */
-    template<gene T>
+    template<Gene T>
     class Mutation
     {
     public:
@@ -68,7 +68,7 @@ namespace genetic_algorithm::mutation
     * Base class used for the mutation operators where each gene also has a lower and upper bound.
     * Used for the operators that perform mutation on real encoded chromosomes.
     */
-    template<gene T>
+    template<Gene T>
     class BoundedMutation : public Mutation<T>
     {
     public:

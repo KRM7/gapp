@@ -21,7 +21,7 @@ namespace genetic_algorithm::selection
     * The selection algorithm is slightly modified so that it also works with negative fitness values.
     * Has no parameters.
     */
-    template<gene T>
+    template<Gene T>
     class Roulette final : public Selection<T>
     {
     public:
@@ -41,7 +41,7 @@ namespace genetic_algorithm::selection
     *
     * The number of candidates in the tournaments is determined by the size parameter of the operator.
     */
-    template<gene T>
+    template<Gene T>
     class Tournament final : public Selection<T>
     {
     public:
@@ -85,7 +85,7 @@ namespace genetic_algorithm::selection
     * minimum and maximum value based on their rank in the population relative to
     * other individuals (assuming fitness maximization).
     */
-    template<gene T>
+    template<Gene T>
     class Rank final : public Selection<T>
     {
     public:
@@ -162,7 +162,7 @@ namespace genetic_algorithm::selection
     * The probability of selecting an individual from the population is proportional to
     * its scaled fitness value, which is: f' = (f - f_mean) / (scale * f_sd)
     */
-    template<gene T>
+    template<Gene T>
     class Sigma final : public Selection<T>
     {
     public:
@@ -210,7 +210,7 @@ namespace genetic_algorithm::selection
     * in the later generations the temperature decreases, resulting in higher selection
     * pressure.
     */
-    template<gene T>
+    template<Gene T>
     class Boltzmann final : public Selection<T>
     {
     public:
@@ -252,7 +252,7 @@ namespace genetic_algorithm::selection
     /**
     * Non-dominated sorting genetic algorithm (NSGA-II) for multi-objective optimization.
     */
-    template<gene T>
+    template<Gene T>
     class NSGA2 final : public Selection<T>
     {
     public:
@@ -274,7 +274,7 @@ namespace genetic_algorithm::selection
     /**
     * NSGA-III algorithm for many-objective optimization.
     */
-    template<gene T>
+    template<Gene T>
     class NSGA3 final : public Selection<T>
     {
     public:

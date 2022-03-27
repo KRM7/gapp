@@ -20,7 +20,7 @@ namespace genetic_algorithm::stopping
     * The stop-condition is only checked at the end of each generation, so the number of
     * actual fitness function evaluations might be higher than the limit that was set.
     */
-    template<gene T>
+    template<Gene T>
     class FitnessEvals final : public StopCondition<T>
     {
     public:
@@ -64,7 +64,7 @@ namespace genetic_algorithm::stopping
     * fitness threshold vector.
     * (Assuming fitness maximization.)
     */
-    template<gene T>
+    template<Gene T>
     class FitnessValue final : public StopCondition<T>
     {
     public:
@@ -107,7 +107,7 @@ namespace genetic_algorithm::stopping
     * For multi-objective problems, the mean fitness vector is considered better if it's better
     * in at least one coordinate. (Assuming fitness maximization.)
     */
-    template<gene T>
+    template<Gene T>
     class FitnessMeanStall final : public StopCondition<T>
     {
     public:
@@ -168,7 +168,7 @@ namespace genetic_algorithm::stopping
     * For multi-objective problems, the best fitness vector is considered better if it's better
     * in at least one coordinate than the previous best. (Assuming fitness maximization.)
     */
-    template<gene T>
+    template<Gene T>
     class FitnessBestStall final : public StopCondition<T>
     {
     public:

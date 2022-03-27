@@ -11,13 +11,13 @@
 
 namespace genetic_algorithm::mutation
 {
-    template<gene T>
+    template<Gene T>
     inline Mutation<T>::Mutation(double pm)
     {
         mutation_rate(pm);
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Mutation<T>::mutation_rate(double pm)
     {
         if (!(0.0 <= pm && pm <= 1.0))
@@ -28,7 +28,7 @@ namespace genetic_algorithm::mutation
         pm_ = pm;
     }
 
-    template<gene T>
+    template<Gene T>
     inline void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
     {
         auto old_chrom = candidate.chromosome;
@@ -41,14 +41,14 @@ namespace genetic_algorithm::mutation
         }
     }
 
-    template<gene T>
+    template<Gene T>
     inline BoundedMutation<T>::BoundedMutation(const std::vector<std::pair<T, T>>& bounds, double pm) :
         Mutation<T>(pm)
     {
         this->bounds(bounds);
     }
 
-    template<gene T>
+    template<Gene T>
     inline void BoundedMutation<T>::bounds(const std::vector<std::pair<T, T>>& bounds)
     {
         if (std::any_of(bounds.begin(), bounds.end(), [](std::pair<double, double> bound) {return bound.first > bound.second; }))

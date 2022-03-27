@@ -20,7 +20,7 @@ namespace genetic_algorithm::selection
     * The selection methods define most parts of a genetic algorithm (eg. single-objective or multi-objective,
     * how to create the next population etc.), and not just the method for selecting a candidate from the population.
     */
-    template<gene T>
+    template<Gene T>
     class Selection
     {
     public:
@@ -84,7 +84,7 @@ namespace genetic_algorithm::selection
 
 namespace genetic_algorithm::selection
 {
-    template<gene T>
+    template<Gene T>
     inline Population<T> Selection<T>::nextPopulation(const GA<T>& ga, Population<T>& old_pop, Population<T>& children)
     {
         old_pop.insert(old_pop.end(), std::make_move_iterator(children.begin()),

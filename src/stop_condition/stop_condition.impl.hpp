@@ -13,48 +13,48 @@
 
 namespace genetic_algorithm::stopping
 {
-    template<gene T>
+    template<Gene T>
     FitnessEvals<T>::FitnessEvals(size_t max_fitness_evals)
         : StopCondition<T>()
     {
         this->max_fitness_evals(max_fitness_evals);
     }
 
-    template<gene T>
+    template<Gene T>
     FitnessEvals<T>::FitnessEvals(const GA<T>&, size_t max_fitness_evals)
         : StopCondition<T>()
     {
         this->max_fitness_evals(max_fitness_evals);
     }
 
-    template<gene T>
+    template<Gene T>
     void FitnessEvals<T>::max_fitness_evals(size_t max_fitness_evals)
     {
         max_fitness_evals_ = max_fitness_evals;
     }
 
-    template<gene T>
+    template<Gene T>
     bool FitnessEvals<T>::operator()(const GA<T>& ga)
     {
         return (ga.num_fitness_evals() >= max_fitness_evals_);
     }
 
 
-    template<gene T>
+    template<Gene T>
     FitnessValue<T>::FitnessValue(const std::vector<double>& fitness_threshold) :
         StopCondition<T>()
     {
         this->fitness_threshold(fitness_threshold);
     }
 
-    template<gene T>
+    template<Gene T>
     FitnessValue<T>::FitnessValue(const GA<T>&, const std::vector<double>& fitness_threshold) :
         StopCondition<T>()
     {
         this->fitness_threshold(fitness_threshold);
     }
 
-    template<gene T>
+    template<Gene T>
     void FitnessValue<T>::fitness_threshold(const std::vector<double>& fitness_threshold)
     {
         if (fitness_threshold.empty())
@@ -65,7 +65,7 @@ namespace genetic_algorithm::stopping
         fitness_threshold_ = fitness_threshold;
     }
 
-    template<gene T>
+    template<Gene T>
     bool FitnessValue<T>::operator()(const GA<T>& ga)
     {
         if (ga.num_objectives() != fitness_threshold_.size())
@@ -81,7 +81,7 @@ namespace genetic_algorithm::stopping
     }
 
 
-    template<gene T>
+    template<Gene T>
     FitnessMeanStall<T>::FitnessMeanStall(size_t patience, double delta)
         : StopCondition<T>()
     {
@@ -89,7 +89,7 @@ namespace genetic_algorithm::stopping
         this->delta(delta);
     }
 
-    template<gene T>
+    template<Gene T>
     FitnessMeanStall<T>::FitnessMeanStall(const GA<T>&, size_t patience, double delta)
         : StopCondition<T>()
     {
@@ -97,26 +97,26 @@ namespace genetic_algorithm::stopping
         this->delta(delta);
     }
 
-    template<gene T>
+    template<Gene T>
     void FitnessMeanStall<T>::patience(size_t patience)
     {
         patience_ = patience;
         resetCntr();
     }
 
-    template<gene T>
+    template<Gene T>
     void FitnessMeanStall<T>::delta(double delta)
     {
         delta_ = delta;
     }
 
-    template<gene T>
+    template<Gene T>
     void FitnessMeanStall<T>::resetCntr()
     {
         cntr_ = patience_ + 1;
     }
 
-    template<gene T>
+    template<Gene T>
     bool FitnessMeanStall<T>::operator()(const GA<T>& ga)
     {
         auto current_mean = populationFitnessMean(ga.population());
@@ -153,7 +153,7 @@ namespace genetic_algorithm::stopping
     }
 
 
-    template<gene T>
+    template<Gene T>
     FitnessBestStall<T>::FitnessBestStall(size_t patience, double delta) :
         StopCondition<T>()
     {
@@ -161,7 +161,7 @@ namespace genetic_algorithm::stopping
         this->delta(delta);
     }
 
-    template<gene T>
+    template<Gene T>
     FitnessBestStall<T>::FitnessBestStall(const GA<T>&, size_t patience, double delta) :
         StopCondition<T>()
     {
@@ -169,26 +169,26 @@ namespace genetic_algorithm::stopping
         this->delta(delta);
     }
 
-    template<gene T>
+    template<Gene T>
     void FitnessBestStall<T>::patience(size_t patience)
     {
         patience_ = patience;
         resetCntr();
     }
 
-    template<gene T>
+    template<Gene T>
     void FitnessBestStall<T>::delta(double delta)
     {
         delta_ = delta;
     }
 
-    template<gene T>
+    template<Gene T>
     void FitnessBestStall<T>::resetCntr()
     {
         cntr_ = patience_ + 1;
     }
 
-    template<gene T>
+    template<Gene T>
     bool FitnessBestStall<T>::operator()(const GA<T>& ga)
     {
         auto current_max = populationFitnessMax(ga.population());

@@ -43,22 +43,22 @@ namespace genetic_algorithm
     * The Candidate class that is used to represent solutions in the genetic algorithms.
     * This is used as the general purpose candidate type in all of the algorithms (SOGA, NSGA-II, NSGA-III).
     */
-    template<gene T>
+    template<Gene T>
     struct Candidate
     {
-        using Gene = T;
+        using GeneType = T;
 
-        std::vector<Gene> chromosome;       /**< The chromosome encoding the solution. */
+        std::vector<GeneType> chromosome;   /**< The chromosome encoding the solution. */
         std::vector<double> fitness;        /**< The fitness values (for each objective) of the solution. */
 
         bool is_evaluated = false;          /**< False if the candidate's fitness value needs to be computed. */
 
         Candidate() = default;
-        explicit Candidate(const std::vector<Gene>& chrom) : chromosome(chrom) {}
+        explicit Candidate(const std::vector<GeneType>& chrom) : chromosome(chrom) {}
     };
 
     /** A pair of candidates. */
-    template<gene T>
+    template<Gene T>
     using CandidatePair = std::pair<Candidate<T>, Candidate<T>>;
 
     /** Two candidates are considered equal if their chromosomes are the same. */
@@ -70,7 +70,7 @@ namespace genetic_algorithm
     inline bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs);
 
     /** Hash function for the Candidate so they can be stored in an unordered set/map. */
-    template<detail::hashable T>
+    template<detail::Hashable T>
     struct CandidateHasher
     {
         size_t operator()(const Candidate<T>& candidate) const noexcept;
@@ -111,7 +111,7 @@ namespace genetic_algorithm
         return !(lhs == rhs);
     }
 
-    template<detail::hashable GeneType>
+    template<detail::Hashable GeneType>
     inline size_t CandidateHasher<GeneType>::operator()(const Candidate<GeneType>& candidate) const noexcept
     {
         size_t seed = candidate.chromosome.size();
