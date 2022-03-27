@@ -21,6 +21,10 @@ namespace genetic_algorithm
         requires std::three_way_comparable<T>;
     };
 
+    /** The chromosome type of the Candidates. */
+    template<Gene T>
+    using Chromosome = std::vector<T>;
+
     /**
     * The Candidate class that is used to represent solutions in the genetic algorithms.
     * This is used as the general purpose candidate type in all of the algorithms (SOGA, NSGA-II, NSGA-III).
@@ -29,14 +33,15 @@ namespace genetic_algorithm
     struct Candidate
     {
         using GeneType = T;
+        using ChromosomeType = Chromosome<T>;
 
-        std::vector<GeneType> chromosome;   /**< The chromosome encoding the solution. */
-        std::vector<double> fitness;        /**< The fitness values (for each objective) of the solution. */
+        Chromosome<T> chromosome;       /**< The chromosome encoding the solution. */
+        std::vector<double> fitness;    /**< The fitness values (for each objective) of the solution. */
 
-        bool is_evaluated = false;          /**< False if the candidate's fitness value needs to be computed. */
+        bool is_evaluated = false;      /**< False if the candidate's fitness value needs to be computed. */
 
         Candidate() = default;
-        explicit Candidate(const std::vector<GeneType>& chrom) : chromosome(chrom) {}
+        explicit Candidate(const Chromosome<T>& chrom) : chromosome(chrom) {}
     };
 
     /** A pair of candidates. */
@@ -45,13 +50,25 @@ namespace genetic_algorithm
 
     /** Two candidates are considered equal if their chromosomes are the same. */
     template<typename T>
-    inline bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs);
+    bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs);
 
     /** Two candidates are considered not equal if their chromosomes are different. */
     template<typename T>
-    inline bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs);
+    bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs);
 
-    /** Hash function for the Candidate so they can be stored in an unordered set/map. */
+    template<typename T>
+    bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs);
+
+    template<typename T>
+    bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs);
+
+    template<typename T>
+    bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs);
+
+    template<typename T>
+    bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs);
+
+    /** Hash function for the Candidate. */
     template<detail::Hashable T>
     struct CandidateHasher
     {
@@ -70,16 +87,12 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    template<typename GeneType>
-    inline bool operator==(const Candidate<GeneType>& lhs, const Candidate<GeneType>& rhs)
+    template<typename T>
+    bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs)
     {
-        if constexpr (std::is_floating_point_v<GeneType>)
+        if constexpr (std::is_floating_point_v<T>)
         {
-            return std::equal(lhs.chromosome.begin(), lhs.chromosome.end(), rhs.chromosome.begin(),
-            [](const GeneType& lhs, const GeneType& rhs)
-            {
-                return detail::floatIsEqual(lhs, rhs);
-            });
+            return detail::floatVecIsEqual(lhs.chromosome, rhs.chromosome);
         }
         else
         {
@@ -87,14 +100,47 @@ namespace genetic_algorithm
         }
     }
 
-    template<typename GeneType>
-    inline bool operator!=(const Candidate<GeneType>& lhs, const Candidate<GeneType>& rhs)
+    template<typename T>
+    bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs)
     {
         return !(lhs == rhs);
     }
 
+    template<typename T>
+    bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    {
+        if constexpr (std::is_floating_point_v<T>)
+        {
+            return std::lexicographical_compare(lhs.chromosome.begin(), lhs.chromosome.end(),
+                                                rhs.chromosome.begin(), rhs.chromosome.end(), 
+                                                detail::floatIsEqual);
+        }
+        else
+        {
+            return lhs.chromosome < rhs.chromosome;
+        }
+    }
+
+    template<typename T>
+    bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    {
+        return !(lhs < rhs);
+    }
+
+    template<typename T>
+    bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    {
+        return rhs < lhs;
+    }
+
+    template<typename T>
+    bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    {
+        return !(rhs < lhs);
+    }
+
     template<detail::Hashable GeneType>
-    inline size_t CandidateHasher<GeneType>::operator()(const Candidate<GeneType>& candidate) const noexcept
+    size_t CandidateHasher<GeneType>::operator()(const Candidate<GeneType>& candidate) const noexcept
     {
         size_t seed = candidate.chromosome.size();
         for (const auto& gene : candidate.chromosome)
