@@ -332,7 +332,7 @@ namespace genetic_algorithm::selection
 
         sol_props_ = std::vector<CandidateInfo>(ga.population_size());
         associatePopWithRefs(ga.population());
-        ref_niche_counts_ = calcNicheCounts(ga, ga.population(), sol_props_);
+        ref_niche_counts_ = calcNicheCounts(ga, sol_props_);
 
         auto pfronts = dtl::nonDominatedSort(fitnessMatrix(ga.population()));
         for (size_t i = 0; i < sol_props_.size(); i++)
@@ -506,7 +506,7 @@ namespace genetic_algorithm::selection
     }
 
     template<Gene T>
-    inline std::vector<size_t> NSGA3<T>::calcNicheCounts(const GA<T>& ga, const Population<T>& pop, std::vector<CandidateInfo>& props)
+    inline std::vector<size_t> NSGA3<T>::calcNicheCounts(const GA<T>& ga, std::vector<CandidateInfo>& props)
     {
         assert(pop.size() == props.size());
 
@@ -565,7 +565,7 @@ namespace genetic_algorithm::selection
             }
             front_idx++;
         }
-        std::vector<size_t> ref_niche_counts = calcNicheCounts(ga, new_pop, new_props);
+        std::vector<size_t> ref_niche_counts = calcNicheCounts(ga, new_props);
 
         /* Add remaining candidates from the partial front if there is one. */
         std::vector<size_t> partial_front = pfronts.idxs[front_idx];
@@ -610,7 +610,7 @@ namespace genetic_algorithm::selection
             ref_niche_counts[ref]++;
         }
 
-        ref_niche_counts_ = calcNicheCounts(ga, new_pop, new_props);
+        ref_niche_counts_ = calcNicheCounts(ga, new_props);
         sol_props_ = new_props;
 
         return new_pop;

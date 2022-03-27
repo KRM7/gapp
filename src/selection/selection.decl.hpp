@@ -312,7 +312,7 @@ namespace genetic_algorithm::selection
         void associatePopWithRefs(const Population<T>& pop);
 
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */
-        static std::vector<size_t> calcNicheCounts(const GA<T>& ga, const Population<T>& pop, std::vector<CandidateInfo>& props);
+        static std::vector<size_t> calcNicheCounts(const GA<T>& ga, std::vector<CandidateInfo>& props);
 
         /* Returns true if Pop[lidx] is better than Pop[ridx]. */
         bool nichedCompare(size_t lidx, size_t ridx) const;
