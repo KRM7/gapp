@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "permutation.hpp"
-#include "../rng.hpp"
+#include "../utility/rng.hpp"
 
 #include <algorithm>
 #include <unordered_set>
@@ -293,7 +293,7 @@ namespace genetic_algorithm::crossover::perm
             /* If gene's neighbour list is empty, gene = random node not already in child. */
             if (nl1[gene].empty())
             {
-                gene = remaining_genes[rng::randomIdx(remaining_genes.size())];
+                gene = rng::randomElement(remaining_genes);
             }
             else /* gene's neighbour list is not empty, gene = neighbour of gene with fewest neighbours (random if tie). */
             {
@@ -315,7 +315,7 @@ namespace genetic_algorithm::crossover::perm
                     }
                 }
 
-                gene = possible_nodes[rng::randomIdx(possible_nodes.size())];
+                gene = rng::randomElement(possible_nodes);
             }
         }
 
@@ -334,7 +334,7 @@ namespace genetic_algorithm::crossover::perm
 
             if (nl2[gene].empty())
             {
-                gene = remaining_genes[rng::randomIdx(remaining_genes.size())];
+                gene = rng::randomElement(remaining_genes);
             }
             else
             {
@@ -354,7 +354,7 @@ namespace genetic_algorithm::crossover::perm
                     }
                 }
 
-                gene = possible_nodes[rng::randomIdx(possible_nodes.size())];
+                gene = rng::randomElement(possible_nodes);
             }
         }
 
