@@ -4,7 +4,7 @@
 #define GA_CROSSOVER_BINARY_HPP
 
 #include "crossover_base.decl.hpp"
-#include "../candidate.hpp"
+#include "../population/candidate.hpp"
 
 /** Predefined crossover operators for the binary encoded genetic algorithms (BinaryGA). */
 namespace genetic_algorithm::crossover::binary

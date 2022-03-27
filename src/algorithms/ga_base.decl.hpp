@@ -3,6 +3,7 @@
 #ifndef GA_GA_BASE_DECL_HPP
 #define GA_GA_BASE_DECL_HPP
 
+#include "../population/candidate.hpp"
 #include <algorithm>
 #include <vector>
 #include <unordered_set>
@@ -12,8 +13,6 @@
 #include <atomic>
 #include <cstddef>
 #include <memory>
-#include "../candidate.hpp"
-#include "../concepts.hpp"
 
 
 namespace genetic_algorithm
@@ -283,6 +282,10 @@ namespace genetic_algorithm
         void updateStats(const Population& pop);
 
     };
+
+    /** Genetic algorithm types. */
+    template<typename T>
+    concept GeneticAlgorithm = detail::DerivedFromSpecializationOf<T, GA>;
 
 } // namespace genetic_algorithm
 

@@ -4,7 +4,7 @@
 #define GA_CROSSOVER_INTEGER_HPP
 
 #include "crossover_base.decl.hpp"
-#include "../candidate.hpp"
+#include "../population/candidate.hpp"
 
 #include <cstddef>
 

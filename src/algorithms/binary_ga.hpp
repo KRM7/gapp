@@ -32,7 +32,7 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
-#include "../rng.hpp"
+#include "../utility/rng.hpp"
 #include <cassert>
 #include <cstdlib>
 

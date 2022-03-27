@@ -1,10 +1,10 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "selection_dtl.hpp"
-#include "../rng.hpp"
-#include "../math.hpp"
-#include "../utils.hpp"
-#include "../algorithm.hpp"
+#include "../utility/rng.hpp"
+#include "../utility/math.hpp"
+#include "../utility/utils.hpp"
+#include "../utility/algorithm.hpp"
 
 #include <vector>
 #include <utility>

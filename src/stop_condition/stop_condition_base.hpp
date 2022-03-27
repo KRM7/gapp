@@ -3,8 +3,7 @@
 #ifndef GA_STOP_CONDITION_BASE_HPP
 #define GA_STOP_CONDITION_BASE_HPP
 
-#include "../candidate.hpp"
-#include "../concepts.hpp"
+#include "../population/candidate.hpp"
 
 namespace genetic_algorithm
 {

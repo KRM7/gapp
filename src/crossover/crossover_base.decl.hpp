@@ -3,8 +3,7 @@
 #ifndef GA_CROSSOVER_BASE_DECL_HPP
 #define GA_CROSSOVER_BASE_DECL_HPP
 
-#include "../candidate.hpp"
-#include "../concepts.hpp"
+#include "../population/candidate.hpp"
 
 #include <vector>
 #include <utility>

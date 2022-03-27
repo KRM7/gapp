@@ -1,8 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
-#include "../rng.hpp"
-#include "../math.hpp"
+#include "../utility/rng.hpp"
+#include "../utility/math.hpp"
 
 #include <algorithm>
 #include <limits>

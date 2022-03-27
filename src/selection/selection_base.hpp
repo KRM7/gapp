@@ -3,8 +3,7 @@
 #ifndef GA_SELECTION_BASE_HPP
 #define GA_SELECTION_BASE_HPP
 
-#include "../concepts.hpp"
-#include "../population.hpp"
+#include "../population/population.hpp"
 
 namespace genetic_algorithm
 {

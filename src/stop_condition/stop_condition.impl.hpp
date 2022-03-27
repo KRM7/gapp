@@ -5,8 +5,8 @@
 
 #include "stop_condition.hpp"
 #include "../algorithms/ga_base.decl.hpp"
-#include "../population.hpp"
-#include "../math.hpp"
+#include "../population/population.hpp"
+#include "../utility/math.hpp"
 
 #include <algorithm>
 #include <stdexcept>

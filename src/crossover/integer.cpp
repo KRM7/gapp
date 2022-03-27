@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "../rng.hpp"
+#include "../utility/rng.hpp"
 
 #include <algorithm>
 #include <vector>

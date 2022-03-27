@@ -5,8 +5,7 @@
 
 #include "selection_base.hpp"
 #include "selection_dtl.hpp"
-#include "../candidate.hpp"
-#include "../concepts.hpp"
+#include "../population/candidate.hpp"
 
 #include <vector>
 #include <utility>

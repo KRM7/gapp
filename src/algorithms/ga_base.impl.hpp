@@ -8,10 +8,10 @@
 #include "../crossover/crossover_base.hpp"
 #include "../mutation/mutation_base.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
-#include "../rng.hpp"
-#include "../math.hpp"
-#include "../population.hpp"
-#include "../utils.hpp"
+#include "../utility/rng.hpp"
+#include "../utility/math.hpp"
+#include "../population/population.hpp"
+#include "../utility/utils.hpp"
 
 #include <execution>
 #include <numeric>

@@ -4,8 +4,7 @@
 #define GA_STOP_CONDITION_DECL_HPP
 
 #include "stop_condition_base.hpp"
-#include "../candidate.hpp"
-#include "../concepts.hpp"
+#include "../population/candidate.hpp"
 
 #include <vector>
 #include <cstddef>

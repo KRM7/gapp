@@ -54,7 +54,7 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
-#include "../rng.hpp"
+#include "../utility/rng.hpp"
 #include <algorithm>
 #include <utility>
 #include <stdexcept>
