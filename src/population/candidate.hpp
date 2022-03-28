@@ -81,8 +81,7 @@ namespace genetic_algorithm
 /* IMPLEMENTATION */
 
 #include <algorithm>
-#include <cmath>
-#include <limits>
+#include <functional>
 #include <type_traits>
 
 namespace genetic_algorithm
