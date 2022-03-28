@@ -427,11 +427,11 @@ namespace genetic_algorithm
         optimal_sols.insert(optimal_sols.end(), pop.begin(), pop.end());
         if (num_objectives_ == 1)
         {
-            optimal_sols = findParetoFront1D(optimal_sols);
+            optimal_sols = detail::findParetoFront1D(optimal_sols);
         }
         else
         {
-            optimal_sols = findParetoFrontKung(optimal_sols);
+            optimal_sols = detail::findParetoFrontKung(optimal_sols);
         }
 
         /* Remove duplicate solutions. */
@@ -471,10 +471,10 @@ namespace genetic_algorithm
     {
         if (num_objectives_ == 1)
         {
-            soga_history_.add(populationFitnessMean(pop)[0],
-                              populationFitnessSD(pop)[0],
-                              populationFitnessMin(pop)[0],
-                              populationFitnessMax(pop)[0]);
+            soga_history_.add(detail::populationFitnessMean(pop)[0],
+                              detail::populationFitnessSD(pop)[0],
+                              detail::populationFitnessMin(pop)[0],
+                              detail::populationFitnessMax(pop)[0]);
         }
     }
 

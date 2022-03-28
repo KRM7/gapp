@@ -17,41 +17,45 @@ namespace genetic_algorithm
     template<Gene T>
     using CandidateVec = std::vector<Candidate<T>>;
 
-    /** Return the minimum fitness value of the population along each objective axis. */
-    template<Gene T>
-    std::vector<double> populationFitnessMin(const Population<T>& pop);
+    namespace detail
+    {
+        /** Return the minimum fitness value of the population along each objective axis. */
+        template<Gene T>
+        std::vector<double> populationFitnessMin(const Population<T>& pop);
 
-    /** Return the maximum fitness value of the population along each objective axis. */
-    template<Gene T>
-    std::vector<double> populationFitnessMax(const Population<T>& pop);
+        /** Return the maximum fitness value of the population along each objective axis. */
+        template<Gene T>
+        std::vector<double> populationFitnessMax(const Population<T>& pop);
 
-    /** Return the mean fitness value of the population along each objective axis. */
-    template<Gene T>
-    std::vector<double> populationFitnessMean(const Population<T>& pop);
+        /** Return the mean fitness value of the population along each objective axis. */
+        template<Gene T>
+        std::vector<double> populationFitnessMean(const Population<T>& pop);
 
-    /** Return the standard deviation of the fitness values of the population along each objective axis. */
-    template<Gene T>
-    std::vector<double> populationFitnessSD(const Population<T>& pop);
+        /** Return the standard deviation of the fitness values of the population along each objective axis. */
+        template<Gene T>
+        std::vector<double> populationFitnessSD(const Population<T>& pop);
 
-    /** Return the standard deviation of the fitness values of the population along each objective axis. */
-    template<Gene T>
-    std::vector<double> populationFitnessSD(const Population<T>& pop, const std::vector<double>& mean);
+        /** Return the standard deviation of the fitness values of the population along each objective axis. */
+        template<Gene T>
+        std::vector<double> populationFitnessSD(const Population<T>& pop, const std::vector<double>& mean);
 
-    /** Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
-    template<Gene T>
-    CandidateVec<T> findParetoFront1D(const Population<T>& pop);
+        /** Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
+        template<Gene T>
+        CandidateVec<T> findParetoFront1D(const Population<T>& pop);
 
-    /** Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
-    template<Gene T>
-    CandidateVec<T> findParetoFrontKung(const Population<T>& pop);
+        /** Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
+        template<Gene T>
+        CandidateVec<T> findParetoFrontKung(const Population<T>& pop);
 
-    /** Get the fitness vector of the population (single-objective). */
-    template<Gene T>
-    std::vector<double> fitnessVector(const Population<T>& pop);
+        /** Get the fitness vector of the population (single-objective). */
+        template<Gene T>
+        std::vector<double> fitnessVector(const Population<T>& pop);
 
-    /** Get the fitness matrix of the population (multi-objective). */
-    template<Gene T>
-    std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop);
+        /** Get the fitness matrix of the population (multi-objective). */
+        template<Gene T>
+        std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop);
+
+    } // namespace genetic_algorithm::detail
 
 } // namespace genetic_algorithm
 
@@ -59,6 +63,7 @@ namespace genetic_algorithm
 /* IMPLEMENTATION */
 
 #include "../utility/math.hpp"
+#include "../utility/algorithm.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -68,7 +73,7 @@ namespace genetic_algorithm
 #include <cassert>
 #include <stdexcept>
 
-namespace genetic_algorithm
+namespace genetic_algorithm::detail
 {
     template<Gene T>
     std::vector<double> populationFitnessMin(const Population<T>& pop)
@@ -339,6 +344,6 @@ namespace genetic_algorithm
         return fmat;
     }
 
-} // namespace genetic_algorithm
+} // namespace genetic_algorithm::detail
 
 #endif // !GA_POPULATION_HPP

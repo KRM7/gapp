@@ -119,7 +119,7 @@ namespace genetic_algorithm::stopping
     template<Gene T>
     bool FitnessMeanStall<T>::operator()(const GA<T>& ga)
     {
-        auto current_mean = populationFitnessMean(ga.population());
+        auto current_mean = detail::populationFitnessMean(ga.population());
 
         /* Init on first gen. */
         if (ga.generation_cntr() == 0)
@@ -191,7 +191,7 @@ namespace genetic_algorithm::stopping
     template<Gene T>
     bool FitnessBestStall<T>::operator()(const GA<T>& ga)
     {
-        auto current_max = populationFitnessMax(ga.population());
+        auto current_max = detail::populationFitnessMax(ga.population());
 
         /* Init on first gen. */
         if (ga.generation_cntr() == 0)

@@ -22,7 +22,7 @@ namespace genetic_algorithm::selection
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
 
-        auto selection_weights = dtl::rouletteWeights(fitnessVector(pop));
+        auto selection_weights = dtl::rouletteWeights(detail::fitnessVector(pop));
 
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
@@ -121,7 +121,7 @@ namespace genetic_algorithm::selection
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
 
-        auto selection_weights = dtl::rankWeights(fitnessVector(pop), min_weight_, max_weight_);
+        auto selection_weights = dtl::rankWeights(detail::fitnessVector(pop), min_weight_, max_weight_);
 
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
@@ -162,7 +162,7 @@ namespace genetic_algorithm::selection
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
 
-        auto selection_weights = dtl::sigmaWeights(fitnessVector(pop), scale_);
+        auto selection_weights = dtl::sigmaWeights(detail::fitnessVector(pop), scale_);
 
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
@@ -191,7 +191,7 @@ namespace genetic_algorithm::selection
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1 && sol.is_evaluated; }));
 
         double temp = std::invoke(temperature_, ga.generation_cntr(), ga.max_gen());
-        auto selection_weights = dtl::boltzmannWeights(fitnessVector(pop), temp);
+        auto selection_weights = dtl::boltzmannWeights(detail::fitnessVector(pop), temp);
 
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
@@ -210,9 +210,9 @@ namespace genetic_algorithm::selection
         assert(ga.num_objectives() > 1);
         assert(!ga.population().empty());
 
-        auto pfronts = dtl::nonDominatedSort(fitnessMatrix(ga.population()));
+        auto pfronts = dtl::nonDominatedSort(detail::fitnessMatrix(ga.population()));
         ranks_ = pfronts.ranks;
-        dists_ = dtl::crowdingDistances(fitnessMatrix(ga.population()), pfronts.idxs);
+        dists_ = dtl::crowdingDistances(detail::fitnessMatrix(ga.population()), pfronts.idxs);
     }
 
     template<Gene T>
@@ -243,9 +243,9 @@ namespace genetic_algorithm::selection
 
         assert(std::all_of(old_pop.begin(), old_pop.end(), [](const Candidate<T>& sol) { return sol.is_evaluated; }));
 
-        auto pfronts = dtl::nonDominatedSort(fitnessMatrix(old_pop));
+        auto pfronts = dtl::nonDominatedSort(detail::fitnessMatrix(old_pop));
         ranks_ = pfronts.ranks;
-        dists_ = dtl::crowdingDistances(fitnessMatrix(old_pop), pfronts.idxs);
+        dists_ = dtl::crowdingDistances(detail::fitnessMatrix(old_pop), pfronts.idxs);
 
         /* Keep track of the ranks of the candidates added to new_pop to avoid a second sort. */
         std::vector<size_t> new_ranks;
@@ -291,7 +291,7 @@ namespace genetic_algorithm::selection
                 if (new_pop.size() == ga.population_size()) break;
             }
 
-            auto changed_dists = dtl::crowdingDistances(fitnessMatrix(new_pop), { added_indices });
+            auto changed_dists = dtl::crowdingDistances(detail::fitnessMatrix(new_pop), { added_indices });
             for (size_t idx : added_indices)
             {
                 new_dists[idx] = changed_dists[idx];
@@ -334,7 +334,7 @@ namespace genetic_algorithm::selection
         associatePopWithRefs(ga.population());
         ref_niche_counts_ = calcNicheCounts(ga, sol_props_);
 
-        auto pfronts = dtl::nonDominatedSort(fitnessMatrix(ga.population()));
+        auto pfronts = dtl::nonDominatedSort(detail::fitnessMatrix(ga.population()));
         for (size_t i = 0; i < sol_props_.size(); i++)
         {
             sol_props_[i].rank = pfronts.ranks[i];
@@ -482,7 +482,7 @@ namespace genetic_algorithm::selection
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
-        auto fnorms = fitnessMatrix(pop);
+        auto fnorms = detail::fitnessMatrix(pop);
 
         std::for_each(GA_EXECUTION_UNSEQ, fnorms.begin(), fnorms.end(),
         [this](std::vector<double>& fnorm)
@@ -508,8 +508,6 @@ namespace genetic_algorithm::selection
     template<Gene T>
     inline std::vector<size_t> NSGA3<T>::calcNicheCounts(const GA<T>& ga, std::vector<CandidateInfo>& props)
     {
-        assert(pop.size() == props.size());
-
         /* Calculate niche counts for each of the reference points */
         std::vector<size_t> ref_niche_counts(ga.population_size(), 0U);
         for (const auto& info : props)
@@ -544,7 +542,7 @@ namespace genetic_algorithm::selection
 
         assert(std::all_of(old_pop.begin(), old_pop.end(), [](const Candidate<T>& sol) { return sol.is_evaluated; }));
 
-        auto pfronts = dtl::nonDominatedSort(fitnessMatrix(old_pop));
+        auto pfronts = dtl::nonDominatedSort(detail::fitnessMatrix(old_pop));
         for (size_t i = 0; i < sol_props_.size(); i++)
         {
             sol_props_[i].rank = pfronts.ranks[i];
