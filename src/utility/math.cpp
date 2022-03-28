@@ -17,28 +17,6 @@ namespace genetic_algorithm::detail
         return n * n;
     }
 
-    bool floatIsEqual(double lhs, double rhs, double eps) noexcept
-    {
-        assert(0.0 <= eps && eps <= 1.0);
-
-        return std::abs(lhs - rhs) <= std::max(std::abs(lhs), std::abs(rhs)) * eps;
-    }
-
-    bool floatIsLess(double lhs, double rhs, double eps) noexcept
-    {
-        assert(0.0 <= eps && eps <= 1.0);
-
-        return (rhs - lhs) > std::max(std::abs(lhs), std::abs(rhs)) * eps;
-    }
-
-    bool floatVecIsEqual(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps) noexcept
-    {
-        assert(0.0 <= eps && eps <= 1.0);
-
-        return (lhs.size() == rhs.size()) &&
-               std::equal(lhs.begin(), lhs.end(), rhs.begin(), [eps](double lhs, double rhs) { return floatIsEqual(lhs, rhs, eps); });
-    }
-
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps)
     {
         assert(0.0 <= eps && eps <= 1.0);

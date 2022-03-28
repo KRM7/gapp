@@ -6,17 +6,21 @@
 #include "utils.hpp"
 
 #include <vector>
+#include <concepts>
 
 namespace genetic_algorithm::detail
 {
     /* Equality comparison for floating point numbers. Returns true if lhs is approximately equal to rhs. */
-    bool floatIsEqual(double lhs, double rhs, double eps = GA_EPSILON) noexcept;
+    template<std::floating_point T>
+    bool floatIsEqual(T lhs, T rhs, T eps = GA_EPSILON) noexcept;
 
     /* Less than comparison for floating point numbers. Returns true if lhs is definitely less than rhs. */
-    bool floatIsLess(double lhs, double rhs, double eps = GA_EPSILON) noexcept;
+    template<std::floating_point T>
+    bool floatIsLess(T lhs, T rhs, T eps = GA_EPSILON) noexcept;
 
     /* Equality comparison for fp vectors. Returns true if the elements of the vectors are approximately equal. */
-    bool floatVecIsEqual(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps = GA_EPSILON) noexcept;
+    template<std::floating_point T>
+    bool floatVecIsEqual(const std::vector<T>& lhs, const std::vector<T>& rhs, T eps = GA_EPSILON) noexcept;
 
     /* Pareto comparison for fp vectors. Returns true if lhs is dominated by rhs (lhs < rhs) assuming maximization. */
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps = GA_EPSILON);
@@ -35,6 +39,43 @@ namespace genetic_algorithm::detail
 
     /* Calculate the standard deviation of the values in vec. */
     double stdDev(const std::vector<double>& vec, double mean) noexcept;
-}
+
+} // namespace genetic_algorithm::detail
+
+
+/* IMPLEMENTATION */
+
+#include <algorithm>
+#include <cmath>
+#include <cassert>
+
+namespace genetic_algorithm::detail
+{
+    template<std::floating_point T>
+    bool floatIsEqual(T lhs, T rhs, T eps) noexcept
+    {
+        assert(0.0 <= eps && eps <= 1.0);
+
+        return std::abs(lhs - rhs) <= std::max(std::abs(lhs), std::abs(rhs)) * eps;
+    }
+
+    template<std::floating_point T>
+    bool floatIsLess(T lhs, T rhs, T eps) noexcept
+    {
+        assert(0.0 <= eps && eps <= 1.0);
+
+        return (rhs - lhs) > std::max(std::abs(lhs), std::abs(rhs)) * eps;
+    }
+
+    template<std::floating_point T>
+    bool floatVecIsEqual(const std::vector<T>& lhs, const std::vector<T>& rhs, T eps) noexcept
+    {
+        assert(0.0 <= eps && eps <= 1.0);
+
+        return (lhs.size() == rhs.size()) &&
+                std::equal(lhs.begin(), lhs.end(), rhs.begin(), [eps](T lhs, T rhs) { return floatIsEqual(lhs, rhs, eps); });
+    }
+
+} // namespace genetic_algorithm::detail
 
 #endif // !GA_MATH_HPP
