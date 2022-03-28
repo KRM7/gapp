@@ -234,9 +234,7 @@ namespace genetic_algorithm::detail
         double max_fitness = populationFitnessMax(pop)[0];
         for (const auto& sol : pop)
         {
-            //if (sol.fitness[0] == max_fitness) optimal_sols.push_back(sol);
-
-            if (detail::floatIsEqual(max_fitness, sol.fitness[0])) optimal_sols.push_back(sol);
+            if (floatIsEqual(max_fitness, sol.fitness[0])) optimal_sols.push_back(sol);
         }
 
         return optimal_sols;
@@ -249,16 +247,14 @@ namespace genetic_algorithm::detail
         /* Doesn't work for d = 1 (single-objective optimization). */
 
         using namespace std;
-        using iter = vector<size_t>::iterator;
+        using Iter = vector<size_t>::iterator;
 
         assert(!pop.empty());
         assert(all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() > 1; }));
         assert(all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
-        size_t dim = pop[0].fitness.size();    /* The number of objectives. */
-
         /* Find the indices of pareto optimal solutions in the population (Kung's algorithm) assuming fitness maximization. */
-        function<vector<size_t>(iter, iter)> pfront = [&pfront, &pop, &dim](iter first, iter last) -> vector<size_t>
+        function<vector<size_t>(Iter, Iter)> pfront = [&pfront, &pop, dim = pop[0].fitness.size()](Iter first, Iter last) -> vector<size_t>
         {
             if (distance(first, last) == 1) return { *first };
 
@@ -296,22 +292,16 @@ namespace genetic_algorithm::detail
             return R;
         };
 
-        /* Find the indices of the pareto optimal candidates. */
-        vector<size_t> indices(pop.size());
-        iota(indices.begin(), indices.end(), 0U);
+        /* Sort the pop indices into descending order based on thhe first fitness value (needed for Kung's algorithm to work). */
+        auto indices = detail::argsort(pop.begin(), pop.end(),
+        [](const Candidate<T>& lhs, const Candidate<T>& rhs)
+        {
+            return lhs.fitness[0] > rhs.fitness[0];
+        });
 
-        /* Sort the pop indices into descending order based on first fitness value (needed for Kung's algorithm to work). */
-        sort(indices.begin(), indices.end(), [&pop](size_t lidx, size_t ridx) { return pop[lidx].fitness[0] > pop[ridx].fitness[0]; });
         indices = pfront(indices.begin(), indices.end());
 
-        CandidateVec<T> optimal_sols;
-        optimal_sols.reserve(indices.size());
-        for (const auto& idx : indices)
-        {
-            optimal_sols.push_back(pop[idx]);
-        }
-
-        return optimal_sols;
+        return detail::map(indices, [&pop](size_t idx) { return pop[idx]; });
     }
 
     template<Gene T>
@@ -319,29 +309,13 @@ namespace genetic_algorithm::detail
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
 
-        std::vector<double> fvec;
-        fvec.reserve(pop.size());
-
-        for (const auto& sol : pop)
-        {
-            fvec.push_back(sol.fitness[0]);
-        }
-
-        return fvec;
+        return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness[0]; });
     }
 
     template<Gene T>
     std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop)
     {
-        std::vector<std::vector<double>> fmat;
-        fmat.reserve(pop.size());
-
-        for (const auto& sol : pop)
-        {
-            fmat.push_back(sol.fitness);
-        }
-
-        return fmat;
+        return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness; });
     }
 
 } // namespace genetic_algorithm::detail
