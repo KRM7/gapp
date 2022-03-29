@@ -161,12 +161,12 @@ namespace genetic_algorithm::detail
 
         if (pop.size() == 1)
         {
-            return std::vector<double>(pop[0].fitness.size(), 0.0);
+            return std::vector(pop[0].fitness.size(), 0.0);
         }
 
         auto mean = populationFitnessMean(pop);
 
-        auto variance = std::vector<double>(pop[0].fitness.size(), 0.0);
+        auto variance = std::vector(pop[0].fitness.size(), 0.0);
         for (const auto& sol : pop)
         {
             for (size_t i = 0; i < variance.size(); i++)
@@ -196,10 +196,10 @@ namespace genetic_algorithm::detail
 
         if (pop.size() == 1)
         {
-            return std::vector<double>(pop[0].fitness.size(), 0.0);
+            return std::vector(pop[0].fitness.size(), 0.0);
         }
 
-        auto variance = std::vector<double>(pop[0].fitness.size(), 0.0);
+        auto variance = std::vector(pop[0].fitness.size(), 0.0);
         for (const auto& sol : pop)
         {
             for (size_t i = 0; i < variance.size(); i++)
@@ -223,21 +223,14 @@ namespace genetic_algorithm::detail
             throw std::invalid_argument("The size of the fitness vectors of the population must be 1 for this algorithm.");
         }
 
-        if (pop.empty())
-        {
-            return {};
-        }
-
-        CandidateVec<T> optimal_sols;
+        if (pop.empty()) return {};
 
         /* Even for a single-objective problem, there might be different solutions with the same fitness value. */
-        double max_fitness = populationFitnessMax(pop)[0];
-        for (const auto& sol : pop)
+        return detail::find_all_v(pop.begin(), pop.begin(),
+        [fbest = populationFitnessMax(pop)[0]](const Candidate<T>& sol)
         {
-            if (floatIsEqual(max_fitness, sol.fitness[0])) optimal_sols.push_back(sol);
-        }
-
-        return optimal_sols;
+            return detail::floatIsEqual(fbest, sol.fitness[0]);
+        });
     }
 
     template<Gene T>
