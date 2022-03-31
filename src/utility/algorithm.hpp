@@ -18,17 +18,9 @@
 namespace genetic_algorithm::detail
 {
     template<typename T>
-    requires !SpecializationOf<std::remove_cvref_t<T>, std::reference_wrapper>
     constexpr auto lforward(std::remove_reference_t<T>& t) noexcept
     {
-        return std::reference_wrapper<std::remove_reference_t<T>>{ t };
-    }
-
-    template<typename T>
-    requires SpecializationOf<std::remove_cvref_t<T>, std::reference_wrapper>
-    constexpr auto lforward(std::remove_reference_t<T>& t) noexcept
-    {
-        return t;
+        return std::ref<std::remove_reference_t<T>>(t);
     }
 
     template<typename T>
