@@ -18,19 +18,31 @@
 namespace genetic_algorithm::detail
 {
     template<typename T>
-    constexpr auto lforward(T&& t) noexcept
+    requires !SpecializationOf<std::remove_cvref_t<T>, std::reference_wrapper>
+    constexpr auto lforward(std::remove_reference_t<T>& t) noexcept
     {
-        return std::conditional_t<std::is_lvalue_reference_v<T>,
-                                  std::reference_wrapper<std::remove_reference_t<T>>,
-                                  T>
-               { std::forward<T>(t) };
+        return std::reference_wrapper<std::remove_reference_t<T>>{ t };
+    }
+
+    template<typename T>
+    requires SpecializationOf<std::remove_cvref_t<T>, std::reference_wrapper>
+    constexpr auto lforward(std::remove_reference_t<T>& t) noexcept
+    {
+        return t;
+    }
+
+    template<typename T>
+    constexpr auto lforward(std::remove_reference_t<T>&& t) noexcept
+    {
+        static_assert(!std::is_lvalue_reference_v<T>, "Bad lforward call");
+        return static_cast<T&&>(t);
     }
 
 
     template<typename F>
     constexpr auto compose(F&& f) noexcept
     {
-        return [f = lforward(f)] <typename... Args>
+        return [f = lforward<F>(f)] <typename... Args>
         (Args&&... args) requires std::invocable<F, Args...>
         {
             return std::invoke(f, std::forward<Args>(args)...);
@@ -40,7 +52,7 @@ namespace genetic_algorithm::detail
     template<typename F, typename... Fs>
     constexpr auto compose(F&& f, Fs&&... fs) noexcept
     {
-        return [f = lforward(f), ...fs = lforward(fs)] <typename... Args>
+        return [f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args>
         (Args&&... args) requires std::invocable<F, Args...>
         {
             return compose(fs...)(std::invoke(f, std::forward<Args>(args)...));
@@ -57,7 +69,7 @@ namespace genetic_algorithm::detail
         result.reserve(cont.size());
 
         std::transform(std::begin(cont), std::end(cont), std::back_inserter(result),
-        [f = lforward(f)](const C::value_type& elem)
+        [f = lforward<F>(f)](const C::value_type& elem)
         {
             return std::invoke(f, elem);
         });
@@ -77,7 +89,7 @@ namespace genetic_algorithm::detail
         std::iota(indices.begin(), indices.end(), size_t{ 0 });
 
         std::sort(indices.begin(), indices.end(),
-        [first, last, comp = lforward(comp)](size_t lidx, size_t ridx)
+        [first, last, comp = lforward<Comp>(comp)](size_t lidx, size_t ridx)
         {
             return std::invoke(comp, *std::next(first, lidx), *std::next(first, ridx));
         });
