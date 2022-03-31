@@ -223,8 +223,6 @@ namespace genetic_algorithm::detail
             throw std::invalid_argument("The size of the fitness vectors of the population must be 1 for this algorithm.");
         }
 
-        if (pop.empty()) return {};
-
         /* Even for a single-objective problem, there might be different solutions with the same fitness value. */
         return detail::find_all_v(pop.begin(), pop.begin(),
         [fbest = populationFitnessMax(pop)[0]](const Candidate<T>& sol)
