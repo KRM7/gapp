@@ -23,33 +23,6 @@
 
 namespace genetic_algorithm
 {
-    template<typename geneType>
-    inline void GA<geneType>::History::clear() noexcept
-    {
-        fitness_mean.clear();
-        fitness_sd.clear();
-        fitness_min.clear();
-        fitness_max.clear();
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::History::reserve(size_t new_capacity)
-    {
-        fitness_mean.reserve(new_capacity);
-        fitness_sd.reserve(new_capacity);
-        fitness_min.reserve(new_capacity);
-        fitness_max.reserve(new_capacity);
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::History::add(double mean, double sd, double min, double max)
-    {
-        fitness_mean.push_back(mean);
-        fitness_sd.push_back(sd);
-        fitness_min.push_back(min);
-        fitness_max.push_back(max);
-    }
-
     template<typename T>
     inline GA<T>::GA(size_t chrom_len, FitnessFunction fitness_function)
         : chrom_len_(chrom_len), fitnessFunction(fitness_function)
@@ -89,11 +62,6 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline typename const GA<geneType>::History& GA<geneType>::soga_history() const
-    {
-        return soga_history_;
-    }
-
     template<typename geneType>
     inline void GA<geneType>::chrom_len(size_t len)
     {
@@ -278,7 +246,6 @@ namespace genetic_algorithm
         /* Create and evaluate the initial population. */
         population_ = generateInitialPopulation();
         evaluate(population_);
-        updateStats(population_);
 
         (*selection_).init(*this);
 
@@ -330,8 +297,6 @@ namespace genetic_algorithm
 
             if (endOfGenerationCallback != nullptr) endOfGenerationCallback(*this);
             generation_cntr_++;
-
-            updateStats(population_);
         }
         updateOptimalSolutions(solutions_, population_);
 
@@ -351,13 +316,6 @@ namespace genetic_algorithm
         num_fitness_evals_ = 0;
         solutions_.clear();
         population_.clear();
-
-        /* Single objective stuff. */
-        if (num_objectives_ == 1)
-        {
-            soga_history_.clear();
-            soga_history_.reserve(max_gen_);
-        }
     }
 
     template<typename geneType>
@@ -463,18 +421,6 @@ namespace genetic_algorithm
             {
                 throw std::domain_error("The repair function must return chromosomes of chrom_len length.");
             }
-        }
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::updateStats(const Population& pop)
-    {
-        if (num_objectives_ == 1)
-        {
-            soga_history_.add(detail::populationFitnessMean(pop)[0],
-                              detail::populationFitnessSD(pop)[0],
-                              detail::populationFitnessMin(pop)[0],
-                              detail::populationFitnessMax(pop)[0]);
         }
     }
 
