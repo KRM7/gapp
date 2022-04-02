@@ -24,88 +24,42 @@
 namespace genetic_algorithm
 {
     template<typename T>
-    inline GA<T>::GA(size_t chrom_len, FitnessFunction fitness_function)
-        : chrom_len_(chrom_len), fitnessFunction(fitness_function)
+    GA<T>::GA(size_t chrom_len, FitnessFunction fitness_function)
+        : GaBase(chrom_len)
     {
-        if (chrom_len == 0)
+        if (!fitness_function)
         {
-            throw std::invalid_argument("The chromosome length must be at least 1."); // TODO assign only after check
+            throw std::invalid_argument("The fitness function is required for the GA.");
         }
-        if (fitnessFunction == nullptr)
-        {
-            throw std::invalid_argument("The fitness function is a nullptr.");
-        }
+        fitness_function_ = fitness_function;
     }
 
     template<typename T>
-    inline typename const GA<T>::CandidateVec& GA<T>::solutions() const
+    typename const GA<T>::CandidateVec& GA<T>::solutions() const
     {
         return solutions_;
     }
 
     template<typename T>
-    inline size_t GA<T>::num_fitness_evals() const
-    {
-        return static_cast<size_t>(num_fitness_evals_);
-    }
-
-    template<typename T>
-    inline size_t GA<T>::generation_cntr() const
-    {
-        return generation_cntr_;
-    }
-
-    template<typename T>
-    inline typename const GA<T>::Population& GA<T>::population() const
+    typename const GA<T>::Population& GA<T>::population() const
     {
         return population_;
     }
 
-    template<typename geneType>
-    template<typename geneType>
-    inline void GA<geneType>::chrom_len(size_t len)
+    template<typename T>
+    std::vector<double> GA<T>::fitness_vec() const
     {
-        if (len == 0) throw std::invalid_argument("The chromosome length must be at least 1.");
+        return detail::fitnessVector(population_);
+    }
 
-        chrom_len_ = len;
+    template<typename T>
+    std::vector<std::vector<double>> GA<T>::fitness_matrix() const
+    {
+        return detail::fitnessMatrix(population_);
     }
 
     template<typename geneType>
-    inline size_t GA<geneType>::chrom_len() const
-    {
-        return chrom_len_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::population_size(size_t size)
-    {
-        if (size == 0) throw std::invalid_argument("The population size must be at least 1.");
-
-        population_size_ = size;
-    }
-
-    template<typename geneType>
-    inline size_t GA<geneType>::population_size() const
-    {
-        return population_size_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::max_gen(size_t max_gen)
-    {
-        if (max_gen == 0) throw std::invalid_argument("The maximum number of generations must be at least 1.");
-
-        max_gen_ = max_gen;
-    }
-
-    template<typename geneType>
-    inline size_t GA<geneType>::max_gen() const
-    {
-        return max_gen_;
-    }
-
-    template<typename geneType>
-    inline void GA<geneType>::presetInitialPopulation(const Population& pop)
+    void GA<geneType>::initial_population(const Population& pop)
     {
         if (!std::all_of(pop.begin(), pop.end(), [this](const Candidate& c) { return c.chromosome.size() == chrom_len_; }))
         {
@@ -116,17 +70,14 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline void GA<geneType>::setFitnessFunction(FitnessFunction f)
+    void GA<geneType>::fitness_function(FitnessFunction f)
     {
-        if (f == nullptr) throw std::invalid_argument("The fitness function can't be a nullptr.");
+        if (!f)
+        {
+            throw std::invalid_argument("The fitness function is requires for the GA.");
+        }
 
-        fitnessFunction = f;
-    }
-
-    template<typename geneType>
-    inline size_t GA<geneType>::num_objectives() const noexcept
-    {
-        return num_objectives_;
+        fitness_function_ = f;
     }
 
     /* SELECTION METHOD */
@@ -237,7 +188,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline typename const GA<geneType>::CandidateVec& GA<geneType>::run()
+    typename const GA<geneType>::CandidateVec& GA<geneType>::run()
     {
         using namespace std;
 
@@ -304,14 +255,12 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline void GA<geneType>::init()
+    void GA<geneType>::init()
     {
-        /* Check mode. */
         Candidate temp = generateCandidate();
-        temp.fitness = fitnessFunction(temp.chromosome);
+        temp.fitness = fitness_function_(temp.chromosome);
         num_objectives_ = temp.fitness.size();
 
-        /* General initialization. */
         generation_cntr_ = 0;
         num_fitness_evals_ = 0;
         solutions_.clear();
@@ -319,7 +268,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline typename GA<geneType>::Population GA<geneType>::generateInitialPopulation() const
+    typename GA<geneType>::Population GA<geneType>::generateInitialPopulation() const
     {
         assert(population_size_ > 0);
 
@@ -348,16 +297,16 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline void GA<geneType>::evaluate(Population& pop)
+    void GA<geneType>::evaluate(Population& pop)
     {
-        assert(fitnessFunction != nullptr);
+        assert(fitness_function_ != nullptr);
 
         std::for_each(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(),
         [this](Candidate& sol)
         {
             if (changing_fitness_func || !sol.is_evaluated)
             {
-                sol.fitness = fitnessFunction(sol.chromosome);
+                sol.fitness = fitness_function_(sol.chromosome);
                 sol.is_evaluated = true;
 
                 num_fitness_evals_++;
@@ -378,7 +327,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline void GA<geneType>::updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const
+    void GA<geneType>::updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
 
@@ -399,7 +348,7 @@ namespace genetic_algorithm
     }
 
     template<typename geneType>
-    inline void GA<geneType>::repair(Population& pop) const
+    void GA<geneType>::repair(Population& pop) const
     {
         /* This function doesn't do anything unless a repair function is specified. */
         if (repairFunction == nullptr) return;

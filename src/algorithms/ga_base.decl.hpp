@@ -38,43 +38,13 @@ namespace genetic_algorithm
         class StopCondition;
     }
 
-    /**
-    * Base GA class.
-    *
-    * @tparam geneType The type of the genes in the candidates' chromosomes.
-    */
-    template<typename geneType>
-    class GA
+    class GaBase
     {
     public:
 
-        /** Structure containing stats of the single-objective algorithm. */
-        struct History
-        {
-            std::vector<double> fitness_mean;   /**< The mean fitness values of each generation. */
-            std::vector<double> fitness_sd;     /**< The standard deviation of the fitness values of each generation. */
-            std::vector<double> fitness_min;    /**< The lowest fitness value in each generation. */
-            std::vector<double> fitness_max;    /**< The highest fitness value in each generation. */
+        GaBase(size_t chrom_len);
 
-            void clear() noexcept;
-            void reserve(size_t new_capacity);
-            void add(double mean, double sd, double min, double max);
-        };
-
-        using GeneType = geneType;
-        using Candidate = Candidate<GeneType>;  /**< The candidates used in the algorithm, each representing a solution to the problem. */
-
-        using Chromosome = std::vector<GeneType>;                                           /**< . */
-        using CandidatePair = CandidatePair<GeneType>;                                      /**< . */
-        using CandidateVec = std::vector<Candidate>;                                        /**< . */
-        using CandidateSet = std::unordered_set<Candidate, CandidateHasher<GeneType>>;      /**< . */
-        using Population = std::vector<Candidate>;                                          /**< . */
-
-        using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;      /**< The type of the fitness function. */
-        using SelectionFunction = std::function<Candidate(const Population&)>;              /**< The type of the selection function. */
-        using MutationFunction = std::function<void(Candidate&, double)>;                   /**< The type of the mutation function. */
-        using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
-        using CallbackFunction = std::function<void(const GA&)>;
+        virtual ~GaBase() = default;
 
         /**
         * Should be set to false if the fitness function does not change over time. \n
@@ -89,6 +59,84 @@ namespace genetic_algorithm
         * Setting it to false can speed up the algorithm.
         */
         bool archive_optimal_solutions = false;
+
+        /** @returns The number of fitness evaluations performed while running the algorithm. */
+        [[nodiscard]]
+        size_t num_fitness_evals() const noexcept;
+
+        /** @returns The current value of the generation counter. */
+        [[nodiscard]]
+        size_t generation_cntr() const noexcept;
+
+        /**
+        * Sets the length of the chromosomes (number of genes) of the Candidate solutions used in the algorithm to @p len. \n
+        * The chromosome length must be at least 1.
+        *
+        * @param len The length of the chromosomes.
+        */
+        void chrom_len(size_t len);
+        [[nodiscard]] size_t chrom_len() const noexcept;
+
+        /**
+        * Sets the number of Candidates used in the population to @p size. \n
+        * The population size must be at least 1.
+        *
+        * @param size The size of the populations.
+        */
+        void population_size(size_t size);
+        [[nodiscard]] size_t population_size() const noexcept;
+        
+        /**
+        * Sets the maximum number of generations the algorithm runs for to @p max_gen. The
+        * algorithm will always stop when this generation has been reached regardless of what stop
+        * condition was set, but it can stop earlier when another stop condition is selected.
+        * @see stop_condition @see StopCondition \n
+        * The value of @p max_gen must be at least 1.
+        *
+        * @param max_gen The maximum number of generations.
+        */
+        void max_gen(size_t max_gen);
+        [[nodiscard]] size_t max_gen() const noexcept;
+
+        [[nodiscard]] size_t num_objectives() const noexcept;
+
+        virtual std::vector<double> fitness_vec() const = 0;
+        virtual std::vector<std::vector<double>> fitness_matrix() const = 0;
+
+    protected:
+
+        size_t generation_cntr_ = 0;
+        size_t num_objectives_ = 0;
+        std::atomic<size_t> num_fitness_evals_ = 0;
+
+        size_t chrom_len_;
+        size_t population_size_ = 100;
+        size_t max_gen_ = 500;
+    };
+
+    /**
+    * Base GA class.
+    *
+    * @tparam geneType The type of the genes in the candidates' chromosomes.
+    */
+    template<typename geneType>
+    class GA : public GaBase
+    {
+    public:
+        using GeneType = geneType;
+        using Candidate = Candidate<GeneType>;  /**< The candidates used in the algorithm, each representing a solution to the problem. */
+
+        using Chromosome = std::vector<GeneType>;                                           /**< . */
+        using CandidatePair = CandidatePair<GeneType>;                                      /**< . */
+        using CandidateVec = std::vector<Candidate>;                                        /**< . */
+        using CandidateSet = std::unordered_set<Candidate, CandidateHasher<GeneType>>;      /**< . */
+        using Population = std::vector<Candidate>;                                          /**< . */
+
+        using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;      /**< The type of the fitness function. */
+        using SelectionFunction = std::function<Candidate(const Population&)>;              /**< The type of the selection function. */
+        using MutationFunction = std::function<void(Candidate&, double)>;                   /**< The type of the mutation function. */
+        using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
+        using CallbackFunction = std::function<void(const GA&)>;
 
         /**
         * The repair function applied to each Candidate of the population after the mutations if it isn't a nullptr. \n
@@ -115,51 +163,15 @@ namespace genetic_algorithm
         */
         [[maybe_unused]] const CandidateVec& run();
 
-
         /** @returns A vector of the pareto optimal solutions found while running the algorithm. */
         [[nodiscard]] const CandidateVec& solutions() const;
-
-        /** @returns The number of fitness evaluations performed while running the algorithm. */
-        [[nodiscard]] size_t num_fitness_evals() const;
-
-        /** @returns The current value of the generation counter. */
-        [[nodiscard]] size_t generation_cntr() const;
 
         /** @returns The population of the final generation in the algorithm. */
         [[nodiscard]] const Population& population() const;
 
-        /** @returns A History object containing stats from each generation of the single objective genetic algorithm. */
-        [[nodiscard]] const History& soga_history() const;
+        std::vector<double> fitness_vec() const override final;
 
-        /**
-        * Sets the length of the chromosomes (number of genes) of the Candidate solutions used in the algorithm to @p len. \n
-        * The chromosome length must be at least 1.
-        *
-        * @param len The length of the chromosomes.
-        */
-        void chrom_len(size_t len);
-        [[nodiscard]] size_t chrom_len() const;
-
-        /**
-        * Sets the number of Candidates used in the population to @p size. \n
-        * The population size must be at least 1.
-        *
-        * @param size The size of the populations.
-        */
-        void population_size(size_t size);
-        [[nodiscard]] size_t population_size() const;
-
-        /**
-        * Sets the maximum number of generations the algorithm runs for to @p max_gen. The
-        * algorithm will always stop when this generation has been reached regardless of what stop
-        * condition was set, but it can stop earlier when another stop condition is selected.
-        * @see stop_condition @see StopCondition \n
-        * The value of @p max_gen must be at least 1.
-        *
-        * @param max_gen The maximum number of generations.
-        */
-        void max_gen(size_t max_gen);
-        [[nodiscard]] size_t max_gen() const;
+        std::vector<std::vector<double>> fitness_matrix() const override final;
 
         /**
         * Sets the initial population to be used in the algorithm to @p pop instead of randomly generating it. \n
@@ -169,7 +181,7 @@ namespace genetic_algorithm
         *
         * @param pop The initial population to use in the algorithm.
         */
-        void presetInitialPopulation(const Population& pop);
+        void initial_population(const Population& pop);
 
         /**
         * Sets the fitness function used by the algorithm to @p f. \n
@@ -178,9 +190,7 @@ namespace genetic_algorithm
         *
         * @param f The fitness function to find the maximum of.
         */
-        void setFitnessFunction(FitnessFunction f);
-
-        [[nodiscard]] size_t num_objectives() const noexcept;
+        void fitness_function(FitnessFunction f);
 
 
         /* CROSSOVER */
@@ -244,26 +254,10 @@ namespace genetic_algorithm
     protected:
 
         Population population_;
-        size_t generation_cntr_ = 0;
-        size_t num_objectives_ = 0;        /* Determined from the fitness function. */
-
-        /* Results. */
         CandidateVec solutions_;
-        std::atomic<size_t> num_fitness_evals_ = 0;
-        History soga_history_;
-
-        /* Basic parameters of the GA. */
-        size_t chrom_len_;
-        size_t population_size_ = 100;
-        size_t max_gen_ = 500;
-
-        /* Initial population settings. */
         Population initial_population_preset_;
 
-        /* User supplied functions used in the GA. All of these are optional except for the fitness function. */
-        FitnessFunction fitnessFunction;
-        //selectionFunction_t customSelection = nullptr;
-
+        FitnessFunction fitness_function_;
         std::unique_ptr<selection::Selection<GeneType>> selection_;
         std::unique_ptr<crossover::Crossover<GeneType>> crossover_;
         std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
@@ -279,7 +273,6 @@ namespace genetic_algorithm
         void evaluate(Population& pop);
         void updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const;
         void repair(Population& pop) const;
-        void updateStats(const Population& pop);
 
     };
 
