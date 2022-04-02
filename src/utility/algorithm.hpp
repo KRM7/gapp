@@ -24,9 +24,9 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    constexpr auto lforward(std::remove_reference_t<T>&& t) noexcept
+    requires(!std::is_lvalue_reference_v<T>)
+    constexpr T&& lforward(std::remove_reference_t<T>&& t) noexcept
     {
-        static_assert(!std::is_lvalue_reference_v<T>, "Bad lforward call");
         return static_cast<T&&>(t);
     }
 
@@ -130,7 +130,7 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    auto argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{}) -> size_t
+    size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
         assert(first < last);
 
@@ -140,7 +140,7 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    auto argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{}) -> size_t
+    size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
         assert(first < last);
 
