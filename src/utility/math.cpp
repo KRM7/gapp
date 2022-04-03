@@ -67,17 +67,7 @@ namespace genetic_algorithm::detail
 
     double stdDev(const std::vector<double>& vec) noexcept
     {
-        assert(!vec.empty());
-
-        if (vec.size() == 1) return 0.0;
-
-        auto var = std::accumulate(vec.begin(), vec.end(), 0.0L,
-        [avg = mean(vec), n = vec.size()](long double acc, double val)
-        {
-            return acc + square(val - avg) / (n - 1.0);
-        });
-
-        return double(std::sqrt(var));
+        return stdDev(vec, mean(vec));
     }
 
     double stdDev(const std::vector<double>& vec, double mean) noexcept
