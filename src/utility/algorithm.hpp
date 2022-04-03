@@ -81,7 +81,28 @@ namespace genetic_algorithm::detail
         std::iota(indices.begin(), indices.end(), size_t{ 0 });
 
         std::sort(indices.begin(), indices.end(),
-        [first, last, comp = lforward<Comp>(comp)](size_t lidx, size_t ridx)
+        [first, comp = lforward<Comp>(comp)](size_t lidx, size_t ridx)
+        {
+            return std::invoke(comp, *std::next(first, lidx), *std::next(first, ridx));
+        });
+
+        return indices;
+    }
+
+    template<std::random_access_iterator Iter,
+             typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
+    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
+                                          typename std::iterator_traits<Iter>::value_type>
+    auto partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    {
+        assert(std::distance(first, middle) >= 0);
+        assert(std::distance(middle, last) >= 0);
+
+        std::vector<size_t> indices(std::distance(first, last));
+        std::iota(indices.begin(), indices.end(), size_t{ 0 });
+
+        std::partial_sort(indices.begin(), indices.begin() + middle, indices.end(),
+        [first, comp = lforward<Comp>(comp)](size_t lidx, size_t ridx)
         {
             return std::invoke(comp, *std::next(first, lidx), *std::next(first, ridx));
         });
