@@ -45,9 +45,6 @@ void perm52Test()
     cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp52.optimal_value() << ").\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 void perm76Test()
@@ -77,9 +74,6 @@ void perm76Test()
     cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp76.optimal_value() << ").\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 void perm124Test()
@@ -109,9 +103,6 @@ void perm124Test()
     cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp124.optimal_value() << ").\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 void perm152Test()
@@ -141,9 +132,6 @@ void perm152Test()
     cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp152.optimal_value() << ").\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 void perm226Test()
@@ -173,9 +161,6 @@ void perm226Test()
     cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp226.optimal_value() << ").\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 void perm299Test()
@@ -205,9 +190,6 @@ void perm299Test()
     cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp299.optimal_value() << ").\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 void perm439Test()
@@ -237,9 +219,6 @@ void perm439Test()
     cout << "The length of the shortest route found: " << -sols[0].fitness[0] << " (best is " << -tsp439.optimal_value() << ").\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 #endif // !PERMUTATIONAL_TESTS_H

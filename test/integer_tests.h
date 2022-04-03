@@ -52,9 +52,6 @@ void integerTest1()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << match.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 void integerTest2()
@@ -92,9 +89,6 @@ void integerTest2()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << match.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the results. */
-    //displayStats(GA.soga_history());
 }
 
 #endif // !INTEGER_TEST_H

@@ -34,7 +34,7 @@ void binaryRastriginTest()
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
 
     GA.max_gen(1500);
-    GA.stop_condition(stopping::FitnessMeanStall{ GA, 50, 0.005 });
+    GA.stop_condition(stopping::FitnessMeanStall{ 50, 0.005 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -62,9 +62,6 @@ void binaryRastriginTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << rastriginFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 void binaryRosenbrockTest()
@@ -106,9 +103,6 @@ void binaryRosenbrockTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << rosenbrockFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 void binarySchwefelTest()
@@ -124,7 +118,7 @@ void binarySchwefelTest()
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     
     GA.max_gen(1500);
-    GA.stop_condition(stopping::FitnessEvals{ GA, 200 * 1000 });
+    GA.stop_condition(stopping::FitnessEvals{ 200 * 1000 });
 
     /* Run GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -152,9 +146,6 @@ void binarySchwefelTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << schwefelFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 void binaryGriewankTest()
@@ -170,7 +161,7 @@ void binaryGriewankTest()
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
 
     GA.max_gen(2500);
-    GA.stop_condition(stopping::FitnessValue{ GA, { -0.1 } });
+    GA.stop_condition(stopping::FitnessValue{ { -0.1 } });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -198,9 +189,6 @@ void binaryGriewankTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << griewankFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 void binaryAckleyTest()
@@ -216,7 +204,7 @@ void binaryAckleyTest()
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
     
     GA.max_gen(2500);
-    GA.stop_condition(stopping::FitnessBestStall{ GA, 50, 0.002 });
+    GA.stop_condition(stopping::FitnessBestStall{ 50, 0.002 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -244,9 +232,6 @@ void binaryAckleyTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << ackleyFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 #endif // !BINARY_TESTS_H

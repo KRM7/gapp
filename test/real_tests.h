@@ -37,7 +37,7 @@ void realRastriginTest()
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     
     GA.max_gen(1000);
-    GA.stop_condition(stopping::FitnessValue{ GA, { -0.01 } });
+    GA.stop_condition(stopping::FitnessValue{ { -0.01 } });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -61,9 +61,6 @@ void realRastriginTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << rastriginFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 void realRosenbrockTest()
@@ -83,7 +80,7 @@ void realRosenbrockTest()
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / rosenbrockFunction.num_vars });
     
     GA.max_gen(2000);
-    GA.stop_condition(stopping::FitnessEvals{ GA, 500 * 1000 });
+    GA.stop_condition(stopping::FitnessEvals{ 500 * 1000 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -107,9 +104,6 @@ void realRosenbrockTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << rosenbrockFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print the GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 void realSchwefelTest()
@@ -129,7 +123,7 @@ void realSchwefelTest()
     GA.mutation_method(mutation::real::NonUniform{ limits, 1.0 / schwefelFunction.num_vars });
     
     GA.max_gen(1000);
-    GA.stop_condition(stopping::FitnessMeanStall{ GA, 75, 0.01 });
+    GA.stop_condition(stopping::FitnessMeanStall{ 75, 0.01 });
 
     /* Run GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -153,9 +147,6 @@ void realSchwefelTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << schwefelFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 void realGriewankTest()
@@ -197,9 +188,6 @@ void realGriewankTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << griewankFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 void realAckleyTest()
@@ -219,7 +207,7 @@ void realAckleyTest()
     GA.mutation_method(mutation::real::Polynomial{ limits, 1.0 / ackleyFunction.num_vars, 60.0 });
     
     GA.max_gen(1000);
-    GA.stop_condition(stopping::FitnessBestStall{ GA, 75, 0.002 });
+    GA.stop_condition(stopping::FitnessBestStall{ 75, 0.002 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
@@ -243,9 +231,6 @@ void realAckleyTest()
     cout << "Fitness value: " << sols[0].fitness[0] << " (best is " << ackleyFunction.optimal_value() << ")\n";
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << time_spent << " s\n\n";
-
-    /* Print GA stats. */
-    //displayStats(GA.soga_history());
 }
 
 #endif // !REAL_TESTS_H

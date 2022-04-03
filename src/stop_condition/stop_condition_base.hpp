@@ -7,8 +7,7 @@
 
 namespace genetic_algorithm
 {
-    template<typename T>
-    class GA;
+    class GaBase;
 }
 
 /** Early stop conditions used in the algorithms. */
@@ -19,16 +18,18 @@ namespace genetic_algorithm::stopping
     * The stop condition will be evaluated only once per generation and
     * should return true if the algorithm should be stopped.
     */
-    template<Gene T>
     class StopCondition
     {
     public:
-
-        StopCondition() = default;
-        virtual ~StopCondition() = default;
-
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        virtual bool operator()(const GA<T>& ga) = 0;
+        virtual bool operator()(const GaBase& ga) = 0;
+
+        StopCondition()                                 = default;
+        StopCondition(const StopCondition&)             = default;
+        StopCondition(StopCondition&&)                  = default;
+        StopCondition& operator=(const StopCondition&)  = default;
+        StopCondition& operator=(StopCondition&&)       = default;
+        virtual ~StopCondition()                        = default;
     };
 
 } // namespace genetic_algorithm::stopping
