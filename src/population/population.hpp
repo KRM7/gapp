@@ -4,7 +4,6 @@
 #define GA_POPULATION_HPP
 
 #include "candidate.hpp"
-
 #include <vector>
 
 namespace genetic_algorithm
@@ -19,25 +18,58 @@ namespace genetic_algorithm
 
     namespace detail
     {
-        /** Return the minimum fitness value of the population along each objective axis. */
-        template<Gene T>
-        std::vector<double> populationFitnessMin(const Population<T>& pop);
+        using FitnessVector = std::vector<double>;
+        using FitnessMatrix = std::vector<std::vector<double>>;
 
-        /** Return the maximum fitness value of the population along each objective axis. */
-        template<Gene T>
-        std::vector<double> populationFitnessMax(const Population<T>& pop);
+        /* Return the minimum fitness value of the population (for single-objective problems). */
+        double populationFitnessMin(const FitnessVector& pop);
 
-        /** Return the mean fitness value of the population along each objective axis. */
-        template<Gene T>
-        std::vector<double> populationFitnessMean(const Population<T>& pop);
+        /* Return the minimum fitness value of the population along each objective axis. */
+        FitnessVector populationFitnessMin(const FitnessMatrix& pop);
 
-        /** Return the standard deviation of the fitness values of the population along each objective axis. */
+        /* Return the minimum fitness value of the population along each objective axis. */
         template<Gene T>
-        std::vector<double> populationFitnessSD(const Population<T>& pop);
+        FitnessVector populationFitnessMin(const Population<T>& pop);
 
-        /** Return the standard deviation of the fitness values of the population along each objective axis. */
+        /* Return the maximum fitness value of the population (for single-objective problems). */
+        double populationFitnessMax(const FitnessVector& pop);
+
+        /* Return the maximum fitness value of the population along each objective axis. */
+        FitnessVector populationFitnessMax(const FitnessMatrix& pop);
+
+        /* Return the maximum fitness value of the population along each objective axis. */
         template<Gene T>
-        std::vector<double> populationFitnessSD(const Population<T>& pop, const std::vector<double>& mean);
+        FitnessVector populationFitnessMax(const Population<T>& pop);
+
+        /* Return the mean fitness value of the population (for single-objective problems). */
+        double populationFitnessMean(const FitnessVector& pop);
+
+        /* Return the mean fitness value of the population along each objective axis. */
+        FitnessVector populationFitnessMean(const FitnessMatrix& pop);
+
+        /* Return the mean fitness value of the population along each objective axis. */
+        template<Gene T>
+        FitnessVector populationFitnessMean(const Population<T>& pop);
+
+        /* Return the standard deviation of the fitness values of the population (for single-objective problems). */
+        double populationFitnessSD(const FitnessVector& pop);
+
+        /* Return the standard deviation of the fitness values of the population (for single-objective problems). */
+        double populationFitnessSD(const FitnessVector& pop, double mean);
+
+        /* Return the standard deviation of the fitness values of the population along each objective axis. */
+        FitnessVector populationFitnessSD(const FitnessMatrix& pop);
+
+        /* Return the standard deviation of the fitness values of the population along each objective axis. */
+        FitnessVector populationFitnessSD(const FitnessMatrix& pop, const FitnessVector& mean);
+
+        /* Return the standard deviation of the fitness values of the population along each objective axis. */
+        template<Gene T>
+        FitnessVector populationFitnessSD(const Population<T>& pop);
+
+        /* Return the standard deviation of the fitness values of the population along each objective axis. */
+        template<Gene T>
+        FitnessVector populationFitnessSD(const Population<T>& pop, const FitnessVector& mean);
 
         /** Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
         template<Gene T>
@@ -49,11 +81,11 @@ namespace genetic_algorithm
 
         /** Get the fitness vector of the population (single-objective). */
         template<Gene T>
-        std::vector<double> fitnessVector(const Population<T>& pop);
+        FitnessVector fitnessVector(const Population<T>& pop);
 
         /** Get the fitness matrix of the population (multi-objective). */
         template<Gene T>
-        std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop);
+        FitnessMatrix fitnessMatrix(const Population<T>& pop);
 
     } // namespace genetic_algorithm::detail
 
@@ -64,167 +96,50 @@ namespace genetic_algorithm
 
 #include "../utility/math.hpp"
 #include "../utility/algorithm.hpp"
-
 #include <algorithm>
-#include <numeric>
 #include <iterator>
-#include <cmath>
 #include <cstddef>
 #include <cassert>
-#include <stdexcept>
 
 namespace genetic_algorithm::detail
 {
     template<Gene T>
-    std::vector<double> populationFitnessMin(const Population<T>& pop)
+    FitnessVector populationFitnessMin(const Population<T>& pop)
     {
-        if (pop.empty())
-        {
-            throw std::invalid_argument("Can't calculate min fitness for an empty population.");
-        }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
-        {
-            throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the minimum.");
-        }
-
-        std::vector<double> min_fitness = pop[0].fitness;
-        for (size_t i = 1; i < pop.size(); i++)
-        {
-            for (size_t j = 0; j < min_fitness.size(); j++)
-            {
-                min_fitness[j] = std::min(min_fitness[j], pop[i].fitness[j]);
-            }
-        }
-
-        return min_fitness;
+        return populationFitnessMin(fitnessMatrix(pop));
     }
 
     template<Gene T>
-    std::vector<double> populationFitnessMax(const Population<T>& pop)
+    FitnessVector populationFitnessMax(const Population<T>& pop)
     {
-        if (pop.empty())
-        {
-            throw std::invalid_argument("Can't calculate max fitness for an empty population.");
-        }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
-        {
-            throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the maximum.");
-        }
-
-        std::vector<double> max_fitness = pop[0].fitness;
-        for (size_t i = 1; i < pop.size(); i++)
-        {
-            for (size_t j = 0; j < max_fitness.size(); j++)
-            {
-                max_fitness[j] = std::max(max_fitness[j], pop[i].fitness[j]);
-            }
-        }
-
-        return max_fitness;
+        return populationFitnessMax(fitnessMatrix(pop));
     }
 
     template<Gene T>
-    std::vector<double> populationFitnessMean(const Population<T>& pop)
+    FitnessVector populationFitnessMean(const Population<T>& pop)
     {
-        if (pop.empty())
-        {
-            throw std::invalid_argument("Can't calculate mean fitness for an empty population.");
-        }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
-        {
-            throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the mean.");
-        }
-
-        std::vector<double> fitness_mean(pop[0].fitness.size(), 0.0);
-        for (const auto& sol : pop)
-        {
-            for (size_t i = 0; i < fitness_mean.size(); i++)
-            {
-                fitness_mean[i] += sol.fitness[i] / pop.size();
-            }
-        }
-
-        return fitness_mean;
+        return populationFitnessMean(fitnessMatrix(pop));
     }
 
     template<Gene T>
-    std::vector<double> populationFitnessSD(const Population<T>& pop)
+    FitnessVector populationFitnessSD(const Population<T>& pop)
     {
-        if (pop.empty())
-        {
-            throw std::invalid_argument("Can't calculate fitness SD for an empty population.");
-        }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
-        {
-            throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the SD.");
-        }
-
-        if (pop.size() == 1)
-        {
-            return std::vector(pop[0].fitness.size(), 0.0);
-        }
-
-        auto mean = populationFitnessMean(pop);
-
-        auto variance = std::vector(pop[0].fitness.size(), 0.0);
-        for (const auto& sol : pop)
-        {
-            for (size_t i = 0; i < variance.size(); i++)
-            {
-                variance[i] += std::pow(sol.fitness[i] - mean[i], 2) / (pop.size() - 1.0);
-            }
-        }
-        for (auto& elem : variance)
-        {
-            elem = std::sqrt(elem);
-        }
-
-        return variance;
+        return populationFitnessSD(fitnessMatrix(pop));
     }
 
     template<Gene T>
-    std::vector<double> populationFitnessSD(const Population<T>& pop, const std::vector<double>& mean)
+    FitnessVector populationFitnessSD(const Population<T>& pop, const FitnessVector& mean)
     {
-        if (pop.empty())
-        {
-            throw std::invalid_argument("Can't calculate fitness SD for an empty population.");
-        }
-        if (!std::all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }))
-        {
-            throw std::invalid_argument("The fitness vectors of the population must match in size to calculate the SD.");
-        }
-
-        if (pop.size() == 1)
-        {
-            return std::vector(pop[0].fitness.size(), 0.0);
-        }
-
-        auto variance = std::vector(pop[0].fitness.size(), 0.0);
-        for (const auto& sol : pop)
-        {
-            for (size_t i = 0; i < variance.size(); i++)
-            {
-                variance[i] += std::pow(sol.fitness[i] - mean[i], 2) / (pop.size() - 1.0);
-            }
-        }
-        for (auto& elem : variance)
-        {
-            elem = std::sqrt(elem);
-        }
-
-        return variance;
+        return populationFitnessSD(fitnessMatrix(pop), mean);
     }
 
     template<Gene T>
     CandidateVec<T> findParetoFront1D(const Population<T>& pop)
     {
-        if (!std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }))
-        {
-            throw std::invalid_argument("The size of the fitness vectors of the population must be 1 for this algorithm.");
-        }
+        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
 
         /* Even for a single-objective problem, there might be different solutions with the same fitness value. */
-        return detail::find_all_v(pop.begin(), pop.begin(),
+        return detail::find_all_v(pop.begin(), pop.end(),
         [fbest = populationFitnessMax(pop)[0]](const Candidate<T>& sol)
         {
             return detail::floatIsEqual(fbest, sol.fitness[0]);
