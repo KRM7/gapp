@@ -71,19 +71,19 @@ namespace genetic_algorithm
         template<Gene T>
         FitnessVector populationFitnessSD(const Population<T>& pop, const FitnessVector& mean);
 
-        /** Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
+        /* Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
         template<Gene T>
         CandidateVec<T> findParetoFront1D(const Population<T>& pop);
 
-        /** Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
+        /* Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
         template<Gene T>
         CandidateVec<T> findParetoFrontKung(const Population<T>& pop);
 
-        /** Get the fitness vector of the population (single-objective). */
+        /* Get the fitness vector of the population (single-objective). */
         template<Gene T>
         FitnessVector fitnessVector(const Population<T>& pop);
 
-        /** Get the fitness matrix of the population (multi-objective). */
+        /* Get the fitness matrix of the population (multi-objective). */
         template<Gene T>
         FitnessMatrix fitnessMatrix(const Population<T>& pop);
 
@@ -136,6 +136,7 @@ namespace genetic_algorithm::detail
     template<Gene T>
     CandidateVec<T> findParetoFront1D(const Population<T>& pop)
     {
+        assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
 
         /* Even for a single-objective problem, there might be different solutions with the same fitness value. */
@@ -160,7 +161,8 @@ namespace genetic_algorithm::detail
         assert(all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
         /* Find the indices of pareto optimal solutions in the population (Kung's algorithm) assuming fitness maximization. */
-        function<vector<size_t>(Iter, Iter)> pfront = [&pfront, &pop, dim = pop[0].fitness.size()](Iter first, Iter last) -> vector<size_t>
+        function<vector<size_t>(Iter, Iter)> pfront =
+        [&pfront, &pop, dim = pop[0].fitness.size()](Iter first, Iter last) -> vector<size_t>
         {
             if (distance(first, last) == 1) return { *first };
 
