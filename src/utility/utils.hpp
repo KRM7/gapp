@@ -3,14 +3,9 @@
 #ifndef GA_UTILS_HPP
 #define GA_UTILS_HPP
 
-#include <cstdlib>
-#include <cassert>
 #include <limits>
 #include <execution>
 #include <random>
-
-
-#define GA_UNREACHABLE (assert(!"Unreachable code."), std::terminate())
 
 #ifndef GA_EPSILON
 #define GA_EPSILON (100 * std::numeric_limits<double>::epsilon())
