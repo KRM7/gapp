@@ -19,7 +19,6 @@ namespace genetic_algorithm
 {
     namespace selection
     {
-        template<Gene T>
         class Selection;
     }
     namespace crossover
@@ -34,7 +33,6 @@ namespace genetic_algorithm
     }
     namespace stopping
     {
-        template<Gene T>
         class StopCondition;
     }
 
@@ -75,7 +73,8 @@ namespace genetic_algorithm
         * @param len The length of the chromosomes.
         */
         void chrom_len(size_t len);
-        [[nodiscard]] size_t chrom_len() const noexcept;
+        [[nodiscard]]
+        size_t chrom_len() const noexcept;
 
         /**
         * Sets the number of Candidates used in the population to @p size. \n
@@ -84,7 +83,8 @@ namespace genetic_algorithm
         * @param size The size of the populations.
         */
         void population_size(size_t size);
-        [[nodiscard]] size_t population_size() const noexcept;
+        [[nodiscard]]
+        size_t population_size() const noexcept;
         
         /**
         * Sets the maximum number of generations the algorithm runs for to @p max_gen. The
@@ -96,11 +96,12 @@ namespace genetic_algorithm
         * @param max_gen The maximum number of generations.
         */
         void max_gen(size_t max_gen);
-        [[nodiscard]] size_t max_gen() const noexcept;
+        [[nodiscard]]
+        size_t max_gen() const noexcept;
 
-        [[nodiscard]] size_t num_objectives() const noexcept;
-
-        virtual std::vector<double> fitness_vec() const = 0;
+        [[nodiscard]]
+        size_t num_objectives() const noexcept;
+        [[nodiscard]]
         virtual std::vector<std::vector<double>> fitness_matrix() const = 0;
 
     protected:
@@ -161,16 +162,18 @@ namespace genetic_algorithm
         *
         * @returns The optimal solutions.
         */
-        [[maybe_unused]] const CandidateVec& run();
+        [[maybe_unused]]
+        const CandidateVec& run();
 
         /** @returns A vector of the pareto optimal solutions found while running the algorithm. */
-        [[nodiscard]] const CandidateVec& solutions() const;
+        [[nodiscard]]
+        const CandidateVec& solutions() const;
 
         /** @returns The population of the final generation in the algorithm. */
-        [[nodiscard]] const Population& population() const;
+        [[nodiscard]]
+        const Population& population() const;
 
-        std::vector<double> fitness_vec() const override final;
-
+        [[nodiscard]]
         std::vector<std::vector<double>> fitness_matrix() const override final;
 
         /**
@@ -221,16 +224,15 @@ namespace genetic_algorithm
 
         /* STOP CONDITION */
 
-        /* The algorithm always stops when the set max_gen generation has been reached regardless of the stop condition
-        set. */
+        /* The algorithm always stops when the set max_gen generation has been reached regardless of the stop condition set. */
         template<typename StopType>
-        //requires std::derived_from<StopType, stopping::StopCondition<GeneType>> && std::copy_constructible<StopType>
+        //requires std::derived_from<StopType, stopping::StopCondition> && std::copy_constructible<StopType>
         void stop_condition(const StopType& f);
 
-        void stop_condition(std::unique_ptr<stopping::StopCondition<GeneType>>&& f);
+        void stop_condition(std::unique_ptr<stopping::StopCondition>&& f);
         
-        template<typename StopType = stopping::StopCondition<GeneType>>
-        //requires std::derived_from<StopType, stopping::StopCondition<GeneType>>
+        template<typename StopType = stopping::StopCondition>
+        //requires std::derived_from<StopType, stopping::StopCondition>
         StopType& stop_condition() const;
 
 
@@ -243,12 +245,12 @@ namespace genetic_algorithm
         * @param method The selection method used in the single-objective algorithm.
         */
         template<typename SelectionType>
-        //requires std::derived_from<SelectionType, selection::Selection<GeneType>> && std::copy_constructible<SelectionType>
+        //requires std::derived_from<SelectionType, selection::Selection> && std::copy_constructible<SelectionType>
         void selection_method(const SelectionType& f);
 
-        void selection_method(std::unique_ptr<selection::Selection<GeneType>>&& f);
+        void selection_method(std::unique_ptr<selection::Selection>&& f);
 
-        template<typename SelectionType = selection::Selection<GeneType>>
+        template<typename SelectionType = selection::Selection>
         SelectionType& selection_method() const;
 
     protected:
@@ -258,10 +260,10 @@ namespace genetic_algorithm
         Population initial_population_preset_;
 
         FitnessFunction fitness_function_;
-        std::unique_ptr<selection::Selection<GeneType>> selection_;
+        std::unique_ptr<selection::Selection> selection_;
         std::unique_ptr<crossover::Crossover<GeneType>> crossover_;
         std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
-        std::unique_ptr<stopping::StopCondition<GeneType>> stop_condition_;
+        std::unique_ptr<stopping::StopCondition> stop_condition_;
 
 
         /* General functions for the genetic algorithms. */
@@ -271,6 +273,7 @@ namespace genetic_algorithm
         Population generateInitialPopulation() const;
         bool stopCondition();
         void evaluate(Population& pop);
+        Population nextPopulation(Population& pop, Population& children) const;
         void updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const;
         void repair(Population& pop) const;
 
