@@ -87,6 +87,9 @@ namespace genetic_algorithm
         template<Gene T>
         FitnessMatrix fitnessMatrix(const Population<T>& pop);
 
+        /* Get the fitness vector of the population along the first objective axis from the fitness matrix. */
+        FitnessVector fitnessVector(const FitnessMatrix& pop);
+
     } // namespace genetic_algorithm::detail
 
 } // namespace genetic_algorithm
