@@ -32,7 +32,7 @@ void realRastriginTest()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::Roulette{ GA });
+    GA.selection_method(selection::Roulette{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.6, 2.0 });
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     
@@ -75,7 +75,7 @@ void realRosenbrockTest()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(selection::Tournament{ GA });
+    GA.selection_method(selection::Tournament{});
     GA.crossover_method(crossover::real::BLXa{ limits, 0.9 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / rosenbrockFunction.num_vars });
     
@@ -118,7 +118,7 @@ void realSchwefelTest()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(selection::Sigma{ GA });
+    GA.selection_method(selection::Sigma{});
     GA.crossover_method(crossover::real::BLXa{ limits, 0.7 });
     GA.mutation_method(mutation::real::NonUniform{ limits, 1.0 / schwefelFunction.num_vars });
     
@@ -161,7 +161,7 @@ void realGriewankTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.selection_method(selection::Boltzmann{ GA });
+    GA.selection_method(selection::Boltzmann{});
     GA.crossover_method(crossover::real::Wright{ limits, 0.85 });
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     GA.max_gen(1500);
@@ -202,7 +202,7 @@ void realAckleyTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.selection_method(selection::Boltzmann{ GA });
+    GA.selection_method(selection::Boltzmann{});
     GA.crossover_method(crossover::real::Arithmetic{ limits, 0.85 });
     GA.mutation_method(mutation::real::Polynomial{ limits, 1.0 / ackleyFunction.num_vars, 60.0 });
     

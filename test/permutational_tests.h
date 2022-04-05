@@ -27,7 +27,7 @@ void perm52Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(selection::Sigma{ GA });
+    GA.selection_method(selection::Sigma{});
     GA.crossover_method(crossover::perm::Edge{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.05 });
     GA.max_gen(1250);
@@ -56,7 +56,7 @@ void perm76Test()
 
     /* Set some optional parameters. */
     GA.population_size(400);
-    GA.selection_method(selection::Tournament{ GA });
+    GA.selection_method(selection::Tournament{});
     GA.crossover_method(crossover::perm::Order1{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.1 });
     GA.max_gen(1000);
@@ -85,7 +85,7 @@ void perm124Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(selection::Boltzmann{ GA });
+    GA.selection_method(selection::Boltzmann{});
     GA.crossover_method(crossover::perm::Position{ 0.9 });
     GA.mutation_method(mutation::perm::Swap3{ 0.4 });
     GA.max_gen(1500);
@@ -114,7 +114,7 @@ void perm152Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(selection::Tournament{ GA });
+    GA.selection_method(selection::Tournament{});
     GA.crossover_method(crossover::perm::PMX{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.6 });
     GA.max_gen(1250);
@@ -143,7 +143,7 @@ void perm226Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(selection::Roulette{ GA });
+    GA.selection_method(selection::Roulette{});
     GA.crossover_method(crossover::perm::Cycle{ 0.9 });
     GA.mutation_method(mutation::perm::Shuffle{ 0.2 });
     GA.max_gen(1250);
@@ -172,7 +172,7 @@ void perm299Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(selection::Boltzmann{ GA });
+    GA.selection_method(selection::Boltzmann{});
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
     GA.max_gen(1000);
@@ -201,7 +201,7 @@ void perm439Test()
 
     /* Set some optional parameters. */
     GA.population_size(500);
-    GA.selection_method(selection::Boltzmann{ GA });
+    GA.selection_method(selection::Boltzmann{});
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
     GA.max_gen(1000);

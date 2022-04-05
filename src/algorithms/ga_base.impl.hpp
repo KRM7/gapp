@@ -83,17 +83,19 @@ namespace genetic_algorithm
     /* SELECTION METHOD */
     template<typename GeneType>
     template<typename SelectionType>
-    //requires std::derived_from<SelectionType, selection::Selection<GeneType>> && std::copy_constructible<SelectionType>
+    //requires std::derived_from<SelectionType, selection::Selection> && std::copy_constructible<SelectionType>
     void GA<GeneType>::selection_method(const SelectionType& f)
     {
         selection_ = std::make_unique<SelectionType>(f);
     }
 
     template<typename GeneType>
-    void GA<GeneType>::selection_method(std::unique_ptr<selection::Selection<GeneType>>&& f)
+    void GA<GeneType>::selection_method(std::unique_ptr<selection::Selection>&& f)
     {
-        if (f == nullptr) throw std::invalid_argument("The selection method can't be a nullptr.");
-
+        if (!f)
+        {
+            throw std::invalid_argument("The selection method can't be a nullptr.");
+        }
         selection_ = std::move(f);
     }
 
@@ -115,8 +117,10 @@ namespace genetic_algorithm
     template<typename GeneType>
     void GA<GeneType>::crossover_method(std::unique_ptr<crossover::Crossover<GeneType>>&& f)
     {
-        if (f == nullptr) throw std::invalid_argument("The crossover method can't be a nullptr.");
-
+        if (!f)
+        {
+            throw std::invalid_argument("The crossover method can't be a nullptr.");
+        }
         crossover_ = std::move(f);
     }
 
@@ -139,8 +143,10 @@ namespace genetic_algorithm
     template<typename GeneType>
     void GA<GeneType>::mutation_method(std::unique_ptr<mutation::Mutation<GeneType>>&& f)
     {
-        if (f == nullptr) throw std::invalid_argument("The mutation method can't be a nullptr.");
-
+        if (!f)
+        {
+            throw std::invalid_argument("The mutation method can't be a nullptr.");
+        }
         mutation_ = std::move(f);
     }
 
@@ -154,21 +160,21 @@ namespace genetic_algorithm
 
     template<typename GeneType>
     template<typename StopType>
-    //requires std::derived_from<StopType, stopping::StopCondition<GA<GeneType>>> && std::copy_constructible<StopType>
+    //requires std::derived_from<StopType, stopping::StopCondition> && std::copy_constructible<StopType>
     void GA<GeneType>::stop_condition(const StopType& f)
     {
         stop_condition_ = std::make_unique<StopType>(f);
     }
 
     template<typename GeneType>
-    void GA<GeneType>::stop_condition(std::unique_ptr<stopping::StopCondition<GeneType>>&& f)
+    void GA<GeneType>::stop_condition(std::unique_ptr<stopping::StopCondition>&& f)
     {
         stop_condition_ = std::move(f);
     }
 
     template<typename GeneType>
     template<typename StopType>
-    //requires std::derived_from<StopType, stopping::StopCondition<GeneType>>
+    //requires std::derived_from<StopType, stopping::StopCondition>
     StopType& GA<GeneType>::stop_condition() const
     {
         return dynamic_cast<StopType&>(*stop_condition_);
@@ -202,19 +208,21 @@ namespace genetic_algorithm
 
         /* Other generations. */
         size_t num_children = population_size_ + population_size_ % 2;
-        while (!stopCondition())
+        while (stopCondition() == false)
         {
             vector<CandidatePair> parent_pairs(num_children / 2);
 
-            (*selection_).prepare(*this, population_);
+            auto current_fmat = fitness_matrix();
+
+            (*selection_).prepare(*this, current_fmat);
             if (archive_optimal_solutions) updateOptimalSolutions(solutions_, population_);
 
             /* Selections. */
             generate(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
-            [this]() -> CandidatePair
+            [this, &current_fmat]() -> CandidatePair
             {
-                return make_pair((*selection_).select(*this, population_),
-                                 (*selection_).select(*this, population_));
+                return make_pair(population_[(*selection_).select(*this, current_fmat)],
+                                 population_[(*selection_).select(*this, current_fmat)]);
             });
 
             /* Crossovers. */
@@ -244,7 +252,7 @@ namespace genetic_algorithm
 
             /* Overwrite the current population with the children. */
             evaluate(children);
-            population_ = (*selection_).nextPopulation(*this, population_, children);
+            population_ = nextPopulation(population_, children);
 
             if (endOfGenerationCallback != nullptr) endOfGenerationCallback(*this);
             generation_cntr_++;
@@ -273,10 +281,10 @@ namespace genetic_algorithm
         assert(population_size_ > 0);
 
         if (!std::all_of(initial_population_preset_.begin(), initial_population_preset_.end(),
-            [this](const Candidate& sol)
-            {
-                return sol.chromosome.size() == chrom_len_;
-            }))
+        [this](const Candidate& sol)
+        {
+            return sol.chromosome.size() == chrom_len_;
+        }))
         {
             throw std::domain_error("The chromosome lengths in the preset initial population must be equal to the chrom_len set.");
         }
@@ -371,6 +379,16 @@ namespace genetic_algorithm
                 throw std::domain_error("The repair function must return chromosomes of chrom_len length.");
             }
         }
+    }
+    template<typename geneType>
+    auto GA<geneType>::nextPopulation(Population& pop, Population& children) const -> Population
+    {
+        pop.insert(pop.end(), std::make_move_iterator(children.begin()), std::make_move_iterator(children.end()));
+
+        auto fitness_matrix = detail::toFitnessMatrix(pop);
+        auto selected_indices = (*selection_).nextPopulation(*this, fitness_matrix);
+
+        return detail::map(selected_indices, [&pop](size_t idx) { return pop[idx]; });
     }
 
 } // namespace genetic_algorithm

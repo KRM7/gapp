@@ -26,7 +26,7 @@ void integerTest1()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::Tournament{ GA });
+    GA.selection_method(selection::Tournament{});
     GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
     GA.mutation_method(mutation::integer::Uniform{ 96, 0.01 });
     GA.max_gen(500);
@@ -63,7 +63,7 @@ void integerTest2()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.selection_method(selection::Boltzmann{ GA });
+    GA.selection_method(selection::Boltzmann{});
     GA.crossover_method(crossover::integer::Uniform{ 0.8 });
     GA.mutation_method(mutation::integer::Uniform{ 96, 5.0 / 250 });
     GA.max_gen(1000);
