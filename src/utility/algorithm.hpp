@@ -153,8 +153,6 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(first < last);
-
         return size_t(std::max_element(first, last, std::forward<Comp>(comp)) - first);
     }
 
@@ -163,8 +161,6 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(first < last);
-
         return size_t(std::min_element(first, last, std::forward<Comp>(comp)) - first);
     }
 
@@ -173,8 +169,6 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     auto argmax_v(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(first < last);
-
         auto it = std::max_element(first, last, std::forward<Comp>(comp));
 
         return std::make_pair(it - first, *it);
@@ -185,8 +179,6 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     auto argmin_v(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(first < last);
-
         auto it = std::min_element(first, last, std::forward<Comp>(comp));
 
         return std::make_pair(it - first, *it);
