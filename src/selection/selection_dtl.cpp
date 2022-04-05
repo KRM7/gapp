@@ -16,8 +16,10 @@
 
 namespace genetic_algorithm::selection::dtl
 {
-    std::vector<double> rouletteWeights(const std::vector<double>& fvec)
+    std::vector<double> rouletteWeights(const FitnessMatrix& fmat)
     {
+        auto fvec = detail::toFitnessVector(fmat);
+
         /* Roulette selection wouldn't work for negative fitness values. */
         double offset = *std::min_element(fvec.begin(), fvec.end());
         offset = 2.0 * offset;              /* The selection probability of the worst candidate should also be > 0. */
@@ -26,13 +28,14 @@ namespace genetic_algorithm::selection::dtl
         return detail::map(fvec, [offset](double f) { return f - offset; });
     }
 
-    std::vector<double> rankWeights(const std::vector<double>& fvec, double wmin, double wmax)
+    std::vector<double> rankWeights(const FitnessMatrix& fmat, double wmin, double wmax)
     {
         assert(0.0 <= wmin && wmin <= wmax);
 
+        auto fvec = detail::toFitnessVector(fmat);
         auto indices = detail::argsort(fvec.begin(), fvec.end());
 
-        std::vector<double> weights(fvec.size());
+        std::vector<double> weights(fmat.size());
         for (size_t i = 0; i < indices.size(); i++)
         {
             double t = i / (weights.size() - 1.0);
@@ -42,10 +45,11 @@ namespace genetic_algorithm::selection::dtl
         return weights;
     }
 
-    std::vector<double> sigmaWeights(const std::vector<double>& fvec, double scale)
+    std::vector<double> sigmaWeights(const FitnessMatrix& fmat, double scale)
     {
         assert(scale > 1.0);
 
+        auto fvec = detail::toFitnessVector(fmat);
         double fmean = detail::mean(fvec);
         double fdev = std::max(detail::stdDev(fvec, fmean), 1E-6);
 
@@ -58,10 +62,9 @@ namespace genetic_algorithm::selection::dtl
         });
     }
 
-    std::vector<double> boltzmannWeights(const std::vector<double>& fvec, double temperature)
+    std::vector<double> boltzmannWeights(const FitnessMatrix& fmat, double temperature)
     {
-        assert(!fvec.empty());
-
+        auto fvec = detail::toFitnessVector(fmat);
         auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
 
         return detail::map(fvec,
@@ -90,7 +93,7 @@ namespace genetic_algorithm::selection::dtl
         });
     }
 
-    ParetoFrontsInfo nonDominatedSort(const std::vector<std::vector<double>>& fmat)
+    ParetoFrontsInfo nonDominatedSort(const FitnessMatrix& fmat)
     {
         using namespace std;
 
@@ -155,7 +158,7 @@ namespace genetic_algorithm::selection::dtl
         return ParetoFrontsInfo(std::move(pareto_fronts), std::move(ranks));
     }
 
-    std::vector<double> crowdingDistances(const std::vector<std::vector<double>>& fmat, std::vector<std::vector<size_t>> pfronts)
+    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>> pfronts)
     {
         std::vector<double> distances(fmat.size(), 0.0);
 
