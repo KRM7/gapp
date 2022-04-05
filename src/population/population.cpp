@@ -129,7 +129,7 @@ namespace genetic_algorithm::detail
 
     FitnessVector fitnessVector(const FitnessMatrix& fmat)
     {
-        assert(std::all_of(fmat.begin(), fmat.end(), [](const FitnessVector& fvec) {fvec.size() == 1; }));
+        assert(std::all_of(fmat.begin(), fmat.end(), [](const FitnessVector& fvec) { return fvec.size() == 1; }));
 
         return detail::map(fmat, [](const FitnessVector& fvec) { return fvec[0]; });
     }
