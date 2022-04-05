@@ -101,7 +101,7 @@ namespace genetic_algorithm::detail
         std::vector<size_t> indices(std::distance(first, last));
         std::iota(indices.begin(), indices.end(), size_t{ 0 });
 
-        std::partial_sort(indices.begin(), indices.begin() + middle, indices.end(),
+        std::partial_sort(indices.begin(), indices.begin() + (middle - first), indices.end(),
         [first, comp = lforward<Comp>(comp)](size_t lidx, size_t ridx)
         {
             return std::invoke(comp, *std::next(first, lidx), *std::next(first, ridx));
