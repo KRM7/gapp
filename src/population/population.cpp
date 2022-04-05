@@ -127,7 +127,7 @@ namespace genetic_algorithm::detail
         return variance;
     }
 
-    FitnessVector fitnessVector(const FitnessMatrix& fmat)
+    FitnessVector toFitnessVector(const FitnessMatrix& fmat)
     {
         assert(std::all_of(fmat.begin(), fmat.end(), [](const FitnessVector& fvec) { return fvec.size() == 1; }));
 

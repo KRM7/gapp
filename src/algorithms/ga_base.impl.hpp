@@ -47,15 +47,9 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    std::vector<double> GA<T>::fitness_vec() const
-    {
-        return detail::fitnessVector(population_);
-    }
-
-    template<typename T>
     std::vector<std::vector<double>> GA<T>::fitness_matrix() const
     {
-        return detail::fitnessMatrix(population_);
+        return detail::toFitnessMatrix(population_);
     }
 
     template<typename geneType>
@@ -65,7 +59,6 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The length of each chromosome in the preset pop must be equal to chrom_len.");
         }
-
         initial_population_preset_ = pop;
     }
 
@@ -76,7 +69,6 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The fitness function is requires for the GA.");
         }
-
         fitness_function_ = f;
     }
 

@@ -81,14 +81,14 @@ namespace genetic_algorithm
 
         /* Get the fitness vector of the population (single-objective). */
         template<Gene T>
-        FitnessVector fitnessVector(const Population<T>& pop);
+        FitnessVector toFitnessVector(const Population<T>& pop);
 
         /* Get the fitness matrix of the population (multi-objective). */
         template<Gene T>
-        FitnessMatrix fitnessMatrix(const Population<T>& pop);
+        FitnessMatrix toFitnessMatrix(const Population<T>& pop);
 
         /* Get the fitness vector of the population along the first objective axis from the fitness matrix. */
-        FitnessVector fitnessVector(const FitnessMatrix& pop);
+        FitnessVector toFitnessVector(const FitnessMatrix& pop);
 
     } // namespace genetic_algorithm::detail
 
@@ -109,31 +109,31 @@ namespace genetic_algorithm::detail
     template<Gene T>
     FitnessVector populationFitnessMin(const Population<T>& pop)
     {
-        return populationFitnessMin(fitnessMatrix(pop));
+        return populationFitnessMin(toFitnessMatrix(pop));
     }
 
     template<Gene T>
     FitnessVector populationFitnessMax(const Population<T>& pop)
     {
-        return populationFitnessMax(fitnessMatrix(pop));
+        return populationFitnessMax(toFitnessMatrix(pop));
     }
 
     template<Gene T>
     FitnessVector populationFitnessMean(const Population<T>& pop)
     {
-        return populationFitnessMean(fitnessMatrix(pop));
+        return populationFitnessMean(toFitnessMatrix(pop));
     }
 
     template<Gene T>
     FitnessVector populationFitnessSD(const Population<T>& pop)
     {
-        return populationFitnessSD(fitnessMatrix(pop));
+        return populationFitnessSD(toFitnessMatrix(pop));
     }
 
     template<Gene T>
     FitnessVector populationFitnessSD(const Population<T>& pop, const FitnessVector& mean)
     {
-        return populationFitnessSD(fitnessMatrix(pop), mean);
+        return populationFitnessSD(toFitnessMatrix(pop), mean);
     }
 
     template<Gene T>
@@ -216,7 +216,7 @@ namespace genetic_algorithm::detail
     }
 
     template<Gene T>
-    std::vector<double> fitnessVector(const Population<T>& pop)
+    std::vector<double> toFitnessVector(const Population<T>& pop)
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
 
@@ -224,7 +224,7 @@ namespace genetic_algorithm::detail
     }
 
     template<Gene T>
-    std::vector<std::vector<double>> fitnessMatrix(const Population<T>& pop)
+    std::vector<std::vector<double>> toFitnessMatrix(const Population<T>& pop)
     {
         return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness; });
     }
