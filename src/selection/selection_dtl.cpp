@@ -166,7 +166,7 @@ namespace genetic_algorithm::selection::dtl
         return ParetoFrontsInfo(std::move(pareto_fronts), std::move(ranks));
     }
 
-    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>> pfronts)
+    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>& pfronts)
     {
         std::vector<double> distances(fmat.size(), 0.0);
 
@@ -198,6 +198,11 @@ namespace genetic_algorithm::selection::dtl
         });
 
         return distances;
+    }
+
+    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>&& pfronts)
+    {
+        return crowdingDistances(fmat, pfronts);
     }
 
     std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim)
