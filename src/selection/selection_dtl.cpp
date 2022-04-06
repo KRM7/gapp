@@ -207,14 +207,12 @@ namespace genetic_algorithm::selection::dtl
         assert(dim > 1);
 
         /* Generate reference point candidates randomly. */
-        size_t k = max(size_t{ 10 }, 2 * dim);
-        vector<vector<double>> candidates(k * n - 1);
+        size_t ratio = max(size_t{ 10 }, 2 * dim);
+        vector<vector<double>> candidates(ratio * n - 1);
         generate(candidates.begin(), candidates.end(), [&dim]() { return rng::randomSimplexPoint(dim); });
 
         vector<vector<double>> refs;
         refs.reserve(n);
-
-        /* The first ref point can be random. */
         refs.push_back(rng::randomSimplexPoint(dim));
 
         vector<double> min_distances(candidates.size(), numeric_limits<double>::infinity());
@@ -229,7 +227,7 @@ namespace genetic_algorithm::selection::dtl
             });
 
             /* Add the candidate with highest min_distance to the refs. */
-            size_t argmax = static_cast<size_t>(max_element(min_distances.begin(), min_distances.end()) - min_distances.begin());
+            size_t argmax = detail::argmax(min_distances.begin(), min_distances.end());
             refs.push_back(move(candidates[argmax]));
 
             /* Remove the added candidate and the corresponding min_distance. */
