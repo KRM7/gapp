@@ -58,7 +58,7 @@ namespace genetic_algorithm::selection::dtl
         double fdev = std::max(detail::stdDev(fvec, fmean), 1E-6);
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(),
-        [&](double f)
+        [fmean, fdev, scale](double f)
         {
             double weight = 1.0 + (f - fmean) / (scale * fdev);
 
@@ -74,10 +74,11 @@ namespace genetic_algorithm::selection::dtl
         auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(),
-        [&](double f)
+        // dont even think about capturing the iterators by ref or value here
+        [fmin = *fmin, fmax = *fmax, temperature](double f)
         {
-            double df = std::max(*fmax - *fmin, 1E-6);
-            double fnorm = (f - *fmin) / df;
+            double df = std::max(fmax - fmin, 1E-6);
+            double fnorm = (f - fmin) / df;
 
             return std::exp(fnorm / temperature);
         });
@@ -96,7 +97,7 @@ namespace genetic_algorithm::selection::dtl
 
         return detail::map(weights,
         [cdf = 0.0, wmean, n = weights.size()](double w) mutable
-        { 
+        {
             return cdf += w / wmean / n;
         });
     }
