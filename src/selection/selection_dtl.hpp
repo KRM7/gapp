@@ -14,16 +14,16 @@ namespace genetic_algorithm::selection::dtl
     using genetic_algorithm::detail::FitnessMatrix;
 
     /* Calculate the selection weights of the population for the roulette selection. */
-    std::vector<double> rouletteWeights(const FitnessMatrix& fmat);
+    std::vector<double> rouletteWeights(const FitnessMatrix& pop);
 
     /* Calculate the selection weights of the population for the rank selection. */
-    std::vector<double> rankWeights(const FitnessMatrix& fmat, double wmin, double wmax);
+    std::vector<double> rankWeights(const FitnessMatrix& pop, double wmin, double wmax);
 
     /* Calculate the selection weights of the population for the sigma selection. */
-    std::vector<double> sigmaWeights(const FitnessMatrix& fmat, double scale);
+    std::vector<double> sigmaWeights(const FitnessMatrix& pop, double scale);
 
     /* Calculate the selection weights of the population for the Boltzmann selection. */
-    std::vector<double> boltzmannWeights(const FitnessMatrix& fmat, double temperature);
+    std::vector<double> boltzmannWeights(const FitnessMatrix& pop, double temperature);
 
     /* Default temperature function used for the Boltzmann selection. */
     double boltzmannDefaultTemp(size_t gen, size_t max_gen);
@@ -42,11 +42,14 @@ namespace genetic_algorithm::selection::dtl
             : idxs(std::move(idxs)), ranks(std::move(ranks)) {}
     };
 
-    /* Non-dominated sorting for the multi-objective algorithms. */
+    /* Non-dominated sorting for the multi-objective algorithms. Returns the pareto fronts of the population and the ranks of each candidate. */
     ParetoFrontsInfo nonDominatedSort(const FitnessMatrix& fmat);
 
     /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */
     std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>> pfronts);
+
+    /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */
+    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>&& pfronts);
 
     /* Generate n reference points on the unit simplex in dim dimensions (for the NSGA-III algorithm). */
     std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim);
