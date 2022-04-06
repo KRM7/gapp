@@ -46,7 +46,7 @@ namespace genetic_algorithm::selection::dtl
     ParetoFrontsInfo nonDominatedSort(const FitnessMatrix& fmat);
 
     /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */
-    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>> pfronts);
+    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>& pfronts);
 
     /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */
     std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>&& pfronts);
