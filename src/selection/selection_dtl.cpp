@@ -106,8 +106,8 @@ namespace genetic_algorithm::selection::dtl
         using namespace std;
 
         /* Find the number of candidates which dominate each candidate, and the indices of the candidates it dominates. */
-        vector<size_t> dom_count(fmat.size(), 0);
-        vector<vector<size_t>> dom_list(fmat.size());
+        vector<size_t> better_sol_count(fmat.size(), 0);
+        vector<vector<size_t>> dominated_idxs(fmat.size());
 
         for (size_t i = 0; i < fmat.size(); i++)
         {
@@ -115,24 +115,23 @@ namespace genetic_algorithm::selection::dtl
             {
                 if (detail::paretoCompareLess(fmat[j], fmat[i]))
                 {
-                    dom_count[j]++;
-                    dom_list[i].push_back(j);
+                    better_sol_count[j]++;
+                    dominated_idxs[i].push_back(j);
                 }
                 else if (detail::paretoCompareLess(fmat[i], fmat[j]))
                 {
-                    dom_count[i]++;
-                    dom_list[j].push_back(i);
+                    better_sol_count[i]++;
+                    dominated_idxs[j].push_back(i);
                 }
             }
         }
-
         vector<size_t> ranks(fmat.size());
 
         /* Find the indices of all non-dominated candidates (the first/best pareto front). */
         vector<size_t> current_front;
         for (size_t i = 0; i < fmat.size(); i++)
         {
-            if (dom_count[i] == 0)
+            if (better_sol_count[i] == 0)
             {
                 current_front.push_back(i);
                 ranks[i] = 0;
@@ -141,29 +140,27 @@ namespace genetic_algorithm::selection::dtl
 
         /* Find all the other pareto fronts. */
         vector<vector<size_t>> pareto_fronts;
-        size_t current_front_idx = 1;
-        while (!current_front.empty())
+        for (size_t rank = 1; !current_front.empty(); rank++)
         {
-            /* "Remove" the current front from the population and find the next one. */
+            /* Remove the current front from the population and find the next one. */
             vector<size_t> next_front;
-            for (size_t idx : current_front)
+            for (size_t sol_idx : current_front)
             {
-                for (size_t dominated_idx : dom_list[idx])
+                for (size_t dominated_idx : dominated_idxs[sol_idx])
                 {
                     /* j belongs to the next front if it's domination count will become 0. */
-                    if (--dom_count[dominated_idx] == 0)
+                    if (--better_sol_count[dominated_idx] == 0)
                     {
                         next_front.push_back(dominated_idx);
-                        ranks[dominated_idx] = current_front_idx;
+                        ranks[dominated_idx] = rank;
                     }
                 }
             }
             pareto_fronts.push_back(current_front);
             current_front = next_front;
-            current_front_idx++;
         }
 
-        return ParetoFrontsInfo(std::move(pareto_fronts), std::move(ranks));
+        return ParetoFrontsInfo(pareto_fronts, ranks);
     }
 
     std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>& pfronts)
