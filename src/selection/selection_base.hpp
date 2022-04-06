@@ -40,19 +40,19 @@ namespace genetic_algorithm::selection
         * Called exactly once every generation before the selections take place.
         * 
         * @param ga The genetic algorithm that uses the selection method.
-        * @param fitness_matrix The fitness matrix of the current population of the algorithm.
+        * @param population_fitness_matrix The fitness matrix of the current population of the algorithm.
         */
-        virtual void prepare(const GaBase& ga, const FitnessMatrix& fitness_matrix) = 0;
+        virtual void prepare(const GaBase& ga, const FitnessMatrix& population_fitness_matrix) = 0;
 
         /**
         * Select a single Candidate from the population.
         * Called (population_size) number of times in every generation.
         * 
         * @param ga The genetic algorithm that uses the selection method.
-        * @param fitness_matrix The fitness matrix of the current population of the algorithm.
+        * @param population_fitness_matrix The fitness matrix of the current population of the algorithm.
         * @returns The index of the selected Candidate.
         */
-        virtual size_t select(const GaBase& ga, const FitnessMatrix& fitness_matrix) = 0;
+        virtual size_t select(const GaBase& ga, const FitnessMatrix& population_fitness_matrix) = 0;
 
         /**
         * Select the Candidates of the next generation (next population) from the Candidates of the
@@ -63,10 +63,10 @@ namespace genetic_algorithm::selection
         * from the combined current and child populations (assuming fitness maximization).
         * 
         * @param ga The genetic algorithm that uses the selection method.
-        * @param fitness_matrix The fitness matrix of the current population and the children of the algorithm.
-        * @returns The indices selected for the next population of the algorithm.
+        * @param population_fitness_matrix The fitness matrix of the current population and the children of the algorithm.
+        * @returns The indices selected from the fitness matrix for the next population of the algorithm.
         */
-        virtual std::vector<size_t> nextPopulation(const GaBase& ga, FitnessMatrix& fitness_matrix);
+        virtual std::vector<size_t> nextPopulation(const GaBase& ga, FitnessMatrix& population_fitness_matrix);
 
         Selection()                             = default;
         Selection(const Selection&)             = default;
