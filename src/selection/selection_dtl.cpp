@@ -9,8 +9,6 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-#include <iterator>
-#include <numeric>
 #include <limits>
 #include <cmath>
 

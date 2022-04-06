@@ -4,7 +4,6 @@
 #include "../utility/algorithm.hpp"
 #include "../algorithms/ga_base.decl.hpp"
 #include <algorithm>
-#include <cstddef>
 #include <cassert>
 
 namespace genetic_algorithm::selection
