@@ -23,7 +23,13 @@ namespace genetic_algorithm::selection::dtl
         offset = 2.0 * offset;              /* The selection probability of the worst candidate should also be > 0. */
         offset = std::min(0.0, offset);     /* Only adjust fitness values if it's neccesary (has negative fitness). */
 
-        return detail::map(fvec, [offset](double f) { return f - offset; });
+        std::transform(fvec.begin(), fvec.end(), fvec.begin(),
+        [offset](double f)
+        {
+            return f - offset;
+        });
+
+        return fvec;
     }
 
     std::vector<double> rankWeights(const FitnessMatrix& fmat, double wmin, double wmax)
@@ -51,13 +57,15 @@ namespace genetic_algorithm::selection::dtl
         double fmean = detail::mean(fvec);
         double fdev = std::max(detail::stdDev(fvec, fmean), 1E-6);
 
-        return detail::map(fvec,
+        std::transform(fvec.begin(), fvec.end(), fvec.begin(),
         [&](double f)
         {
-            double weight = (1.0 + (f - fmean) / (scale * fdev));
+            double weight = 1.0 + (f - fmean) / (scale * fdev);
 
             return std::max(weight, 0.0);  /* If ( fitness < (f_mean - scale * SD) ) the weight could be negative. */
         });
+
+        return fvec;
     }
 
     std::vector<double> boltzmannWeights(const FitnessMatrix& fmat, double temperature)
@@ -65,7 +73,7 @@ namespace genetic_algorithm::selection::dtl
         auto fvec = detail::toFitnessVector(fmat);
         auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
 
-        return detail::map(fvec,
+        std::transform(fvec.begin(), fvec.end(), fvec.begin(),
         [&](double f)
         {
             double df = std::max(*fmax - *fmin, 1E-6);
@@ -73,6 +81,8 @@ namespace genetic_algorithm::selection::dtl
 
             return std::exp(fnorm / temperature);
         });
+
+        return fvec;
     }
 
     double boltzmannDefaultTemp(size_t gen, size_t max_gen)
