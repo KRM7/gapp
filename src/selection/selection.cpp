@@ -112,7 +112,7 @@ namespace genetic_algorithm::selection
         scale_ = scale;
     }
 
-    void Sigma::prepare(const GaBase& ga, const FitnessMatrix& pop)
+    void Sigma::prepare(const GaBase&, const FitnessMatrix& pop)
     {
         auto selection_weights = dtl::sigmaWeights(pop, scale_);
 
