@@ -5,7 +5,6 @@
 
 #include "../population/population.hpp"
 #include <vector>
-#include <utility>
 #include <cstddef>
 
 namespace genetic_algorithm::selection::dtl
@@ -34,12 +33,11 @@ namespace genetic_algorithm::selection::dtl
 
     struct ParetoFrontsInfo
     {
-    public:
         std::vector<std::vector<size_t>> idxs;
         std::vector<size_t> ranks;
 
-        ParetoFrontsInfo(std::vector<std::vector<size_t>> idxs, std::vector<size_t> ranks)
-            : idxs(std::move(idxs)), ranks(std::move(ranks)) {}
+        ParetoFrontsInfo(const std::vector<std::vector<size_t>>& idxs, const std::vector<size_t>& ranks)
+            : idxs(idxs), ranks(ranks) {}
     };
 
     /* Non-dominated sorting for the multi-objective algorithms. Returns the pareto fronts of the population and the ranks of each candidate. */
@@ -51,7 +49,7 @@ namespace genetic_algorithm::selection::dtl
     /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */
     std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>&& pfronts);
 
-    /* Generate n reference points on the unit simplex in dim dimensions (for the NSGA-III algorithm). */
+    /* Generate n reference points on the unit simplex in dim dimensions from a uniform distribution (for the NSGA-III algorithm). */
     std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim);
 
     /* Find the index and distance of the closest reference line to the point p. */
