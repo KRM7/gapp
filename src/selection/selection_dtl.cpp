@@ -245,19 +245,13 @@ namespace genetic_algorithm::selection::dtl
 
     std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p)
     {
-        size_t argmin = 0;
-        double dmin = detail::perpendicularDistanceSq(refs[0], p);
-        for (size_t i = 1; i < refs.size(); i++)
+        auto distances = detail::map(refs,
+        [&p](const auto& ref)
         {
-            double d = detail::perpendicularDistanceSq(refs[i], p);
-            if (d < dmin)
-            {
-                dmin = d;
-                argmin = i;
-            }
-        }
+            return detail::perpendicularDistanceSq(ref, p);
+        });
 
-        return { argmin, dmin };
+        return detail::argmin_v(distances.begin(), distances.end());
     }
 
     double ASF(const std::vector<double>& f, const std::vector<double>& z, const std::vector<double>& w)
