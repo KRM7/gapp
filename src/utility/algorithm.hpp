@@ -52,10 +52,10 @@ namespace genetic_algorithm::detail
     }
 
     template<Container C, typename F>
-    requires std::invocable<F, const typename C::value_type>
+    requires std::invocable<F, typename C::value_type>
     auto map(const C& cont, F&& f)
     {
-        using result_t = std::vector<std::invoke_result_t<F, const typename C::value_type>>;
+        using result_t = std::vector<std::invoke_result_t<F, typename C::value_type>>;
         
         result_t result;
         result.reserve(cont.size());
@@ -112,7 +112,7 @@ namespace genetic_algorithm::detail
 
     template<std::input_iterator Iter, typename Pred>
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
-    auto find_all(Iter first, Iter last, Pred&& pred) -> std::vector<Iter>
+    auto find_all(Iter first, Iter last, Pred&& pred)
     {
         assert(std::distance(first, last) >= 0);
 
@@ -131,7 +131,7 @@ namespace genetic_algorithm::detail
 
     template<std::input_iterator Iter, typename Pred>
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
-    auto find_all_v(Iter first, Iter last, Pred&& pred) -> std::vector<typename std::iterator_traits<Iter>::value_type>
+    auto find_all_v(Iter first, Iter last, Pred&& pred)
     {
         assert(std::distance(first, last) >= 0);
 
