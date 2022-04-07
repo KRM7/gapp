@@ -51,17 +51,20 @@ namespace genetic_algorithm::detail
         };
     }
 
-    template<Container C, typename F>
-    requires std::invocable<F, typename C::value_type>
-    auto map(const C& cont, F&& f)
+    template<template<typename...> class ContainerType, typename ValueType, typename... Rest, typename F>
+    requires Container<ContainerType<ValueType, Rest...>> && std::invocable<F, ValueType>
+    auto map(const ContainerType<ValueType, Rest...>& cont, F&& f)
     {
-        using result_t = std::vector<std::invoke_result_t<F, typename C::value_type>>;
+        using ResultType = ContainerType<std::invoke_result_t<F, ValueType>>;
         
-        result_t result;
-        result.reserve(cont.size());
+        ResultType result;
+        if constexpr (std::is_same_v<ResultType, std::vector<std::invoke_result_t<F, ValueType>>>)
+        {
+            result.reserve(cont.size());
+        }
 
         std::transform(std::begin(cont), std::end(cont), std::back_inserter(result),
-        [f = lforward<F>(f)](const C::value_type& elem)
+        [f = lforward<F>(f)](const ValueType& elem)
         {
             return std::invoke(f, elem);
         });
