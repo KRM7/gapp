@@ -12,6 +12,8 @@
 
 namespace genetic_algorithm::selection
 {
+namespace single_objective
+{
     /**
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.
     * The probability of selecting an individual from the population is proportional to it's fitness value.
@@ -204,6 +206,10 @@ namespace genetic_algorithm::selection
         std::vector<double> cdf_;
     };
 
+} // namespace genetic_algorithm::selection::single_objective
+
+namespace multi_objective
+{
     /**
     * Non-dominated sorting genetic algorithm (NSGA-II) for multi-objective optimization.
     */
@@ -268,6 +274,7 @@ namespace genetic_algorithm::selection
         bool nichedCompare(size_t lidx, size_t ridx) const;
     };
 
+} // namespace genetic_algorithm::selection::multi_objective
 } // namespace genetic_algorithm::selection
 
 #endif // !GA_SELECTION_DECL_HPP

@@ -29,7 +29,7 @@ void timeGA(size_t num_runs = 50)
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::Tournament{});
+    GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.6 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.max_gen(1000);

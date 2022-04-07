@@ -33,7 +33,7 @@ void nsga3KurTest()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::NSGA3{});
+    GA.selection_method(selection::multi_objective::NSGA3{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
@@ -67,7 +67,7 @@ void nsga3Zdt2Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::NSGA3{});
+    GA.selection_method(selection::multi_objective::NSGA3{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
@@ -101,7 +101,7 @@ void nsga3Zdt3Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::NSGA3{});
+    GA.selection_method(selection::multi_objective::NSGA3{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
@@ -135,7 +135,7 @@ void nsga3Zdt6Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::NSGA3{});
+    GA.selection_method(selection::multi_objective::NSGA3{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
     GA.max_gen(250);
@@ -169,7 +169,7 @@ void nsga3Dtlz1Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::NSGA3{});
+    GA.selection_method(selection::multi_objective::NSGA3{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
     GA.max_gen(1500);
@@ -203,7 +203,7 @@ void nsga3Dtlz2Test()
 
     /* Set some optional parameters. */
     GA.population_size(100);
-    GA.selection_method(selection::NSGA3{});
+    GA.selection_method(selection::multi_objective::NSGA3{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
     GA.max_gen(1500);

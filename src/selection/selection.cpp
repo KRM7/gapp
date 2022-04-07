@@ -12,7 +12,7 @@
 #include <exception>
 #include <cassert>
 
-namespace genetic_algorithm::selection
+namespace genetic_algorithm::selection::single_objective
 {
     void Roulette::prepare(const GaBase&, const FitnessMatrix& pop)
     {
@@ -39,7 +39,8 @@ namespace genetic_algorithm::selection
     }
 
     void Tournament::prepare(const GaBase&, const FitnessMatrix&)
-    { /* Nothing to do for tournament selection. */ }
+    { /* Nothing to do for tournament selection. */
+    }
 
     size_t Tournament::select(const GaBase&, const FitnessMatrix& pop)
     {
@@ -49,7 +50,7 @@ namespace genetic_algorithm::selection
         auto candidates = rng::sampleUnique(pop.size(), tourney_size_);
 
         return *std::max_element(candidates.begin(), candidates.end(),
-        [&pop](size_t lidx, size_t ridx)
+                                 [&pop](size_t lidx, size_t ridx)
         {
             return pop[lidx][0] < pop[ridx][0];
         });
@@ -140,6 +141,11 @@ namespace genetic_algorithm::selection
     {
         return rng::sampleCdf(cdf_);
     }
+
+} // namespace genetic_algorithm::selection::single_objective
+
+namespace genetic_algorithm::selection::multi_objective
+{
 
     void NSGA2::init(const GaBase& ga)
     {
@@ -519,4 +525,4 @@ namespace genetic_algorithm::selection
         return new_pop_idxs;
     }
 
-} // namespace genetic_algorithm::selection
+} // namespace genetic_algorithm::selection::multi_objective

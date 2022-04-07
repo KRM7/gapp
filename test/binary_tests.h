@@ -29,7 +29,7 @@ void binaryRastriginTest()
     
     /* Set some optional parameters. */
     GA.population_size(400);
-    GA.selection_method(selection::Roulette{});
+    GA.selection_method(selection::single_objective::Roulette{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
 
@@ -72,7 +72,7 @@ void binaryRosenbrockTest()
 
     /* Set some optional parameters. */
     GA.population_size(300);
-    GA.selection_method(selection::Tournament{});
+    GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.max_gen(1500);
@@ -113,7 +113,7 @@ void binarySchwefelTest()
 
     /* Set some optional parameters. */
     GA.population_size(200);
-    GA.selection_method(selection::Rank{});
+    GA.selection_method(selection::single_objective::Rank{});
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     
@@ -156,7 +156,7 @@ void binaryGriewankTest()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.selection_method(selection::Sigma{});
+    GA.selection_method(selection::single_objective::Sigma{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
 
@@ -199,7 +199,7 @@ void binaryAckleyTest()
 
     /* Set some optional parameters. */
     GA.population_size(250);
-    GA.selection_method(selection::Boltzmann{});
+    GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
     
