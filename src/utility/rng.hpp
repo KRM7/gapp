@@ -33,6 +33,9 @@ namespace genetic_algorithm::rng
         state_type state_;
     };
 
+    /** Generate a new seed that can be used to initialize a PRNG. Thread-safe. */
+    inline Splitmix64::result_type generateSeed();
+
     /** xoroshiro128+ PRNG adapted from https://prng.di.unimi.it/xoroshiro128plus.c */
     class Xoroshiro128p
     {
@@ -53,24 +56,11 @@ namespace genetic_algorithm::rng
         static state_type rotl64(state_type value, unsigned shift) noexcept;
     };
 
-    /** Thread-safe seed generator for seeding PRNGs created on different threads. */
-    class SeedGenerator
-    {
-    public:
-        /** Generate a new seed that can be used to initialize a PRNG. */
-        Splitmix64::result_type operator()();
-    private:
-        Splitmix64 gen_ = Splitmix64{ GA_SEED() };
-    };
-
-    /** Global seed generator used in the genetic algorithms to seed PRNGs. */
-    inline SeedGenerator seed_gen{};
-
     /** The PRNG type used in the genetic algorithms. */
     using PRNG = Xoroshiro128p;
 
     /** PRNG instance(s) used in the genetic algorithms. */
-    thread_local inline PRNG prng{ seed_gen() };
+    thread_local inline PRNG prng{ generateSeed() };
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
     template<std::floating_point RealType = double>
@@ -146,6 +136,14 @@ namespace genetic_algorithm::rng
         return z ^ (z >> 31);
     }
 
+    inline Splitmix64::result_type generateSeed()
+    {
+        static Splitmix64 gen = Splitmix64{ GA_SEED() };
+        static std::mutex lock;
+        std::lock_guard guard(lock);
+
+        return gen();
+    }
 
     inline Xoroshiro128p::Xoroshiro128p(uint_fast64_t seed)
     {
@@ -181,16 +179,6 @@ namespace genetic_algorithm::rng
     {
         return (value << shift) | (value >> (64U - shift));
     }
-
-
-    inline Splitmix64::result_type SeedGenerator::operator()()
-    {
-        static std::mutex m;
-        std::lock_guard<std::mutex> lock(m);
-
-        return gen_();
-    }
-
 
     template<std::floating_point RealType>
     RealType randomReal()
