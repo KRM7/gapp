@@ -30,7 +30,6 @@ namespace genetic_algorithm::detail
         return static_cast<T&&>(t);
     }
 
-
     template<typename F>
     constexpr auto compose(F&& f) noexcept
     {
@@ -63,7 +62,7 @@ namespace genetic_algorithm::detail
             result.reserve(cont.size());
         }
 
-        std::transform(std::begin(cont), std::end(cont), std::back_inserter(result),
+        std::transform(std::begin(cont), std::end(cont), std::back_inserter(result), // only works if the container has push_back
         [f = lforward<F>(f)](const ValueType& elem)
         {
             return std::invoke(f, elem);
