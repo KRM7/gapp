@@ -4,6 +4,7 @@
 #define GA_GA_BASE_DECL_HPP
 
 #include "../population/candidate.hpp"
+#include "../utility/concepts.hpp"
 #include <algorithm>
 #include <vector>
 #include <unordered_set>
@@ -13,6 +14,9 @@
 #include <atomic>
 #include <cstddef>
 #include <memory>
+#include <concepts>
+
+#include "../crossover/crossover_base.decl.hpp"
 
 
 namespace genetic_algorithm
@@ -20,20 +24,48 @@ namespace genetic_algorithm
     namespace selection
     {
         class Selection;
+
+        template<typename T>
+        concept SelectionMethod = requires
+        {
+            detail::DerivedFrom<T, Selection>;
+            std::copy_constructible<T>;
+        };
     }
     namespace crossover
     {
         template<Gene T>
         class Crossover;
+
+        template<typename T>
+        concept CrossoverMethod = requires
+        {
+            detail::DerivedFromSpecializationOf<T, Crossover>;
+            std::copy_constructible<T>;
+        };
     }
     namespace mutation
     {
         template<Gene T>
         class Mutation;
+
+        template<typename T>
+        concept MutationMethod = requires
+        {
+            detail::DerivedFromSpecializationOf<T, Mutation>;
+            std::copy_constructible<T>;
+        };
     }
     namespace stopping
     {
         class StopCondition;
+
+        template<typename T>
+        concept StopMethod = requires
+        {
+            detail::DerivedFrom<T, StopCondition>;
+            std::copy_constructible<T>;
+        };
     }
 
     class GaBase
@@ -197,61 +229,50 @@ namespace genetic_algorithm
 
 
         /* CROSSOVER */
-
-        template<typename CrossoverType>
-        //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>> && std::copy_constructible<CrossoverType>
-        void crossover_method(const CrossoverType& f);
+        template<crossover::CrossoverMethod F>
+        void crossover_method(const F& f);
 
         void crossover_method(std::unique_ptr<crossover::Crossover<GeneType>>&& f);
 
-        template<typename CrossoverType = crossover::Crossover<GeneType>>
-        //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>
-        CrossoverType& crossover_method() const;
+        template<crossover::CrossoverMethod F = crossover::Crossover<GeneType>>
+        F& crossover_method() const;
 
 
         /* MUTATION */
-
-        template<typename MutationType>
-        //requires std::derived_from<MutationType, mutation::Mutation<GeneType>>&& std::copy_constructible<MutationType>
-        void mutation_method(const MutationType& f);
+        template<mutation::MutationMethod F>
+        void mutation_method(const F& f);
 
         void mutation_method(std::unique_ptr<mutation::Mutation<GeneType>>&& f);
 
-        template<typename MutationType = mutation::Mutation<GeneType>>
-        //requires std::derived_from<MutationType, mutation::Crossover<GeneType>>
-        MutationType& mutation_method() const;
+        template<mutation::MutationMethod F = mutation::Mutation<GeneType>>
+        F& mutation_method() const;
 
 
         /* STOP CONDITION */
-
         /* The algorithm always stops when the set max_gen generation has been reached regardless of the stop condition set. */
-        template<typename StopType>
-        //requires std::derived_from<StopType, stopping::StopCondition> && std::copy_constructible<StopType>
-        void stop_condition(const StopType& f);
+        template<stopping::StopMethod F>
+        void stop_condition(const F& f);
 
         void stop_condition(std::unique_ptr<stopping::StopCondition>&& f);
         
-        template<typename StopType = stopping::StopCondition>
-        //requires std::derived_from<StopType, stopping::StopCondition>
-        StopType& stop_condition() const;
+        template<stopping::StopMethod F = stopping::StopCondition>
+        F& stop_condition() const;
 
 
         /* SELECTION METHOD */
-
         /**
         * Sets the selection method used in the single-objective algorithm to @p method. \n
         * The selection method set is ignored in the other algorithm types. @see Mode
         *
         * @param method The selection method used in the single-objective algorithm.
         */
-        template<typename SelectionType>
-        //requires std::derived_from<SelectionType, selection::Selection> && std::copy_constructible<SelectionType>
-        void selection_method(const SelectionType& f);
+        template<selection::SelectionMethod F>
+        void selection_method(const F& f);
 
         void selection_method(std::unique_ptr<selection::Selection>&& f);
 
-        template<typename SelectionType = selection::Selection>
-        SelectionType& selection_method() const;
+        template<selection::SelectionMethod F = selection::Selection>
+        F& selection_method() const;
 
     protected:
 

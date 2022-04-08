@@ -74,11 +74,10 @@ namespace genetic_algorithm
 
     /* SELECTION METHOD */
     template<typename GeneType>
-    template<typename SelectionType>
-    //requires std::derived_from<SelectionType, selection::Selection> && std::copy_constructible<SelectionType>
-    void GA<GeneType>::selection_method(const SelectionType& f)
+    template<selection::SelectionMethod F>
+    void GA<GeneType>::selection_method(const F& f)
     {
-        selection_ = std::make_unique<SelectionType>(f);
+        selection_ = std::make_unique<F>(f);
     }
 
     template<typename GeneType>
@@ -92,18 +91,17 @@ namespace genetic_algorithm
     }
 
     template<typename GeneType>
-    template<typename SelectionType>
-    SelectionType& GA<GeneType>::selection_method() const
+    template<selection::SelectionMethod F>
+    F& GA<GeneType>::selection_method() const
     {
-        return dynamic_cast<SelectionType&>(*selection_);
+        return dynamic_cast<F&>(*selection_);
     }
 
     template<typename GeneType>
-    template<typename CrossoverType>
-    //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>> && std::copy_constructible<CrossoverType>
-    void GA<GeneType>::crossover_method(const CrossoverType& f)
+    template<crossover::CrossoverMethod F>
+    void GA<GeneType>::crossover_method(const F& f)
     {
-        crossover_ = std::make_unique<CrossoverType>(f);
+        crossover_ = std::make_unique<F>(f);
     }
 
     template<typename GeneType>
@@ -117,19 +115,17 @@ namespace genetic_algorithm
     }
 
     template<typename GeneType>
-    template<typename CrossoverType>
-    //requires std::derived_from<CrossoverType, crossover::Crossover<GeneType>>
-    CrossoverType& GA<GeneType>::crossover_method() const
+    template<crossover::CrossoverMethod F>
+    F& GA<GeneType>::crossover_method() const
     {
-        return dynamic_cast<CrossoverType&>(*crossover_);
+        return dynamic_cast<F&>(*crossover_);
     }
 
     template<typename GeneType>
-    template<typename MutationType>
-    //requires std::derived_from<MutationType, mutation::Mutation<GeneType>> && std::copy_constructible<MutationType>
-    void GA<GeneType>::mutation_method(const MutationType& f)
+    template<mutation::MutationMethod F>
+    void GA<GeneType>::mutation_method(const F& f)
     {
-        mutation_ = std::make_unique<MutationType>(f);
+        mutation_ = std::make_unique<F>(f);
     }
 
     template<typename GeneType>
@@ -143,19 +139,17 @@ namespace genetic_algorithm
     }
 
     template<typename GeneType>
-    template<typename MutationType>
-    //requires std::derived_from<MutationType, mutation::Crossover<GeneType>>
-    MutationType& GA<GeneType>::mutation_method() const
+    template<mutation::MutationMethod F>
+    F& GA<GeneType>::mutation_method() const
     {
-        return dynamic_cast<MutationType&>(*mutation_);
+        return dynamic_cast<F&>(*mutation_);
     }
 
     template<typename GeneType>
-    template<typename StopType>
-    //requires std::derived_from<StopType, stopping::StopCondition> && std::copy_constructible<StopType>
-    void GA<GeneType>::stop_condition(const StopType& f)
+    template<stopping::StopMethod F>
+    void GA<GeneType>::stop_condition(const F& f)
     {
-        stop_condition_ = std::make_unique<StopType>(f);
+        stop_condition_ = std::make_unique<F>(f);
     }
 
     template<typename GeneType>
@@ -165,11 +159,10 @@ namespace genetic_algorithm
     }
 
     template<typename GeneType>
-    template<typename StopType>
-    //requires std::derived_from<StopType, stopping::StopCondition>
-    StopType& GA<GeneType>::stop_condition() const
+    template<stopping::StopMethod F>
+    F& GA<GeneType>::stop_condition() const
     {
-        return dynamic_cast<StopType&>(*stop_condition_);
+        return dynamic_cast<F&>(*stop_condition_);
     }
 
     template<typename GeneType>
