@@ -4,7 +4,6 @@
 #define GA_CROSSOVER_BASE_DECL_HPP
 
 #include "../population/candidate.hpp"
-
 #include <vector>
 #include <utility>
 
