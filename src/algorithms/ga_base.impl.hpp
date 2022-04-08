@@ -7,7 +7,6 @@
 #include "../selection/selection_base.hpp"
 #include "../crossover/crossover_base.hpp"
 #include "../mutation/mutation_base.hpp"
-#include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"
 #include "../population/population.hpp"
@@ -72,7 +71,6 @@ namespace genetic_algorithm
         fitness_function_ = f;
     }
 
-    /* SELECTION METHOD */
     template<typename GeneType>
     template<selection::SelectionMethod F>
     void GA<GeneType>::selection_method(const F& f)
@@ -163,19 +161,6 @@ namespace genetic_algorithm
     F& GA<GeneType>::stop_condition() const
     {
         return dynamic_cast<F&>(*stop_condition_);
-    }
-
-    template<typename GeneType>
-    bool GA<GeneType>::stopCondition()
-    {
-        if (stop_condition_)
-        {
-            return (generation_cntr_ >= (max_gen_ - 1)) || std::invoke(*stop_condition_, *this);;
-        }
-        else
-        {
-            return (generation_cntr_ >= (max_gen_ - 1));
-        }
     }
 
     template<typename geneType>
@@ -374,6 +359,19 @@ namespace genetic_algorithm
         auto selected_indices = (*selection_).nextPopulation(*this, fitness_matrix);
 
         return detail::map(selected_indices, [&pop](size_t idx) { return pop[idx]; });
+    }
+
+    template<typename GeneType>
+    bool GA<GeneType>::stopCondition() const
+    {
+        if (stop_condition_)
+        {
+            return (generation_cntr_ >= (max_gen_ - 1)) || (*stop_condition_)(*this);
+        }
+        else
+        {
+            return (generation_cntr_ >= (max_gen_ - 1));
+        }
     }
 
 } // namespace genetic_algorithm
