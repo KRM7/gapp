@@ -15,25 +15,34 @@ namespace genetic_algorithm::detail
     template<typename T>
     concept Hashable = requires(T arg)
     {
-        { std::hash<T>{}(arg) } -> std::unsigned_integral;
+        { std::hash<T>{}(arg) } -> std::convertible_to<size_t>;
     };
 
-    template<typename T, template<typename...> class Templ>
-    struct SpecializationOfImpl : std::false_type {};
+    template<typename S, template<typename...> class Templ>
+    struct IsSpecializationOf : std::false_type {};
 
     template<template<typename...> class Templ, typename... TArgs>
-    struct SpecializationOfImpl<Templ<TArgs...>, Templ> : std::true_type {};
+    struct IsSpecializationOf<Templ<TArgs...>, Templ> : std::true_type {};
 
     template<typename S, template<typename...> class Templ>
-    concept SpecializationOf = SpecializationOfImpl<S, Templ>::value;
+    concept SpecializationOf = IsSpecializationOf<S, Templ>::value;
+
+    template<typename Base>
+    void derivedFromImpl_(const Base&);
+
+    template<typename Derived, typename Base>
+    concept DerivedFrom = requires(const Derived& arg)
+    {
+        derivedFromImpl_<Base>(arg);
+    };
 
     template<template<typename...> class BaseTempl, typename... TArgs>
-    void derivedFromSpecializationOfImpl(const BaseTempl<TArgs...>&);
+    void derivedFromSpecializationOfImpl_(const BaseTempl<TArgs...>&);
 
     template<typename Derived, template<typename...> class BaseTempl>
     concept DerivedFromSpecializationOf = requires(const Derived& arg)
     {
-        derivedFromSpecializationOfImpl<BaseTempl>(arg);
+        derivedFromSpecializationOfImpl_<BaseTempl>(arg);
     };
 
     template<typename C>
