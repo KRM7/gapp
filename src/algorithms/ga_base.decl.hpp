@@ -16,8 +16,6 @@
 #include <memory>
 #include <concepts>
 
-#include "../crossover/crossover_base.decl.hpp"
-
 
 namespace genetic_algorithm
 {
@@ -133,6 +131,7 @@ namespace genetic_algorithm
 
         [[nodiscard]]
         size_t num_objectives() const noexcept;
+
         [[nodiscard]]
         virtual std::vector<std::vector<double>> fitness_matrix() const = 0;
 
@@ -227,38 +226,6 @@ namespace genetic_algorithm
         */
         void fitness_function(FitnessFunction f);
 
-
-        /* CROSSOVER */
-        template<crossover::CrossoverMethod F>
-        void crossover_method(const F& f);
-
-        void crossover_method(std::unique_ptr<crossover::Crossover<GeneType>>&& f);
-
-        template<crossover::CrossoverMethod F = crossover::Crossover<GeneType>>
-        F& crossover_method() const;
-
-
-        /* MUTATION */
-        template<mutation::MutationMethod F>
-        void mutation_method(const F& f);
-
-        void mutation_method(std::unique_ptr<mutation::Mutation<GeneType>>&& f);
-
-        template<mutation::MutationMethod F = mutation::Mutation<GeneType>>
-        F& mutation_method() const;
-
-
-        /* STOP CONDITION */
-        /* The algorithm always stops when the set max_gen generation has been reached regardless of the stop condition set. */
-        template<stopping::StopMethod F>
-        void stop_condition(const F& f);
-
-        void stop_condition(std::unique_ptr<stopping::StopCondition>&& f);
-        
-        template<stopping::StopMethod F = stopping::StopCondition>
-        F& stop_condition() const;
-
-
         /* SELECTION METHOD */
         /**
         * Sets the selection method used in the single-objective algorithm to @p method. \n
@@ -272,7 +239,35 @@ namespace genetic_algorithm
         void selection_method(std::unique_ptr<selection::Selection>&& f);
 
         template<selection::SelectionMethod F = selection::Selection>
-        F& selection_method() const;
+        [[nodiscard]] F& selection_method() const;
+
+        /* CROSSOVER */
+        template<crossover::CrossoverMethod F>
+        void crossover_method(const F& f);
+
+        void crossover_method(std::unique_ptr<crossover::Crossover<GeneType>>&& f);
+
+        template<crossover::CrossoverMethod F = crossover::Crossover<GeneType>>
+        F& crossover_method() const;
+
+        /* MUTATION */
+        template<mutation::MutationMethod F>
+        void mutation_method(const F& f);
+
+        void mutation_method(std::unique_ptr<mutation::Mutation<GeneType>>&& f);
+
+        template<mutation::MutationMethod F = mutation::Mutation<GeneType>>
+        F& mutation_method() const;
+
+        /* STOP CONDITION */
+        /* The algorithm always stops when the set max_gen generation has been reached regardless of the stop condition set. */
+        template<stopping::StopMethod F>
+        void stop_condition(const F & f);
+
+        void stop_condition(std::unique_ptr<stopping::StopCondition> && f);
+
+        template<stopping::StopMethod F = stopping::StopCondition>
+        [[nodiscard]] F& stop_condition() const;
 
     protected:
 
@@ -286,17 +281,14 @@ namespace genetic_algorithm
         std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
 
-
-        /* General functions for the genetic algorithms. */
-
         void init();
         virtual Candidate generateCandidate() const = 0;
         Population generateInitialPopulation() const;
-        bool stopCondition();
         void evaluate(Population& pop);
         Population nextPopulation(Population& pop, Population& children) const;
         void updateOptimalSolutions(CandidateVec& optimal_sols, const Population& pop) const;
         void repair(Population& pop) const;
+        bool stopCondition() const;
 
     };
 
