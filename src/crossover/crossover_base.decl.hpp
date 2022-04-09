@@ -33,7 +33,11 @@ namespace genetic_algorithm::crossover
         */
         explicit Crossover(double pc = 0.8);
 
-        virtual ~Crossover() = default;
+        Crossover(const Crossover&)             = default;
+        Crossover(Crossover&&)                  = default;
+        Crossover& operator=(const Crossover&)  = default;
+        Crossover& operator=(Crossover&&)       = default;
+        virtual ~Crossover()                    = default;
 
         /**
         * Sets the crossover rate used in the algorithm to @p pc. 

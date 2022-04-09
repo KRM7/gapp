@@ -34,7 +34,11 @@ namespace genetic_algorithm::mutation
         */
         explicit Mutation(double pm = 0.01);
 
-        virtual ~Mutation() = default;
+        Mutation(const Mutation&)               = default;
+        Mutation(Mutation&&)                    = default;
+        Mutation& operator=(const Mutation&)    = default;
+        Mutation& operator=(Mutation&&)         = default;
+        virtual ~Mutation()                     = default;
 
         /**
         * Sets the mutation rate used for the operator to @p pm.
