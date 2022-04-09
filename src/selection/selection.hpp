@@ -24,8 +24,8 @@ namespace single_objective
     class Roulette final : public Selection
     {
     public:
-        void prepare(const GaBase& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaBase& ga, const FitnessMatrix& pop) override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
 
     private:
         std::vector<double> cdf_;
@@ -60,8 +60,8 @@ namespace single_objective
         [[nodiscard]]
         size_t size() const noexcept { return tourney_size_; }
 
-        void prepare(const GaBase& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaBase& ga, const FitnessMatrix& pop) override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
 
     private:
         size_t tourney_size_;
@@ -124,8 +124,8 @@ namespace single_objective
         [[nodiscard]]
         std::pair<double, double> weights() const noexcept { return { min_weight_, max_weight_ }; }
 
-        void prepare(const GaBase& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaBase& ga, const FitnessMatrix& pop) override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
 
     private:
         double min_weight_;
@@ -161,8 +161,8 @@ namespace single_objective
         [[nodiscard]]
         double scale() const noexcept { return scale_; }
 
-        void prepare(const GaBase& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaBase& ga, const FitnessMatrix& pop) override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
 
     private:
         double scale_;
@@ -198,8 +198,8 @@ namespace single_objective
         */
         void temperature_function(TemperatureFunction f);
 
-        void prepare(const GaBase& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaBase& ga, const FitnessMatrix& pop) override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
 
     private:
         TemperatureFunction temperature_;
@@ -216,10 +216,10 @@ namespace multi_objective
     class NSGA2 final : public Selection
     {
     public:
-        void init(const GaBase& ga) override;
-        void prepare(const GaBase& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaBase& ga, const FitnessMatrix& pop) override;
-        std::vector<size_t> nextPopulation(const GaBase& ga, FitnessMatrix& combined_pop) override;
+        void init(const GaInfo& ga) override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
 
     private:
         std::vector<size_t> ranks_;
@@ -235,10 +235,10 @@ namespace multi_objective
     class NSGA3 final : public Selection
     {
     public:
-        void init(const GaBase& ga) override;
-        void prepare(const GaBase& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaBase& ga, const FitnessMatrix& pop) override;
-        std::vector<size_t> nextPopulation(const GaBase& ga, FitnessMatrix& combined_pop) override;
+        void init(const GaInfo& ga) override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
 
     private:
         using Point = std::vector<double>;
@@ -268,7 +268,7 @@ namespace multi_objective
         void associatePopWithRefs(const FitnessMatrix& pop);
 
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */
-        static std::vector<size_t> calcNicheCounts(const GaBase& ga, std::vector<CandidateInfo>& props);
+        static std::vector<size_t> calcNicheCounts(const GaInfo& ga, std::vector<CandidateInfo>& props);
 
         /* Returns true if Pop[lidx] is better than Pop[ridx]. */
         bool nichedCompare(size_t lidx, size_t ridx) const;

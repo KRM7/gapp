@@ -66,13 +66,16 @@ namespace genetic_algorithm
         };
     }
 
-    class GaBase
+    class GaInfo
     {
     public:
+        GaInfo(size_t chrom_len);
 
-        GaBase(size_t chrom_len);
-
-        virtual ~GaBase() = default;
+        GaInfo(const GaInfo&)               = default;
+        GaInfo(GaInfo&&)                    = default;
+        GaInfo& operator=(const GaInfo&)    = default;
+        GaInfo& operator=(GaInfo&&)         = default;
+        virtual ~GaInfo()                   = default;
 
         /**
         * Should be set to false if the fitness function does not change over time. \n
@@ -152,7 +155,7 @@ namespace genetic_algorithm
     * @tparam geneType The type of the genes in the candidates' chromosomes.
     */
     template<typename geneType>
-    class GA : public GaBase
+    class GA : public GaInfo
     {
     public:
         using GeneType = geneType;

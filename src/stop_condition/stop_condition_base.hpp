@@ -7,7 +7,7 @@
 
 namespace genetic_algorithm
 {
-    class GaBase;
+    class GaInfo;
 }
 
 /** Early stop conditions used in the algorithms. */
@@ -22,7 +22,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        virtual bool operator()(const GaBase& ga) = 0;
+        virtual bool operator()(const GaInfo& ga) = 0;
 
         StopCondition()                                 = default;
         StopCondition(const StopCondition&)             = default;

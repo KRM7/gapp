@@ -24,7 +24,7 @@ namespace genetic_algorithm
 {
     template<typename T>
     GA<T>::GA(size_t chrom_len, FitnessFunction fitness_function)
-        : GaBase(chrom_len)
+        : GaInfo(chrom_len)
     {
         if (!fitness_function)
         {
@@ -282,7 +282,7 @@ namespace genetic_algorithm
         std::for_each(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(),
         [this](Candidate& sol)
         {
-            if (changing_fitness_func || !sol.is_evaluated)
+            if (dynamic_fitness || !sol.is_evaluated)
             {
                 sol.fitness = fitness_function_(sol.chromosome);
                 sol.is_evaluated = true;

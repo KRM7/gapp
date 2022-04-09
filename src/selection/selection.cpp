@@ -14,14 +14,14 @@
 
 namespace genetic_algorithm::selection::single_objective
 {
-    void Roulette::prepare(const GaBase&, const FitnessMatrix& pop)
+    void Roulette::prepare(const GaInfo&, const FitnessMatrix& pop)
     {
         auto selection_weights = dtl::rouletteWeights(pop);
 
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    size_t Roulette::select(const GaBase&, const FitnessMatrix&)
+    size_t Roulette::select(const GaInfo&, const FitnessMatrix&)
     {
         return rng::sampleCdf(cdf_);
     }
@@ -38,11 +38,11 @@ namespace genetic_algorithm::selection::single_objective
         tourney_size_ = size;
     }
 
-    void Tournament::prepare(const GaBase&, const FitnessMatrix&)
+    void Tournament::prepare(const GaInfo&, const FitnessMatrix&)
     { /* Nothing to do for tournament selection. */
     }
 
-    size_t Tournament::select(const GaBase&, const FitnessMatrix& pop)
+    size_t Tournament::select(const GaInfo&, const FitnessMatrix& pop)
     {
         assert(pop.size() >= tourney_size_);
         assert(std::all_of(pop.begin(), pop.end(), [](const FitnessVector& sol) { return sol.size() == 1; }));
@@ -86,14 +86,14 @@ namespace genetic_algorithm::selection::single_objective
         max_weight_ = max_weight;
     }
 
-    void Rank::prepare(const GaBase&, const FitnessMatrix& pop)
+    void Rank::prepare(const GaInfo&, const FitnessMatrix& pop)
     {
         auto selection_weights = dtl::rankWeights(pop, min_weight_, max_weight_);
 
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    size_t Rank::select(const GaBase&, const FitnessMatrix&)
+    size_t Rank::select(const GaInfo&, const FitnessMatrix&)
     {
         return rng::sampleCdf(cdf_);
     }
@@ -113,14 +113,14 @@ namespace genetic_algorithm::selection::single_objective
         scale_ = scale;
     }
 
-    void Sigma::prepare(const GaBase&, const FitnessMatrix& pop)
+    void Sigma::prepare(const GaInfo&, const FitnessMatrix& pop)
     {
         auto selection_weights = dtl::sigmaWeights(pop, scale_);
 
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    size_t Sigma::select(const GaBase&, const FitnessMatrix&)
+    size_t Sigma::select(const GaInfo&, const FitnessMatrix&)
     {
         return rng::sampleCdf(cdf_);
     }
@@ -129,7 +129,7 @@ namespace genetic_algorithm::selection::single_objective
     {
     }
 
-    void Boltzmann::prepare(const GaBase& ga, const FitnessMatrix& pop)
+    void Boltzmann::prepare(const GaInfo& ga, const FitnessMatrix& pop)
     {
         double T = temperature_(ga.generation_cntr(), ga.max_gen());
         auto selection_weights = dtl::boltzmannWeights(pop, T);
@@ -137,7 +137,7 @@ namespace genetic_algorithm::selection::single_objective
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    size_t Boltzmann::select(const GaBase&, const FitnessMatrix&)
+    size_t Boltzmann::select(const GaInfo&, const FitnessMatrix&)
     {
         return rng::sampleCdf(cdf_);
     }
@@ -147,7 +147,7 @@ namespace genetic_algorithm::selection::single_objective
 namespace genetic_algorithm::selection::multi_objective
 {
 
-    void NSGA2::init(const GaBase& ga)
+    void NSGA2::init(const GaInfo& ga)
     {
         assert(ga.num_objectives() > 1);
         assert(ga.population_size() != 0);
@@ -157,10 +157,10 @@ namespace genetic_algorithm::selection::multi_objective
         dists_ = dtl::crowdingDistances(ga.fitness_matrix(), pfronts.idxs);
     }
 
-    void NSGA2::prepare(const GaBase&, const FitnessMatrix&)
+    void NSGA2::prepare(const GaInfo&, const FitnessMatrix&)
     { /* Nothing to do, the ranks and distances from the previous nextPopulation call are fine */ }
 
-    size_t NSGA2::select(const GaBase&, const FitnessMatrix& pop)
+    size_t NSGA2::select(const GaInfo&, const FitnessMatrix& pop)
     {
         assert(!pop.empty() && pop.size() == ranks_.size());
 
@@ -170,7 +170,7 @@ namespace genetic_algorithm::selection::multi_objective
         return crowdedCompare(idx1, idx2) ? idx1 : idx2;
     }
 
-    std::vector<size_t> NSGA2::nextPopulation(const GaBase& ga, FitnessMatrix& combined_pop)
+    std::vector<size_t> NSGA2::nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop)
     {
         std::vector<size_t> new_pop_idxs;
         new_pop_idxs.reserve(ga.population_size());
@@ -246,7 +246,7 @@ namespace genetic_algorithm::selection::multi_objective
         }
     }
 
-    void NSGA3::init(const GaBase& ga)
+    void NSGA3::init(const GaInfo& ga)
     {
         assert(ga.num_objectives() > 1);
         assert(ga.population_size() != 0);
@@ -367,7 +367,7 @@ namespace genetic_algorithm::selection::multi_objective
         return nadir;
     }
 
-    void NSGA3::prepare(const GaBase&, const FitnessMatrix&)
+    void NSGA3::prepare(const GaInfo&, const FitnessMatrix&)
     { /* Nothing to do */ }
 
     bool NSGA3::nichedCompare(size_t lidx, size_t ridx) const
@@ -386,7 +386,7 @@ namespace genetic_algorithm::selection::multi_objective
         }
     }
 
-    size_t NSGA3::select(const GaBase&, const FitnessMatrix& pop)
+    size_t NSGA3::select(const GaInfo&, const FitnessMatrix& pop)
     {
         assert(!pop.empty());
 
@@ -424,7 +424,7 @@ namespace genetic_algorithm::selection::multi_objective
         });
     }
 
-    std::vector<size_t> NSGA3::calcNicheCounts(const GaBase& ga, std::vector<CandidateInfo>& props)
+    std::vector<size_t> NSGA3::calcNicheCounts(const GaInfo& ga, std::vector<CandidateInfo>& props)
     {
         /* Calculate niche counts for each of the reference points */
         std::vector<size_t> ref_niche_counts(ga.population_size(), 0U);
@@ -442,7 +442,7 @@ namespace genetic_algorithm::selection::multi_objective
         return ref_niche_counts;
     }
 
-    std::vector<size_t> NSGA3::nextPopulation(const GaBase& ga, FitnessMatrix& combined_pop)
+    std::vector<size_t> NSGA3::nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop)
     {
         updateIdealPoint(ideal_point_, combined_pop);
         updateExtremePoints(extreme_points_, combined_pop, ideal_point_);

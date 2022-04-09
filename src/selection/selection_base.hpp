@@ -9,7 +9,7 @@
 
 namespace genetic_algorithm
 {
-    class GaBase;
+    class GaInfo;
 }
 
 /** Selection methods used in the algorithms. */
@@ -33,7 +33,7 @@ namespace genetic_algorithm::selection
         * 
         * @param ga The genetic algorithm that uses the selection method.
         */
-        virtual void init(const GaBase& ga);
+        virtual void init(const GaInfo& ga);
 
         /**
         * Prepare the selection method for the selections beforehand if neccesary. 
@@ -42,7 +42,7 @@ namespace genetic_algorithm::selection
         * @param ga The genetic algorithm that uses the selection method.
         * @param population_fitness_matrix The fitness matrix of the current population of the algorithm.
         */
-        virtual void prepare(const GaBase& ga, const FitnessMatrix& population_fitness_matrix) = 0;
+        virtual void prepare(const GaInfo& ga, const FitnessMatrix& population_fitness_matrix) = 0;
 
         /**
         * Select a single Candidate from the population.
@@ -52,7 +52,7 @@ namespace genetic_algorithm::selection
         * @param population_fitness_matrix The fitness matrix of the current population of the algorithm.
         * @returns The index of the selected Candidate.
         */
-        virtual size_t select(const GaBase& ga, const FitnessMatrix& population_fitness_matrix) = 0;
+        virtual size_t select(const GaInfo& ga, const FitnessMatrix& population_fitness_matrix) = 0;
 
         /**
         * Select the Candidates of the next generation (next population) from the Candidates of the
@@ -66,7 +66,7 @@ namespace genetic_algorithm::selection
         * @param population_fitness_matrix The fitness matrix of the current population and the children of the algorithm.
         * @returns The indices selected from the fitness matrix for the next population of the algorithm.
         */
-        virtual std::vector<size_t> nextPopulation(const GaBase& ga, FitnessMatrix& population_fitness_matrix);
+        virtual std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& population_fitness_matrix);
 
         Selection()                             = default;
         Selection(const Selection&)             = default;

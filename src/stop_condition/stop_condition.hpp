@@ -30,7 +30,7 @@ namespace genetic_algorithm::stopping
         explicit FitnessEvals(size_t max_fitness_evals);
 
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GaBase& ga) override;
+        bool operator()(const GaInfo& ga) override;
 
         /**
         * Set the maximum number of fitness function evaluations allowed in the algorithm.
@@ -65,7 +65,7 @@ namespace genetic_algorithm::stopping
         explicit FitnessValue(const std::vector<double>& fitness_threshold);
 
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GaBase& ga) override;
+        bool operator()(const GaInfo& ga) override;
 
         /**
         * Sets the fitness threshold vector used when evaluating the stop condition.
@@ -100,7 +100,7 @@ namespace genetic_algorithm::stopping
         explicit FitnessMeanStall(size_t patience = 0, double delta = 1E-6);
 
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GaBase& ga) override;
+        bool operator()(const GaInfo& ga) override;
 
         /**
         * Sets the patience value used for the stop condition.
@@ -151,7 +151,7 @@ namespace genetic_algorithm::stopping
         explicit FitnessBestStall(size_t patience = 0, double delta = 1E-6);
 
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GaBase& ga) override;
+        bool operator()(const GaInfo& ga) override;
 
         /**
         * Sets the patience value used for the stop condition.
