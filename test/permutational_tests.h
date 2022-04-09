@@ -6,7 +6,6 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
-#include <chrono>
 
 #include "../src/algorithms/permutation_ga.hpp"
 #include "../src/selection/selection.hpp"
