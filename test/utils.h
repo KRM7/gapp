@@ -1,14 +1,15 @@
-/* Functions used in the test functions. */
-
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "../src/algorithms/ga_base.hpp"
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-
-#include "../src/algorithms/ga_base.hpp"
+#include <chrono>
+#include <utility>
+#include <functional>
+#include <atomic>
 
 using namespace genetic_algorithm;
 
@@ -43,6 +44,21 @@ void writeResultsToFile(auto sols, std::string fname)
         file << "\n";
     }
     file.close();
+}
+
+template<typename F, typename... Args>
+auto timed(F&& f, Args&&... args)
+{
+    auto tbegin = chrono::high_resolution_clock::now();
+    std::atomic_signal_fence(std::memory_order_seq_cst);
+    auto result = std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
+    std::atomic_signal_fence(std::memory_order_seq_cst);
+    auto tend = chrono::high_resolution_clock::now();
+
+    auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
+    double time_spent = double(duration) / 1E+6;
+
+    return std::make_pair(result, time_spent);
 }
 
 #endif // !UTILS_H
