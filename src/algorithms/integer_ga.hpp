@@ -13,7 +13,7 @@ namespace genetic_algorithm
     * Same as @ref BinaryGA, but the genes of the chromosomes can be any integer on [0, base], not just 0 or 1. \n
     * It also uses a slightly different mutation function with swaps and inversions.
     */
-    class IntegerGA : public GA<size_t>
+    class IntegerGA : public GA<size_t, IntegerGA>
     {
     public:
         /**
@@ -23,7 +23,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function used in the algorithm.
         * @param base The number of values a gene can take. Must be > 1. If 2, same as the @ref BinaryGA.
         */
-        IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, size_t base);
+        IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, GeneType base);
 
         /**
         * Sets the number of values a gene can take to @p base. \n
@@ -32,58 +32,17 @@ namespace genetic_algorithm
         *
         * @param base The number of values a gene can be.
         */
-        void base(size_t base);
-        [[nodiscard]] size_t base() const;
+        void base(GeneType base);
+
+        /** @returns The current base value set for the algorithm. */
+        [[nodiscard]] GeneType base() const noexcept;
 
     private:
-        size_t base_ = 4;
+        friend class GA<GeneType, IntegerGA>;
+        GeneType base_ = 4;
 
-        Candidate generateCandidate() const override;
+        Candidate generateCandidate() const;
     };
-
-} // namespace genetic_algorithm
-
-
-/* IMPLEMENTATION */
-
-#include "../utility/rng.hpp"
-#include <stdexcept>
-#include <cassert>
-
-namespace genetic_algorithm
-{
-    inline IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, size_t base)
-        : GA(chrom_len, fitnessFunction), base_(base)
-    {
-        if (base < 2) throw std::invalid_argument("The base must be at least 2.");
-    }
-
-    inline void IntegerGA::base(size_t base)
-    {
-        if (base < 2) throw std::invalid_argument("The base must be at least 2.");
-
-        base_ = base;
-    }
-
-    inline size_t IntegerGA::base() const
-    {
-        return base_;
-    }
-
-    inline IntegerGA::Candidate IntegerGA::generateCandidate() const
-    {
-        assert(chrom_len_ > 0);
-        assert(base_ > 1);
-
-        Candidate sol;
-        sol.chromosome.reserve(chrom_len_);
-        for (size_t i = 0; i < chrom_len_; i++)
-        {
-            sol.chromosome.push_back(rng::randomInt(size_t{ 0 }, base_ - 1));
-        }
-
-        return sol;
-    }
 
 } // namespace genetic_algorithm
 

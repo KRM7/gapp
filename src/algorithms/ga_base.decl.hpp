@@ -71,7 +71,7 @@ namespace genetic_algorithm
     *
     * @tparam geneType The type of the genes in the candidates' chromosomes.
     */
-    template<Gene T>
+    template<Gene T, typename Derived>
     class GA : public GaInfo
     {
     public:
@@ -262,7 +262,11 @@ namespace genetic_algorithm
         bool stopCondition() const;
         void advance();
 
-        virtual Candidate generateCandidate() const = 0;
+    private:
+
+        Derived& derived();
+        const Derived& derived() const;
+        Candidate generateCandidate() const;
     };
 
     /** Genetic algorithm types. */

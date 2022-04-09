@@ -12,7 +12,7 @@ namespace genetic_algorithm
     * Genetic algorithm that uses permutational encoding. \n
     * The genes of the chromosomes are all unique unsigned integers on [0, chrom_len-1].
     */
-    class PermutationGA : public GA<size_t>
+    class PermutationGA : public GA<size_t, PermutationGA>
     {
     public:
         /**
@@ -24,44 +24,11 @@ namespace genetic_algorithm
         PermutationGA(size_t chrom_len, FitnessFunction fitnessFunction);
 
     private:
-        Candidate generateCandidate() const override;
+        friend class GA<GeneType, PermutationGA>;
+
+        Candidate generateCandidate() const;
     };
 
 } // namespace genetic_algorithm
-
-
-/* IMPLEMENTATION */
-
-#include "../utility/rng.hpp"
-#include <algorithm>
-#include <numeric>
-#include <vector>
-#include <stdexcept>
-#include <cassert>
-
-namespace genetic_algorithm
-{
-    inline PermutationGA::PermutationGA(size_t chrom_len, FitnessFunction fitnessFunction)
-        : GA(chrom_len, fitnessFunction)
-    {
-    }
-
-    inline PermutationGA::Candidate PermutationGA::generateCandidate() const
-    {
-        assert(chrom_len_ > 0);
-
-        Candidate sol;
-
-        std::vector<size_t> chrom(chrom_len_);
-        std::iota(chrom.begin(), chrom.end(), 0U);
-        std::shuffle(chrom.begin(), chrom.end(), rng::prng);
-
-        sol.chromosome = chrom;
-
-        return sol;
-    }
-
-} // namespace genetic_algorithm
-
 
 #endif // !GA_PERMUTATION_GA_H
