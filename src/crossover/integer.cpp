@@ -2,7 +2,6 @@
 
 #include "integer.hpp"
 #include "../utility/rng.hpp"
-
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
@@ -48,17 +47,17 @@ namespace genetic_algorithm::crossover::integer
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> SinglePoint::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> SinglePoint::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         return nPointCrossoverImpl(parent1, parent2, 1U);
     }
 
-    CandidatePair<size_t> TwoPoint::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> TwoPoint::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         return nPointCrossoverImpl(parent1, parent2, 2U);
     }
 
-    CandidatePair<size_t> Uniform::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Uniform::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {

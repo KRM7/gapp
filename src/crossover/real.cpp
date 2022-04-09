@@ -46,7 +46,7 @@ namespace genetic_algorithm::crossover::real
     }
 
 
-    CandidatePair<double> Arithmetic::crossover(const GA<double>&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
+    CandidatePair<double> Arithmetic::crossover(const GaInfo&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -66,7 +66,7 @@ namespace genetic_algorithm::crossover::real
         return { child1, child2 };
     }
 
-    CandidatePair<double> BLXa::crossover(const GA<double>&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
+    CandidatePair<double> BLXa::crossover(const GaInfo&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
         assert(alpha_ >= 0.0);
 
@@ -97,7 +97,7 @@ namespace genetic_algorithm::crossover::real
         return { child1, child2 };
     }
 
-    CandidatePair<double> SimulatedBinary::crossover(const GA<double>&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
+    CandidatePair<double> SimulatedBinary::crossover(const GaInfo&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
         assert(eta_ > 0.0);
 
@@ -148,7 +148,7 @@ namespace genetic_algorithm::crossover::real
         return { child1, child2 };
     }
 
-    CandidatePair<double> Wright::crossover(const GA<double>&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
+    CandidatePair<double> Wright::crossover(const GaInfo&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {

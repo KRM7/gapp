@@ -3,7 +3,6 @@
 #include "binary.hpp"
 #include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
-
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
@@ -50,17 +49,17 @@ namespace genetic_algorithm::crossover::binary
         return { child1, child2 };
     }
 
-    CandidatePair<char> SinglePoint::crossover(const GA<char>&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
+    CandidatePair<char> SinglePoint::crossover(const GaInfo&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
     {
         return nPointCrossoverImpl(parent1, parent2, 1U);
     }
 
-    CandidatePair<char> TwoPoint::crossover(const GA<char>&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
+    CandidatePair<char> TwoPoint::crossover(const GaInfo&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
     {
         return nPointCrossoverImpl(parent1, parent2, 2U);
     }
 
-    CandidatePair<char> Uniform::crossover(const GA<char>&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
+    CandidatePair<char> Uniform::crossover(const GaInfo&, const Candidate<char>& parent1, const Candidate<char>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {

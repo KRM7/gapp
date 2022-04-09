@@ -5,7 +5,6 @@
 
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
-
 #include <vector>
 #include <utility>
 
@@ -24,7 +23,7 @@ namespace genetic_algorithm::crossover::real
     public:
         using BoundedCrossover::BoundedCrossover;
     private:
-        CandidatePair<double> crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+        CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
     };
 
     /**
@@ -64,7 +63,7 @@ namespace genetic_algorithm::crossover::real
         double alpha() const noexcept { return alpha_; }
 
     private:
-        CandidatePair<double> crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+        CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
 
         double alpha_ = 0.5;        /* The range parameter (alpha) of the BLX-alpha crossover. */
     };
@@ -102,7 +101,7 @@ namespace genetic_algorithm::crossover::real
         double eta() const noexcept { return eta_; }
 
     private:
-        CandidatePair<double> crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+        CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
 
         double eta_ = 4.0;          /* The shape parameter (eta) for the distribution of the simulated binary crossover. */
     };
@@ -119,7 +118,7 @@ namespace genetic_algorithm::crossover::real
     public:
         using BoundedCrossover::BoundedCrossover;
     private:
-        CandidatePair<double> crossover(const GA<double>& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+        CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
     };
 
 

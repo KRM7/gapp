@@ -5,7 +5,6 @@
 
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
-
 #include <cstddef>
 
 /** Predefined crossover operators for the permutation encoded GAs (PermutationGA), designed specifically for combinatorial problems. */
@@ -25,7 +24,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
     };
 
     /**
@@ -43,7 +42,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
     };
 
     /**
@@ -62,7 +61,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
     };
 
     /**
@@ -76,7 +75,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
     };
 
     /**
@@ -90,7 +89,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
     };
 
     /**
@@ -106,7 +105,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GA<size_t>& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
     };
 
 } // namespace genetic_algorithm::crossover::perm

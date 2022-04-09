@@ -6,7 +6,6 @@
 #include "crossover_base.decl.hpp"
 #include "../algorithms/ga_base.hpp"
 #include "../utility/rng.hpp"
-
 #include <algorithm>
 #include <stdexcept>
 #include <cassert>
@@ -31,7 +30,7 @@ namespace genetic_algorithm::crossover
     }
 
     template<Gene T>
-    inline CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
+    inline CandidatePair<T> Crossover<T>::operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         assert(0.0 <= pc_ && pc_ <= 1.0);
 

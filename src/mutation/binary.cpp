@@ -32,7 +32,7 @@ namespace genetic_algorithm::mutation::binary
         std::vector<size_t> flipped_idxs = rng::sampleUnique(candidate.chromosome.size(), flip_cnt);
         for (const auto& idx : flipped_idxs)
         {
-            candidate.chromosome[idx] = !candidate.chromosome[idx];
+            candidate.chromosome[idx] = !bool(candidate.chromosome[idx]);
         }
     }
 

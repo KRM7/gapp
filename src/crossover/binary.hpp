@@ -19,7 +19,7 @@ namespace genetic_algorithm::crossover::binary
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<char> crossover(const GA<char>& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
+        CandidatePair<char> crossover(const GaInfo& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
     };
 
     /**
@@ -33,7 +33,7 @@ namespace genetic_algorithm::crossover::binary
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<char> crossover(const GA<char>& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
+        CandidatePair<char> crossover(const GaInfo& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
     };
 
     /**
@@ -45,7 +45,7 @@ namespace genetic_algorithm::crossover::binary
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<char> crossover(const GA<char>& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
+        CandidatePair<char> crossover(const GaInfo& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
     };
 
 } // namespace genetic_algorithm::crossover::binary

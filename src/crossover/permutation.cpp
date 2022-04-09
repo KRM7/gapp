@@ -8,7 +8,7 @@
 
 namespace genetic_algorithm::crossover::perm
 {
-    CandidatePair<size_t> Order1::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Order1::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -74,7 +74,7 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Order2::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Order2::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -123,7 +123,7 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Position::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Position::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -172,7 +172,7 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Cycle::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Cycle::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -238,7 +238,7 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Edge::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> Edge::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         using NList = std::vector<std::unordered_set<size_t>>;
 
@@ -361,7 +361,7 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> PMX::crossover(const GA<size_t>&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    CandidatePair<size_t> PMX::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
