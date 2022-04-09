@@ -113,7 +113,7 @@ namespace genetic_algorithm
         {
             return std::lexicographical_compare(lhs.chromosome.begin(), lhs.chromosome.end(),
                                                 rhs.chromosome.begin(), rhs.chromosome.end(), 
-                                                detail::floatIsEqual);
+                                                detail::floatIsEqual<T>);
         }
         else
         {

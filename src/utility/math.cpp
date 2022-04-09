@@ -17,7 +17,7 @@ namespace genetic_algorithm::detail
         return n * n;
     }
 
-    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, double eps)
+    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs)
     {
         assert(0.0 <= eps && eps <= 1.0);
         assert(lhs.size() == rhs.size());
@@ -25,8 +25,8 @@ namespace genetic_algorithm::detail
         bool has_lower = false;
         for (size_t i = 0; i < lhs.size(); i++)
         {
-            if (floatIsLess(rhs[i], lhs[i], eps)) return false;
-            if (floatIsLess(lhs[i], rhs[i], eps)) has_lower = true;
+            if (floatIsLess(rhs[i], lhs[i])) return false;
+            if (floatIsLess(lhs[i], rhs[i])) has_lower = true;
         }
 
         return has_lower;
