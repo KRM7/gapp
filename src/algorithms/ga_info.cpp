@@ -1,8 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include "ga_base.decl.hpp"
+#include "ga_info.hpp"
 #include <stdexcept>
-#include <cstddef>
 
 namespace genetic_algorithm
 {
@@ -59,7 +58,7 @@ namespace genetic_algorithm
 
         max_gen_ = max_gen;
     }
-    
+
     size_t GaInfo::max_gen() const noexcept
     {
         return max_gen_;
@@ -69,5 +68,4 @@ namespace genetic_algorithm
     {
         return num_objectives_;
     }
-
 } // namespace genetic_algorithm

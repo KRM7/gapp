@@ -5,7 +5,6 @@
 #include "../utility/math.hpp"
 #include "../utility/utils.hpp"
 #include "../utility/algorithm.hpp"
-
 #include <vector>
 #include <utility>
 #include <algorithm>

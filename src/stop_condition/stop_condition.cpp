@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "stop_condition.hpp"
-#include "../algorithms/ga_base.decl.hpp"
+#include "../algorithms/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/math.hpp"
 #include <algorithm>

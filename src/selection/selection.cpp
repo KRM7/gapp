@@ -3,8 +3,8 @@
 #include "selection.hpp"
 #include "selection_dtl.hpp"
 #include "../population/population.hpp"
+#include "../algorithms/ga_info.hpp"
 #include "../utility/rng.hpp"
-#include "../algorithms/ga_base.decl.hpp"
 #include <vector>
 #include <algorithm>
 #include <iterator>

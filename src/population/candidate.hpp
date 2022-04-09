@@ -5,8 +5,9 @@
 
 #include "../utility/math.hpp"
 #include "../utility/concepts.hpp"
-
 #include <vector>
+#include <utility>
+#include <concepts>
 #include <cstddef>
 
 namespace genetic_algorithm
