@@ -47,6 +47,7 @@ void writeResultsToFile(auto sols, std::string fname)
 }
 
 template<typename F, typename... Args>
+requires std::invocable<F, Args...>
 auto timed(F&& f, Args&&... args)
 {
     auto tbegin = std::chrono::high_resolution_clock::now();
