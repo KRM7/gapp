@@ -29,7 +29,7 @@ namespace genetic_algorithm::mutation
     }
 
     template<Gene T>
-    inline void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
+    inline void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
     {
         auto old_chrom = candidate.chromosome;
 

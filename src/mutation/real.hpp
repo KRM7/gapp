@@ -4,7 +4,6 @@
 #define GA_MUTATION_REAL_HPP
 
 #include "mutation_base.hpp"
-
 #include <vector>
 #include <utility>
 
@@ -21,7 +20,7 @@ namespace genetic_algorithm::mutation::real
     public:
         using BoundedMutation::BoundedMutation;
     private:
-        void mutate(const GA<double>& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
     };
 
     /**
@@ -61,7 +60,7 @@ namespace genetic_algorithm::mutation::real
         double beta() const noexcept { return beta_; }
 
     private:
-        void mutate(const GA<double>& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
 
         double beta_ = 2.0;
     };
@@ -100,7 +99,7 @@ namespace genetic_algorithm::mutation::real
         double sigma() const noexcept { return sigma_; }
 
     private:
-        void mutate(const GA<double>& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
 
         double sigma_ = 6.0;
     };
@@ -137,7 +136,7 @@ namespace genetic_algorithm::mutation::real
         [[nodiscard]] double eta() const noexcept { return eta_; }
 
     private:
-        void mutate(const GA<double>& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
 
         double eta_ = 40.0;
     };
@@ -152,7 +151,7 @@ namespace genetic_algorithm::mutation::real
     public:
         using BoundedMutation::BoundedMutation;
     private:
-        void mutate(const GA<double>& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
     };
 
 } // namespace genetic_algorithm::mutation::real

@@ -1,8 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
+#include "../algorithms/ga_info.hpp"
 #include "../utility/rng.hpp"
-
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -10,7 +10,7 @@
 
 namespace genetic_algorithm::mutation::real
 {
-    void Uniform::mutate(const GA<double>&, Candidate<double>& candidate) const
+    void Uniform::mutate(const GaInfo&, Candidate<double>& candidate) const
     {
         if (candidate.chromosome.size() != bounds_.size())
         {
@@ -42,7 +42,7 @@ namespace genetic_algorithm::mutation::real
         beta_ = beta;
     }
 
-    void NonUniform::mutate(const GA<double>& ga, Candidate<double>& candidate) const
+    void NonUniform::mutate(const GaInfo& ga, Candidate<double>& candidate) const
     {
         if (candidate.chromosome.size() != bounds_.size())
         {
@@ -86,7 +86,7 @@ namespace genetic_algorithm::mutation::real
         sigma_ = sigma;
     }
 
-    void Gauss::mutate(const GA<double>&, Candidate<double>& candidate) const
+    void Gauss::mutate(const GaInfo&, Candidate<double>& candidate) const
     {
         if (candidate.chromosome.size() != bounds_.size())
         {
@@ -127,7 +127,7 @@ namespace genetic_algorithm::mutation::real
         eta_ = eta;
     }
 
-    void Polynomial::mutate(const GA<double>&, Candidate<double>& candidate) const
+    void Polynomial::mutate(const GaInfo&, Candidate<double>& candidate) const
     {
         if (candidate.chromosome.size() != bounds_.size())
         {
@@ -155,7 +155,7 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    void Boundary::mutate(const GA<double>&, Candidate<double>& candidate) const
+    void Boundary::mutate(const GaInfo&, Candidate<double>& candidate) const
     {
         if (candidate.chromosome.size() != bounds_.size())
         {

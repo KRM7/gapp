@@ -38,7 +38,7 @@ namespace genetic_algorithm::mutation::integer
         size_t base() const noexcept { return base_; }
 
     private:
-        void mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<size_t>& candidate) const override;
 
         size_t base_;
     };

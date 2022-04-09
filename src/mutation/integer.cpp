@@ -2,7 +2,6 @@
 
 #include "integer.hpp"
 #include "../utility/rng.hpp"
-
 #include <algorithm>
 #include <vector>
 #include <cmath>
@@ -24,7 +23,7 @@ namespace genetic_algorithm::mutation::integer
         base_ = base;
     }
 
-    void Uniform::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
+    void Uniform::mutate(const GaInfo&, Candidate<size_t>& candidate) const
     {
         size_t mutate_cnt;
         if (candidate.chromosome.size() * pm_ >= 2.0)

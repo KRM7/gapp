@@ -2,7 +2,6 @@
 
 #include "permutation.hpp"
 #include "../utility/rng.hpp"
-
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
@@ -10,7 +9,7 @@
 
 namespace genetic_algorithm::mutation::perm
 {
-    void Inversion::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
+    void Inversion::mutate(const GaInfo&, Candidate<size_t>& candidate) const
     {
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {
@@ -22,7 +21,7 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Swap2::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
+    void Swap2::mutate(const GaInfo&, Candidate<size_t>& candidate) const
     {
         if (candidate.chromosome.size() < 2)
         {
@@ -36,7 +35,7 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Swap3::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
+    void Swap3::mutate(const GaInfo&, Candidate<size_t>& candidate) const
     {
         if (candidate.chromosome.size() < 3)
         {
@@ -51,7 +50,7 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Shuffle::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
+    void Shuffle::mutate(const GaInfo&, Candidate<size_t>& candidate) const
     {
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {
@@ -63,7 +62,7 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Shift::mutate(const GA<size_t>&, Candidate<size_t>& candidate) const
+    void Shift::mutate(const GaInfo&, Candidate<size_t>& candidate) const
     {
         if (candidate.chromosome.size() > 1 && rng::randomReal() < pm_)
         {

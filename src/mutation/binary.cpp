@@ -2,7 +2,6 @@
 
 #include "binary.hpp"
 #include "../utility/rng.hpp"
-
 #include <vector>
 #include <cstddef>
 #include <algorithm>
@@ -11,7 +10,7 @@
 
 namespace genetic_algorithm::mutation::binary
 {
-    void Flip::mutate(const GA<char>&, Candidate<char>& candidate) const
+    void Flip::mutate(const GaInfo&, Candidate<char>& candidate) const
     {
         size_t flip_cnt;
         if (candidate.chromosome.size() * pm_ >= 2.0)

@@ -18,7 +18,7 @@ namespace genetic_algorithm::mutation::perm
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<size_t>& candidate) const override;
     };
 
     /**
@@ -31,7 +31,7 @@ namespace genetic_algorithm::mutation::perm
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<size_t>& candidate) const override;
     };
 
     /**
@@ -44,7 +44,7 @@ namespace genetic_algorithm::mutation::perm
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<size_t>& candidate) const override;
     };
 
     /**
@@ -57,7 +57,7 @@ namespace genetic_algorithm::mutation::perm
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<size_t>& candidate) const override;
     };
 
     /**
@@ -71,7 +71,7 @@ namespace genetic_algorithm::mutation::perm
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<size_t>& ga, Candidate<size_t>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<size_t>& candidate) const override;
     };
 
 } // namespace genetic_algorithm::mutation::perm

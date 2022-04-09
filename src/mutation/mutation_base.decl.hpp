@@ -4,14 +4,12 @@
 #define GA_MUTATION_BASE_DECL_HPP
 
 #include "../population/candidate.hpp"
-
 #include <vector>
 #include <utility>
 
 namespace genetic_algorithm
 {
-    template<Gene T>
-    class GA;
+    class GaInfo;
 
 } // namespace genetic_algorithm
 
@@ -57,12 +55,12 @@ namespace genetic_algorithm::mutation
         * @param ga The genetic algorithm the crossover operator is being used in.
         * @param candidate The candidate to mutate.
         */
-        void operator()(const GA<T>& ga, Candidate<T>& candidate) const;
+        void operator()(const GaInfo& ga, Candidate<T>& candidate) const;
 
     protected:
 
         /* The actual mutation function. Performs the mutation using the set probability and does nothing else. */
-        virtual void mutate(const GA<T>& ga, Candidate<T>& candidate) const = 0;
+        virtual void mutate(const GaInfo& ga, Candidate<T>& candidate) const = 0;
 
         double pm_ = 0.01;      /* The mutation rate used for the mutation operator. */
     };
