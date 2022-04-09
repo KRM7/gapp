@@ -75,6 +75,7 @@ namespace genetic_algorithm
     void GA<T>::selection_method(const F& f)
     {
         selection_ = std::make_unique<F>(f);
+        can_continue_ = false;
     }
 
     template<Gene T>
@@ -85,6 +86,7 @@ namespace genetic_algorithm
             throw std::invalid_argument("The selection method can't be a nullptr.");
         }
         selection_ = std::move(f);
+        can_continue_ = false;
     }
 
     template<Gene T>
@@ -169,69 +171,93 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    typename const GA<T>::Candidates& GA<T>::run(size_t num_generations)
+    void GA<T>::advance()
     {
         using namespace std;
 
+        size_t num_children = population_size_ + population_size_ % 2;
+        vector<CandidatePair> parent_pairs(num_children / 2);
+
+        auto current_fmat = fitness_matrix();
+
+        (*selection_).prepare(*this, current_fmat);
+        if (archive_optimal_solutions)
+        {
+            updateOptimalSolutions(solutions_, population_);
+        }
+
+        /* Selections. */
+        generate(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
+        [this, &current_fmat]() -> CandidatePair
+        {
+            return make_pair(population_[(*selection_).select(*this, current_fmat)],
+                             population_[(*selection_).select(*this, current_fmat)]);
+        });
+
+        /* Crossovers. */
+        for_each(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
+        [this](CandidatePair& p) -> void
+        {
+            p = (*crossover_)(*this, p.first, p.second);
+        });
+
+        vector<Candidate> children;
+        children.reserve(num_children);
+        for (size_t i = 0; i < parent_pairs.size(); i++)
+        {
+            children.push_back(move(parent_pairs[i].first));
+            children.push_back(move(parent_pairs[i].second));
+        }
+
+        /* Mutations. */
+        for_each(GA_EXECUTION_UNSEQ, children.begin(), children.end(),
+        [this](Candidate& c) -> void
+        {
+            (*mutation_)(*this, c);
+        });
+
+        /* Apply repair function to the children if set. */
+        repair(children);
+
+        /* Overwrite the current population with the children. */
+        evaluate(children);
+        population_ = nextPopulation(population_, children);
+
+        if (endOfGenerationCallback != nullptr) endOfGenerationCallback(*this);
+        generation_cntr_++;
+    }
+
+    template<Gene T>
+    typename const GA<T>::Candidates& GA<T>::run(size_t num_generations)
+    {
         initialize();
         max_gen(num_generations);
 
-        /* Create and evaluate the initial population. */
         population_ = generateInitialPopulation();
         evaluate(population_);
 
         (*selection_).init(*this);
-
-        /* Other generations. */
-        while (stopCondition() == false)
+        while (!stopCondition())
         {
-            size_t num_children = population_size_ + population_size_ % 2;
-            vector<CandidatePair> parent_pairs(num_children / 2);
+            advance();
+        }
+        updateOptimalSolutions(solutions_, population_);
 
-            auto current_fmat = fitness_matrix();
+        can_continue_ = true;
 
-            (*selection_).prepare(*this, current_fmat);
-            if (archive_optimal_solutions) updateOptimalSolutions(solutions_, population_);
+        return solutions_;
+    }
 
-            /* Selections. */
-            generate(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
-            [this, &current_fmat]() -> CandidatePair
-            {
-                return make_pair(population_[(*selection_).select(*this, current_fmat)],
-                                 population_[(*selection_).select(*this, current_fmat)]);
-            });
+    template<Gene T>
+    typename const GA<T>::Candidates& GA<T>::continueFor(size_t num_generations)
+    {
+        if (!can_continue_) { run(num_generations); }
 
-            /* Crossovers. */
-            for_each(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
-            [this](CandidatePair& p) -> void
-            {
-                p = (*crossover_)(*this, p.first, p.second);
-            });
+        max_gen(max_gen_ + num_generations);
 
-            vector<Candidate> children;
-            children.reserve(num_children);
-            for (size_t i = 0; i < parent_pairs.size(); i++)
-            {
-                children.push_back(move(parent_pairs[i].first));
-                children.push_back(move(parent_pairs[i].second));
-            }
-
-            /* Mutations. */
-            for_each(GA_EXECUTION_UNSEQ, children.begin(), children.end(),
-            [this](Candidate& c) -> void
-            {
-                (*mutation_)(*this, c);
-            });
-
-            /* Apply repair function to the children if set. */
-            repair(children);
-
-            /* Overwrite the current population with the children. */
-            evaluate(children);
-            population_ = nextPopulation(population_, children);
-
-            if (endOfGenerationCallback != nullptr) endOfGenerationCallback(*this);
-            generation_cntr_++;
+        while (!stopCondition())
+        {
+            advance();
         }
         updateOptimalSolutions(solutions_, population_);
 
@@ -244,6 +270,7 @@ namespace genetic_algorithm
         // throw on mismatch
         num_objectives_ = getNumObjectives(fitness_function_);
 
+        can_continue_ = false;
         generation_cntr_ = 0;
         num_fitness_evals_ = 0;
         solutions_.clear();

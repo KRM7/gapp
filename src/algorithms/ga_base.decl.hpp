@@ -104,6 +104,16 @@ namespace genetic_algorithm
         */
         [[maybe_unused]] const Candidates& run(size_t num_generations = 500);
 
+        /**
+        * Continue running the genetic algorithm for the set number of generations. \n
+        * Equivalent to calling run if the algorithm hasn't been run before, or if the selection
+        * method was changed.
+        *
+        * @param num_generations The number of generations to run the algorithm for.
+        * @returns The optimal solutions.
+        */
+        [[maybe_unused]] const Candidates& continueFor(size_t num_generations);
+
         /** @returns The pareto optimal solutions found by the algorithm. */
         [[nodiscard]] const Candidates& solutions() const;
 
@@ -240,6 +250,8 @@ namespace genetic_algorithm
         std::unique_ptr<stopping::StopCondition> stop_condition_;
         RepairFunction repair_ = nullptr;
 
+        bool can_continue_ = false;
+
         void initialize();
         size_t getNumObjectives(FitnessFunction& f) const;
         Population generateInitialPopulation() const;
@@ -248,6 +260,7 @@ namespace genetic_algorithm
         void updateOptimalSolutions(Candidates& optimal_sols, const Population& pop) const;
         void repair(Population& pop) const;
         bool stopCondition() const;
+        void advance();
 
         virtual Candidate generateCandidate() const = 0;
     };
