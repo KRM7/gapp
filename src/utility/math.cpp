@@ -19,7 +19,6 @@ namespace genetic_algorithm::detail
 
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs)
     {
-        assert(0.0 <= eps && eps <= 1.0);
         assert(lhs.size() == rhs.size());
 
         bool has_lower = false;
