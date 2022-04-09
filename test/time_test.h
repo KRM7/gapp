@@ -1,18 +1,15 @@
-/* Functions for measuring the speed of the GA. */
-
 #ifndef TIME_TEST_H
 #define TIME_TEST_H
-
-#include <vector>
-#include <algorithm>
-#include <iostream>
-#include <iomanip>
-#include <chrono>
 
 #include "../src/algorithms/binary_ga.hpp"
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/binary.hpp"
 #include "../src/mutation/binary.hpp"
+#include "utils.h"
+#include <vector>
+#include <algorithm>
+#include <iostream>
+#include <iomanip>
 
 using namespace std;
 using namespace genetic_algorithm;
@@ -38,12 +35,7 @@ void timeGA(size_t num_runs = 50)
     double running_mean_time = 0.0;
     for (size_t i = 1; i <= num_runs; i++)
     {
-        auto tbegin = chrono::high_resolution_clock::now();
-        GA.run(1000);
-        auto tend = chrono::high_resolution_clock::now();
-
-        auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
-        double time_spent = double(duration) / 1E+6;
+        auto [_, time_spent] = timed(&BinaryGA::run, GA, 1000);
 
         running_mean_time += (time_spent - running_mean_time) / i;
         cout << "Time taken: " << running_mean_time << " s \r";

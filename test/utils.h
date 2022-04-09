@@ -49,13 +49,13 @@ void writeResultsToFile(auto sols, std::string fname)
 template<typename F, typename... Args>
 auto timed(F&& f, Args&&... args)
 {
-    auto tbegin = chrono::high_resolution_clock::now();
+    auto tbegin = std::chrono::high_resolution_clock::now();
     std::atomic_signal_fence(std::memory_order_seq_cst);
     auto result = std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
     std::atomic_signal_fence(std::memory_order_seq_cst);
-    auto tend = chrono::high_resolution_clock::now();
+    auto tend = std::chrono::high_resolution_clock::now();
 
-    auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(tend - tbegin).count();
     double time_spent = double(duration) / 1E+6;
 
     return std::make_pair(result, time_spent);
