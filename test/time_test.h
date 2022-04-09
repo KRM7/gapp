@@ -32,7 +32,6 @@ void timeGA(size_t num_runs = 50)
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.6 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
-    GA.max_gen(1000);
 
     /* Run the GA with a timer. */
     cout << setprecision(4);
@@ -40,7 +39,7 @@ void timeGA(size_t num_runs = 50)
     for (size_t i = 1; i <= num_runs; i++)
     {
         auto tbegin = chrono::high_resolution_clock::now();
-        GA.run();
+        GA.run(1000);
         auto tend = chrono::high_resolution_clock::now();
 
         auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();

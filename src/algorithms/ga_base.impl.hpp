@@ -169,11 +169,12 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    typename const GA<T>::Candidates& GA<T>::run()
+    typename const GA<T>::Candidates& GA<T>::run(size_t num_generations)
     {
         using namespace std;
 
-        init();
+        initialize();
+        max_gen(num_generations);
 
         /* Create and evaluate the initial population. */
         population_ = generateInitialPopulation();
@@ -182,9 +183,9 @@ namespace genetic_algorithm
         (*selection_).init(*this);
 
         /* Other generations. */
-        size_t num_children = population_size_ + population_size_ % 2;
         while (stopCondition() == false)
         {
+            size_t num_children = population_size_ + population_size_ % 2;
             vector<CandidatePair> parent_pairs(num_children / 2);
 
             auto current_fmat = fitness_matrix();
@@ -238,16 +239,22 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    void GA<T>::init()
+    void GA<T>::initialize()
     {
-        Candidate temp = generateCandidate();
-        temp.fitness = fitness_function_(temp.chromosome);
-        num_objectives_ = temp.fitness.size();
+        // throw on mismatch
+        num_objectives_ = getNumObjectives(fitness_function_);
 
         generation_cntr_ = 0;
         num_fitness_evals_ = 0;
         solutions_.clear();
         population_.clear();
+    }
+    
+    template<Gene T>
+    size_t GA<T>::getNumObjectives(FitnessFunction& f) const
+    {
+        Candidate c = generateCandidate();
+        return f(c.chromosome).size();
     }
 
     template<Gene T>

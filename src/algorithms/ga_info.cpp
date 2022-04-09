@@ -52,13 +52,6 @@ namespace genetic_algorithm
         return population_size_;
     }
 
-    void GaInfo::max_gen(size_t max_gen)
-    {
-        if (max_gen == 0) throw std::invalid_argument("The maximum number of generations must be at least 1.");
-
-        max_gen_ = max_gen;
-    }
-
     size_t GaInfo::max_gen() const noexcept
     {
         return max_gen_;
@@ -68,4 +61,14 @@ namespace genetic_algorithm
     {
         return num_objectives_;
     }
+
+    void GaInfo::max_gen(size_t max_gen)
+    {
+        if (max_gen == 0)
+        {
+            throw std::invalid_argument("The maximum number of generations must be at least 1.");
+        }
+        max_gen_ = max_gen;
+    }
+
 } // namespace genetic_algorithm

@@ -36,11 +36,10 @@ void nsga2KurTest()
     GA.selection_method(selection::multi_objective::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
-    GA.max_gen(250);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(250);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -70,11 +69,10 @@ void nsga2Zdt2Test()
     GA.selection_method(selection::multi_objective::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
-    GA.max_gen(250);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(250);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -104,11 +102,10 @@ void nsga2Zdt3Test()
     GA.selection_method(selection::multi_objective::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
-    GA.max_gen(250);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(250);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -138,11 +135,10 @@ void nsga2Zdt6Test()
     GA.selection_method(selection::multi_objective::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
-    GA.max_gen(250);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(250);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -172,11 +168,10 @@ void nsga2Dtlz1Test()
     GA.selection_method(selection::multi_objective::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
-    GA.max_gen(1500);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -206,11 +201,10 @@ void nsga2Dtlz2Test()
     GA.selection_method(selection::multi_objective::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
-    GA.max_gen(1500);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();

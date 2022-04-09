@@ -30,11 +30,10 @@ void perm52Test()
     GA.selection_method(selection::single_objective::Sigma{});
     GA.crossover_method(crossover::perm::Edge{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.05 });
-    GA.max_gen(1250);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1250);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -59,11 +58,10 @@ void perm76Test()
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::perm::Order1{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.1 });
-    GA.max_gen(1000);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1000);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -88,11 +86,10 @@ void perm124Test()
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::perm::Position{ 0.9 });
     GA.mutation_method(mutation::perm::Swap3{ 0.4 });
-    GA.max_gen(1500);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -117,11 +114,10 @@ void perm152Test()
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::perm::PMX{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.6 });
-    GA.max_gen(1250);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1250);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -146,11 +142,10 @@ void perm226Test()
     GA.selection_method(selection::single_objective::Roulette{});
     GA.crossover_method(crossover::perm::Cycle{ 0.9 });
     GA.mutation_method(mutation::perm::Shuffle{ 0.2 });
-    GA.max_gen(1250);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1250);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -175,11 +170,10 @@ void perm299Test()
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
-    GA.max_gen(1000);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1000);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -204,11 +198,10 @@ void perm439Test()
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
-    GA.max_gen(1000);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1000);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();

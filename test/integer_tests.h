@@ -29,11 +29,10 @@ void integerTest1()
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
     GA.mutation_method(mutation::integer::Uniform{ 96, 0.01 });
-    GA.max_gen(500);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -66,11 +65,10 @@ void integerTest2()
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::integer::Uniform{ 0.8 });
     GA.mutation_method(mutation::integer::Uniform{ 96, 5.0 / 250 });
-    GA.max_gen(1000);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1000);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();

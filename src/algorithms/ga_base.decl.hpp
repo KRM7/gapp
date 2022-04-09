@@ -95,11 +95,14 @@ namespace genetic_algorithm
         GA(size_t chrom_len, FitnessFunction fitness_function);
 
         /**
-        * Run the genetic algorithm.
+        * Run the genetic algorithm for the set number of generations. \n
+        * The algorithm will always stop when reaching the maximum number of
+        * generations have been reached.
         *
+        * @param num_generations The maximum number of generations.
         * @returns The optimal solutions.
         */
-        [[maybe_unused]] const Candidates& run();
+        [[maybe_unused]] const Candidates& run(size_t num_generations = 500);
 
         /** @returns The pareto optimal solutions found by the algorithm. */
         [[nodiscard]] const Candidates& solutions() const;
@@ -237,14 +240,16 @@ namespace genetic_algorithm
         std::unique_ptr<stopping::StopCondition> stop_condition_;
         RepairFunction repair_ = nullptr;
 
-        void init();
-        virtual Candidate generateCandidate() const = 0;
+        void initialize();
+        size_t getNumObjectives(FitnessFunction& f) const;
         Population generateInitialPopulation() const;
         void evaluate(Population& pop);
         Population nextPopulation(Population& pop, Population& children) const;
         void updateOptimalSolutions(Candidates& optimal_sols, const Population& pop) const;
         void repair(Population& pop) const;
         bool stopCondition() const;
+
+        virtual Candidate generateCandidate() const = 0;
     };
 
     /** Genetic algorithm types. */

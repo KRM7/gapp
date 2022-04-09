@@ -55,17 +55,6 @@ namespace genetic_algorithm
         /** @returns The population size of the algorithm. */
         [[nodiscard]] size_t population_size() const noexcept;
 
-        /**
-        * Sets the maximum number of generations the algorithm runs for to @p max_gen. The
-        * algorithm will always stop when this generation has been reached regardless of what stop
-        * condition was set, but it can stop earlier when another stop condition is selected.
-        * @see stop_condition @see StopCondition \n
-        * The value of @p max_gen must be at least 1.
-        *
-        * @param max_gen The maximum number of generations.
-        */
-        void max_gen(size_t max_gen);
-
         /** @returns The maximum number of generations set for the algorithm. */
         [[nodiscard]] size_t max_gen() const noexcept;
 
@@ -91,6 +80,8 @@ namespace genetic_algorithm
         size_t chrom_len_;
         size_t population_size_ = 100;
         size_t max_gen_ = 500;
+
+        void max_gen(size_t max_gen);
     };
 
 } // namespace genetic_algorithm

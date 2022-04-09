@@ -35,13 +35,11 @@ void realRastriginTest()
     GA.selection_method(selection::single_objective::Roulette{});
     GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.6, 2.0 });
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
-    
-    GA.max_gen(1000);
     GA.stop_condition(stopping::FitnessValue{ { -0.01 } });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1000);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -78,13 +76,11 @@ void realRosenbrockTest()
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::real::BLXa{ limits, 0.9 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / rosenbrockFunction.num_vars });
-    
-    GA.max_gen(2000);
     GA.stop_condition(stopping::FitnessEvals{ 500 * 1000 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(2000);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -121,13 +117,11 @@ void realSchwefelTest()
     GA.selection_method(selection::single_objective::Sigma{});
     GA.crossover_method(crossover::real::BLXa{ limits, 0.7 });
     GA.mutation_method(mutation::real::NonUniform{ limits, 1.0 / schwefelFunction.num_vars });
-    
-    GA.max_gen(1000);
     GA.stop_condition(stopping::FitnessMeanStall{ 75, 0.01 });
 
     /* Run GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1000);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -164,11 +158,10 @@ void realGriewankTest()
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::real::Wright{ limits, 0.85 });
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
-    GA.max_gen(1500);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -205,13 +198,11 @@ void realAckleyTest()
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::real::Arithmetic{ limits, 0.85 });
     GA.mutation_method(mutation::real::Polynomial{ limits, 1.0 / ackleyFunction.num_vars, 60.0 });
-    
-    GA.max_gen(1000);
     GA.stop_condition(stopping::FitnessBestStall{ 75, 0.002 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1000);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();

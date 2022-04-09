@@ -32,13 +32,11 @@ void binaryRastriginTest()
     GA.selection_method(selection::single_objective::Roulette{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
-
-    GA.max_gen(1500);
     GA.stop_condition(stopping::FitnessMeanStall{ 50, 0.005 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -75,11 +73,10 @@ void binaryRosenbrockTest()
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
-    GA.max_gen(1500);
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -116,13 +113,11 @@ void binarySchwefelTest()
     GA.selection_method(selection::single_objective::Rank{});
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
-    
-    GA.max_gen(1500);
     GA.stop_condition(stopping::FitnessEvals{ 200 * 1000 });
 
     /* Run GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(1500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -159,13 +154,11 @@ void binaryGriewankTest()
     GA.selection_method(selection::single_objective::Sigma{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
-
-    GA.max_gen(2500);
     GA.stop_condition(stopping::FitnessValue{ { -0.1 } });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(2500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
@@ -202,13 +195,11 @@ void binaryAckleyTest()
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
-    
-    GA.max_gen(2500);
     GA.stop_condition(stopping::FitnessBestStall{ 50, 0.002 });
 
     /* Run the GA with a timer. */
     auto tbegin = chrono::high_resolution_clock::now();
-    auto sols = GA.run();
+    auto sols = GA.run(2500);
     auto tend = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::microseconds>(tend - tbegin).count();
