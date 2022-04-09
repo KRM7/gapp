@@ -9,7 +9,7 @@
 
 namespace genetic_algorithm
 {
-    template<typename GeneType>
+    template<Gene T>
     class GA;
 }
 

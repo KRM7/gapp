@@ -10,7 +10,7 @@
 
 namespace genetic_algorithm
 {
-    template<typename T>
+    template<Gene T>
     class GA;
 
 } // namespace genetic_algorithm
