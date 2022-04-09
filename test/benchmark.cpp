@@ -7,6 +7,7 @@
 #include "nsga3_tests.h"
 
 #include <cstdio>
+#include <tuple>
 
 int main()
 {
@@ -51,7 +52,7 @@ int main()
 
     //timeGA();
 
-    std::getchar();
+    std::ignore = std::getchar();
 
     return 0;
 }
