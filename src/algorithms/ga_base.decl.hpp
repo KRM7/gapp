@@ -79,25 +79,16 @@ namespace genetic_algorithm
 
         /**
         * Should be set to false if the fitness function does not change over time. \n
-        * (The fitness function will always return the same value for a given chromosome.) \n
-        * Used to eliminate unnecesary fitness evaluations.
+        * (The fitness function will always return the same fitness values for a given chromosome.) \n
+        * Used to eliminate unnecesary objective function evaluations.
         */
-        bool changing_fitness_func = false;
+        bool dynamic_fitness = false;
 
         /**
-        * All pareto optimal optimal solutions found in the algorithm will be stored in the solutions,
-        * not just the ones in the current population if this is set to true. \n
-        * Setting it to false can speed up the algorithm.
+        * All pareto optimal optimal solutions found by the algorithm will be stored in the solutions,
+        * not just the ones in the current population if set to true. \n
         */
         bool archive_optimal_solutions = false;
-
-        /** @returns The number of fitness evaluations performed while running the algorithm. */
-        [[nodiscard]]
-        size_t num_fitness_evals() const noexcept;
-
-        /** @returns The current value of the generation counter. */
-        [[nodiscard]]
-        size_t generation_cntr() const noexcept;
 
         /**
         * Sets the length of the chromosomes (number of genes) of the Candidate solutions used in the algorithm to @p len. \n
@@ -106,8 +97,9 @@ namespace genetic_algorithm
         * @param len The length of the chromosomes.
         */
         void chrom_len(size_t len);
-        [[nodiscard]]
-        size_t chrom_len() const noexcept;
+
+        /** @returns The chromosome length used for the candidates of the population. */
+        [[nodiscard]] size_t chrom_len() const noexcept;
 
         /**
         * Sets the number of Candidates used in the population to @p size. \n
@@ -116,8 +108,9 @@ namespace genetic_algorithm
         * @param size The size of the populations.
         */
         void population_size(size_t size);
-        [[nodiscard]]
-        size_t population_size() const noexcept;
+
+        /** @returns The population size of the algorithm. */
+        [[nodiscard]] size_t population_size() const noexcept;
         
         /**
         * Sets the maximum number of generations the algorithm runs for to @p max_gen. The
@@ -129,14 +122,22 @@ namespace genetic_algorithm
         * @param max_gen The maximum number of generations.
         */
         void max_gen(size_t max_gen);
-        [[nodiscard]]
-        size_t max_gen() const noexcept;
 
-        [[nodiscard]]
-        size_t num_objectives() const noexcept;
+        /** @returns The maximum number of generations set for the algorithm. */
+        [[nodiscard]] size_t max_gen() const noexcept;
 
+        /** @returns The number of objectives. Determined by the algorithm and returns 0 before the start of the algorithm. */
+        [[nodiscard]] size_t num_objectives() const noexcept;
+
+        /** @returns The fitness matrix of the population. */
         [[nodiscard]]
         virtual std::vector<std::vector<double>> fitness_matrix() const = 0;
+
+        /** @returns The number of fitness evaluations performed so far by the algorithm. */
+        [[nodiscard]] size_t num_fitness_evals() const noexcept;
+
+        /** @returns The current value of the generation counter. */
+        [[nodiscard]] size_t generation_cntr() const noexcept;
 
     protected:
 
