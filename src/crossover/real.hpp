@@ -18,10 +18,10 @@ namespace genetic_algorithm::crossover::real
     *   child2 = (1 - alpha) * parent1 + alpha * parent2
     * where alpha is a random number generated from a uniform distribution on [0.0, 1.0).
     */
-    class Arithmetic final : public BoundedCrossover<double>
+    class Arithmetic final : public Crossover<double>
     {
     public:
-        using BoundedCrossover::BoundedCrossover;
+        using Crossover::Crossover;
     private:
         CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
     };
@@ -39,17 +39,16 @@ namespace genetic_algorithm::crossover::real
     * intervals the child genes are chosen from. Larger alpha values -> larger intervals.
     * The recommended value of alpha is around 0.5.
     */
-    class BLXa final : public BoundedCrossover<double>
+    class BLXa final : public Crossover<double>
     {
     public:
         /**
         * Create a BLX-alpha crossover operator with the specified parameters.
         *
-        * @param bounds The (lower and upper) bounds of each gene. Must be the same length as the chromosomes used in the algorithm.
         * @param pc The crossover probability used.
         * @param alpha The alpha parameter of the BLX-alpha crossover. Must be >= 0.0.
         */
-        explicit BLXa(const std::vector<std::pair<double, double>>& bounds, double pc = 0.8, double alpha = 0.5);
+        explicit BLXa(double pc = 0.8, double alpha = 0.5);
 
         /**
         * Sets the alpha parameter for the crossover.
@@ -77,17 +76,16 @@ namespace genetic_algorithm::crossover::real
     * from the parents, while smaller values will result in the children being closer to the parents.
     * Typical values for eta are [1.0, 5.0].
     */
-    class SimulatedBinary final : public BoundedCrossover<double>
+    class SimulatedBinary final : public Crossover<double>
     {
     public:
         /**
         * Create a simulated binary crossover operator with the specified parameters.
         *
-        * @param bounds The (lower and upper) bounds of each gene. Must be the same length as the chromosomes used in the algorithm.
         * @param pc The crossover probability used.
         * @param eta The shape parameter of the simulated binary crossover.
         */
-        explicit SimulatedBinary(const std::vector<std::pair<double, double>>& bounds, double pc = 0.8, double eta = 4.0);
+        explicit SimulatedBinary(double pc = 0.8, double eta = 4.0);
 
         /**
         * Sets the shape parameter (eta) of the simulated binary crossover.
@@ -113,10 +111,10 @@ namespace genetic_algorithm::crossover::real
     *   child2 = p1 + w2 * (p1 - p2)
     * where w1 and w2 are random numbers generated from a uniform distribution on [0.0, 1.0).
     */
-    class Wright final : public BoundedCrossover<double>
+    class Wright final : public Crossover<double>
     {
     public:
-        using BoundedCrossover::BoundedCrossover;
+        using Crossover::Crossover;
     private:
         CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
     };
