@@ -67,40 +67,6 @@ namespace genetic_algorithm::crossover
         double pc_ = 0.8;   /* The probability of performing the crossover operation on the parents. */
     };
 
-    /**
-    * Base class used for the crossover operators where each gene has a lower and upper bound.
-    * Used for the operators that perform crossover on real encoded chromosomes.
-    */
-    template<Gene T>
-    class BoundedCrossover : public Crossover<T>
-    {
-    public:
-        /**
-        * Create a bounded crossover operator with @p bounds used as the bounds for the genes.
-        *
-        * @param bounds The (lower and upper) bounds of the genes. Must be the same length as the chromosomes used in the algorithm.
-        * @param pc The crossover probability.
-        */
-        explicit BoundedCrossover(const std::vector<std::pair<T, T>>& bounds, double pc = 0.8);
-
-        /**
-        * Sets the boundaries of the genes.
-        * Each element of the @p bounds vector must contain the lower and upper bounds of the corresponding gene
-        * (the min and max values of the gene), with the lower bound never being greater than the upper bound for a gene.
-        * The number of elements in @p bounds must be the same as the length of the chromosomes used.
-        *
-        * @param bounds The (lower and upper) bounds of the genes.
-        */
-        void bounds(const std::vector<std::pair<T, T>>& bounds);
-
-        /** @returns The bounds currently set for this crossover operator. */
-        [[nodiscard]]
-        std::vector<std::pair<T, T>> bounds() const noexcept { return bounds_; }
-
-    protected:
-        std::vector<std::pair<T, T>> bounds_;     /* The lower and upper bounds for each gene of the chromosome. */
-    };
-
 } // namespace genetic_algorithm::crossover
 
 #endif // !GA_CROSSOVER_BASE_DECL_HPP

@@ -88,25 +88,6 @@ namespace genetic_algorithm::crossover
         return { child1, child2 };
     }
 
-
-    template<Gene T>
-    inline BoundedCrossover<T>::BoundedCrossover(const std::vector<std::pair<T, T>>& bounds, double pc)
-        : Crossover<T>(pc)
-    {
-        this->bounds(bounds);
-    }
-
-    template<Gene T>
-    inline void BoundedCrossover<T>::bounds(const std::vector<std::pair<T, T>>& bounds)
-    {
-        if (std::any_of(bounds.begin(), bounds.end(), [](std::pair<double, double> bound) {return bound.first > bound.second; }))
-        {
-            throw std::invalid_argument("The lower bound must be lower than the upper bound for each gene.");
-        }
-
-        bounds_ = bounds;
-    }
-
 } // namespace genetic_algorithm::crossover
 
 #endif // !GA_CROSSOVER_BASE_IMPL_HPP
