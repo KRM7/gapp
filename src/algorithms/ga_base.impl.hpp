@@ -82,7 +82,7 @@ namespace genetic_algorithm
         }
         fitness_function_ = std::move(f);
 
-        num_objectives_ = getNumObjectives(fitness_function_);
+        num_objectives(getNumObjectives(fitness_function_));
     }
 
     template<Gene T, typename D>
@@ -94,7 +94,8 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::selection_method(std::unique_ptr<selection::Selection>&& f)
+    template<selection::SelectionMethod F>
+    void GA<T, D>::selection_method(std::unique_ptr<F>&& f)
     {
         if (!f)
         {
@@ -119,7 +120,8 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::crossover_method(std::unique_ptr<crossover::Crossover<T>>&& f)
+    template<crossover::CrossoverMethod F>
+    void GA<T, D>::crossover_method(std::unique_ptr<F>&& f)
     {
         if (!f)
         {
@@ -143,7 +145,8 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::mutation_method(std::unique_ptr<mutation::Mutation<T>>&& f)
+    template<mutation::MutationMethod F>
+    void GA<T, D>::mutation_method(std::unique_ptr<F>&& f)
     {
         if (!f)
         {
@@ -167,7 +170,8 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::stop_condition(std::unique_ptr<stopping::StopCondition>&& f)
+    template<stopping::StopMethod F>
+    void GA<T, D>::stop_condition(std::unique_ptr<F>&& f)
     {
         stop_condition_ = std::move(f);
     }
@@ -283,7 +287,7 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::initialize()
     {
-        num_objectives_ = getNumObjectives(fitness_function_);
+        num_objectives(getNumObjectives(fitness_function_));
 
         can_continue_ = false;
         generation_cntr_ = 0;

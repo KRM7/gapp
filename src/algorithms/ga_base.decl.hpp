@@ -26,7 +26,7 @@ namespace genetic_algorithm
         template<typename T>
         concept SelectionMethod = requires
         {
-            detail::DerivedFrom<T, Selection>;
+            std::derived_from<T, Selection>;
             std::copy_constructible<T>;
         };
     }
@@ -61,7 +61,7 @@ namespace genetic_algorithm
         template<typename T>
         concept StopMethod = requires
         {
-            detail::DerivedFrom<T, StopCondition>;
+            std::derived_from<T, StopCondition>;
             std::copy_constructible<T>;
         };
     }
@@ -156,7 +156,8 @@ namespace genetic_algorithm
         *
         * @param method The selection method used in the single-objective algorithm.
         */
-        void selection_method(std::unique_ptr<selection::Selection>&& f);
+        template<selection::SelectionMethod F>
+        void selection_method(std::unique_ptr<F>&& f);
 
         /** @returns The current selection method used by the algorithm. */
         template<selection::SelectionMethod F = selection::Selection>
@@ -175,7 +176,8 @@ namespace genetic_algorithm
         *
         * @param f The crossover method for the algorithm.
         */
-        void crossover_method(std::unique_ptr<crossover::Crossover<GeneType>>&& f);
+        template<crossover::CrossoverMethod F>
+        void crossover_method(std::unique_ptr<F>&& f);
 
         /** @returns The current crossover method used by the algorithm. */
         template<crossover::CrossoverMethod F = crossover::Crossover<GeneType>>
@@ -194,7 +196,8 @@ namespace genetic_algorithm
         *
         * @param f The crossover method for the algorithm.
         */
-        void mutation_method(std::unique_ptr<mutation::Mutation<GeneType>>&& f);
+        template<mutation::MutationMethod F>
+        void mutation_method(std::unique_ptr<F>&& f);
 
         /** @returns The current mutation method used by the algorithm. */
         template<mutation::MutationMethod F = mutation::Mutation<GeneType>>
@@ -217,7 +220,8 @@ namespace genetic_algorithm
         *
         * @param f The early-stop method the algorithm should use.
         */
-        void stop_condition(std::unique_ptr<stopping::StopCondition>&& f);
+        template<stopping::StopMethod F>
+        void stop_condition(std::unique_ptr<F>&& f);
 
         /** @returns The current stop condition used by the algorithm. */
         template<stopping::StopMethod F = stopping::StopCondition>
