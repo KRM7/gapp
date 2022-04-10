@@ -5,9 +5,9 @@
 
 #include "utils.hpp"
 #include "concepts.hpp"
-
 #include <vector>
 #include <random>
+#include <iterator>
 #include <cstdint>
 #include <cstddef>
 #include <concepts>
@@ -89,6 +89,10 @@ namespace genetic_algorithm::rng
     /** Pick a random element from a container. */
     template<detail::Container T>
     auto randomElement(const T& cont) -> typename T::value_type;
+
+    /** Pick a random element from a range. */
+    template<std::input_iterator Iter>
+    auto randomElement(Iter first, Iter last);
 
     /** Generates a random boolean value from a uniform distribution. */
     inline bool randomBool() noexcept;
@@ -242,6 +246,17 @@ namespace genetic_algorithm::rng
         size_t i = randomInt( size_t{0}, cont.size() - 1 );
 
         return *std::next(cont.begin(), i);
+    }
+
+    template<std::input_iterator Iter>
+    auto randomElement(Iter first, Iter last)
+    {
+        ptrdiff_t dist = std::distance(first, last);
+        assert(dist > 0);
+
+        ptrdiff_t off = randomInt<ptrdiff_t>(0, dist - 1);
+
+        return *std::next(first, off);
     }
 
     bool randomBool() noexcept
