@@ -7,11 +7,13 @@ namespace genetic_algorithm
 {
     GaInfo::GaInfo(size_t chrom_len)
     {
-        if (chrom_len == 0)
-        {
-            throw std::invalid_argument("The chromosome length must be at least 1.");
-        }
-        chrom_len_ = chrom_len;
+        this->chrom_len(chrom_len);
+    }
+
+    GaInfo::GaInfo(size_t population_size, size_t chrom_len)
+    {
+        this->population_size(population_size);
+        this->chrom_len(chrom_len);
     }
 
     size_t GaInfo::num_fitness_evals() const noexcept
