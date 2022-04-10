@@ -146,7 +146,8 @@ namespace genetic_algorithm::detail
         return detail::find_all_v(pop.begin(), pop.end(),
         [fbest = populationFitnessMax(pop)[0]](const Candidate<T>& sol)
         {
-            return detail::floatIsEqual(fbest, sol.fitness[0]);
+            //return detail::floatIsEqual(fbest, sol.fitness[0]);
+            return fbest == sol.fitness[0];
         });
     }
 
@@ -184,12 +185,14 @@ namespace genetic_algorithm::detail
                     /* The first dimension (d = 0) of the fitness vectors doesn't need to be compared since the pop is already sorted. */
                     for (size_t d = 1; d < dim; d++)
                     {
-                        if (detail::floatIsLess(pop[r].fitness[d], pop[s].fitness[d]))
+                        //if (detail::floatIsLess(pop[r].fitness[d], pop[s].fitness[d]))
+                        if (pop[r].fitness[d] < pop[s].fitness[d])
                         {
                             is_dominated = false;
                             break;
                         }
-                        if (detail::floatIsLess(pop[s].fitness[d], pop[r].fitness[d]))
+                        //if (detail::floatIsLess(pop[s].fitness[d], pop[r].fitness[d]))
+                        if (pop[s].fitness[d] < pop[r].fitness[d])
                         {
                             is_dominated = true;
                         }
