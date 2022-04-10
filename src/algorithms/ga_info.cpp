@@ -71,4 +71,13 @@ namespace genetic_algorithm
         max_gen_ = max_gen;
     }
 
+    void GaInfo::num_objectives(size_t n)
+    {
+        if (n == 0)
+        {
+            throw std::invalid_argument("The number of objective functions must be at least 1.");
+        }
+        num_objectives_ = n;
+    }
+
 } // namespace genetic_algorithm

@@ -82,6 +82,7 @@ namespace genetic_algorithm
         size_t max_gen_ = 500;
 
         void max_gen(size_t max_gen);
+        void num_objectives(size_t n);
     };
 
 } // namespace genetic_algorithm
