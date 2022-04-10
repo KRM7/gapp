@@ -30,7 +30,7 @@ void realRastriginTest()
 
     GA.population_size(100);
     GA.selection_method(selection::single_objective::Roulette{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.6, 2.0 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.6, 2.0 });
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
     GA.stop_condition(stopping::FitnessValue{ { -0.01 } });
 
@@ -62,7 +62,7 @@ void realRosenbrockTest()
 
     GA.population_size(500);
     GA.selection_method(selection::single_objective::Tournament{});
-    GA.crossover_method(crossover::real::BLXa{ limits, 0.9 });
+    GA.crossover_method(crossover::real::BLXa{ 0.9 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / rosenbrockFunction.num_vars });
     GA.stop_condition(stopping::FitnessEvals{ 500 * 1000 });
 
@@ -94,7 +94,7 @@ void realSchwefelTest()
 
     GA.population_size(500);
     GA.selection_method(selection::single_objective::Sigma{});
-    GA.crossover_method(crossover::real::BLXa{ limits, 0.7 });
+    GA.crossover_method(crossover::real::BLXa{ 0.7 });
     GA.mutation_method(mutation::real::NonUniform{ limits, 1.0 / schwefelFunction.num_vars });
     GA.stop_condition(stopping::FitnessMeanStall{ 75, 0.01 });
 
@@ -126,7 +126,7 @@ void realGriewankTest()
 
     GA.population_size(200);
     GA.selection_method(selection::single_objective::Boltzmann{});
-    GA.crossover_method(crossover::real::Wright{ limits, 0.85 });
+    GA.crossover_method(crossover::real::Wright{ 0.85 });
     GA.mutation_method(mutation::real::Gauss{ limits, 0.05 });
 
     auto [sols, time_spent] = timed(&RCGA::run, GA, 1500);
@@ -157,7 +157,7 @@ void realAckleyTest()
 
     GA.population_size(200);
     GA.selection_method(selection::single_objective::Boltzmann{});
-    GA.crossover_method(crossover::real::Arithmetic{ limits, 0.85 });
+    GA.crossover_method(crossover::real::Arithmetic{ 0.85 });
     GA.mutation_method(mutation::real::Polynomial{ limits, 1.0 / ackleyFunction.num_vars, 60.0 });
     GA.stop_condition(stopping::FitnessBestStall{ 75, 0.002 });
 

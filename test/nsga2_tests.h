@@ -32,7 +32,7 @@ void nsga2KurTest()
 
     GA.population_size(100);
     GA.selection_method(selection::multi_objective::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
 
     auto [sols, time_spent] = timed(&RCGA::run, GA, 250);
@@ -55,7 +55,7 @@ void nsga2Zdt2Test()
 
     GA.population_size(100);
     GA.selection_method(selection::multi_objective::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
 
     auto [sols, time_spent] = timed(&RCGA::run, GA, 250);
@@ -78,7 +78,7 @@ void nsga2Zdt3Test()
 
     GA.population_size(100);
     GA.selection_method(selection::multi_objective::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
 
     auto [sols, time_spent] = timed(&RCGA::run, GA, 250);
@@ -101,7 +101,7 @@ void nsga2Zdt6Test()
 
     GA.population_size(100);
     GA.selection_method(selection::multi_objective::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.8 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
     GA.mutation_method(mutation::real::Gauss{ limits, 1.0 / limits.size() });
 
     auto [sols, time_spent] = timed(&RCGA::run, GA, 250);
@@ -124,7 +124,7 @@ void nsga2Dtlz1Test()
 
     GA.population_size(100);
     GA.selection_method(selection::multi_objective::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
 
     auto [sols, time_spent] = timed(&RCGA::run, GA, 1500);
@@ -147,7 +147,7 @@ void nsga2Dtlz2Test()
 
     GA.population_size(100);
     GA.selection_method(selection::multi_objective::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ limits, 0.9, 15.0 });
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ limits, 1.0 / limits.size() });
 
     auto [sols, time_spent] = timed(&RCGA::run, GA, 1500);
