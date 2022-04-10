@@ -34,15 +34,15 @@ namespace genetic_algorithm
     struct Candidate
     {
         using GeneType = T;
-        using ChromosomeType = Chromosome<T>;
+        using Chromosome = Chromosome<T>;
 
-        Chromosome<T> chromosome;       /**< The chromosome encoding the solution. */
+        Chromosome chromosome;          /**< The chromosome encoding the solution. */
         std::vector<double> fitness;    /**< The fitness values (for each objective) of the solution. */
 
         bool is_evaluated = false;      /**< False if the candidate's fitness value needs to be computed. */
 
         Candidate() = default;
-        explicit Candidate(const Chromosome<T>& chrom) : chromosome(chrom) {}
+        explicit Candidate(const Chromosome& chrom) : chromosome(chrom) {}
     };
 
     /** A pair of candidates. */
