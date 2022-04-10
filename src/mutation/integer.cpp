@@ -1,8 +1,10 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
+#include "../algorithms/integer_ga.hpp"
 #include "../utility/rng.hpp"
 #include <algorithm>
+#include <iterator>
 #include <vector>
 #include <cmath>
 #include <random>
@@ -10,21 +12,10 @@
 
 namespace genetic_algorithm::mutation::integer
 {
-    Uniform::Uniform(size_t base, double pm) :
-        Mutation(pm)
+    void Uniform::mutate(const GaInfo& ga, Candidate<size_t>& candidate) const
     {
-        this->base(base);
-    }
+        size_t base = dynamic_cast<const IntegerGA&>(ga).base();
 
-    void Uniform::base(size_t base)
-    {
-        if (base < 2) throw std::invalid_argument("The base for the uniform integer mutation must be at least 2.");
-
-        base_ = base;
-    }
-
-    void Uniform::mutate(const GaInfo&, Candidate<size_t>& candidate) const
-    {
         size_t mutate_cnt;
         if (candidate.chromosome.size() * pm_ >= 2.0)
         {
@@ -41,17 +32,16 @@ namespace genetic_algorithm::mutation::integer
             std::binomial_distribution<size_t> dist(candidate.chromosome.size(), pm_);
             mutate_cnt = dist(rng::prng);
         }
-
         std::vector<size_t> changed_idxs = rng::sampleUnique(candidate.chromosome.size(), mutate_cnt);
 
-        std::vector<size_t> alleles(base_);
+        std::vector<size_t> alleles(base);
         std::iota(alleles.begin(), alleles.end(), size_t{ 0 });
 
         for (const auto& idx : changed_idxs)
         {
             /* Make sure the new value for the changed gene can't be the old one. */
             std::swap(alleles[candidate.chromosome[idx]], alleles.back());
-            size_t new_gene = alleles[rng::randomInt(size_t{ 0 }, alleles.size() - 2)];
+            size_t new_gene = rng::randomElement(alleles.begin(), std::prev(alleles.end()));
             std::swap(alleles[candidate.chromosome[idx]], alleles.back());
 
             candidate.chromosome[idx] = new_gene;

@@ -18,29 +18,9 @@ namespace genetic_algorithm::mutation::integer
     class Uniform : public Mutation<size_t>
     {
     public:
-        /**
-        * Create a uniform crossover operator with the specified parameters.
-        * 
-        * @param base The number of values a gene can take. Genes can be integers in the range [0, base-1].
-        * @param The mutation probability used.
-        */
-        explicit Uniform(size_t base, double pm = 0.01);
-
-        /**
-        * Sets the base for this crossover operator.
-        * 
-        * @param base The number of values a gene can take. Genes can be integers in the range [0, base-1].
-        */
-        void base(size_t base);
-
-        /** @returns The base parameter currently set for this operator. */
-        [[nodiscard]]
-        size_t base() const noexcept { return base_; }
-
+        using Mutation::Mutation;
     private:
         void mutate(const GaInfo& ga, Candidate<size_t>& candidate) const override;
-
-        size_t base_;
     };
 
 } // namespace genetic_algorithm::mutation::integer
