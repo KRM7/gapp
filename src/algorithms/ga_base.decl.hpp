@@ -95,6 +95,15 @@ namespace genetic_algorithm
         GA(size_t chrom_len, FitnessFunction fitness_function);
 
         /**
+        * Create a genetic algorithm.
+        *
+        * @param population_size The number of candidates in the population.
+        * @param chrom_len The length of the chromosomes (number of genes).
+        * @param fitness_function The fitness function to find the maximum of.
+        */
+        GA(size_t population_size, size_t chrom_len, FitnessFunction fitness_function);
+
+        /**
         * Run the genetic algorithm for the set number of generations. \n
         * The algorithm will always stop when reaching the maximum number of
         * generations have been reached.

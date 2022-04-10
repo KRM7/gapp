@@ -28,7 +28,18 @@ namespace genetic_algorithm
     {
         if (!fitness_function)
         {
-            throw std::invalid_argument("The fitness function is required for the GA.");
+            throw std::invalid_argument("The fitness function is requires for the GA.");
+        }
+        fitness_function_ = std::move(fitness_function);
+    }
+
+    template<Gene T, typename D>
+    GA<T, D>::GA(size_t population_size, size_t chrom_len, FitnessFunction fitness_function)
+        : GaInfo(population_size, chrom_len)
+    {
+        if (!fitness_function)
+        {
+            throw std::invalid_argument("The fitness function is requires for the GA.");
         }
         fitness_function_ = std::move(fitness_function);
     }
