@@ -269,19 +269,7 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
     {
-        assert(u_bound >= n);
-
-        std::vector<IntType> nums(u_bound);
-        std::iota(nums.begin(), nums.end(), IntType{ 0 });  // [0, u_bound)
-
-        for (size_t i = 0; i < n; i++)
-        {
-            size_t idx = randomInt(i, nums.size() - 1);
-            std::swap(nums[idx], nums[i]);
-        }
-        nums.resize(n);
-
-        return nums;
+        return sampleUnique<IntType>(0, u_bound, n);
     }
 
     template<std::integral IntType>
