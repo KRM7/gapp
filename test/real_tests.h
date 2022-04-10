@@ -26,9 +26,8 @@ void realRastriginTest()
     pair<double, double> limit = { rastriginFunction.lbound(), rastriginFunction.ubound() };
     vector<pair<double, double>> limits(rastriginFunction.num_vars, limit);
 
-    RCGA GA(rastriginFunction.num_vars, rastriginFunction, limits);
+    RCGA GA(100, rastriginFunction.num_vars, rastriginFunction, limits);
 
-    GA.population_size(100);
     GA.selection_method(selection::single_objective::Roulette{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.6, 2.0 });
     GA.mutation_method(mutation::real::Gauss{ 0.05 });
@@ -58,9 +57,8 @@ void realRosenbrockTest()
     pair<double, double> limit = { rosenbrockFunction.lbound(), rosenbrockFunction.ubound() };
     vector<pair<double, double>> limits(rosenbrockFunction.num_vars, limit);
 
-    RCGA GA(rosenbrockFunction.num_vars, rosenbrockFunction, limits);
+    RCGA GA(500, rosenbrockFunction.num_vars, rosenbrockFunction, limits);
 
-    GA.population_size(500);
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::real::BLXa{ 0.9 });
     GA.mutation_method(mutation::real::Uniform{ 1.0 / rosenbrockFunction.num_vars });
@@ -90,9 +88,8 @@ void realSchwefelTest()
     pair<double, double> limit = { schwefelFunction.lbound(), schwefelFunction.ubound() };
     vector<pair<double, double>> limits(schwefelFunction.num_vars, limit);
 
-    RCGA GA(schwefelFunction.num_vars, schwefelFunction, limits);
+    RCGA GA(500, schwefelFunction.num_vars, schwefelFunction, limits);
 
-    GA.population_size(500);
     GA.selection_method(selection::single_objective::Sigma{});
     GA.crossover_method(crossover::real::BLXa{ 0.7 });
     GA.mutation_method(mutation::real::NonUniform{ 1.0 / schwefelFunction.num_vars });
@@ -122,9 +119,8 @@ void realGriewankTest()
     pair<double, double> limit = { griewankFunction.lbound(), griewankFunction.ubound() };
     vector<pair<double, double>> limits(griewankFunction.num_vars, limit);
 
-    RCGA GA(griewankFunction.num_vars, griewankFunction, limits);
+    RCGA GA(200, griewankFunction.num_vars, griewankFunction, limits);
 
-    GA.population_size(200);
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::real::Wright{ 0.85 });
     GA.mutation_method(mutation::real::Gauss{ 0.05 });
@@ -153,9 +149,8 @@ void realAckleyTest()
     pair<double, double> limit = { ackleyFunction.lbound(), ackleyFunction.ubound() };
     vector<pair<double, double>> limits(ackleyFunction.num_vars, limit);
 
-    RCGA GA(ackleyFunction.num_vars, ackleyFunction, limits);
+    RCGA GA(200, ackleyFunction.num_vars, ackleyFunction, limits);
 
-    GA.population_size(200);
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::real::Arithmetic{ 0.85 });
     GA.mutation_method(mutation::real::Polynomial{ 1.0 / ackleyFunction.num_vars, 60.0 });

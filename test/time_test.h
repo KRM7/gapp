@@ -16,21 +16,16 @@ using namespace genetic_algorithm;
 
 void timeGA(size_t num_runs = 50)
 {
-    /* Init GA. */
-    auto fitness_func = [](const vector<char>& chrom) -> vector<double>
-    { 
-        return vector<double>(1, double(count(chrom.begin(), chrom.end(), 1))); 
-    };
+    BinaryGA GA(100, 100,
+    [](const vector<char>& chrom)
+    {
+        return vector(1, double(count(chrom.begin(), chrom.end(), 1)));
+    });
 
-    BinaryGA GA(100, fitness_func);
-
-    /* Set some optional parameters. */
-    GA.population_size(100);
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.6 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
 
-    /* Run the GA with a timer. */
     cout << setprecision(4);
     double running_mean_time = 0.0;
     for (size_t i = 1; i <= num_runs; i++)

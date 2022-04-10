@@ -23,9 +23,8 @@ using namespace genetic_algorithm;
 void binaryRastriginTest()
 {
     Rastrigin rastriginFunction(10);
-    BinaryGA GA(rastriginFunction.num_vars * rastriginFunction.var_bits, rastriginFunction);
+    BinaryGA GA(400, rastriginFunction.num_vars * rastriginFunction.var_bits, rastriginFunction);
     
-    GA.population_size(400);
     GA.selection_method(selection::single_objective::Roulette{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
@@ -54,9 +53,8 @@ void binaryRastriginTest()
 void binaryRosenbrockTest()
 {
     Rosenbrock rosenbrockFunction(10);
-    BinaryGA GA(rosenbrockFunction.num_vars * rosenbrockFunction.var_bits, rosenbrockFunction);
+    BinaryGA GA(300, rosenbrockFunction.num_vars * rosenbrockFunction.var_bits, rosenbrockFunction);
 
-    GA.population_size(300);
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
@@ -84,9 +82,8 @@ void binaryRosenbrockTest()
 void binarySchwefelTest()
 {
     Schwefel schwefelFunction(10);
-    BinaryGA GA(schwefelFunction.num_vars * schwefelFunction.var_bits, schwefelFunction);
+    BinaryGA GA(200, schwefelFunction.num_vars * schwefelFunction.var_bits, schwefelFunction);
 
-    GA.population_size(200);
     GA.selection_method(selection::single_objective::Rank{});
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
@@ -115,9 +112,8 @@ void binarySchwefelTest()
 void binaryGriewankTest()
 {
     Griewank griewankFunction(10);
-    BinaryGA GA(griewankFunction.num_vars * griewankFunction.var_bits, griewankFunction);
+    BinaryGA GA(250, griewankFunction.num_vars * griewankFunction.var_bits, griewankFunction);
 
-    GA.population_size(250);
     GA.selection_method(selection::single_objective::Sigma{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
@@ -146,9 +142,8 @@ void binaryGriewankTest()
 void binaryAckleyTest()
 {
     Ackley ackleyFunction(10);
-    BinaryGA GA(ackleyFunction.num_vars * ackleyFunction.var_bits, ackleyFunction);
+    BinaryGA GA(250, ackleyFunction.num_vars * ackleyFunction.var_bits, ackleyFunction);
 
-    GA.population_size(250);
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });

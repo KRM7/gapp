@@ -19,9 +19,8 @@ void integerTest1()
 {
     MatchString match("HELLO WORLD!");
 
-    IntegerGA GA(match.num_vars(), match, 96);
+    IntegerGA GA(100, match.num_vars(), match, 96);
 
-    GA.population_size(100);
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
     GA.mutation_method(mutation::integer::Uniform{ 0.01 });
@@ -46,9 +45,8 @@ void integerTest2()
 {
     MatchString match("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque gravida ut ipsum at tincidunt.");
 
-    IntegerGA GA(match.num_vars(), match, 96);
+    IntegerGA GA(250, match.num_vars(), match, 96);
 
-    GA.population_size(250);
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::integer::Uniform{ 0.8 });
     GA.mutation_method(mutation::integer::Uniform{ 5.0 / 250 });
