@@ -81,6 +81,8 @@ namespace genetic_algorithm
             throw std::invalid_argument("The fitness function is requires for the GA.");
         }
         fitness_function_ = std::move(f);
+
+        num_objectives_ = getNumObjectives(fitness_function_);
     }
 
     template<Gene T, typename D>
@@ -281,7 +283,6 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::initialize()
     {
-        // throw on mismatch
         num_objectives_ = getNumObjectives(fitness_function_);
 
         can_continue_ = false;
