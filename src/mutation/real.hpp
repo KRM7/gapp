@@ -100,6 +100,7 @@ namespace genetic_algorithm::mutation::real
         void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
 
         double sigma_ = 6.0;
+        const size_t NMAX_RESAMPLE = 3;
     };
 
     /**

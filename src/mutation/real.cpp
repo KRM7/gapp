@@ -107,7 +107,7 @@ namespace genetic_algorithm::mutation::real
                 double SD = (bounds[i].second - bounds[i].first) / sigma_;
 
                 double delta = 0.0;
-                for (size_t j = 0; j < 5; j++)
+                for (size_t j = 0; j < NMAX_RESAMPLE; j++)
                 {
                     delta = rng::randomNormal(0.0, SD);
                     if (bounds[i].first <= (candidate.chromosome[i] + delta) && (candidate.chromosome[i] + delta) <= bounds[i].second)
