@@ -29,6 +29,23 @@ namespace genetic_algorithm
         mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
     }
 
+    PermutationGA::PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction)
+        : GA(pop_size, chrom_len, std::move(fitnessFunction))
+    {
+        num_objectives(getNumObjectives(fitness_function_));
+
+        if (num_objectives() == 1)
+        {
+            selection_method(std::make_unique<selection::single_objective::Tournament>());
+        }
+        else
+        {
+            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
+        }
+        crossover_method(std::make_unique<crossover::perm::Order2>());
+        mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
+    }
+
     PermutationGA::Candidate PermutationGA::generateCandidate() const
     {
         assert(chrom_len_ > 0);

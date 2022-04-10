@@ -15,14 +15,22 @@ namespace genetic_algorithm
     class BinaryGA final : public GA<char, BinaryGA>
     {
     public:
-
         /**
-        * Basic contructor for the binary GA.
+        * Constructor for the binary GA.
         *
         * @param chrom_len The length of the binary chromosomes.
         * @param fitness_function The fitness function to find the maximum of in the algorithm.
         */
         BinaryGA(size_t chrom_len, FitnessFunction fitness_function);
+
+        /**
+        * Constructor for the binary GA.
+        *
+        * @param pop_size The number of candidates in the population.
+        * @param chrom_len The length of the binary chromosomes.
+        * @param fitness_function The fitness function to find the maximum of in the algorithm.
+        */
+        BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
 
     private:
         friend class GA<GeneType, BinaryGA>;

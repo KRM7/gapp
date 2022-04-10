@@ -31,6 +31,25 @@ namespace genetic_algorithm
         mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len));
     }
 
+    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds)
+        : GA(pop_size, chrom_len, std::move(fitnessFunction))
+    {
+        this->limits(bounds);
+
+        num_objectives(getNumObjectives(fitness_function_));
+
+        if (num_objectives() == 1)
+        {
+            selection_method(std::make_unique<selection::single_objective::Tournament>());
+        }
+        else
+        {
+            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
+        }
+        crossover_method(std::make_unique<crossover::real::Wright>());
+        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len));
+    }
+
     void RCGA::limits(const Bounds& limits)
     {
         if (limits.size() != chrom_len_)

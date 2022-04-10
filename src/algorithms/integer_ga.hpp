@@ -17,13 +17,23 @@ namespace genetic_algorithm
     {
     public:
         /**
-        * Basic contructor for the IntegerGA.
+        * Constructor for the IntegerGA.
         *
         * @param chrom_len The number of genes in each chromosome.
         * @param fitness_function The fitness function used in the algorithm.
         * @param base The number of values a gene can take. Must be > 1. If 2, same as the @ref BinaryGA.
         */
         IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, GeneType base);
+
+        /**
+        * Constructor for the IntegerGA.
+        *
+        * @param pop_size The number of candidates in a population.
+        * @param chrom_len The number of genes in each chromosome.
+        * @param fitness_function The fitness function used in the algorithm.
+        * @param base The number of values a gene can take. Must be > 1. If 2, same as the @ref BinaryGA.
+        */
+        IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, GeneType base);
 
         /**
         * Sets the number of values a gene can take to @p base. \n

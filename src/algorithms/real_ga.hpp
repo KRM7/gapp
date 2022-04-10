@@ -24,13 +24,23 @@ namespace genetic_algorithm
         using Bounds = std::vector<std::pair<GeneType, GeneType>>;
 
         /**
-        * Basic constructor for the RCGA.
+        * Constructor for the RCGA.
         *
-        * @param chrom_len The number of real genes in the chromosomes of the candidates.
+        * @param chrom_len The number of genes in the chromosomes of the candidates.
         * @param fitness_function The fitness function to find the maximum of with the algorithm.
         * @param bounds The boundaries of the real coded genes (their min and max values).
         */
         RCGA(size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds);
+
+        /**
+        * Constructor for the RCGA.
+        *
+        * @param pop_size The number of candidates in the population.
+        * @param chrom_len The number of genes in the chromosomes of the candidates.
+        * @param fitness_function The fitness function to find the maximum of with the algorithm.
+        * @param bounds The boundaries of the real coded genes (their min and max values).
+        */
+        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds);
 
         /**
         * Sets the boundaries of the real-coded genes. \n

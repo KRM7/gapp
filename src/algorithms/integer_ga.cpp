@@ -31,6 +31,25 @@ namespace genetic_algorithm
         mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len));
     }
 
+    IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
+        : GA(pop_size, chrom_len, std::move(fitnessFunction))
+    {
+        this->base(base);
+
+        num_objectives(getNumObjectives(fitness_function_));
+
+        if (num_objectives() == 1)
+        {
+            selection_method(std::make_unique<selection::single_objective::Tournament>());
+        }
+        else
+        {
+            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
+        }
+        crossover_method(std::make_unique<crossover::integer::TwoPoint>());
+        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len));
+    }
+
     void IntegerGA::base(GeneType base)
     {
         if (base < 2)
