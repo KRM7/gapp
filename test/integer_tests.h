@@ -1,5 +1,3 @@
-/* Benchmark/test functions for the IntegerGA. */
-
 #ifndef INTEGER_TEST_H
 #define INTEGER_TEST_H
 
@@ -26,7 +24,7 @@ void integerTest1()
     GA.population_size(100);
     GA.selection_method(selection::single_objective::Tournament{});
     GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
-    GA.mutation_method(mutation::integer::Uniform{ 96, 0.01 });
+    GA.mutation_method(mutation::integer::Uniform{ 0.01 });
 
     auto [sols, time_spent] = timed(&IntegerGA::run, GA, 500);
 
@@ -53,7 +51,7 @@ void integerTest2()
     GA.population_size(250);
     GA.selection_method(selection::single_objective::Boltzmann{});
     GA.crossover_method(crossover::integer::Uniform{ 0.8 });
-    GA.mutation_method(mutation::integer::Uniform{ 96, 5.0 / 250 });
+    GA.mutation_method(mutation::integer::Uniform{ 5.0 / 250 });
 
     auto [sols, time_spent] = timed(&IntegerGA::run, GA, 1000);
 
