@@ -385,7 +385,7 @@ namespace genetic_algorithm
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
 
         optimal_sols.insert(optimal_sols.end(), pop.begin(), pop.end());
-        if (num_objectives_ == 1)
+        if (num_objectives() == 1)
         {
             optimal_sols = detail::findParetoFront1D(optimal_sols);
         }
