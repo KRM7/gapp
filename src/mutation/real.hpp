@@ -15,10 +15,10 @@ namespace genetic_algorithm::mutation::real
     * Each gene of the candidate is mutated with pm probability, and the values
     * of the mutated genes are randomly generated from a uniform distribution within the gene bounds.
     */
-    class Uniform final : public BoundedMutation<double>
+    class Uniform final : public Mutation<double>
     {
     public:
-        using BoundedMutation::BoundedMutation;
+        using Mutation::Mutation;
     private:
         void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
     };
@@ -36,17 +36,16 @@ namespace genetic_algorithm::mutation::real
     * the distribution is uniform and doesn't change), while larger values will lead to faster change and
     * mutated genes closer to the original ones.
     */
-    class NonUniform final : public BoundedMutation<double>
+    class NonUniform final : public Mutation<double>
     {
     public:
         /**
         * Create a non-uniform mutation operator with the specified parameters.
         * 
-        * @param bounds The (lower and upper) bounds of each gene. Must be the same length as the chromosomes used in the algorithm.
         * @param pm The mutation probability used.
         * @param beta The beta parameter of the non-uniform crossover. Must be >= 0.0.
         */
-        explicit NonUniform(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double beta = 2.0);
+        explicit NonUniform(double pm = 0.01, double beta = 2.0);
         
         /**
         * Sets the beta parameter for the crossover.
@@ -75,17 +74,16 @@ namespace genetic_algorithm::mutation::real
     *   SD = (upper_bound - lower_bound) / sigma
     * Larger sigma values will lead to mutated gene values closer to their original values.
     */
-    class Gauss final : public BoundedMutation<double>
+    class Gauss final : public Mutation<double>
     {
     public:
         /**
         * Create a Gauss mutation operator with the specified parameters.
         * 
-        * @param bounds The (lower and upper) bounds of each gene. Must be the same length as the chromosomes used in the algorithm.
         * @param pm The mutation probability used.
         * @param sigma The sigma parameter of the gauss crossover. Must be > 0.0.
         */
-        explicit Gauss(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double sigma = 6.0);
+        explicit Gauss(double pm = 0.01, double sigma = 6.0);
 
         /**
         * Sets the sigma parameter for the crossover.
@@ -113,7 +111,7 @@ namespace genetic_algorithm::mutation::real
     * the mutated genes are picked from. The value of eta must be >= 0.0, with larger values leading
     * to mutated genes closer to the original ones. Typical values for eta are [20.0, 100.0].
     */
-    class Polynomial final : public BoundedMutation<double>
+    class Polynomial final : public Mutation<double>
     {
     public:
         /**
@@ -123,7 +121,7 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param eta The eta parameter of the polynomial mutation. Must be >= 0.0.
         */
-        explicit Polynomial(const std::vector<std::pair<double, double>>& bounds, double pm = 0.01, double eta = 40.0);
+        explicit Polynomial(double pm = 0.01, double eta = 40.0);
 
         /**
         * Sets the eta parameter for the crossover.
@@ -146,10 +144,10 @@ namespace genetic_algorithm::mutation::real
     * Each gene of the candidate is mutated with pm probability, and the values of the
     * mutated genes are either the lower or upper bounds of the given gene.
     */
-    class Boundary final : public BoundedMutation<double>
+    class Boundary final : public Mutation<double>
     {
     public:
-        using BoundedMutation::BoundedMutation;
+        using Mutation::Mutation;
     private:
         void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
     };
