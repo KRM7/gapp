@@ -385,14 +385,8 @@ namespace genetic_algorithm
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
 
         optimal_sols.insert(optimal_sols.end(), pop.begin(), pop.end());
-        if (num_objectives() == 1)
-        {
-            optimal_sols = detail::findParetoFront1D(optimal_sols);
-        }
-        else
-        {
-            optimal_sols = detail::findParetoFrontKung(optimal_sols);
-        }
+
+        optimal_sols = detail::findParetoFrontLin(optimal_sols);
 
         /* Remove duplicate solutions. */
         std::sort(optimal_sols.begin(), optimal_sols.end());
