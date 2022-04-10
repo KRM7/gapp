@@ -14,7 +14,7 @@ namespace genetic_algorithm
 
     /** A vector of Candidates. */
     template<Gene T>
-    using CandidateVec = std::vector<Candidate<T>>;
+    using Candidates = std::vector<Candidate<T>>;
 
     namespace detail
     {
@@ -73,11 +73,15 @@ namespace genetic_algorithm
 
         /* Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
         template<Gene T>
-        CandidateVec<T> findParetoFront1D(const Population<T>& pop);
+        Candidates<T> findParetoFront1D(const Population<T>& pop);
 
         /* Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
         template<Gene T>
-        CandidateVec<T> findParetoFrontKung(const Population<T>& pop);
+        Candidates<T> findParetoFrontKung(const Population<T>& pop);
+
+        /* Return all of the pareto-optimal solutions in the population. */
+        template<Gene T>
+        Candidates<T> findParetoFrontLin(const Population<T>& pop);
 
         /* Get the fitness vector of the population (single-objective). */
         template<Gene T>
@@ -137,22 +141,27 @@ namespace genetic_algorithm::detail
     }
 
     template<Gene T>
-    CandidateVec<T> findParetoFront1D(const Population<T>& pop)
+    Candidates<T> findParetoFront1D(const Population<T>& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
 
+        auto best = std::max_element(pop.begin(), pop.end(),
+        [](const Candidate<T>& lhs, const Candidate<T>& rhs)
+        {
+            return lhs.fitness[0] < rhs.fitness[0];
+        });
+
         /* Even for a single-objective problem, there might be different solutions with the same fitness value. */
         return detail::find_all_v(pop.begin(), pop.end(),
-        [fbest = populationFitnessMax(pop)[0]](const Candidate<T>& sol)
+        [fbest = best->fitness[0]](const Candidate<T>& sol)
         {
-            //return detail::floatIsEqual(fbest, sol.fitness[0]);
-            return fbest == sol.fitness[0];
+            return detail::floatIsEqual(fbest, sol.fitness[0]);
         });
     }
 
     template<Gene T>
-    CandidateVec<T> findParetoFrontKung(const Population<T>& pop)
+    Candidates<T> findParetoFrontKung(const Population<T>& pop)
     {
         /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476.*/
         /* Doesn't work for d = 1 (single-objective optimization). */
@@ -185,14 +194,12 @@ namespace genetic_algorithm::detail
                     /* The first dimension (d = 0) of the fitness vectors doesn't need to be compared since the pop is already sorted. */
                     for (size_t d = 1; d < dim; d++)
                     {
-                        //if (detail::floatIsLess(pop[r].fitness[d], pop[s].fitness[d]))
-                        if (pop[r].fitness[d] < pop[s].fitness[d])
+                        if (detail::floatIsLess(pop[r].fitness[d], pop[s].fitness[d]))
                         {
                             is_dominated = false;
                             break;
                         }
-                        //if (detail::floatIsLess(pop[s].fitness[d], pop[r].fitness[d]))
-                        if (pop[s].fitness[d] < pop[r].fitness[d])
+                        if (detail::floatIsLess(pop[s].fitness[d], pop[r].fitness[d]))
                         {
                             is_dominated = true;
                         }
@@ -216,6 +223,41 @@ namespace genetic_algorithm::detail
         indices = pfront(indices.begin(), indices.end());
 
         return detail::map(indices, [&pop](size_t idx) { return pop[idx]; });
+    }
+
+    template<Gene T>
+    Candidates<T> findParetoFrontLin(const Population<T>& pop)
+    {
+        std::vector is_dominated(pop.size(), false);
+
+        for (size_t lhs = 0; lhs < pop.size(); lhs++)
+        {
+            if (is_dominated[lhs]) continue;
+
+            for (size_t rhs = lhs + 1; rhs < pop.size(); rhs++)
+            {
+                if (detail::paretoCompareLess(pop[lhs].fitness, pop[rhs].fitness))
+                {
+                    is_dominated[lhs] = true;
+                    break;
+                }
+                else if (detail::paretoCompareLess(pop[rhs].fitness, pop[lhs].fitness))
+                {
+                    is_dominated[rhs] = true;
+                }
+            }
+        }
+
+        Candidates<T> optimal_sols;
+        for (size_t i = 0; i < is_dominated.size(); i++)
+        {
+            if (!is_dominated[i])
+            {
+                optimal_sols.push_back(pop[i]);
+            }
+        }
+
+        return optimal_sols;
     }
 
     template<Gene T>
