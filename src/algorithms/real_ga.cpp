@@ -28,7 +28,7 @@ namespace genetic_algorithm
         limits_ = limits;
     }
 
-    RCGA::Bounds RCGA::limits() const noexcept
+    const RCGA::Bounds& RCGA::limits() const noexcept
     {
         return limits_;
     }

@@ -44,7 +44,7 @@ namespace genetic_algorithm
         void limits(const Bounds& limits);
 
         /** @returns The current bounds set for the genes of the algorithm. */
-        [[nodiscard]] Bounds limits() const noexcept;
+        [[nodiscard]] const Bounds& limits() const noexcept;
 
     private:
         friend class GA<GeneType, RCGA>;
