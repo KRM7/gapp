@@ -65,40 +65,6 @@ namespace genetic_algorithm::mutation
         double pm_ = 0.01;      /* The mutation rate used for the mutation operator. */
     };
 
-    /**
-    * Base class used for the mutation operators where each gene also has a lower and upper bound.
-    * Used for the operators that perform mutation on real encoded chromosomes.
-    */
-    template<Gene T>
-    class BoundedMutation : public Mutation<T>
-    {
-    public:
-        /**
-        * Create a bounded mutation operator with @p bounds used as the bounds for the genes.
-        *
-        * @param bounds The (lower and upper) bounds of the genes. Must be the same length as the chromosomes used in the algorithm.
-        * @param pm The mutation probability.
-        */
-        explicit BoundedMutation(const std::vector<std::pair<T, T>>& bounds, double pm = 0.01);
-
-        /**
-        * Sets the boundaries of the genes.
-        * Each element of the @p bounds vector must contain the lower and upper bounds of the corresponding gene
-        * (the min and max values of the gene), with the lower bound never being greater than the upper bound for a gene.
-        * The number of elements in @p bounds must be the same as the length of the chromosomes used.
-        *
-        * @param bounds The (lower and upper) bounds of the genes.
-        */
-        void bounds(const std::vector<std::pair<T, T>>& bounds);
-
-        /** @returns The bounds currently set for this crossover operator. */
-        [[nodiscard]]
-        std::vector<std::pair<T, T>> bounds() const noexcept { return bounds_; }
-
-    protected:
-        std::vector<std::pair<T, T>> bounds_;     /* The lower and upper bounds for each gene of the chromosome. */
-    };
-
 } // namespace genetic_algorithm::mutation
 
 #endif // !GA_MUTATION_BASE_DECL_HPP
