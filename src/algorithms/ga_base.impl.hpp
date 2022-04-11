@@ -184,6 +184,10 @@ namespace genetic_algorithm
     template<stopping::StopMethod F>
     void GA<T, D>::stop_condition(std::unique_ptr<F>&& f)
     {
+        if (!f)
+        {
+            throw std::invalid_argument("The stop condition can't be a nullptr.");
+        }
         stop_condition_ = std::move(f);
     }
 
@@ -434,14 +438,7 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     bool GA<T, D>::stopCondition() const
     {
-        if (stop_condition_)
-        {
-            return (generation_cntr_ >= (max_gen_ - 1)) || (*stop_condition_)(*this);
-        }
-        else
-        {
-            return (generation_cntr_ >= (max_gen_ - 1));
-        }
+        return (generation_cntr_ >= (max_gen_ - 1)) || (*stop_condition_)(*this);
     }
 
 } // namespace genetic_algorithm
