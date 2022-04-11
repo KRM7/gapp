@@ -188,7 +188,7 @@ namespace genetic_algorithm::stopping
     * will be used by the algorithm.
     * The algorithm will stop when reaching the maximum number of generations set.
     */
-    class NoEarlyStop final : StopCondition
+    class NoEarlyStop final : public StopCondition
     {
     public:
         using StopCondition::StopCondition;
