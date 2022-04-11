@@ -5,6 +5,7 @@
 #include "../selection/selection.hpp"
 #include "../crossover/real.hpp"
 #include "../mutation/real.hpp"
+#include "../stop_condition/stop_condition.hpp"
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
@@ -29,6 +30,7 @@ namespace genetic_algorithm
         }
         crossover_method(std::make_unique<crossover::real::Wright>());
         mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds)
@@ -48,6 +50,7 @@ namespace genetic_algorithm
         }
         crossover_method(std::make_unique<crossover::real::Wright>());
         mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     void RCGA::limits(const Bounds& limits)

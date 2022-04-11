@@ -5,6 +5,7 @@
 #include "../selection/selection.hpp"
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"
+#include "../stop_condition/stop_condition.hpp"
 #include <utility>
 #include <memory>
 #include <stdexcept>
@@ -29,6 +30,7 @@ namespace genetic_algorithm
         }
         crossover_method(std::make_unique<crossover::integer::TwoPoint>());
         mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
@@ -48,6 +50,7 @@ namespace genetic_algorithm
         }
         crossover_method(std::make_unique<crossover::integer::TwoPoint>());
         mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     void IntegerGA::base(GeneType base)

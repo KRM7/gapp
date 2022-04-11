@@ -5,6 +5,7 @@
 #include "../selection/selection.hpp"
 #include "../crossover/binary.hpp"
 #include "../mutation/binary.hpp"
+#include "../stop_condition/stop_condition.hpp"
 #include <utility>
 #include <memory>
 #include <cassert>
@@ -27,6 +28,7 @@ namespace genetic_algorithm
         }
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());
         mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / chrom_len));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     BinaryGA::BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)
@@ -44,6 +46,7 @@ namespace genetic_algorithm
         }
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());
         mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / chrom_len));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     BinaryGA::Candidate BinaryGA::generateCandidate() const

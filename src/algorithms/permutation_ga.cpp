@@ -5,6 +5,7 @@
 #include "../selection/selection.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
+#include "../stop_condition/stop_condition.hpp"
 #include <algorithm>
 #include <memory>
 #include <numeric>
@@ -27,6 +28,7 @@ namespace genetic_algorithm
         }
         crossover_method(std::make_unique<crossover::perm::Order2>());
         mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     PermutationGA::PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction)
@@ -44,6 +46,7 @@ namespace genetic_algorithm
         }
         crossover_method(std::make_unique<crossover::perm::Order2>());
         mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     PermutationGA::Candidate PermutationGA::generateCandidate() const
