@@ -183,6 +183,20 @@ namespace genetic_algorithm::stopping
         void resetCntr();
     };
 
+    /**
+    * This stop condition always evaluates to false, so no early stopping
+    * will be used by the algorithm.
+    * The algorithm will stop when reaching the maximum number of generations set.
+    */
+    class NoEarlyStop final : StopCondition
+    {
+    public:
+        using StopCondition::StopCondition;
+
+        /** Returns false. */
+        bool operator()(const GaInfo& ga) override;
+    };
+
 }
 
 #endif // !GA_STOP_CONDITION_DECL_HPP

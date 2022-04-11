@@ -173,4 +173,9 @@ namespace genetic_algorithm::stopping
         return cntr_ == 0;
     }
 
+    bool NoEarlyStop::operator()(const GaInfo&)
+    {
+        return false;
+    }
+
 } // namespace genetic_algorithm::stopping
