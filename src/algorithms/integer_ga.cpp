@@ -13,13 +13,8 @@
 
 namespace genetic_algorithm
 {
-    IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
-        : GA(chrom_len, std::move(fitnessFunction))
+    void IntegerGA::setDefaultOperators()
     {
-        this->base(base);
-
-        num_objectives(getNumObjectives(fitness_function_));
-
         if (num_objectives() == 1)
         {
             selection_method(std::make_unique<selection::single_objective::Tournament>());
@@ -29,28 +24,24 @@ namespace genetic_algorithm
             selection_method(std::make_unique<selection::multi_objective::NSGA3>());
         }
         crossover_method(std::make_unique<crossover::integer::TwoPoint>());
-        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len));
+        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len_));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
+    }
+
+    IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
+        : GA(chrom_len, std::move(fitnessFunction))
+    {
+        this->base(base);
+        num_objectives(getNumObjectives(fitness_function_));
+        setDefaultOperators();
     }
 
     IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
         : GA(pop_size, chrom_len, std::move(fitnessFunction))
     {
         this->base(base);
-
         num_objectives(getNumObjectives(fitness_function_));
-
-        if (num_objectives() == 1)
-        {
-            selection_method(std::make_unique<selection::single_objective::Tournament>());
-        }
-        else
-        {
-            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
-        }
-        crossover_method(std::make_unique<crossover::integer::TwoPoint>());
-        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len));
-        stop_condition(std::make_unique<stopping::NoEarlyStop>());
+        setDefaultOperators();
     }
 
     void IntegerGA::base(GeneType base)

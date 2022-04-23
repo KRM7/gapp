@@ -52,6 +52,7 @@ namespace genetic_algorithm
         GeneType base_ = 4;
 
         Candidate generateCandidate() const;
+        void setDefaultOperators();
     };
 
 } // namespace genetic_algorithm

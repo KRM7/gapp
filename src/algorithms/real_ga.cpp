@@ -13,13 +13,8 @@
 
 namespace genetic_algorithm
 {
-    RCGA::RCGA(size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds)
-        : GA(chrom_len, std::move(fitnessFunction))
+    void RCGA::setDefaultOperators()
     {
-        this->limits(bounds);
-
-        num_objectives(getNumObjectives(fitness_function_));
-
         if (num_objectives() == 1)
         {
             selection_method(std::make_unique<selection::single_objective::Tournament>());
@@ -29,28 +24,24 @@ namespace genetic_algorithm
             selection_method(std::make_unique<selection::multi_objective::NSGA3>());
         }
         crossover_method(std::make_unique<crossover::real::Wright>());
-        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len));
+        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len_));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
+    }
+
+    RCGA::RCGA(size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds)
+        : GA(chrom_len, std::move(fitnessFunction))
+    {
+        this->limits(bounds);
+        num_objectives(getNumObjectives(fitness_function_));
+        setDefaultOperators();
     }
 
     RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds)
         : GA(pop_size, chrom_len, std::move(fitnessFunction))
     {
         this->limits(bounds);
-
         num_objectives(getNumObjectives(fitness_function_));
-
-        if (num_objectives() == 1)
-        {
-            selection_method(std::make_unique<selection::single_objective::Tournament>());
-        }
-        else
-        {
-            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
-        }
-        crossover_method(std::make_unique<crossover::real::Wright>());
-        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len));
-        stop_condition(std::make_unique<stopping::NoEarlyStop>());
+        setDefaultOperators();
     }
 
     void RCGA::limits(const Bounds& limits)

@@ -13,11 +13,8 @@
 
 namespace genetic_algorithm
 {
-    BinaryGA::BinaryGA(size_t chrom_len, FitnessFunction fitness_function)
-        : GA(chrom_len, std::move(fitness_function))
+    void BinaryGA::setDefaultOperators()
     {
-        num_objectives(getNumObjectives(fitness_function_));
-
         if (num_objectives() == 1)
         {
             selection_method(std::make_unique<selection::single_objective::Tournament>());
@@ -27,26 +24,22 @@ namespace genetic_algorithm
             selection_method(std::make_unique<selection::multi_objective::NSGA3>());
         }
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());
-        mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / chrom_len));
+        mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / chrom_len_));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
+    }
+
+    BinaryGA::BinaryGA(size_t chrom_len, FitnessFunction fitness_function)
+        : GA(chrom_len, std::move(fitness_function))
+    {
+        num_objectives(getNumObjectives(fitness_function_));
+        setDefaultOperators();
     }
 
     BinaryGA::BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)
         : GA(pop_size, chrom_len, std::move(fitness_function))
     {
         num_objectives(getNumObjectives(fitness_function_));
-
-        if (num_objectives() == 1)
-        {
-            selection_method(std::make_unique<selection::single_objective::Tournament>());
-        }
-        else
-        {
-            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
-        }
-        crossover_method(std::make_unique<crossover::binary::TwoPoint>());
-        mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / chrom_len));
-        stop_condition(std::make_unique<stopping::NoEarlyStop>());
+        setDefaultOperators();
     }
 
     BinaryGA::Candidate BinaryGA::generateCandidate() const

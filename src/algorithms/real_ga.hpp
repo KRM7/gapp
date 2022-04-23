@@ -61,6 +61,7 @@ namespace genetic_algorithm
         Bounds limits_;
 
         Candidate generateCandidate() const;
+        void setDefaultOperators();
     };
 
 } // namespace genetic_algorithm

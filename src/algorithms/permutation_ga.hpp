@@ -36,6 +36,7 @@ namespace genetic_algorithm
         friend class GA<GeneType, PermutationGA>;
 
         Candidate generateCandidate() const;
+        void setDefaultOperators();
     };
 
 } // namespace genetic_algorithm
