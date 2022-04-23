@@ -11,39 +11,19 @@
 #include <cstdint>
 #include <cstddef>
 #include <concepts>
+#include <atomic>
 
 /** Contains the PRNG classes and functions for generating random numbers. */
 namespace genetic_algorithm::rng
 {
-    /**
-    * Splitmix64 PRNG adapted from https://prng.di.unimi.it/splitmix64.c \n
-    * Only used for seeding the other PRNGs.
-    */
+    /**  Splitmix64 PRNG adapted from https://prng.di.unimi.it/splitmix64.c */
     class Splitmix64
     {
     public:
-        using result_type = uint_fast64_t;
-        using state_type = uint_fast64_t;
+        using result_type = uint64_t;
+        using state_type = uint64_t;
 
-        explicit Splitmix64(state_type seed);
-
-        result_type operator()() noexcept;
-
-    private:
-        state_type state_;
-    };
-
-    /** Generate a new seed that can be used to initialize a PRNG. Thread-safe. */
-    inline Splitmix64::result_type generateSeed();
-
-    /** xoroshiro128+ PRNG adapted from https://prng.di.unimi.it/xoroshiro128plus.c */
-    class Xoroshiro128p
-    {
-    public:
-        using result_type = uint_fast64_t;
-        using state_type = uint_fast64_t;
-
-        explicit Xoroshiro128p(uint_fast64_t seed);
+        explicit constexpr Splitmix64(state_type seed) noexcept;
 
         result_type operator()() noexcept;
 
@@ -51,16 +31,14 @@ namespace genetic_algorithm::rng
         static constexpr result_type max() noexcept;
 
     private:
-        state_type state_[2];
-
-        static state_type rotl64(state_type value, unsigned shift) noexcept;
+        std::atomic<state_type> state_;
     };
 
     /** The PRNG type used in the genetic algorithms. */
-    using PRNG = Xoroshiro128p;
+    using PRNG = Splitmix64;
 
-    /** PRNG instance(s) used in the genetic algorithms. */
-    thread_local inline PRNG prng{ generateSeed() };
+    /** PRNG instance used in the genetic algorithms. */
+    inline PRNG prng{ std::random_device{}() };
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
     template<std::floating_point RealType = double>
@@ -125,71 +103,34 @@ namespace genetic_algorithm::rng
 
 namespace genetic_algorithm::rng
 {
-    inline Splitmix64::Splitmix64(state_type seed)
+    constexpr inline Splitmix64::Splitmix64(state_type seed) noexcept
         : state_(seed)
     {
     }
 
     inline Splitmix64::result_type Splitmix64::operator()() noexcept
     {
-        state_ += 0x9e3779b97f4a7c15;
-        result_type z = state_;
+        result_type z = state_.fetch_add(0x9e3779b97f4a7c15, std::memory_order::acquire) + 0x9e3779b97f4a7c15;
         z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
         z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
 
         return z ^ (z >> 31);
     }
 
-    inline Splitmix64::result_type generateSeed()
+    inline constexpr Splitmix64::result_type Splitmix64::min() noexcept
     {
-        static Splitmix64 gen = Splitmix64{ GA_SEED() };
-        static std::mutex lock;
-        std::lock_guard guard(lock);
-
-        return gen();
+        return std::numeric_limits<result_type>::min();
     }
 
-    inline Xoroshiro128p::Xoroshiro128p(uint_fast64_t seed)
-    {
-        Splitmix64 seed_seq_gen(seed);
-        state_[0] = seed_seq_gen();
-        state_[1] = seed_seq_gen();
-    }
-
-    inline Xoroshiro128p::result_type Xoroshiro128p::operator()() noexcept
-    {
-        state_type s0 = state_[0];
-        state_type s1 = state_[1];
-        result_type result = s0 + s1;
-
-        s1 ^= s0;
-        state_[0] = rotl64(s0, 24) ^ s1 ^ (s1 << 16);
-        state_[1] = rotl64(s1, 37);
-
-        return result;
-    }
-
-    inline constexpr Xoroshiro128p::result_type Xoroshiro128p::min() noexcept
-    {
-        return std::numeric_limits<result_type>::lowest();
-    }
-
-    inline constexpr Xoroshiro128p::result_type Xoroshiro128p::max() noexcept
+    inline constexpr Splitmix64::result_type Splitmix64::max() noexcept
     {
         return std::numeric_limits<result_type>::max();
-    }
-
-    inline Xoroshiro128p::state_type Xoroshiro128p::rotl64(state_type value, unsigned shift) noexcept
-    {
-        return (value << shift) | (value >> (64U - shift));
     }
 
     template<std::floating_point RealType>
     RealType randomReal()
     {
-        std::uniform_real_distribution<RealType> distribution{ 0.0, 1.0 };
-
-        return distribution(prng);
+        return std::uniform_real_distribution<RealType>{ 0.0, 1.0 }(prng);
     }
 
     template<std::floating_point RealType>
@@ -197,17 +138,13 @@ namespace genetic_algorithm::rng
     {
         assert(l_bound <= u_bound);
 
-        std::uniform_real_distribution<RealType> distribution{ l_bound, u_bound };
-
-        return distribution(prng);
+        return std::uniform_real_distribution{ l_bound, u_bound }(prng);
     }
 
     template<std::floating_point RealType>
     RealType randomNormal()
     {
-        std::normal_distribution<RealType> distribution{ 0.0, 1.0 };
-
-        return distribution(prng);
+        return std::normal_distribution<RealType>{ 0.0, 1.0 }(prng);
     }
 
     template<std::floating_point RealType>
@@ -215,9 +152,7 @@ namespace genetic_algorithm::rng
     {
         assert(SD > 0.0);
 
-        std::normal_distribution<RealType> distribution{ mean, SD };
-
-        return distribution(prng);
+        return std::normal_distribution{ mean, SD }(prng);
     }
 
     template<std::integral IntType>
@@ -225,45 +160,36 @@ namespace genetic_algorithm::rng
     {
         assert(l_bound <= u_bound);
 
-        std::uniform_int_distribution<IntType> distribution{ l_bound, u_bound };
-
-        return distribution(prng);
+        return std::uniform_int_distribution{ l_bound, u_bound }(prng);
     }
 
     template<detail::IndexableContainer T>
     size_t randomIdx(const T& cont)
     {
-        assert(!cont.empty()); /* There are no valid indices otherwise. */
+        assert(!cont.empty());
 
-        std::uniform_int_distribution<size_t> distribution{ 0, cont.size() - 1 };
-
-        return distribution(prng);
+        return std::uniform_int_distribution<size_t>{ 0, cont.size() - 1 }(prng);
     }
 
     template<detail::Container T>
     auto randomElement(const T& cont) -> typename T::value_type
     {
-        size_t i = randomInt( size_t{0}, cont.size() - 1 );
+        size_t n = randomInt<size_t>( 0, cont.size() - 1 );
 
-        return *std::next(cont.begin(), i);
+        return *std::next(cont.begin(), n);
     }
 
     template<std::input_iterator Iter>
     auto randomElement(Iter first, Iter last)
     {
-        ptrdiff_t dist = std::distance(first, last);
-        assert(dist > 0);
+        ptrdiff_t n = randomInt<ptrdiff_t>(0, std::distance(first, last) - 1);
 
-        ptrdiff_t off = randomInt<ptrdiff_t>(0, dist - 1);
-
-        return *std::next(first, off);
+        return *std::next(first, n);
     }
 
     bool randomBool() noexcept
     {
-        std::uniform_int_distribution distribution{ 0, 1 };
-
-        return distribution(prng);
+        return prng() & 1;
     }
 
     template<std::integral IntType>
@@ -295,8 +221,7 @@ namespace genetic_algorithm::rng
     {
         assert(dim > 0);
 
-        static thread_local std::minstd_rand0 rng{ GA_SEED() };
-        std::uniform_real_distribution<double> dist{ 0.0, 1.0 };
+        std::uniform_real_distribution dist{ 0.0, 1.0 };
 
         std::vector<double> point;
         point.reserve(dim);
@@ -304,7 +229,7 @@ namespace genetic_algorithm::rng
         double sum = 0.0;
         for (size_t i = 0; i < dim; i++)
         {
-            point.push_back(-std::log(dist(rng)));
+            point.push_back(-std::log(dist(prng)));
             sum += point.back();
         }
         for (size_t i = 0; i < dim; i++)
@@ -319,9 +244,9 @@ namespace genetic_algorithm::rng
     {
         assert(!cdf.empty());
 
-        auto idx = std::lower_bound(cdf.begin(), cdf.end(), randomReal(0.0, cdf.back())) - cdf.begin(); // cdf.back() in case not exactly 1.0
+        auto it = std::lower_bound(cdf.begin(), cdf.end(), randomReal(0.0, cdf.back())); // cdf.back() in case not exactly 1.0
 
-        return size_t(idx);
+        return size_t(it - cdf.begin());
     }
 
 }
