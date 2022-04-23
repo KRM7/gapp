@@ -84,7 +84,7 @@ namespace genetic_algorithm
 
         using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;      /**< The type of the fitness function. */
         using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
-        using CallbackFunction = std::function<void(const GA&)>;
+        using CallbackFunction = std::function<void(const GA<T, Derived>&)>;
 
         /**
         * Create a genetic algorithm.
