@@ -162,6 +162,25 @@ namespace genetic_algorithm::detail
     {
         return std::find_if(first, last, std::forward<Pred>(pred)) != last;
     }
+
+    template<typename T>
+    size_t index_of(const std::vector<T>& cont, const T& val)
+    {
+        auto pos = std::find(cont.begin(), cont.end(), val);
+        assert(pos != cont.end());
+
+        return size_t(pos - cont.begin());
+    }
+
+    template<typename T, std::predicate<T> Pred>
+    size_t index_of(const std::vector<T>& cont, Pred&& pred)
+    {
+        auto pos = std::find_if(cont.begin(), cont.end(), std::forward<Pred>(pred));
+        assert(pos != cont.end());
+
+        return size_t(pos - cont.begin());
+    }
+
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
