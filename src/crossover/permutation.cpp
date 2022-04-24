@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
-#include <tuple>
 
 namespace genetic_algorithm::crossover::perm
 {
@@ -181,60 +180,24 @@ namespace genetic_algorithm::crossover::perm
             throw std::invalid_argument("The parent chromosomes must be the same length for the Cycle crossover.");
         }
 
-        /* Identify all cycles. */
-        std::vector<std::vector<size_t>> cycles;
-        std::vector<size_t> chrom1(parent1.chromosome), chrom2(parent2.chromosome);
+        auto cycles = dtl::findCycles(parent1.chromosome, parent2.chromosome);
 
-        while (!chrom1.empty())
-        {
-            std::vector<size_t> cycle;
-            /* Always start the cycle at chrom1[0]. Old cycles are removed the chromosomes. */
-            size_t cur_pos = 0;
-            size_t top_val = chrom1[cur_pos];
-            cycle.push_back(top_val);
-
-            while (chrom2[cur_pos] != chrom1[0])
-            {
-                /* Look for the bottom value at this pos (chrom2[pos]) in chrom1. This is the new pos and top value. */
-                cur_pos = static_cast<size_t>(std::find(chrom1.begin(), chrom1.end(), chrom2[cur_pos]) - chrom1.begin());
-                top_val = chrom1[cur_pos];
-                /* Add the new top value to the cycle. */
-                cycle.push_back(top_val);
-                /* Keep going until the bottom value at this pos isn't the cycle start value. (cycle complete) */
-            }
-
-            /* Delete the values in this cycle from chrom1 and chrom2. (Without changing the order of the remaining genes.) */
-            for (size_t i = 0; i < cycle.size(); i++)
-            {
-                chrom1.erase(std::find(chrom1.begin(), chrom1.end(), cycle[i]));
-                chrom2.erase(std::find(chrom2.begin(), chrom2.end(), cycle[i]));
-            }
-            /* Add this cycle to the cycles. */
-            cycles.push_back(cycle);
-        }
-
-        /* Construct the children from the cycles. */
         Candidate child1{ parent1 }, child2{ parent2 };
 
         for (size_t i = 0; i < parent1.chromosome.size(); i++)
         {
-            /* Find which cycle has the gene. */
-            size_t cycle_num = 0;
-            for (size_t j = 0; j < cycles.size(); j++)
+            size_t cycle_idx = detail::index_of(cycles,
+            [&gene = parent1.chromosome[i]](const auto& cycle)
             {
-                if (std::find(cycles[j].begin(), cycles[j].end(), parent1.chromosome[i]) != cycles[j].end())
-                {
-                    cycle_num = j + 1;
-                    break;
-                }
-            }
-            /* Even cycle genes are swapped parent1->child2 and parent2->child1. */
-            if (cycle_num % 2 == 0)
+                return detail::contains(cycle.begin(), cycle.end(), gene);
+            });
+
+            if (cycle_idx % 2)
             {
                 child1.chromosome[i] = parent2.chromosome[i];
                 child2.chromosome[i] = parent1.chromosome[i];
             }
-            /* Odd cycle genes were already handled when initializing the children. */
+            /* Even cycle genes were already handled when initializing the children. */
         }
 
         return { child1, child2 };
