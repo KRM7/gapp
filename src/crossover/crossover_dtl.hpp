@@ -16,6 +16,7 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
+    /* Get the neighbours of each gene. */
     template<Gene T, bool Wrap = false>
     std::unordered_map<T, std::vector<T>> getNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
 
@@ -25,6 +26,9 @@ namespace genetic_algorithm::crossover::dtl
 
     template<Gene T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, std::unordered_map<T, std::vector<T>>&& neighbour_lists);
+
+    template<typename T>
+    std::vector<std::vector<T>> findCycles(Chromosome<T> chrom1, Chromosome<T> chrom2);
 
 } // namespace genetic_algorithm::crossover::dtl
 
@@ -108,7 +112,7 @@ namespace genetic_algorithm::crossover::dtl
                 while (first <= cur_pos && cur_pos < last)
                 {
                     T gene = parent1.chromosome[cur_pos];
-                    cur_pos = size_t(std::find(parent2.chromosome.begin(), parent2.chromosome.end(), gene) - parent2.chromosome.begin());
+                    cur_pos = detail::index_of(parent2.chromosome, gene);
                 }
                 child.chromosome[cur_pos] = parent2.chromosome[i];
             }
@@ -208,6 +212,38 @@ namespace genetic_algorithm::crossover::dtl
         }
 
         return child;
+    }
+
+    template<typename T>
+    std::vector<std::vector<T>> findCycles(Chromosome<T> chrom1, Chromosome<T> chrom2)
+    {
+        std::vector<std::vector<T>> cycles;
+
+        while (!chrom1.empty())
+        {
+            std::vector<T> cycle;
+
+            size_t cur_pos = 0;
+            T top_val = chrom1[cur_pos];
+            cycle.push_back(top_val);
+
+            while (chrom2[cur_pos] != chrom1[0])
+            {
+                cur_pos = detail::index_of(chrom1, chrom2[cur_pos]);
+                top_val = chrom1[cur_pos];
+                cycle.push_back(top_val);
+            }
+
+            /* Delete the values in this cycle from chrom1 and chrom2 without changing the order of the remaining genes. */
+            for (size_t i = 0; i < cycle.size(); i++)
+            {
+                chrom1.erase(std::find(chrom1.begin(), chrom1.end(), cycle[i]));
+                chrom2.erase(std::find(chrom2.begin(), chrom2.end(), cycle[i]));
+            }
+            cycles.push_back(cycle);
+        }
+
+        return cycles;
     }
 
 } // namespace genetic_algorithm::crossover::dtl
