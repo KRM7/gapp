@@ -19,7 +19,7 @@ namespace genetic_algorithm::crossover::binary
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<char> crossover(const GaInfo& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -33,19 +33,19 @@ namespace genetic_algorithm::crossover::binary
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<char> crossover(const GaInfo& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
     * Uniform crossover operator for the binary encoded algorithms. \n
-    * Every gene of the chromosomes is swapped with 0.5 probability between the parents to create the children.
+    * Each pair of genes of the chromosomes are swapped with 0.5 probability between the parents to create the children.
     */
     class Uniform final : public Crossover<char>
     {
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<char> crossover(const GaInfo& ga, const Candidate<char>& parent1, const Candidate<char>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
 } // namespace genetic_algorithm::crossover::binary
