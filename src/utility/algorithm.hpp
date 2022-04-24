@@ -156,6 +156,12 @@ namespace genetic_algorithm::detail
         return std::find(first, last, val) != last;
     }
 
+    template<std::input_iterator Iter, typename Pred>
+    requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
+    bool contains(Iter first, Iter last, Pred&& pred)
+    {
+        return std::find_if(first, last, std::forward<Pred>(pred)) != last;
+    }
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
