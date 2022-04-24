@@ -86,10 +86,9 @@ namespace genetic_algorithm::crossover::perm
             throw std::invalid_argument("The parent chromosomes must have at least 2 genes for the Order2 crossover.");
         }
 
-        /* Pick a random range [first, last) of genes (never empty or the entire chromosome). */
-        size_t len = rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1);
-        size_t first = rng::randomInt(size_t{ 0 }, parent1.chromosome.size() - len);
-        size_t last = first + len;
+        size_t range_len = rng::randomInt<size_t>(1, parent1.chromosome.size() - 1);
+        size_t first = rng::randomInt<size_t>(0, parent1.chromosome.size() - range_len);
+        size_t last = first + range_len;
 
         auto child1 = dtl::order2CrossoverImpl(parent1, parent2, first, last);
         auto child2 = dtl::order2CrossoverImpl(parent2, parent1, first, last);
