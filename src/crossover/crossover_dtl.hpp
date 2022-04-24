@@ -30,6 +30,9 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     std::vector<std::vector<T>> findCycles(Chromosome<T> chrom1, Chromosome<T> chrom2);
 
+    template<Gene T>
+    Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
+
 } // namespace genetic_algorithm::crossover::dtl
 
 
@@ -39,6 +42,7 @@ namespace genetic_algorithm::crossover::dtl
 #include "../utility/algorithm.hpp"
 #include <unordered_set>
 #include <algorithm>
+#include <iterator>
 #include <stdexcept>
 #include <cassert>
 
@@ -244,6 +248,34 @@ namespace genetic_algorithm::crossover::dtl
         }
 
         return cycles;
+    }
+
+    template<Gene T>
+    Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
+    {
+        /* Genes in the range are copied directly: parent1 -> child */
+        std::unordered_set<T> direct;
+        for (size_t i = first; i != last; i++)
+        {
+            direct.insert(parent1.chromosome[i]);
+        }
+
+        /* The rest of the genes are copied from the other parent: parent2 -> child */
+        auto cross = detail::find_all_v(parent2.chromosome.begin(), parent2.chromosome.end(),
+        [&direct](const T& gene)
+        {
+            return !direct.contains(gene);
+        });
+
+        /* Construct the child: child = direct + cross */
+        Candidate<size_t> child;
+        child.chromosome.reserve(parent1.chromosome.size());
+
+        std::move(cross.begin(), cross.begin() + first, std::back_inserter(child.chromosome));
+        std::copy(parent1.chromosome.begin() + first, parent1.chromosome.begin() + last, std::back_inserter(child.chromosome));
+        std::move(cross.begin() + first, cross.end(), std::back_inserter(child.chromosome));
+
+        return child;
     }
 
 } // namespace genetic_algorithm::crossover::dtl

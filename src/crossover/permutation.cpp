@@ -91,35 +91,8 @@ namespace genetic_algorithm::crossover::perm
         size_t first = rng::randomInt(size_t{ 0 }, parent1.chromosome.size() - len);
         size_t last = first + len;
 
-        /* Gather the genes that will go directly from parent1 -> child1, and parent2 -> child2. (Not using the constructor is intentional.) */
-        std::unordered_set<size_t> direct1, direct2;
-        for (auto gene = parent1.chromosome.begin() + first; gene != parent1.chromosome.begin() + last; gene++) direct1.insert(*gene);
-        for (auto gene = parent2.chromosome.begin() + first; gene != parent2.chromosome.begin() + last; gene++) direct2.insert(*gene);
-
-        /* Gather the remaining genes (not in the range) from the other parent. */
-        std::vector<size_t> cross1;    /* Segment gathered from parent2 -> child1. */
-        std::vector<size_t> cross2;    /* Segment gathered from parent1 -> child2. */
-        cross1.reserve(parent2.chromosome.size() - direct1.size());
-        cross2.reserve(parent1.chromosome.size() - direct2.size());
-        for (size_t i = 0; i < parent1.chromosome.size(); i++)
-        {
-            /* If a gene is not taken directly from the corresponding parent, then take it from the other parent. */
-            if (!direct1.contains(parent2.chromosome[i])) cross1.push_back(parent2.chromosome[i]);
-            if (!direct2.contains(parent1.chromosome[i])) cross2.push_back(parent1.chromosome[i]);
-        }
-
-        /* Construct the children: child1 = direct1 + cross1, child2 = direct2 + cross2 */
-        Candidate<size_t> child1, child2;
-        child1.chromosome.reserve(parent1.chromosome.size());
-        child2.chromosome.reserve(parent2.chromosome.size());
-        /* child1 */
-        child1.chromosome.insert(child1.chromosome.end(), cross1.begin(), cross1.begin() + first);
-        child1.chromosome.insert(child1.chromosome.end(), parent1.chromosome.begin() + first, parent1.chromosome.begin() + last);
-        child1.chromosome.insert(child1.chromosome.end(), cross1.begin() + first, cross1.end());
-        /* child2 */
-        child2.chromosome.insert(child2.chromosome.end(), cross2.begin(), cross2.begin() + first);
-        child2.chromosome.insert(child2.chromosome.end(), parent2.chromosome.begin() + first, parent2.chromosome.begin() + last);
-        child2.chromosome.insert(child2.chromosome.end(), cross2.begin() + first, cross2.end());
+        auto child1 = dtl::order2CrossoverImpl(parent1, parent2, first, last);
+        auto child2 = dtl::order2CrossoverImpl(parent2, parent1, first, last);
 
         return { child1, child2 };
     }
@@ -157,12 +130,7 @@ namespace genetic_algorithm::crossover::perm
 
         for (size_t i = 0, first = 0; i < parent1.chromosome.size(); i++)
         {
-            if (direct_idxs.contains(i))
-            {
-                child1.chromosome[i] = parent1.chromosome[i];
-                child2.chromosome[i] = parent2.chromosome[i];
-            }
-            else
+            if (!direct_idxs.contains(i))
             {
                 child1.chromosome[i] = parent2.chromosome[cross_idxs1[first]];
                 child2.chromosome[i] = parent1.chromosome[cross_idxs2[first]];
