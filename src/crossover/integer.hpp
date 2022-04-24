@@ -20,7 +20,7 @@ namespace genetic_algorithm::crossover::integer
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -34,19 +34,19 @@ namespace genetic_algorithm::crossover::integer
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
     * Uniform crossover operator for the integer encoded algorithms.
-    * Every gene of the chromosomes is swapped between the parents with 0.5 probability when creating the children.
+    * Each pair of genes of the chromosomes are swapped with 0.5 probability between the parents to create the children.
     */
     class Uniform final : public Crossover<size_t>
     {
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
 } // namespace genetic_algorithm::crossover::integer
