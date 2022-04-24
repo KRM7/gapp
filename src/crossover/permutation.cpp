@@ -20,57 +20,12 @@ namespace genetic_algorithm::crossover::perm
             throw std::invalid_argument("The parent chromosomes must have at least 2 genes for the Order1 crossover.");
         }
 
-        /* Pick a random range [first, last) of genes (never empty or the entire chromosome). */
-        size_t len = rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1);
-        size_t first = rng::randomInt(size_t{ 0 }, parent1.chromosome.size() - len);
-        size_t last = first + len;
+        size_t range_len = rng::randomInt<size_t>(1, parent1.chromosome.size() - 1);
+        size_t first = rng::randomInt<size_t>(0, parent1.chromosome.size() - range_len);
+        size_t last = first + range_len;
 
-        /* Gather the genes that will go directly from parent1 -> child1, and parent2 -> child2. (Not using the constructor is intentional.) */
-        std::unordered_set<size_t> direct1, direct2;
-        for (auto gene = parent1.chromosome.begin() + first; gene != parent1.chromosome.begin() + last; gene++) direct1.insert(*gene);
-        for (auto gene = parent2.chromosome.begin() + first; gene != parent2.chromosome.begin() + last; gene++) direct2.insert(*gene);
-
-        /* Gather the remaining genes (not in the range) from the other parent. */
-        std::vector<size_t> cross1;    /* Segment gathered from parent2 -> child1. */
-        std::vector<size_t> cross2;    /* Segment gathered from parent1 -> child2. */
-        cross1.reserve(parent2.chromosome.size() - direct1.size());
-        cross2.reserve(parent1.chromosome.size() - direct2.size());
-
-        size_t pos = last;
-        if (pos == parent1.chromosome.size())
-        {
-            pos = 0;
-        }
-        while (cross1.size() < (parent2.chromosome.size() - direct1.size()) ||
-               cross2.size() < (parent1.chromosome.size() - direct2.size()))
-        {
-            /* If a gene is not taken directly from the corresponding parent, then take it from the other parent. */
-            if (!direct1.contains(parent2.chromosome[pos])) cross1.push_back(parent2.chromosome[pos]);
-            if (!direct2.contains(parent1.chromosome[pos])) cross2.push_back(parent1.chromosome[pos]);
-
-            if (++pos == parent1.chromosome.size())
-            {
-                pos = 0;
-            }
-        }
-
-        /* Construct the children: child1 = direct1 + cross1, child2 = direct2 + cross2 */
-        Candidate<size_t> child1{ parent1 }, child2{ parent2 };
-
-        size_t chrom_pos = last;
-        if (chrom_pos == parent1.chromosome.size())
-        {
-            chrom_pos = 0;
-        }
-        for (size_t i = 0; i < cross1.size(); i++)
-        {
-            child1.chromosome[chrom_pos] = cross1[i];
-            child2.chromosome[chrom_pos] = cross2[i];
-            if (++chrom_pos == parent1.chromosome.size())
-            {
-                chrom_pos = 0;
-            }
-        }
+        auto child1 = dtl::order1CrossoverImpl(parent1, parent2, first, last);
+        auto child2 = dtl::order1CrossoverImpl(parent2, parent1, first, last);
 
         return { child1, child2 };
     }
