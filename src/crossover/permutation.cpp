@@ -1,14 +1,16 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "permutation.hpp"
+#include "crossover_dtl.hpp"
 #include "../utility/rng.hpp"
-
 #include <algorithm>
 #include <unordered_set>
+#include <unordered_map>
+#include <tuple>
 
 namespace genetic_algorithm::crossover::perm
 {
-    CandidatePair<size_t> Order1::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    auto Order1::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -74,7 +76,7 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Order2::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    auto Order2::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -123,7 +125,7 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Position::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    auto Position::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -172,7 +174,7 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Cycle::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    auto Cycle::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -238,10 +240,8 @@ namespace genetic_algorithm::crossover::perm
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> Edge::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    auto Edge::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        using NList = std::vector<std::unordered_set<size_t>>;
-
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the Edge crossover.");
@@ -251,117 +251,16 @@ namespace genetic_algorithm::crossover::perm
             throw std::invalid_argument("The parent chromosomes must have at least 2 genes for the Edge crossover.");
         }
 
-        Candidate<size_t> child1, child2;
-        child1.chromosome.reserve(parent1.chromosome.size());
-        child2.chromosome.reserve(parent2.chromosome.size());
+        auto nl1 = dtl::getNeighbourLists(parent1.chromosome, parent2.chromosome);
+        auto nl2 = nl1;
 
-        /* Construct neighbour list based on parents. The first and last genes are not neighbours. */
-        size_t len = parent1.chromosome.size();
-        NList nl1(len);
-        /* Neighbours of first and last genes. */
-        nl1[parent1.chromosome.front()] = { parent1.chromosome[1] };
-        nl1[parent1.chromosome.back()] = { parent1.chromosome[len - 2] };
-        nl1[parent2.chromosome.front()].insert(parent2.chromosome[1]);
-        nl1[parent2.chromosome.back()].insert(parent2.chromosome[len - 2]);
-        /* Neighbours of all other genes. */
-        for (size_t i = 1; i < len - 1; i++)
-        {
-            nl1[parent1.chromosome[i]].insert(parent1.chromosome[i + 1]);
-            nl1[parent1.chromosome[i]].insert(parent1.chromosome[i - 1]);
-
-            nl1[parent2.chromosome[i]].insert(parent2.chromosome[i + 1]);
-            nl1[parent2.chromosome[i]].insert(parent2.chromosome[i - 1]);
-        }
-        NList nl2 = nl1;    /* Copy for child2. */
-
-        /* Generate child1. */
-        std::vector<size_t> remaining_genes = parent1.chromosome;
-        size_t gene = parent1.chromosome[0];
-
-        while (child1.chromosome.size() != parent1.chromosome.size())
-        {
-            /* Append gene to the child, and remove it from all neighbour lists. */
-            child1.chromosome.push_back(gene);
-            remaining_genes.erase(std::remove(remaining_genes.begin(), remaining_genes.end(), gene), remaining_genes.end());
-            for (auto& neighbours : nl1)
-            {
-                neighbours.erase(gene);
-            }
-            if (child1.chromosome.size() == parent1.chromosome.size()) break;
-
-            /* Determine next gene that will be added to the child. */
-            /* If gene's neighbour list is empty, gene = random node not already in child. */
-            if (nl1[gene].empty())
-            {
-                gene = rng::randomElement(remaining_genes);
-            }
-            else /* gene's neighbour list is not empty, gene = neighbour of gene with fewest neighbours (random if tie). */
-            {
-                /* Find gene's neighbour with fewest neighbours. */
-                size_t nb = *std::min_element(nl1[gene].begin(), nl1[gene].end(),
-                [&nl1](const size_t& lhs, const size_t& rhs)
-                {
-                    return (nl1[lhs].size() < nl1[rhs].size());
-                });
-                size_t min_neighbour_count = nl1[nb].size();
-
-                /* Determine possible nodes (neighbours of gene with min_neighbour_count neighbours). */
-                std::vector<size_t> possible_nodes;
-                for (const auto& neighbour : nl1[gene])
-                {
-                    if (nl1[neighbour].size() == min_neighbour_count)
-                    {
-                        possible_nodes.push_back(neighbour);
-                    }
-                }
-
-                gene = rng::randomElement(possible_nodes);
-            }
-        }
-
-        /* Same process to get child2. */
-        remaining_genes = parent2.chromosome;
-        gene = parent2.chromosome[0];
-        while (child2.chromosome.size() != parent2.chromosome.size())
-        {
-            child2.chromosome.push_back(gene);
-            remaining_genes.erase(std::remove(remaining_genes.begin(), remaining_genes.end(), gene), remaining_genes.end());
-            for (auto& neighbours : nl2)
-            {
-                neighbours.erase(gene);
-            }
-            if (child2.chromosome.size() == parent2.chromosome.size()) break;
-
-            if (nl2[gene].empty())
-            {
-                gene = rng::randomElement(remaining_genes);
-            }
-            else
-            {
-                size_t nb = *std::min_element(nl2[gene].begin(), nl2[gene].end(),
-                [&nl2](const size_t& lhs, const size_t& rhs)
-                {
-                    return (nl2[lhs].size() < nl2[rhs].size());
-                });
-                size_t min_neighbour_count = nl2[nb].size();
-
-                std::vector<size_t> possible_nodes;
-                for (const auto& neighbour : nl2[gene])
-                {
-                    if (nl2[neighbour].size() == min_neighbour_count)
-                    {
-                        possible_nodes.push_back(neighbour);
-                    }
-                }
-
-                gene = rng::randomElement(possible_nodes);
-            }
-        }
+        auto child1 = dtl::edgeCrossoverImpl(parent1, std::move(nl1));
+        auto child2 = dtl::edgeCrossoverImpl(parent2, std::move(nl2));
 
         return { child1, child2 };
     }
 
-    CandidatePair<size_t> PMX::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const
+    auto PMX::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -372,52 +271,8 @@ namespace genetic_algorithm::crossover::perm
             throw std::invalid_argument("The parent chromosomes must have at least 2 genes for the PMX crossover.");
         }
 
-        /* Init children so the last step of the crossover can be skipped. */
-        Candidate child1{ parent2 }, child2{ parent1 };
-
-        /* Pick a random range [first, last) of genes (never empty or the entire chromosome). */
-        size_t len = rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1);
-        size_t first = rng::randomInt(size_t{ 0 }, parent1.chromosome.size() - len);
-        size_t last = first + len;
-
-        /* Copy genes in the range from the corresponding parent. */
-        for (size_t i = first; i < last; i++)
-        {
-            child1.chromosome[i] = parent1.chromosome[i];
-            child2.chromosome[i] = parent2.chromosome[i];
-        }
-        /* Note ranges that were copied from parents to check if they contain an element. (Not using the constructor is intentional.) */
-        std::unordered_set<size_t> p1_range, p2_range;
-        for (auto gene = parent1.chromosome.begin() + first; gene != parent1.chromosome.begin() + last; gene++) p1_range.insert(*gene);
-        for (auto gene = parent2.chromosome.begin() + first; gene != parent2.chromosome.begin() + last; gene++) p2_range.insert(*gene);
-
-        /* Get the rest of the children's genes from the other parents. */
-        for (size_t i = first; i < last; i++)
-        {
-            /* child1 */
-            if (!p1_range.contains(parent2.chromosome[i]))
-            {
-                size_t cur_pos = i;
-                while (first <= cur_pos && cur_pos < last)
-                {
-                    size_t val = parent1.chromosome[cur_pos];
-                    cur_pos = static_cast<size_t>(std::find(parent2.chromosome.begin(), parent2.chromosome.end(), val) - parent2.chromosome.begin());
-                }
-                child1.chromosome[cur_pos] = parent2.chromosome[i];
-            }
-            /* child2 */
-            if (!p2_range.contains(parent1.chromosome[i]))
-            {
-                size_t cur_pos = i;
-                while (first <= cur_pos && cur_pos < last)
-                {
-                    size_t val = parent2.chromosome[cur_pos];
-                    cur_pos = static_cast<size_t>(std::find(parent1.chromosome.begin(), parent1.chromosome.end(), val) - parent1.chromosome.begin());
-                }
-                child2.chromosome[cur_pos] = parent1.chromosome[i];
-            }
-        }
-        /* Copy any not yet in child positions to the children from the other parents. (Already done at the initialization of the children.) */
+        auto child1 = dtl::pmxCrossoverImpl<GeneType>(parent1, parent2);
+        auto child2 = dtl::pmxCrossoverImpl<GeneType>(parent2, parent1);
 
         return { child1, child2 };
     }

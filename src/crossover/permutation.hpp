@@ -24,7 +24,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -42,7 +42,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -61,7 +61,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -75,7 +75,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -89,7 +89,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -105,7 +105,7 @@ namespace genetic_algorithm::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<size_t> crossover(const GaInfo& ga, const Candidate<size_t>& parent1, const Candidate<size_t>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
 } // namespace genetic_algorithm::crossover::perm
