@@ -25,6 +25,8 @@ namespace genetic_algorithm::crossover
     class Crossover
     {
     public:
+        using GeneType = T;
+
         /**
         * Create a crossover operator that will use @p pc as the crossover rate.
         *
