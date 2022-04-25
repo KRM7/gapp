@@ -15,11 +15,11 @@ namespace genetic_algorithm
         GaInfo(size_t chrom_len);
         GaInfo(size_t population_size, size_t chrom_len);
 
-        GaInfo(const GaInfo&) = default;
-        GaInfo(GaInfo&&) = default;
-        GaInfo& operator=(const GaInfo&) = default;
-        GaInfo& operator=(GaInfo&&) = default;
-        virtual ~GaInfo() = default;
+        GaInfo(const GaInfo&)               = default;
+        GaInfo(GaInfo&&)                    = default;
+        GaInfo& operator=(const GaInfo&)    = default;
+        GaInfo& operator=(GaInfo&&)         = default;
+        virtual ~GaInfo()                   = default;
 
         /**
         * Should be set to false if the fitness function does not change over time. \n
