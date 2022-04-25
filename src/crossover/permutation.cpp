@@ -58,39 +58,11 @@ namespace genetic_algorithm::crossover::perm
             throw std::invalid_argument("The parent chromosomes must be the same length for the Position crossover.");
         }
 
-        Candidate child1{ parent1 }, child2{ parent2 };
+        size_t chrom_len = parent1.chromosome.size();
+        auto idxs = rng::sampleUnique(chrom_len, rng::randomInt<size_t>(1, chrom_len - 1));
 
-        /* Determine directly copied indices (never directly copy 0 or every gene). */
-        std::vector<size_t> idxs = rng::sampleUnique(parent1.chromosome.size(), rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1));
-
-        std::unordered_set<size_t> direct_idxs;
-        for (const auto& idx : idxs) direct_idxs.insert(idx);
-
-        std::unordered_set<size_t> direct1, direct2;
-        for (const auto& idx : idxs)
-        {
-            direct1.insert(parent1.chromosome[idx]);
-            direct2.insert(parent2.chromosome[idx]);
-        }
-
-        std::vector<size_t> cross_idxs1, cross_idxs2;
-        cross_idxs1.reserve(parent1.chromosome.size() - direct_idxs.size());
-        cross_idxs2.reserve(parent1.chromosome.size() - direct_idxs.size());
-        for (size_t i = 0; i < parent1.chromosome.size(); i++)
-        {
-            if (!direct1.contains(parent2.chromosome[i])) cross_idxs1.push_back(i);
-            if (!direct2.contains(parent1.chromosome[i])) cross_idxs2.push_back(i);
-        }
-
-        for (size_t i = 0, first = 0; i < parent1.chromosome.size(); i++)
-        {
-            if (!direct_idxs.contains(i))
-            {
-                child1.chromosome[i] = parent2.chromosome[cross_idxs1[first]];
-                child2.chromosome[i] = parent1.chromosome[cross_idxs2[first]];
-                first++;
-            }
-        }
+        auto child1 = dtl::positionCrossoverImpl(parent1, parent2, idxs);
+        auto child2 = dtl::positionCrossoverImpl(parent2, parent1, idxs);
 
         return { child1, child2 };
     }

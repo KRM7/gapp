@@ -13,11 +13,14 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t n);
 
-    template<typename T>
+    template<Gene T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
 
     template<Gene T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
+
+    template<Gene T>
+    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices);
 
     template<typename T>
     std::vector<std::vector<T>> findCycles(Chromosome<T> chrom1, Chromosome<T> chrom2);
@@ -92,7 +95,7 @@ namespace genetic_algorithm::crossover::dtl
         return { child1, child2 };
     }
 
-    template<typename T>
+    template<Gene T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
         size_t chrom_len = parent1.chromosome.size();
@@ -123,27 +126,54 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
-        /* Genes in the range are copied directly: parent1 -> child */
         std::unordered_set<T> direct;
         for (size_t i = first; i != last; i++)
         {
             direct.insert(parent1.chromosome[i]);
         }
 
-        /* The rest of the genes are copied from the other parent: parent2 -> child */
-        auto cross = detail::find_all_v(parent2.chromosome.begin(), parent2.chromosome.end(),
-        [&direct](const T& gene)
+        Candidate<T> child{ parent1 };
+
+        size_t child_pos = (first == 0) ? last : 0;
+        for (size_t parent_pos = 0; parent_pos < parent2.chromosome.size(); parent_pos++)
         {
-            return !direct.contains(gene);
-        });
+            if (!direct.contains(parent2.chromosome[parent_pos]))
+            {
+                child.chromosome[child_pos] = parent2.chromosome[parent_pos];
+                if (++child_pos == first)
+                {
+                    child_pos = last;
+                }
+            }
+        }
 
-        /* Construct the child: child = direct + cross */
-        Candidate<size_t> child;
-        child.chromosome.reserve(parent1.chromosome.size());
 
-        std::move(cross.begin(), cross.begin() + first, std::back_inserter(child.chromosome));
-        std::copy(parent1.chromosome.begin() + first, parent1.chromosome.begin() + last, std::back_inserter(child.chromosome));
-        std::move(cross.begin() + first, cross.end(), std::back_inserter(child.chromosome));
+        return child;
+    }
+
+    template<Gene T>
+    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
+    {
+        std::unordered_set<T> direct;
+        std::unordered_set<size_t> direct_indices;
+        for (const auto& idx : indices)
+        {
+            direct.insert(parent1.chromosome[idx]);
+            direct_indices.insert(idx);
+        }
+
+        Candidate<T> child{ parent1 };
+
+        size_t child_pos = 0;
+        while (direct_indices.contains(child_pos)) child_pos++;
+        for (size_t parent_pos = 0; parent_pos < parent2.chromosome.size(); parent_pos++)
+        {
+            if (!direct.contains(parent2.chromosome[parent_pos]))
+            {
+                child.chromosome[child_pos] = parent2.chromosome[parent_pos];
+                while (direct_indices.contains(++child_pos));
+            }
+        }
 
         return child;
     }
