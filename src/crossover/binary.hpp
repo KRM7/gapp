@@ -37,15 +37,69 @@ namespace genetic_algorithm::crossover::binary
     };
 
     /**
+    * General N-point crossover operator for the binary encoded algorithms. \n
+    * The result of the crossover is equivalent to performing N consecutive single-point
+    * crossovers on the parents using different crossover points.
+    */
+    class NPoint final : public Crossover<char>
+    {
+    public:
+        /**
+        * Create an N-point crossover operator.
+        * 
+        * @param n The number of crossover points (must be > 0).
+        */
+        explicit NPoint(size_t n);
+
+        /**
+        * Set the number of crossover points used for the operator to @p n. \n
+        * The number of crossover points can't be 0, and all values over the chromosome
+        * length are treated the same (as if n == chrom_len).
+        * 
+        * @param n The number of crossover points.
+        */
+        void num_crossover_points(size_t n);
+
+        /** @returns The number of crossover points set. */
+        [[nodiscard]]
+        size_t num_crossover_points() const noexcept { return n_; };
+
+    private:
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+
+        size_t n_;
+    };
+
+    /**
     * Uniform crossover operator for the binary encoded algorithms. \n
-    * Each pair of genes of the chromosomes are swapped with 0.5 probability between the parents to create the children.
+    * Each pair of genes of the chromosomes are swapped with a set probability between the parents to create the children.
     */
     class Uniform final : public Crossover<char>
     {
     public:
-        using Crossover::Crossover;
+        /**
+        * Create a uniform crossover operator.
+        * 
+        * @param swap_prob The probability of swapping each pair of genes between the 2 parents. Must be in the closed interval [0.0, 1.0].
+        */
+        explicit Uniform(double swap_prob = 0.5);
+
+        /**
+        * Set the probability of swapping each pair of genes between the parents during
+        * the crossovers to @p ps. This value must be in the closed interval [0.0, 1.0].
+        * 
+        * @param swap_prob The probability of swapping each pair of genes between the 2 parents.
+        */
+        void swap_probability(double ps);
+
+        /** @returns The swap probability set. */
+        [[nodiscard]]
+        double swap_probability() const noexcept { return ps_; }
+
     private:
         CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+
+        double ps_;
     };
 
 } // namespace genetic_algorithm::crossover::binary

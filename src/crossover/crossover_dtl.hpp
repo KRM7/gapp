@@ -10,8 +10,8 @@
 
 namespace genetic_algorithm::crossover::dtl
 {
-    template<size_t N, Gene T>
-    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
+    template<Gene T>
+    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t n);
 
     template<typename T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
@@ -51,17 +51,18 @@ namespace genetic_algorithm::crossover::dtl
 
 namespace genetic_algorithm::crossover::dtl
 {
-    template<size_t N, Gene T>
-    requires (N > 0)
-    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
+    template<Gene T>
+    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t n)
     {
+        assert(n);
+
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the n-point crossover.");
         }
 
         size_t chrom_len = parent1.chromosome.size();
-        size_t num_crossover_points = std::min(N, chrom_len);
+        size_t num_crossover_points = std::min(n, chrom_len);
 
         std::vector<size_t> crossover_points = rng::sampleUnique(chrom_len, num_crossover_points);
 

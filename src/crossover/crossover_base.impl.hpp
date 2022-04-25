@@ -13,13 +13,13 @@
 namespace genetic_algorithm::crossover
 {
     template<Gene T>
-    inline Crossover<T>::Crossover(double pc)
+    Crossover<T>::Crossover(double pc)
     {
         crossover_rate(pc);
     }
 
     template<Gene T>
-    inline void Crossover<T>::crossover_rate(double pc)
+    void Crossover<T>::crossover_rate(double pc)
     {
         if (!(0.0 <= pc && pc <= 1.0))
         {
@@ -30,7 +30,7 @@ namespace genetic_algorithm::crossover
     }
 
     template<Gene T>
-    inline CandidatePair<T> Crossover<T>::operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
+    CandidatePair<T> Crossover<T>::operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         assert(0.0 <= pc_ && pc_ <= 1.0);
 
