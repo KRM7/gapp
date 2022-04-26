@@ -54,14 +54,16 @@ namespace genetic_algorithm::crossover::integer
 
     auto Uniform::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        if (parent1.chromosome.size() != parent2.chromosome.size())
+        size_t chrom_len = parent1.chromosome.size();
+
+        if (parent2.chromosome.size() != chrom_len)
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the uniform crossover.");
         }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
-        for (size_t i = 0; i < parent1.chromosome.size(); i++)
+        for (size_t i = 0; i < chrom_len; i++)
         {
             if (rng::randomReal() <= ps_)
             {

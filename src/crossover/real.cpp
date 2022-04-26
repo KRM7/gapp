@@ -48,7 +48,9 @@ namespace genetic_algorithm::crossover::real
 
     CandidatePair<double> Arithmetic::crossover(const GaInfo&, const Candidate<double>& parent1, const Candidate<double>& parent2) const
     {
-        if (parent1.chromosome.size() != parent2.chromosome.size())
+        size_t chrom_len = parent1.chromosome.size();
+
+        if (parent2.chromosome.size() != chrom_len)
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the arithmetic crossover.");
         }
@@ -56,7 +58,7 @@ namespace genetic_algorithm::crossover::real
         Candidate child1{ parent1 }, child2{ parent2 };
 
         double alpha = rng::randomReal();
-        for (size_t i = 0; i < parent1.chromosome.size(); i++)
+        for (size_t i = 0; i < chrom_len; i++)
         {
             child1.chromosome[i] = alpha * parent1.chromosome[i] + (1.0 - alpha) * parent2.chromosome[i];
             child2.chromosome[i] = (1.0 - alpha) * parent1.chromosome[i] + alpha * parent2.chromosome[i];
@@ -71,18 +73,20 @@ namespace genetic_algorithm::crossover::real
         assert(alpha_ >= 0.0);
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
-        if (parent1.chromosome.size() != parent2.chromosome.size())
+        size_t chrom_len = parent1.chromosome.size();
+
+        if (parent2.chromosome.size() != chrom_len)
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the BLXa crossover.");
         }
-        if (parent1.chromosome.size() != bounds.size())
+        if (bounds.size() != chrom_len)
         {
-            throw std::invalid_argument("The chromosome and bounds vector lengths must be the same to perform the BLXa crossover.");
+            throw std::invalid_argument("The chromosome and bounds vector sizes must be the same to perform the BLXa crossover.");
         }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
-        for (size_t i = 0; i < parent1.chromosome.size(); i++)
+        for (size_t i = 0; i < chrom_len; i++)
         {
             /* Calc interval to generate the childrens genes on. */
             auto [range_min, range_max] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
@@ -103,19 +107,21 @@ namespace genetic_algorithm::crossover::real
         assert(eta_ > 0.0);
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
-        if (parent1.chromosome.size() != parent2.chromosome.size())
+        size_t chrom_len = parent1.chromosome.size();
+
+        if (parent2.chromosome.size() != chrom_len)
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the Simulated Binary crossover.");
         }
-        if (parent1.chromosome.size() != bounds.size())
+        if (bounds.size() != chrom_len)
         {
-            throw std::invalid_argument("The chromosome and bounds vector lengths must be the same to perform the Simulated Binary crossover.");
+            throw std::invalid_argument("The chromosome and bounds vector sizes must be the same to perform the simulated binary crossover.");
         }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
         /* Perform crossover. */
-        for (size_t i = 0; i < parent1.chromosome.size(); i++)
+        for (size_t i = 0; i < chrom_len; i++)
         {
             auto [gene_low, gene_high] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
 
@@ -154,28 +160,30 @@ namespace genetic_algorithm::crossover::real
     {
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
-        if (parent1.chromosome.size() != parent2.chromosome.size())
+        size_t chrom_len = parent1.chromosome.size();
+
+        if (parent2.chromosome.size() != chrom_len)
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the Wright crossover.");
         }
-        if (parent1.chromosome.size() != bounds.size())
+        if (bounds.size() != chrom_len)
         {
             throw std::invalid_argument("The chromosome and bounds vector lengths must be the same to perform the Wright crossover.");
         }
 
-        Candidate child1(parent1), child2(parent2);
+        Candidate child1{ parent1 }, child2{ parent2 };
 
         /* p1 is always the better parent. */
-        const Candidate<double>* p1 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? &parent2 : &parent1;
-        const Candidate<double>* p2 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? &parent1 : &parent2;
+        const Candidate<double>& p1 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent2 : parent1;
+        const Candidate<double>& p2 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent1 : parent2;
         /* Get random weights. */
         double w1 = rng::randomReal();
         double w2 = rng::randomReal();
         /* Perform crossover. */
-        for (size_t i = 0; i < p1->chromosome.size(); i++)
+        for (size_t i = 0; i < chrom_len; i++)
         {
-            child1.chromosome[i] = w1 * (p1->chromosome[i] - p2->chromosome[i]) + p1->chromosome[i];
-            child2.chromosome[i] = w2 * (p1->chromosome[i] - p2->chromosome[i]) + p1->chromosome[i];
+            child1.chromosome[i] = w1 * (p1.chromosome[i] - p2.chromosome[i]) + p1.chromosome[i];
+            child2.chromosome[i] = w2 * (p1.chromosome[i] - p2.chromosome[i]) + p1.chromosome[i];
             /* The children's genes might be outside the allowed intervals. */
             child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
             child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
