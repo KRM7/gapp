@@ -181,6 +181,12 @@ namespace genetic_algorithm::detail
         return size_t(pos - cont.begin());
     }
 
+    template<typename T>
+    auto erase_first_v(std::vector<T>& cont, const T& val)
+    {
+        return cont.erase(std::find(cont.begin(), cont.end(), val));
+    }
+
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
