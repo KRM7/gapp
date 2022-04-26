@@ -59,12 +59,13 @@ namespace genetic_algorithm::crossover::dtl
     {
         assert(n);
 
-        if (parent1.chromosome.size() != parent2.chromosome.size())
+        size_t chrom_len = parent1.chromosome.size();
+
+        if (parent2.chromosome.size() != chrom_len)
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the n-point crossover.");
         }
 
-        size_t chrom_len = parent1.chromosome.size();
         size_t num_crossover_points = std::min(n, chrom_len);
 
         std::vector<size_t> crossover_points = rng::sampleUnique(chrom_len, num_crossover_points);
@@ -134,7 +135,7 @@ namespace genetic_algorithm::crossover::dtl
 
         Candidate<T> child{ parent1 };
 
-        size_t child_pos = (first == 0) ? last : 0;
+        size_t child_pos = (first != 0) ? 0 : last;
         for (size_t parent_pos = 0; parent_pos < parent2.chromosome.size(); parent_pos++)
         {
             if (!direct.contains(parent2.chromosome[parent_pos]))
@@ -146,7 +147,6 @@ namespace genetic_algorithm::crossover::dtl
                 }
             }
         }
-
 
         return child;
     }
@@ -199,10 +199,10 @@ namespace genetic_algorithm::crossover::dtl
             }
 
             /* Delete the values in this cycle from chrom1 and chrom2 without changing the order of the remaining genes. */
-            for (size_t i = 0; i < cycle.size(); i++)
+            for (const auto& gene : cycle)
             {
-                chrom1.erase(std::find(chrom1.begin(), chrom1.end(), cycle[i]));
-                chrom2.erase(std::find(chrom2.begin(), chrom2.end(), cycle[i]));
+                detail::erase_first_v(chrom1, gene);
+                detail::erase_first_v(chrom2, gene);
             }
             cycles.push_back(cycle);
         }
@@ -240,12 +240,12 @@ namespace genetic_algorithm::crossover::dtl
             }
             else
             {
-                size_t min_neighbour_count = minNeighbourCount(neighbour_lists, gene);
+                size_t n = minNeighbourCount(neighbour_lists, gene);
 
                 candidate_genes = detail::find_all_v(neighbour_lists[gene].begin(), neighbour_lists[gene].end(),
-                [&neighbour_lists, min_neighbour_count](const T& val)
+                [&neighbour_lists, n](const T& val)
                 {
-                    return neighbour_lists[val].size() == min_neighbour_count;
+                    return neighbour_lists[val].size() == n;
                 });
 
             }
@@ -305,26 +305,24 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-        /* Init the child so the last step of the crossover can be skipped later. */
+
         Candidate child{ parent2 };
 
-        /* Pick a random range [first, last) of genes (never empty or the entire chromosome). */
-        size_t len = rng::randomInt(size_t{ 1 }, parent1.chromosome.size() - 1);
-        size_t first = rng::randomInt(size_t{ 0 }, parent1.chromosome.size() - len);
-        size_t last = first + len;
+        size_t chrom_len = parent1.chromosome.size();
+        size_t range_len = rng::randomInt<size_t>(1, chrom_len - 1);
+        size_t first = rng::randomInt<size_t>(0, chrom_len - range_len);
+        size_t last = first + range_len;
 
-        /* Copy genes in the range from the corresponding parent. */
-        std::unordered_set<T> copied_genes;
+        std::unordered_set<T> direct;
         for (size_t i = first; i < last; i++)
         {
             child.chromosome[i] = parent1.chromosome[i];
-            copied_genes.insert(parent1.chromosome[i]);
+            direct.insert(parent1.chromosome[i]);
         }
 
-        /* Get the rest of the child's genes from the other parent. */
         for (size_t i = first; i < last; i++)
         {
-            if (!copied_genes.contains(parent2.chromosome[i]))
+            if (!direct.contains(parent2.chromosome[i]))
             {
                 size_t cur_pos = i;
                 while (first <= cur_pos && cur_pos < last)
@@ -335,7 +333,6 @@ namespace genetic_algorithm::crossover::dtl
                 child.chromosome[cur_pos] = parent2.chromosome[i];
             }
         }
-        /* Copy any not yet in child positions to the child from the other parent. (Already done at the initialization of the child.) */
 
         return child;
     }
