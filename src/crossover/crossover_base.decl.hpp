@@ -66,7 +66,7 @@ namespace genetic_algorithm::crossover
         /* The actual crossover function. Performs the crossover every time and does nothing else. */
         virtual CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
 
-        double pc_ = 0.8;   /* The probability of performing the crossover operation on the parents. */
+        double pc_;   /* The probability of performing the crossover operation on the parents. */
     };
 
 } // namespace genetic_algorithm::crossover
