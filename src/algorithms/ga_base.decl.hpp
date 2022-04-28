@@ -218,7 +218,7 @@ namespace genetic_algorithm
         *
         * @param f The crossover method for the algorithm.
         */
-        template<mutation::MutationMethod F>
+        template<mutation::MutationMethod<T> F>
         void mutation_method(const F& f);
 
         /**
@@ -226,11 +226,11 @@ namespace genetic_algorithm
         *
         * @param f The crossover method for the algorithm.
         */
-        template<mutation::MutationMethod F>
+        template<mutation::MutationMethod<T> F>
         void mutation_method(std::unique_ptr<F>&& f);
 
         /** @returns The current mutation method used by the algorithm. */
-        template<mutation::MutationMethod F = mutation::Mutation<GeneType>>
+        template<mutation::MutationMethod<T> F = mutation::Mutation<GeneType>>
         F& mutation_method();
 
         /**

@@ -31,6 +31,7 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The fitness function is requires for the GA.");
         }
+
         fitness_function_ = std::move(fitness_function);
     }
 
@@ -42,6 +43,7 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The fitness function is requires for the GA.");
         }
+
         fitness_function_ = std::move(fitness_function);
     }
 
@@ -82,6 +84,7 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The length of each chromosome in the preset pop must be equal to chrom_len.");
         }
+
         initial_population_ = pop;
     }
 
@@ -92,6 +95,7 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The fitness function is requires for the GA.");
         }
+
         fitness_function_ = std::move(f);
 
         num_objectives(getNumObjectives(fitness_function_));
@@ -113,6 +117,7 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The selection method can't be a nullptr.");
         }
+
         selection_ = std::move(f);
         can_continue_ = false;
     }
@@ -125,8 +130,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    template<typename F>
-    requires crossover::CrossoverMethod<F, T>
+    template<crossover::CrossoverMethod<T> F>
     void GA<T, D>::crossover_method(const F& f)
     {
         crossover_ = std::make_unique<F>(f);
@@ -140,6 +144,7 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The crossover method can't be a nullptr.");
         }
+
         crossover_ = std::move(f);
     }
 
@@ -169,25 +174,26 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    template<mutation::MutationMethod F>
+    template<mutation::MutationMethod<T> F>
     void GA<T, D>::mutation_method(const F& f)
     {
         mutation_ = std::make_unique<F>(f);
     }
 
     template<Gene T, typename D>
-    template<mutation::MutationMethod F>
+    template<mutation::MutationMethod<T> F>
     void GA<T, D>::mutation_method(std::unique_ptr<F>&& f)
     {
         if (!f)
         {
             throw std::invalid_argument("The mutation method can't be a nullptr.");
         }
+
         mutation_ = std::move(f);
     }
 
     template<Gene T, typename D>
-    template<mutation::MutationMethod F>
+    template<mutation::MutationMethod<T> F>
     F& GA<T, D>::mutation_method()
     {
         return dynamic_cast<F&>(*mutation_);
@@ -208,6 +214,7 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The stop condition can't be a nullptr.");
         }
+
         stop_condition_ = std::move(f);
     }
 

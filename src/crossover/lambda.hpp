@@ -15,8 +15,7 @@ namespace genetic_algorithm::crossover::dtl
     public:
         using CrossoverFunction_t = std::function<CandidatePair<T>(const GaInfo&, const Candidate<T>&, const Candidate<T>&)>;
 
-        Lambda(double pc, CrossoverFunction_t f);
-        Lambda(double pc, std::function<CandidatePair<T>(const Candidate<T>&, const Candidate<T>&)> f);
+        explicit Lambda(CrossoverFunction_t f);
 
     private:
         CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const override;
@@ -34,28 +33,12 @@ namespace genetic_algorithm::crossover::dtl
 namespace genetic_algorithm::crossover::dtl
 {
     template<Gene T>
-    Lambda<T>::Lambda(double pc, CrossoverFunction_t f)
+    Lambda<T>::Lambda(CrossoverFunction_t f)
+        : Crossover<T>()
     {
-        if (!f)
-        {
-            throw std::invalid_argument("The crossover function can't be a nullptr.");
-        }
+        if (!f) throw std::invalid_argument("The crossover function can't be a nullptr.");
 
         crossover_ = std::move(f);
-    }
-
-    template<Gene T>
-    Lambda<T>::Lambda(double pc, std::function<CandidatePair<T>(const Candidate<T>&, const Candidate<T>&)> f)
-    {
-        if (!f)
-        {
-            throw std::invalid_argument("The crossover function can't be a nullptr.");
-        }
-
-        crossover_ = [f = std::move(f)](const GaInfo&, const Candidate<T>& parent1, const Candidate<T>& parent2)
-        {
-            return f(parent1, parent2);
-        }
     }
 
     template<Gene T>
