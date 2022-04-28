@@ -67,8 +67,7 @@ namespace genetic_algorithm::crossover::integer
         {
             if (rng::randomReal() <= ps_)
             {
-                child1.chromosome[i] = parent2.chromosome[i];
-                child2.chromosome[i] = parent1.chromosome[i];
+                std::swap(child1.chromosome[i], child2.chromosome[i]);
             }
         }
 

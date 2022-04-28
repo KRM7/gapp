@@ -88,8 +88,7 @@ namespace genetic_algorithm::crossover::dtl
         {
             if (crossover_mask[i] % 2)
             {
-                child1.chromosome[i] = parent2.chromosome[i];
-                child2.chromosome[i] = parent1.chromosome[i];
+                std::swap(child1.chromosome[i], child2.chromosome[i]);
             }
         }
 
