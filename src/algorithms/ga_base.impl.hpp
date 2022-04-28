@@ -6,6 +6,7 @@
 #include "ga_base.decl.hpp"
 #include "../selection/selection_base.hpp"
 #include "../crossover/crossover_base.hpp"
+#include "../crossover/lambda.hpp"
 #include "../mutation/mutation_base.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/rng.hpp"
@@ -124,14 +125,15 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    template<crossover::CrossoverMethod F>
+    template<typename F>
+    requires crossover::CrossoverMethod<F, T>
     void GA<T, D>::crossover_method(const F& f)
     {
         crossover_ = std::make_unique<F>(f);
     }
 
     template<Gene T, typename D>
-    template<crossover::CrossoverMethod F>
+    template<crossover::CrossoverMethod<T> F>
     void GA<T, D>::crossover_method(std::unique_ptr<F>&& f)
     {
         if (!f)
@@ -142,10 +144,28 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    template<crossover::CrossoverMethod F>
+    void GA<T, D>::crossover_method(CrossoverFunction f)
+    {
+        crossover_ = std::make_unique<crossover::dtl::Lambda<T>>(std::move(f));
+    }
+
+    template<Gene T, typename D>
+    template<crossover::CrossoverMethod<T> F>
     F& GA<T, D>::crossover_method()
     {
         return dynamic_cast<F&>(*crossover_);
+    }
+
+    template<Gene T, typename D>
+    void GA<T, D>::crossover_rate(double pc)
+    {
+        crossover_->crossover_rate(pc);
+    }
+
+    template<Gene T, typename D>
+    double GA<T, D>::crossover_rate() const noexcept
+    {
+        return crossover_->crossover_rate();
     }
 
     template<Gene T, typename D>
