@@ -26,8 +26,8 @@ namespace genetic_algorithm
         template<typename T>
         concept SelectionMethod = requires
         {
-            std::derived_from<T, Selection>;
-            std::copy_constructible<T>;
+            requires std::derived_from<T, Selection>;
+            requires std::copy_constructible<T>;
         };
     }
     namespace crossover
@@ -35,11 +35,12 @@ namespace genetic_algorithm
         template<Gene T>
         class Crossover;
 
-        template<typename T>
+        template<typename T, typename G>
         concept CrossoverMethod = requires
         {
-            detail::DerivedFromSpecializationOf<T, Crossover>;
-            std::copy_constructible<T>;
+            requires Gene<G>;
+            requires std::derived_from<T, Crossover<G>>;
+            requires std::copy_constructible<T>;
         };
     }
     namespace mutation
@@ -47,11 +48,12 @@ namespace genetic_algorithm
         template<Gene T>
         class Mutation;
 
-        template<typename T>
+        template<typename T, typename G>
         concept MutationMethod = requires
         {
-            detail::DerivedFromSpecializationOf<T, Mutation>;
-            std::copy_constructible<T>;
+            requires Gene<G>;
+            requires std::derived_from<T, Mutation<G>>;
+            requires std::copy_constructible<T>;
         };
     }
     namespace stopping
@@ -61,8 +63,8 @@ namespace genetic_algorithm
         template<typename T>
         concept StopMethod = requires
         {
-            std::derived_from<T, StopCondition>;
-            std::copy_constructible<T>;
+            requires std::derived_from<T, StopCondition>;
+            requires std::copy_constructible<T>;
         };
     }
 
@@ -83,6 +85,7 @@ namespace genetic_algorithm
         using Population = std::vector<Candidate>;      /**< The population type used in the algorithm. */
 
         using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;      /**< The type of the fitness function. */
+        using CrossoverFunction = std::function<CandidatePair(const GaInfo&, const Candidate&, const Candidate&)>;
         using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
         using CallbackFunction = std::function<void(const GA<T, Derived>&)>;
 
@@ -177,7 +180,7 @@ namespace genetic_algorithm
         * 
         * @param f The crossover method for the algorithm.
         */
-        template<crossover::CrossoverMethod F>
+        template<crossover::CrossoverMethod<T> F>
         void crossover_method(const F& f);
 
         /**
@@ -185,12 +188,30 @@ namespace genetic_algorithm
         *
         * @param f The crossover method for the algorithm.
         */
-        template<crossover::CrossoverMethod F>
+        template<crossover::CrossoverMethod<T> F>
         void crossover_method(std::unique_ptr<F>&& f);
 
+        /**
+        * Set the crossover method the algorithm will use to @p f.
+        *
+        * @param f The crossover method for the algorithm.
+        */
+        void crossover_method(CrossoverFunction f);
+
         /** @returns The current crossover method used by the algorithm. */
-        template<crossover::CrossoverMethod F = crossover::Crossover<GeneType>>
+        template<crossover::CrossoverMethod<T> F = crossover::Crossover<GeneType>>
         F& crossover_method();
+
+        /**
+        * Sets the crossover rate used in the algorithm to @p pc.
+        *
+        * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
+        */
+        void crossover_rate(double pc);
+
+        /** @returns The current crossover rate set. */
+        [[nodiscard]] double crossover_rate() const noexcept;
+
 
         /**
         * Set the mutation method the algorithm will use to @p f.
