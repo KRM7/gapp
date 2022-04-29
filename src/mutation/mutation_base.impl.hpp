@@ -30,15 +30,12 @@ namespace genetic_algorithm::mutation
     template<Gene T>
     void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
     {
-        auto old_candidate = candidate;
-
+        auto old_chrom = candidate.chromosome;
         mutate(ga, candidate);
-        candidate.is_evaluated = false;
 
-        if (candidate.chromosome == old_candidate.chromosome)
+        if (candidate.chromosome != old_chrom)
         {
-            candidate.is_evaluated = true;
-            candidate.fitness = std::move(old_candidate.fitness);
+            candidate.is_evaluated = false;
         }
     }
 

@@ -25,7 +25,7 @@ namespace genetic_algorithm::mutation::perm
         range_max_ = rm;
     }
 
-    void Inversion::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
+    void Inversion::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
     {
         size_t chrom_len = candidate.chromosome.size();
 

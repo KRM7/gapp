@@ -2,6 +2,7 @@
 
 #include "integer.hpp"
 #include "mutation_dtl.hpp"
+#include "../algorithms/integer_ga.hpp"
 #include "../utility/rng.hpp"
 #include <algorithm>
 #include <iterator>
@@ -14,12 +15,13 @@ namespace genetic_algorithm::mutation::integer
 {
     void Uniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
+        size_t base = dynamic_cast<const IntegerGA&>(ga).base();
         size_t chrom_len = candidate.chromosome.size();
 
         size_t mutate_cnt = dtl::approxMutateCnt(chrom_len, pm_);
         auto mutated_indices = rng::sampleUnique(chrom_len, mutate_cnt);
 
-        std::vector<GeneType> alleles(chrom_len);
+        std::vector<GeneType> alleles(base);
         std::iota(alleles.begin(), alleles.end(), GeneType{ 0 });
 
         for (const auto& idx : mutated_indices)
