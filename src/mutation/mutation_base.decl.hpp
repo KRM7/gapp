@@ -25,12 +25,14 @@ namespace genetic_algorithm::mutation
     class Mutation
     {
     public:
+        using GeneType = T;
+
         /**
-        * Create a mutation operator that will use @p pm as the mutation rate.
+        * Create a mutation operator.
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Mutation(double pm = 0.01);
+        explicit Mutation(double pm);
 
         Mutation(const Mutation&)               = default;
         Mutation(Mutation&&)                    = default;
@@ -39,7 +41,7 @@ namespace genetic_algorithm::mutation
         virtual ~Mutation()                     = default;
 
         /**
-        * Sets the mutation rate used for the operator to @p pm.
+        * Set the mutation rate used for the operator to @p pm.
         * 
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
@@ -59,10 +61,10 @@ namespace genetic_algorithm::mutation
 
     protected:
 
-        /* The actual mutation function. Performs the mutation using the set probability and does nothing else. */
+        /* The actual mutation function. Performs the mutation using the set probability. */
         virtual void mutate(const GaInfo& ga, Candidate<T>& candidate) const = 0;
 
-        double pm_ = 0.01;      /* The mutation rate used for the mutation operator. */
+        double pm_;
     };
 
 } // namespace genetic_algorithm::mutation

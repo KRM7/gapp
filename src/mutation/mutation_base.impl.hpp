@@ -5,20 +5,19 @@
 
 #include "mutation_base.decl.hpp"
 #include "../algorithms/ga_base.hpp"
-
 #include <algorithm>
 #include <stdexcept>
 
 namespace genetic_algorithm::mutation
 {
     template<Gene T>
-    inline Mutation<T>::Mutation(double pm)
+    Mutation<T>::Mutation(double pm)
     {
         mutation_rate(pm);
     }
 
     template<Gene T>
-    inline void Mutation<T>::mutation_rate(double pm)
+    void Mutation<T>::mutation_rate(double pm)
     {
         if (!(0.0 <= pm && pm <= 1.0))
         {
@@ -29,15 +28,17 @@ namespace genetic_algorithm::mutation
     }
 
     template<Gene T>
-    inline void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
+    void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
     {
-        auto old_chrom = candidate.chromosome;
+        auto old_candidate = candidate;
 
         mutate(ga, candidate);
+        candidate.is_evaluated = false;
 
-        if (candidate.chromosome != old_chrom)
+        if (candidate.chromosome == old_candidate.chromosome)
         {
-            candidate.is_evaluated = false;
+            candidate.is_evaluated = true;
+            candidate.fitness = std::move(old_candidate.fitness);
         }
     }
 
