@@ -10,14 +10,14 @@ namespace genetic_algorithm::mutation::binary
 {
     /**
     * Standard flip mutation for the binary encoded genetic algorithm.
-    * Each gene of the chromosome is flipped with the specified mutation probability.
+    * Each gene of the chromosome is flipped (0 -> 1, or 1 -> 0) with the specified mutation probability.
     */
     class Flip final : public Mutation<char>
     {
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<char>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
     };
 
 } // namespace genetic_algorithm::mutation::binary
