@@ -20,7 +20,7 @@ namespace genetic_algorithm::mutation::integer
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<size_t>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
     };
 
 } // namespace genetic_algorithm::mutation::integer
