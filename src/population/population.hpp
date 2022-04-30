@@ -21,6 +21,17 @@ namespace genetic_algorithm
         using FitnessVector = std::vector<double>;
         using FitnessMatrix = std::vector<std::vector<double>>;
 
+        /* Get the fitness vector of the population (single-objective). */
+        template<Gene T>
+        FitnessVector toFitnessVector(const Population<T>& pop);
+
+        /* Get the fitness matrix of the population (multi-objective). */
+        template<Gene T>
+        FitnessMatrix toFitnessMatrix(const Population<T>& pop);
+
+        /* Get the fitness vector of the population along the first objective axis from the fitness matrix. */
+        FitnessVector toFitnessVector(const FitnessMatrix& pop);
+
         /* Return the minimum fitness value of the population (for single-objective problems). */
         double populationFitnessMin(const FitnessVector& pop);
 
@@ -83,17 +94,6 @@ namespace genetic_algorithm
         template<Gene T>
         Candidates<T> findParetoFrontLin(const Population<T>& pop);
 
-        /* Get the fitness vector of the population (single-objective). */
-        template<Gene T>
-        FitnessVector toFitnessVector(const Population<T>& pop);
-
-        /* Get the fitness matrix of the population (multi-objective). */
-        template<Gene T>
-        FitnessMatrix toFitnessMatrix(const Population<T>& pop);
-
-        /* Get the fitness vector of the population along the first objective axis from the fitness matrix. */
-        FitnessVector toFitnessVector(const FitnessMatrix& pop);
-
     } // namespace genetic_algorithm::detail
 
 } // namespace genetic_algorithm
@@ -110,6 +110,20 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm::detail
 {
+    template<Gene T>
+    FitnessVector toFitnessVector(const Population<T>& pop)
+    {
+        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
+
+        return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness[0]; });
+    }
+
+    template<Gene T>
+    FitnessMatrix toFitnessMatrix(const Population<T>& pop)
+    {
+        return detail::map(pop, [](const Candidate<T>& sol) { return std::cref(sol.fitness); });
+    }
+
     template<Gene T>
     FitnessVector populationFitnessMin(const Population<T>& pop)
     {
@@ -258,20 +272,6 @@ namespace genetic_algorithm::detail
         }
 
         return optimal_sols;
-    }
-
-    template<Gene T>
-    std::vector<double> toFitnessVector(const Population<T>& pop)
-    {
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
-
-        return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness[0]; });
-    }
-
-    template<Gene T>
-    std::vector<std::vector<double>> toFitnessMatrix(const Population<T>& pop)
-    {
-        return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness; });
     }
 
 } // namespace genetic_algorithm::detail
