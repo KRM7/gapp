@@ -156,13 +156,6 @@ namespace genetic_algorithm::detail
         return std::find(first, last, val) != last;
     }
 
-    template<std::input_iterator Iter, typename Pred>
-    requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
-    bool contains(Iter first, Iter last, Pred&& pred)
-    {
-        return std::find_if(first, last, std::forward<Pred>(pred)) != last;
-    }
-
     template<typename T>
     size_t index_of(const std::vector<T>& cont, const T& val)
     {
