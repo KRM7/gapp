@@ -12,11 +12,11 @@ namespace genetic_algorithm
     class GaInfo;
 }
 
-/** Selection methods used in the algorithms. */
+/** Selection methods for the genetic algorithms. */
 namespace genetic_algorithm::selection
 {
     /**
-    * Base class used for all of the selection methods.
+    * Base class used for all of the selection methods. \n
     * The selection methods define most parts of a genetic algorithm (eg. single-objective or multi-objective,
     * how to create the next population etc.), and not just the method for selecting a candidate from the population.
     */
@@ -27,16 +27,17 @@ namespace genetic_algorithm::selection
         using FitnessMatrix = detail::FitnessMatrix;
 
         /** 
-        * Initialize the selection method if needed.
-        * Called exactly once at start of the genetic algorithm after the initial population
-        * has already been created.
+        * Initialize the selection method if needed. \n
+        * Will be called exactly once at start of the genetic algorithm after the initial population
+        * has already been created. \n
+        * The default implementation of this function does nothing.
         * 
         * @param ga The genetic algorithm that uses the selection method.
         */
         virtual void init(const GaInfo& ga);
 
         /**
-        * Prepare the selection method for the selections beforehand if neccesary. 
+        * Prepare the selection method for the selections beforehand if neccesary. \n
         * Called exactly once every generation before the selections take place.
         * 
         * @param ga The genetic algorithm that uses the selection method.
@@ -45,19 +46,19 @@ namespace genetic_algorithm::selection
         virtual void prepare(const GaInfo& ga, const FitnessMatrix& population_fitness_matrix) = 0;
 
         /**
-        * Select a single Candidate from the population.
+        * Select a single Candidate from the population. \n
         * Called (population_size) number of times in every generation.
         * 
         * @param ga The genetic algorithm that uses the selection method.
-        * @param population_fitness_matrix The fitness matrix of the current population of the algorithm.
-        * @returns The index of the selected Candidate.
+        * @param population_fitness_matrix The fitness matrix of the current population.
+        * @returns The index of the selected Candidate in the fitness matrix.
         */
         virtual size_t select(const GaInfo& ga, const FitnessMatrix& population_fitness_matrix) = 0;
 
         /**
         * Select the Candidates of the next generation (next population) from the Candidates of the
-        * current population and the child population generated from the current population.
-        * Called once at the end of each generation.
+        * current population and the child population generated from the current population. \n
+        * Called once at the end of each generation. \n
         * 
         * The default implementation simply chooses the best (population_size) number of candidates
         * from the combined current and child populations (assuming fitness maximization).

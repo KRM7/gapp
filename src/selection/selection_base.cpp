@@ -20,7 +20,7 @@ namespace genetic_algorithm::selection
         detail::partial_argsort(fitness_matrix.begin(), fitness_matrix.begin() + ga.population_size(), fitness_matrix.end(),
         [](const FitnessVector& lhs, const FitnessVector& rhs)
         {
-            return detail::paretoCompareLess(rhs, lhs);
+            return detail::paretoCompareLess(rhs, lhs); // descending
         });
         selected_indices.resize(ga.population_size());
 
