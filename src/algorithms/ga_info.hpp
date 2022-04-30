@@ -3,6 +3,7 @@
 #ifndef GA_GA_INFO_HPP
 #define GA_GA_INFO_HPP
 
+#include "../population/population.hpp"
 #include <vector>
 #include <atomic>
 #include <cstddef>
@@ -20,6 +21,8 @@ namespace genetic_algorithm
         GaInfo& operator=(const GaInfo&)    = default;
         GaInfo& operator=(GaInfo&&)         = default;
         virtual ~GaInfo()                   = default;
+
+        using FitnessMatrix = detail::FitnessMatrix;
 
         /**
         * Should be set to false if the fitness function does not change over time. \n
@@ -64,7 +67,7 @@ namespace genetic_algorithm
 
         /** @returns The fitness matrix of the population. */
         [[nodiscard]]
-        virtual std::vector<std::vector<double>> fitness_matrix() const = 0;
+        virtual FitnessMatrix fitness_matrix() const = 0;
 
         /** @returns The number of fitness evaluations performed so far by the algorithm. */
         [[nodiscard]] size_t num_fitness_evals() const noexcept;
