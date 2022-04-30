@@ -41,7 +41,7 @@ namespace genetic_algorithm::mutation::perm
     private:
         void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
 
-        double range_max_ = 0.75;
+        double range_max_;
     };
 
     /**
@@ -103,7 +103,7 @@ namespace genetic_algorithm::mutation::perm
     private:
         void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
 
-        double range_max_ = 0.5;
+        double range_max_;
     };
 
     /**
@@ -140,7 +140,7 @@ namespace genetic_algorithm::mutation::perm
     private:
         void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
 
-        double range_max_ = 0.75;
+        double range_max_;
     };
 
 } // namespace genetic_algorithm::mutation::perm
