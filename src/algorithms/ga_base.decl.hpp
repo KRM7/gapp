@@ -135,7 +135,7 @@ namespace genetic_algorithm
         [[nodiscard]] const Population& population() const;
 
         /** @returns The fitness matrix of the current population of the algorithm. */
-        [[nodiscard]] std::vector<std::vector<double>> fitness_matrix() const override final;
+        [[nodiscard]] FitnessMatrix fitness_matrix() const override final;
 
         /**
         * Set the initial population to be used in the algorithm to @p pop instead of randomly generating it. \n
