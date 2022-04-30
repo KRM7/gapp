@@ -29,25 +29,20 @@ namespace genetic_algorithm::crossover::dtl
 /* IMPLEMENTATION */
 
 #include <utility>
-#include <stdexcept>
 #include <cassert>
 
 namespace genetic_algorithm::crossover::dtl
 {
     template<Gene T>
     Lambda<T>::Lambda(CrossoverFunction f)
-        : Crossover<T>()
+        : Crossover<T>(), crossover_(std::move(f))
     {
-        if (!f) throw std::invalid_argument("The crossover function can't be a nullptr.");
-
-        crossover_ = std::move(f);
     }
 
     template<Gene T>
     CandidatePair<T> Lambda<T>::crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         assert(crossover_);
-
         return crossover_(ga, parent1, parent2);
     }
 

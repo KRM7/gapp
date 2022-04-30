@@ -152,6 +152,11 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::crossover_method(CrossoverFunction f)
     {
+        if (!f)
+        {
+            throw std::invalid_argument("The crossover function can't be empty.");
+        }
+
         crossover_ = std::make_unique<crossover::dtl::Lambda<T>>(std::move(f));
     }
 
@@ -198,7 +203,7 @@ namespace genetic_algorithm
     {
         if (!f)
         {
-            throw std::invalid_argument("Thhe mutation method can't be a nullptr.");
+            throw std::invalid_argument("Thhe mutation method can't be empty.");
         }
 
         mutation_ = std::make_unique<mutation::dtl::Lambda<T>>(std::move(f));
@@ -240,6 +245,17 @@ namespace genetic_algorithm
         }
 
         stop_condition_ = std::move(f);
+    }
+
+    template<Gene T, typename D>
+    void GA<T, D>::stop_condition(StopConditionFunction f)
+    {
+        if (!f)
+        {
+            throw std::invalid_argument("The stop condition can't be empty.");
+        }
+
+        stop_condition_ = std::make_unique<stopping::dtl::Lambda>(std::move(f));
     }
 
     template<Gene T, typename D>

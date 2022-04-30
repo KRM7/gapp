@@ -29,18 +29,14 @@ namespace genetic_algorithm::mutation::dtl
 /* IMPLEMENTATION */
 
 #include <utility>
-#include <stdexcept>
 #include <cassert>
 
 namespace genetic_algorithm::mutation::dtl
 {
     template<Gene T>
     Lambda<T>::Lambda(MutationFunction f)
-        : Mutation<T>(0.01)
+        : Mutation<T>(0.01), mutate_(std::move(f))
     {
-        if (!f) throw std::invalid_argument("The crossover function can't be a nullptr.");
-
-        mutate_ = std::move(f);
     }
 
     template<Gene T>

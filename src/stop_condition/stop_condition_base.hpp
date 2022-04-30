@@ -4,6 +4,7 @@
 #define GA_STOP_CONDITION_BASE_HPP
 
 #include "../population/candidate.hpp"
+#include <functional>
 
 namespace genetic_algorithm
 {
@@ -33,5 +34,22 @@ namespace genetic_algorithm::stopping
     };
 
 } // namespace genetic_algorithm::stopping
+
+
+namespace genetic_algorithm::stopping::dtl
+{
+    class Lambda final : public StopCondition
+    {
+    public:
+        using StopConditionFunction = std::function<bool(const GaInfo&)>;
+
+        Lambda(StopConditionFunction f);
+
+        bool operator()(const GaInfo& ga) override;
+    private:
+        StopConditionFunction f_;
+    };
+
+} // namespace genetic_algorithm::stopping::dtl
 
 #endif

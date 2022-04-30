@@ -180,23 +180,3 @@ namespace genetic_algorithm::stopping
     }
 
 } // namespace genetic_algorithm::stopping
-
-namespace genetic_algorithm::stopping::dtl
-{
-    Lambda::Lambda(StopConditionFunction f)
-    {
-        if (!f)
-        {
-            throw std::invalid_argument("The stop condition function can't be a nullptr.");
-        }
-
-        f_ = std::move(f);
-    }
-
-    bool Lambda::operator()(const GaInfo& ga)
-    {
-        assert(f_);
-        return f_(ga);
-    };
-
-} // namespace genetic_algorithm::stopping::dtl

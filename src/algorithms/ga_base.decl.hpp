@@ -87,6 +87,7 @@ namespace genetic_algorithm
         using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;      /**< The type of the fitness function. */
         using CrossoverFunction = std::function<CandidatePair(const GaInfo&, const Candidate&, const Candidate&)>;
         using MutationFunction = std::function<void(const GaInfo&, Candidate&)>;
+        using StopConditionFunction = std::function<bool(const GaInfo&)>;
         using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
         using CallbackFunction = std::function<void(const GA<T, Derived>&)>;
 
@@ -269,6 +270,15 @@ namespace genetic_algorithm
         */
         template<stopping::StopMethod F>
         void stop_condition(std::unique_ptr<F>&& f);
+
+        /**
+        * Set the early-stop condition used by the algorithm to @p f. \n
+        * The algorithm will always stop when reaching thhe maximum generations set, regardless
+        * of this early-stop condition.
+        * 
+        * @param f The function used to check for the early-stop condition.
+        */
+        void stop_condition(StopConditionFunction f);
 
         /** @returns The current stop condition used by the algorithm. */
         template<stopping::StopMethod F = stopping::StopCondition>
