@@ -10,13 +10,13 @@ namespace genetic_algorithm
     class GaInfo;
 }
 
-/** Early stop conditions used in the algorithms. */
+/** Stop conditions that can be used in the algorithms. */
 namespace genetic_algorithm::stopping
 {
     /**
-    * Base class used for all of the stop conditions.
-    * The stop condition will be evaluated only once per generation and
-    * should return true if the algorithm should be stopped.
+    * Base class used for all of the stop conditions. \n
+    * The stop condition will be evaluated only once per generation at the end of the generation,
+    * and should return true if the algorithm should be stopped.
     */
     class StopCondition
     {

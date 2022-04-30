@@ -25,8 +25,8 @@ namespace genetic_algorithm::stopping
         return (ga.num_fitness_evals() >= max_fitness_evals_);
     }
 
-    FitnessValue::FitnessValue(const std::vector<double>& fitness_threshold) :
-        StopCondition()
+    FitnessValue::FitnessValue(const std::vector<double>& fitness_threshold)
+        : StopCondition()
     {
         this->fitness_threshold(fitness_threshold);
     }
@@ -51,9 +51,9 @@ namespace genetic_algorithm::stopping
         auto fitness_matrix = ga.fitness_matrix();
 
         return std::any_of(fitness_matrix.begin(), fitness_matrix.end(),
-        [this](const std::vector<double>& sol)
+        [this](const auto& fvec)
         {
-            return detail::paretoCompareLess(fitness_threshold_, sol);
+            return detail::paretoCompareLess(fitness_threshold_, fvec);
         });
     }
 
