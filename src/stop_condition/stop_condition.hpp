@@ -7,6 +7,7 @@
 #include "../population/candidate.hpp"
 #include <vector>
 #include <cstddef>
+#include <functional>
 
 /* Early stop conditions for the genetic algorithms. */
 namespace genetic_algorithm::stopping
@@ -201,6 +202,24 @@ namespace genetic_algorithm::stopping
         bool operator()(const GaInfo& ga) override;
     };
 
-}
+} // namespace genetic_algorithm::stopping
+
+
+namespace genetic_algorithm::stopping::dtl
+{
+    class Lambda final : StopCondition
+    {
+    public:
+        using StopConditionFunction = std::function<bool(const GaInfo&)>;
+
+        Lambda(StopConditionFunction f);
+
+        bool operator()(const GaInfo& ga) override;
+
+    private:
+        StopConditionFunction f_;
+    };
+
+} // namespace genetic_algorithm::stopping::dtl
 
 #endif // !GA_STOP_CONDITION_DECL_HPP
