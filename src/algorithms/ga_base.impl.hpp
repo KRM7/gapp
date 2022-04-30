@@ -73,7 +73,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    std::vector<std::vector<double>> GA<T, D>::fitness_matrix() const
+    auto GA<T, D>::fitness_matrix() const -> FitnessMatrix
     {
         return detail::toFitnessMatrix(population_);
     }
