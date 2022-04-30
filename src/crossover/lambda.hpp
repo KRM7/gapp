@@ -26,6 +26,8 @@ namespace genetic_algorithm::crossover::dtl
 } // namespace genetic_algorithm::crossover::dtl
 
 
+/* IMPLEMENTATION */
+
 #include <utility>
 #include <stdexcept>
 #include <cassert>
