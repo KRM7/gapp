@@ -3,19 +3,15 @@
 #include "binary.hpp"
 #include "mutation_dtl.hpp"
 #include "../utility/rng.hpp"
-#include <vector>
 #include <cstddef>
-#include <algorithm>
-#include <cmath>
-#include <random>
 
 namespace genetic_algorithm::mutation::binary
 {
     void Flip::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
     {
         size_t flip_cnt = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
-
         auto flipped_idxs = rng::sampleUnique(candidate.chromosome.size(), flip_cnt);
+
         for (const auto& idx : flipped_idxs)
         {
             candidate.chromosome[idx] = !bool(candidate.chromosome[idx]);
