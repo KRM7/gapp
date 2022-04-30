@@ -4,7 +4,6 @@
 #define GA_MUTATION_INTEGER_HPP
 
 #include "mutation_base.hpp"
-
 #include <cstddef>
 
 /** Predefined mutation operators for the integer encoded genetic algorithm. */
