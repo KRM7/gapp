@@ -23,7 +23,7 @@ namespace genetic_algorithm::crossover::real
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -48,23 +48,23 @@ namespace genetic_algorithm::crossover::real
         * @param pc The crossover probability used.
         * @param alpha The alpha parameter of the BLX-alpha crossover. Must be >= 0.0.
         */
-        explicit BLXa(double pc = 0.8, double alpha = 0.5);
+        explicit BLXa(double pc = 0.8, GeneType alpha = 0.5);
 
         /**
         * Sets the alpha parameter for the crossover.
         *
         * @param alpha The alpha parameter of the BLX-alpha crossover. Must be >= 0.0.
         */
-        void alpha(double alpha);
+        void alpha(GeneType alpha);
 
         /** @returns The alpha parameter currently set for this operator. */
         [[nodiscard]]
-        double alpha() const noexcept { return alpha_; }
+        GeneType alpha() const noexcept { return alpha_; }
 
     private:
-        CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
-        double alpha_ = 0.5;        /* The range parameter (alpha) of the BLX-alpha crossover. */
+        GeneType alpha_;    /* The range parameter (alpha) of the BLX-alpha crossover. */
     };
 
     /**
@@ -85,23 +85,23 @@ namespace genetic_algorithm::crossover::real
         * @param pc The crossover probability used.
         * @param eta The shape parameter of the simulated binary crossover.
         */
-        explicit SimulatedBinary(double pc = 0.8, double eta = 4.0);
+        explicit SimulatedBinary(double pc = 0.8, GeneType eta = 4.0);
 
         /**
         * Sets the shape parameter (eta) of the simulated binary crossover.
         * 
         * @param eta The eta parameter of the crossover. Must be >=0.0.
         */
-        void eta(double eta);
+        void eta(GeneType eta);
 
         /** @returns The eta parameter currently set for this operator. */
         [[nodiscard]]
-        double eta() const noexcept { return eta_; }
+        GeneType eta() const noexcept { return eta_; }
 
     private:
-        CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
-        double eta_ = 4.0;          /* The shape parameter (eta) for the distribution of the simulated binary crossover. */
+        GeneType eta_;  /* The shape parameter (eta) for the distribution of the simulated binary crossover. */
     };
 
     /**
@@ -116,7 +116,7 @@ namespace genetic_algorithm::crossover::real
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<double> crossover(const GaInfo& ga, const Candidate<double>& parent1, const Candidate<double>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
 
