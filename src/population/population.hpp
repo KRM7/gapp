@@ -121,7 +121,7 @@ namespace genetic_algorithm::detail
     template<Gene T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop)
     {
-        return detail::map(pop, [](const Candidate<T>& sol) { return std::cref(sol.fitness); });
+        return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness; });
     }
 
     template<Gene T>

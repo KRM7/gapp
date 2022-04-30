@@ -29,7 +29,8 @@ namespace genetic_algorithm::detail
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
-        FitnessVector res = std::reduce(pop.begin() + 1, pop.end(), FitnessVector(pop.front().get()),
+
+        FitnessVector res = std::reduce(pop.begin() + 1, pop.end(), FitnessVector(pop.front()),
         [](const FitnessVector& lhs, const FitnessVector& rhs)
         {
             return detail::map(lhs, rhs, [](double l, double r) { return std::min(l, r); });
@@ -60,7 +61,7 @@ namespace genetic_algorithm::detail
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
 
-        FitnessVector res = std::reduce(pop.begin() + 1, pop.end(), FitnessVector(pop.front().get()),
+        FitnessVector res = std::reduce(pop.begin() + 1, pop.end(), FitnessVector(pop.front()),
         [](const FitnessVector& lhs, const FitnessVector& rhs)
         {
             return detail::map(lhs, rhs, [](double l, double r) { return std::max(l, r); });
@@ -90,7 +91,7 @@ namespace genetic_algorithm::detail
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
 
-        FitnessVector res = std::accumulate(pop.begin(), pop.end(), FitnessVector(pop.front().get().size(), 0.0),
+        FitnessVector res = std::accumulate(pop.begin(), pop.end(), FitnessVector(pop.front().size(), 0.0),
         [n = pop.size()](FitnessVector mean, const FitnessVector& sol)
         {
             for (size_t i = 0; i < mean.size(); i++)
@@ -101,7 +102,7 @@ namespace genetic_algorithm::detail
             return mean;
         });
 
-        FitnessVector fitness_mean(pop[0].get().size(), 0.0);
+        FitnessVector fitness_mean(pop[0].size(), 0.0);
         for (const auto& sol : pop)
         {
             for (size_t i = 0; i < fitness_mean.size(); i++)
