@@ -11,7 +11,7 @@
 
 namespace genetic_algorithm::mutation::real
 {
-    void Uniform::mutate(const GaInfo& ga, Candidate<double>& candidate) const
+    void Uniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
@@ -29,15 +29,15 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    NonUniform::NonUniform(double pm, double beta) :
+    NonUniform::NonUniform(double pm, GeneType beta) :
         Mutation(pm)
     {
         this->beta(beta);
     }
 
-    void NonUniform::beta(double beta)
+    void NonUniform::beta(GeneType beta)
     {
-        if (!(0.0 <= beta && beta <= std::numeric_limits<double>::max()))
+        if (!(0.0 <= beta && beta <= std::numeric_limits<GeneType>::max()))
         {
             throw std::invalid_argument("The beta parameter must be a nonnegative, finite value.");
         }
@@ -45,7 +45,7 @@ namespace genetic_algorithm::mutation::real
         beta_ = beta;
     }
 
-    void NonUniform::mutate(const GaInfo& ga, Candidate<double>& candidate) const
+    void NonUniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
@@ -58,8 +58,8 @@ namespace genetic_algorithm::mutation::real
         {
             if (rng::randomReal() < pm_)
             {
-                double rand = rng::randomReal();
-                double exponent = std::pow(1.0 - double(ga.generation_cntr()) / ga.max_gen(), beta_);
+                GeneType rand = rng::randomReal<GeneType>();
+                GeneType exponent = std::pow(1.0 - GeneType(ga.generation_cntr()) / ga.max_gen(), beta_);
 
                 if (rng::randomBool())
                 {
@@ -69,21 +69,20 @@ namespace genetic_algorithm::mutation::real
                 {
                     candidate.chromosome[i] -= (candidate.chromosome[i] - bounds[i].first) * (1.0 - std::pow(rand, exponent));
                 }
-                /* The mutated gene might be outside the allowed range. */
                 candidate.chromosome[i] = std::clamp(candidate.chromosome[i], bounds[i].first, bounds[i].second);
             }
         }
     }
 
-    Gauss::Gauss(double pm, double sigma) :
+    Gauss::Gauss(double pm, GeneType sigma) :
         Mutation(pm)
     {
         this->sigma(sigma);
     }
 
-    void Gauss::sigma(double sigma)
+    void Gauss::sigma(GeneType sigma)
     {
-        if (!(0.0 < sigma && sigma <= std::numeric_limits<double>::max()))
+        if (!(0.0 < sigma && sigma <= std::numeric_limits<GeneType>::max()))
         {
             throw std::invalid_argument("Sigma must be a positive, finite value.");
         }
@@ -91,7 +90,7 @@ namespace genetic_algorithm::mutation::real
         sigma_ = sigma;
     }
 
-    void Gauss::mutate(const GaInfo& ga, Candidate<double>& candidate) const
+    void Gauss::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
@@ -104,31 +103,32 @@ namespace genetic_algorithm::mutation::real
         {
             if (rng::randomReal() <= pm_)
             {
-                double SD = (bounds[i].second - bounds[i].first) / sigma_;
+                GeneType SD = (bounds[i].second - bounds[i].first) / sigma_;
+                GeneType new_gene = candidate.chromosome[i];
 
-                double delta = 0.0;
                 for (size_t j = 0; j < NMAX_RESAMPLE; j++)
                 {
-                    delta = rng::randomNormal(0.0, SD);
-                    if (bounds[i].first <= (candidate.chromosome[i] + delta) && (candidate.chromosome[i] + delta) <= bounds[i].second)
+                    new_gene = candidate.chromosome[i] + rng::randomNormal<GeneType>(0.0, SD);
+
+                    if (bounds[i].first <= new_gene && new_gene <= bounds[i].second)
                     {
                         break;
                     }
                 }
-                candidate.chromosome[i] = std::clamp(candidate.chromosome[i] + delta, bounds[i].first, bounds[i].second);
+                candidate.chromosome[i] = std::clamp(new_gene, bounds[i].first, bounds[i].second);
             }
         }
     }
 
-    Polynomial::Polynomial(double pm, double eta)
+    Polynomial::Polynomial(double pm, GeneType eta)
         : Mutation(pm)
     {
         this->eta(eta);
     }
 
-    void Polynomial::eta(double eta)
+    void Polynomial::eta(GeneType eta)
     {
-        if (!(0.0 <= eta && eta <= std::numeric_limits<double>::max()))
+        if (!(0.0 <= eta && eta <= std::numeric_limits<GeneType>::max()))
         {
             throw std::invalid_argument("Eta must be a nonnegative, finite value.");
         }
@@ -136,7 +136,7 @@ namespace genetic_algorithm::mutation::real
         eta_ = eta;
     }
 
-    void Polynomial::mutate(const GaInfo& ga, Candidate<double>& candidate) const
+    void Polynomial::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
@@ -149,24 +149,23 @@ namespace genetic_algorithm::mutation::real
         {
             if (rng::randomReal() < pm_)
             {
-                double alpha = rng::randomReal();
+                GeneType alpha = rng::randomReal();
                 if (alpha <= 0.5)
                 {
-                    double delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
+                    GeneType delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
                     candidate.chromosome[i] += delta * (candidate.chromosome[i] - bounds[i].first);
                 }
                 else
                 {
-                    double delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
+                    GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
                     candidate.chromosome[i] += delta * (bounds[i].second - candidate.chromosome[i]);
                 }
-                /* The mutated gene might be outside the allowed range. */
                 candidate.chromosome[i] = std::clamp(candidate.chromosome[i], bounds[i].first, bounds[i].second);
             }
         }
     }
 
-    void Boundary::mutate(const GaInfo& ga, Candidate<double>& candidate) const
+    void Boundary::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 

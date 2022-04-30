@@ -11,7 +11,7 @@
 namespace genetic_algorithm::mutation::real
 {
     /**
-    * Uniform mutation operator for the real encoded genetic algorithm (RCGA).
+    * Uniform mutation operator for the real encoded genetic algorithm (RCGA). \n
     * Each gene of the candidate is mutated with pm probability, and the values
     * of the mutated genes are randomly generated from a uniform distribution within the gene bounds.
     */
@@ -20,18 +20,18 @@ namespace genetic_algorithm::mutation::real
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
     };
 
     /**
-    * Michalewicz's non-uniform mutation operator for the real encoded genetic algorithm (RCGA).
+    * Michalewicz's non-uniform mutation operator for the real encoded genetic algorithm (RCGA). \n
     * Each gene of the candidate is mutated with pm probability, and the values
     * of the mutated genes are randomly generated from a non-uniform distribution that changes over
     * time. In the early generations the distribution is close to uniform, while in the later generations
-    * the mutated values tend to be closer to the original values.
+    * the mutated values tend to be closer to the original values. \n
     * 
     * The operator has one parameter, beta, which controls how fast the shape of the probability distribution
-    * and how fast it changes over the generations. The value of this parameter must be >= 0.0.
+    * and how fast it changes over the generations. The value of this parameter must be >= 0.0. \n
     * For smaller values the distribution is more uniform and changes less over time (for beta = 0,
     * the distribution is uniform and doesn't change), while larger values will lead to faster change and
     * mutated genes closer to the original ones.
@@ -45,33 +45,33 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param beta The beta parameter of the non-uniform crossover. Must be >= 0.0.
         */
-        explicit NonUniform(double pm = 0.01, double beta = 2.0);
+        explicit NonUniform(double pm, GeneType beta = 2.0);
         
         /**
         * Sets the beta parameter for the crossover.
         * 
         * @param beta The beta parameter of the non-uniform crossover. Must be >= 0.0.
         */
-        void beta(double beta);
+        void beta(GeneType beta);
 
         /** @returns The beta parameter currently set for this operator. */
         [[nodiscard]]
-        double beta() const noexcept { return beta_; }
+        GeneType beta() const noexcept { return beta_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
 
-        double beta_ = 2.0;
+        GeneType beta_;
     };
 
     /**
-    * Gauss mutation operator for the real encoded genetic algorithm (RCGA).
+    * Gauss mutation operator for the real encoded genetic algorithm (RCGA). \n
     * Each gene of the candidate is mutated with pm probability, and the values of the mutated genes
-    * are randomly generated from a normal distribution around the current value of the gene.
+    * are randomly generated from a normal distribution around the current value of the gene. \n
     * 
     * The operator has one parameter, sigma, which controls the standard deviation of the normal distribution
-    * used (but isn't the actual standard deviation). The SD of the normal distribution used for a gene is:
-    *   SD = (upper_bound - lower_bound) / sigma
+    * used (but isn't the actual standard deviation). The SD of the normal distribution used for a gene is: \n
+    *   SD = (upper_bound - lower_bound) / sigma \n
     * Larger sigma values will lead to mutated gene values closer to their original values.
     */
     class Gauss final : public Mutation<double>
@@ -83,30 +83,30 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param sigma The sigma parameter of the gauss crossover. Must be > 0.0.
         */
-        explicit Gauss(double pm = 0.01, double sigma = 6.0);
+        explicit Gauss(double pm, GeneType sigma = 6.0);
 
         /**
         * Sets the sigma parameter for the crossover.
         * 
         * @param sigma The sigma parameter of the gauss crossover. Must be > 0.0.
         */
-        void sigma(double sigma);
+        void sigma(GeneType sigma);
 
         /** @returns The sigma parameter currently set for this operator. */
         [[nodiscard]]
-        double sigma() const noexcept { return sigma_; }
+        GeneType sigma() const noexcept { return sigma_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
 
-        double sigma_ = 6.0;
-        const size_t NMAX_RESAMPLE = 3;
+        GeneType sigma_;
+        static const size_t NMAX_RESAMPLE = 5;
     };
 
     /**
-    * Polynomial mutation operator for the real encoded genetic algorithm (RCGA).
+    * Polynomial mutation operator for the real encoded genetic algorithm (RCGA). \n
     * Each gene of the candidate is mutated with pm probability, and the values of the mutated genes
-    * are randomly generated from a non-uniform distribution.
+    * are randomly generated from a non-uniform distribution. \n
     * 
     * This operator has one parameter, eta, which controls shape of the probability distribution
     * the mutated genes are picked from. The value of eta must be >= 0.0, with larger values leading
@@ -122,35 +122,36 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param eta The eta parameter of the polynomial mutation. Must be >= 0.0.
         */
-        explicit Polynomial(double pm = 0.01, double eta = 40.0);
+        explicit Polynomial(double pm, GeneType eta = 40.0);
 
         /**
         * Sets the eta parameter for the crossover.
         * 
         * @param eta The eta parameter of the polynomial mutation. Must be >= 0.0.
         */
-        void eta(double eta);
+        void eta(GeneType eta);
 
         /** @returns The eta parameter currently set for this operator. */
-        [[nodiscard]] double eta() const noexcept { return eta_; }
+        [[nodiscard]]
+        GeneType eta() const noexcept { return eta_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
 
-        double eta_ = 40.0;
+        GeneType eta_ = 40.0;
     };
 
     /**
-    * Boundary mutation operator for the real encoded genetic algorithm.
+    * Boundary mutation operator for the real encoded genetic algorithm. \n
     * Each gene of the candidate is mutated with pm probability, and the values of the
-    * mutated genes are either the lower or upper bounds of the given gene.
+    * mutated genes are either the lower or upper bounds of the gene.
     */
     class Boundary final : public Mutation<double>
     {
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<double>& candidate) const override;
+        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
     };
 
 } // namespace genetic_algorithm::mutation::real
