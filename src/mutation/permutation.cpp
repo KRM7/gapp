@@ -10,7 +10,7 @@
 namespace genetic_algorithm::mutation::perm
 {
     Inversion::Inversion(double pm, double range_max)
-        : Mutation<GeneType>(pm)
+        : Mutation(pm)
     {
         this->range_max(range_max);
     }
@@ -72,7 +72,7 @@ namespace genetic_algorithm::mutation::perm
     }
 
     Shuffle::Shuffle(double pm, double range_max)
-        : Mutation<GeneType>(pm)
+        : Mutation(pm)
     {
         this->range_max(range_max);
     }
@@ -107,7 +107,7 @@ namespace genetic_algorithm::mutation::perm
     }
 
     Shift::Shift(double pm, double range_max)
-        : Mutation<GeneType>(pm)
+        : Mutation(pm)
     {
         this->range_max(range_max);
     }
