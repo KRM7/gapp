@@ -3,6 +3,7 @@
 #include "population.hpp"
 #include "../utility/math.hpp"
 #include <algorithm>
+#include <numeric>
 #include <vector>
 #include <cmath>
 #include <cassert>
@@ -10,6 +11,13 @@
 
 namespace genetic_algorithm::detail
 {
+    FitnessVector toFitnessVector(const FitnessMatrix& fmat)
+    {
+        assert(std::all_of(fmat.begin(), fmat.end(), [](const FitnessVector& fvec) { return fvec.size() == 1; }));
+
+        return detail::map(fmat, [](const FitnessVector& fvec) { return fvec[0]; });
+    }
+
     double populationFitnessMin(const FitnessVector& pop)
     {
         assert(!pop.empty());
@@ -21,6 +29,12 @@ namespace genetic_algorithm::detail
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
+        FitnessVector res = std::reduce(pop.begin() + 1, pop.end(), FitnessVector(pop.front().get()),
+        [](const FitnessVector& lhs, const FitnessVector& rhs)
+        {
+            return detail::map(lhs, rhs, [](double l, double r) { return std::min(l, r); });
+        });
+
 
         FitnessVector min_fitness = pop[0];
         for (size_t i = 1; i < pop.size(); i++)
@@ -46,6 +60,12 @@ namespace genetic_algorithm::detail
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
 
+        FitnessVector res = std::reduce(pop.begin() + 1, pop.end(), FitnessVector(pop.front().get()),
+        [](const FitnessVector& lhs, const FitnessVector& rhs)
+        {
+            return detail::map(lhs, rhs, [](double l, double r) { return std::max(l, r); });
+        });
+
         FitnessVector max_fitness = pop[0];
         for (size_t i = 1; i < pop.size(); i++)
         {
@@ -70,7 +90,18 @@ namespace genetic_algorithm::detail
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
 
-        FitnessVector fitness_mean(pop[0].size(), 0.0);
+        FitnessVector res = std::accumulate(pop.begin(), pop.end(), FitnessVector(pop.front().get().size(), 0.0),
+        [n = pop.size()](FitnessVector mean, const FitnessVector& sol)
+        {
+            for (size_t i = 0; i < mean.size(); i++)
+            {
+                mean[i] += sol[i] / n;
+            }
+
+            return mean;
+        });
+
+        FitnessVector fitness_mean(pop[0].get().size(), 0.0);
         for (const auto& sol : pop)
         {
             for (size_t i = 0; i < fitness_mean.size(); i++)
@@ -125,13 +156,6 @@ namespace genetic_algorithm::detail
         }
 
         return variance;
-    }
-
-    FitnessVector toFitnessVector(const FitnessMatrix& fmat)
-    {
-        assert(std::all_of(fmat.begin(), fmat.end(), [](const FitnessVector& fvec) { return fvec.size() == 1; }));
-
-        return detail::map(fmat, [](const FitnessVector& fvec) { return fvec[0]; });
     }
 
 } // namespace genetic_algorithm::detail
