@@ -54,10 +54,11 @@ namespace genetic_algorithm::detail
     requires Container<ContainerType<ValueType, Rest...>> && std::invocable<F, ValueType>
     auto map(const ContainerType<ValueType, Rest...>& cont, F&& f)
     {
-        using ResultType = ContainerType<std::invoke_result_t<F, ValueType>>;
+        using MappedType = std::invoke_result_t<F, ValueType>;
+        using ResultType = ContainerType<MappedType>;
         
         ResultType result;
-        if constexpr (std::is_same_v<ResultType, std::vector<std::invoke_result_t<F, ValueType>>>)
+        if constexpr (std::is_same_v<ResultType, std::vector<MappedType>>)
         {
             result.reserve(cont.size());
         }
@@ -66,6 +67,30 @@ namespace genetic_algorithm::detail
         [f = lforward<F>(f)](const ValueType& elem)
         {
             return std::invoke(f, elem);
+        });
+
+        return result;
+    }
+
+    template<template<typename...> class ContainerType, typename ValueType, typename... Rest, typename F>
+    requires Container<ContainerType<ValueType, Rest...>> && std::invocable<F, ValueType, ValueType>
+    auto map(const ContainerType<ValueType, Rest...>& cont1, const ContainerType<ValueType, Rest...>& cont2, F&& f)
+    {
+        assert(cont1.size() <= cont2.size());
+
+        using MappedType = std::invoke_result_t<F, ValueType, ValueType>;
+        using ResultType = ContainerType<MappedType>;
+
+        ResultType result;
+        if constexpr (std::is_same_v<ResultType, std::vector<MappedType>>)
+        {
+            result.reserve(cont1.size());
+        }
+
+        std::transform(std::begin(cont1), std::end(cont1), std::begin(cont2), std::back_inserter(result), // only works if the container has push_back
+        [f = lforward<F>(f)](const ValueType& val1, const ValueType& val2)
+        {
+            return std::invoke(f, val1, val2);
         });
 
         return result;
