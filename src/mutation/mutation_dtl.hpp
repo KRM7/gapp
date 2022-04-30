@@ -9,8 +9,6 @@ namespace genetic_algorithm::mutation::dtl
 {
     size_t approxMutateCnt(size_t chrom_len, double pm);
 
-
-
 } // namespace genetic_algorithm::mutation::dtl
 
 #endif // !GA_MUTATION_DTL_HPP

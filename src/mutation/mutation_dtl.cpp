@@ -31,5 +31,4 @@ namespace genetic_algorithm::mutation::dtl
         return mutate_cnt;
     }
 
-
 } // namespace genetic_algorithm::mutation::dtl
