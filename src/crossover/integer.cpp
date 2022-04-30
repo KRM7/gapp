@@ -7,12 +7,12 @@
 
 namespace genetic_algorithm::crossover::integer
 {
-    auto SinglePoint::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
+    auto SinglePoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         return dtl::nPointCrossoverImpl(parent1, parent2, 1);
     }
 
-    auto TwoPoint::crossover(const GaInfo&, const Candidate<size_t>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
+    auto TwoPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         return dtl::nPointCrossoverImpl(parent1, parent2, 2);
     }
