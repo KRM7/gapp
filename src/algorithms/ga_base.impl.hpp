@@ -379,7 +379,7 @@ namespace genetic_algorithm
     }
     
     template<Gene T, typename D>
-    size_t GA<T, D>::getNumObjectives(FitnessFunction& f) const
+    size_t GA<T, D>::getNumObjectives(const FitnessFunction& f) const
     {
         Candidate c = generateCandidate();
         return f(c.chromosome).size();

@@ -314,7 +314,7 @@ namespace genetic_algorithm
         bool can_continue_ = false;
 
         void initialize();
-        size_t getNumObjectives(FitnessFunction& f) const;
+        size_t getNumObjectives(const FitnessFunction& f) const;
         Population generateInitialPopulation() const;
         void evaluate(Population& pop);
         Population nextPopulation(Population& pop, Population& children) const;
