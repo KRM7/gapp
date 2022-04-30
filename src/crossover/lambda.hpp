@@ -13,14 +13,14 @@ namespace genetic_algorithm::crossover::dtl
     class Lambda final : public Crossover<T>
     {
     public:
-        using CrossoverFunction_t = std::function<CandidatePair<T>(const GaInfo&, const Candidate<T>&, const Candidate<T>&)>;
+        using CrossoverFunction = std::function<CandidatePair<T>(const GaInfo&, const Candidate<T>&, const Candidate<T>&)>;
 
-        explicit Lambda(CrossoverFunction_t f);
+        explicit Lambda(CrossoverFunction f);
 
     private:
         CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const override;
 
-        CrossoverFunction_t crossover_;
+        CrossoverFunction crossover_;
     };
 
 } // namespace genetic_algorithm::crossover::dtl
@@ -35,7 +35,7 @@ namespace genetic_algorithm::crossover::dtl
 namespace genetic_algorithm::crossover::dtl
 {
     template<Gene T>
-    Lambda<T>::Lambda(CrossoverFunction_t f)
+    Lambda<T>::Lambda(CrossoverFunction f)
         : Crossover<T>()
     {
         if (!f) throw std::invalid_argument("The crossover function can't be a nullptr.");
