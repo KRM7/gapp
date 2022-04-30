@@ -67,22 +67,22 @@ namespace genetic_algorithm::crossover
         if (child1.chromosome == parent1.chromosome)
         {
             child1.fitness = parent1.fitness;
-            child1.is_evaluated = true;
+            child1.is_evaluated = parent1.is_evaluated;
         }
         else if (child1.chromosome == parent2.chromosome)
         {
             child1.fitness = parent2.fitness;
-            child1.is_evaluated = true;
+            child1.is_evaluated = parent2.is_evaluated;
         }
         if (child2.chromosome == parent1.chromosome)
         {
             child2.fitness = parent1.fitness;
-            child2.is_evaluated = true;
+            child2.is_evaluated = parent1.is_evaluated;
         }
         else if (child2.chromosome == parent2.chromosome)
         {
             child2.fitness = parent2.fitness;
-            child2.is_evaluated = true;
+            child2.is_evaluated = parent2.is_evaluated;
         }
 
         return { child1, child2 };
