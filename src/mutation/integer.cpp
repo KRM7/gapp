@@ -7,9 +7,6 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-#include <cmath>
-#include <random>
-#include <stdexcept>
 
 namespace genetic_algorithm::mutation::integer
 {
