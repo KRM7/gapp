@@ -86,6 +86,7 @@ namespace genetic_algorithm
 
         using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;      /**< The type of the fitness function. */
         using CrossoverFunction = std::function<CandidatePair(const GaInfo&, const Candidate&, const Candidate&)>;
+        using MutationFunction = std::function<void(const GaInfo&, Candidate&)>;
         using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
         using CallbackFunction = std::function<void(const GA<T, Derived>&)>;
 
@@ -212,7 +213,6 @@ namespace genetic_algorithm
         /** @returns The current crossover rate set. */
         [[nodiscard]] double crossover_rate() const noexcept;
 
-
         /**
         * Set the mutation method the algorithm will use to @p f.
         *
@@ -229,9 +229,26 @@ namespace genetic_algorithm
         template<mutation::MutationMethod<T> F>
         void mutation_method(std::unique_ptr<F>&& f);
 
+        /**
+        * Set the mutation method the algorithm will use to @p f.
+        *
+        * @param f The crossover method for the algorithm.
+        */
+        void mutation_method(MutationFunction f);
+
         /** @returns The current mutation method used by the algorithm. */
         template<mutation::MutationMethod<T> F = mutation::Mutation<GeneType>>
         F& mutation_method();
+
+        /**
+        * Sets the mutation rate used in the algorithm to @p pm.
+        *
+        * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
+        */
+        void mutation_rate(double pm);
+
+        /** @returns The current crossover rate set. */
+        [[nodiscard]] double mutation_rate() const noexcept;
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n

@@ -8,6 +8,7 @@
 #include "../crossover/crossover_base.hpp"
 #include "../crossover/lambda.hpp"
 #include "../mutation/mutation_base.hpp"
+#include "../mutation/lambda.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"
@@ -193,10 +194,33 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
+    void GA<T, D>::mutation_method(MutationFunction f)
+    {
+        if (!f)
+        {
+            throw std::invalid_argument("Thhe mutation method can't be a nullptr.");
+        }
+
+        mutation_ = std::make_unique<mutation::dtl::Lambda<T>>(std::move(f));
+    }
+
+    template<Gene T, typename D>
     template<mutation::MutationMethod<T> F>
     F& GA<T, D>::mutation_method()
     {
         return dynamic_cast<F&>(*mutation_);
+    }
+
+    template<Gene T, typename D>
+    void GA<T, D>::mutation_rate(double pm)
+    {
+        mutation_->mutation_rate(pm);
+    }
+
+    template<Gene T, typename D>
+    double GA<T, D>::mutation_rate() const noexcept
+    {
+        return mutation_->mutation_rate();
     }
 
     template<Gene T, typename D>
