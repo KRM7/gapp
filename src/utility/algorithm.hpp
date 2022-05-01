@@ -63,7 +63,7 @@ namespace genetic_algorithm::detail
             result.reserve(cont.size());
         }
 
-        std::transform(std::begin(cont), std::end(cont), std::back_inserter(result), // only works if the container has push_back
+        std::transform(std::begin(cont), std::end(cont), std::back_inserter(result),
         [f = lforward<F>(f)](const ValueType& elem)
         {
             return std::invoke(f, elem);
@@ -87,7 +87,7 @@ namespace genetic_algorithm::detail
             result.reserve(cont1.size());
         }
 
-        std::transform(std::begin(cont1), std::end(cont1), std::begin(cont2), std::back_inserter(result), // only works if the container has push_back
+        std::transform(std::begin(cont1), std::end(cont1), std::begin(cont2), std::back_inserter(result),
         [f = lforward<F>(f)](const ValueType& val1, const ValueType& val2)
         {
             return std::invoke(f, val1, val2);
@@ -178,25 +178,37 @@ namespace genetic_algorithm::detail
     template<std::input_iterator Iter>
     bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
     {
-        return std::find(first, last, val) != last;
+        assert(std::distance(first, last) >= 0);
+
+        while (first != last)
+        {
+            if (*first++ == val) return true;
+        }
+        return false;
     }
 
     template<typename T>
-    size_t index_of(const std::vector<T>& cont, const T& val)
+    size_t index_of(const std::vector<T>& c, const T& val)
     {
-        auto pos = std::find(cont.begin(), cont.end(), val);
-        assert(pos != cont.end());
+        assert(!c.empty());
 
-        return size_t(pos - cont.begin());
+        for (size_t i = 0; i < c.size(); i++)
+        {
+            if (c[i] == val) return i;
+        }
+        assert(false), std::terminate();
     }
 
     template<typename T, std::predicate<T> Pred>
-    size_t index_of(const std::vector<T>& cont, Pred&& pred)
+    size_t index_of(const std::vector<T>& c, Pred&& pred)
     {
-        auto pos = std::find_if(cont.begin(), cont.end(), std::forward<Pred>(pred));
-        assert(pos != cont.end());
+        assert(!c.empty());
 
-        return size_t(pos - cont.begin());
+        for (size_t i = 0; i < c.size(); i++)
+        {
+            if (std::invoke(pred, c[i])) return i;
+        }
+        assert(false), std::terminate();
     }
 
     template<typename T>
