@@ -2,7 +2,6 @@
 
 #include "math.hpp"
 #include "algorithm.hpp"
-
 #include <algorithm>
 #include <numeric>
 #include <functional>
@@ -17,12 +16,17 @@ namespace genetic_algorithm::detail
         return n * n;
     }
 
-    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs)
+    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
+    {
+        return paretoCompareLess(lhs, rhs, 0);
+    }
+
+    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept
     {
         assert(lhs.size() == rhs.size());
 
         bool has_lower = false;
-        for (size_t i = 0; i < lhs.size(); i++)
+        for (size_t i = first; i < lhs.size(); i++)
         {
             if (floatIsLess(rhs[i], lhs[i])) return false;
             if (floatIsLess(lhs[i], rhs[i])) has_lower = true;
