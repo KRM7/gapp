@@ -16,93 +16,104 @@ namespace genetic_algorithm
     template<Gene T>
     using Candidates = std::vector<Candidate<T>>;
 
-    namespace detail
-    {
-        using FitnessVector = std::vector<double>;
-        using FitnessMatrix = std::vector<std::vector<double>>;
-
-        /* Get the fitness vector of the population (single-objective). */
-        template<Gene T>
-        FitnessVector toFitnessVector(const Population<T>& pop);
-
-        /* Get the fitness matrix of the population (multi-objective). */
-        template<Gene T>
-        FitnessMatrix toFitnessMatrix(const Population<T>& pop);
-
-        /* Get the fitness vector of the population along the first objective axis from the fitness matrix. */
-        FitnessVector toFitnessVector(const FitnessMatrix& pop);
-
-        /* Return the minimum fitness value of the population (for single-objective problems). */
-        double populationFitnessMin(const FitnessVector& pop);
-
-        /* Return the minimum fitness value of the population along each objective axis. */
-        FitnessVector populationFitnessMin(const FitnessMatrix& pop);
-
-        /* Return the minimum fitness value of the population along each objective axis. */
-        template<Gene T>
-        FitnessVector populationFitnessMin(const Population<T>& pop);
-
-        /* Return the maximum fitness value of the population (for single-objective problems). */
-        double populationFitnessMax(const FitnessVector& pop);
-
-        /* Return the maximum fitness value of the population along each objective axis. */
-        FitnessVector populationFitnessMax(const FitnessMatrix& pop);
-
-        /* Return the maximum fitness value of the population along each objective axis. */
-        template<Gene T>
-        FitnessVector populationFitnessMax(const Population<T>& pop);
-
-        /* Return the mean fitness value of the population (for single-objective problems). */
-        double populationFitnessMean(const FitnessVector& pop);
-
-        /* Return the mean fitness value of the population along each objective axis. */
-        FitnessVector populationFitnessMean(const FitnessMatrix& pop);
-
-        /* Return the mean fitness value of the population along each objective axis. */
-        template<Gene T>
-        FitnessVector populationFitnessMean(const Population<T>& pop);
-
-        /* Return the standard deviation of the fitness values of the population (for single-objective problems). */
-        double populationFitnessSD(const FitnessVector& pop);
-
-        /* Return the standard deviation of the fitness values of the population (for single-objective problems). */
-        double populationFitnessSD(const FitnessVector& pop, double mean);
-
-        /* Return the standard deviation of the fitness values of the population along each objective axis. */
-        FitnessVector populationFitnessSD(const FitnessMatrix& pop);
-
-        /* Return the standard deviation of the fitness values of the population along each objective axis. */
-        FitnessVector populationFitnessSD(const FitnessMatrix& pop, const FitnessVector& mean);
-
-        /* Return the standard deviation of the fitness values of the population along each objective axis. */
-        template<Gene T>
-        FitnessVector populationFitnessSD(const Population<T>& pop);
-
-        /* Return the standard deviation of the fitness values of the population along each objective axis. */
-        template<Gene T>
-        FitnessVector populationFitnessSD(const Population<T>& pop, const FitnessVector& mean);
-
-        /* Return all of the pareto-optimal solutions in the population assuming there is only 1 objective function. */
-        template<Gene T>
-        Candidates<T> findParetoFront1D(const Population<T>& pop);
-
-        /* Return all of the pareto-optimal solutions in the population assuming there are more than 1 objective functions. */
-        template<Gene T>
-        Candidates<T> findParetoFrontKung(const Population<T>& pop);
-
-        /* Return all of the pareto-optimal solutions in the population. */
-        template<Gene T>
-        Candidates<T> findParetoFrontLin(const Population<T>& pop);
-
-    } // namespace genetic_algorithm::detail
-
 } // namespace genetic_algorithm
+
+namespace genetic_algorithm::detail
+{
+    using FitnessVector = std::vector<double>;
+    using FitnessMatrix = std::vector<std::vector<double>>;
+
+    /* Get the fitness vector of the population (single-objective). */
+    template<Gene T>
+    FitnessVector toFitnessVector(const Population<T>& pop);
+
+    /* Get the fitness matrix of the population (multi-objective). */
+    template<Gene T>
+    FitnessMatrix toFitnessMatrix(const Population<T>& pop);
+
+    /* Get the fitness vector of the population along the first objective axis from the fitness matrix. */
+    FitnessVector toFitnessVector(const FitnessMatrix& pop);
+
+    /* Return the minimum fitness value of the population (for single-objective problems). */
+    double populationFitnessMin(const FitnessVector& pop);
+
+    /* Return the minimum fitness value of the population along each objective axis. */
+    FitnessVector populationFitnessMin(const FitnessMatrix& pop);
+
+    /* Return the minimum fitness value of the population along each objective axis. */
+    template<Gene T>
+    FitnessVector populationFitnessMin(const Population<T>& pop);
+
+    /* Return the maximum fitness value of the population (for single-objective problems). */
+    double populationFitnessMax(const FitnessVector& pop);
+
+    /* Return the maximum fitness value of the population along each objective axis. */
+    FitnessVector populationFitnessMax(const FitnessMatrix& pop);
+
+    /* Return the maximum fitness value of the population along each objective axis. */
+    template<Gene T>
+    FitnessVector populationFitnessMax(const Population<T>& pop);
+
+    /* Return the mean fitness value of the population (for single-objective problems). */
+    double populationFitnessMean(const FitnessVector& pop);
+
+    /* Return the mean fitness value of the population along each objective axis. */
+    FitnessVector populationFitnessMean(const FitnessMatrix& pop);
+
+    /* Return the mean fitness value of the population along each objective axis. */
+    template<Gene T>
+    FitnessVector populationFitnessMean(const Population<T>& pop);
+
+    /* Return the standard deviation of the fitness values of the population (for single-objective problems). */
+    double populationFitnessSD(const FitnessVector& pop);
+
+    /* Return the standard deviation of the fitness values of the population (for single-objective problems). */
+    double populationFitnessSD(const FitnessVector& pop, double mean);
+
+    /* Return the standard deviation of the fitness values of the population along each objective axis. */
+    FitnessVector populationFitnessSD(const FitnessMatrix& pop);
+
+    /* Return the standard deviation of the fitness values of the population along each objective axis. */
+    FitnessVector populationFitnessSD(const FitnessMatrix& pop, const FitnessVector& mean);
+
+    /* Return the standard deviation of the fitness values of the population along each objective axis. */
+    template<Gene T>
+    FitnessVector populationFitnessSD(const Population<T>& pop);
+
+    /* Return the standard deviation of the fitness values of the population along each objective axis. */
+    template<Gene T>
+    FitnessVector populationFitnessSD(const Population<T>& pop, const FitnessVector& mean);
+
+    /* Finds the pareto-optimal solutions in a population. */
+    template<Gene T>
+    Candidates<T> findParetoFront(const Population<T>& pop);
+
+} // namespace genetic_algorithm::detail
+
+namespace genetic_algorithm::detail::_
+{
+    template<Gene T>
+    Candidates<T> findParetoFront1D(const Population<T>& pop);
+
+    template<Gene T>
+    Candidates<T> findParetoFrontKung(const Population<T>& pop);
+
+    template<Gene T>
+    std::vector<size_t> findParetoFrontKungImpl(const Population<T>& pop, std::vector<size_t>::iterator first, std::vector<size_t>::iterator last);
+
+    template<Gene T>
+    Candidates<T> findParetoFrontSimple(const Population<T>& pop);
+
+    inline bool kungCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs);
+
+} // namespace genetic_algorithm::detail::_
 
 
 /* IMPLEMENTATION */
 
 #include "../utility/math.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/functional.hpp"
 #include <algorithm>
 #include <iterator>
 #include <cstddef>
@@ -113,7 +124,7 @@ namespace genetic_algorithm::detail
     template<Gene T>
     FitnessVector toFitnessVector(const Population<T>& pop)
     {
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
+        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() >= 1; }));
 
         return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness[0]; });
     }
@@ -155,125 +166,137 @@ namespace genetic_algorithm::detail
     }
 
     template<Gene T>
-    Candidates<T> findParetoFront1D(const Population<T>& pop)
+    Candidates<T> findParetoFront(const Population<T>& pop)
     {
         assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
+        assert(pop[0].fitness.size() > 0);
+        assert(std::all_of(pop.begin(), pop.end(), [](const auto& sol) { sol.fitness.size() == pop[0].fitness.size(); }));
 
+        size_t dim = pop[0].fitness.size();
+
+        if (dim == 1)
+        {
+            return _::findParetoFront1D(pop);
+        }
+        else
+        {
+            return _::findParetoFrontSimple(pop);
+        }
+    }
+
+} // namespace genetic_algorithm::detail
+
+namespace genetic_algorithm::detail::_
+{
+    template<Gene T>
+    Candidates<T> findParetoFront1D(const Population<T>& pop)
+    {
         auto best = std::max_element(pop.begin(), pop.end(),
         [](const Candidate<T>& lhs, const Candidate<T>& rhs)
         {
             return lhs.fitness[0] < rhs.fitness[0];
         });
 
-        /* Even for a single-objective problem, there might be different solutions with the same fitness value. */
         return detail::find_all_v(pop.begin(), pop.end(),
-        [fbest = best->fitness[0]](const Candidate<T>& sol)
+        [&best](const Candidate<T>& sol)
         {
-            return detail::floatIsEqual(fbest, sol.fitness[0]);
+            return detail::floatIsEqual(best->fitness[0], sol.fitness[0]);
         });
     }
 
     template<Gene T>
     Candidates<T> findParetoFrontKung(const Population<T>& pop)
     {
-        /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476.*/
+        /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476. */
         /* Doesn't work for d = 1 (single-objective optimization). */
 
-        using namespace std;
-        using Iter = vector<size_t>::iterator;
-
-        assert(!pop.empty());
-        assert(all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() > 1; }));
-        assert(all_of(pop.begin(), pop.end(), [&pop](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
-
-        /* Find the indices of pareto optimal solutions in the population (Kung's algorithm) assuming fitness maximization. */
-        function<vector<size_t>(Iter, Iter)> pfront =
-        [&pfront, &pop, dim = pop[0].fitness.size()](Iter first, Iter last) -> vector<size_t>
-        {
-            if (distance(first, last) == 1) return { *first };
-
-            vector<size_t> R = pfront(first, first + distance(first, last) / 2);    /* Top half. */
-            vector<size_t> S = pfront(first + distance(first, last) / 2, last);     /* Bottom half. */
-
-            /* Q = Find all non-dominated elements of the bottom half. */
-            vector<size_t> Q;
-            for (const auto& s : S)
-            {
-                /* Check if s is dominated by any solution in R. */
-                bool is_dominated = false;
-                for (const auto& r : R)
-                {
-                    /* Pareto compare s and r. */
-                    /* The first dimension (d = 0) of the fitness vectors doesn't need to be compared since the pop is already sorted. */
-                    for (size_t d = 1; d < dim; d++)
-                    {
-                        if (detail::floatIsLess(pop[r].fitness[d], pop[s].fitness[d]))
-                        {
-                            is_dominated = false;
-                            break;
-                        }
-                        if (detail::floatIsLess(pop[s].fitness[d], pop[r].fitness[d]))
-                        {
-                            is_dominated = true;
-                        }
-                    }
-                    if (is_dominated) break;
-                }
-                if (!is_dominated) Q.push_back(s);
-            }
-            R.insert(R.end(), Q.begin(), Q.end());
-
-            return R;
-        };
-
-        /* Sort the pop indices into descending order based on thhe first fitness value (needed for Kung's algorithm to work). */
         auto indices = detail::argsort(pop.begin(), pop.end(),
         [](const Candidate<T>& lhs, const Candidate<T>& rhs)
         {
-            return lhs.fitness[0] > rhs.fitness[0];
+            for (size_t i = 0; i < lhs.fitness.size(); i++)
+            {
+                if (lhs.fitness[i] != rhs.fitness[i])
+                {
+                    return lhs.fitness[i] > rhs.fitness[i];
+                }
+            }
+            return false;
         });
 
-        indices = pfront(indices.begin(), indices.end());
+        indices = _::findParetoFrontKungImpl(pop, indices.begin(), indices.end());
 
         return detail::map(indices, [&pop](size_t idx) { return pop[idx]; });
     }
 
     template<Gene T>
-    Candidates<T> findParetoFrontLin(const Population<T>& pop)
+    std::vector<size_t> findParetoFrontKungImpl(const Population<T>& pop, std::vector<size_t>::iterator first, std::vector<size_t>::iterator last)
     {
-        std::vector is_dominated(pop.size(), false);
+        if (std::distance(first, last) == 1) return { *first };
 
-        for (size_t lhs = 0; lhs < pop.size(); lhs++)
+        auto middle = first + std::distance(first, last) / 2;
+
+        auto top_half    = _::findParetoFrontKungImpl(pop, first, middle);
+        auto bottom_half = _::findParetoFrontKungImpl(pop, middle, last);
+
+        for (const auto& bad : bottom_half)
         {
-            if (is_dominated[lhs]) continue;
-
-            for (size_t rhs = lhs + 1; rhs < pop.size(); rhs++)
+            bool is_dominated = false;
+            for (const auto& good : top_half)
             {
-                if (detail::paretoCompareLess(pop[lhs].fitness, pop[rhs].fitness))
+                if (_::kungCompareLess(pop[bad].fitness, pop[good].fitness))
                 {
-                    is_dominated[lhs] = true;
+                    is_dominated = true;
                     break;
                 }
-                else if (detail::paretoCompareLess(pop[rhs].fitness, pop[lhs].fitness))
-                {
-                    is_dominated[rhs] = true;
-                }
             }
+            if (!is_dominated) top_half.push_back(bad);
         }
 
-        Candidates<T> optimal_sols;
-        for (size_t i = 0; i < is_dominated.size(); i++)
-        {
-            if (!is_dominated[i])
-            {
-                optimal_sols.push_back(pop[i]);
-            }
-        }
-
-        return optimal_sols;
+        return top_half;
     }
 
-} // namespace genetic_algorithm::detail
+    template<Gene T>
+    Candidates<T> findParetoFrontSimple(const Population<T>& pop)
+    {
+        auto indices = detail::argsort(pop.begin(), pop.end(),
+        [](const Candidate<T>& lhs, const Candidate<T>& rhs)
+        {
+            for (size_t i = 0; i < lhs.fitness.size(); i++)
+            {
+                if (lhs.fitness[i] != rhs.fitness[i])
+                {
+                    return lhs.fitness[i] > rhs.fitness[i];
+                }
+            }
+            return false;
+        });
+
+        std::vector<size_t> optimal_indices;
+
+        for (const auto& idx : indices)
+        {
+            bool dominated = std::any_of(optimal_indices.begin(), optimal_indices.end(),
+            [&pop, idx](size_t optimal_idx)
+            {
+                return detail::paretoCompareLess(pop[idx].fitness, pop[optimal_idx].fitness);
+            });
+            if (!dominated) optimal_indices.push_back(idx);
+        }
+
+        return detail::map(optimal_indices, [&pop](size_t idx) { return pop[idx]; });
+    }
+
+    inline bool kungCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs)
+    {
+        bool is_dominated = detail::paretoCompareLess(lhs, rhs, 1);
+        bool is_equal = !detail::floatIsEqual(lhs[0], rhs[0]) &&
+            std::equal(lhs.begin() + 1, lhs.end(),
+                       rhs.begin() + 1,
+                       detail::floatIsEqual<double>);
+
+        return is_dominated || is_equal;
+    }
+
+} // namespace genetic_algorithm::detail::_
 
 #endif // !GA_POPULATION_HPP
