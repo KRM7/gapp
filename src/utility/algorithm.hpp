@@ -50,52 +50,6 @@ namespace genetic_algorithm::detail
         };
     }
 
-    template<template<typename...> class ContainerType, typename ValueType, typename... Rest, typename F>
-    requires Container<ContainerType<ValueType, Rest...>> && std::invocable<F, ValueType>
-    auto map(const ContainerType<ValueType, Rest...>& cont, F&& f)
-    {
-        using MappedType = std::invoke_result_t<F, ValueType>;
-        using ResultType = ContainerType<MappedType>;
-        
-        ResultType result;
-        if constexpr (std::is_same_v<ResultType, std::vector<MappedType>>)
-        {
-            result.reserve(cont.size());
-        }
-
-        std::transform(std::begin(cont), std::end(cont), std::back_inserter(result),
-        [f = lforward<F>(f)](const ValueType& elem)
-        {
-            return std::invoke(f, elem);
-        });
-
-        return result;
-    }
-
-    template<template<typename...> class ContainerType, typename ValueType, typename... Rest, typename F>
-    requires Container<ContainerType<ValueType, Rest...>> && std::invocable<F, ValueType, ValueType>
-    auto map(const ContainerType<ValueType, Rest...>& cont1, const ContainerType<ValueType, Rest...>& cont2, F&& f)
-    {
-        assert(cont1.size() <= cont2.size());
-
-        using MappedType = std::invoke_result_t<F, ValueType, ValueType>;
-        using ResultType = ContainerType<MappedType>;
-
-        ResultType result;
-        if constexpr (std::is_same_v<ResultType, std::vector<MappedType>>)
-        {
-            result.reserve(cont1.size());
-        }
-
-        std::transform(std::begin(cont1), std::end(cont1), std::begin(cont2), std::back_inserter(result),
-        [f = lforward<F>(f)](const ValueType& val1, const ValueType& val2)
-        {
-            return std::invoke(f, val1, val2);
-        });
-
-        return result;
-    }
-
     template<std::random_access_iterator Iter,
              typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
@@ -212,9 +166,29 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    auto erase_first_v(std::vector<T>& cont, const T& val)
+    bool erase_first_v(std::vector<T>& cont, const T& val)
     {
-        return cont.erase(std::find(cont.begin(), cont.end(), val));
+        auto pos = std::find(cont.begin(), cont.end(), val);
+
+        if (pos != cont.end())
+        {
+            cont.erase(pos);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    template<typename T,
+             std::predicate<T, T> Pred = std::equal_to<T>,
+             std::strict_weak_order<T, T> Comp = std::less<T>>
+    void erase_duplicates(std::vector<T>& cont, Pred&& pred = std::equal_to<T>{}, Comp&& comp = std::less<T>{})
+    {
+        std::sort(cont.begin(), cont.end(), std::forward<Comp>(comp));
+        auto last = std::unique(cont.begin(), cont.end(), std::forward<Pred>(pred));
+        cont.erase(last, cont.end());
     }
 
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
