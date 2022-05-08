@@ -457,12 +457,9 @@ namespace genetic_algorithm
 
         optimal_sols.insert(optimal_sols.end(), pop.begin(), pop.end());
 
-        optimal_sols = detail::findParetoFrontLin(optimal_sols);
+        optimal_sols = detail::findParetoFront(optimal_sols);
 
-        /* Remove duplicate solutions. */
-        std::sort(optimal_sols.begin(), optimal_sols.end());
-        auto last = std::unique(optimal_sols.begin(), optimal_sols.end());
-        optimal_sols.erase(last, optimal_sols.end());
+        detail::erase_duplicates(optimal_sols);
     }
 
     template<Gene T, typename D>
