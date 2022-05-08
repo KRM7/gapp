@@ -25,8 +25,7 @@ namespace genetic_algorithm::detail
     struct is_one_of_templ<Match, Target, Targets...>
         : std::bool_constant<is_same_template_v<Match, Target> ||
                              is_one_of_templ<Match, Targets...>::value>
-    {
-    };
+    {};
 
     template<template<typename...> class T, template<typename...> class... Ts>
     inline constexpr bool is_one_of_templ_v = is_one_of_templ<T, Ts...>::value;
