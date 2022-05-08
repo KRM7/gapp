@@ -5,6 +5,7 @@
 #include "../utility/math.hpp"
 #include "../utility/utils.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/functional.hpp"
 #include <vector>
 #include <utility>
 #include <algorithm>
@@ -35,8 +36,8 @@ namespace genetic_algorithm::selection::dtl
     {
         assert(0.0 <= wmin && wmin <= wmax);
 
-        auto fvec = detail::toFitnessVector(fmat);
-        auto indices = detail::argsort(fvec.begin(), fvec.end());
+        const auto fvec = detail::toFitnessVector(fmat);
+        const auto indices = detail::argsort(fvec.begin(), fvec.end());
 
         std::vector<double> weights(fmat.size());
         for (size_t i = 0; i < indices.size(); i++)
@@ -73,7 +74,7 @@ namespace genetic_algorithm::selection::dtl
         auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(),
-        // dont even think about capturing the iterators by ref or value here
+        // dont try to capture the iterators by ref or value here
         [fmin = *fmin, fmax = *fmax, temperature](double f)
         {
             double df = std::max(fmax - fmin, 1E-6);
