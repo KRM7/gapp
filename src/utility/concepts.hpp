@@ -9,6 +9,7 @@
 #include <limits>
 #include <iterator>
 #include <compare>
+#include "type_traits.hpp"
 
 namespace genetic_algorithm::detail
 {
@@ -19,31 +20,10 @@ namespace genetic_algorithm::detail
     };
 
     template<typename S, template<typename...> class Templ>
-    struct IsSpecializationOf : std::false_type {};
-
-    template<template<typename...> class Templ, typename... TArgs>
-    struct IsSpecializationOf<Templ<TArgs...>, Templ> : std::true_type {};
-
-    template<typename S, template<typename...> class Templ>
-    concept SpecializationOf = IsSpecializationOf<S, Templ>::value;
-
-    template<typename Base>
-    void derivedFromImpl_(const Base&);
-
-    template<typename Derived, typename Base>
-    concept DerivedFrom = requires(const Derived& arg)
-    {
-        derivedFromImpl_<Base>(arg);
-    };
-
-    template<template<typename...> class BaseTempl, typename... TArgs>
-    void derivedFromSpecializationOfImpl_(const BaseTempl<TArgs...>&);
+    concept SpecializationOf = is_specialization_of_v<S, Templ>;
 
     template<typename Derived, template<typename...> class BaseTempl>
-    concept DerivedFromSpecializationOf = requires(const Derived& arg)
-    {
-        derivedFromSpecializationOfImpl_<BaseTempl>(arg);
-    };
+    concept DerivedFromSpecializationOf = is_derived_from_spec_of_v<Derived, BaseTempl>;
 
     template<typename C>
     concept Container = requires(C c, const C cc, C&& rc)
