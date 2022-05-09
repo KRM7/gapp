@@ -6,6 +6,7 @@
 #include <limits>
 #include <execution>
 #include <random>
+#include <exception>
 
 #ifndef GA_EPSILON
 #define GA_EPSILON (10 * std::numeric_limits<double>::epsilon())
@@ -24,5 +25,7 @@
 #else
 #define GA_SEED() (0x12345678);
 #endif
+
+#define GA_UNREACHABLE() (assert(false), std::terminate())
 
 #endif // !GA_UTILS_HPP
