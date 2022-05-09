@@ -325,8 +325,8 @@ namespace genetic_algorithm
 
     private:
 
-        Derived& derived();
-        const Derived& derived() const;
+        constexpr Derived& derived() noexcept;
+        constexpr const Derived& derived() const noexcept;
         Candidate generateCandidate() const;
     };
 

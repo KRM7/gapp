@@ -49,13 +49,13 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    D& GA<T, D>::derived()
+    constexpr D& GA<T, D>::derived() noexcept
     {
         return static_cast<D&>(*this);
     }
 
     template<Gene T, typename D>
-    const D& GA<T, D>::derived() const
+    constexpr const D& GA<T, D>::derived() const noexcept
     {
         return static_cast<const D&>(*this);
     }
