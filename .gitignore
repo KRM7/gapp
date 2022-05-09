@@ -353,3 +353,4 @@ test/mo_results/nsga3_zdt3_sols.txt
 test/mo_results/nsga3_zdt6_sols.txt
 *.exe
 GeneticAlgorithm.ruleset
+*.ruleset
