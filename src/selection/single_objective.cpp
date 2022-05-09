@@ -124,7 +124,8 @@ namespace genetic_algorithm::selection::single_objective
         return rng::sampleCdf(cdf_);
     }
 
-    Boltzmann::Boltzmann(TemperatureFunction f) : temperature_(std::move(f))
+    Boltzmann::Boltzmann(TemperatureFunction f)
+        : temperature_(std::move(f))
     {
     }
 
