@@ -34,18 +34,12 @@ namespace genetic_algorithm::detail
     /* Get the fitness vector of the population along the first objective axis from the fitness matrix. */
     FitnessVector toFitnessVector(const FitnessMatrix& pop);
 
-    /* Return the minimum fitness value of the population (for single-objective problems). */
-    double populationFitnessMin(const FitnessVector& pop);
-
     /* Return the minimum fitness value of the population along each objective axis. */
     FitnessVector populationFitnessMin(const FitnessMatrix& pop);
 
     /* Return the minimum fitness value of the population along each objective axis. */
     template<Gene T>
     FitnessVector populationFitnessMin(const Population<T>& pop);
-
-    /* Return the maximum fitness value of the population (for single-objective problems). */
-    double populationFitnessMax(const FitnessVector& pop);
 
     /* Return the maximum fitness value of the population along each objective axis. */
     FitnessVector populationFitnessMax(const FitnessMatrix& pop);
@@ -54,21 +48,12 @@ namespace genetic_algorithm::detail
     template<Gene T>
     FitnessVector populationFitnessMax(const Population<T>& pop);
 
-    /* Return the mean fitness value of the population (for single-objective problems). */
-    double populationFitnessMean(const FitnessVector& pop);
-
     /* Return the mean fitness value of the population along each objective axis. */
     FitnessVector populationFitnessMean(const FitnessMatrix& pop);
 
     /* Return the mean fitness value of the population along each objective axis. */
     template<Gene T>
     FitnessVector populationFitnessMean(const Population<T>& pop);
-
-    /* Return the standard deviation of the fitness values of the population (for single-objective problems). */
-    double populationFitnessSD(const FitnessVector& pop);
-
-    /* Return the standard deviation of the fitness values of the population (for single-objective problems). */
-    double populationFitnessSD(const FitnessVector& pop, double mean);
 
     /* Return the standard deviation of the fitness values of the population along each objective axis. */
     FitnessVector populationFitnessSD(const FitnessMatrix& pop);
@@ -290,9 +275,9 @@ namespace genetic_algorithm::detail::_
     {
         bool is_dominated = detail::paretoCompareLess(lhs, rhs, 1);
         bool is_equal = !detail::floatIsEqual(lhs[0], rhs[0]) &&
-            std::equal(lhs.begin() + 1, lhs.end(),
-                       rhs.begin() + 1,
-                       detail::floatIsEqual<double>);
+                        std::equal(lhs.begin() + 1, lhs.end(),
+                                   rhs.begin() + 1,
+                                   detail::floatIsEqual<double>);
 
         return is_dominated || is_equal;
     }

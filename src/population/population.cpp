@@ -18,13 +18,6 @@ namespace genetic_algorithm::detail
         return detail::map(fmat, [](const FitnessVector& fvec) { return fvec[0]; });
     }
 
-    double populationFitnessMin(const FitnessVector& pop)
-    {
-        assert(!pop.empty());
-
-        return *std::min_element(pop.begin(), pop.end());
-    }
-
     FitnessVector populationFitnessMin(const FitnessMatrix& pop)
     {
         assert(!pop.empty());
@@ -40,13 +33,6 @@ namespace genetic_algorithm::detail
         }
 
         return min_fitness;
-    }
-
-    double populationFitnessMax(const FitnessVector& pop)
-    {
-        assert(!pop.empty());
-
-        return *std::max_element(pop.begin(), pop.end());
     }
 
     FitnessVector populationFitnessMax(const FitnessMatrix& pop)
@@ -66,13 +52,6 @@ namespace genetic_algorithm::detail
         return max_fitness;
     }
 
-    double populationFitnessMean(const FitnessVector& pop)
-    {
-        assert(!pop.empty());
-        
-        return mean(pop);
-    }
-
     FitnessVector populationFitnessMean(const FitnessMatrix& pop)
     {
         assert(!pop.empty());
@@ -88,20 +67,6 @@ namespace genetic_algorithm::detail
         }
 
         return fitness_mean;
-    }
-
-    double populationFitnessSD(const FitnessVector& pop)
-    {
-        assert(!pop.empty());
-
-        return stdDev(pop);
-    }
-
-    double populationFitnessSD(const FitnessVector& pop, double mean)
-    {
-        assert(!pop.empty());
-
-        return stdDev(pop, mean);
     }
 
     FitnessVector populationFitnessSD(const FitnessMatrix& pop)
