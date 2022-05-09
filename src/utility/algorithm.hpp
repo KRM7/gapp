@@ -130,7 +130,7 @@ namespace genetic_algorithm::detail
     }
 
     template<std::input_iterator Iter>
-    bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
+    constexpr bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val) noexcept
     {
         assert(std::distance(first, last) >= 0);
 
@@ -142,59 +142,48 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    size_t index_of(const std::vector<T>& c, const T& val)
+    constexpr size_t index_of(const std::vector<T>& container, const T& val)
     {
         assert(!c.empty());
 
-        for (size_t i = 0; i < c.size(); i++)
-        {
-            if (c[i] == val) return i;
-        }
-        assert(false), std::terminate();
+        return size_t(std::find(container.begin(), container.end(), val) - container.begin());
     }
 
     template<typename T, std::predicate<T> Pred>
-    size_t index_of(const std::vector<T>& c, Pred&& pred)
+    constexpr size_t index_of(const std::vector<T>& container, Pred&& pred)
     {
         assert(!c.empty());
 
-        for (size_t i = 0; i < c.size(); i++)
-        {
-            if (std::invoke(pred, c[i])) return i;
-        }
-        assert(false), std::terminate();
+        return size_t(std::find_if(container.begin(), container.end(), std::forward<Pred>(pred)) - container.begin());
     }
 
     template<typename T>
-    bool erase_first_v(std::vector<T>& cont, const T& val)
+    constexpr bool erase_first_v(std::vector<T>& container, const T& val) noexcept(std::is_nothrow_move_assignable_v<T>)
     {
-        auto pos = std::find(cont.begin(), cont.end(), val);
+        const auto pos = std::find(container.begin(), container.end(), val);
 
-        if (pos != cont.end())
+        if (pos != container.end())
         {
-            cont.erase(pos);
+            container.erase(pos);
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     template<typename T,
              std::predicate<T, T> Pred = std::equal_to<T>,
              std::strict_weak_order<T, T> Comp = std::less<T>>
-    void erase_duplicates(std::vector<T>& cont, Pred&& pred = std::equal_to<T>{}, Comp&& comp = std::less<T>{})
+    constexpr void erase_duplicates(std::vector<T>& container, Pred&& pred = std::equal_to<T>{}, Comp&& comp = std::less<T>{})
     {
-        std::sort(cont.begin(), cont.end(), std::forward<Comp>(comp));
-        auto last = std::unique(cont.begin(), cont.end(), std::forward<Pred>(pred));
-        cont.erase(last, cont.end());
+        std::sort(container.begin(), container.end(), std::forward<Comp>(comp));
+        const auto last = std::unique(container.begin(), container.end(), std::forward<Pred>(pred));
+        container.erase(last, container.end());
     }
 
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    constexpr size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
         return size_t(std::max_element(first, last, std::forward<Comp>(comp)) - first);
     }
@@ -202,7 +191,7 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    constexpr size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
         return size_t(std::min_element(first, last, std::forward<Comp>(comp)) - first);
     }
@@ -210,21 +199,21 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    auto argmax_v(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    constexpr auto argmax_with_v(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        auto it = std::max_element(first, last, std::forward<Comp>(comp));
+        const auto it = std::max_element(first, last, std::forward<Comp>(comp));
 
-        return std::make_pair(it - first, *it);
+        return std::make_pair(size_t(it - first), *it);
     }
 
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    auto argmin_v(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    constexpr auto argmin_with_v(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        auto it = std::min_element(first, last, std::forward<Comp>(comp));
+        const auto it = std::min_element(first, last, std::forward<Comp>(comp));
 
-        return std::make_pair(it - first, *it);
+        return std::make_pair(size_t(it - first), *it);
     }
 
 }
