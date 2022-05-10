@@ -35,7 +35,7 @@ namespace genetic_algorithm::detail
         return has_lower;
     }
 
-    double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2)
+    double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept
     {
         assert(v1.size() == v2.size());
 
@@ -44,7 +44,7 @@ namespace genetic_algorithm::detail
                                      compose(std::minus<double>{}, square));
     }
 
-    double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point)
+    double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept
     {
         assert(line.size() == point.size());
         assert(!line.empty());
@@ -54,7 +54,7 @@ namespace genetic_algorithm::detail
 
         return std::transform_reduce(point.begin(), point.end(), line.begin(), 0.0,
                                      std::plus<double>(),
-                                     [k](double p, double l) { return square(p - k * l); });
+                                     [k](double p, double l) noexcept { return square(p - k * l); });
     }
 
     double mean(const std::vector<double>& vec) noexcept
@@ -62,7 +62,7 @@ namespace genetic_algorithm::detail
         assert(!vec.empty());
 
         return std::accumulate(vec.begin(), vec.end(), 0.0,
-        [n = vec.size()](double acc, double val)
+        [n = vec.size()](double acc, double val) noexcept
         {
             return acc + val / n;
         });
@@ -80,7 +80,7 @@ namespace genetic_algorithm::detail
         if (vec.size() == 1) return 0.0;
 
         auto var = std::accumulate(vec.begin(), vec.end(), 0.0L,
-        [mean, n = vec.size()](long double acc, double val)
+        [mean, n = vec.size()](long double acc, double val) noexcept
         {
             return acc + square(val - mean) / (n - 1.0);
         });

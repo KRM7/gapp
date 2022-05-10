@@ -40,10 +40,10 @@ namespace genetic_algorithm::detail
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept;
 
     /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
-    double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2);
+    double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept;
 
     /* Calculate the square of the perpendicular distance between a line and a point. */
-    double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point);
+    double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept;
 
     /* Calculate the arithmetic mean of the values in vec. */
     double mean(const std::vector<double>& vec) noexcept;
