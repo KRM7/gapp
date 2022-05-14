@@ -18,7 +18,7 @@ namespace genetic_algorithm::selection
 
         auto selected_indices =
         detail::partial_argsort(fitness_matrix.begin(), fitness_matrix.begin() + ga.population_size(), fitness_matrix.end(),
-        [](const FitnessVector& lhs, const FitnessVector& rhs)
+        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
             return detail::paretoCompareLess(rhs, lhs); // descending
         });
