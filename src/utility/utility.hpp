@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztiï¿½n Rugï¿½si. Subject to the MIT License. */
 
 #ifndef GA_UTILS_HPP
 #define GA_UTILS_HPP
@@ -6,6 +6,8 @@
 #include <limits>
 #include <execution>
 #include <random>
+#include <concepts>
+#include <cstddef>
 #include <exception>
 
 #ifndef GA_EPSILON
@@ -27,5 +29,6 @@
 #endif
 
 #define GA_UNREACHABLE() (assert(false), std::terminate())
+
 
 #endif // !GA_UTILS_HPP
