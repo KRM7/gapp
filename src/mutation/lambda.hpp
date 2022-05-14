@@ -29,7 +29,6 @@ namespace genetic_algorithm::mutation::dtl
 /* IMPLEMENTATION */
 
 #include <utility>
-#include <cassert>
 
 namespace genetic_algorithm::mutation::dtl
 {
@@ -42,7 +41,6 @@ namespace genetic_algorithm::mutation::dtl
     template<Gene T>
     void Lambda<T>::mutate(const GaInfo& ga, Candidate<T>& candidate) const
     {
-        assert(mutate_);
         mutate_(ga, candidate);
     }
 

@@ -42,7 +42,6 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> Lambda<T>::crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
-        assert(crossover_);
         return crossover_(ga, parent1, parent2);
     }
 
