@@ -103,7 +103,7 @@ namespace genetic_algorithm::selection::multi_objective
         return new_pop_idxs;
     }
 
-    bool NSGA2::crowdedCompare(size_t lidx, size_t ridx) const
+    constexpr bool NSGA2::crowdedCompare(size_t lidx, size_t ridx) const noexcept
     {
         if (ranks_[lidx] != ranks_[ridx])
         {
@@ -138,7 +138,7 @@ namespace genetic_algorithm::selection::multi_objective
         }
     }
 
-    void NSGA3::updateIdealPoint(Point& ideal_point, const FitnessMatrix& pop)
+    void NSGA3::updateIdealPoint(Point& ideal_point, const FitnessMatrix& pop) noexcept
     {
         for (const auto& sol : pop)
         {
@@ -241,7 +241,7 @@ namespace genetic_algorithm::selection::multi_objective
         /* Nothing to do */
     }
 
-    bool NSGA3::nichedCompare(size_t lidx, size_t ridx) const
+    constexpr bool NSGA3::nichedCompare(size_t lidx, size_t ridx) const noexcept
     {
         if (sol_props_[lidx].rank != sol_props_[ridx].rank)
         {

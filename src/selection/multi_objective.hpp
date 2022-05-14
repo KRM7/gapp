@@ -25,7 +25,7 @@ namespace genetic_algorithm::selection::multi_objective
         std::vector<double> dists_;
 
         /* Returns true if Pop[lidx] is better than Pop[ridx]. */
-        bool crowdedCompare(size_t lidx, size_t ridx) const;
+        constexpr bool crowdedCompare(size_t lidx, size_t ridx) const noexcept;
     };
 
     /**
@@ -58,7 +58,7 @@ namespace genetic_algorithm::selection::multi_objective
         Point nadir_point_;
         std::vector<Point> extreme_points_;
 
-        static void updateIdealPoint(Point& ideal_point, const FitnessMatrix& pop);
+        static void updateIdealPoint(Point& ideal_point, const FitnessMatrix& pop) noexcept;
         static std::vector<Point> initExtremePoints(const FitnessMatrix& pop, const Point& ideal_point);
         static void updateExtremePoints(std::vector<Point>& extreme_points, const FitnessMatrix& pop, const Point& ideal_point);
         static Point nadirPoint(const std::vector<Point>& extreme_points);
@@ -70,7 +70,7 @@ namespace genetic_algorithm::selection::multi_objective
         static std::vector<size_t> calcNicheCounts(const GaInfo& ga, std::vector<CandidateInfo>& props);
 
         /* Returns true if Pop[lidx] is better than Pop[ridx]. */
-        bool nichedCompare(size_t lidx, size_t ridx) const;
+        constexpr bool nichedCompare(size_t lidx, size_t ridx) const noexcept;
     };
 
 } // namespace genetic_algorithm::selection::multi_objective
