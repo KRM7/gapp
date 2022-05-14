@@ -1,7 +1,6 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "mutation_dtl.hpp"
 #include "../algorithms/integer_ga.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
@@ -16,7 +15,7 @@ namespace genetic_algorithm::mutation::integer
         size_t base = dynamic_cast<const IntegerGA&>(ga).base();
         size_t chrom_len = candidate.chromosome.size();
 
-        size_t mutate_count = dtl::approxMutateCnt(chrom_len, pm_);
+        size_t mutate_count = rng::randomBinomialApprox(chrom_len, pm_);
         auto mutated_indices = rng::sampleUnique(0_sz, chrom_len, mutate_count);
 
         std::vector<GeneType> alleles(base);
