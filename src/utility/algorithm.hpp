@@ -176,7 +176,7 @@ namespace genetic_algorithm::detail
     constexpr void erase_duplicates(std::vector<T>& container, Pred&& pred = std::equal_to<T>{}, Comp&& comp = std::less<T>{})
     {
         std::sort(container.begin(), container.end(), std::forward<Comp>(comp));
-        const auto last = std::unique(container.begin(), container.end(), std::forward<Pred>(pred));
+        auto last = std::unique(container.begin(), container.end(), std::forward<Pred>(pred));
         container.erase(last, container.end());
     }
 
