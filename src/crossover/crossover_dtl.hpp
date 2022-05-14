@@ -46,6 +46,7 @@ namespace genetic_algorithm::crossover::dtl
 
 #include "../utility/rng.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/utility.hpp"
 #include <unordered_set>
 #include <algorithm>
 #include <iterator>
@@ -68,7 +69,7 @@ namespace genetic_algorithm::crossover::dtl
 
         size_t num_crossover_points = std::min(n, chrom_len);
 
-        std::vector<size_t> crossover_points = rng::sampleUnique(chrom_len, num_crossover_points);
+        std::vector<size_t> crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
 
         std::vector<size_t> crossover_mask;
         crossover_mask.reserve(chrom_len);
@@ -217,9 +218,9 @@ namespace genetic_algorithm::crossover::dtl
         Candidate<T> child;
         child.chromosome.reserve(chrom_len);
 
-        std::vector<T> remaining_genes = parent1.chromosome;
+        auto remaining_genes = parent1.chromosome;
+        auto gene = parent1.chromosome[0];
 
-        T gene = parent1.chromosome[0];
         while (child.chromosome.size() != chrom_len)
         {
             /* Add current gene */
@@ -239,7 +240,7 @@ namespace genetic_algorithm::crossover::dtl
             }
             else
             {
-                size_t n = minNeighbourCount(neighbour_lists, gene);
+                size_t n = dtl::minNeighbourCount(neighbour_lists, gene);
 
                 candidate_genes = detail::find_all_v(neighbour_lists[gene].begin(), neighbour_lists[gene].end(),
                 [&neighbour_lists, n](const T& val)
@@ -304,12 +305,12 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-
         Candidate child{ parent2 };
 
         size_t chrom_len = parent1.chromosome.size();
-        size_t range_len = rng::randomInt<size_t>(1, chrom_len - 1);
-        size_t first = rng::randomInt<size_t>(0, chrom_len - range_len);
+        size_t range_len = rng::randomInt(1_sz, chrom_len - 1);
+
+        size_t first = rng::randomInt(0_sz, chrom_len - range_len);
         size_t last = first + range_len;
 
         std::unordered_set<T> direct;
