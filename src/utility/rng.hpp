@@ -56,6 +56,14 @@ namespace genetic_algorithm::rng
     template<std::floating_point RealType = double>
     RealType randomNormal(RealType mean, RealType SD);
 
+    /** Generates a random integer from a binomial distribution with the parameters n and p. */
+    template<std::integral IntType = int>
+    IntType randomBinomial(IntType n, double p);
+
+    /** Generates a random integer from a distribution that is the approximation of a binomial distribution with the parameters n and p. */
+    template<std::integral IntType = int>
+    IntType randomBinomialApprox(IntType n, double p);
+
     /** Generates a random integer of type IntType from a uniform distribution on the closed interval [l_bound, u_bound]. */
     template<std::integral IntType = int>
     IntType randomInt(IntType l_bound, IntType u_bound);
@@ -149,6 +157,32 @@ namespace genetic_algorithm::rng
         assert(SD > 0.0);
 
         return std::normal_distribution{ mean, SD }(prng);
+    }
+
+    template<std::integral IntType>
+    IntType randomBinomial(IntType n, double p)
+    {
+        return std::binomial_distribution{ n, p }(prng);
+    }
+
+    template<std::integral IntType>
+    IntType randomBinomialApprox(IntType n, double p)
+    {
+        double mean = n * p;
+        if (mean >= 2.0)
+        {
+            double SD = std::sqrt(mean * (1.0 - p));
+
+            double r = randomNormal(mean, SD);
+            while (r <= -0.5) { r = randomNormal(mean, SD); }
+
+            IntType result = IntType(std::round(r));
+            return std::min(result, n);
+        }
+        else
+        {
+            return randomBinomial(n, p);
+        }
     }
 
     template<std::integral IntType>
