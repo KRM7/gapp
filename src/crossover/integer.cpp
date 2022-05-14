@@ -71,15 +71,15 @@ namespace genetic_algorithm::crossover::integer
         {
             throw std::invalid_argument("The parent chromosomes must be the same length for the uniform crossover.");
         }
+        
+        size_t num_swapped_indices = rng::randomBinomialApprox(chrom_len, ps_);
+        auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped_indices);
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
-        for (size_t i = 0; i < chrom_len; i++)
+        for (const auto& idx : swapped_indices)
         {
-            if (rng::randomReal() <= ps_)
-            {
-                std::swap(child1.chromosome[i], child2.chromosome[i]);
-            }
+            std::swap(child1.chromosome, child2.chromosome);
         }
 
         return { child1, child2 };
