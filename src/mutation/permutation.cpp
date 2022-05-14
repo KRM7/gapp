@@ -2,6 +2,7 @@
 
 #include "permutation.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
@@ -37,7 +38,7 @@ namespace genetic_algorithm::mutation::perm
             size_t max_len = std::max(size_t(range_max_ * chrom_len), min_len);
             size_t range_len = rng::randomInt(min_len, max_len);
 
-            size_t first = rng::randomInt<size_t>(0, chrom_len - range_len);
+            size_t first = rng::randomInt(0_sz, chrom_len - range_len);
             size_t last = first + range_len;
 
             std::reverse(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last);
@@ -50,7 +51,7 @@ namespace genetic_algorithm::mutation::perm
 
         if (rng::randomReal() < pm_)
         {
-            auto idxs = rng::sampleUnique(candidate.chromosome.size(), 2);
+            auto idxs = rng::sampleUnique(0_sz, candidate.chromosome.size(), 2);
 
             using std::swap;
             swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[1]]);
@@ -63,7 +64,7 @@ namespace genetic_algorithm::mutation::perm
 
         if (rng::randomReal() < pm_)
         {
-            auto idxs = rng::sampleUnique(candidate.chromosome.size(), 3);
+            auto idxs = rng::sampleUnique(0_sz, candidate.chromosome.size(), 3);
 
             using std::swap;
             swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[1]]);
@@ -99,7 +100,7 @@ namespace genetic_algorithm::mutation::perm
             size_t max_len = std::max(size_t(range_max_ * chrom_len), min_len);
             size_t range_len = rng::randomInt(min_len, max_len);
 
-            size_t first = rng::randomInt<size_t>(0, chrom_len - range_len);
+            size_t first = rng::randomInt(0_sz, chrom_len - range_len);
             size_t last = first + range_len;
 
             std::shuffle(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last, rng::prng);
@@ -133,7 +134,8 @@ namespace genetic_algorithm::mutation::perm
             size_t min_len = 2;
             size_t max_len = std::max(size_t(range_max_ * chrom_len), min_len);
             size_t range_len = rng::randomInt(min_len, max_len);
-            size_t first = rng::randomInt<size_t>(0, chrom_len - range_len);
+
+            size_t first = rng::randomInt(0_sz, chrom_len - range_len);
             size_t last = first + range_len;
 
             std::vector<GeneType> moved_elements(std::make_move_iterator(candidate.chromosome.begin()) + first,
@@ -141,7 +143,7 @@ namespace genetic_algorithm::mutation::perm
             candidate.chromosome.erase(candidate.chromosome.begin() + first,
                                        candidate.chromosome.begin() + last);
 
-            size_t new_pos = rng::randomInt(size_t{ 0 }, candidate.chromosome.size());
+            size_t new_pos = rng::randomInt(0_sz, candidate.chromosome.size());
             candidate.chromosome.insert(candidate.chromosome.begin() + new_pos,
                                         std::make_move_iterator(moved_elements.begin()),
                                         std::make_move_iterator(moved_elements.end()));

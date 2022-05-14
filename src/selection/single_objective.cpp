@@ -3,6 +3,7 @@
 #include "single_objective.hpp"
 #include "../algorithms/ga_info.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
 #include <limits>
 #include <utility>
 #include <stdexcept>
@@ -46,7 +47,7 @@ namespace genetic_algorithm::selection::single_objective
         assert(pop.size() >= tourney_size_);
         assert(std::all_of(pop.begin(), pop.end(), [](const FitnessVector& sol) { return sol.size() == 1; }));
 
-        auto candidates = rng::sampleUnique(pop.size(), tourney_size_);
+        auto candidates = rng::sampleUnique(0_sz, pop.size(), tourney_size_);
 
         return *std::max_element(candidates.begin(), candidates.end(),
         [&pop](size_t lidx, size_t ridx)

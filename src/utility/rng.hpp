@@ -75,10 +75,6 @@ namespace genetic_algorithm::rng
     /** Generates a random boolean value from a uniform distribution. */
     inline bool randomBool() noexcept;
 
-    /** Generates n unique integers from the range [0, u_bound). */
-    template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType u_bound, size_t n);
-
     /** Generates n unique integers from the range [l_bound, u_bound). */
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t n);
@@ -164,17 +160,17 @@ namespace genetic_algorithm::rng
     }
 
     template<detail::IndexableContainer T>
-    size_t randomIdx(const T& cont)
+    size_t randomIdx(const T& container)
     {
-        assert(!cont.empty());
+        assert(!container.empty());
 
-        return std::uniform_int_distribution<size_t>{ 0, cont.size() - 1 }(prng);
+        return std::uniform_int_distribution{ 0_sz, container.size() - 1 }(prng);
     }
 
     template<detail::Container T>
     auto randomElement(const T& cont) -> typename T::value_type
     {
-        size_t n = randomInt<size_t>( 0, cont.size() - 1 );
+        size_t n = rng::randomInt(0_sz, cont.size() - 1);
 
         return *std::next(cont.begin(), n);
     }
@@ -182,7 +178,7 @@ namespace genetic_algorithm::rng
     template<std::input_iterator Iter>
     auto randomElement(Iter first, Iter last)
     {
-        ptrdiff_t n = randomInt<ptrdiff_t>(0, std::distance(first, last) - 1);
+        auto n = rng::randomInt<ptrdiff_t>(0, std::distance(first, last) - 1);
 
         return *std::next(first, n);
     }
@@ -193,16 +189,12 @@ namespace genetic_algorithm::rng
     }
 
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType u_bound, size_t n)
-    {
-        return sampleUnique<IntType>(0, u_bound, n);
-    }
-
-    template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t n)
     {
         assert(l_bound <= u_bound);
         assert(u_bound - l_bound >= n);
+
+        if (n == 1) return { randomInt(l_bound, u_bound - 1) };
 
         std::vector<IntType> nums(u_bound - l_bound);
         std::iota(nums.begin(), nums.end(), l_bound);  // [l_bound, u_bound)
