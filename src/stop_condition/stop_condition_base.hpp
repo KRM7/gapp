@@ -43,7 +43,7 @@ namespace genetic_algorithm::stopping::dtl
     public:
         using StopConditionFunction = std::function<bool(const GaInfo&)>;
 
-        Lambda(StopConditionFunction f);
+        explicit Lambda(StopConditionFunction f);
 
         bool operator()(const GaInfo& ga) override;
     private:
