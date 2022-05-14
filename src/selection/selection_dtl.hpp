@@ -25,7 +25,7 @@ namespace genetic_algorithm::selection::dtl
     std::vector<double> boltzmannWeights(const FitnessMatrix& pop, double temperature);
 
     /* Default temperature function used for the Boltzmann selection. */
-    double boltzmannDefaultTemp(size_t gen, size_t max_gen);
+    double boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept;
 
     /* Calculate the cumulative distribution function of the population from the selection weights. */
     std::vector<double> weightsToCdf(const std::vector<double>& selection_weights);

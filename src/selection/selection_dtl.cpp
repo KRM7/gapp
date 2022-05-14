@@ -86,7 +86,7 @@ namespace genetic_algorithm::selection::dtl
         return fvec;
     }
 
-    double boltzmannDefaultTemp(size_t gen, size_t max_gen)
+    double boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept
     {
         return -4.0 / (1.0 + std::exp(-10.0 * (double(gen) / max_gen) + 3.0)) + 4.0 + 0.25;
     }
