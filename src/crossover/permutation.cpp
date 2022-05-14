@@ -3,6 +3,7 @@
 #include "permutation.hpp"
 #include "crossover_dtl.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
@@ -20,9 +21,9 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        size_t range_len = rng::randomInt<size_t>(1, chrom_len - 1);
-        size_t first = rng::randomInt<size_t>(0, chrom_len - range_len);
-        size_t last = first + range_len;
+        size_t length = rng::randomInt(1_sz, chrom_len - 1);
+        size_t first = rng::randomInt(0_sz, chrom_len - length);
+        size_t last = first + length;
 
         auto child1 = dtl::order1CrossoverImpl(parent1, parent2, first, last);
         auto child2 = dtl::order1CrossoverImpl(parent2, parent1, first, last);
@@ -41,9 +42,9 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        size_t range_len = rng::randomInt<size_t>(1, chrom_len - 1);
-        size_t first = rng::randomInt<size_t>(0, chrom_len - range_len);
-        size_t last = first + range_len;
+        size_t length = rng::randomInt(1_sz, chrom_len - 1);
+        size_t first = rng::randomInt(0_sz, chrom_len - length);
+        size_t last = first + length;
 
         auto child1 = dtl::order2CrossoverImpl(parent1, parent2, first, last);
         auto child2 = dtl::order2CrossoverImpl(parent2, parent1, first, last);
@@ -62,7 +63,8 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        auto idxs = rng::sampleUnique(chrom_len, rng::randomInt<size_t>(1, chrom_len - 1));
+        size_t ns = rng::randomInt(1_sz, chrom_len - 1);
+        auto idxs = rng::sampleUnique(0_sz, chrom_len, ns);
 
         auto child1 = dtl::positionCrossoverImpl(parent1, parent2, idxs);
         auto child2 = dtl::positionCrossoverImpl(parent2, parent1, idxs);
@@ -87,13 +89,13 @@ namespace genetic_algorithm::crossover::perm
 
         for (size_t i = 0; i < chrom_len; i++)
         {
-            size_t cycle_idx = detail::index_of(cycles,
-            [&gene = parent1.chromosome[i]](const auto& cycle)
+            size_t cycle = detail::index_of(cycles,
+            [gene = parent1.chromosome[i]](const auto& cycle)
             {
                 return detail::contains(cycle.begin(), cycle.end(), gene);
             });
 
-            if (cycle_idx % 2)
+            if (cycle % 2)
             {
                 child1.chromosome[i] = parent2.chromosome[i];
                 child2.chromosome[i] = parent1.chromosome[i];
