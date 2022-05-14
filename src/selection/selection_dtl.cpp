@@ -3,7 +3,7 @@
 #include "selection_dtl.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"
-#include "../utility/utils.hpp"
+#include "../utility/utility.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include <vector>

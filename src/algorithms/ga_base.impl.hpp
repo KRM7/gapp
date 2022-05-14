@@ -13,7 +13,7 @@
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"
 #include "../population/population.hpp"
-#include "../utility/utils.hpp"
+#include "../utility/utility.hpp"
 #include <execution>
 #include <numeric>
 #include <limits>

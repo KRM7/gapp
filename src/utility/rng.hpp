@@ -3,7 +3,7 @@
 #ifndef GA_RANDOM_HPP
 #define GA_RANDOM_HPP
 
-#include "utils.hpp"
+#include "utility.hpp"
 #include "concepts.hpp"
 #include <vector>
 #include <random>

@@ -3,7 +3,7 @@
 #ifndef GA_MATH_HPP
 #define GA_MATH_HPP
 
-#include "utils.hpp"
+#include "utility.hpp"
 #include <vector>
 #include <concepts>
 
