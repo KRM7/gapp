@@ -38,7 +38,7 @@ namespace genetic_algorithm::stopping
         *
         * @param max_fitness_evals The maximum number of fitness function evaluations to perform.
         */
-        void max_fitness_evals(size_t max_fitness_evals);
+        void max_fitness_evals(size_t max_fitness_evals) noexcept;
 
         /** @returns The number of fitness function evaluations allowed. */
         [[nodiscard]]
@@ -119,7 +119,7 @@ namespace genetic_algorithm::stopping
         *
         * @param delta The minimum fitness difference considered an improvement.
         */
-        void delta(double delta);
+        void delta(double delta) noexcept;
 
         /** @returns The currently set minimum fitness improvement value. */
         [[nodiscard]]
@@ -131,7 +131,7 @@ namespace genetic_algorithm::stopping
         size_t cntr_;
         std::vector<double> best_fitness_mean_;
 
-        void resetCntr();
+        void resetCntr() noexcept;
     };
 
     /**
@@ -172,7 +172,7 @@ namespace genetic_algorithm::stopping
         *
         * @param delta The minimum fitness difference considered an improvement.
         */
-        void delta(double delta);
+        void delta(double delta) noexcept;
 
         /** @returns The currently set minimum fitness improvement value. */
         [[nodiscard]]
@@ -184,7 +184,7 @@ namespace genetic_algorithm::stopping
         size_t cntr_;
         std::vector<double> best_fitness_max_;
 
-        void resetCntr();
+        void resetCntr() noexcept;
     };
 
     /**

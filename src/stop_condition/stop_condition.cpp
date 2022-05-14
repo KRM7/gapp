@@ -16,7 +16,7 @@ namespace genetic_algorithm::stopping
         this->max_fitness_evals(max_fitness_evals);
     }
 
-    void FitnessEvals::max_fitness_evals(size_t max_fitness_evals)
+    void FitnessEvals::max_fitness_evals(size_t max_fitness_evals) noexcept
     {
         max_fitness_evals_ = max_fitness_evals;
     }
@@ -52,7 +52,7 @@ namespace genetic_algorithm::stopping
         auto fitness_matrix = ga.fitness_matrix();
 
         return std::any_of(fitness_matrix.begin(), fitness_matrix.end(),
-        [this](const auto& fvec)
+        [this](const auto& fvec) noexcept
         {
             return detail::paretoCompareLess(fitness_threshold_, fvec);
         });
@@ -71,12 +71,12 @@ namespace genetic_algorithm::stopping
         resetCntr();
     }
 
-    void FitnessMeanStall::delta(double delta)
+    void FitnessMeanStall::delta(double delta) noexcept
     {
         delta_ = delta;
     }
 
-    void FitnessMeanStall::resetCntr()
+    void FitnessMeanStall::resetCntr() noexcept
     {
         cntr_ = patience_ + 1;
     }
@@ -129,12 +129,12 @@ namespace genetic_algorithm::stopping
         resetCntr();
     }
 
-    void FitnessBestStall::delta(double delta)
+    void FitnessBestStall::delta(double delta) noexcept
     {
         delta_ = delta;
     }
 
-    void FitnessBestStall::resetCntr()
+    void FitnessBestStall::resetCntr() noexcept
     {
         cntr_ = patience_ + 1;
     }
