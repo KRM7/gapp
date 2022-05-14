@@ -1,9 +1,11 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
+#include "mutation_dtl.hpp"
 #include "../algorithms/ga_info.hpp"
 #include "../algorithms/real_ga.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -13,19 +15,19 @@ namespace genetic_algorithm::mutation::real
 {
     void Uniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
-        auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
         if (candidate.chromosome.size() != bounds.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Uniform mutation.");
         }
 
-        for (size_t i = 0; i < candidate.chromosome.size(); i++)
+        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+
+        for (const auto& idx : mutated_indices)
         {
-            if (rng::randomReal() < pm_)
-            {
-                candidate.chromosome[i] = rng::randomReal(bounds[i].first, bounds[i].second);
-            }
+            candidate.chromosome[idx] = rng::randomReal(bounds[idx].first, bounds[idx].second);
         }
     }
 
@@ -47,30 +49,26 @@ namespace genetic_algorithm::mutation::real
 
     void NonUniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
-        auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
         if (candidate.chromosome.size() != bounds.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Non-Uniform mutation.");
         }
 
-        for (size_t i = 0; i < candidate.chromosome.size(); i++)
-        {
-            if (rng::randomReal() < pm_)
-            {
-                GeneType rand = rng::randomReal<GeneType>();
-                GeneType exponent = std::pow(1.0 - GeneType(ga.generation_cntr()) / ga.max_gen(), beta_);
+        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
-                if (rng::randomBool())
-                {
-                    candidate.chromosome[i] += (bounds[i].second - candidate.chromosome[i]) * (1.0 - std::pow(rand, exponent));
-                }
-                else
-                {
-                    candidate.chromosome[i] -= (candidate.chromosome[i] - bounds[i].first) * (1.0 - std::pow(rand, exponent));
-                }
-                candidate.chromosome[i] = std::clamp(candidate.chromosome[i], bounds[i].first, bounds[i].second);
-            }
+        for (const auto& idx : mutated_indices)
+        {
+            GeneType rand = rng::randomReal<GeneType>();
+            GeneType exponent = std::pow(1.0 - GeneType(ga.generation_cntr()) / ga.max_gen(), beta_);
+
+            GeneType multiplier = 1.0 - std::pow(rand, exponent);
+            GeneType bound = rng::randomBool() ? bounds[idx].second : bounds[idx].first;
+
+            candidate.chromosome[idx] += (bound - candidate.chromosome[idx]) * multiplier;
+            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
         }
     }
 
@@ -92,31 +90,22 @@ namespace genetic_algorithm::mutation::real
 
     void Gauss::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
-        auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
         if (candidate.chromosome.size() != bounds.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Gauss mutation.");
         }
 
-        for (size_t i = 0; i < candidate.chromosome.size(); i++)
+        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+
+        for (const auto& idx : mutated_indices)
         {
-            if (rng::randomReal() <= pm_)
-            {
-                GeneType SD = (bounds[i].second - bounds[i].first) / sigma_;
-                GeneType new_gene = candidate.chromosome[i];
+            GeneType SD = (bounds[idx].second - bounds[idx].first) / sigma_;
 
-                for (size_t j = 0; j < NMAX_RESAMPLE; j++)
-                {
-                    new_gene = candidate.chromosome[i] + rng::randomNormal<GeneType>(0.0, SD);
-
-                    if (bounds[i].first <= new_gene && new_gene <= bounds[i].second)
-                    {
-                        break;
-                    }
-                }
-                candidate.chromosome[i] = std::clamp(new_gene, bounds[i].first, bounds[i].second);
-            }
+            candidate.chromosome[idx] += rng::randomNormal<GeneType>(0.0, SD);
+            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
         }
     }
 
@@ -138,48 +127,48 @@ namespace genetic_algorithm::mutation::real
 
     void Polynomial::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
-        auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
         if (candidate.chromosome.size() != bounds.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Polynomial mutation.");
         }
 
-        for (size_t i = 0; i < candidate.chromosome.size(); i++)
+        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+
+        for (const auto& idx : mutated_indices)
         {
-            if (rng::randomReal() < pm_)
+            GeneType alpha = rng::randomReal<GeneType>();
+            if (alpha <= 0.5)
             {
-                GeneType alpha = rng::randomReal();
-                if (alpha <= 0.5)
-                {
-                    GeneType delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
-                    candidate.chromosome[i] += delta * (candidate.chromosome[i] - bounds[i].first);
-                }
-                else
-                {
-                    GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
-                    candidate.chromosome[i] += delta * (bounds[i].second - candidate.chromosome[i]);
-                }
-                candidate.chromosome[i] = std::clamp(candidate.chromosome[i], bounds[i].first, bounds[i].second);
+                GeneType delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
+                candidate.chromosome[idx] += delta * (candidate.chromosome[idx] - bounds[idx].first);
             }
+            else
+            {
+                GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
+                candidate.chromosome[idx] += delta * (bounds[idx].second - candidate.chromosome[idx]);
+            }
+            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
         }
     }
 
     void Boundary::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
-        auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
         if (candidate.chromosome.size() != bounds.size())
         {
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Boundary mutation.");
         }
 
-        for (size_t i = 0; i < candidate.chromosome.size(); i++)
+        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+
+        for (const auto& idx : mutated_indices)
         {
-            if (rng::randomReal() < pm_)
-            {
-                candidate.chromosome[i] = rng::randomBool() ? bounds[i].first : bounds[i].second;
-            }
+            candidate.chromosome[idx] = rng::randomBool() ? bounds[idx].first : bounds[idx].second;
         }
     }
 
