@@ -11,12 +11,12 @@ namespace genetic_algorithm::crossover::binary
 {
     auto SinglePoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        return dtl::nPointCrossoverImpl(parent1, parent2, 1);
+        return dtl::singlePointCrossoverImpl(parent1, parent2);
     }
 
     auto TwoPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        return dtl::nPointCrossoverImpl(parent1, parent2, 2);
+        return dtl::twoPointCrossoverImpl(parent1, parent2);
     }
 
     NPoint::NPoint(size_t n)
@@ -36,7 +36,12 @@ namespace genetic_algorithm::crossover::binary
 
     auto NPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        return dtl::nPointCrossoverImpl(parent1, parent2, n_);
+        if (n_ == 1)
+            return dtl::singlePointCrossoverImpl(parent1, parent2);
+        else if (n_ == 2)
+            return dtl::twoPointCrossoverImpl(parent1, parent2);
+        else
+            return dtl::nPointCrossoverImpl(parent1, parent2, n_);
     }
 
     Uniform::Uniform(double ps)
