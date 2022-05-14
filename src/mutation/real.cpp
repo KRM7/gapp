@@ -1,7 +1,6 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
-#include "mutation_dtl.hpp"
 #include "../algorithms/ga_info.hpp"
 #include "../algorithms/real_ga.hpp"
 #include "../utility/rng.hpp"
@@ -22,7 +21,7 @@ namespace genetic_algorithm::mutation::real
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Uniform mutation.");
         }
 
-        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), pm_);
         auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
@@ -56,7 +55,7 @@ namespace genetic_algorithm::mutation::real
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Non-Uniform mutation.");
         }
 
-        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), pm_);
         auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
@@ -97,7 +96,7 @@ namespace genetic_algorithm::mutation::real
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Gauss mutation.");
         }
 
-        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), pm_);
         auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
@@ -134,7 +133,7 @@ namespace genetic_algorithm::mutation::real
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Polynomial mutation.");
         }
 
-        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), pm_);
         auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
@@ -163,7 +162,7 @@ namespace genetic_algorithm::mutation::real
             throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Boundary mutation.");
         }
 
-        size_t mutate_count = dtl::approxMutateCnt(candidate.chromosome.size(), pm_);
+        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), pm_);
         auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
