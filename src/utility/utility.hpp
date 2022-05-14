@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Krisztiï¿½n Rugï¿½si. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_UTILS_HPP
 #define GA_UTILS_HPP
@@ -30,5 +30,13 @@
 
 #define GA_UNREACHABLE() (assert(false), std::terminate())
 
+namespace genetic_algorithm
+{
+    constexpr std::size_t operator ""_sz(unsigned long long n)
+    {
+        return std::size_t{ n };
+    }
+
+} // namespace genetic_algorithm
 
 #endif // !GA_UTILS_HPP
