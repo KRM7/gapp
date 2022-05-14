@@ -568,7 +568,7 @@ public:
 
 private:
 
-    static double g(const vector<double>& xm)
+    static double g(const vector<double>& xm) noexcept
     {
         double g = double(xm.size());
         for (const auto& val : xm)
@@ -652,7 +652,7 @@ public:
 
 private:
 
-    static double g(const vector<double>& xm)
+    static double g(const vector<double>& xm) noexcept
     {
         double g = 0.0;
         for (const auto& val : xm)
