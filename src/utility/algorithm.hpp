@@ -144,7 +144,7 @@ namespace genetic_algorithm::detail
     template<typename T>
     constexpr size_t index_of(const std::vector<T>& container, const T& val)
     {
-        assert(!c.empty());
+        assert(!container.empty());
 
         return size_t(std::find(container.begin(), container.end(), val) - container.begin());
     }
@@ -152,7 +152,7 @@ namespace genetic_algorithm::detail
     template<typename T, std::predicate<T> Pred>
     constexpr size_t index_of(const std::vector<T>& container, Pred&& pred)
     {
-        assert(!c.empty());
+        assert(!container.empty());
 
         return size_t(std::find_if(container.begin(), container.end(), std::forward<Pred>(pred)) - container.begin());
     }

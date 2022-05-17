@@ -155,7 +155,7 @@ namespace genetic_algorithm::detail
     {
         assert(!pop.empty());
         assert(pop[0].fitness.size() > 0);
-        assert(std::all_of(pop.begin(), pop.end(), [](const auto& sol) { sol.fitness.size() == pop[0].fitness.size(); }));
+        assert(std::all_of(pop.begin(), pop.end(), [&pop](const auto& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
         size_t dim = pop[0].fitness.size();
 
