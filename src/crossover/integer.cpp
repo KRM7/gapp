@@ -79,7 +79,7 @@ namespace genetic_algorithm::crossover::integer
 
         for (const auto& idx : swapped_indices)
         {
-            std::swap(child1.chromosome, child2.chromosome);
+            std::swap(child1.chromosome[idx], child2.chromosome[idx]);
         }
 
         return { child1, child2 };
