@@ -210,6 +210,8 @@ namespace genetic_algorithm::selection::dtl
 
         while (sorted_indices.size() != pop_size)
         {
+            size_t next_rank = current_first->second + 1;
+
             /* Remove the current front from the population and find the next one. */
             for (; current_first != current_last; current_first++)
             {
@@ -218,7 +220,7 @@ namespace genetic_algorithm::selection::dtl
                     if (--better_count[worse_idx] == 0)
                     {
                         current_last--;
-                        sorted_indices.emplace_back(worse_idx, current_first->second + 1);
+                        sorted_indices.emplace_back(worse_idx, next_rank);
                         current_last++;
                     }
                 }
@@ -241,14 +243,32 @@ namespace genetic_algorithm::selection::dtl
         return ranks;
     }
 
-    ParetoFronts::iterator nextFrontBegin(ParetoFronts& pareto_fronts, ParetoFronts::iterator current)
+    ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept
     {
-        return std::find_if(current, pareto_fronts.end(),
-        [current_rank = current->second](const std::pair<size_t, size_t>& elem)
+        return std::find_if(current, last,
+        [current_rank = current->second](const std::pair<size_t, size_t>& elem) noexcept
         {
             size_t rank = elem.second;
             return rank != current_rank;
         });
+    }
+
+    auto paretoFrontBounds(ParetoFronts& pareto_fronts) -> std::vector<std::pair<ParetoFronts::iterator, ParetoFronts::iterator>>
+    {
+        using Iter = ParetoFronts::iterator;
+        using IterPair = std::pair<Iter, Iter>;
+
+        std::vector<IterPair> front_bounds;
+        front_bounds.reserve(pareto_fronts.back().second);
+
+        for (auto first = pareto_fronts.begin(); first != pareto_fronts.end(); )
+        {
+            auto last = nextFrontBegin(first, pareto_fronts.end());
+            front_bounds.emplace_back(first, last);
+            first = last;
+        }
+
+        return front_bounds;
     }
 
     std::vector<double> crowdingDistances(const FitnessMatrix& fmat, ParetoFronts pfronts)
@@ -258,34 +278,26 @@ namespace genetic_algorithm::selection::dtl
         using Iter = ParetoFronts::iterator;
         using IterPair = std::pair<Iter, Iter>;
 
-        std::vector<std::pair<Iter, Iter>> front_bounds;
-        front_bounds.reserve(pfronts.back().second);
-
-        for (auto first = pfronts.begin(); first != pfronts.end(); )
-        {
-            auto last = nextFrontBegin(pfronts, first);
-
-            front_bounds.emplace_back(first, last);
-            first = last;
-        }
+        auto front_bounds = paretoFrontBounds(pfronts);
 
         std::for_each(GA_EXECUTION_UNSEQ, front_bounds.begin(), front_bounds.end(),
-        [&pfronts, &distances, &fmat](const IterPair& bounds)
+        [&distances, &fmat](const IterPair& bounds) noexcept
         {
             const auto& [first, last] = bounds;
 
-            for (size_t d = 0; d < fmat[0].size(); d++)
+            /* Calculate distances along each fitness dimension */
+            for (size_t dim = 0; dim < fmat[0].size(); dim++)
             {
                 std::sort(first, last,
-                [&fmat, d](const auto& lhs, const auto& rhs)
+                [&fmat, dim](const auto& lhs, const auto& rhs) noexcept
                 {
-                    return fmat[lhs.first][d] < fmat[rhs.first][d];
+                    return fmat[lhs.first][dim] < fmat[rhs.first][dim];
                 });
 
                 const auto& front = *first;
                 const auto& back  = *(last - 1);
 
-                double finterval = fmat[back.first][d] - fmat[front.first][d];
+                double finterval = fmat[back.first][dim] - fmat[front.first][dim];
                 finterval = std::max(finterval, 1E-6);
 
                 distances[front.first] = std::numeric_limits<double>::infinity();
@@ -297,37 +309,10 @@ namespace genetic_algorithm::selection::dtl
                     size_t next = std::next(it)->first;
                     size_t prev = std::prev(it)->first;
 
-                    distances[this_] += (fmat[next][d] - fmat[prev][d]) / finterval;
+                    distances[this_] += (fmat[next][dim] - fmat[prev][dim]) / finterval;
                 }
             }
         });
-
-        //std::for_each(GA_EXECUTION_UNSEQ, pfronts.begin(), pfronts.end(),
-        //[&fmat, &distances](std::vector<size_t>& pfront)
-        //{
-        //    /* Calculate the distances along each fitness component. */
-        //    for (size_t d = 0; d < fmat[0].size(); d++)
-        //    {
-        //        std::sort(pfront.begin(), pfront.end(),
-        //        [&fmat, d](size_t lidx, size_t ridx)
-        //        {
-        //            return fmat[lidx][d] < fmat[ridx][d];
-        //        });
-
-        //        double finterval = fmat[pfront.back()][d] - fmat[pfront.front()][d];
-        //        finterval = std::max(finterval, 1E-6);
-
-        //        distances[pfront.front()] = distances[pfront.back()] = std::numeric_limits<double>::infinity();
-        //        for (size_t i = 1; i < pfront.size() - 1; i++)
-        //        {
-        //            size_t this_ = pfront[i];
-        //            size_t next = pfront[i + 1];
-        //            size_t prev = pfront[i - 1];
-
-        //            distances[this_] += (fmat[next][d] - fmat[prev][d]) / finterval;
-        //        }
-        //    }
-        //});
 
         return distances;
     }

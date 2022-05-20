@@ -40,7 +40,7 @@ namespace genetic_algorithm::selection::dtl
             : idxs(idxs), ranks(ranks) {}
     };
 
-    /* Sorted (idx, rank) pairs */
+    /* Sorted (idx, rank) pairs. */
     using ParetoFronts = std::vector<std::pair<size_t, size_t>>;
 
     /* Non-dominated sorting for the multi-objective algorithms. Returns the pareto fronts of the population and the ranks of each candidate. */
@@ -52,8 +52,11 @@ namespace genetic_algorithm::selection::dtl
     /* Returns the rank of each candidate based on the pareto fronts. */
     std::vector<size_t> paretoRanks(const ParetoFronts& pareto_fronts);
 
-    /* Find the first element of the front following the front which current is a part of. */
-    ParetoFronts::iterator nextFrontBegin(ParetoFronts& pareto_fronts, ParetoFronts::iterator current);
+    /* Finds the first element of the front following the front which current is a part of. */
+    ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept;
+
+    /* Finds the first and last elements of each front in the pareto fronts vector. */
+    auto paretoFrontBounds(ParetoFronts& pareto_fronts) -> std::vector<std::pair<ParetoFronts::iterator, ParetoFronts::iterator>>;
 
     /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */
     std::vector<double> crowdingDistances(const FitnessMatrix& fmat, ParetoFronts pfronts);
