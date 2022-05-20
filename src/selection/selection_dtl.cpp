@@ -21,7 +21,7 @@ namespace genetic_algorithm::selection::dtl
         /* Roulette selection wouldn't work for negative fitness values. */
         double offset = *std::min_element(fvec.begin(), fvec.end());
         offset = 2.0 * offset;              /* The selection probability of the worst candidate should also be > 0. */
-        offset = std::min(0.0, offset);     /* Only adjust fitness values if it's neccesary (has negative fitness). */
+        offset = std::min(0.0, offset);     /* Only adjust fitness values if it's neccesary (there are negative fitness values). */
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(),
         [offset](double f)
@@ -36,8 +36,8 @@ namespace genetic_algorithm::selection::dtl
     {
         assert(0.0 <= wmin && wmin <= wmax);
 
-        const auto fvec = detail::toFitnessVector(fmat);
-        const auto indices = detail::argsort(fvec.begin(), fvec.end());
+        auto fvec = detail::toFitnessVector(fmat);
+        auto indices = detail::argsort(fvec.begin(), fvec.end());
 
         std::vector<double> weights(fmat.size());
         for (size_t i = 0; i < indices.size(); i++)
@@ -75,7 +75,7 @@ namespace genetic_algorithm::selection::dtl
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(),
         // dont try to capture the iterators by ref or value here
-        [fmin = *fmin, fmax = *fmax, temperature](double f)
+        [fmin = *fmin, fmax = *fmax, temperature](double f) noexcept
         {
             double df = std::max(fmax - fmin, 1E-6);
             double fnorm = (f - fmin) / df;
