@@ -76,13 +76,14 @@ namespace genetic_algorithm::selection::multi_objective
         if (new_pop.size() != ga.population_size())
         {
             size_t remaining_indices = ga.population_size() - new_pop.size();
+
             /* Keep track of the candidates added from the partial front,
              * the crowding distances will only need to be updated for these candidates. */
             dtl::ParetoFronts partial_front;
             partial_front.reserve(remaining_indices);
 
             std::sort(first, last,
-            [this](const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs)
+            [this](const auto& lhs, const auto& rhs) noexcept
             {
                 return crowdedCompare(lhs.first, rhs.first);
             });
@@ -104,8 +105,8 @@ namespace genetic_algorithm::selection::multi_objective
                 new_dists.push_back(new_dist);
             }
         }
-        ranks_ = new_ranks;
-        dists_ = new_dists;
+        ranks_ = std::move(new_ranks);
+        dists_ = std::move(new_dists);
 
         return new_pop;
     }
