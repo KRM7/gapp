@@ -280,7 +280,7 @@ namespace genetic_algorithm::selection::dtl
 
         auto front_bounds = paretoFrontBounds(pfronts);
 
-        std::for_each(GA_EXECUTION_UNSEQ, front_bounds.begin(), front_bounds.end(),
+        std::for_each(front_bounds.begin(), front_bounds.end(),
         [&distances, &fmat](const IterPair& bounds) noexcept
         {
             const auto& [first, last] = bounds;
