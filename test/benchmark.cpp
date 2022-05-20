@@ -11,7 +11,7 @@
 
 int main()
 {
-    binaryRastriginTest();
+    /*binaryRastriginTest();
     binaryRosenbrockTest();
     binarySchwefelTest();
     binaryGriewankTest();
@@ -32,23 +32,23 @@ int main()
     perm439Test();
 
     integerTest1();
-    integerTest2();
+    integerTest2();*/
 
     nsga2KurTest();
     nsga2Zdt2Test();
     nsga2Zdt3Test();
     nsga2Zdt6Test();
 
-    nsga3KurTest();
-    nsga3Zdt2Test();
-    nsga3Zdt3Test();
-    nsga3Zdt6Test();
+    //nsga3KurTest();
+    //nsga3Zdt2Test();
+    //nsga3Zdt3Test();
+    //nsga3Zdt6Test();
 
-    nsga2Dtlz1Test();
-    nsga2Dtlz2Test();
+    //nsga2Dtlz1Test();
+    //nsga2Dtlz2Test();
 
-    nsga3Dtlz1Test();
-    nsga3Dtlz2Test();
+    //nsga3Dtlz1Test();
+    //nsga3Dtlz2Test();
 
     //timeGA();
 
