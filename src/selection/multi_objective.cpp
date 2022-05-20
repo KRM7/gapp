@@ -19,9 +19,11 @@ namespace genetic_algorithm::selection::multi_objective
         assert(ga.num_objectives() > 1);
         assert(ga.population_size() != 0);
 
-        auto pfronts = dtl::nonDominatedSort(ga.fitness_matrix());
-        ranks_ = pfronts.ranks;
-        dists_ = dtl::crowdingDistances(ga.fitness_matrix(), pfronts.idxs);
+        auto fmat = ga.fitness_matrix();
+        auto pfronts = dtl::nonDominatedSort2(fmat);
+
+        ranks_ = dtl::paretoRanks(pfronts);
+        dists_ = dtl::crowdingDistances(fmat, std::move(pfronts));
     }
 
     void NSGA2::prepare(const GaInfo&, const FitnessMatrix&)
@@ -41,66 +43,71 @@ namespace genetic_algorithm::selection::multi_objective
 
     std::vector<size_t> NSGA2::nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop)
     {
-        std::vector<size_t> new_pop_idxs;
-        new_pop_idxs.reserve(ga.population_size());
+        std::vector<size_t> new_pop;
+        new_pop.reserve(ga.population_size());
 
-        auto pfronts = dtl::nonDominatedSort(combined_pop);
-        ranks_ = pfronts.ranks;
-        dists_ = dtl::crowdingDistances(combined_pop, pfronts.idxs);
+        auto pfronts = dtl::nonDominatedSort2(combined_pop);
+        ranks_ = dtl::paretoRanks(pfronts);
+        dists_ = dtl::crowdingDistances(combined_pop, pfronts);
 
-        /* Keep track of the ranks of the candidates added to new_pop_idxs to avoid a second sort. */
+        /* Keep track of the ranks of the candidates added to new_pop to avoid a second sort. */
         std::vector<size_t> new_ranks;
-        new_ranks.reserve(ga.population_size());
         std::vector<double> new_dists;
+        new_ranks.reserve(ga.population_size());
         new_dists.reserve(ga.population_size());
 
         /* Add entire fronts while possible. */
-        size_t front_idx = 0;
-        while (new_pop_idxs.size() + pfronts.idxs[front_idx].size() <= ga.population_size())
+        auto first = pfronts.begin();
+        auto last  = dtl::nextFrontBegin(pfronts, first);
+        while (new_pop.size() + std::distance(first, last) <= ga.population_size())
         {
-            for (const auto& idx : pfronts.idxs[front_idx])
+            for (; first != last; first++)
             {
-                new_pop_idxs.push_back(idx);
+                size_t idx = first->first;
+                new_pop.push_back(idx);
                 new_ranks.push_back(ranks_[idx]);
                 new_dists.push_back(dists_[idx]);
             }
-            front_idx++;
+            first = last;
+            last  = dtl::nextFrontBegin(pfronts, first);
         }
 
         /* Add the remaining candidates from the partial front if there is one. */
-        if (new_pop_idxs.size() != ga.population_size())
+        if (new_pop.size() != ga.population_size())
         {
+            size_t remaining_indices = ga.population_size() - new_pop.size();
             /* Keep track of the candidates added from the partial front,
              * the crowding distances will only need to be updated for these candidates. */
-            std::vector<size_t> newly_added_indices(ga.population_size() - new_pop_idxs.size());
-            std::iota(newly_added_indices.begin(), newly_added_indices.end(), new_pop_idxs.size());
+            dtl::ParetoFronts partial_front;
+            partial_front.reserve(remaining_indices);
 
-            std::vector<size_t> partial_front = pfronts.idxs[front_idx];
-
-            std::sort(partial_front.begin(), partial_front.end(),
-            [this](size_t lidx, size_t ridx)
+            std::sort(first, last,
+            [this](const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs)
             {
-                return crowdedCompare(lidx, ridx);
+                return crowdedCompare(lhs.first, rhs.first);
             });
 
-            for (auto it = partial_front.begin(); new_pop_idxs.size() != ga.population_size(); it++)
+            for (; new_pop.size() != ga.population_size(); first++)
             {
-                new_pop_idxs.push_back(*it);
-                new_ranks.push_back(ranks_[*it]);
-                new_dists.push_back(dists_[*it]);
+                size_t idx = first->first;
+
+                new_pop.push_back(idx);
+                new_ranks.push_back(ranks_[idx]);
+                partial_front.push_back(*first);
             }
 
-            auto changed_dists = dtl::crowdingDistances(combined_pop, { newly_added_indices });
-            for (size_t idx : newly_added_indices)
-            {
-                new_dists[idx] = changed_dists[idx];
-            }
+            auto changed_dists = dtl::crowdingDistances(combined_pop, { partial_front });
 
+            for (size_t i = 0; i < remaining_indices; i++)
+            {
+                double new_dist = changed_dists[partial_front[i].first];
+                new_dists.push_back(new_dist);
+            }
         }
         ranks_ = new_ranks;
         dists_ = new_dists;
 
-        return new_pop_idxs;
+        return new_pop;
     }
 
     constexpr bool NSGA2::crowdedCompare(size_t lidx, size_t ridx) const noexcept

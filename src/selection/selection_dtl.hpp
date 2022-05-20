@@ -40,14 +40,23 @@ namespace genetic_algorithm::selection::dtl
             : idxs(idxs), ranks(ranks) {}
     };
 
+    /* Sorted (idx, rank) pairs */
+    using ParetoFronts = std::vector<std::pair<size_t, size_t>>;
+
     /* Non-dominated sorting for the multi-objective algorithms. Returns the pareto fronts of the population and the ranks of each candidate. */
     ParetoFrontsInfo nonDominatedSort(const FitnessMatrix& fmat);
 
-    /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */
-    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>& pfronts);
+    /* Non-dominated sorting for the multi-objective algorithms. Returns the pareto fronts (idx, rank pairs) of the population. */
+    ParetoFronts nonDominatedSort2(const FitnessMatrix& fmat);
+
+    /* Returns the rank of each candidate based on the pareto fronts. */
+    std::vector<size_t> paretoRanks(const ParetoFronts& pareto_fronts);
+
+    /* Find the first element of the front following the front which current is a part of. */
+    ParetoFronts::iterator nextFrontBegin(ParetoFronts& pareto_fronts, ParetoFronts::iterator current);
 
     /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */
-    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, std::vector<std::vector<size_t>>&& pfronts);
+    std::vector<double> crowdingDistances(const FitnessMatrix& fmat, ParetoFronts pfronts);
 
     /* Generate n reference points on the unit simplex in dim dimensions from a uniform distribution (for the NSGA-III algorithm). */
     std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim);
