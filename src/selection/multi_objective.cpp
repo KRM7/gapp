@@ -58,7 +58,7 @@ namespace genetic_algorithm::selection::multi_objective
 
         /* Add entire fronts while possible. */
         auto first = pfronts.begin();
-        auto last  = dtl::nextFrontBegin(pfronts, first);
+        auto last  = dtl::nextFrontBegin(first, pfronts.end());
         while (new_pop.size() + std::distance(first, last) <= ga.population_size())
         {
             for (; first != last; first++)
@@ -69,7 +69,7 @@ namespace genetic_algorithm::selection::multi_objective
                 new_dists.push_back(dists_[idx]);
             }
             first = last;
-            last  = dtl::nextFrontBegin(pfronts, first);
+            last  = dtl::nextFrontBegin(first, pfronts.end());
         }
 
         /* Add the remaining candidates from the partial front if there is one. */
@@ -83,7 +83,7 @@ namespace genetic_algorithm::selection::multi_objective
             partial_front.reserve(remaining_indices);
 
             std::sort(first, last,
-            [this](const auto& lhs, const auto& rhs) noexcept
+            [this](const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs) noexcept
             {
                 return crowdedCompare(lhs.first, rhs.first);
             });
