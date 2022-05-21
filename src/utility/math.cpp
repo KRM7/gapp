@@ -35,6 +35,25 @@ namespace genetic_algorithm::detail
         return has_lower;
     }
 
+    bool paretoCompareGreater(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
+    {
+        return paretoCompareGreater(lhs, rhs, 0);
+    }
+
+    bool paretoCompareGreater(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept
+    {
+        assert(lhs.size() == rhs.size());
+
+        bool has_higher = false;
+        for (size_t i = first; i < lhs.size(); i++)
+        {
+            if (floatIsLess(lhs[i], rhs[i])) return false;
+            if (floatIsLess(rhs[i], lhs[i])) has_higher = true;
+        }
+
+        return has_higher;
+    }
+
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept
     {
         assert(v1.size() == v2.size());
