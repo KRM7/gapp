@@ -281,7 +281,7 @@ namespace genetic_algorithm::selection::dtl
         auto front_bounds = paretoFrontBounds(pfronts);
 
         std::for_each(front_bounds.begin(), front_bounds.end(),
-        [&distances, &fmat](const IterPair& bounds) noexcept
+        [&distances, &fmat](const IterPair& bounds)
         {
             const auto& [first, last] = bounds;
 
@@ -294,14 +294,14 @@ namespace genetic_algorithm::selection::dtl
                     return fmat[lhs.first][dim] < fmat[rhs.first][dim];
                 });
 
-                const auto& front = *first;
-                const auto& back  = *(last - 1);
+                const auto& front = first->first;
+                const auto& back  = (last - 1)->first;
 
-                double finterval = fmat[back.first][dim] - fmat[front.first][dim];
+                double finterval = fmat[back][dim] - fmat[front][dim];
                 finterval = std::max(finterval, 1E-6);
 
-                distances[front.first] = std::numeric_limits<double>::infinity();
-                distances[back.first]  = std::numeric_limits<double>::infinity();
+                distances[front] = std::numeric_limits<double>::infinity();
+                distances[back]  = std::numeric_limits<double>::infinity();
 
                 for (auto it = std::next(first); it < std::prev(last); it++)
                 {
