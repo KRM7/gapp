@@ -64,12 +64,9 @@ namespace genetic_algorithm::selection::multi_objective
         /* Create a weight vector for the given axis. */
         static std::vector<double> weightVector(size_t dimensions, size_t axis);
 
-        /* Find the initial extreme points of the population. */
-        static std::vector<Point> initExtremePoints(const FitnessMatrix& fmat, const Point& ideal_point);
-
         static void updateExtremePoints(std::vector<Point>& extreme_points, const FitnessMatrix& pop, const Point& ideal_point);
 
-        static Point nadirPoint(const std::vector<Point>& extreme_points);
+        static Point findNadirPoint(const std::vector<Point>& extreme_points);
 
         /* Find the closest reference point to each candidate after normalization, and their distances. */
         void associatePopWithRefs(const FitnessMatrix& pop);

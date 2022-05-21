@@ -128,18 +128,23 @@ namespace genetic_algorithm::selection::multi_objective
         assert(ga.num_objectives() > 1);
         assert(ga.population_size() != 0);
 
+        auto fitness_matrix = ga.fitness_matrix();
+
         ref_points_ = dtl::generateRefPoints(ga.population_size(), ga.num_objectives());
 
-        ideal_point_ = std::vector(ga.num_objectives(), -std::numeric_limits<double>::max());
-        updateIdealPoint(ideal_point_, ga.fitness_matrix());
-        extreme_points_ = initExtremePoints(ga.fitness_matrix(), ideal_point_);
-        nadir_point_ = nadirPoint(extreme_points_);
+        ideal_point_ = {};
+        updateIdealPoint(ideal_point_, fitness_matrix);
+
+        extreme_points_ = {};
+        updateExtremePoints(extreme_points_, fitness_matrix, ideal_point_);
+
+        nadir_point_ = findNadirPoint(extreme_points_);
 
         sol_props_ = std::vector<CandidateInfo>(ga.population_size());
-        associatePopWithRefs(ga.fitness_matrix());
+        associatePopWithRefs(fitness_matrix);
         ref_niche_counts_ = calcNicheCounts(ga, sol_props_);
 
-        auto pfronts = dtl::nonDominatedSort(ga.fitness_matrix());
+        auto pfronts = dtl::nonDominatedSort(fitness_matrix);
         for (size_t i = 0; i < sol_props_.size(); i++)
         {
             sol_props_[i].rank = pfronts.ranks[i];
@@ -150,9 +155,16 @@ namespace genetic_algorithm::selection::multi_objective
     {
         auto fmax = detail::populationFitnessMax(fmat);
 
-        for (size_t i = 0; i < ideal_point.size(); i++)
+        if (!ideal_point.empty())
         {
-            ideal_point[i] = std::max(ideal_point[i], fmax[i]);
+            for (size_t i = 0; i < ideal_point.size(); i++)
+            {
+                ideal_point[i] = std::max(ideal_point[i], fmax[i]);
+            }
+        }
+        else
+        {
+            ideal_point = fmax;
         }
     }
 
@@ -164,54 +176,42 @@ namespace genetic_algorithm::selection::multi_objective
         return weights;
     }
 
-    auto NSGA3::initExtremePoints(const FitnessMatrix& fmat, const Point& ideal_point) -> std::vector<Point>
-    {
-        assert(!fmat.empty());
-
-        size_t dim = ideal_point.size();
-
-        std::vector extreme_points(dim, Point(dim));
-
-        for (size_t i = 0; i < dim; i++)
-        {
-            auto chebysev_distances = detail::map(fmat,
-            [&ideal_point, w = weightVector(dim, i)](const FitnessVector& fvec) noexcept
-            {
-                return dtl::ASF(fvec, ideal_point, w);
-            });
-
-            size_t idx = detail::argmin(chebysev_distances.begin(), chebysev_distances.end());
-
-            extreme_points[i] = fmat[idx];
-        }
-
-        return extreme_points;
-    }
-
     void NSGA3::updateExtremePoints(std::vector<Point>& extreme_points, const FitnessMatrix& fmat, const Point& ideal_point)
     {
         assert(!fmat.empty());
+        assert(fmat[0].size() == ideal_point.size());
 
         size_t dim = ideal_point.size();
 
+        std::vector<Point> new_extreme_points;
+        new_extreme_points.reserve(extreme_points.size());
+
         for (size_t i = 0; i < dim; i++)
         {
-            auto ASFi = [&ideal_point, w = weightVector(dim, i)](const FitnessVector& fvec) noexcept
+            auto w = weightVector(dim, i);
+            auto ASFi = dtl::ASF(ideal_point, std::move(w));
+
+            auto chebysev_distances_f = detail::map(fmat, ASFi);
+            auto fmat_min = std::min_element(chebysev_distances_f.begin(), chebysev_distances_f.end());
+
+            auto chebysev_distances_e = detail::map(extreme_points, ASFi);
+            auto ext_min = std::min_element(chebysev_distances_e.begin(), chebysev_distances_e.end());
+
+            if (ext_min != chebysev_distances_e.end() && *ext_min < *fmat_min)
             {
-                return dtl::ASF(fvec, ideal_point, w);
-            };
-
-            auto chebysev_distances = detail::map(fmat, ASFi);
-            auto [fmat_idx, fmat_dmin] = detail::argmin_with_v(chebysev_distances.begin(), chebysev_distances.end());
-
-            chebysev_distances = detail::map(extreme_points, ASFi);
-            auto [ext_idx, ext_dmin] = detail::argmin_with_v(chebysev_distances.begin(), chebysev_distances.end());
-
-            extreme_points[i] = (ext_dmin < fmat_dmin) ? extreme_points[ext_idx] : fmat[fmat_idx];
+                size_t argmin = size_t(ext_min - chebysev_distances_e.begin());
+                new_extreme_points.push_back(extreme_points[argmin]);
+            }
+            else
+            {
+                size_t argmin = size_t(fmat_min - chebysev_distances_f.begin());
+                new_extreme_points.push_back(fmat[argmin]);
+            }
         }
+        extreme_points = std::move(new_extreme_points);
     }
 
-    auto NSGA3::nadirPoint(const std::vector<Point>& extreme_points) -> Point
+    auto NSGA3::findNadirPoint(const std::vector<Point>& extreme_points) -> Point
     {
         Point nadir(extreme_points.size());
 
@@ -309,7 +309,7 @@ namespace genetic_algorithm::selection::multi_objective
     {
         updateIdealPoint(ideal_point_, combined_pop);
         updateExtremePoints(extreme_points_, combined_pop, ideal_point_);
-        nadir_point_ = nadirPoint(extreme_points_);
+        nadir_point_ = findNadirPoint(extreme_points_);
 
         std::vector<size_t> new_pop_idxs;
         new_pop_idxs.reserve(ga.population_size());
