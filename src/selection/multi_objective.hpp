@@ -25,7 +25,7 @@ namespace genetic_algorithm::selection::multi_objective
         std::vector<double> dists_;
 
         /* Returns true if Pop[lidx] is better than Pop[ridx]. */
-        constexpr bool crowdedCompare(size_t lidx, size_t ridx) const noexcept;
+        bool crowdedCompare(size_t lidx, size_t ridx) const noexcept;
     };
 
     /**
@@ -58,9 +58,17 @@ namespace genetic_algorithm::selection::multi_objective
         Point nadir_point_;
         std::vector<Point> extreme_points_;
 
-        static void updateIdealPoint(Point& ideal_point, const FitnessMatrix& pop) noexcept;
-        static std::vector<Point> initExtremePoints(const FitnessMatrix& pop, const Point& ideal_point);
+        /* Update the ideal point using new points in fmat, assuming maximization. */
+        static void updateIdealPoint(Point& ideal_point, const FitnessMatrix& fmat);
+
+        /* Create a weight vector for the given axis. */
+        static std::vector<double> weightVector(size_t dimensions, size_t axis);
+
+        /* Find the initial extreme points of the population. */
+        static std::vector<Point> initExtremePoints(const FitnessMatrix& fmat, const Point& ideal_point);
+
         static void updateExtremePoints(std::vector<Point>& extreme_points, const FitnessMatrix& pop, const Point& ideal_point);
+
         static Point nadirPoint(const std::vector<Point>& extreme_points);
 
         /* Find the closest reference point to each candidate after normalization, and their distances. */

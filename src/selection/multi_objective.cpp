@@ -111,7 +111,7 @@ namespace genetic_algorithm::selection::multi_objective
         return new_pop;
     }
 
-    constexpr bool NSGA2::crowdedCompare(size_t lidx, size_t ridx) const noexcept
+    bool NSGA2::crowdedCompare(size_t lidx, size_t ridx) const noexcept
     {
         if (ranks_[lidx] != ranks_[ridx])
         {
@@ -146,84 +146,68 @@ namespace genetic_algorithm::selection::multi_objective
         }
     }
 
-    void NSGA3::updateIdealPoint(Point& ideal_point, const FitnessMatrix& pop) noexcept
+    void NSGA3::updateIdealPoint(Point& ideal_point, const FitnessMatrix& fmat)
     {
-        for (const auto& sol : pop)
+        auto fmax = detail::populationFitnessMax(fmat);
+
+        for (size_t i = 0; i < ideal_point.size(); i++)
         {
-            for (size_t i = 0; i < ideal_point.size(); i++)
-            {
-                ideal_point[i] = std::max(ideal_point[i], sol[i]);
-            }
+            ideal_point[i] = std::max(ideal_point[i], fmax[i]);
         }
     }
 
-    auto NSGA3::initExtremePoints(const FitnessMatrix& pop, const Point& ideal_point) -> std::vector<Point>
+    std::vector<double> NSGA3::weightVector(size_t dimensions, size_t axis)
     {
-        assert(!pop.empty());
+        std::vector weights(dimensions, 1E-6);
+        weights[axis] = 1.0;
 
-        std::vector<Point> extreme_points(ideal_point.size(), Point(ideal_point.size()));
+        return weights;
+    }
 
-        /* Identify and update extreme points for each objective axis. */
-        for (size_t i = 0; i < extreme_points.size(); i++)
+    auto NSGA3::initExtremePoints(const FitnessMatrix& fmat, const Point& ideal_point) -> std::vector<Point>
+    {
+        assert(!fmat.empty());
+
+        size_t dim = ideal_point.size();
+
+        std::vector extreme_points(dim, Point(dim));
+
+        for (size_t i = 0; i < dim; i++)
         {
-            std::vector<double> weights(extreme_points[i].size(), 1E-6);
-            weights[i] = 1.0;
-
-            /* Find the solution with the lowest Chebysev distance to the objective axis. */
-            double dmin = std::numeric_limits<double>::infinity();
-            std::vector<double> extreme_point = pop[0];
-            for (const auto& sol : pop)
+            auto chebysev_distances = detail::map(fmat,
+            [&ideal_point, w = weightVector(dim, i)](const FitnessVector& fvec) noexcept
             {
-                double dist = dtl::ASF(sol, ideal_point, weights);
+                return dtl::ASF(fvec, ideal_point, w);
+            });
 
-                if (dist < dmin)
-                {
-                    dmin = dist;
-                    extreme_point = sol;
-                }
-            }
+            size_t idx = detail::argmin(chebysev_distances.begin(), chebysev_distances.end());
 
-            extreme_points[i] = extreme_point;
+            extreme_points[i] = fmat[idx];
         }
 
         return extreme_points;
     }
 
-    void NSGA3::updateExtremePoints(std::vector<Point>& extreme_points, const FitnessMatrix& pop, const Point& ideal_point)
+    void NSGA3::updateExtremePoints(std::vector<Point>& extreme_points, const FitnessMatrix& fmat, const Point& ideal_point)
     {
-        assert(!pop.empty());
+        assert(!fmat.empty());
 
-        /* Identify and update extreme points for each objective axis. */
-        for (size_t i = 0; i < extreme_points.size(); i++)
+        size_t dim = ideal_point.size();
+
+        for (size_t i = 0; i < dim; i++)
         {
-            std::vector<double> weights(extreme_points[i].size(), 1E-6);
-            weights[i] = 1.0;
-
-            /* Find the solution or extreme point with the lowest Chebysev distance to the objective axis. */
-            double dmin = std::numeric_limits<double>::infinity();
-            std::vector<double> new_extreme_point = extreme_points[i];
-
-            for (const auto& sol : pop)
+            auto ASFi = [&ideal_point, w = weightVector(dim, i)](const FitnessVector& fvec) noexcept
             {
-                double dist = dtl::ASF(sol, ideal_point, weights);
+                return dtl::ASF(fvec, ideal_point, w);
+            };
 
-                if (dist < dmin)
-                {
-                    dmin = dist;
-                    new_extreme_point = sol;
-                }
-            }
-            for (const auto& old_extreme_point : extreme_points)
-            {
-                double dist = dtl::ASF(old_extreme_point, ideal_point, weights);
+            auto chebysev_distances = detail::map(fmat, ASFi);
+            auto [fmat_idx, fmat_dmin] = detail::argmin_with_v(chebysev_distances.begin(), chebysev_distances.end());
 
-                if (dist < dmin)
-                {
-                    dmin = dist;
-                    new_extreme_point = old_extreme_point;
-                }
-            }
-            extreme_points[i] = new_extreme_point;
+            chebysev_distances = detail::map(extreme_points, ASFi);
+            auto [ext_idx, ext_dmin] = detail::argmin_with_v(chebysev_distances.begin(), chebysev_distances.end());
+
+            extreme_points[i] = (ext_dmin < fmat_dmin) ? extreme_points[ext_idx] : fmat[fmat_idx];
         }
     }
 
