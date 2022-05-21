@@ -43,6 +43,9 @@ namespace genetic_algorithm::selection::multi_objective
 
     std::vector<size_t> NSGA2::nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop)
     {
+        assert(ga.population_size() <= combined_pop.size());
+        assert(std::all_of(combined_pop.begin(), combined_pop.end(), [&ga](const FitnessVector& f) { f.size() == ga.num_objectives(); }));
+
         std::vector<size_t> new_pop;
         new_pop.reserve(ga.population_size());
 
