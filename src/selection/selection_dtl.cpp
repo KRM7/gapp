@@ -166,24 +166,24 @@ namespace genetic_algorithm::selection::dtl
 
     ParetoFronts nonDominatedSort2(const FitnessMatrix& fmat)
     {
-        using namespace std;
-
         size_t pop_size = fmat.size();
 
         /* Find the number of candidates which dominate each candidate, and the indices of the candidates it dominates. */
-        vector<size_t> better_count(pop_size, 0);
-        vector<vector<size_t>> worse_indices(pop_size);
+        std::vector<size_t> better_count(pop_size, 0);
+        std::vector<std::vector<size_t>> worse_indices(pop_size);
 
-        for (size_t rhs = 0; rhs < pop_size; rhs++)
+        std::for_each(worse_indices.begin(), worse_indices.end(), [&pop_size](std::vector<size_t>& vec) { vec.reserve(pop_size); });
+
+        for (size_t lhs = 0; lhs < pop_size; lhs++)
         {
-            for (size_t lhs = 0; lhs < rhs; lhs++)
+            for (size_t rhs = 1; rhs < lhs; rhs++)
             {
                 if (detail::paretoCompareLess(fmat[lhs], fmat[rhs]))
                 {
                     better_count[lhs]++;
                     worse_indices[rhs].push_back(lhs);
                 }
-                else if (detail::paretoCompareLess(fmat[rhs], fmat[lhs]))
+                else if (detail::paretoCompareLess(fmat[rhs], fmat[lhs])) [[likely]]
                 {
                     better_count[rhs]++;
                     worse_indices[lhs].push_back(rhs);
