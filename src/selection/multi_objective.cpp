@@ -135,8 +135,7 @@ namespace genetic_algorithm::selection::multi_objective
 
         ref_points_ = dtl::generateRefPoints(ga.population_size(), ga.num_objectives());
 
-        ideal_point_ = {};
-        updateIdealPoint(ideal_point_, fitness_matrix);
+        ideal_point_ = detail::populationFitnessMax(fitness_matrix);
 
         extreme_points_ = {};
         updateExtremePoints(extreme_points_, fitness_matrix, ideal_point_);
@@ -156,23 +155,20 @@ namespace genetic_algorithm::selection::multi_objective
 
     void NSGA3::updateIdealPoint(Point& ideal_point, const FitnessMatrix& fmat)
     {
-        auto fmax = detail::populationFitnessMax(fmat);
+        assert(!fmat.empty());
+        assert(ideal_point.size() == fmat[0].size());
 
-        if (!ideal_point.empty())
+        auto fmax = detail::populationFitnessMax(fmat);
+        for (size_t i = 0; i < ideal_point.size(); i++)
         {
-            for (size_t i = 0; i < ideal_point.size(); i++)
-            {
-                ideal_point[i] = std::max(ideal_point[i], fmax[i]);
-            }
-        }
-        else
-        {
-            ideal_point = fmax;
+            ideal_point[i] = std::max(ideal_point[i], fmax[i]);
         }
     }
 
     std::vector<double> NSGA3::weightVector(size_t dimensions, size_t axis)
     {
+        assert(dimensions > axis);
+
         std::vector weights(dimensions, 1E-6);
         weights[axis] = 1.0;
 
