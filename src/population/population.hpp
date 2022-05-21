@@ -89,7 +89,7 @@ namespace genetic_algorithm::detail::_
     template<Gene T>
     Candidates<T> findParetoFrontSimple(const Population<T>& pop);
 
-    inline bool kungCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs);
+    inline bool kungCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
 
 } // namespace genetic_algorithm::detail::_
 
@@ -244,7 +244,7 @@ namespace genetic_algorithm::detail::_
     Candidates<T> findParetoFrontSimple(const Population<T>& pop)
     {
         auto indices = detail::argsort(pop.begin(), pop.end(),
-        [](const Candidate<T>& lhs, const Candidate<T>& rhs)
+        [](const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
         {
             for (size_t i = 0; i < lhs.fitness.size(); i++)
             {
@@ -271,7 +271,7 @@ namespace genetic_algorithm::detail::_
         return detail::map(optimal_indices, [&pop](size_t idx) { return pop[idx]; });
     }
 
-    inline bool kungCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs)
+    inline bool kungCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
     {
         bool is_dominated = detail::paretoCompareLess(lhs, rhs, 1);
         bool is_equal = !detail::floatIsEqual(lhs[0], rhs[0]) &&
