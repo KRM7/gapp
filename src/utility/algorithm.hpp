@@ -196,26 +196,6 @@ namespace genetic_algorithm::detail
         return size_t(std::min_element(first, last, std::forward<Comp>(comp)) - first);
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
-    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
-                                          typename std::iterator_traits<Iter>::value_type>
-    constexpr auto argmax_with_v(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
-    {
-        const auto it = std::max_element(first, last, std::forward<Comp>(comp));
-
-        return std::make_pair(size_t(it - first), *it);
-    }
-
-    template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
-    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
-                                          typename std::iterator_traits<Iter>::value_type>
-    constexpr auto argmin_with_v(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
-    {
-        const auto it = std::min_element(first, last, std::forward<Comp>(comp));
-
-        return std::make_pair(size_t(it - first), *it);
-    }
-
 }
 
 #endif // !GA_ALGORITHM_HPP

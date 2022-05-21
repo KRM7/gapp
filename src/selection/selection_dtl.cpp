@@ -365,7 +365,9 @@ namespace genetic_algorithm::selection::dtl
             return detail::perpendicularDistanceSq(ref, p);
         });
 
-        return detail::argmin_with_v(distances.begin(), distances.end());
+        auto idx = detail::argmin(distances.begin(), distances.end());
+
+        return { idx, distances[idx] };
     }
 
     double ASF(const std::vector<double>& f, const std::vector<double>& z, const std::vector<double>& w) noexcept
