@@ -6,6 +6,7 @@
 #include "../population/population.hpp"
 #include <vector>
 #include <cstddef>
+#include <functional>
 
 namespace genetic_algorithm::selection::dtl
 {
@@ -68,7 +69,7 @@ namespace genetic_algorithm::selection::dtl
     std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p);
 
     /* Achievement scalarization function for the NSGA-III algorithm. */
-    double ASF(const std::vector<double>& f, const std::vector<double>& z, const std::vector<double>& w) noexcept;
+    std::function<double(const std::vector<double>&)> ASF(std::vector<double> z, std::vector<double> w) noexcept;
 
 } // namespace genetic_algorithm::selection::dtl
 

@@ -370,18 +370,21 @@ namespace genetic_algorithm::selection::dtl
         return { idx, distances[idx] };
     }
 
-    double ASF(const std::vector<double>& f, const std::vector<double>& z, const std::vector<double>& w) noexcept
+    auto ASF(std::vector<double> z, std::vector<double> w) noexcept
+        -> std::function<double(const std::vector<double>&)>
     {
-        assert(!f.empty());
-        assert(f.size() == z.size() && f.size() == w.size());
+        assert(!w.empty());
+        assert(w.size() == z.size());
 
-        double dmax = std::abs(f[0] - z[0]) / w[0];
-        for (size_t j = 1; j < f.size(); j++)
+        return [z = std::move(z), w = std::move(w)](const std::vector<double>& f) noexcept
         {
-            dmax = std::max(dmax, std::abs(f[j] - z[j]) / w[j]);
-        }
-
-        return dmax;
+            double dmax = std::abs(f[0] - z[0]) / w[0];
+            for (size_t i = 0; i < f.size(); i++)
+            {
+                dmax = std::max(dmax, std::abs(f[i] - z[i]) / w[i]);
+            }
+            return dmax;
+        };
     }
 
 } // namespace genetic_algorithm::selection::dtl
