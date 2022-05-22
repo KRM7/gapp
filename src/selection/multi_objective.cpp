@@ -53,7 +53,7 @@ namespace genetic_algorithm::selection::multi_objective
         ranks_ = dtl::paretoRanks(pfronts);
         dists_ = dtl::crowdingDistances(combined_pop, pfronts);
 
-        /* Keep track of the ranks of the candidates added to new_pop to avoid a second sort. */
+        /* Keep track of the details of the candidates added to new_pop to avoid a second sort. */
         std::vector<size_t> new_ranks;
         std::vector<double> new_dists;
         new_ranks.reserve(ga.population_size());
@@ -88,7 +88,9 @@ namespace genetic_algorithm::selection::multi_objective
             std::sort(first, last,
             [this](const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs) noexcept
             {
-                return crowdedCompare(lhs.first, rhs.first);
+                size_t lidx = lhs.first;
+                size_t ridx = rhs.first;
+                return dists_[lidx] > dists_[ridx]; /* The ranks will always be the same */
             });
 
             for (; new_pop.size() != ga.population_size(); first++)
