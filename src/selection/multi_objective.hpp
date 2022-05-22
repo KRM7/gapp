@@ -58,14 +58,16 @@ namespace genetic_algorithm::selection::multi_objective
         Point nadir_point_;
         std::vector<Point> extreme_points_;
 
-        /* Update the ideal point using new points in fmat, assuming maximization. */
+        /* Update the approximate ideal point using new points in fmat, assuming maximization. */
         static void updateIdealPoint(Point& ideal_point, const FitnessMatrix& fmat);
 
-        /* Create a weight vector for the given axis. */
+        /* Create a weight vector for the given axis (used in the ASF). */
         static std::vector<double> weightVector(size_t dimensions, size_t axis);
 
+        /* Update the extreme points with the new points in fmat. */
         static void updateExtremePoints(std::vector<Point>& extreme_points, const FitnessMatrix& pop, const Point& ideal_point);
 
+        /* Find an approximation of the nadir point of the pareto front using the minimum of the extreme points. */
         static Point findNadirPoint(const std::vector<Point>& extreme_points);
 
         /* Find the closest reference point to each candidate after normalization, and their distances. */

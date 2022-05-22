@@ -193,19 +193,19 @@ namespace genetic_algorithm::selection::multi_objective
             auto ASFi = dtl::ASF(ideal_point, std::move(w));
 
             auto chebysev_distances_f = detail::map(fmat, ASFi);
-            auto fmat_min = std::min_element(chebysev_distances_f.begin(), chebysev_distances_f.end());
-
             auto chebysev_distances_e = detail::map(extreme_points, ASFi);
-            auto ext_min = std::min_element(chebysev_distances_e.begin(), chebysev_distances_e.end());
 
-            if (ext_min != chebysev_distances_e.end() && *ext_min < *fmat_min)
+            auto fmin = std::min_element(chebysev_distances_f.begin(), chebysev_distances_f.end());
+            auto emin = std::min_element(chebysev_distances_e.begin(), chebysev_distances_e.end());
+
+            if (emin != chebysev_distances_e.end() && *emin < *fmin)
             {
-                size_t argmin = size_t(ext_min - chebysev_distances_e.begin());
+                size_t argmin = size_t(emin - chebysev_distances_e.begin());
                 new_extreme_points.push_back(extreme_points[argmin]);
             }
             else
             {
-                size_t argmin = size_t(fmat_min - chebysev_distances_f.begin());
+                size_t argmin = size_t(fmin - chebysev_distances_f.begin());
                 new_extreme_points.push_back(fmat[argmin]);
             }
         }
@@ -214,15 +214,17 @@ namespace genetic_algorithm::selection::multi_objective
 
     auto NSGA3::findNadirPoint(const std::vector<Point>& extreme_points) -> Point
     {
-        Point nadir(extreme_points.size());
+        assert(!extreme_points.empty());
+        assert(std::all_of(extreme_points.begin(), extreme_points.end(), [](const Point& p) { return extreme_points[0].size() == p.size(); }));
 
         /* Nadir point estimate = minimum of extreme points along each objective axis. */
-        for (size_t i = 0; i < extreme_points.size(); i++)
+        Point nadir = extreme_points[0];
+
+        for (size_t i = 1; i < extreme_points.size(); i++)
         {
-            nadir[i] = extreme_points[0][i];
-            for (size_t j = 1; j < extreme_points.size(); j++)
+            for (size_t j = 0; j < nadir.size(); j++)
             {
-                nadir[i] = std::min(nadir[i], extreme_points[j][i]);
+                nadir[j] = std::min(nadir[j], extreme_points[i][j]);
             }
         }
 
