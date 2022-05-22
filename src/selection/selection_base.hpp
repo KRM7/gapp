@@ -38,12 +38,13 @@ namespace genetic_algorithm::selection
 
         /**
         * Prepare the selection method for the selections beforehand if neccesary. \n
-        * Called exactly once every generation before the selections take place.
+        * Called exactly once every generation before the selections take place. \n
+        * The default implementation of this function does nothing.
         * 
         * @param ga The genetic algorithm that uses the selection method.
         * @param population_fitness_matrix The fitness matrix of the current population of the algorithm.
         */
-        virtual void prepare(const GaInfo& ga, const FitnessMatrix& population_fitness_matrix) = 0;
+        virtual void prepare(const GaInfo& ga, const FitnessMatrix& population_fitness_matrix);
 
         /**
         * Select a single Candidate from the population. \n
