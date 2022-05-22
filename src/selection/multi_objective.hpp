@@ -16,7 +16,6 @@ namespace genetic_algorithm::selection::multi_objective
     {
     public:
         void init(const GaInfo& ga) override;
-        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
         size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
         std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
 
@@ -35,7 +34,6 @@ namespace genetic_algorithm::selection::multi_objective
     {
     public:
         void init(const GaInfo& ga) override;
-        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
         size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
         std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
 
@@ -70,14 +68,14 @@ namespace genetic_algorithm::selection::multi_objective
         /* Find an approximation of the nadir point of the pareto front using the minimum of the extreme points. */
         static Point findNadirPoint(const std::vector<Point>& extreme_points);
 
+        /* Returns true if Pop[lhs] is better than Pop[rhs]. */
+        bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
+
         /* Find the closest reference point to each candidate after normalization, and their distances. */
         void associatePopWithRefs(const FitnessMatrix& pop);
 
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */
         static std::vector<size_t> calcNicheCounts(const GaInfo& ga, std::vector<CandidateInfo>& props);
-
-        /* Returns true if Pop[lidx] is better than Pop[ridx]. */
-        constexpr bool nichedCompare(size_t lidx, size_t ridx) const noexcept;
     };
 
 } // namespace genetic_algorithm::selection::multi_objective

@@ -26,11 +26,6 @@ namespace genetic_algorithm::selection::multi_objective
         dists_ = dtl::crowdingDistances(fmat, std::move(pfronts));
     }
 
-    void NSGA2::prepare(const GaInfo&, const FitnessMatrix&)
-    {
-        /* Nothing to do, the ranks and distances from the previous nextPopulation call are fine */
-    }
-
     size_t NSGA2::select(const GaInfo&, const FitnessMatrix& pop)
     {
         assert(!pop.empty() && pop.size() == ranks_.size());
@@ -44,7 +39,7 @@ namespace genetic_algorithm::selection::multi_objective
     std::vector<size_t> NSGA2::nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop)
     {
         assert(ga.population_size() <= combined_pop.size());
-        assert(std::all_of(combined_pop.begin(), combined_pop.end(), [&ga](const FitnessVector& f) { f.size() == ga.num_objectives(); }));
+        assert(std::all_of(combined_pop.begin(), combined_pop.end(), [&ga](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
 
         std::vector<size_t> new_pop;
         new_pop.reserve(ga.population_size());
@@ -148,10 +143,11 @@ namespace genetic_algorithm::selection::multi_objective
         associatePopWithRefs(fitness_matrix);
         ref_niche_counts_ = calcNicheCounts(ga, sol_props_);
 
-        auto pfronts = dtl::nonDominatedSort(fitness_matrix);
+        auto pfronts = dtl::nonDominatedSort2(fitness_matrix);
+        auto ranks = dtl::paretoRanks(pfronts);
         for (size_t i = 0; i < sol_props_.size(); i++)
         {
-            sol_props_[i].rank = pfronts.ranks[i];
+            sol_props_[i].rank = ranks[i];
         }
     }
 
@@ -215,7 +211,7 @@ namespace genetic_algorithm::selection::multi_objective
     auto NSGA3::findNadirPoint(const std::vector<Point>& extreme_points) -> Point
     {
         assert(!extreme_points.empty());
-        assert(std::all_of(extreme_points.begin(), extreme_points.end(), [](const Point& p) { return extreme_points[0].size() == p.size(); }));
+        assert(std::all_of(extreme_points.begin(), extreme_points.end(), [&extreme_points](const Point& p) { return extreme_points[0].size() == p.size(); }));
 
         /* Nadir point estimate = minimum of extreme points along each objective axis. */
         Point nadir = extreme_points[0];
@@ -231,24 +227,19 @@ namespace genetic_algorithm::selection::multi_objective
         return nadir;
     }
 
-    void NSGA3::prepare(const GaInfo&, const FitnessMatrix&)
+    bool NSGA3::nichedCompare(size_t lhs, size_t rhs) const noexcept
     {
-        /* Nothing to do */
-    }
-
-    constexpr bool NSGA3::nichedCompare(size_t lidx, size_t ridx) const noexcept
-    {
-        if (sol_props_[lidx].rank != sol_props_[ridx].rank)
+        if (sol_props_[lhs].rank != sol_props_[rhs].rank)
         {
-            return sol_props_[lidx].rank < sol_props_[ridx].rank;
+            return sol_props_[lhs].rank < sol_props_[rhs].rank;
         }
-        else if (sol_props_[lidx].niche_count != sol_props_[ridx].niche_count)
+        else if (sol_props_[lhs].niche_count != sol_props_[rhs].niche_count)
         {
-            return sol_props_[lidx].niche_count < sol_props_[ridx].niche_count;
+            return sol_props_[lhs].niche_count < sol_props_[rhs].niche_count;
         }
         else
         {
-            return sol_props_[lidx].ref_dist < sol_props_[ridx].ref_dist;
+            return sol_props_[lhs].ref_dist < sol_props_[rhs].ref_dist;
         }
     }
 
