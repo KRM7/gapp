@@ -359,6 +359,8 @@ namespace genetic_algorithm::selection::dtl
 
     std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p)
     {
+        assert(!refs.empty());
+
         auto distances = detail::map(refs,
         [&p](const auto& ref)
         {
