@@ -253,27 +253,35 @@ namespace genetic_algorithm::selection::multi_objective
         return nichedCompare(idx1, idx2) ? idx1 : idx2;
     }
 
-    void NSGA3::associatePopWithRefs(const FitnessMatrix& pop)
+    auto NSGA3::normalize(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point) -> FitnessVector
     {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
+        FitnessVector fnorm;
+        fnorm.reserve(fvec.size());
 
-        FitnessMatrix fnorms = pop;
-
-        std::for_each(GA_EXECUTION_UNSEQ, fnorms.begin(), fnorms.end(),
-        [this](FitnessVector& fnorm)
+        for (size_t i = 0; i < fvec.size(); i++)
         {
-            for (size_t i = 0; i < fnorm.size(); i++)
-            {
-                fnorm[i] -= ideal_point_[i];
-                fnorm[i] /= std::min(nadir_point_[i] - ideal_point_[i], -1E-6);
-            }
+            double f = (ideal_point[i] - fvec[i]) / std::max(ideal_point[i] - nadir_point[i], 1E-6);
+            fnorm.push_back(f);
+        }
+
+        return fnorm;
+    }
+
+    void NSGA3::associatePopWithRefs(const FitnessMatrix& fmat)
+    {
+        assert(!fmat.empty());
+        assert(std::all_of(fmat.begin(), fmat.end(), [&fmat](const FitnessVector& sol) { return sol.size() == fmat[0].size(); }));
+
+        auto fnorm = detail::map(fmat,
+        [this](const FitnessVector& fvec)
+        {
+            return normalize(fvec, ideal_point_, nadir_point_);
         });
 
         /* Associate each candidate with the closest reference point. */
-        sol_props_.resize(pop.size());
-        std::transform(GA_EXECUTION_UNSEQ, fnorms.begin(), fnorms.end(), sol_props_.begin(), sol_props_.begin(),
-        [this](const std::vector<double>& f, CandidateInfo& info) -> CandidateInfo
+        sol_props_.resize(fmat.size());
+        std::transform(GA_EXECUTION_UNSEQ, fnorm.begin(), fnorm.end(), sol_props_.begin(), sol_props_.begin(),
+        [this](const FitnessVector& f, CandidateInfo& info) -> CandidateInfo
         {
             std::tie(info.ref_idx, info.ref_dist) = dtl::findClosestRef(ref_points_, f);
 

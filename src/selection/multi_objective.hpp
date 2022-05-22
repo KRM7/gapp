@@ -71,8 +71,10 @@ namespace genetic_algorithm::selection::multi_objective
         /* Returns true if Pop[lhs] is better than Pop[rhs]. */
         bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
 
+        static FitnessVector normalize(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point);
+
         /* Find the closest reference point to each candidate after normalization, and their distances. */
-        void associatePopWithRefs(const FitnessMatrix& pop);
+        void associatePopWithRefs(const FitnessMatrix& fmat);
 
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */
         static std::vector<size_t> calcNicheCounts(const GaInfo& ga, std::vector<CandidateInfo>& props);
