@@ -4,6 +4,7 @@
 #define GA_SELECTION_DTL_HPP
 
 #include "../population/population.hpp"
+#include "multi_objective.hpp"
 #include <vector>
 #include <cstddef>
 #include <functional>
@@ -12,6 +13,8 @@ namespace genetic_algorithm::selection::dtl
 {
     using genetic_algorithm::detail::FitnessVector;
     using genetic_algorithm::detail::FitnessMatrix;
+    using Point = genetic_algorithm::selection::multi_objective::NSGA3::Point;
+    using RefPoint = genetic_algorithm::selection::multi_objective::NSGA3::RefPoint;
 
     /* Calculate the selection weights of the population for the roulette selection. */
     std::vector<double> rouletteWeights(const FitnessMatrix& pop);
@@ -32,23 +35,11 @@ namespace genetic_algorithm::selection::dtl
     std::vector<double> weightsToCdf(const std::vector<double>& selection_weights);
 
 
-    struct ParetoFrontsInfo
-    {
-        std::vector<std::vector<size_t>> idxs;
-        std::vector<size_t> ranks;
-
-        ParetoFrontsInfo(const std::vector<std::vector<size_t>>& idxs, const std::vector<size_t>& ranks)
-            : idxs(idxs), ranks(ranks) {}
-    };
-
     /* Sorted (idx, rank) pairs. */
     using ParetoFronts = std::vector<std::pair<size_t, size_t>>;
 
-    /* Non-dominated sorting for the multi-objective algorithms. Returns the pareto fronts of the population and the ranks of each candidate. */
-    ParetoFrontsInfo nonDominatedSort(const FitnessMatrix& fmat);
-
     /* Non-dominated sorting for the multi-objective algorithms. Returns the pareto fronts (idx, rank pairs) of the population. */
-    ParetoFronts nonDominatedSort2(const FitnessMatrix& fmat);
+    ParetoFronts nonDominatedSort(const FitnessMatrix& fmat);
 
     /* Returns the rank of each candidate based on the pareto fronts. */
     std::vector<size_t> paretoRanks(const ParetoFronts& pareto_fronts);
@@ -63,10 +54,10 @@ namespace genetic_algorithm::selection::dtl
     std::vector<double> crowdingDistances(const FitnessMatrix& fmat, ParetoFronts pfronts);
 
     /* Generate n reference points on the unit simplex in dim dimensions from a uniform distribution (for the NSGA-III algorithm). */
-    std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim);
+    std::vector<Point> generateRefPoints(size_t n, size_t dim);
 
     /* Find the index and distance of the closest reference line to the point p. */
-    std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p);
+    std::pair<size_t, double> findClosestRef(const std::vector<RefPoint>& refs, const Point& p);
 
     /* Achievement scalarization function for the NSGA-III algorithm. */
     std::function<double(const std::vector<double>&)> ASF(std::vector<double> z, std::vector<double> w) noexcept;

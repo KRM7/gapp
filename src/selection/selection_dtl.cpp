@@ -102,69 +102,7 @@ namespace genetic_algorithm::selection::dtl
         });
     }
 
-    ParetoFrontsInfo nonDominatedSort(const FitnessMatrix& fmat)
-    {
-        using namespace std;
-
-        /* Find the number of candidates which dominate each candidate, and the indices of the candidates it dominates. */
-        vector<size_t> better_sol_count(fmat.size(), 0);
-        vector<vector<size_t>> dominated_idxs(fmat.size());
-
-        for (size_t rhs = 0; rhs < fmat.size(); rhs++)
-        {
-            for (size_t lhs = 0; lhs < rhs; lhs++)
-            {
-                if (detail::paretoCompareLess(fmat[lhs], fmat[rhs]))
-                {
-                    better_sol_count[lhs]++;
-                    dominated_idxs[rhs].push_back(lhs);
-                }
-                else if (detail::paretoCompareLess(fmat[rhs], fmat[lhs]))
-                {
-                    better_sol_count[rhs]++;
-                    dominated_idxs[lhs].push_back(rhs);
-                }
-            }
-        }
-        vector<size_t> ranks(fmat.size());
-
-        /* Find the indices of all non-dominated candidates (the first/best pareto front). */
-        vector<size_t> current_front; // get rid of this by having first, last iters to current front for sorted_indices
-        for (size_t i = 0; i < fmat.size(); i++)
-        {
-            if (better_sol_count[i] == 0)
-            {
-                current_front.push_back(i);
-                ranks[i] = 0;
-            }
-        }
-
-        /* Find all the other pareto fronts. */
-        vector<vector<size_t>> pareto_fronts;
-        for (size_t rank = 1; !current_front.empty(); rank++)
-        {
-            /* Remove the current front from the population and find the next one. */
-            vector<size_t> next_front;
-            for (const auto& sol_idx : current_front)
-            {
-                for (const auto& dominated_idx : dominated_idxs[sol_idx])
-                {
-                    /* j belongs to the next front if it's domination count will become 0. */
-                    if (--better_sol_count[dominated_idx] == 0)
-                    {
-                        next_front.push_back(dominated_idx);
-                        ranks[dominated_idx] = rank;
-                    }
-                }
-            }
-            pareto_fronts.push_back(current_front);
-            current_front = std::move(next_front);
-        }
-
-        return ParetoFrontsInfo(pareto_fronts, ranks);
-    }
-
-    ParetoFronts nonDominatedSort2(const FitnessMatrix& fmat)
+    ParetoFronts nonDominatedSort(const FitnessMatrix& fmat)
     {
         size_t pop_size = fmat.size();
 
@@ -317,7 +255,7 @@ namespace genetic_algorithm::selection::dtl
         return distances;
     }
 
-    std::vector<std::vector<double>> generateRefPoints(size_t n, size_t dim)
+    std::vector<Point> generateRefPoints(size_t n, size_t dim)
     {
         using namespace std;
         assert(n > 0);
@@ -325,10 +263,10 @@ namespace genetic_algorithm::selection::dtl
 
         /* Generate reference point candidates randomly. */
         size_t ratio = max(size_t{ 10 }, 2 * dim);
-        vector<vector<double>> candidates(ratio * n - 1);
+        vector<Point> candidates(ratio * n - 1);
         generate(candidates.begin(), candidates.end(), [&dim]() { return rng::randomSimplexPoint(dim); });
 
-        vector<vector<double>> refs;
+        vector<Point> refs;
         refs.reserve(n);
         refs.push_back(rng::randomSimplexPoint(dim));
 
@@ -337,7 +275,7 @@ namespace genetic_algorithm::selection::dtl
         {
             /* Calc the distance of each candidate to the closest ref point. */
             transform(GA_EXECUTION_UNSEQ, candidates.begin(), candidates.end(), min_distances.begin(), min_distances.begin(),
-            [&refs](const vector<double>& candidate, double dmin)
+            [&refs](const Point& candidate, double dmin)
             {
                 double d = detail::euclideanDistanceSq(candidate, refs.back());
                 return min(dmin, d);
@@ -357,14 +295,14 @@ namespace genetic_algorithm::selection::dtl
         return refs;
     }
 
-    std::pair<size_t, double> findClosestRef(const std::vector<std::vector<double>>& refs, const std::vector<double>& p)
+    std::pair<size_t, double> findClosestRef(const std::vector<RefPoint>& refs, const Point& p)
     {
         assert(!refs.empty());
 
         auto distances = detail::map(refs,
-        [&p](const auto& ref)
+        [&p](const RefPoint& ref)
         {
-            return detail::perpendicularDistanceSq(ref, p);
+            return detail::perpendicularDistanceSq(ref.point, p);
         });
 
         auto idx = detail::argmin(distances.begin(), distances.end());

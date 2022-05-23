@@ -37,20 +37,27 @@ namespace genetic_algorithm::selection::multi_objective
         size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
         std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
 
-    private:
         using Point = std::vector<double>;
+
+        struct RefPoint
+        {
+            const Point point;
+            size_t niche_count;
+
+            RefPoint(const Point& p) : point(p), niche_count(0) {}
+        };
+
+    private:
 
         struct CandidateInfo
         {
             size_t rank = 0;
             size_t ref_idx = 0;
             double ref_dist = 0.0;
-            size_t niche_count = 0;
         };
 
-        std::vector<CandidateInfo> sol_props_;
-        std::vector<Point> ref_points_;
-        std::vector<size_t> ref_niche_counts_;
+        std::vector<CandidateInfo> sol_info_;
+        std::vector<RefPoint> ref_points_;
 
         Point ideal_point_;
         Point nadir_point_;
@@ -74,10 +81,16 @@ namespace genetic_algorithm::selection::multi_objective
         static FitnessVector normalize(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point);
 
         /* Find the closest reference point to each candidate after normalization, and their distances. */
-        void associatePopWithRefs(const FitnessMatrix& fmat);
+        void associatePopWithRefs(std::vector<CandidateInfo>& props, const FitnessMatrix& fmat, const std::vector<RefPoint>& refs);
+        
+        /* Returns the niche counts of the given candidate. */
+        size_t& nicheCountOf(CandidateInfo& info);
+        size_t& nicheCountOf(size_t sol_idx);
+        const size_t& nicheCountOf(const CandidateInfo& info) const;
+        const size_t& nicheCountOf(size_t sol_idx) const;
 
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */
-        static std::vector<size_t> calcNicheCounts(const GaInfo& ga, std::vector<CandidateInfo>& props);
+        static void updateNicheCounts(std::vector<RefPoint>& refs, const std::vector<CandidateInfo>& props);
     };
 
 } // namespace genetic_algorithm::selection::multi_objective
