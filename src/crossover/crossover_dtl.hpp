@@ -76,19 +76,16 @@ namespace genetic_algorithm::crossover::dtl
         if (chrom_len < 2) return { parent1, parent2 };
 
         size_t num_crossover_points = std::min(n, chrom_len);
-
         std::vector<size_t> crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
 
-        std::vector<size_t> crossover_mask;
-        crossover_mask.reserve(chrom_len);
-
+        std::vector<size_t> crossover_mask(chrom_len, 0);
         for (size_t i = 0, remaining = num_crossover_points; i < chrom_len; i++)
         {
-            if (remaining && detail::contains(crossover_points.begin(), crossover_points.end(), i))
+            if (detail::contains(crossover_points.begin(), crossover_points.end(), i))
             {
-                remaining--;
+                if (--remaining == 0) break;
             }
-            crossover_mask.push_back(remaining);
+            crossover_mask[i] = remaining;
         }
 
         Candidate<T> child1{ parent1 }, child2{ parent2 };
