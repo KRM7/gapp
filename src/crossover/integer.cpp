@@ -35,17 +35,11 @@ namespace genetic_algorithm::crossover::integer
     auto NPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         if (n_ == 1)
-        {
             return dtl::singlePointCrossoverImpl(parent1, parent2);
-        }
         else if (n_ == 2)
-        {
             return dtl::twoPointCrossoverImpl(parent1, parent2);
-        }
         else
-        {
             return dtl::nPointCrossoverImpl(parent1, parent2, n_);
-        }
     }
 
     Uniform::Uniform(double ps)
@@ -72,8 +66,8 @@ namespace genetic_algorithm::crossover::integer
             throw std::invalid_argument("The parent chromosomes must be the same length for the uniform crossover.");
         }
         
-        size_t num_swapped_indices = rng::randomBinomialApprox(chrom_len, ps_);
-        auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped_indices);
+        size_t num_swapped = rng::randomBinomialApprox(chrom_len, ps_);
+        auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
 
         Candidate child1{ parent1 }, child2{ parent2 };
 

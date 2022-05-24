@@ -97,8 +97,7 @@ namespace genetic_algorithm::crossover::perm
 
             if (cycle % 2)
             {
-                child1.chromosome[i] = parent2.chromosome[i];
-                child2.chromosome[i] = parent1.chromosome[i];
+                std::swap(child1.chromosome[i], child2.chromosome[i]);
             }
             /* Even cycle genes were already handled when initializing the children. */
         }

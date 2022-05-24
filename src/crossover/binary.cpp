@@ -68,8 +68,8 @@ namespace genetic_algorithm::crossover::binary
             throw std::invalid_argument("The parent chromosomes must be the same length for the uniform crossover.");
         }
 
-        size_t num_swapped_indices = rng::randomBinomialApprox(chrom_len, ps_);
-        auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped_indices);
+        size_t num_swapped = rng::randomBinomialApprox(chrom_len, ps_);
+        auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
