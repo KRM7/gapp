@@ -76,7 +76,7 @@ namespace genetic_algorithm::crossover::dtl
         if (chrom_len < 2) return { parent1, parent2 };
 
         size_t num_crossover_points = std::min(n, chrom_len);
-        std::vector<size_t> crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
+        auto crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
 
         std::vector<size_t> crossover_mask(chrom_len, 0);
         for (size_t i = 0, remaining = num_crossover_points; i < chrom_len; i++)
@@ -88,7 +88,7 @@ namespace genetic_algorithm::crossover::dtl
             crossover_mask[i] = remaining;
         }
 
-        Candidate<T> child1{ parent1 }, child2{ parent2 };
+        Candidate child1{ parent1 }, child2{ parent2 };
 
         for (size_t i = 0; i < chrom_len; i++)
         {
@@ -116,7 +116,7 @@ namespace genetic_algorithm::crossover::dtl
 
         size_t crossover_point = rng::randomInt(0_sz, chrom_len);
 
-        Candidate<T> child1{ parent1 }, child2{ parent2 };
+        Candidate child1{ parent1 }, child2{ parent2 };
 
         for (size_t i = 0; i < crossover_point; i++)
         {
@@ -139,13 +139,10 @@ namespace genetic_algorithm::crossover::dtl
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        std::vector<size_t> crossover_points = rng::sampleUnique(0_sz, chrom_len, 2);
-        if (crossover_points[0] > crossover_points[1])
-        {
-            std::swap(crossover_points[0], crossover_points[1]);
-        }
+        auto crossover_points = rng::sampleUnique(0_sz, chrom_len, 2);
+        std::tie(crossover_points[0], crossover_points[1]) = std::minmax(crossover_points[0], crossover_points[1]);
 
-        Candidate<T> child1{ parent1 }, child2{ parent2 };
+        Candidate child1{ parent1 }, child2{ parent2 };
 
         for (size_t i = crossover_points[0]; i < crossover_points[1]; i++)
         {
@@ -222,7 +219,7 @@ namespace genetic_algorithm::crossover::dtl
             direct_indices.insert(idx);
         }
 
-        Candidate<T> child{ parent1 };
+        Candidate child{ parent1 };
 
         size_t child_pos = 0;
         while (direct_indices.contains(child_pos)) child_pos++;
@@ -247,15 +244,15 @@ namespace genetic_algorithm::crossover::dtl
         {
             std::vector<T> cycle;
 
-            size_t cur_pos = 0;
-            T top_val = chrom1[cur_pos];
-            cycle.push_back(top_val);
+            size_t pos = 0;
+            T top = chrom1[pos];
+            cycle.push_back(top);
 
-            while (chrom2[cur_pos] != chrom1[0])
+            while (chrom2[pos] != chrom1[0])
             {
-                cur_pos = detail::index_of(chrom1, chrom2[cur_pos]);
-                top_val = chrom1[cur_pos];
-                cycle.push_back(top_val);
+                pos = detail::index_of(chrom1, chrom2[pos]);
+                top = chrom1[pos];
+                cycle.push_back(top);
             }
 
             /* Delete the values in this cycle from chrom1 and chrom2 without changing the order of the remaining genes. */
@@ -293,23 +290,19 @@ namespace genetic_algorithm::crossover::dtl
             if (child.chromosome.size() == chrom_len) break;
 
             /* Get next gene */
-            std::vector<T> candidate_genes;
             if (neighbour_lists[gene].empty())
             {
-                candidate_genes = remaining_genes;
+                gene = rng::randomElement(remaining_genes);
             }
             else
             {
-                size_t n = dtl::minNeighbourCount(neighbour_lists, gene);
-
-                candidate_genes = detail::find_all_v(neighbour_lists[gene].begin(), neighbour_lists[gene].end(),
-                [&neighbour_lists, n](const T& val)
+                auto candidate_genes = detail::find_all_v(neighbour_lists[gene].begin(), neighbour_lists[gene].end(),
+                [&neighbour_lists, n = dtl::minNeighbourCount(neighbour_lists, gene)](const T& val)
                 {
                     return neighbour_lists[val].size() == n;
                 });
-
+                gene = rng::randomElement(candidate_genes);
             }
-            gene = rng::randomElement(candidate_genes);
         }
 
         return child;
@@ -384,13 +377,13 @@ namespace genetic_algorithm::crossover::dtl
         {
             if (!direct.contains(parent2.chromosome[i]))
             {
-                size_t cur_pos = i;
-                while (first <= cur_pos && cur_pos < last)
+                size_t pos = i;
+                while (first <= pos && pos < last)
                 {
-                    T gene = parent1.chromosome[cur_pos];
-                    cur_pos = detail::index_of(parent2.chromosome, gene);
+                    T gene = parent1.chromosome[pos];
+                    pos = detail::index_of(parent2.chromosome, gene);
                 }
-                child.chromosome[cur_pos] = parent2.chromosome[i];
+                child.chromosome[pos] = parent2.chromosome[i];
             }
         }
 
