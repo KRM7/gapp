@@ -140,7 +140,10 @@ namespace genetic_algorithm::crossover::dtl
         if (chrom_len < 2) return { parent1, parent2 };
 
         auto crossover_points = rng::sampleUnique(0_sz, chrom_len, 2);
-        std::tie(crossover_points[0], crossover_points[1]) = std::minmax(crossover_points[0], crossover_points[1]);
+        if (crossover_points[0] > crossover_points[1])
+        {
+            std::swap(crossover_points[0], crossover_points[1]);
+        }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
