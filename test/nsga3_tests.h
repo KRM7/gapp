@@ -41,7 +41,7 @@ void nsga3KurTest()
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << setprecision(4) << time_spent << " s\n\n";
 
-    //writeResultsToFile(GA.population(), "test/mo_results/nsga3_kur_last.txt");
+    writeResultsToFile(GA.population(), "test/mo_results/nsga3_kur_last.txt");
     writeResultsToFile(sols, "test/mo_results/nsga3_kur_sols.txt");
 }
 
@@ -64,7 +64,7 @@ void nsga3Zdt2Test()
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << setprecision(4) << time_spent << " s\n\n";
 
-    //writeResultsToFile(GA.population(), "test/mo_results/nsga3_zdt2_last.txt");
+    writeResultsToFile(GA.population(), "test/mo_results/nsga3_zdt2_last.txt");
     writeResultsToFile(sols, "test/mo_results/nsga3_zdt2_sols.txt");
 }
 
@@ -87,7 +87,7 @@ void nsga3Zdt3Test()
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << setprecision(4) << time_spent << " s\n\n";
 
-    //writeResultsToFile(GA.population(), "test/mo_results/nsga3_zdt3_last.txt");
+    writeResultsToFile(GA.population(), "test/mo_results/nsga3_zdt3_last.txt");
     writeResultsToFile(sols, "test/mo_results/nsga3_zdt3_sols.txt");
 }
 
@@ -110,7 +110,7 @@ void nsga3Zdt6Test()
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << setprecision(4) << time_spent << " s\n\n";
 
-    //writeResultsToFile(GA.population(), "test/mo_results/nsga3_zdt6_last.txt");
+    writeResultsToFile(GA.population(), "test/mo_results/nsga3_zdt6_last.txt");
     writeResultsToFile(sols, "test/mo_results/nsga3_zdt6_sols.txt");
 }
 
@@ -133,7 +133,7 @@ void nsga3Dtlz1Test()
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << setprecision(4) << time_spent << " s\n\n";
 
-    //writeResultsToFile(GA.population(), "test/mo_results/nsga3_dtlz1_last.txt");
+    writeResultsToFile(GA.population(), "test/mo_results/nsga3_dtlz1_last.txt");
     writeResultsToFile(sols, "test/mo_results/nsga3_dtlz1_sols.txt");
 }
 
@@ -156,7 +156,7 @@ void nsga3Dtlz2Test()
     cout << "Number of fitness evals: " << GA.num_fitness_evals() << "\n";
     cout << "Time taken: " << setprecision(4) << time_spent << " s\n\n";
 
-    //writeResultsToFile(GA.population(), "test/mo_results/nsga3_dtlz2_last.txt");
+    writeResultsToFile(GA.population(), "test/mo_results/nsga3_dtlz2_last.txt");
     writeResultsToFile(sols, "test/mo_results/nsga3_dtlz2_sols.txt");
 }
 
