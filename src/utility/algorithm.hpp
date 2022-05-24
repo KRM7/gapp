@@ -146,7 +146,10 @@ namespace genetic_algorithm::detail
     {
         assert(!container.empty());
 
-        return size_t(std::find(container.begin(), container.end(), val) - container.begin());
+        size_t idx = size_t(std::find(container.begin(), container.end(), val) - container.begin());
+        assert(idx < container.size());
+
+        return idx;  
     }
 
     template<typename T, std::predicate<T> Pred>
@@ -154,7 +157,10 @@ namespace genetic_algorithm::detail
     {
         assert(!container.empty());
 
-        return size_t(std::find_if(container.begin(), container.end(), std::forward<Pred>(pred)) - container.begin());
+        size_t idx = size_t(std::find_if(container.begin(), container.end(), std::forward<Pred>(pred)) - container.begin());
+        assert(idx < container.size());
+
+        return idx;
     }
 
     template<typename T>
