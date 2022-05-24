@@ -28,9 +28,6 @@ namespace genetic_algorithm::stopping
         */
         explicit FitnessEvals(size_t max_fitness_evals);
 
-        /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GaInfo& ga) override;
-
         /**
         * Set the maximum number of fitness function evaluations allowed in the algorithm. \n
         * The actual number of fitness function evaluations might be somewhat higher as the stop
@@ -46,6 +43,8 @@ namespace genetic_algorithm::stopping
 
     private:
         size_t max_fitness_evals_;
+
+        bool stop_condition(const GaInfo& ga) override;
     };
 
     /**
@@ -63,9 +62,6 @@ namespace genetic_algorithm::stopping
         */
         explicit FitnessValue(const std::vector<double>& fitness_threshold);
 
-        /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GaInfo& ga) override;
-
         /**
         * Set the fitness threshold vector used when evaluating the stop condition.
         *
@@ -79,6 +75,8 @@ namespace genetic_algorithm::stopping
 
     private:
         std::vector<double> fitness_threshold_;
+
+        bool stop_condition(const GaInfo& ga) override;
     };
 
     /**
@@ -98,9 +96,6 @@ namespace genetic_algorithm::stopping
         * @param delta The minimum fitness difference considered an improvement.
         */
         explicit FitnessMeanStall(size_t patience = 0, double delta = 1E-6);
-
-        /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GaInfo& ga) override;
 
         /**
         * Set the patience value used for the stop condition.
@@ -132,6 +127,7 @@ namespace genetic_algorithm::stopping
         std::vector<double> best_fitness_mean_;
 
         void resetCntr() noexcept;
+        bool stop_condition(const GaInfo& ga) override;
     };
 
     /**
@@ -151,9 +147,6 @@ namespace genetic_algorithm::stopping
         * @param delta The minimum fitness difference considered an improvement.
         */
         explicit FitnessBestStall(size_t patience = 0, double delta = 1E-6);
-
-        /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        bool operator()(const GaInfo& ga) override;
 
         /**
         * Set the patience value used for the stop condition.
@@ -185,6 +178,7 @@ namespace genetic_algorithm::stopping
         std::vector<double> best_fitness_max_;
 
         void resetCntr() noexcept;
+        bool stop_condition(const GaInfo& ga) override;
     };
 
     /**
@@ -196,9 +190,8 @@ namespace genetic_algorithm::stopping
     {
     public:
         using StopCondition::StopCondition;
-
-        /** @returns false. */
-        bool operator()(const GaInfo& ga) override;
+    private:
+        bool stop_condition(const GaInfo& ga) override;
     };
 
 } // namespace genetic_algorithm::stopping

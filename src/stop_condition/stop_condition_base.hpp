@@ -23,7 +23,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
-        virtual bool operator()(const GaInfo& ga) = 0;
+        bool operator()(const GaInfo& ga);
 
         StopCondition()                                 = default;
         StopCondition(const StopCondition&)             = default;
@@ -31,6 +31,10 @@ namespace genetic_algorithm::stopping
         StopCondition& operator=(const StopCondition&)  = default;
         StopCondition& operator=(StopCondition&&)       = default;
         virtual ~StopCondition()                        = default;
+
+    private:
+        /* Implementation of the stop condition. */
+        virtual bool stop_condition(const GaInfo& ga) = 0;
     };
 
 } // namespace genetic_algorithm::stopping
@@ -45,9 +49,10 @@ namespace genetic_algorithm::stopping::dtl
 
         explicit Lambda(StopConditionFunction f);
 
-        bool operator()(const GaInfo& ga) override;
     private:
         StopConditionFunction f_;
+
+        bool stop_condition(const GaInfo& ga) override;
     };
 
 } // namespace genetic_algorithm::stopping::dtl

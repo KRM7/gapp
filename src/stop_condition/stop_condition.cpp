@@ -21,7 +21,7 @@ namespace genetic_algorithm::stopping
         max_fitness_evals_ = max_fitness_evals;
     }
 
-    bool FitnessEvals::operator()(const GaInfo& ga)
+    bool FitnessEvals::stop_condition(const GaInfo& ga)
     {
         return (ga.num_fitness_evals() >= max_fitness_evals_);
     }
@@ -42,7 +42,7 @@ namespace genetic_algorithm::stopping
         fitness_threshold_ = fitness_threshold;
     }
 
-    bool FitnessValue::operator()(const GaInfo& ga)
+    bool FitnessValue::stop_condition(const GaInfo& ga)
     {
         if (ga.num_objectives() != fitness_threshold_.size())
         {
@@ -81,7 +81,7 @@ namespace genetic_algorithm::stopping
         cntr_ = patience_ + 1;
     }
 
-    bool FitnessMeanStall::operator()(const GaInfo& ga)
+    bool FitnessMeanStall::stop_condition(const GaInfo& ga)
     {
         auto current_mean = detail::populationFitnessMean(ga.fitness_matrix());
 
@@ -139,7 +139,7 @@ namespace genetic_algorithm::stopping
         cntr_ = patience_ + 1;
     }
 
-    bool FitnessBestStall::operator()(const GaInfo& ga)
+    bool FitnessBestStall::stop_condition(const GaInfo& ga)
     {
         auto current_max = detail::populationFitnessMax(ga.fitness_matrix());
 
@@ -174,7 +174,7 @@ namespace genetic_algorithm::stopping
         return cntr_ == 0;
     }
 
-    bool NoEarlyStop::operator()(const GaInfo&)
+    bool NoEarlyStop::stop_condition(const GaInfo&)
     {
         return false;
     }
