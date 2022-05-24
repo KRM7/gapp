@@ -247,20 +247,17 @@ namespace genetic_algorithm::rng
     {
         assert(dim > 0);
 
-        std::uniform_real_distribution dist{ 0.0, 1.0 };
-
-        std::vector<double> point;
-        point.reserve(dim);
+        std::vector<double> point(dim);
 
         double sum = 0.0;
-        for (size_t i = 0; i < dim; i++)
+        for (auto& coord : point)
         {
-            point.push_back(-std::log(dist(prng)));
-            sum += point.back();
+            coord = -std::log(randomReal());
+            sum += coord;
         }
-        for (size_t i = 0; i < dim; i++)
+        for (auto& coord : point)
         {
-            point[i] /= sum;
+            coord /= sum;
         }
 
         return point;
@@ -270,7 +267,7 @@ namespace genetic_algorithm::rng
     {
         assert(!cdf.empty());
 
-        auto it = std::lower_bound(cdf.begin(), cdf.end(), randomReal(0.0, cdf.back())); // cdf.back() in case not exactly 1.0
+        auto it = std::lower_bound(cdf.begin(), cdf.end(), randomReal(0.0, cdf.back())); // cdf.back() in case it's not exactly 1.0
 
         return size_t(it - cdf.begin());
     }
