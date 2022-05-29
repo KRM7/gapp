@@ -47,6 +47,52 @@ namespace genetic_algorithm::detail
         concept MapContainer = requires { is_map_container<T>; };
     }
 
+    template<typename ValueType, typename... Rest, typename F>
+    requires std::invocable<F, ValueType>
+    auto map(const std::vector<ValueType, Rest...>& cont, F&& f)
+    {
+        using MappedType = std::invoke_result_t<F, ValueType>;
+        using ResultType = std::vector<MappedType>;
+
+        if constexpr (std::is_scalar_v<ResultType>)
+        {
+            ResultType result(cont.size());
+            for (size_t i = 0; i < cont.size(); i++)
+            {
+                result[i] = std::invoke(f, cont[i]);
+            }
+            return result;
+        }
+        else
+        {
+            ResultType result;
+            result.reserve(cont.size());
+            for (const auto& elem : cont)
+            {
+                result.push_back(std::invoke(f, elem));
+            }
+            return result;
+        }
+    }
+
+    template<typename ValueType, size_t N, typename F>
+    requires std::invocable<F, ValueType>
+    constexpr auto map(const std::array<ValueType, N>& cont, F&& f)
+        noexcept(std::is_nothrow_invocable_v<F, ValueType> &&
+                 std::is_nothrow_move_assignable_v<std::invoke_result_t<F, ValueType>> &&
+                 std::is_nothrow_default_constructible_v<std::invoke_result_t<F, ValueType>>)
+    {
+        using MappedType = std::invoke_result_t<F, ValueType>;
+        using ResultType = std::array<MappedType, N>;
+
+        ResultType result;
+        for (size_t i = 0; i < N; i++)
+        {
+            result[i] = std::invoke(f, cont[i]);
+        }
+        return result;
+    }
+
     template<template<typename...> class ContainerType, typename ValueType, typename... Rest, typename F>
     requires Container<ContainerType<ValueType, Rest...>> && std::invocable<F, ValueType>
     auto map(const ContainerType<ValueType, Rest...>& cont, F&& f)
@@ -56,12 +102,7 @@ namespace genetic_algorithm::detail
 
         ResultType result;
 
-        if constexpr (is_same_template_v<ContainerType, std::vector> || _::is_unordered_container<ContainerType>)
-        {
-            result.reserve(cont.size());
-        }
-
-        if constexpr (is_one_of_templ_v<ContainerType, std::vector, std::deque, std::list>)
+        if constexpr (is_one_of_templ_v<ContainerType, std::deque, std::list>)
         {
             for (const auto& elem : cont)
             {
@@ -71,6 +112,10 @@ namespace genetic_algorithm::detail
         }
         else if constexpr (_::is_set_container<ContainerType>)
         {
+            if constexpr (_::is_unordered_container<ContainerType>)
+            {
+                result.reserve(cont.size());
+            }
             for (const auto& elem : cont)
             {
                 result.insert(std::invoke(f, elem));
@@ -86,24 +131,7 @@ namespace genetic_algorithm::detail
             result.reverse();
             return result;
         }
-        else static_assert(false);
-    }
-
-    template<typename ValueType, size_t N, typename F>
-    requires std::invocable<F, ValueType>
-    auto map(const std::array<ValueType, N>& cont, F&& f)
-    {
-        using MappedType = std::invoke_result_t<F, ValueType>;
-        using ResultType = std::array<MappedType, N>;
-
-        ResultType result;
-
-        for (size_t i = 0; i < cont.size(); i++)
-        {
-            result[i] = std::invoke(f, cont[i]);
-        }
-
-        return result;
+        else static_assert(false, "bad container type");
     }
 
     template<template<typename...> class ContainerType, typename KeyType, typename ValueType, typename... Rest, typename F>
@@ -114,11 +142,9 @@ namespace genetic_algorithm::detail
     {
         using MappedType = std::invoke_result_t<F, KeyType, ValueType>;
         static_assert(is_specialization_of_v<MappedType, std::pair>);
-
         using ResultType = ContainerType<typename MappedType::first_type, typename MappedType::second_type>;
 
         ResultType result;
-
         if constexpr (_::is_unordered_container<ContainerType>)
         {
             result.reserve(cont.size());
