@@ -147,10 +147,10 @@ namespace genetic_algorithm::selection::multi_objective
         updateNicheCounts(ref_points_, sol_info_);
 
         auto pfronts = dtl::nonDominatedSort(fitness_matrix);
-        for (size_t i = 0; i < pfronts.size(); i++)
+        for (const auto& elem : pfronts)
         {
-            size_t idx = pfronts[i].first;
-            size_t rank = pfronts[i].second;
+            size_t idx = elem.first;
+            size_t rank = elem.second;
 
             sol_info_[idx].rank = rank;
         }
