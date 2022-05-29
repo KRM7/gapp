@@ -23,8 +23,8 @@ namespace genetic_algorithm::detail
              template<typename...> class Target,
              template<typename...> class... Targets>
     struct is_one_of_templ<Match, Target, Targets...>
-        : std::bool_constant<is_same_template_v<Match, Target> ||
-                             is_one_of_templ<Match, Targets...>::value>
+        : std::bool_constant<std::disjunction_v<is_same_template<Match, Target>,
+                                                is_one_of_templ<Match, Targets...>>>
     {};
 
     template<template<typename...> class T, template<typename...> class... Ts>
@@ -82,7 +82,6 @@ namespace genetic_algorithm::detail
             template<typename... TArgs>
             static std::true_type f(BaseTempl<TArgs...>*);
 
-            template<typename...>
             static std::false_type f(...);
 
         public:
