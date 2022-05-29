@@ -72,7 +72,7 @@ namespace genetic_algorithm::detail
                    std::inner_product(line.begin(), line.end(), line.begin(), 0.0);
 
         return std::transform_reduce(point.begin(), point.end(), line.begin(), 0.0,
-                                     std::plus<double>(),
+                                     std::plus<double>{},
                                      [k](double p, double l) noexcept { return square(p - k * l); });
     }
 
@@ -99,9 +99,9 @@ namespace genetic_algorithm::detail
         if (vec.size() == 1) return 0.0;
 
         auto var = std::accumulate(vec.begin(), vec.end(), 0.0L,
-        [mean, n = vec.size()](long double acc, double val) noexcept
+        [mean, n = vec.size() - 1](long double acc, double val) noexcept
         {
-            return acc + square(val - mean) / (n - 1.0);
+            return acc + square(val - mean) / n;
         });
 
         return double(std::sqrt(var));

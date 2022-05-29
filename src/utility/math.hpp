@@ -105,9 +105,7 @@ namespace genetic_algorithm::detail
     bool floatVecIsEqual(const std::vector<T>& lhs, const std::vector<T>& rhs) noexcept
     {
         return (lhs.size() == rhs.size()) &&
-                std::equal(lhs.begin(), lhs.end(),
-                           rhs.begin(),
-                           floatIsEqual<T>);
+                std::equal(lhs.begin(), lhs.end(), rhs.begin(), floatIsEqual<T>);
     }
 
 } // namespace genetic_algorithm::detail
