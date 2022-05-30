@@ -4,9 +4,7 @@
 #include "crossover_dtl.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
-#include <algorithm>
-#include <unordered_set>
-#include <unordered_map>
+#include <utility>
 
 namespace genetic_algorithm::crossover::perm
 {

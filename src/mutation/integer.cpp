@@ -5,7 +5,6 @@
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
-#include <iterator>
 #include <vector>
 
 namespace genetic_algorithm::mutation::integer
@@ -24,9 +23,10 @@ namespace genetic_algorithm::mutation::integer
         for (const auto& idx : mutated_indices)
         {
             /* Make sure the new value for the changed gene can't be the old one. */
-            std::swap(alleles[candidate.chromosome[idx]], alleles.back());
-            GeneType new_gene = rng::randomElement(alleles.begin(), std::prev(alleles.end()));
-            std::swap(alleles[candidate.chromosome[idx]], alleles.back());
+            auto old_gene = candidate.chromosome[idx];
+            std::swap(alleles[old_gene], alleles.back());
+            GeneType new_gene = rng::randomElement(alleles.begin(), alleles.end() - 1);
+            std::swap(alleles[old_gene], alleles.back());
 
             candidate.chromosome[idx] = new_gene;
         }

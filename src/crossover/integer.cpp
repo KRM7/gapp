@@ -3,6 +3,7 @@
 #include "integer.hpp"
 #include "crossover_dtl.hpp"
 #include "../utility/rng.hpp"
+#include <utility>
 #include <stdexcept>
 
 namespace genetic_algorithm::crossover::integer
