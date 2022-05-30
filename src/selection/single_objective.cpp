@@ -37,21 +37,22 @@ namespace genetic_algorithm::selection::single_objective
         tourney_size_ = size;
     }
 
-    void Tournament::prepare(const GaInfo&, const FitnessMatrix&)
-    { /* Nothing to do for tournament selection. */
+    void Tournament::prepare(const GaInfo&, const FitnessMatrix& fmat)
+    {
+        assert(fmat.size() >= tourney_size_);
+        assert(std::none_of(fmat.begin(), fmat.end(), [](const FitnessVector& fvec) { return fvec.empty(); }));
+
+        fvec_ = detail::map(fmat, [](const FitnessVector& fvec) noexcept { return fvec[0]; });
     }
 
     size_t Tournament::select(const GaInfo&, const FitnessMatrix&) const
     {
-        assert(pop.size() >= tourney_size_);
-        assert(std::all_of(pop.begin(), pop.end(), [](const FitnessVector& sol) { return sol.size() == 1; }));
-
-        auto candidates = rng::sampleUnique(0_sz, pop.size(), tourney_size_);
+        auto candidates = rng::sampleUnique(0_sz, fvec_.size(), tourney_size_);
 
         return *std::max_element(candidates.begin(), candidates.end(),
-        [&pop](size_t lidx, size_t ridx)
+        [this](size_t lidx, size_t ridx) noexcept
         {
-            return pop[lidx][0] < pop[ridx][0];
+            return fvec_[lidx] < fvec_[ridx];
         });
     }
 
