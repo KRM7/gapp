@@ -61,13 +61,13 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::solutions() const -> const Population&
+    auto GA<T, D>::solutions() const noexcept -> const Population&
     {
         return solutions_;
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::population() const -> const Population&
+    auto GA<T, D>::population() const noexcept -> const Population&
     {
         return population_;
     }
@@ -443,7 +443,7 @@ namespace genetic_algorithm
             {
                 throw std::domain_error("A fitness vector returned by the fitness function has incorrect size.");
             }
-            if (!std::all_of(sol.fitness.begin(), sol.fitness.end(), [](double val) { return std::isfinite(val); }))
+            if (!std::all_of(sol.fitness.begin(), sol.fitness.end(), [](double val) noexcept { return std::isfinite(val); }))
             {
                 throw std::domain_error("A non-finite fitness value was returned by the fitness function.");
             }

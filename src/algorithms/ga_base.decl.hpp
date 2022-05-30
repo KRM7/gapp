@@ -129,10 +129,10 @@ namespace genetic_algorithm
         [[maybe_unused]] const Candidates& continueFor(size_t num_generations);
 
         /** @returns The pareto optimal solutions found by the algorithm. */
-        [[nodiscard]] const Candidates& solutions() const;
+        [[nodiscard]] const Candidates& solutions() const noexcept;
 
         /** @returns The current population of the algorithm. Not the same as the solutions. */
-        [[nodiscard]] const Population& population() const;
+        [[nodiscard]] const Population& population() const noexcept;
 
         /** @returns The fitness matrix of the current population of the algorithm. */
         [[nodiscard]] FitnessMatrix fitness_matrix() const override final;
