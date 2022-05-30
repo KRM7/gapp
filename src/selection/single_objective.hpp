@@ -21,7 +21,7 @@ namespace genetic_algorithm::selection::single_objective
     {
     public:
         void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
 
     private:
         std::vector<double> cdf_;
@@ -57,10 +57,11 @@ namespace genetic_algorithm::selection::single_objective
         size_t size() const noexcept { return tourney_size_; }
 
         void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
 
     private:
         size_t tourney_size_;
+        std::vector<double> fvec_;
     };
 
     /**
@@ -121,7 +122,7 @@ namespace genetic_algorithm::selection::single_objective
         std::pair<double, double> weights() const noexcept { return { min_weight_, max_weight_ }; }
 
         void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
 
     private:
         double min_weight_;
@@ -158,7 +159,7 @@ namespace genetic_algorithm::selection::single_objective
         double scale() const noexcept { return scale_; }
 
         void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
 
     private:
         double scale_;
@@ -195,7 +196,7 @@ namespace genetic_algorithm::selection::single_objective
         void temperature_function(TemperatureFunction f);
 
         void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
 
     private:
         TemperatureFunction temperature_;

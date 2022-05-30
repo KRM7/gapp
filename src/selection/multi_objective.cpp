@@ -28,7 +28,7 @@ namespace genetic_algorithm::selection::multi_objective
         dists_ = dtl::crowdingDistances(fmat, std::move(pfronts));
     }
 
-    size_t NSGA2::select(const GaInfo&, const FitnessMatrix& pop)
+    size_t NSGA2::select(const GaInfo&, const FitnessMatrix& pop) const
     {
         assert(!pop.empty() && pop.size() == ranks_.size());
 
@@ -248,7 +248,7 @@ namespace genetic_algorithm::selection::multi_objective
         }
     }
 
-    size_t NSGA3::select(const GaInfo&, const FitnessMatrix& pop)
+    size_t NSGA3::select(const GaInfo&, const FitnessMatrix& pop) const
     {
         assert(!pop.empty());
 
@@ -297,24 +297,24 @@ namespace genetic_algorithm::selection::multi_objective
         });
     }
 
-    size_t& NSGA3::nicheCountOf(CandidateInfo& info)
+    size_t& NSGA3::nicheCountOf(CandidateInfo& info) noexcept
     {
         return ref_points_[info.ref_idx].niche_count;
     }
-    size_t& NSGA3::nicheCountOf(size_t sol_idx)
+    size_t& NSGA3::nicheCountOf(size_t sol_idx) noexcept
     {
         return ref_points_[sol_info_[sol_idx].ref_idx].niche_count;
     }
-    const size_t& NSGA3::nicheCountOf(size_t sol_idx) const
+    const size_t& NSGA3::nicheCountOf(size_t sol_idx) const noexcept
     {
         return ref_points_[sol_info_[sol_idx].ref_idx].niche_count;
     }
-    const size_t& NSGA3::nicheCountOf(const CandidateInfo& info) const
+    const size_t& NSGA3::nicheCountOf(const CandidateInfo& info) const noexcept
     {
         return ref_points_[info.ref_idx].niche_count;
     }
 
-    void NSGA3::updateNicheCounts(std::vector<RefPoint>& refs, const std::vector<CandidateInfo>& props)
+    void NSGA3::updateNicheCounts(std::vector<RefPoint>& refs, const std::vector<CandidateInfo>& props) noexcept
     {
         assert(!refs.empty());
 

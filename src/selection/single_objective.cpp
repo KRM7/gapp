@@ -14,11 +14,10 @@ namespace genetic_algorithm::selection::single_objective
     void Roulette::prepare(const GaInfo&, const FitnessMatrix& pop)
     {
         auto selection_weights = dtl::rouletteWeights(pop);
-
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    size_t Roulette::select(const GaInfo&, const FitnessMatrix&)
+    size_t Roulette::select(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
@@ -42,7 +41,7 @@ namespace genetic_algorithm::selection::single_objective
     { /* Nothing to do for tournament selection. */
     }
 
-    size_t Tournament::select(const GaInfo&, const FitnessMatrix& pop)
+    size_t Tournament::select(const GaInfo&, const FitnessMatrix&) const
     {
         assert(pop.size() >= tourney_size_);
         assert(std::all_of(pop.begin(), pop.end(), [](const FitnessVector& sol) { return sol.size() == 1; }));
@@ -89,11 +88,10 @@ namespace genetic_algorithm::selection::single_objective
     void Rank::prepare(const GaInfo&, const FitnessMatrix& pop)
     {
         auto selection_weights = dtl::rankWeights(pop, min_weight_, max_weight_);
-
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    size_t Rank::select(const GaInfo&, const FitnessMatrix&)
+    size_t Rank::select(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
@@ -116,11 +114,10 @@ namespace genetic_algorithm::selection::single_objective
     void Sigma::prepare(const GaInfo&, const FitnessMatrix& pop)
     {
         auto selection_weights = dtl::sigmaWeights(pop, scale_);
-
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    size_t Sigma::select(const GaInfo&, const FitnessMatrix&)
+    size_t Sigma::select(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
@@ -138,8 +135,9 @@ namespace genetic_algorithm::selection::single_objective
         cdf_ = dtl::weightsToCdf(selection_weights);
     }
 
-    size_t Boltzmann::select(const GaInfo&, const FitnessMatrix&)
+    size_t Boltzmann::select(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
+
 } // namespace genetic_algorithm::selection::single_objective

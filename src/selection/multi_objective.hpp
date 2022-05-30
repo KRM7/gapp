@@ -16,7 +16,7 @@ namespace genetic_algorithm::selection::multi_objective
     {
     public:
         void init(const GaInfo& ga) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
         std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
 
     private:
@@ -34,7 +34,7 @@ namespace genetic_algorithm::selection::multi_objective
     {
     public:
         void init(const GaInfo& ga) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
         std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
 
         using Point = std::vector<double>;
@@ -84,13 +84,13 @@ namespace genetic_algorithm::selection::multi_objective
         void associatePopWithRefs(std::vector<CandidateInfo>& props, const FitnessMatrix& fmat, const std::vector<RefPoint>& refs);
         
         /* Returns the niche counts of the given candidate. */
-        size_t& nicheCountOf(CandidateInfo& info);
-        size_t& nicheCountOf(size_t sol_idx);
-        const size_t& nicheCountOf(const CandidateInfo& info) const;
-        const size_t& nicheCountOf(size_t sol_idx) const;
+        size_t& nicheCountOf(CandidateInfo& info) noexcept;
+        size_t& nicheCountOf(size_t sol_idx) noexcept;
+        const size_t& nicheCountOf(const CandidateInfo& info) const noexcept;
+        const size_t& nicheCountOf(size_t sol_idx) const noexcept;
 
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */
-        static void updateNicheCounts(std::vector<RefPoint>& refs, const std::vector<CandidateInfo>& props);
+        static void updateNicheCounts(std::vector<RefPoint>& refs, const std::vector<CandidateInfo>& props) noexcept;
     };
 
 } // namespace genetic_algorithm::selection::multi_objective
