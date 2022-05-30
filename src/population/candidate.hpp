@@ -27,8 +27,8 @@ namespace genetic_algorithm
     using Chromosome = std::vector<T>;
 
     /**
-    * The Candidate class that is used to represent solutions in the genetic algorithms.
-    * This is used as the general purpose candidate type in all of the algorithms (SOGA, NSGA-II, NSGA-III).
+    * The Candidate class that is used to represent solutions in the genetic algorithms. \n
+    * This is used as the candidate type in all of the algorithms.
     */
     template<Gene T>
     struct Candidate
@@ -38,11 +38,19 @@ namespace genetic_algorithm
 
         Chromosome chromosome;          /**< The chromosome encoding the solution. */
         std::vector<double> fitness;    /**< The fitness values (for each objective) of the solution. */
-
         bool is_evaluated = false;      /**< False if the candidate's fitness value needs to be computed. */
 
-        Candidate() = default;
-        explicit Candidate(const Chromosome& chrom) : chromosome(chrom) {}
+        explicit Candidate(const Chromosome& chrom)
+            : chromosome(chrom) {}
+
+        explicit Candidate(Chromosome&& chrom) noexcept
+            : chromosome(std::move(chrom)) {}
+
+        Candidate()                             = default;
+        Candidate(const Candidate&)             = default;
+        Candidate(Candidate&&)                  = default;
+        Candidate& operator=(const Candidate&)  = default;
+        Candidate& operator=(Candidate&&)       = default;
     };
 
     /** A pair of candidates. */
@@ -51,23 +59,27 @@ namespace genetic_algorithm
 
     /** Two candidates are considered equal if their chromosomes are the same. */
     template<typename T>
-    bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs);
+    bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
     /** Two candidates are considered not equal if their chromosomes are different. */
     template<typename T>
-    bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs);
+    bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
+    /* Lexicographical comparison based on the chromosomes. */
     template<typename T>
-    bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs);
+    bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
+    /* Lexicographical comparison based on the chromosomes. */
     template<typename T>
-    bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs);
+    bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
+    /* Lexicographical comparison based on the chromosomes. */
     template<typename T>
-    bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs);
+    bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
+    /* Lexicographical comparison based on the chromosomes. */
     template<typename T>
-    bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs);
+    bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
     /** Hash function for the Candidate. */
     template<detail::Hashable T>
@@ -88,7 +100,7 @@ namespace genetic_algorithm
 namespace genetic_algorithm
 {
     template<typename T>
-    bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
     {
         if constexpr (std::is_floating_point_v<T>)
         {
@@ -101,13 +113,13 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
     {
         return !(lhs == rhs);
     }
 
     template<typename T>
-    bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
     {
         if constexpr (std::is_floating_point_v<T>)
         {
@@ -122,19 +134,19 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
     {
         return !(lhs < rhs);
     }
 
     template<typename T>
-    bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
     {
         return rhs < lhs;
     }
 
     template<typename T>
-    bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs)
+    bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
     {
         return !(rhs < lhs);
     }
