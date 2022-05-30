@@ -10,38 +10,47 @@
 
 namespace genetic_algorithm::crossover::dtl
 {
+    /* General n-point crossover implementation for any gene type. */
     template<Gene T>
     CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t n);
 
+    /* Simpler single-point crossover function for any gene type. */
     template<Gene T>
     CandidatePair<T> singlePointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
+    /* Simpler two-point crossover function for any gene type. */
     template<Gene T>
     CandidatePair<T> twoPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
+    /* Implementation of the order-1 crossover for any gene type, only generates a single child. */
     template<Gene T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
 
+    /* Implementation of the order-2 crossover for any gene type, only generates a single child. */
     template<Gene T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
 
+    /* Implementation of the position crossover for any gene type, only generates a single child. */
     template<Gene T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices);
 
+    /* Find every cycle of genes in the chromosomes chrom1 and chrom2. Used in the cycle crossover operator. */
     template<typename T>
     std::vector<std::vector<T>> findCycles(Chromosome<T> chrom1, Chromosome<T> chrom2);
 
+    /* Implementation of the edge crossover for any gene type, only generates a single child. */
     template<Gene T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, std::unordered_map<T, std::vector<T>>&& neighbour_lists);
 
-    /* Get the neighbours of each gene. */
+    /* Get the list of neighbours of each gene in the 2 chromosomes. (Wrap = true if the front and back elements are considered neighbours.) */
     template<Gene T, bool Wrap = false>
     std::unordered_map<T, std::vector<T>> getNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
 
-    /* Find the minimum number of neighbours of gene's neighbours. */
+    /* Find the neighbour of gene which has the least number of neighbours. */
     template<typename T>
     size_t minNeighbourCount(const std::unordered_map<T, std::vector<T>>& neighbour_lists, const T& gene);
 
+    /* Implementation of the PMX crossover for any gene type, only generates a single child. */
     template<Gene T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
@@ -55,7 +64,6 @@ namespace genetic_algorithm::crossover::dtl
 #include "../utility/utility.hpp"
 #include <unordered_set>
 #include <algorithm>
-#include <iterator>
 #include <stdexcept>
 #include <cassert>
 
