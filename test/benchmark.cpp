@@ -1,58 +1,52 @@
-#include "time_test.h"
-#include "binary_tests.h"
-#include "real_tests.h"
-#include "permutational_tests.h"
-#include "integer_tests.h"
-#include "nsga2_tests.h"
-#include "nsga3_tests.h"
-
+#include "binary_soga.hpp"
+#include "real_soga.hpp"
+#include "perm_soga.hpp"
+#include "integer_soga.hpp"
+#include "nsga2.hpp"
+#include "nsga3.hpp"
 #include <cstdio>
 #include <tuple>
 
 int main()
 {
-    /*binaryRastriginTest();
-    binaryRosenbrockTest();
-    binarySchwefelTest();
-    binaryGriewankTest();
-    binaryAckleyTest();
+    binary_rastrigin();
+    binary_rosenbrock();
+    binary_schwefel();
+    binary_griewank();
+    binary_ackley();
 
-    realRastriginTest();
-    realRosenbrockTest();
-    realSchwefelTest();
-    realGriewankTest();
-    realAckleyTest();
+    real_rastrigin();
+    real_rosenbrock();
+    real_schwefel();
+    real_griewank();
+    real_ackley();
 
-    perm52Test();
-    perm76Test();
-    perm124Test();
-    perm152Test();
-    perm226Test();
-    perm299Test();
-    perm439Test();
+    perm_tsp52();
+    perm_tsp76();
+    perm_tsp124();
+    perm_tsp152();
+    perm_tsp226();
+    perm_tsp299();
+    perm_tsp439();
 
-    integerTest1();
-    integerTest2();*/
+    integer_hello();
+    integer_sentence();
 
-    nsga2KurTest();
-    nsga2Zdt2Test();
-    nsga2Zdt3Test();
-    nsga2Zdt6Test();
+    nsga2_kur();
+    nsga2_zdt2();
+    nsga2_zdt3();
+    nsga2_zdt6();
 
-    //nsga3KurTest();
-    //nsga3Zdt2Test();
-    //nsga3Zdt3Test();
-    //nsga3Zdt6Test();
+    nsga3_kur();
+    nsga3_zdt2();
+    nsga3_zdt3();
+    nsga3_zdt6();
 
-    //nsga2Dtlz1Test();
-    //nsga2Dtlz2Test();
+    nsga2_dtlz1();
+    nsga2_dtlz2();
 
-    //nsga3Dtlz1Test();
-    //nsga3Dtlz2Test();
+    nsga3_dtlz1();
+    nsga3_dtlz2();
 
-    //timeGA();
-
-    std::ignore = std::getchar();
-
-    return 0;
+    //std::ignore = std::getchar();
 }

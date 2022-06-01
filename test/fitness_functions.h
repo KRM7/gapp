@@ -16,38 +16,11 @@
 #include <numeric>
 #include <algorithm>
 #include <cassert>
+#include "benchmark_utils.hpp"
 
 using namespace std;
 
 constexpr double PI = 3.14159265358979323846;
-
-/* Utility functions. */
-
-/* Convert binary vector to real values in [0.0, upper_limit] for the binary fitness functions. */
-vector<double> convertToReals(const vector<char>& binv, size_t bits_per_var, double upper_limit)
-{
-    size_t var_count = size_t(double(binv.size()) / bits_per_var);
-    
-    vector<double> vars(var_count);
-    for (size_t i = 0; i < var_count; i++)
-    {
-        /* Convert to decimal. */
-        size_t k = accumulate(binv.begin() + i * bits_per_var, binv.begin() + (i + 1) * bits_per_var, size_t{ 0 },
-        [](size_t x, size_t y)
-        {
-            return (x << 1) + y;
-        });
-
-        /* Norm decimal. */
-        vars[i] = double(k) / ((1ULL << bits_per_var) - 1.0);
-
-        /* Scale. */
-        vars[i] *= upper_limit;
-    }
-
-    return vars;
-}
-
 
 /* Single-objective fitness functions. */
 
@@ -82,9 +55,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -94,6 +65,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -5.12; }
     constexpr static double ubound() noexcept { return 5.12; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 0.0; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -130,9 +102,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -142,6 +112,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -2.048; }
     constexpr static double ubound() noexcept { return 2.048; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 1.0; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -178,9 +149,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -190,6 +159,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -500.0; }
     constexpr static double ubound() noexcept { return 500.0; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 420.9687; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -229,9 +199,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -241,6 +209,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -600.0; }
     constexpr static double ubound() noexcept { return 600.0; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 0.0; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -283,9 +252,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -295,6 +262,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -32.768; }
     constexpr static double ubound() noexcept { return 32.768; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 0.0; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -340,9 +308,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -352,6 +318,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 2; }
     constexpr static double lbound() noexcept { return -5.0; }
     constexpr static double ubound() noexcept { return 5.0; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 };
 
@@ -386,9 +353,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -398,6 +363,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 2; }
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 };
 
@@ -432,9 +398,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -444,6 +408,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 2; }
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 };
 
@@ -478,9 +443,7 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
@@ -490,6 +453,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 2; }
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 };
 
@@ -552,18 +516,17 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
 
-    size_t num_vars;
-    size_t num_obj;
+    size_t num_vars = 7;
+    size_t num_obj = 3;
     size_t var_bits = 32;
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 
 private:
@@ -636,18 +599,17 @@ public:
     {
         assert(x.size() == num_vars * var_bits);
 
-        /* Convert binary chromosome to real values. */
-        vector<double> vars = convertToReals(x, var_bits, intval());
-        for_each(vars.begin(), vars.end(), [](double& var) { var += lbound(); });
+        auto vars = convertToReals(x, var_bits, intval(), lbound());
 
         return operator()(vars);
     }
 
-    size_t num_vars;
-    size_t num_obj;
+    size_t num_vars = 12;
+    size_t num_obj = 3;
     size_t var_bits = 32;
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
+    auto bounds() { return std::vector(num_vars, std::pair(lbound(), ubound())); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 
 private:
@@ -721,6 +683,7 @@ public:
 
     size_t num_vars() const noexcept { return num_vars_; }
     constexpr static size_t num_obj() noexcept { return 1; }
+    constexpr static double optimal_x() noexcept { return NAN; }
     double optimal_value() const noexcept
     {
         switch (num_vars_)
