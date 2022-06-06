@@ -139,7 +139,7 @@ namespace genetic_algorithm::selection::multi_objective
             ref_points_.emplace_back(std::move(ref));
         }
 
-        ideal_point_ = detail::populationFitnessMax(fitness_matrix);
+        ideal_point_ = detail::maxFitness(fitness_matrix);
         extreme_points_ = {};
 
         sol_info_ = std::vector<CandidateInfo>(fitness_matrix.size());
@@ -161,7 +161,7 @@ namespace genetic_algorithm::selection::multi_objective
         assert(!fmat.empty());
         assert(ideal_point.size() == fmat[0].size());
 
-        auto fmax = detail::populationFitnessMax(fmat);
+        auto fmax = detail::maxFitness(fmat);
         for (size_t i = 0; i < ideal_point.size(); i++)
         {
             ideal_point[i] = std::max(ideal_point[i], fmax[i]);
