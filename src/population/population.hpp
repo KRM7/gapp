@@ -35,39 +35,19 @@ namespace genetic_algorithm::detail
     FitnessVector toFitnessVector(const FitnessMatrix& pop);
 
     /* Return the minimum fitness value of the population along each objective axis. */
-    FitnessVector populationFitnessMin(const FitnessMatrix& pop);
-
-    /* Return the minimum fitness value of the population along each objective axis. */
-    template<Gene T>
-    FitnessVector populationFitnessMin(const Population<T>& pop);
+    FitnessVector minFitness(const FitnessMatrix& pop);
 
     /* Return the maximum fitness value of the population along each objective axis. */
-    FitnessVector populationFitnessMax(const FitnessMatrix& pop);
-
-    /* Return the maximum fitness value of the population along each objective axis. */
-    template<Gene T>
-    FitnessVector populationFitnessMax(const Population<T>& pop);
+    FitnessVector maxFitness(const FitnessMatrix& pop);
 
     /* Return the mean fitness value of the population along each objective axis. */
-    FitnessVector populationFitnessMean(const FitnessMatrix& pop);
-
-    /* Return the mean fitness value of the population along each objective axis. */
-    template<Gene T>
-    FitnessVector populationFitnessMean(const Population<T>& pop);
+    FitnessVector fitnessMean(const FitnessMatrix& pop);
 
     /* Return the standard deviation of the fitness values of the population along each objective axis. */
-    FitnessVector populationFitnessSD(const FitnessMatrix& pop);
+    FitnessVector fitnessStdDev(const FitnessMatrix& pop);
 
     /* Return the standard deviation of the fitness values of the population along each objective axis. */
-    FitnessVector populationFitnessSD(const FitnessMatrix& pop, const FitnessVector& mean);
-
-    /* Return the standard deviation of the fitness values of the population along each objective axis. */
-    template<Gene T>
-    FitnessVector populationFitnessSD(const Population<T>& pop);
-
-    /* Return the standard deviation of the fitness values of the population along each objective axis. */
-    template<Gene T>
-    FitnessVector populationFitnessSD(const Population<T>& pop, const FitnessVector& mean);
+    FitnessVector fitnessStdDev(const FitnessMatrix& pop, const FitnessVector& mean);
 
     /* Finds the pareto-optimal solutions in a population. */
     template<Gene T>
@@ -82,8 +62,6 @@ namespace genetic_algorithm::detail::_
     std::vector<size_t> findParetoFrontND(const FitnessMatrix& fmat);
 
     std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat);
-
-    std::vector<size_t> findParetoFrontKungImpl(const FitnessMatrix& fmat, std::vector<size_t>::iterator first, std::vector<size_t>::iterator last);
 
 } // namespace genetic_algorithm::detail::_
 
@@ -108,41 +86,6 @@ namespace genetic_algorithm::detail
     FitnessMatrix toFitnessMatrix(const Population<T>& pop)
     {
         return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness; });
-    }
-
-    template<Gene T>
-    FitnessVector populationFitnessMin(const Population<T>& pop)
-    {
-        // TODO
-        return populationFitnessMin(toFitnessMatrix(pop));
-    }
-
-    template<Gene T>
-    FitnessVector populationFitnessMax(const Population<T>& pop)
-    {
-        // TODO
-        return populationFitnessMax(toFitnessMatrix(pop));
-    }
-
-    template<Gene T>
-    FitnessVector populationFitnessMean(const Population<T>& pop)
-    {
-        // TODO
-        return populationFitnessMean(toFitnessMatrix(pop));
-    }
-
-    template<Gene T>
-    FitnessVector populationFitnessSD(const Population<T>& pop)
-    {
-        // TODO
-        return populationFitnessSD(toFitnessMatrix(pop));
-    }
-
-    template<Gene T>
-    FitnessVector populationFitnessSD(const Population<T>& pop, const FitnessVector& mean)
-    {
-        // TODO
-        return populationFitnessSD(toFitnessMatrix(pop), mean);
     }
 
     template<Gene T>

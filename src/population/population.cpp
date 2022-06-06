@@ -19,7 +19,7 @@ namespace genetic_algorithm::detail
         return detail::map(fmat, [](const FitnessVector& fvec) { return fvec[0]; });
     }
 
-    FitnessVector populationFitnessMin(const FitnessMatrix& pop)
+    FitnessVector minFitness(const FitnessMatrix& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
@@ -36,7 +36,7 @@ namespace genetic_algorithm::detail
         return min_fitness;
     }
 
-    FitnessVector populationFitnessMax(const FitnessMatrix& pop)
+    FitnessVector maxFitness(const FitnessMatrix& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
@@ -53,7 +53,7 @@ namespace genetic_algorithm::detail
         return max_fitness;
     }
 
-    FitnessVector populationFitnessMean(const FitnessMatrix& pop)
+    FitnessVector fitnessMean(const FitnessMatrix& pop)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
@@ -70,12 +70,12 @@ namespace genetic_algorithm::detail
         return fitness_mean;
     }
 
-    FitnessVector populationFitnessSD(const FitnessMatrix& pop)
+    FitnessVector fitnessStdDev(const FitnessMatrix& pop)
     {
-        return populationFitnessSD(pop, populationFitnessMean(pop));
+        return fitnessStdDev(pop, fitnessMean(pop));
     }
 
-    FitnessVector populationFitnessSD(const FitnessMatrix& pop, const FitnessVector& mean)
+    FitnessVector fitnessStdDev(const FitnessMatrix& pop, const FitnessVector& mean)
     {
         assert(!pop.empty());
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
@@ -147,24 +147,6 @@ namespace genetic_algorithm::detail::_
         return optimal_indices;
     }
 
-    std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat)
-    {
-        /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476. */
-        /* Doesn't work for d = 1 (single-objective optimization). */
-
-        auto indices = detail::argsort(fmat.begin(), fmat.end(),
-        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
-        {
-            for (size_t i = 0; i < lhs.size(); i++)
-            {
-                if (lhs[i] != rhs[i]) return lhs[i] > rhs[i];
-            }
-            return false;
-        });
-
-        return _::findParetoFrontKungImpl(fmat, indices.begin(), indices.end());
-    }
-
     bool kungCompareLess(const FitnessVector& lhs, const FitnessVector& rhs) noexcept
     {
         bool is_dominated = detail::paretoCompareLess(lhs, rhs, 1);
@@ -201,6 +183,24 @@ namespace genetic_algorithm::detail::_
         }
 
         return top_half;
+    }
+
+    std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat)
+    {
+        /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476. */
+        /* Doesn't work for d = 1 (single-objective optimization). */
+
+        auto indices = detail::argsort(fmat.begin(), fmat.end(),
+        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        {
+            for (size_t i = 0; i < lhs.size(); i++)
+            {
+                if (lhs[i] != rhs[i]) return lhs[i] > rhs[i];
+            }
+            return false;
+        });
+
+        return _::findParetoFrontKungImpl(fmat, indices.begin(), indices.end());
     }
 
 } // namespace genetic_algorithm::detail::_
