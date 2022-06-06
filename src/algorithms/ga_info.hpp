@@ -73,7 +73,8 @@ namespace genetic_algorithm
         void chrom_len(size_t len);
 
         /** @returns The chromosome length used for the candidates of the population. */
-        [[nodiscard]] size_t chrom_len() const noexcept;
+        [[nodiscard]]
+        size_t chrom_len() const noexcept;
 
         /**
         * Sets the number of Candidates used in the population to @p size. \n
@@ -84,23 +85,50 @@ namespace genetic_algorithm
         void population_size(size_t size);
 
         /** @returns The population size of the algorithm. */
-        [[nodiscard]] size_t population_size() const noexcept;
+        [[nodiscard]]
+        size_t population_size() const noexcept;
 
         /** @returns The maximum number of generations set for the algorithm. */
-        [[nodiscard]] size_t max_gen() const noexcept;
+        [[nodiscard]]
+        size_t max_gen() const noexcept;
 
         /** @returns The number of objectives. Determined by the algorithm and returns 0 before the start of the algorithm. */
-        [[nodiscard]] size_t num_objectives() const noexcept;
+        [[nodiscard]]
+        size_t num_objectives() const noexcept;
 
         /** @returns The fitness matrix of the population. */
         [[nodiscard]]
         virtual FitnessMatrix fitness_matrix() const = 0;
 
         /** @returns The number of fitness evaluations performed so far by the algorithm. */
-        [[nodiscard]] size_t num_fitness_evals() const noexcept;
+        [[nodiscard]]
+        size_t num_fitness_evals() const noexcept;
 
         /** @returns The current value of the generation counter. */
-        [[nodiscard]] size_t generation_cntr() const noexcept;
+        [[nodiscard]]
+        size_t generation_cntr() const noexcept;
+
+        /**
+        * Sets the crossover rate of the crossover operator used by the algorithm to @p pc.
+        *
+        * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
+        */
+        virtual void crossover_rate(double pc) = 0;
+
+        /** @returns The current crossover rate set for the crossover operator. */
+        [[nodiscard]]
+        virtual double crossover_rate() const noexcept = 0;
+
+        /**
+        * Sets the mutation rate of the mutation operator used by the algorithm to @p pm.
+        *
+        * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
+        */
+        virtual void mutation_rate(double pm) = 0;
+
+        /** @returns The current mutation rate set for the mutation operator. */
+        [[nodiscard]]
+        virtual double mutation_rate() const noexcept = 0;
 
         /**
         * Set the selection method used in the algorithm to @p f. \n
@@ -122,7 +150,8 @@ namespace genetic_algorithm
 
         /** @returns The current selection method used by the algorithm. */
         template<selection::SelectionMethod F = selection::Selection>
-        [[nodiscard]] F& selection_method();
+        [[nodiscard]]
+        F& selection_method();
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
@@ -155,7 +184,8 @@ namespace genetic_algorithm
 
         /** @returns The current stop condition used by the algorithm. */
         template<stopping::StopMethod F = stopping::StopCondition>
-        [[nodiscard]] F& stop_condition();
+        [[nodiscard]]
+        F& stop_condition();
 
     protected:
 

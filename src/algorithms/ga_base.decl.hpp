@@ -93,7 +93,7 @@ namespace genetic_algorithm
         * @param num_generations The maximum number of generations.
         * @returns The optimal solutions.
         */
-        [[maybe_unused]] const Candidates& run(size_t num_generations = 500);
+        const Candidates& run(size_t num_generations = 500);
 
         /**
         * Continue running the genetic algorithm for the set number of generations. \n
@@ -103,16 +103,19 @@ namespace genetic_algorithm
         * @param num_generations The number of generations to run the algorithm for.
         * @returns The optimal solutions.
         */
-        [[maybe_unused]] const Candidates& continueFor(size_t num_generations);
+        const Candidates& continueFor(size_t num_generations);
 
         /** @returns The pareto optimal solutions found by the algorithm. */
-        [[nodiscard]] const Candidates& solutions() const noexcept;
+        [[nodiscard]]
+        const Candidates& solutions() const noexcept;
 
         /** @returns The current population of the algorithm. Not the same as the solutions. */
-        [[nodiscard]] const Population& population() const noexcept;
+        [[nodiscard]]
+        const Population& population() const noexcept;
 
         /** @returns The fitness matrix of the current population of the algorithm. */
-        [[nodiscard]] FitnessMatrix fitness_matrix() const override final;
+        [[nodiscard]]
+        FitnessMatrix fitness_matrix() const override final;
 
         /**
         * Set the initial population to be used in the algorithm to @p pop instead of randomly generating it. \n
@@ -160,14 +163,15 @@ namespace genetic_algorithm
         F& crossover_method();
 
         /**
-        * Sets the crossover rate used in the algorithm to @p pc.
+        * Sets the crossover rate of the crossover operator used by the algorithm to @p pc.
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        void crossover_rate(double pc);
+        void crossover_rate(double pc) override final;
 
-        /** @returns The current crossover rate set. */
-        [[nodiscard]] double crossover_rate() const noexcept;
+        /** @returns The current crossover rate set for the crossover operator. */
+        [[nodiscard]]
+        double crossover_rate() const noexcept override final;
 
         /**
         * Set the mutation method the algorithm will use to @p f.
@@ -197,14 +201,15 @@ namespace genetic_algorithm
         F& mutation_method();
 
         /**
-        * Sets the mutation rate used in the algorithm to @p pm.
+        * Sets the mutation rate of the mutation operator used by the algorithm to @p pm.
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        void mutation_rate(double pm);
+        void mutation_rate(double pm) override final;
 
-        /** @returns The current crossover rate set. */
-        [[nodiscard]] double mutation_rate() const noexcept;
+        /** @returns The current mutation rate set for the mutation operator. */
+        [[nodiscard]]
+        double mutation_rate() const noexcept override final;
 
         /**
         * Set a repair function for the genetic algorithm. \n
