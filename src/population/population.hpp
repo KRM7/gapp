@@ -177,13 +177,13 @@ namespace genetic_algorithm::detail::_
     Candidates<T> findParetoFront1D(const Population<T>& pop)
     {
         auto best = std::max_element(pop.begin(), pop.end(),
-        [](const Candidate<T>& lhs, const Candidate<T>& rhs)
+        [](const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
         {
             return lhs.fitness[0] < rhs.fitness[0];
         });
 
         return detail::find_all_v(pop.begin(), pop.end(),
-        [&best](const Candidate<T>& sol)
+        [&best](const Candidate<T>& sol) noexcept
         {
             return detail::floatIsEqual(best->fitness[0], sol.fitness[0]);
         });
