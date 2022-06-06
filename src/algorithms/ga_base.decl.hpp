@@ -19,17 +19,6 @@
 
 namespace genetic_algorithm
 {
-    namespace selection
-    {
-        class Selection;
-
-        template<typename T>
-        concept SelectionMethod = requires
-        {
-            requires std::derived_from<T, Selection>;
-            requires std::copy_constructible<T>;
-        };
-    }
     namespace crossover
     {
         template<Gene T>
@@ -56,17 +45,6 @@ namespace genetic_algorithm
             requires std::copy_constructible<T>;
         };
     }
-    namespace stopping
-    {
-        class StopCondition;
-
-        template<typename T>
-        concept StopMethod = requires
-        {
-            requires std::derived_from<T, StopCondition>;
-            requires std::copy_constructible<T>;
-        };
-    }
 
     /**
     * Base GA class.
@@ -87,7 +65,6 @@ namespace genetic_algorithm
         using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;      /**< The type of the fitness function. */
         using CrossoverFunction = std::function<CandidatePair(const GaInfo&, const Candidate&, const Candidate&)>;
         using MutationFunction = std::function<void(const GaInfo&, Candidate&)>;
-        using StopConditionFunction = std::function<bool(const GaInfo&)>;
         using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
         using CallbackFunction = std::function<void(const GA<T, Derived>&)>;
 
@@ -154,28 +131,6 @@ namespace genetic_algorithm
         * @param f The fitness function to find the maximum of.
         */
         void fitness_function(FitnessFunction f);
-
-        /**
-        * Set the selection method used in the algorithm to @p f. \n
-        * The selection method also determines the type of the algorithm (single- or multi-objective).
-        *
-        * @param method The selection method used in the single-objective algorithm.
-        */
-        template<selection::SelectionMethod F>
-        void selection_method(const F& f);
-
-        /**
-        * Set the selection method used in the algorithm to @p f. \n
-        * The selection method also determines the type of the algorithm (single- or multi-objective).
-        *
-        * @param method The selection method used in the single-objective algorithm.
-        */
-        template<selection::SelectionMethod F>
-        void selection_method(std::unique_ptr<F>&& f);
-
-        /** @returns The current selection method used by the algorithm. */
-        template<selection::SelectionMethod F = selection::Selection>
-        [[nodiscard]] F& selection_method();
 
         /**
         * Set the crossover method the algorithm will use to @p f.
@@ -252,39 +207,6 @@ namespace genetic_algorithm
         [[nodiscard]] double mutation_rate() const noexcept;
 
         /**
-        * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set, regardless of the early-stop
-        * condition set here.
-        * 
-        * @param f The early-stop method the algorithm should use.
-        */
-        template<stopping::StopMethod F>
-        void stop_condition(const F& f);
-
-        /**
-        * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set, regardless of the early-stop
-        * condition set here.
-        *
-        * @param f The early-stop method the algorithm should use.
-        */
-        template<stopping::StopMethod F>
-        void stop_condition(std::unique_ptr<F>&& f);
-
-        /**
-        * Set the early-stop condition used by the algorithm to @p f. \n
-        * The algorithm will always stop when reaching thhe maximum generations set, regardless
-        * of this early-stop condition.
-        * 
-        * @param f The function used to check for the early-stop condition.
-        */
-        void stop_condition(StopConditionFunction f);
-
-        /** @returns The current stop condition used by the algorithm. */
-        template<stopping::StopMethod F = stopping::StopCondition>
-        [[nodiscard]] F& stop_condition();
-
-        /**
         * Set a repair function for the genetic algorithm. \n
         * This function will be applied to each chromosome after the mutations. \n
         * This can be used for example to perform a local search. \n
@@ -305,13 +227,9 @@ namespace genetic_algorithm
         Population initial_population_; /* Only if preset pop is used. */
 
         FitnessFunction fitness_function_;
-        std::unique_ptr<selection::Selection> selection_;
         std::unique_ptr<crossover::Crossover<GeneType>> crossover_;
         std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
-        std::unique_ptr<stopping::StopCondition> stop_condition_;
         RepairFunction repair_ = nullptr;
-
-        bool can_continue_ = false;
 
         void initialize();
         size_t getNumObjectives(const FitnessFunction& f) const;
@@ -325,8 +243,8 @@ namespace genetic_algorithm
 
     private:
 
-        constexpr Derived& derived() noexcept;
-        constexpr const Derived& derived() const noexcept;
+        Derived& derived() noexcept;
+        const Derived& derived() const noexcept;
         Candidate generateCandidate() const;
     };
 

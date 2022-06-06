@@ -4,12 +4,10 @@
 #define GA_GA_BASE_IMPL_HPP
 
 #include "ga_base.decl.hpp"
-#include "../selection/selection_base.hpp"
 #include "../crossover/crossover_base.hpp"
 #include "../crossover/lambda.hpp"
 #include "../mutation/mutation_base.hpp"
 #include "../mutation/lambda.hpp"
-#include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"
 #include "../population/population.hpp"
@@ -49,13 +47,13 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    constexpr D& GA<T, D>::derived() noexcept
+    D& GA<T, D>::derived() noexcept
     {
         return static_cast<D&>(*this);
     }
 
     template<Gene T, typename D>
-    constexpr const D& GA<T, D>::derived() const noexcept
+    const D& GA<T, D>::derived() const noexcept
     {
         return static_cast<const D&>(*this);
     }
@@ -100,34 +98,6 @@ namespace genetic_algorithm
         fitness_function_ = std::move(f);
 
         num_objectives(getNumObjectives(fitness_function_));
-    }
-
-    template<Gene T, typename D>
-    template<selection::SelectionMethod F>
-    void GA<T, D>::selection_method(const F& f)
-    {
-        selection_ = std::make_unique<F>(f);
-        can_continue_ = false;
-    }
-
-    template<Gene T, typename D>
-    template<selection::SelectionMethod F>
-    void GA<T, D>::selection_method(std::unique_ptr<F>&& f)
-    {
-        if (!f)
-        {
-            throw std::invalid_argument("The selection method can't be a nullptr.");
-        }
-
-        selection_ = std::move(f);
-        can_continue_ = false;
-    }
-
-    template<Gene T, typename D>
-    template<selection::SelectionMethod F>
-    F& GA<T, D>::selection_method()
-    {
-        return dynamic_cast<F&>(*selection_);
     }
 
     template<Gene T, typename D>
@@ -226,43 +196,6 @@ namespace genetic_algorithm
     double GA<T, D>::mutation_rate() const noexcept
     {
         return mutation_->mutation_rate();
-    }
-
-    template<Gene T, typename D>
-    template<stopping::StopMethod F>
-    void GA<T, D>::stop_condition(const F& f)
-    {
-        stop_condition_ = std::make_unique<F>(f);
-    }
-
-    template<Gene T, typename D>
-    template<stopping::StopMethod F>
-    void GA<T, D>::stop_condition(std::unique_ptr<F>&& f)
-    {
-        if (!f)
-        {
-            throw std::invalid_argument("The stop condition can't be a nullptr.");
-        }
-
-        stop_condition_ = std::move(f);
-    }
-
-    template<Gene T, typename D>
-    void GA<T, D>::stop_condition(StopConditionFunction f)
-    {
-        if (!f)
-        {
-            throw std::invalid_argument("The stop condition can't be empty.");
-        }
-
-        stop_condition_ = std::make_unique<stopping::dtl::Lambda>(std::move(f));
-    }
-
-    template<Gene T, typename D>
-    template<stopping::StopMethod F>
-    F& GA<T, D>::stop_condition()
-    {
-        return dynamic_cast<F&>(*stop_condition_);
     }
 
     template<Gene T, typename D>

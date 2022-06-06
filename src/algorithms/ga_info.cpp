@@ -5,6 +5,42 @@
 
 namespace genetic_algorithm
 {
+    GaInfo::GaInfo(GaInfo&& other) noexcept :
+        selection_(std::move(other.selection_)),
+        stop_condition_(std::move(other.stop_condition_)),
+        num_fitness_evals_(size_t(other.num_fitness_evals_)),
+        generation_cntr_(other.generation_cntr_),
+        num_objectives_(other.num_objectives_),
+        chrom_len_(other.chrom_len_),
+        population_size_(other.population_size_),
+        max_gen_(other.max_gen_),
+        can_continue_(other.can_continue_)
+    {
+    }
+
+    GaInfo& GaInfo::operator=(GaInfo&& other) noexcept
+    {
+        if (&other != this)
+        {
+            selection_ = std::move(other.selection_);
+            stop_condition_ = std::move(other.stop_condition_);
+
+            num_fitness_evals_ = size_t(other.num_fitness_evals_);
+            generation_cntr_ = other.generation_cntr_;
+            num_objectives_ = other.num_objectives_;
+
+            chrom_len_ = other.chrom_len_;
+            population_size_ = other.population_size_;
+            max_gen_ = other.max_gen_;
+
+            can_continue_ = other.can_continue_;
+        }
+
+        return *this;
+    }
+
+    GaInfo::~GaInfo() = default;
+
     GaInfo::GaInfo(size_t chrom_len)
     {
         this->chrom_len(chrom_len);
@@ -80,6 +116,16 @@ namespace genetic_algorithm
             throw std::invalid_argument("The number of objective functions must be at least 1.");
         }
         num_objectives_ = n;
+    }
+
+    void GaInfo::stop_condition(StopConditionFunction f)
+    {
+        if (!f)
+        {
+            throw std::invalid_argument("The stop condition can't be empty.");
+        }
+
+        stop_condition_ = std::make_unique<stopping::dtl::Lambda>(std::move(f));
     }
 
 } // namespace genetic_algorithm
