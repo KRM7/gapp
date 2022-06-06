@@ -98,7 +98,7 @@ namespace genetic_algorithm
 
         /** @returns The fitness matrix of the population. */
         [[nodiscard]]
-        virtual FitnessMatrix fitness_matrix() const = 0;
+        const FitnessMatrix& fitness_matrix() const&;
 
         /** @returns The number of fitness evaluations performed so far by the algorithm. */
         [[nodiscard]]
@@ -188,6 +188,8 @@ namespace genetic_algorithm
         F& stop_condition() &;
 
     protected:
+
+        FitnessMatrix fitness_matrix_;
 
         std::unique_ptr<selection::Selection> selection_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;

@@ -71,23 +71,6 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::fitness_matrix() const -> FitnessMatrix
-    {
-        return detail::toFitnessMatrix(population_);
-    }
-
-    template<Gene T, typename D>
-    void GA<T, D>::initial_population(const Population& pop)
-    {
-        if (!std::all_of(pop.begin(), pop.end(), [this](const Candidate& c) { return c.chromosome.size() == chrom_len_; }))
-        {
-            throw std::invalid_argument("The length of each chromosome in the preset pop must be equal to chrom_len.");
-        }
-
-        initial_population_ = pop;
-    }
-
-    template<Gene T, typename D>
     void GA<T, D>::fitness_function(FitnessFunction f)
     {
         if (!f)
@@ -212,9 +195,7 @@ namespace genetic_algorithm
         size_t num_children = population_size_ + population_size_ % 2;
         vector<CandidatePair> parent_pairs(num_children / 2);
 
-        auto current_fmat = fitness_matrix();
-
-        (*selection_).prepare(*this, current_fmat);
+        (*selection_).prepare(*this, fitness_matrix());
         if (archive_optimal_solutions)
         {
             updateOptimalSolutions(solutions_, population_);
@@ -222,10 +203,10 @@ namespace genetic_algorithm
 
         /* Selections. */
         generate(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
-        [this, &current_fmat]() -> CandidatePair
+        [this]() -> CandidatePair
         {
-            return make_pair(population_[(*selection_).select(*this, current_fmat)],
-                             population_[(*selection_).select(*this, current_fmat)]);
+            return make_pair(population_[(*selection_).select(*this, fitness_matrix())],
+                             population_[(*selection_).select(*this, fitness_matrix())]);
         });
 
         /* Crossovers. */
@@ -256,6 +237,7 @@ namespace genetic_algorithm
         /* Overwrite the current population with the children. */
         evaluate(children);
         population_ = nextPopulation(population_, children);
+        fitness_matrix_ = detail::toFitnessMatrix(population_);
 
         if (endOfGenerationCallback != nullptr) endOfGenerationCallback(*this);
         generation_cntr_++;
@@ -270,6 +252,7 @@ namespace genetic_algorithm
 
         population_ = generateInitialPopulation();
         evaluate(population_);
+        fitness_matrix_ = detail::toFitnessMatrix(population_);
 
         (*selection_).init(*this);
         while (!stopCondition())
@@ -329,22 +312,22 @@ namespace genetic_algorithm
     {
         assert(population_size_ > 0);
 
-        if (!std::all_of(initial_population_.begin(), initial_population_.end(),
-        [this](const Candidate& sol)
-        {
-            return sol.chromosome.size() == chrom_len_;
-        }))
-        {
-            throw std::domain_error("The chromosome lengths in the preset initial population must be equal to the chrom_len set.");
-        }
+        //if (!std::all_of(initial_population_.begin(), initial_population_.end(),
+        //[this](const Candidate& sol)
+        //{
+        //    return sol.chromosome.size() == chrom_len_;
+        //}))
+        //{
+        //    throw std::domain_error("The chromosome lengths in the preset initial population must be equal to the chrom_len set.");
+        //}
 
         Population pop;
         pop.reserve(population_size_);
 
-        for (size_t i = 0; i < std::min(population_size_, initial_population_.size()); i++)
-        {
-            pop.push_back(initial_population_[i]);
-        }
+        //for (size_t i = 0; i < std::min(population_size_, initial_population_.size()); i++)
+        //{
+        //    pop.push_back(initial_population_[i]);
+        //}
         while (pop.size() < population_size_)
         {
             pop.push_back(generateCandidate());

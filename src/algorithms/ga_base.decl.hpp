@@ -113,10 +113,6 @@ namespace genetic_algorithm
         [[nodiscard]]
         Population population() const noexcept;
 
-        /** @returns The fitness matrix of the current population of the algorithm. */
-        [[nodiscard]]
-        FitnessMatrix fitness_matrix() const override final;
-
         /**
         * Set the initial population to be used in the algorithm to @p pop instead of randomly generating it. \n
         * If @p pop is empty, the initial population will be randomly generated. \n
@@ -229,7 +225,6 @@ namespace genetic_algorithm
 
         Population population_;
         Candidates solutions_;
-        Population initial_population_; /* Only if preset pop is used. */
 
         FitnessFunction fitness_function_;
         std::unique_ptr<crossover::Crossover<GeneType>> crossover_;
