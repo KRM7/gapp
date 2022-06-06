@@ -11,7 +11,7 @@
 #include <exception>
 
 #ifndef GA_EPSILON
-#define GA_EPSILON (10 * std::numeric_limits<double>::epsilon())
+#define GA_EPSILON (4 * std::numeric_limits<double>::epsilon())
 #endif
 
 #ifndef GA_SEQ_EXECUTION
