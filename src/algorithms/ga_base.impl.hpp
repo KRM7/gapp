@@ -12,6 +12,7 @@
 #include "../utility/math.hpp"
 #include "../population/population.hpp"
 #include "../utility/utility.hpp"
+#include "../utility/algorithm.hpp"
 #include <execution>
 #include <numeric>
 #include <limits>
