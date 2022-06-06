@@ -17,14 +17,12 @@
 
 namespace genetic_algorithm::detail
 {
-    /* Forward function for lambda captures, same as std::forward, but uses std::ref_wrapper for lvalues. */
     template<typename T>
     constexpr auto lforward(std::remove_reference_t<T>& t) noexcept
     {
         return std::ref<std::remove_reference_t<T>>(t);
     }
 
-    /* Forward function for lambda captures, same as std::forward, but uses std::ref_wrapper for lvalues. */
     template<typename T>
     requires(!std::is_lvalue_reference_v<T>)
     constexpr T&& lforward(std::remove_reference_t<T>&& t) noexcept
@@ -32,7 +30,6 @@ namespace genetic_algorithm::detail
         return static_cast<T&&>(t);
     }
 
-    /* Returns a function that is the result of the composition of the argument functions. */
     template<typename F>
     constexpr auto compose(F&& f) noexcept
     {
@@ -44,7 +41,6 @@ namespace genetic_algorithm::detail
         };
     }
 
-    /* Returns a function that is the result of the composition of the argument functions. */
     template<typename F, typename... Fs>
     constexpr auto compose(F&& f, Fs&&... fs) noexcept
     {
@@ -56,7 +52,6 @@ namespace genetic_algorithm::detail
         };
     }
 
-    /* Returns a vector of the sorted indices (first = 0). */
     template<std::random_access_iterator Iter,
              typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
@@ -77,7 +72,6 @@ namespace genetic_algorithm::detail
         return indices;
     }
 
-    /* Returns a vector of the partially sorted (up to middle) indices (first = 0). */
     template<std::random_access_iterator Iter,
              typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
@@ -99,7 +93,6 @@ namespace genetic_algorithm::detail
         return indices;
     }
 
-    /* Returns iterators to all elements in the range [first, last) that satisfy a predicate. */
     template<std::input_iterator Iter, typename Pred>
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
     auto find_all(Iter first, Iter last, Pred&& pred)
@@ -119,7 +112,6 @@ namespace genetic_algorithm::detail
         return result;
     }
 
-    /* Returns all values in the range [first, last) that satisfy a predicate. */
     template<std::input_iterator Iter, typename Pred>
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
     auto find_all_v(Iter first, Iter last, Pred&& pred)
@@ -141,7 +133,6 @@ namespace genetic_algorithm::detail
         return result;
     }
 
-    /* Returns true if the range [first, last) contains an element that is equal to val. */
     template<std::input_iterator Iter>
     constexpr bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
     {
@@ -154,33 +145,44 @@ namespace genetic_algorithm::detail
         return false;
     }
 
-    /* Returns the index of the first element that is equal to val, assuming the container contains this element. */
     template<typename T>
     constexpr size_t index_of(const std::vector<T>& container, const T& val)
     {
         assert(!container.empty());
 
-        auto pos = std::find(container.begin(), container.end(), val);
-        size_t idx = size_t(pos - container.begin());
-
-        assert(idx < container.size());
-        return idx;  
+        for (size_t i = 0; i < container.size(); i++)
+        {
+            if (container[i] == val) return i;
+        }
+        assert(false);
+        return 0;
     }
 
-    /* Returns the index of the first element that satisfies the predicate, assuming the container contains this element. */
     template<typename T, std::predicate<T> Pred>
-    constexpr size_t index_of(const std::vector<T>& container, Pred&& pred)
+    constexpr size_t find_index(const std::vector<T>& container, Pred&& pred)
     {
         assert(!container.empty());
 
-        auto pos = std::find_if(container.begin(), container.end(), std::forward<Pred>(pred));
-        size_t idx = size_t(pos - container.begin());
-
-        assert(idx < container.size());
-        return idx;
+        for (size_t i = 0; i < container.size(); i++)
+        {
+            if (std::invoke(pred, container[i])) return i;
+        }
+        assert(false);
+        return 0;
     }
 
-    /* Erases the first element in container the is equal to val, without changing the order of the other elements. */
+    template<typename T, std::predicate<T> Pred>
+    std::vector<size_t> find_indices(const std::vector<T>& container, Pred&& pred)
+    {
+        std::vector<size_t> indices;
+
+        for (size_t i = 0; i < container.size(); i++)
+        {
+            if (std::invoke(pred, container[i])) indices.push_back(i);
+        }
+        return indices;
+    }
+
     template<typename T>
     constexpr bool erase_first_v(std::vector<T>& container, const T& val)
     {
@@ -193,7 +195,6 @@ namespace genetic_algorithm::detail
         return false;
     }
 
-    /* Erases all duplicate elements from the container. */
     template<typename T,
              std::predicate<T, T> Pred = std::equal_to<T>,
              std::strict_weak_order<T, T> Comp = std::less<T>>
@@ -204,7 +205,6 @@ namespace genetic_algorithm::detail
         container.erase(last, container.end());
     }
 
-    /* Returns the index of the max element in the range [first, last). */
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
@@ -214,7 +214,6 @@ namespace genetic_algorithm::detail
         return size_t(std::max_element(first, last, std::forward<Comp>(comp)) - first);
     }
 
-    /* Returns the index of the min element in the range [first, last). */
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
