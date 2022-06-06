@@ -2,7 +2,9 @@
 
 #include "population.hpp"
 #include "../utility/math.hpp"
+#include "../utility/algorithm.hpp"
 #include <algorithm>
+#include <iterator>
 #include <numeric>
 #include <vector>
 #include <cmath>
@@ -101,3 +103,105 @@ namespace genetic_algorithm::detail
     }
 
 } // namespace genetic_algorithm::detail
+
+namespace genetic_algorithm::detail::_
+{
+    std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
+    {
+        auto best = std::max_element(fmat.begin(), fmat.end(),
+        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        {
+            return lhs[0] < rhs[0];
+        });
+
+        return detail::find_indices(fmat,
+        [best](const FitnessVector& fvec) noexcept
+        {
+            return detail::floatIsEqual((*best)[0], fvec[0]);
+        });
+    }
+
+    std::vector<size_t> findParetoFrontND(const FitnessMatrix& fmat)
+    {
+        auto indices = detail::argsort(fmat.begin(), fmat.end(),
+        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        {
+            for (size_t i = 0; i < lhs.size(); i++)
+            {
+                if (lhs[i] != rhs[i]) return lhs[i] > rhs[i];
+            }
+            return false;
+        });
+
+        std::vector<size_t> optimal_indices;
+
+        for (const auto& idx : indices)
+        {
+            bool dominated = std::any_of(optimal_indices.begin(), optimal_indices.end(),
+            [&fmat, idx](size_t optimal_idx) noexcept
+            {
+                return detail::paretoCompareLess(fmat[idx], fmat[optimal_idx]);
+            });
+            if (!dominated) optimal_indices.push_back(idx);
+        }
+
+        return optimal_indices;
+    }
+
+    std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat)
+    {
+        /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476. */
+        /* Doesn't work for d = 1 (single-objective optimization). */
+
+        auto indices = detail::argsort(fmat.begin(), fmat.end(),
+        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        {
+            for (size_t i = 0; i < lhs.size(); i++)
+            {
+                if (lhs[i] != rhs[i]) return lhs[i] > rhs[i];
+            }
+            return false;
+        });
+
+        return _::findParetoFrontKungImpl(fmat, indices.begin(), indices.end());
+    }
+
+    bool kungCompareLess(const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+    {
+        bool is_dominated = detail::paretoCompareLess(lhs, rhs, 1);
+
+        bool is_equal = !detail::floatIsEqual(lhs[0], rhs[0]) &&
+                        std::equal(lhs.begin() + 1, lhs.end(),
+                                   rhs.begin() + 1,
+                                   detail::floatIsEqual<double>);
+
+        return is_dominated || is_equal;
+    }
+
+    std::vector<size_t> findParetoFrontKungImpl(const FitnessMatrix& fmat, std::vector<size_t>::iterator first, std::vector<size_t>::iterator last)
+    {
+        if (std::distance(first, last) == 1) return { *first };
+
+        auto middle = first + std::distance(first, last) / 2;
+
+        auto top_half = _::findParetoFrontKungImpl(fmat, first, middle);
+        auto bottom_half = _::findParetoFrontKungImpl(fmat, middle, last);
+
+        for (const auto& bad : bottom_half)
+        {
+            bool is_dominated = false;
+            for (const auto& good : top_half)
+            {
+                if (_::kungCompareLess(fmat[bad], fmat[good]))
+                {
+                    is_dominated = true;
+                    break;
+                }
+            }
+            if (!is_dominated) top_half.push_back(bad);
+        }
+
+        return top_half;
+    }
+
+} // namespace genetic_algorithm::detail::_
