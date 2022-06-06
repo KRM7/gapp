@@ -87,7 +87,7 @@ namespace genetic_algorithm::crossover::perm
 
         for (size_t i = 0; i < chrom_len; i++)
         {
-            size_t cycle = detail::index_of(cycles,
+            size_t cycle = detail::find_index(cycles,
             [gene = parent1.chromosome[i]](const auto& cycle)
             {
                 return detail::contains(cycle.begin(), cycle.end(), gene);
