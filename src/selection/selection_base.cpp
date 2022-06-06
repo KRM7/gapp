@@ -16,7 +16,7 @@ namespace genetic_algorithm::selection
     {
     }
 
-    std::vector<size_t> Selection::nextPopulation(const GaInfo& ga, FitnessMatrix& fitness_matrix)
+    std::vector<size_t> Selection::nextPopulation(const GaInfo& ga, const FitnessMatrix& fitness_matrix)
     {
         assert(std::all_of(fitness_matrix.begin(), fitness_matrix.end(), [](const FitnessVector& sol) { return !sol.empty(); }));
 

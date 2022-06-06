@@ -21,7 +21,7 @@ namespace genetic_algorithm::selection::multi_objective
         assert(ga.num_objectives() > 1);
         assert(ga.population_size() != 0);
 
-        auto fmat = ga.fitness_matrix();
+        auto& fmat = ga.fitness_matrix();
         auto pfronts = dtl::nonDominatedSort(fmat);
 
         ranks_ = dtl::paretoRanks(pfronts);
@@ -38,17 +38,17 @@ namespace genetic_algorithm::selection::multi_objective
         return crowdedCompare(idx1, idx2) ? idx1 : idx2;
     }
 
-    std::vector<size_t> NSGA2::nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop)
+    std::vector<size_t> NSGA2::nextPopulation(const GaInfo& ga, const FitnessMatrix& fmat)
     {
-        assert(ga.population_size() <= combined_pop.size());
-        assert(std::all_of(combined_pop.begin(), combined_pop.end(), [&ga](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
+        assert(ga.population_size() <= fmat.size());
+        assert(std::all_of(fmat.begin(), fmat.end(), [&ga](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
 
         std::vector<size_t> new_pop;
         new_pop.reserve(ga.population_size());
 
-        auto pfronts = dtl::nonDominatedSort(combined_pop);
+        auto pfronts = dtl::nonDominatedSort(fmat);
         ranks_ = dtl::paretoRanks(pfronts);
-        dists_ = dtl::crowdingDistances(combined_pop, pfronts);
+        dists_ = dtl::crowdingDistances(fmat, pfronts);
 
         /* Keep track of the details of the candidates added to new_pop to avoid a second sort. */
         std::vector<size_t> new_ranks;
@@ -99,7 +99,7 @@ namespace genetic_algorithm::selection::multi_objective
                 partial_front.push_back(*first);
             }
 
-            auto changed_dists = dtl::crowdingDistances(combined_pop, { partial_front });
+            auto changed_dists = dtl::crowdingDistances(fmat, { partial_front });
 
             for (size_t i = 0; i < remaining_indices; i++)
             {
@@ -130,7 +130,7 @@ namespace genetic_algorithm::selection::multi_objective
         assert(ga.num_objectives() > 1);
         assert(ga.population_size() != 0);
 
-        auto fitness_matrix = ga.fitness_matrix();
+        auto& fitness_matrix = ga.fitness_matrix();
 
         auto refs = dtl::generateRefPoints(ga.population_size(), ga.num_objectives());
         ref_points_.reserve(refs.size());
@@ -328,7 +328,7 @@ namespace genetic_algorithm::selection::multi_objective
         }
     }
 
-    std::vector<size_t> NSGA3::nextPopulation(const GaInfo& ga, FitnessMatrix& fmat)
+    std::vector<size_t> NSGA3::nextPopulation(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         assert(fmat.size() >= ga.population_size());
 
@@ -340,7 +340,7 @@ namespace genetic_algorithm::selection::multi_objective
         sol_info_ = std::vector<CandidateInfo>(fmat.size());
         for (size_t i = 0; i < pfronts.size(); i++)
         {
-            auto [idx, rank] = pfronts[i];
+            auto& [idx, rank] = pfronts[i];
             sol_info_[idx].rank = rank; // after this, only the rank is updated, the rest are nonsense (ref idx, ref dist)
         }
         associatePopWithRefs(sol_info_, fmat, ref_points_);

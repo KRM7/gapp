@@ -68,7 +68,7 @@ namespace genetic_algorithm::selection
         * @param population_fmat The fitness matrix of the current population and the children of the algorithm.
         * @returns The indices selected from the fitness matrix for the next population of the algorithm.
         */
-        virtual std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& population_fmat);
+        virtual std::vector<size_t> nextPopulation(const GaInfo& ga, const FitnessMatrix& population_fmat);
 
         Selection()                             = default;
         Selection(const Selection&)             = default;

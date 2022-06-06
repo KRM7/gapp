@@ -17,7 +17,7 @@ namespace genetic_algorithm::selection::multi_objective
     public:
         void init(const GaInfo& ga) override;
         size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
-        std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
+        std::vector<size_t> nextPopulation(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
     private:
         std::vector<size_t> ranks_;
@@ -35,7 +35,7 @@ namespace genetic_algorithm::selection::multi_objective
     public:
         void init(const GaInfo& ga) override;
         size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
-        std::vector<size_t> nextPopulation(const GaInfo& ga, FitnessMatrix& combined_pop) override;
+        std::vector<size_t> nextPopulation(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
         using Point = std::vector<double>;
 
