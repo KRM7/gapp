@@ -5,7 +5,6 @@
 #include "../utility/algorithm.hpp"
 #include <algorithm>
 #include <iterator>
-#include <numeric>
 #include <vector>
 #include <cmath>
 #include <cassert>

@@ -90,8 +90,6 @@ namespace genetic_algorithm::detail::_
 
 /* IMPLEMENTATION */
 
-#include "../utility/math.hpp"
-#include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include <algorithm>
 #include <cassert>
