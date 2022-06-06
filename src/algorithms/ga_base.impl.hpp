@@ -59,13 +59,13 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::solutions() const noexcept -> const Population&
+    auto GA<T, D>::solutions() const noexcept -> Population
     {
         return solutions_;
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::population() const noexcept -> const Population&
+    auto GA<T, D>::population() const noexcept -> Population
     {
         return population_;
     }
@@ -262,7 +262,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::run(size_t num_generations) -> const Candidates&
+    auto GA<T, D>::run(size_t num_generations) -> Candidates
     {
         max_gen(num_generations);
 
@@ -284,7 +284,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::continueFor(size_t num_generations) -> const Candidates&
+    auto GA<T, D>::continueFor(size_t num_generations) -> Candidates
     {
         if (!can_continue_) { run(num_generations); }
 

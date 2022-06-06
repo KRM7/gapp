@@ -93,7 +93,7 @@ namespace genetic_algorithm
         * @param num_generations The maximum number of generations.
         * @returns The optimal solutions.
         */
-        const Candidates& run(size_t num_generations = 500);
+        Candidates run(size_t num_generations = 500);
 
         /**
         * Continue running the genetic algorithm for the set number of generations. \n
@@ -103,15 +103,15 @@ namespace genetic_algorithm
         * @param num_generations The number of generations to run the algorithm for.
         * @returns The optimal solutions.
         */
-        const Candidates& continueFor(size_t num_generations);
+        Candidates continueFor(size_t num_generations);
 
         /** @returns The pareto optimal solutions found by the algorithm. */
         [[nodiscard]]
-        const Candidates& solutions() const noexcept;
+        Candidates solutions() const noexcept;
 
         /** @returns The current population of the algorithm. Not the same as the solutions. */
         [[nodiscard]]
-        const Population& population() const noexcept;
+        Population population() const noexcept;
 
         /** @returns The fitness matrix of the current population of the algorithm. */
         [[nodiscard]]
