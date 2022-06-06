@@ -151,7 +151,7 @@ namespace genetic_algorithm
         /** @returns The current selection method used by the algorithm. */
         template<selection::SelectionMethod F = selection::Selection>
         [[nodiscard]]
-        F& selection_method();
+        F& selection_method() &;
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
@@ -185,7 +185,7 @@ namespace genetic_algorithm
         /** @returns The current stop condition used by the algorithm. */
         template<stopping::StopMethod F = stopping::StopCondition>
         [[nodiscard]]
-        F& stop_condition();
+        F& stop_condition() &;
 
     protected:
 
@@ -238,7 +238,7 @@ namespace genetic_algorithm
     }
 
     template<selection::SelectionMethod F>
-    F& GaInfo::selection_method()
+    F& GaInfo::selection_method() &
     {
         return dynamic_cast<F&>(*selection_);
     }
@@ -261,7 +261,7 @@ namespace genetic_algorithm
     }
 
     template<stopping::StopMethod F>
-    F& GaInfo::stop_condition()
+    F& GaInfo::stop_condition() &
     {
         return dynamic_cast<F&>(*stop_condition_);
     }

@@ -160,7 +160,7 @@ namespace genetic_algorithm
 
         /** @returns The current crossover method used by the algorithm. */
         template<crossover::CrossoverMethod<T> F = crossover::Crossover<GeneType>>
-        F& crossover_method();
+        F& crossover_method() &;
 
         /**
         * Sets the crossover rate of the crossover operator used by the algorithm to @p pc.
@@ -198,7 +198,7 @@ namespace genetic_algorithm
 
         /** @returns The current mutation method used by the algorithm. */
         template<mutation::MutationMethod<T> F = mutation::Mutation<GeneType>>
-        F& mutation_method();
+        F& mutation_method() &;
 
         /**
         * Sets the mutation rate of the mutation operator used by the algorithm to @p pm.

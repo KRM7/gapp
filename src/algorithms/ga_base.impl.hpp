@@ -132,7 +132,7 @@ namespace genetic_algorithm
 
     template<Gene T, typename D>
     template<crossover::CrossoverMethod<T> F>
-    F& GA<T, D>::crossover_method()
+    F& GA<T, D>::crossover_method() &
     {
         return dynamic_cast<F&>(*crossover_);
     }
@@ -181,7 +181,7 @@ namespace genetic_algorithm
 
     template<Gene T, typename D>
     template<mutation::MutationMethod<T> F>
-    F& GA<T, D>::mutation_method()
+    F& GA<T, D>::mutation_method() &
     {
         return dynamic_cast<F&>(*mutation_);
     }
