@@ -20,8 +20,8 @@ namespace genetic_algorithm::selection::single_objective
     class Roulette final : public Selection
     {
     public:
-        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
     private:
         std::vector<double> cdf_;
@@ -56,8 +56,8 @@ namespace genetic_algorithm::selection::single_objective
         [[nodiscard]]
         size_t size() const noexcept { return tourney_size_; }
 
-        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
     private:
         size_t tourney_size_;
@@ -121,8 +121,8 @@ namespace genetic_algorithm::selection::single_objective
         [[nodiscard]]
         std::pair<double, double> weights() const noexcept { return { min_weight_, max_weight_ }; }
 
-        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
     private:
         double min_weight_;
@@ -158,8 +158,8 @@ namespace genetic_algorithm::selection::single_objective
         [[nodiscard]]
         double scale() const noexcept { return scale_; }
 
-        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
     private:
         double scale_;
@@ -195,8 +195,8 @@ namespace genetic_algorithm::selection::single_objective
         */
         void temperature_function(TemperatureFunction f);
 
-        void prepare(const GaInfo& ga, const FitnessMatrix& pop) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
+        void prepare(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
     private:
         TemperatureFunction temperature_;
