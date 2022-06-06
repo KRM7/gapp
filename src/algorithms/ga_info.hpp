@@ -16,9 +16,9 @@ namespace genetic_algorithm
         GaInfo(size_t chrom_len);
         GaInfo(size_t population_size, size_t chrom_len);
 
-        GaInfo(const GaInfo&)               = default;
+        GaInfo(const GaInfo&)               = delete;
         GaInfo(GaInfo&&)                    = default;
-        GaInfo& operator=(const GaInfo&)    = default;
+        GaInfo& operator=(const GaInfo&)    = delete;
         GaInfo& operator=(GaInfo&&)         = default;
         virtual ~GaInfo()                   = default;
 
