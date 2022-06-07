@@ -5,26 +5,14 @@
 
 #include "../population/population.hpp"
 #include "../selection/selection_base.fwd.hpp"
+#include "../stop_condition/stop_condition_base.fwd.hpp"
 #include <vector>
 #include <atomic>
 #include <memory>
-#include <concepts>
 #include <cstddef>
 
 namespace genetic_algorithm
 {
-    namespace stopping
-    {
-        class StopCondition;
-
-        template<typename T>
-        concept StopMethod = requires
-        {
-            requires std::derived_from<T, StopCondition>;
-            requires std::copy_constructible<T>;
-        };
-    }
-
     class GaInfo
     {
     public:
