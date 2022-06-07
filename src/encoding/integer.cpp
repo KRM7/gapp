@@ -13,12 +13,12 @@
 
 namespace genetic_algorithm
 {
-    IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
-        : IntegerGA(100, chrom_len, std::move(fitnessFunction), base)
+    IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitness_function, GeneType base)
+        : IntegerGA(100, chrom_len, std::move(fitness_function), base)
     {}
 
-    IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
-        : GA(pop_size, chrom_len, std::move(fitnessFunction))
+    IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, GeneType base)
+        : GA(pop_size, chrom_len, std::move(fitness_function))
     {
         this->base(base);
         setDefaultAlgorithm();

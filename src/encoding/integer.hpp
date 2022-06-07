@@ -23,7 +23,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function used in the algorithm.
         * @param base The number of values a gene can take. Must be > 1. If 2, same as the @ref BinaryGA.
         */
-        IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, GeneType base);
+        IntegerGA(size_t chrom_len, FitnessFunction fitness_function, GeneType base);
 
         /**
         * Construct an integer encoded genetic algorithm.
@@ -33,7 +33,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function used in the algorithm.
         * @param base The number of values a gene can take. Must be > 1. If 2, same as the @ref BinaryGA.
         */
-        IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, GeneType base);
+        IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, GeneType base);
 
         /**
         * Sets the number of values a gene can take to @p base. \n
