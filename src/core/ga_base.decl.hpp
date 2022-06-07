@@ -6,7 +6,7 @@
 #include "ga_info.hpp"
 #include "../population/candidate.hpp"
 #include "../mutation/mutation_base.fwd.hpp"
-#include "../utility/concepts.hpp"
+#include "../crossover/crossover_base.fwd.hpp"
 #include <algorithm>
 #include <vector>
 #include <utility>
@@ -19,20 +19,6 @@
 
 namespace genetic_algorithm
 {
-    namespace crossover
-    {
-        template<Gene T>
-        class Crossover;
-
-        template<typename T, typename G>
-        concept CrossoverMethod = requires
-        {
-            requires Gene<G>;
-            requires std::derived_from<T, Crossover<G>>;
-            requires std::copy_constructible<T>;
-        };
-    }
-
     /**
     * Base GA class.
     *
