@@ -13,36 +13,27 @@
 
 namespace genetic_algorithm
 {
-    void RCGA::setDefaultOperators()
+    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const Bounds& bounds)
+        : GA(pop_size, chrom_len, std::move(fitness_function))
     {
-        if (num_objectives() == 1)
-        {
-            selection_method(std::make_unique<selection::single_objective::Tournament>());
-        }
-        else
-        {
-            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
-        }
+        this->limits(bounds);
+        setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::real::Wright>());
         mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len_));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
-    RCGA::RCGA(size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds)
-        : GA(chrom_len, std::move(fitnessFunction))
-    {
-        this->limits(bounds);
-        num_objectives(getNumObjectives(fitness_function_));
-        setDefaultOperators();
-    }
+    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const Bounds& bounds)
+        : RCGA(100, chrom_len, std::move(fitness_function), bounds)
+    {}
 
-    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, const Bounds& bounds)
-        : GA(pop_size, chrom_len, std::move(fitnessFunction))
-    {
-        this->limits(bounds);
-        num_objectives(getNumObjectives(fitness_function_));
-        setDefaultOperators();
-    }
+    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const std::pair<double, double>& bounds)
+         : RCGA(100, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
+    {}
+
+    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const std::pair<double, double>& bounds)
+        : RCGA(pop_size, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
+    {}
 
     void RCGA::limits(const Bounds& limits)
     {
@@ -50,12 +41,17 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The number of limits must be equal to the chromosome length.");
         }
-        if (std::any_of(limits.begin(), limits.end(), [](std::pair<GeneType, GeneType> b) {return b.first > b.second; }))
+        if (std::any_of(limits.begin(), limits.end(), [](const std::pair<GeneType, GeneType>& b) {return b.first > b.second; }))
         {
             throw std::invalid_argument("The lower bound must be lower than the upper bound for each gene.");
         }
 
         limits_ = limits;
+    }
+
+    void RCGA::limits(const std::pair<double, double>& limits)
+    {
+        this->limits(std::vector(chrom_len_, limits));
     }
 
     const RCGA::Bounds& RCGA::limits() const noexcept
@@ -68,14 +64,13 @@ namespace genetic_algorithm
         assert(chrom_len_ > 0);
         assert(chrom_len_ == limits_.size());
 
-        Candidate sol;
-        sol.chromosome.reserve(chrom_len_);
-        for (size_t i = 0; i < chrom_len_; i++)
+        Candidate solution(chrom_len_);
+        for (size_t i = 0; i < solution.chromosome.size(); i++)
         {
-            sol.chromosome.push_back(rng::randomReal(limits_[i].first, limits_[i].second));
+            solution.chromosome[i] = rng::randomReal(limits_[i].first, limits_[i].second);
         }
 
-        return sol;
+        return solution;
     }
 
 } // namespace genetic_algorithm
