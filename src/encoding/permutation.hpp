@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PERMUTATION_GA_HPP
-#define GA_PERMUTATION_GA_HPP
+#ifndef GA_ENCODING_PERMUTATION_HPP
+#define GA_ENCODING_PERMUTATION_HPP
 
 #include "../core/ga_base.hpp"
 #include <cstddef>
@@ -40,4 +40,4 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-#endif // !GA_PERMUTATION_GA_H
+#endif // !GA_ENCODING_PERMUTATION_HPP

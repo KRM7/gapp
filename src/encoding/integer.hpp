@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_INTEGER_GA_HPP
-#define GA_INTEGER_GA_HPP
+#ifndef GA_ENCODING_INTEGER_HPP
+#define GA_ENCODING_INTEGER_HPP
 
 #include "../core/ga_base.hpp"
 #include <cstddef>
@@ -58,4 +58,4 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-#endif // !GA_INTEGER_GA_HPP
+#endif // !GA_ENCODING_INTEGER_HPP

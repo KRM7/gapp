@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_REAL_GA_HPP
-#define GA_REAL_GA_HPP
+#ifndef GA_ENCODING_REAL_HPP
+#define GA_ENCODING_REAL_HPP
 
 #include "../core/ga_base.hpp"
 #include <vector>
@@ -85,12 +85,13 @@ namespace genetic_algorithm
         */
         void limits(const std::pair<double, double>& limits);
 
-        /** @returns The current bounds set for the genes of the algorithm. */
+        /** @returns The current bounds set for the genes. */
         [[nodiscard]]
         const Bounds& limits() const noexcept;
 
     private:
         friend class GA<GeneType, RCGA>;
+
         Bounds limits_;
 
         Candidate generateCandidate() const;
@@ -98,4 +99,4 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-#endif // !GA_RCGA_H
+#endif // !GA_ENCODING_REAL_HPP
