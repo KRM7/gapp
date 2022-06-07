@@ -3,6 +3,7 @@
 #ifndef GA_SELECTION_BASE_HPP
 #define GA_SELECTION_BASE_HPP
 
+#include "selection_base.fwd.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <cstddef>

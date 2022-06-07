@@ -4,6 +4,7 @@
 #define GA_GA_INFO_HPP
 
 #include "../population/population.hpp"
+#include "../selection/selection_base.fwd.hpp"
 #include <vector>
 #include <atomic>
 #include <memory>
@@ -12,17 +13,6 @@
 
 namespace genetic_algorithm
 {
-    namespace selection
-    {
-        class Selection;
-
-        template<typename T>
-        concept SelectionMethod = requires
-        {
-            requires std::derived_from<T, Selection>;
-            requires std::copy_constructible<T>;
-        };
-    }
     namespace stopping
     {
         class StopCondition;
