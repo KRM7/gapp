@@ -13,35 +13,18 @@
 
 namespace genetic_algorithm
 {
-    void IntegerGA::setDefaultOperators()
-    {
-        if (num_objectives() == 1)
-        {
-            selection_method(std::make_unique<selection::single_objective::Tournament>());
-        }
-        else
-        {
-            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
-        }
-        crossover_method(std::make_unique<crossover::integer::TwoPoint>());
-        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len_));
-        stop_condition(std::make_unique<stopping::NoEarlyStop>());
-    }
-
     IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
-        : GA(chrom_len, std::move(fitnessFunction))
-    {
-        this->base(base);
-        num_objectives(getNumObjectives(fitness_function_));
-        setDefaultOperators();
-    }
+        : IntegerGA(100, chrom_len, std::move(fitnessFunction), base)
+    {}
 
     IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction, GeneType base)
         : GA(pop_size, chrom_len, std::move(fitnessFunction))
     {
         this->base(base);
-        num_objectives(getNumObjectives(fitness_function_));
-        setDefaultOperators();
+        setDefaultAlgorithm();
+        crossover_method(std::make_unique<crossover::integer::TwoPoint>());
+        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len_));
+        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     void IntegerGA::base(GeneType base)
@@ -62,14 +45,14 @@ namespace genetic_algorithm
     {
         assert(chrom_len_ > 0);
 
-        Candidate sol;
-        sol.chromosome.reserve(chrom_len_);
-        for (size_t i = 0; i < chrom_len_; i++)
+        Candidate solution(chrom_len_);
+        std::generate(solution.chromosome.begin(), solution.chromosome.end(),
+        [this]
         {
-            sol.chromosome.push_back(rng::randomInt(GeneType{ 0 }, base_ - 1));
-        }
+            return rng::randomInt<GeneType>(0, base_ - 1);
+        });
 
-        return sol;
+        return solution;
     }
 
 } // namespace genetic_algorithm
