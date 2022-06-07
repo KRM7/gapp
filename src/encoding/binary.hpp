@@ -18,7 +18,7 @@ namespace genetic_algorithm
         /**
         * Construct a binary encoded genetic algorithm.
         *
-        * @param chrom_len The length of the chromosomes.
+        * @param chrom_len The number of genes in each chromosome.
         * @param fitness_function The fitness function to find the maximum of in the algorithm.
         */
         BinaryGA(size_t chrom_len, FitnessFunction fitness_function);
@@ -27,7 +27,7 @@ namespace genetic_algorithm
         * Construct a binary encoded genetic algorithm.
         *
         * @param pop_size The number of candidates in the population.
-        * @param chrom_len The length of the chromosomes.
+        * @param chrom_len The number of genes in each chromosome.
         * @param fitness_function The fitness function to find the maximum of in the algorithm.
         */
         BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
