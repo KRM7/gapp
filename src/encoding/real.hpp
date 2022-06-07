@@ -74,7 +74,7 @@ namespace genetic_algorithm
         *
         * @param limits The lower and upper boundaries of the genes.
         */
-        void limits(const Bounds& limits);
+        RCGA& limits(const Bounds& limits);
 
         /**
         * Sets the the same lower and upper bounds for every gene. \n
@@ -83,7 +83,7 @@ namespace genetic_algorithm
         *
         * @param limits The lower and upper boundaries of the genes.
         */
-        void limits(const std::pair<double, double>& limits);
+        RCGA& limits(const std::pair<double, double>& limits);
 
         /** @returns The current bounds set for the genes. */
         [[nodiscard]]

@@ -42,7 +42,7 @@ namespace genetic_algorithm
         *
         * @param base The number of values a gene can be.
         */
-        void base(GeneType base);
+        IntegerGA& base(GeneType base);
 
         /** @returns The current base value set for the algorithm. */
         [[nodiscard]]
