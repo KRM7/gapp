@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "selection_base.hpp"
-#include "../algorithms/ga_info.hpp"
+#include "../core/ga_info.hpp"
 #include "../utility/algorithm.hpp"
 #include <algorithm>
 #include <cassert>

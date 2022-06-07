@@ -4,7 +4,7 @@
 #define GA_MUTATION_BASE_IMPL_HPP
 
 #include "mutation_base.decl.hpp"
-#include "../algorithms/ga_base.hpp"
+#include "../core/ga_base.hpp"
 #include <algorithm>
 #include <stdexcept>
 

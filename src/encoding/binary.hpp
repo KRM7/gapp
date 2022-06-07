@@ -3,31 +3,31 @@
 #ifndef GA_BINARY_GA_HPP
 #define GA_BINARY_GA_HPP
 
-#include "ga_base.hpp"
+#include "../core/ga_base.hpp"
 #include <cstddef>
 
 namespace genetic_algorithm
 {
     /**
     * Standard genetic algorithm with binary encoding. \n
-    * (The binary genes are encoded as char types.)
+    * The genes are encoded as char.
     */
     class BinaryGA final : public GA<char, BinaryGA>
     {
     public:
         /**
-        * Constructor for the binary GA.
+        * Construct a binary encoded genetic algorithm.
         *
-        * @param chrom_len The length of the binary chromosomes.
+        * @param chrom_len The length of the chromosomes.
         * @param fitness_function The fitness function to find the maximum of in the algorithm.
         */
         BinaryGA(size_t chrom_len, FitnessFunction fitness_function);
 
         /**
-        * Constructor for the binary GA.
+        * Construct a binary encoded genetic algorithm.
         *
         * @param pop_size The number of candidates in the population.
-        * @param chrom_len The length of the binary chromosomes.
+        * @param chrom_len The length of the chromosomes.
         * @param fitness_function The fitness function to find the maximum of in the algorithm.
         */
         BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
@@ -36,7 +36,6 @@ namespace genetic_algorithm
         friend class GA<GeneType, BinaryGA>;
 
         Candidate generateCandidate() const;
-        void setDefaultOperators();
     };
 
 } // namespace genetic_algorithm

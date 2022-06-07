@@ -1,6 +1,6 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include "integer_ga.hpp"
+#include "integer.hpp"
 #include "../utility/rng.hpp"
 #include "../selection/selection.hpp"
 #include "../crossover/integer.hpp"

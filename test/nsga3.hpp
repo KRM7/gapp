@@ -3,7 +3,7 @@
 #ifndef NSGA3_BENCHMARK_HPP
 #define NSGA3_BENCHMARK_HPP
 
-#include "../src/algorithms/real_ga.hpp"
+#include "../src/encoding/real.hpp"
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/real.hpp"
 #include "../src/mutation/real.hpp"

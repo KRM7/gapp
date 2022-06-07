@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztiï¿½n Rugï¿½si. Subject to the MIT License. */
 
 #ifndef GA_GA_BASE_DECL_HPP
 #define GA_GA_BASE_DECL_HPP
@@ -8,7 +8,6 @@
 #include "../utility/concepts.hpp"
 #include <algorithm>
 #include <vector>
-#include <unordered_set>
 #include <utility>
 #include <functional>
 #include <type_traits>
@@ -121,7 +120,7 @@ namespace genetic_algorithm
         *
         * @param pop The initial population to use in the algorithm.
         */
-        void initial_population(const Population& pop);
+        //void initial_population(const Population& pop);
 
         /**
         * Set the fitness function used by the algorithm to @p f. \n

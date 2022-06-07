@@ -2,7 +2,7 @@
 
 #include "multi_objective.hpp"
 #include "selection_dtl.hpp"
-#include "../algorithms/ga_info.hpp"
+#include "../core/ga_info.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/algorithm.hpp"
 #include <algorithm>

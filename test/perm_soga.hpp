@@ -3,7 +3,7 @@
 #ifndef PERM_BENCHMARK_HPP
 #define PERM_BENCHMARK_HPP
 
-#include "../src/algorithms/permutation_ga.hpp"
+#include "../src/encoding/permutation.hpp"
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/permutation.hpp"
 #include "../src/mutation/permutation.hpp"

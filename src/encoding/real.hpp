@@ -3,7 +3,7 @@
 #ifndef GA_REAL_GA_HPP
 #define GA_REAL_GA_HPP
 
-#include "ga_base.hpp"
+#include "../core/ga_base.hpp"
 #include <vector>
 #include <utility>
 #include <cstddef>

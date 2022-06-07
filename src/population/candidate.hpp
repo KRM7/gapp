@@ -40,6 +40,9 @@ namespace genetic_algorithm
         std::vector<double> fitness;    /**< The fitness values (for each objective) of the solution. */
         bool is_evaluated = false;      /**< False if the candidate's fitness value needs to be computed. */
 
+        explicit Candidate(size_t chrom_len)
+            : chromosome(chrom_len) {}
+
         explicit Candidate(const Chromosome& chrom)
             : chromosome(chrom) {}
 

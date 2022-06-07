@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "../algorithms/integer_ga.hpp"
+#include "../encoding/integer.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>

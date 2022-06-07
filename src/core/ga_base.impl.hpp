@@ -1,16 +1,17 @@
-/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztiï¿½n Rugï¿½si. Subject to the MIT License. */
 
 #ifndef GA_GA_BASE_IMPL_HPP
 #define GA_GA_BASE_IMPL_HPP
 
 #include "ga_base.decl.hpp"
+#include "../population/population.hpp"
+#include "../selection/selection.hpp"
 #include "../crossover/crossover_base.hpp"
 #include "../crossover/lambda.hpp"
 #include "../mutation/mutation_base.hpp"
 #include "../mutation/lambda.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"
-#include "../population/population.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/algorithm.hpp"
 #include <execution>
@@ -301,6 +302,7 @@ namespace genetic_algorithm
         Candidate c = generateCandidate();
         return f(c.chromosome).size();
     }
+
 
     template<Gene T, typename D>
     auto GA<T, D>::generateCandidate() const -> Candidate

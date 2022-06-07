@@ -3,7 +3,7 @@
 #ifndef BINARY_TESTS_H
 #define BINARY_TESTS_H
 
-#include "../src/algorithms/binary_ga.hpp"
+#include "../src/encoding/binary.hpp"
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/binary.hpp"
 #include "../src/mutation/binary.hpp"

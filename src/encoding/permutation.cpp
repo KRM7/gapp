@@ -1,6 +1,6 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include "permutation_ga.hpp"
+#include "permutation.hpp"
 #include "../utility/rng.hpp"
 #include "../selection/selection.hpp"
 #include "../crossover/permutation.hpp"

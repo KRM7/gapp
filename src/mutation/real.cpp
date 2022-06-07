@@ -1,8 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
-#include "../algorithms/ga_info.hpp"
-#include "../algorithms/real_ga.hpp"
+#include "../core/ga_info.hpp"
+#include "../encoding/real.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>

@@ -3,7 +3,7 @@
 #ifndef GA_INTEGER_GA_HPP
 #define GA_INTEGER_GA_HPP
 
-#include "ga_base.hpp"
+#include "../core/ga_base.hpp"
 #include <cstddef>
 
 namespace genetic_algorithm
