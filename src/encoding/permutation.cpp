@@ -7,54 +7,34 @@
 #include "../mutation/permutation.hpp"
 #include "../stop_condition/stop_condition.hpp"
 #include <algorithm>
-#include <memory>
 #include <numeric>
+#include <memory>
 #include <cassert>
 
 namespace genetic_algorithm
 {
-    void PermutationGA::setDefaultOperators()
+    PermutationGA::PermutationGA(size_t chrom_len, FitnessFunction fitness_function)
+        : PermutationGA(100, chrom_len, std::move(fitness_function))
+    {}
+
+    PermutationGA::PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)
+        : GA(pop_size, chrom_len, std::move(fitness_function))
     {
-        if (num_objectives() == 1)
-        {
-            selection_method(std::make_unique<selection::single_objective::Tournament>());
-        }
-        else
-        {
-            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
-        }
+        setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::perm::Order2>());
         mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
-    }
-
-    PermutationGA::PermutationGA(size_t chrom_len, FitnessFunction fitnessFunction)
-        : GA(chrom_len, std::move(fitnessFunction))
-    {
-        num_objectives(getNumObjectives(fitness_function_));
-        setDefaultOperators();
-    }
-
-    PermutationGA::PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitnessFunction)
-        : GA(pop_size, chrom_len, std::move(fitnessFunction))
-    {
-        num_objectives(getNumObjectives(fitness_function_));
-        setDefaultOperators();
     }
 
     PermutationGA::Candidate PermutationGA::generateCandidate() const
     {
         assert(chrom_len_ > 0);
 
-        Candidate sol;
+        Candidate solution(chrom_len_);
+        std::iota(solution.chromosome.begin(), solution.chromosome.end(), 0);
+        std::shuffle(solution.chromosome.begin(), solution.chromosome.end(), rng::prng);
 
-        Chromosome chrom(chrom_len_);
-        std::iota(chrom.begin(), chrom.end(), GeneType{ 0 });
-        std::shuffle(chrom.begin(), chrom.end(), rng::prng);
-
-        sol.chromosome = chrom;
-
-        return sol;
+        return solution;
     }
 
 } // namespace genetic_algorithm
