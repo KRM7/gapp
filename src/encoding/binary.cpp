@@ -2,7 +2,6 @@
 
 #include "binary.hpp"
 #include "../utility/rng.hpp"
-#include "../selection/selection.hpp"
 #include "../crossover/binary.hpp"
 #include "../mutation/binary.hpp"
 #include "../stop_condition/stop_condition.hpp"
