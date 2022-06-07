@@ -5,6 +5,7 @@
 
 #include "ga_info.hpp"
 #include "../population/candidate.hpp"
+#include "../mutation/mutation_base.fwd.hpp"
 #include "../utility/concepts.hpp"
 #include <algorithm>
 #include <vector>
@@ -28,19 +29,6 @@ namespace genetic_algorithm
         {
             requires Gene<G>;
             requires std::derived_from<T, Crossover<G>>;
-            requires std::copy_constructible<T>;
-        };
-    }
-    namespace mutation
-    {
-        template<Gene T>
-        class Mutation;
-
-        template<typename T, typename G>
-        concept MutationMethod = requires
-        {
-            requires Gene<G>;
-            requires std::derived_from<T, Mutation<G>>;
             requires std::copy_constructible<T>;
         };
     }

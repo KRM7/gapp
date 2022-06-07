@@ -3,7 +3,7 @@
 #ifndef GA_MUTATION_BASE_DECL_HPP
 #define GA_MUTATION_BASE_DECL_HPP
 
-#include "../population/candidate.hpp"
+#include "mutation_base.fwd.hpp"
 #include <vector>
 #include <utility>
 
