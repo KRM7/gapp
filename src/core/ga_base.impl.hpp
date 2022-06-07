@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Krisztiï¿½n Rugï¿½si. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_GA_BASE_IMPL_HPP
 #define GA_GA_BASE_IMPL_HPP
@@ -303,6 +303,20 @@ namespace genetic_algorithm
         return f(c.chromosome).size();
     }
 
+    template<Gene T, typename D>
+    void GA<T, D>::setDefaultAlgorithm()
+    {
+        num_objectives(getNumObjectives(fitness_function_));
+
+        if (num_objectives_ == 1)
+        {
+            selection_method(std::make_unique<selection::single_objective::Tournament>());
+        }
+        else
+        {
+            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
+        }
+    }
 
     template<Gene T, typename D>
     auto GA<T, D>::generateCandidate() const -> Candidate

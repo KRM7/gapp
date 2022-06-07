@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Krisztiï¿½n Rugï¿½si. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_GA_BASE_DECL_HPP
 #define GA_GA_BASE_DECL_HPP
@@ -232,6 +232,7 @@ namespace genetic_algorithm
 
         void initialize();
         size_t getNumObjectives(const FitnessFunction& f) const;
+        void setDefaultAlgorithm();
         Population generateInitialPopulation() const;
         void evaluate(Population& pop);
         Population nextPopulation(Population& pop, Population& children) const;
