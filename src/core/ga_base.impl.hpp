@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_GA_BASE_IMPL_HPP
-#define GA_GA_BASE_IMPL_HPP
+#ifndef GA_CORE_GA_BASE_IMPL_HPP
+#define GA_CORE_GA_BASE_IMPL_HPP
 
 #include "ga_base.decl.hpp"
 #include "../population/population.hpp"
@@ -440,4 +440,4 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-#endif // !GA_GA_BASE_IMPL_HPP
+#endif // !GA_CORE_GA_BASE_IMPL_HPP
