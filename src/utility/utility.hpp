@@ -34,7 +34,7 @@ namespace genetic_algorithm
 {
     constexpr std::size_t operator ""_sz(unsigned long long n)
     {
-        return std::size_t{ n };
+        return static_cast<size_t>(n);
     }
 
 } // namespace genetic_algorithm
