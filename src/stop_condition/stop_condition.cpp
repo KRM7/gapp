@@ -49,7 +49,7 @@ namespace genetic_algorithm::stopping
             throw std::domain_error("The size of the fitness threshold vector does not match the size of the fitness vectors.");
         }
 
-        auto fitness_matrix = ga.fitness_matrix();
+        auto& fitness_matrix = ga.fitness_matrix();
 
         return std::any_of(fitness_matrix.begin(), fitness_matrix.end(),
         [this](const auto& fvec) noexcept
@@ -65,7 +65,7 @@ namespace genetic_algorithm::stopping
         this->delta(delta);
     }
 
-    void FitnessMeanStall::patience(size_t patience)
+    void FitnessMeanStall::patience(size_t patience) noexcept
     {
         patience_ = patience;
         resetCntr();
@@ -123,7 +123,7 @@ namespace genetic_algorithm::stopping
         this->delta(delta);
     }
 
-    void FitnessBestStall::patience(size_t patience)
+    void FitnessBestStall::patience(size_t patience) noexcept
     {
         patience_ = patience;
         resetCntr();

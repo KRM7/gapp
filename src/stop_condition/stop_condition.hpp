@@ -102,7 +102,7 @@ namespace genetic_algorithm::stopping
         *
         * @param patience The number of generations to wait without stopping if there is no improvement.
         */
-        void patience(size_t patience);
+        void patience(size_t patience) noexcept;
 
         /** @returns The currently set patience value for the stop condition. */
         [[nodiscard]]
@@ -153,7 +153,7 @@ namespace genetic_algorithm::stopping
         *
         * @param patience The number of generations to wait without stopping if there is no improvement.
         */
-        void patience(size_t patience);
+        void patience(size_t patience) noexcept;
 
         /** @returns The currently set patience value for the stop condition. */
         [[nodiscard]]
