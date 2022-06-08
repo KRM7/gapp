@@ -394,7 +394,7 @@ namespace genetic_algorithm::selection::multi_objective
             size_t ref = rng::randomElement(refs);
 
             /* Find the idx of the closest sol in the partial front associated with this ref point. */
-            size_t selected_idx;
+            size_t selected_idx = partial_front[0].first;
             double dmin = std::numeric_limits<double>::infinity();
             for (const auto& elem : partial_front)
             {
