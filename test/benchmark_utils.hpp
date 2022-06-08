@@ -91,12 +91,12 @@ void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::str
 
     for (const auto& sol : sols)
     {
-        if constexpr (std::is_same_v<GA, BinaryGA>)
+        if constexpr (std::is_same_v<GA, genetic_algorithm::BinaryGA>)
         {
             auto real_chrom = convertToReals(sol.chromosome, fitness_func.var_bits, fitness_func.intval(), fitness_func.lbound());
             printSol(real_chrom);
         }
-        else if constexpr (!std::is_same_v<GA, PermutationGA>)
+        else if constexpr (!std::is_same_v<GA, genetic_algorithm::PermutationGA>)
         {
             printSol(sol.chromosome);
         }
