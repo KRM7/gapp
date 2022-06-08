@@ -54,6 +54,7 @@ namespace genetic_algorithm
         Candidate(Candidate&&)                  = default;
         Candidate& operator=(const Candidate&)  = default;
         Candidate& operator=(Candidate&&)       = default;
+        ~Candidate()                            = default;
     };
 
     /** A pair of candidates. */
