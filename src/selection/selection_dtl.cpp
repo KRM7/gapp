@@ -62,7 +62,7 @@ namespace genetic_algorithm::selection::dtl
         {
             double weight = 1.0 + (f - fmean) / (scale * fdev);
 
-            return std::max(weight, 0.0);  /* If ( fitness < (f_mean - scale * SD) ) the weight could be negative. */
+            return std::max({ weight, 0.0 });  /* If ( fitness < (f_mean - scale * SD) ) the weight could be negative. */
         });
 
         return fvec;
@@ -275,7 +275,7 @@ namespace genetic_algorithm::selection::dtl
         {
             /* Calc the distance of each candidate to the closest ref point. */
             transform(GA_EXECUTION_UNSEQ, candidates.begin(), candidates.end(), min_distances.begin(), min_distances.begin(),
-            [&refs](const Point& candidate, double dmin)
+            [&refs](const Point& candidate, double dmin) noexcept
             {
                 double d = detail::euclideanDistanceSq(candidate, refs.back());
                 return min(dmin, d);
