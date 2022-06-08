@@ -300,7 +300,7 @@ namespace genetic_algorithm::selection::dtl
         assert(!refs.empty());
 
         auto distances = detail::map(refs,
-        [&p](const RefPoint& ref)
+        [&p](const RefPoint& ref) noexcept
         {
             return detail::perpendicularDistanceSq(ref.point, p);
         });
