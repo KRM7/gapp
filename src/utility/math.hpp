@@ -74,19 +74,19 @@ namespace genetic_algorithm::detail
     template<std::floating_point T>
     bool floatIsEqual(T lhs, T rhs) noexcept
     {
-        return std::abs(lhs - rhs) <= std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
+        return std::abs(lhs - rhs) <= std::max({ std::abs(lhs), std::abs(rhs) }) * GA_EPSILON;
     }
 
     template<std::floating_point T>
     bool floatIsLess(T lhs, T rhs) noexcept
     {
-        return (rhs - lhs) > std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
+        return (rhs - lhs) > std::max({ std::abs(lhs), std::abs(rhs) }) * GA_EPSILON;
     }
 
     template<std::floating_point T>
     bool floatIsGreater(T lhs, T rhs) noexcept
     {
-        return (lhs - rhs) > std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
+        return (lhs - rhs) > std::max({ std::abs(lhs), std::abs(rhs) }) * GA_EPSILON;
     }
 
     template<std::floating_point T>
