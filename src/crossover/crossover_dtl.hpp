@@ -357,7 +357,9 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     size_t minNeighbourCount(const std::unordered_map<T, std::vector<T>>& neighbour_lists, const T& gene)
     {
-        T nb = *std::min_element(neighbour_lists.at(gene).begin(), neighbour_lists.at(gene).end(),
+        auto& neighbour_list = neighbour_lists.at(gene);
+
+        T nb = *std::min_element(neighbour_list.begin(), neighbour_list.end(),
         [&neighbour_lists](const T& lhs, const T& rhs)
         {
             return (neighbour_lists.at(lhs).size() < neighbour_lists.at(rhs).size());
