@@ -9,7 +9,7 @@
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/integer.hpp"
 #include "../src/mutation/integer.hpp"
-#include "fitness_functions.h"
+#include "fitness_functions.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace genetic_algorithm;

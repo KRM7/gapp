@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+
 /*
 * Fitness functions for testing the genetic algorithms.
 * Includes some functions for both single- and multi-objective algorithms.
@@ -5,8 +7,8 @@
 * Note: All of the functions are modified for maximization where needed, and return vector<double>.
 */
 
-#ifndef FITNESS_FUNCTIONS_H
-#define FITNESS_FUNCTIONS_H
+#ifndef FITNESS_FUNCTIONS_HPP
+#define FITNESS_FUNCTIONS_HPP
 
 #include <fstream>
 #include <sstream>
@@ -743,4 +745,4 @@ private:
     size_t num_vars_;
 };
 
-#endif // !FITNESS_FUNCTIONS_H
+#endif // !FITNESS_FUNCTIONS_HPP

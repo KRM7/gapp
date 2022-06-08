@@ -7,7 +7,7 @@
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/real.hpp"
 #include "../src/mutation/real.hpp"
-#include "fitness_functions.h"
+#include "fitness_functions.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace genetic_algorithm;

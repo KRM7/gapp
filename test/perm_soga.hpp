@@ -7,7 +7,7 @@
 #include "../src/selection/selection.hpp"
 #include "../src/crossover/permutation.hpp"
 #include "../src/mutation/permutation.hpp"
-#include "fitness_functions.h"
+#include "fitness_functions.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace std;
