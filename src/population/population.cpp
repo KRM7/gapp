@@ -165,7 +165,7 @@ namespace genetic_algorithm::detail::_
 
         auto middle = first + std::distance(first, last) / 2;
 
-        auto top_half = _::findParetoFrontKungImpl(fmat, first, middle);
+        auto top_half    = _::findParetoFrontKungImpl(fmat, first, middle);
         auto bottom_half = _::findParetoFrontKungImpl(fmat, middle, last);
 
         for (const auto& bad : bottom_half)
