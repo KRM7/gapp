@@ -56,13 +56,13 @@ auto convertToReals(const std::vector<char>& binary_chrom, size_t bits_per_var, 
         auto first = binary_chrom.begin() + i * bits_per_var;
         auto last = binary_chrom.begin() + (i + 1) * bits_per_var;
 
-        size_t val = std::accumulate(first, last, size_t{ 0 },
-        [](size_t acc, char bit) noexcept
+        double val = std::accumulate(first, last, 0.0,
+        [](double acc, char bit) noexcept
         {
-            return (acc << 1) + bit;
+            return (acc * 2) + bit;
         });
 
-        vars[i] = double(val) / ((size_t{ 1 } << bits_per_var) - 1.0);
+        vars[i] = val / (std::pow(2.0, bits_per_var) - 1);
         vars[i] *= interval_len;
         vars[i] += lower_bound;
     }
