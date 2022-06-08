@@ -198,7 +198,7 @@ namespace genetic_algorithm
         vector<CandidatePair> parent_pairs(num_children / 2);
 
         (*selection_).prepare(*this, fitness_matrix());
-        if (archive_optimal_solutions)
+        if (keep_all_optimal_solutions)
         {
             updateOptimalSolutions(solutions_, population_);
         }

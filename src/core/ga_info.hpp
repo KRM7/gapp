@@ -40,7 +40,7 @@ namespace genetic_algorithm
         * All pareto optimal optimal solutions found by the algorithm will be stored in the solutions,
         * not just the ones in the current population if set to true. \n
         */
-        bool archive_optimal_solutions = false;
+        bool keep_all_optimal_solutions = false;
 
         /**
         * Sets the length of the chromosomes (number of genes) of the Candidate solutions used in the algorithm to @p len. \n
