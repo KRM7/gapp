@@ -27,15 +27,13 @@ namespace genetic_algorithm
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
-    IntegerGA& IntegerGA::base(GeneType base)
+    void IntegerGA::base(GeneType base)
     {
         if (base < 2)
         {
             throw std::invalid_argument("The base must be at least 2.");
         }
         base_ = base;
-
-        return *this;
     }
 
     IntegerGA::GeneType IntegerGA::base() const noexcept

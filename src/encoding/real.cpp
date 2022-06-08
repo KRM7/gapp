@@ -35,7 +35,7 @@ namespace genetic_algorithm
         : RCGA(pop_size, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
     {}
 
-    RCGA& RCGA::limits(const Bounds& limits)
+    void RCGA::limits(const Bounds& limits)
     {
         if (limits.size() != chrom_len_)
         {
@@ -45,19 +45,16 @@ namespace genetic_algorithm
         {
             throw std::invalid_argument("The lower bound must be lower than the upper bound for each gene.");
         }
-        limits_ = limits;
 
-        return *this;
+        limits_ = limits;
     }
 
-    RCGA& RCGA::limits(const std::pair<double, double>& limits)
+    void RCGA::limits(const std::pair<double, double>& limits)
     {
         this->limits(std::vector(chrom_len_, limits));
-
-        return *this;
     }
 
-    const RCGA::Bounds& RCGA::limits() const noexcept
+    const RCGA::Bounds& RCGA::limits() const& noexcept
     {
         return limits_;
     }
