@@ -76,7 +76,7 @@ namespace genetic_algorithm
 
         /** @returns The fitness matrix of the population. */
         [[nodiscard]]
-        const FitnessMatrix& fitness_matrix() const&;
+        const FitnessMatrix& fitness_matrix() const& noexcept;
 
         /** @returns The number of fitness evaluations performed so far by the algorithm. */
         [[nodiscard]]

@@ -52,7 +52,7 @@ namespace genetic_algorithm
         this->chrom_len(chrom_len);
     }
 
-    const GaInfo::FitnessMatrix& GaInfo::fitness_matrix() const&
+    const GaInfo::FitnessMatrix& GaInfo::fitness_matrix() const& noexcept
     {
         return fitness_matrix_;
     }
