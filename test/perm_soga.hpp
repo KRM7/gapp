@@ -1,7 +1,7 @@
-/* Benchmark/test functions for the permutationGA. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef PERM_BENCHMARK_HPP
-#define PERM_BENCHMARK_HPP
+#ifndef PERM_SOGA_BENCHMARK_HPP
+#define PERM_SOGA_BENCHMARK_HPP
 
 #include "../src/encoding/permutation.hpp"
 #include "../src/selection/selection.hpp"
@@ -111,4 +111,4 @@ void perm_tsp439()
     benchmarkSoga(GA, 1000, tsp439, "TSP439");
 }
 
-#endif // !PERM_BENCHMARK_HPP
+#endif // !PERM_SOGA_BENCHMARK_HPP

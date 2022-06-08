@@ -1,7 +1,7 @@
-/* Benchmark/test functions for the binary coded GA. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef BINARY_TESTS_H
-#define BINARY_TESTS_H
+#ifndef BINARY_SOGA_BENCHMARK_HPP
+#define BINARY_SOGA_BENCHMARK_HPP
 
 #include "../src/encoding/binary.hpp"
 #include "../src/selection/selection.hpp"
@@ -77,4 +77,4 @@ void binary_ackley()
     benchmarkSoga(GA, 2500, fitness_func, "Ackley function");
 }
 
-#endif // !BINARY_TESTS_H
+#endif // !BINARY_SOGA_BENCHMARK_HPP

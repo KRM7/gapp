@@ -1,9 +1,7 @@
-#ifndef INTEGER_BENCHMARK_HPP
-#define INTEGER_BENCHMARK_HPP
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include <vector>
-#include <chrono>
-#include <iostream>
+#ifndef INTEGER_SOGA_BENCHMARK_HPP
+#define INTEGER_SOGA_BENCHMARK_HPP
 
 #include "../src/encoding/integer.hpp"
 #include "../src/selection/selection.hpp"
@@ -40,4 +38,4 @@ void integer_sentence()
     benchmarkSoga(GA, 1000, fitness_func, "Lorem");
 }
 
-#endif // !INTEGER_BENCHMARK_HPP
+#endif // !INTEGER_SOGA_BENCHMARK_HPP

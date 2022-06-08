@@ -1,7 +1,7 @@
-/* Benchmark/test functions for the real coded GA (RCGA). */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef REAL_BENCHMARK_HPP
-#define REAL_BENCHMARK_HPP
+#ifndef REAL_SOGA_BENCHMARK_HPP
+#define REAL_SOGA_BENCHMARK_HPP
 
 #include "../src/encoding/real.hpp"
 #include "../src/selection/selection.hpp"

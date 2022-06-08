@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+
 #ifndef BENCHMARK_UTILS_HPP
 #define BENCHMARK_UTILS_HPP
 
@@ -13,8 +15,6 @@
 #include <algorithm>
 #include <atomic>
 #include <type_traits>
-
-using namespace genetic_algorithm;
 
 template<typename F, typename... Args>
 requires std::invocable<F, Args...>
@@ -81,7 +81,7 @@ void printSol(const std::vector<T>& chrom)
     std::cout << "\n";
 }
 
-template<GeneticAlgorithm GA, typename F>
+template<genetic_algorithm::GeneticAlgorithm GA, typename F>
 void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::string& problem_name)
 {
     auto [sols, time_spent] = invoke_timed(&GA::run, ga, max_gen);
@@ -113,7 +113,7 @@ void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::str
                    time_spent);
 }
 
-template<GeneticAlgorithm GA>
+template<genetic_algorithm::GeneticAlgorithm GA>
 void benchmarkMoga(GA& ga, size_t max_gen, const std::string& ga_name, const std::string& problem_name)
 {
     auto [sols, time_spent] = invoke_timed(&GA::run, ga, max_gen);
