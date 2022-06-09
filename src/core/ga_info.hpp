@@ -13,56 +13,79 @@
 
 namespace genetic_algorithm
 {
+    /**
+    * Base class that all GAs are derived from. \n
+    * Contains all of the general information about a GA that does not depend
+    * on the encoding (gene) type. \n
+    * Move-only.
+    */
     class GaInfo
     {
     public:
+        /**
+        * Construct a genetic algorithm.
+        * 
+        * @param chrom_len The size of the Chromosomes in the Population (each solution has a single Chromosome).
+        */
         GaInfo(size_t chrom_len);
+
+        /**
+        * Construct a genetic algorithm.
+        * 
+        * @param population_size The number of solutions in the Population.
+        * @param chrom_len The size of the Chromosomes in the Population (each solution has a single Chromosome).
+        */
         GaInfo(size_t population_size, size_t chrom_len);
 
-        GaInfo(GaInfo&&) noexcept;
-        GaInfo& operator=(GaInfo&&) noexcept;
-        virtual ~GaInfo();
-
-        GaInfo(const GaInfo&) = delete;
-        GaInfo& operator=(const GaInfo&) = delete;
-
+        /**
+        * Type returned by fitness_matrix(), used to represent the fitness matrix of the population. \n
+        * Each element of the matrix is the fitness vector of the corresponding solution of the population. \n
+        * Eg. fmat[0] is the fitness vector of the first member of the population.
+        */
         using FitnessMatrix = detail::FitnessMatrix;
+
+        /**
+        * The type of the stop condition function if a function or lambda is used instead of a functor
+        * derived from StopCondition. \n
+        * The function should return true if the algorithm should stop.
+        */
         using StopConditionFunction = std::function<bool(const GaInfo&)>;
 
         /**
-        * Should be set to false if the fitness function does not change over time. \n
-        * (The fitness function will always return the same fitness values for a given chromosome.) \n
-        * Used to eliminate unnecesary objective function evaluations.
+        * Should be set to false if the fitness function does not change while running the algorithm. \n
+        * (The fitness function will always return the same fitness values for a given Chromosome.) \n
+        * Used to eliminate unnecessary objective function evaluations.
         */
         bool dynamic_fitness = false;
 
         /**
-        * All pareto optimal optimal solutions found by the algorithm will be stored in the solutions,
-        * not just the ones in the current population if set to true. \n
+        * All pareto optimal optimal Candidates found by the algorithm will be stored and kept in the solutions,
+        * regardless of when they were founds,
+        * not just the optimal solutions of the last Population if this is set to true. \n
         */
         bool keep_all_optimal_solutions = false;
 
         /**
-        * Sets the length of the chromosomes (number of genes) of the Candidate solutions used in the algorithm to @p len. \n
+        * Set the size of the chromosomes (number of genes) of the Candidate solutions used in the algorithm. \n
         * The chromosome length must be at least 1.
         *
-        * @param len The length of the chromosomes.
+        * @param len The length of the Chromosomes.
         */
         void chrom_len(size_t len);
 
-        /** @returns The chromosome length used for the candidates of the population. */
+        /** @returns The Chromosome size used for the Candidates of the Population. */
         [[nodiscard]]
         size_t chrom_len() const noexcept;
 
         /**
-        * Sets the number of Candidates used in the population to @p size. \n
-        * The population size must be at least 1.
+        * Set the number of Candidates used in the Population. \n
+        * Must be at least 1.
         *
-        * @param size The size of the populations.
+        * @param size The number of Candidates in a Population.
         */
         void population_size(size_t size);
 
-        /** @returns The population size of the algorithm. */
+        /** @returns The number of Candidates in the Population. */
         [[nodiscard]]
         size_t population_size() const noexcept;
 
@@ -70,100 +93,115 @@ namespace genetic_algorithm
         [[nodiscard]]
         size_t max_gen() const noexcept;
 
-        /** @returns The number of objectives. Determined by the algorithm and returns 0 before the start of the algorithm. */
+        /** @returns The number of objectives as determined by the algorithm based on the fitness function. */
         [[nodiscard]]
         size_t num_objectives() const noexcept;
 
-        /** @returns The fitness matrix of the population. */
+        /**
+        * @returns The fitness matrix of the population.
+        * Each element of the matrix is the fitness vector of the corresponding solution in the population. \n
+        * Eg. fmat[0] is the fitness vector of the first member of the population.
+        */
         [[nodiscard]]
         const FitnessMatrix& fitness_matrix() const& noexcept;
 
-        /** @returns The number of fitness evaluations performed so far by the algorithm. */
+        /** @returns The number of fitness evaluations performed by the algorithm. This value is updated after every objective function evaluation. */
         [[nodiscard]]
         size_t num_fitness_evals() const noexcept;
 
-        /** @returns The current value of the generation counter. */
+        /** @returns The current generation's number. */
         [[nodiscard]]
         size_t generation_cntr() const noexcept;
-
+        
         /**
-        * Sets the crossover rate of the crossover operator used by the algorithm to @p pc.
+        * Set the crossover rate of the crossover operator used by the algorithm.
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
         virtual void crossover_rate(double pc) = 0;
 
-        /** @returns The current crossover rate set for the crossover operator. */
+        /** @returns The crossover rate set for the crossover operator. */
         [[nodiscard]]
         virtual double crossover_rate() const noexcept = 0;
 
         /**
-        * Sets the mutation rate of the mutation operator used by the algorithm to @p pm.
+        * Set the mutation rate of the mutation operator used by the algorithm.
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
         virtual void mutation_rate(double pm) = 0;
 
-        /** @returns The current mutation rate set for the mutation operator. */
+        /** @returns The mutation rate set for the mutation operator. */
         [[nodiscard]]
         virtual double mutation_rate() const noexcept = 0;
 
         /**
-        * Set the selection method used in the algorithm to @p f. \n
-        * The selection method also determines the type of the algorithm (single- or multi-objective).
+        * Set the selection method used in the algorithm. \n
+        * The selection method will also determine the type of the algorithm (single- or multi-objective),
+        * so it must be consistent with the size of the fitness vectors returned by the fitness function.
         *
-        * @param method The selection method used in the single-objective algorithm.
+        * @param method The selection method used in the algorithm.
         */
         template<selection::SelectionMethod F>
         void selection_method(const F& f);
 
         /**
-        * Set the selection method used in the algorithm to @p f. \n
-        * The selection method also determines the type of the algorithm (single- or multi-objective).
+        * Set the selection method used in the algorithm. \n
+        * The selection method will also determine the type of the algorithm (single- or multi-objective),
+        * so it must be consistent with the size of the fitness vectors returned by the fitness function.
         *
-        * @param method The selection method used in the single-objective algorithm.
+        * @param method The selection method used in the algorithm.
         */
         template<selection::SelectionMethod F>
         void selection_method(std::unique_ptr<F>&& f);
 
-        /** @returns The current selection method used by the algorithm. */
+        /** @returns The selection method used by the algorithm, cast to type @p F. */
         template<selection::SelectionMethod F = selection::Selection>
         [[nodiscard]]
         F& selection_method() &;
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set, regardless of the early-stop
+        * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
         * condition set here.
         *
-        * @param f The early-stop method the algorithm should use.
+        * @param f The StopCondition the algorithm should use.
         */
         template<stopping::StopMethod F>
         void stop_condition(const F& f);
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set, regardless of the early-stop
+        * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
         * condition set here.
         *
-        * @param f The early-stop method the algorithm should use.
+        * @param f The StopCondition the algorithm should use.
         */
         template<stopping::StopMethod F>
         void stop_condition(std::unique_ptr<F>&& f);
 
         /**
-        * Set the early-stop condition used by the algorithm to @p f. \n
-        * The algorithm will always stop when reaching thhe maximum generations set, regardless
-        * of this early-stop condition.
+        * Set an early-stop condition for the genetic algorithm. \n
+        * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
+        * condition set here.
         *
         * @param f The function used to check for the early-stop condition.
         */
         void stop_condition(StopConditionFunction f);
 
-        /** @returns The current stop condition used by the algorithm. */
+        /** @returns The stop condition used by the algorithm, cast to type @p F. */
         template<stopping::StopMethod F = stopping::StopCondition>
         [[nodiscard]]
         F& stop_condition() &;
+
+        /* Move-only. */
+        GaInfo(const GaInfo&)            = delete;
+        GaInfo& operator=(const GaInfo&) = delete;
+
+        GaInfo(GaInfo&&) noexcept;
+        GaInfo& operator=(GaInfo&&) noexcept;
+
+        virtual ~GaInfo();
 
     protected:
 
