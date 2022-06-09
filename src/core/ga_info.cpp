@@ -15,8 +15,7 @@ namespace genetic_algorithm
         population_size_(other.population_size_),
         max_gen_(other.max_gen_),
         can_continue_(other.can_continue_)
-    {
-    }
+    {}
 
     GaInfo& GaInfo::operator=(GaInfo&& other) noexcept
     {
@@ -42,9 +41,8 @@ namespace genetic_algorithm
     GaInfo::~GaInfo() = default;
 
     GaInfo::GaInfo(size_t chrom_len)
-    {
-        this->chrom_len(chrom_len);
-    }
+        : GaInfo(100, chrom_len)
+    {}
 
     GaInfo::GaInfo(size_t population_size, size_t chrom_len)
     {
@@ -69,10 +67,8 @@ namespace genetic_algorithm
 
     void GaInfo::chrom_len(size_t len)
     {
-        if (len == 0)
-        {
-            throw std::invalid_argument("The chromosome length must be at least 1.");
-        }
+        if (len == 0) throw std::invalid_argument("The chromosome length must be at least 1.");
+
         chrom_len_ = len;
     }
 
@@ -83,10 +79,8 @@ namespace genetic_algorithm
 
     void GaInfo::population_size(size_t size)
     {
-        if (size == 0)
-        {
-            throw std::invalid_argument("The population size must be at least 1.");
-        }
+        if (size == 0) throw std::invalid_argument("The population size must be at least 1.");
+
         population_size_ = size;
     }
 
@@ -107,28 +101,21 @@ namespace genetic_algorithm
 
     void GaInfo::max_gen(size_t max_gen)
     {
-        if (max_gen == 0)
-        {
-            throw std::invalid_argument("The maximum number of generations must be at least 1.");
-        }
+        if (max_gen == 0) throw std::invalid_argument("The number of generations must be at least 1.");
+
         max_gen_ = max_gen;
     }
 
     void GaInfo::num_objectives(size_t n)
     {
-        if (n == 0)
-        {
-            throw std::invalid_argument("The number of objective functions must be at least 1.");
-        }
+        if (n == 0) throw std::invalid_argument("There must be at least 1 objective function.");
+
         num_objectives_ = n;
     }
 
     void GaInfo::stop_condition(StopConditionFunction f)
     {
-        if (!f)
-        {
-            throw std::invalid_argument("The stop condition can't be empty.");
-        }
+        if (!f) throw std::invalid_argument("The stop condition function can't be a nullptr.");
 
         stop_condition_ = std::make_unique<stopping::dtl::Lambda>(std::move(f));
     }

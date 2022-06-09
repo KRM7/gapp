@@ -143,7 +143,7 @@ namespace genetic_algorithm
         * @param method The selection method used in the algorithm.
         */
         template<selection::SelectionMethod F>
-        void selection_method(const F& f);
+        void selection_method(F&& f);
 
         /**
         * Set the selection method used in the algorithm. \n
@@ -168,7 +168,7 @@ namespace genetic_algorithm
         * @param f The StopCondition the algorithm should use.
         */
         template<stopping::StopMethod F>
-        void stop_condition(const F& f);
+        void stop_condition(F&& f);
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
@@ -237,19 +237,15 @@ namespace genetic_algorithm
 namespace genetic_algorithm
 {
     template<selection::SelectionMethod F>
-    void GaInfo::selection_method(const F& f)
+    void GaInfo::selection_method(F&& f)
     {
-        selection_ = std::make_unique<F>(f);
-        can_continue_ = false;
+        selection_method(std::make_unique<F>(std::forward<F>(f)));
     }
 
     template<selection::SelectionMethod F>
     void GaInfo::selection_method(std::unique_ptr<F>&& f)
     {
-        if (!f)
-        {
-            throw std::invalid_argument("The selection method can't be a nullptr.");
-        }
+        if (!f) throw std::invalid_argument("The selection method can't be a nullptr.");
 
         selection_ = std::move(f);
         can_continue_ = false;
@@ -262,18 +258,15 @@ namespace genetic_algorithm
     }
 
     template<stopping::StopMethod F>
-    void GaInfo::stop_condition(const F& f)
+    void GaInfo::stop_condition(F&& f)
     {
-        stop_condition_ = std::make_unique<F>(f);
+        stop_condition(std::make_unique<F>(std::forward<F>(f)));
     }
 
     template<stopping::StopMethod F>
     void GaInfo::stop_condition(std::unique_ptr<F>&& f)
     {
-        if (!f)
-        {
-            throw std::invalid_argument("The stop condition can't be a nullptr.");
-        }
+        if (!f) throw std::invalid_argument("The stop condition can't be a nullptr.");
 
         stop_condition_ = std::move(f);
     }
