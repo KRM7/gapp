@@ -21,7 +21,8 @@ void binary_rastrigin()
     GA.selection_method(selection::single_objective::Roulette{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
-    GA.stop_condition(stopping::FitnessMeanStall{ 50, 0.005 });
+    GA.stop_condition(stopping::AND(stopping::FitnessMeanStall{ 50, 0.005 },
+                                    stopping::FitnessBestStall{ 50, 0.005 }));
 
     benchmarkSoga(GA, 1000, fitness_func, "Rastrigin function");
 }
