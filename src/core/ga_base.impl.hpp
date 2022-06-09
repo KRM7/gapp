@@ -435,7 +435,7 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     bool GA<T, D>::stopCondition() const
     {
-        return (generation_cntr_ >= (max_gen_ - 1)) || (*stop_condition_)(*this);
+        return (*stop_condition_)(*this);
     }
 
 } // namespace genetic_algorithm
