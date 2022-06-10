@@ -28,6 +28,9 @@ namespace genetic_algorithm
     class GA : public GaInfo
     {
     public:
+
+        // static assert that Derived is actually derived from this, and implements generateCandidate()
+
         using GeneType = T;                             /**< The gene type used in the algorithm. */
         using Candidate = Candidate<GeneType>;          /**< The candidate type used in the algorithm. */
         using Chromosome = std::vector<GeneType>;       /**< The type of the chromosomes used in the algorithm. */
@@ -39,7 +42,7 @@ namespace genetic_algorithm
         using CrossoverFunction = std::function<CandidatePair(const GaInfo&, const Candidate&, const Candidate&)>;
         using MutationFunction = std::function<void(const GaInfo&, Candidate&)>;
         using RepairFunction = std::function<Chromosome(const Chromosome&)>;                /**< The type of the repair function. */
-        using CallbackFunction = std::function<void(const GA<T, Derived>&)>;
+        using Callback = std::function<void(const GA<T, Derived>&)>;
 
         /**
         * Create a genetic algorithm.
@@ -192,7 +195,7 @@ namespace genetic_algorithm
         */
         void repair_function(const RepairFunction& f);
 
-        CallbackFunction endOfGenerationCallback = nullptr;
+        Callback endOfGenerationCallback = nullptr;
 
     protected:
 
@@ -204,22 +207,28 @@ namespace genetic_algorithm
         std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
         RepairFunction repair_ = nullptr;
 
-        void initialize();
-        size_t getNumObjectives(const FitnessFunction& f) const;
+        // reorder funcs
         void setDefaultAlgorithm();
-        Population generateInitialPopulation() const;
-        void evaluate(Population& pop);
-        Population nextPopulation(Population& pop, Population& children) const;
+        void initializeAlgorithm();
+        Population generatePopulation(size_t pop_size) const;
+        const Candidate& selectCandidate() const;
+        CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const;
+        void mutate(Candidate& sol) const;
+        void repair(Candidate& sol) const;
+
+        void evaluateSolution(Candidate); // for single solution, maybe?
+        [[nodiscard]] FitnessMatrix evaluatePopulation(Population& pop);
+        void updatePopulation(Population& pop, Population&& children);
         void updateOptimalSolutions(Candidates& optimal_sols, const Population& pop) const;
-        void repair(Population& pop) const;
         bool stopCondition() const;
         void advance();
-
+        
     private:
 
         Derived& derived() noexcept;
         const Derived& derived() const noexcept;
         Candidate generateCandidate() const;
+        size_t findNumObjectives(const FitnessFunction& f) const;
     };
 
     /** Genetic algorithm types. */

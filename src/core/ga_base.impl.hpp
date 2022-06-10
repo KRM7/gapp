@@ -82,7 +82,7 @@ namespace genetic_algorithm
 
         fitness_function_ = std::move(f);
 
-        num_objectives(getNumObjectives(fitness_function_));
+        num_objectives(findNumObjectives(fitness_function_));
     }
 
     template<Gene T, typename D>
@@ -192,54 +192,34 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::advance()
     {
-        using namespace std;
-
-        size_t num_children = population_size_ + population_size_ % 2;
-        vector<CandidatePair> parent_pairs(num_children / 2);
-
-        (*selection_).prepare(*this, fitness_matrix());
         if (keep_all_optimal_solutions)
         {
             updateOptimalSolutions(solutions_, population_);
         }
 
-        /* Selections. */
-        generate(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
-        [this]() -> CandidatePair
+        size_t num_children = population_size_ + population_size_ % 2;
+        std::vector<CandidatePair> child_pairs(num_children / 2);
+
+        (*selection_).prepare(*this, fitness_matrix());
+        std::generate(GA_EXECUTION_UNSEQ, child_pairs.begin(), child_pairs.end(),
+        [this]
         {
-            return make_pair(population_[(*selection_).select(*this, fitness_matrix())],
-                             population_[(*selection_).select(*this, fitness_matrix())]);
+            const auto& parent1 = selectCandidate();
+            const auto& parent2 = selectCandidate();
+
+            return crossover(parent1, parent2);
         });
 
-        /* Crossovers. */
-        for_each(GA_EXECUTION_UNSEQ, parent_pairs.begin(), parent_pairs.end(),
-        [this](CandidatePair& p) -> void
+        auto children = detail::flatten(std::move(child_pairs));
+
+        std::for_each(GA_EXECUTION_UNSEQ, children.begin(), children.end(),
+        [this](Candidate& child)
         {
-            p = (*crossover_)(*this, p.first, p.second);
+            mutate(child);
+            repair(child);
         });
 
-        vector<Candidate> children;
-        children.reserve(num_children);
-        for (size_t i = 0; i < parent_pairs.size(); i++)
-        {
-            children.push_back(move(parent_pairs[i].first));
-            children.push_back(move(parent_pairs[i].second));
-        }
-
-        /* Mutations. */
-        for_each(GA_EXECUTION_UNSEQ, children.begin(), children.end(),
-        [this](Candidate& c) -> void
-        {
-            (*mutation_)(*this, c);
-        });
-
-        /* Apply repair function to the children if set. */
-        repair(children);
-
-        /* Overwrite the current population with the children. */
-        evaluate(children);
-        population_ = nextPopulation(population_, children);
-        fitness_matrix_ = detail::toFitnessMatrix(population_);
+        updatePopulation(population_, std::move(children));
 
         if (endOfGenerationCallback != nullptr) endOfGenerationCallback(*this);
         generation_cntr_++;
@@ -250,13 +230,7 @@ namespace genetic_algorithm
     {
         max_gen(num_generations);
 
-        initialize();
-
-        population_ = generateInitialPopulation();
-        evaluate(population_);
-        fitness_matrix_ = detail::toFitnessMatrix(population_);
-
-        (*selection_).init(*this);
+        initializeAlgorithm();
         while (!stopCondition())
         {
             advance();
@@ -271,7 +245,7 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     auto GA<T, D>::continueFor(size_t num_generations) -> Candidates
     {
-        if (!can_continue_) { run(num_generations); }
+        if (!can_continue_) { return run(num_generations); }
 
         max_gen(max_gen_ + num_generations);
 
@@ -285,19 +259,36 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::initialize()
+    void GA<T, D>::initializeAlgorithm()
     {
-        num_objectives(getNumObjectives(fitness_function_));
+        /* The number of objectives is determined from the return value of the fitness func,
+        *  this assumes that the returned vector will always be the same size during a run. 
+        *
+        *  This also needs generateCandidate() to create a dummy solution to pass to the fitness
+        *  function, which might only return valid values after the derived class contructor set
+        *  up some stuff for the candidate generation (eg. bounds), so this can't be called earlier,
+        *  eg. in the base ctor. */
+        num_objectives(findNumObjectives(fitness_function_));
 
+        /* Reset state variables just in case GA.run() has already been called before. */
         can_continue_ = false;
         generation_cntr_ = 0;
         num_fitness_evals_ = 0;
         solutions_.clear();
         population_.clear();
+
+        /* Create and evaluate the initial population of the algorithm. */
+        population_ = generatePopulation(population_size_);
+        fitness_matrix_ = evaluatePopulation(population_);
+
+        /* Initialize the selection method. 
+         * This must be done after the initial population has been created and evaluted,
+         * as it might rely on the population's fitness values (fitness_matrix). */
+        (*selection_).init(*this);
     }
     
     template<Gene T, typename D>
-    size_t GA<T, D>::getNumObjectives(const FitnessFunction& f) const
+    size_t GA<T, D>::findNumObjectives(const FitnessFunction& f) const
     {
         Candidate c = generateCandidate();
         return f(c.chromosome).size();
@@ -306,7 +297,7 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::setDefaultAlgorithm()
     {
-        num_objectives(getNumObjectives(fitness_function_));
+        num_objectives(findNumObjectives(fitness_function_));
 
         if (num_objectives_ == 1)
         {
@@ -325,27 +316,14 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::generateInitialPopulation() const -> Population
+    auto GA<T, D>::generatePopulation(size_t pop_size) const -> Population
     {
-        assert(population_size_ > 0);
-
-        //if (!std::all_of(initial_population_.begin(), initial_population_.end(),
-        //[this](const Candidate& sol)
-        //{
-        //    return sol.chromosome.size() == chrom_len_;
-        //}))
-        //{
-        //    throw std::domain_error("The chromosome lengths in the preset initial population must be equal to the chrom_len set.");
-        //}
+        assert(pop_size > 0);
 
         Population pop;
-        pop.reserve(population_size_);
+        pop.reserve(pop_size);
 
-        //for (size_t i = 0; i < std::min(population_size_, initial_population_.size()); i++)
-        //{
-        //    pop.push_back(initial_population_[i]);
-        //}
-        while (pop.size() < population_size_)
+        while (pop_size--)
         {
             pop.push_back(generateCandidate());
         }
@@ -354,7 +332,27 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::evaluate(Population& pop)
+    auto GA<T, D>::selectCandidate() const -> const Candidate&
+    {
+        size_t idx = (*selection_).select(*this, fitness_matrix());
+
+        return population_[idx];
+    }
+
+    template<Gene T, typename D>
+    auto GA<T, D>::crossover(const Candidate& parent1, const Candidate& parent2) const -> CandidatePair
+    {
+        return (*crossover_)(*this, parent1, parent2);
+    }
+
+    template<Gene T, typename D>
+    void GA<T, D>::mutate(Candidate& sol) const
+    {
+        return (*mutation_)(*this, sol);
+    }
+
+    template<Gene T, typename D>
+    auto GA<T, D>::evaluatePopulation(Population& pop) -> FitnessMatrix
     {
         assert(fitness_function_ != nullptr);
 
@@ -376,11 +374,13 @@ namespace genetic_algorithm
             {
                 throw std::domain_error("A fitness vector returned by the fitness function has incorrect size.");
             }
-            if (!std::all_of(sol.fitness.begin(), sol.fitness.end(), [](double val) noexcept { return std::isfinite(val); }))
+            if (!std::all_of(sol.fitness.begin(), sol.fitness.end(), std::isfinite<double>))
             {
                 throw std::domain_error("A non-finite fitness value was returned by the fitness function.");
             }
         }
+
+        return detail::toFitnessMatrix(pop);
     }
 
     template<Gene T, typename D>
@@ -396,40 +396,35 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::repair(Population& pop) const
+    void GA<T, D>::repair(Candidate& sol) const
     {
         /* Don't do anything unless a repair function is specified. */
-        if (repair_ == nullptr) return;
+        if (!repair_) return;
 
-        std::for_each(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(),
-        [this](Candidate& sol)
+        auto improved_chrom = repair_(sol.chromosome); // assert=chrom_len
+        if (improved_chrom != sol.chromosome)
         {
-            Chromosome improved_chrom = repair_(sol.chromosome);
-            if (improved_chrom != sol.chromosome)
-            {
-                sol.is_evaluated = false;
-                sol.chromosome = std::move(improved_chrom);
-            }
-        });
-
-        for (const auto& sol : pop)
-        {
-            if (sol.chromosome.size() != chrom_len_)
-            {
-                throw std::domain_error("The repair function must return chromosomes of chrom_len length.");
-            }
+            sol.is_evaluated = false;
+            sol.chromosome = std::move(improved_chrom);
         }
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::nextPopulation(Population& pop, Population& children) const -> Population
+    void GA<T, D>::updatePopulation(Population& current_pop, Population&& children)
     {
-        pop.insert(pop.end(), std::make_move_iterator(children.begin()), std::make_move_iterator(children.end()));
+        auto child_fmat = evaluatePopulation(children);
 
-        auto fitness_matrix = detail::toFitnessMatrix(pop);
-        auto selected_indices = (*selection_).nextPopulation(*this, fitness_matrix);
+        current_pop.insert(current_pop.end(),
+                           std::make_move_iterator(children.begin()),
+                           std::make_move_iterator(children.end()));
+        fitness_matrix_.insert(fitness_matrix_.end(),
+                               std::make_move_iterator(child_fmat.begin()),
+                               std::make_move_iterator(child_fmat.end()));
 
-        return detail::map(selected_indices, [&pop](size_t idx) { return pop[idx]; });
+        auto next_indices = (*selection_).nextPopulation(*this, fitness_matrix_);
+
+        current_pop = detail::map(next_indices, [&current_pop](size_t idx) { return current_pop[idx]; });
+        fitness_matrix_ = detail::map(next_indices, [this](size_t idx) { return fitness_matrix_[idx]; });
     }
 
     template<Gene T, typename D>
