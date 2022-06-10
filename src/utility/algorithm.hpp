@@ -12,6 +12,7 @@
 #include <utility>
 #include <type_traits>
 #include <concepts>
+#include <limits>
 #include <cstddef>
 #include <cassert>
 
@@ -221,6 +222,23 @@ namespace genetic_algorithm::detail
     {
         assert(first != last);
         return size_t(std::min_element(first, last, std::forward<Comp>(comp)) - first);
+    }
+
+    template<typename T>
+    std::vector<T> flatten(std::vector<std::pair<T, T>>&& in)
+    {
+        assert(in.size() <= (std::numeric_limits<size_t>::max() / 2));
+
+        std::vector<T> out;
+        out.reserve(2 * in.size());
+
+        for (size_t i = 0; i < in.size(); i++)
+        {
+            out.push_back(std::move(in[i].first));
+            out.push_back(std::move(in[i].second));
+        }
+
+        return out;
     }
 
 }
