@@ -17,9 +17,10 @@ namespace genetic_algorithm::crossover
 {
     /**
     * Base class used for all of the crossover operators.
-    * Every implemented crossover operator takes 2 Candidates (the parents), and creates 2 children from these parents.
-    * The crossover operation is performed on the 2 parents with the set (pc) probability only, the rest of the time
-    * the returned children will be the same as the parents.
+    * Every crossover operator takes 2 Candidates (the parents), and creates 2 children from these parents.
+    * The crossover operation is performed on the 2 parents with a set (pc) probability only, the rest of the time
+    * the returned children will be the same as the parents. \n
+    * The generated children's chromosome sizes may be different from eachother, and also from the parent's chromosomes.
     */
     template<Gene T>
     class Crossover
@@ -28,7 +29,7 @@ namespace genetic_algorithm::crossover
         using GeneType = T;
 
         /**
-        * Create a crossover operator that will use @p pc as the crossover rate.
+        * Create a crossover operator.
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
@@ -41,13 +42,13 @@ namespace genetic_algorithm::crossover
         virtual ~Crossover()                    = default;
 
         /**
-        * Sets the crossover rate used in the algorithm to @p pc. 
+        * Set the crossover rate used by the operator. 
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
         void crossover_rate(double pc);
 
-        /** @returns The crossover rate currently set for this crossover operator. */
+        /** @returns The crossover rate set for this operator. */
         [[nodiscard]]
         double crossover_rate() const noexcept { return pc_; }
 
