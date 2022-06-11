@@ -106,6 +106,7 @@ namespace genetic_algorithm
 
         /**
         * Set the crossover method the algorithm will use. \n
+        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see CrossoverFunction
         * @see Crossover
         * 
@@ -116,6 +117,7 @@ namespace genetic_algorithm
 
         /**
         * Set the crossover method the algorithm will use. \n
+        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see CrossoverFunction
         * @see Crossover
         *
@@ -126,6 +128,7 @@ namespace genetic_algorithm
 
         /**
         * Set the crossover method the algorithm will use. \n
+        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see CrossoverFunction
         * @see Crossover
         *
@@ -149,40 +152,49 @@ namespace genetic_algorithm
         double crossover_rate() const noexcept final;
 
         /**
-        * Set the mutation method the algorithm will use to @p f.
+        * Set the mutation method the algorithm will use. \n
+        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * @see MutationFunction
+        * @see Mutation
         *
-        * @param f The crossover method for the algorithm.
+        * @param f The crossover function that will be used by the algorithm.
         */
         template<mutation::MutationMethod<T> F>
         void mutation_method(const F& f);
 
         /**
-        * Set the mutation method the algorithm will use to @p f.
+        * Set the mutation method the algorithm will use. \n
+        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * @see MutationFunction
+        * @see Mutation
         *
-        * @param f The crossover method for the algorithm.
+        * @param f The crossover function that will be used by the algorithm.
         */
         template<mutation::MutationMethod<T> F>
         void mutation_method(std::unique_ptr<F>&& f);
 
         /**
-        * Set the mutation method the algorithm will use to @p f.
+        * Set the mutation method the algorithm will use. \n
+        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * @see MutationFunction
+        * @see Mutation
         *
-        * @param f The crossover method for the algorithm.
+        * @param f The crossover function that will be used by the algorithm.
         */
         void mutation_method(MutationFunction f);
 
-        /** @returns The current mutation method used by the algorithm. */
+        /** @returns The mutation operator used by the algorithm, cast to type @p F. */
         template<mutation::MutationMethod<T> F = mutation::Mutation<GeneType>>
         F& mutation_method() &;
 
         /**
-        * Sets the mutation rate of the mutation operator used by the algorithm to @p pm.
+        * Set the mutation rate of the mutation operator.
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
         void mutation_rate(double pm) final;
 
-        /** @returns The current mutation rate set for the mutation operator. */
+        /** @returns The mutation rate of the mutation operator. */
         [[nodiscard]]
         double mutation_rate() const noexcept final;
 

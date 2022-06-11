@@ -17,9 +17,10 @@ namespace genetic_algorithm
 namespace genetic_algorithm::mutation
 {
     /**
-    * Base class used for all of the mutation operators.
-    * Every implemented mutation operator takes a Candidate, and mutates that candidate using the set probability.
-    * (This probability can either be per-candidate or per-gene depending on the operator.)
+    * Base class used for all of the mutation operators. \n
+    * Every mutation operator takes a Candidate, and mutates that candidate using a set probability. \n
+    * (This probability can either be per-candidate or per-gene depending on how the particular operator is defined.) \n
+    * The mutation is allowed change the length of the candidate's chromosome.
     */
     template<Gene T>
     class Mutation
@@ -41,13 +42,13 @@ namespace genetic_algorithm::mutation
         virtual ~Mutation()                     = default;
 
         /**
-        * Set the mutation rate used for the operator to @p pm.
+        * Set the mutation rate used by the operator.
         * 
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
         void mutation_rate(double pm);
 
-        /** @returns The mutation rate currently set for this mutation operator. */
+        /** @returns The mutation rate set for this mutation operator. */
         [[nodiscard]]
         double mutation_rate() const noexcept { return pm_; }
 
