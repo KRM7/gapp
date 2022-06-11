@@ -97,7 +97,7 @@ namespace genetic_algorithm
         /**
         * Set the fitness function used by the algorithm. \n
         * The fitness function should return a vector with a size equal to the number of objectives. \n
-        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The fitness function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see FitnessFunction
         *
         * @param f The function the algorithm should find the maximum of.
@@ -106,7 +106,7 @@ namespace genetic_algorithm
 
         /**
         * Set the crossover method the algorithm will use. \n
-        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The crossover function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see CrossoverFunction
         * @see Crossover
         * 
@@ -117,7 +117,7 @@ namespace genetic_algorithm
 
         /**
         * Set the crossover method the algorithm will use. \n
-        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The crossover function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see CrossoverFunction
         * @see Crossover
         *
@@ -128,7 +128,7 @@ namespace genetic_algorithm
 
         /**
         * Set the crossover method the algorithm will use. \n
-        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The crossover function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see CrossoverFunction
         * @see Crossover
         *
@@ -153,7 +153,7 @@ namespace genetic_algorithm
 
         /**
         * Set the mutation method the algorithm will use. \n
-        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The mutation function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see MutationFunction
         * @see Mutation
         *
@@ -164,7 +164,7 @@ namespace genetic_algorithm
 
         /**
         * Set the mutation method the algorithm will use. \n
-        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The mutation function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see MutationFunction
         * @see Mutation
         *
@@ -175,7 +175,7 @@ namespace genetic_algorithm
 
         /**
         * Set the mutation method the algorithm will use. \n
-        * The function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The mutation function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * @see MutationFunction
         * @see Mutation
         *
@@ -199,49 +199,58 @@ namespace genetic_algorithm
         double mutation_rate() const noexcept final;
 
         /**
-        * Set a repair function for the genetic algorithm. \n
-        * This function will be applied to each chromosome after the mutations. \n
-        * This can be used for example to perform a local search. \n
+        * Set a repair function for the algorithm. \n
+        * This function will be applied to each chromosome after the mutations have been performed. \n
+        * This can be used to perform a local search for example. \n
         * 
-        * No repair function is used in the algorithm by default, set to nullptr if
-        * no repair function should be used.
+        * No repair function is used in the algorithm by default, set to nullptr if no repair function should be used.
+        * 
+        * The repair function should be thread-safe if parallel execution is enabled (it is enabled by default).
         * 
         * @param f The repair function the algorithm will use.
         */
         void repair_function(const RepairFunction& f);
 
-        /** @returns The pareto optimal solutions found by the algorithm. */
+        /** 
+        * @returns The pareto optimal solutions found by the algorithm.
+        * These are just the optimal solutions of the last generation's population if
+        * keep_all_optimal_sols is not set, otherwise it contains every optimal solution
+        * found during the run, updated in every generation.
+        */
         [[nodiscard]]
         Candidates solutions() const noexcept;
 
-        /** @returns The current population of the algorithm. Not the same as the solutions. */
+        /**
+        * @returns The current population of the algorithm.
+        * This is not the same as the solutions (this will always the same size as the population_size set,
+        * and may also contain non pareto-optimal solutions).
+        */
         [[nodiscard]]
         Population population() const noexcept;
 
         /**
-        * Run the genetic algorithm for the set number of generations. \n
-        * The algorithm will always stop when reaching the maximum number of
-        * generations have been reached.
+        * Run the genetic algorithm for a set number of generations. \n
+        * The algorithm will always stop when reaching this number of generations.
         *
         * @param num_generations The maximum number of generations.
-        * @returns The optimal solutions.
+        * @returns The pareto-optimal solutions found. @see solutions
         */
-        Candidates run(size_t num_generations = 500);
+        Candidates run(size_t num_generations = 1000);
 
         /**
         * Continue running the genetic algorithm for the set number of generations. \n
-        * Equivalent to calling run if the algorithm hasn't been run before, or if the selection
-        * method was changed.
+        * The algorithm can only continue if run has already been called at least once,
+        * and the selection_method hasn't been changed since then.
         *
         * @param num_generations The number of generations to run the algorithm for.
         * @returns The optimal solutions.
         */
         Candidates continueFor(size_t num_generations);
 
-        /** */
+        /** This function will be called exactly once at the end of each generation. */
         Callback endOfGenerationCallback = nullptr;
 
-        /** */
+        /** This function will be called exactly once at the end of a run. */
         Callback endOfRunCallback = nullptr;
 
     protected:
@@ -257,14 +266,14 @@ namespace genetic_algorithm
         void setDefaultAlgorithm();
 
         void initializeAlgorithm();
-        Population generatePopulation(size_t pop_size) const;
+        [[nodiscard]] Population generatePopulation(size_t pop_size) const;
         void prepareSelections() const;
-        const Candidate& selectCandidate() const;
-        CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const;
+        [[nodiscard]] const Candidate& selectCandidate() const;
+        [[nodiscard]] CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const;
         void mutate(Candidate& sol) const;
         void repair(Candidate& sol) const;
         void updatePopulation(Population& pop, Population&& children);
-        bool stopCondition() const;
+        [[nodiscard]] bool stopCondition() const;
 
         void evaluateSolution(Candidate& sol);
         [[nodiscard]] FitnessMatrix evaluatePopulation(Population& pop);
@@ -276,8 +285,8 @@ namespace genetic_algorithm
 
         Derived& derived() noexcept;
         const Derived& derived() const noexcept;
-        Candidate generateCandidate() const;
-        size_t findNumObjectives(const FitnessFunction& f) const;
+        [[nodiscard]] Candidate generateCandidate() const;
+        [[nodiscard]] size_t findNumObjectives(const FitnessFunction& f) const;
     };
 
     /** Genetic algorithm types. */

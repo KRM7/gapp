@@ -139,6 +139,7 @@ namespace genetic_algorithm
         * Set the selection method used in the algorithm. \n
         * The selection method will also determine the type of the algorithm (single- or multi-objective),
         * so it must be consistent with the size of the fitness vectors returned by the fitness function.
+        * @see Selection
         *
         * @param method The selection method used in the algorithm.
         */
@@ -149,6 +150,7 @@ namespace genetic_algorithm
         * Set the selection method used in the algorithm. \n
         * The selection method will also determine the type of the algorithm (single- or multi-objective),
         * so it must be consistent with the size of the fitness vectors returned by the fitness function.
+        * @see Selection
         *
         * @param method The selection method used in the algorithm.
         */
@@ -164,6 +166,7 @@ namespace genetic_algorithm
         * Set an early-stop condition for the genetic algorithm. \n
         * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
         * condition set here.
+        * @see StopCondition
         *
         * @param f The StopCondition the algorithm should use.
         */
@@ -174,6 +177,7 @@ namespace genetic_algorithm
         * Set an early-stop condition for the genetic algorithm. \n
         * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
         * condition set here.
+        * @see StopCondition
         *
         * @param f The StopCondition the algorithm should use.
         */
@@ -184,6 +188,8 @@ namespace genetic_algorithm
         * Set an early-stop condition for the genetic algorithm. \n
         * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
         * condition set here.
+        * @see StopCondition
+        * @see StopConditionFunction
         *
         * @param f The function used to check for the early-stop condition.
         */
