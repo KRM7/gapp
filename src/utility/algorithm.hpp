@@ -208,20 +208,20 @@ namespace genetic_algorithm::detail
 
     namespace _
     {
-        template<typename... Ts, typename Acc, typename TransformOp, typename ReduceOp>
-        Acc transform_reduce_impl(TransformOp&&, ReduceOp&&, Acc&& acc, Ts&&...)
+        template<typename... Ts, typename R, typename Tr, typename Rd>
+        R transform_reduce_impl(Tr&&, Rd&&, R&& acc, Ts&&...)
         {
             return acc;
         }
 
-        template<typename T, typename... Ts, typename Acc, typename TransformOp, typename ReduceOp>
-        Acc transform_reduce_impl(TransformOp&& tr, ReduceOp&& rd, Acc&& acc, T&& arg, Ts&&... args)
+        template<typename T, typename... Ts, typename R, typename Tr, typename Rd>
+        R transform_reduce_impl(Tr&& tr, Rd&& rd, R&& acc, T&& arg, Ts&&... args)
         {
             auto transform_result = std::invoke(tr, std::forward<T>(arg));
 
-            acc = static_cast<std::remove_reference_t<Acc>>(std::invoke(rd, std::forward<Acc>(acc), std::move(transform_result)));
+            acc = static_cast<std::remove_reference_t<R>>(std::invoke(rd, std::forward<R>(acc), std::move(transform_result)));
 
-            return transform_reduce_impl(std::forward<TransformOp>(tr), std::forward<ReduceOp>(rd), std::forward<Acc>(acc), std::forward<Ts>(args)...);
+            return transform_reduce_impl(std::forward<Tr>(tr), std::forward<Rd>(rd), std::forward<R>(acc), std::forward<Ts>(args)...);
         }
     }
 
@@ -230,9 +230,7 @@ namespace genetic_algorithm::detail
     Acc transform_reduce(Tuple&& tup, Acc&& init, TransformOp&& transform, ReduceOp&& reduce)
     {
         auto transform_reduce_ =
-        [acc = lforward<Acc>(init),
-         tr = lforward<TransformOp>(transform),
-         rd = lforward<ReduceOp>(reduce)]
+        [acc = lforward<Acc>(init), tr = lforward<TransformOp>(transform), rd = lforward<ReduceOp>(reduce)]
         (auto&&... args) mutable -> Acc
         {
             return _::transform_reduce_impl(
