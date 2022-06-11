@@ -8,6 +8,7 @@
 #include "crossover/crossover.hpp"
 #include "mutation/mutation.hpp"
 #include "stop_condition/stop_condition.hpp"
+#include "stop_condition/composite.hpp"
 #include "core/ga_base.hpp"
 #include "encoding/binary.hpp"
 #include "encoding/real.hpp"
