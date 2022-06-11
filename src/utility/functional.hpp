@@ -1,6 +1,8 @@
 #ifndef GA_FUNCTIONAL_HPP
 #define GA_FUNCTIONAL_HPP
 
+#include "concepts.hpp"
+#include "type_traits.hpp"
 #include <array>
 #include <vector>
 #include <list>
@@ -11,9 +13,9 @@
 #include <map>
 #include <unordered_map>
 #include <utility>
+#include <limits>
 #include <type_traits>
-#include "concepts.hpp"
-#include "type_traits.hpp"
+#include <cassert>
 
 namespace genetic_algorithm::detail
 {
@@ -156,6 +158,47 @@ namespace genetic_algorithm::detail
         }
 
         return result;
+    }
+
+    template<typename T>
+    std::vector<T> flatten(std::vector<std::vector<T>>&& in)
+    {
+        size_t out_size = 0;
+        for (const auto& vec : in)
+        {
+            assert( out_size <= (std::numeric_limits<size_t>::max() - vec.size()) );
+            out_size += vec.size();
+        }
+
+        std::vector<T> out;
+        out.reserve(out_size);
+
+        for (size_t i = 0; i < in.size(); i++)
+        {
+            for (size_t j = 0; j < in[i].size(); j++)
+            {
+                out.push_back(std::move(in[i][j]));
+            }
+        }
+
+        return out;
+    }
+
+    template<typename T>
+    std::vector<T> flatten(std::vector<std::pair<T, T>>&& in)
+    {
+        assert( in.size() <= (std::numeric_limits<size_t>::max() / 2) );
+
+        std::vector<T> out;
+        out.reserve(2 * in.size());
+
+        for (size_t i = 0; i < in.size(); i++)
+        {
+            out.push_back(std::move(in[i].first));
+            out.push_back(std::move(in[i].second));
+        }
+
+        return out;
     }
 
 } // namespace genetic_algorithm::detail
