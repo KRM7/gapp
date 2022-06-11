@@ -5,6 +5,7 @@
 
 #include "concepts.hpp"
 #include <vector>
+#include <tuple>
 #include <algorithm>
 #include <numeric>
 #include <iterator>
@@ -204,6 +205,46 @@ namespace genetic_algorithm::detail
         auto last = std::unique(container.begin(), container.end(), std::forward<Pred>(pred));
         container.erase(last, container.end());
     }
+
+    namespace _
+    {
+        template<typename... Ts, typename Acc, typename TransformOp, typename ReduceOp>
+        Acc transform_reduce(Acc acc, TransformOp&&, ReduceOp&&, Ts&&...)
+        {
+            return acc;
+        }
+
+        template<typename T, typename... Ts, typename Acc, typename TransformOp, typename ReduceOp>
+        Acc transform_reduce(Acc acc, TransformOp&& tr, ReduceOp&& rd, T&& arg, Ts&&... args)
+        {
+            auto transform_result = std::invoke(tr, std::forward<T>(arg));
+
+            acc = static_cast<Acc>(std::invoke(rd, std::move(acc), std::move(transform_result)));
+
+            return _::transform_reduce(std::move(acc), std::forward<TransformOp>(tr), std::forward<ReduceOp>(rd), std::forward<Ts>(args)...);
+        }
+    }
+
+    template<typename... Ts, typename Acc, typename TransformOp, typename ReduceOp>
+    Acc transform_reduce(const std::tuple<Ts...>& tup, Acc init, TransformOp&& transform, ReduceOp&& reduce)
+    {
+        auto transform_reduce_ =
+        [tr = lforward<TransformOp>(transform),
+         rd = lforward<ReduceOp>(reduce)]
+        (Acc acc, Ts&&... args)
+        {
+            return _::transform_reduce(std::move(acc),
+                                       std::forward<TransformOp>(tr),
+                                       std::forward<ReduceOp>(rd),
+                                       std::forward<Ts>(args)...);
+        };
+
+        std::tuple init_tup(std::forward<Acc>(init));
+        std::tuple args_tup(std::tuple_cat(std::move(init_tup), tup));
+
+        return std::apply(std::move(transform_reduce_), std::move(args_tup));
+    }
+
 
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
