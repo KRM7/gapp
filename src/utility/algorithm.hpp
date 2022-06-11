@@ -209,40 +209,40 @@ namespace genetic_algorithm::detail
     namespace _
     {
         template<typename... Ts, typename Acc, typename TransformOp, typename ReduceOp>
-        Acc transform_reduce(Acc acc, TransformOp&&, ReduceOp&&, Ts&&...)
+        Acc transform_reduce_impl(TransformOp&&, ReduceOp&&, Acc&& acc, Ts&&...)
         {
             return acc;
         }
 
         template<typename T, typename... Ts, typename Acc, typename TransformOp, typename ReduceOp>
-        Acc transform_reduce(Acc acc, TransformOp&& tr, ReduceOp&& rd, T&& arg, Ts&&... args)
+        Acc transform_reduce_impl(TransformOp&& tr, ReduceOp&& rd, Acc&& acc, T&& arg, Ts&&... args)
         {
             auto transform_result = std::invoke(tr, std::forward<T>(arg));
 
-            acc = static_cast<Acc>(std::invoke(rd, std::move(acc), std::move(transform_result)));
+            acc = static_cast<std::remove_reference_t<Acc>>(std::invoke(rd, std::forward<Acc>(acc), std::move(transform_result)));
 
-            return _::transform_reduce(std::move(acc), std::forward<TransformOp>(tr), std::forward<ReduceOp>(rd), std::forward<Ts>(args)...);
+            return transform_reduce_impl(std::forward<TransformOp>(tr), std::forward<ReduceOp>(rd), std::forward<Acc>(acc), std::forward<Ts>(args)...);
         }
     }
 
-    template<typename... Ts, typename Acc, typename TransformOp, typename ReduceOp>
-    Acc transform_reduce(const std::tuple<Ts...>& tup, Acc init, TransformOp&& transform, ReduceOp&& reduce)
+    template<typename Tuple, typename Acc, typename TransformOp, typename ReduceOp>
+    requires is_specialization_of_v<std::remove_reference_t<Tuple>, std::tuple>
+    Acc transform_reduce(Tuple&& tup, Acc&& init, TransformOp&& transform, ReduceOp&& reduce)
     {
         auto transform_reduce_ =
-        [tr = lforward<TransformOp>(transform),
+        [acc = lforward<Acc>(init),
+         tr = lforward<TransformOp>(transform),
          rd = lforward<ReduceOp>(reduce)]
-        (Acc acc, Ts&&... args)
+        (auto&&... args) mutable -> Acc
         {
-            return _::transform_reduce(std::move(acc),
-                                       std::forward<TransformOp>(tr),
-                                       std::forward<ReduceOp>(rd),
-                                       std::forward<Ts>(args)...);
+            return _::transform_reduce_impl(
+                std::forward<TransformOp>(tr),
+                std::forward<ReduceOp>(rd),
+                std::forward<Acc>(acc),
+                std::forward<decltype(args)>(args)...);
         };
 
-        std::tuple init_tup(std::forward<Acc>(init));
-        std::tuple args_tup(std::tuple_cat(std::move(init_tup), tup));
-
-        return std::apply(std::move(transform_reduce_), std::move(args_tup));
+        return std::apply(std::move(transform_reduce_), std::forward<Tuple>(tup));
     }
 
 
