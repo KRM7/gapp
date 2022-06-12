@@ -20,9 +20,12 @@
 namespace genetic_algorithm
 {
     /**
-    * Base GA class.
+    * Base GA class. \n
+    * Contains everything of the genetic algorithm, except for the
+    * generateCandidate() function, which should be implemented in the derived classes.
     *
-    * @tparam geneType The type of the genes in the candidates' chromosomes.
+    * @tparam Gene The type of the genes in the candidates' chromosomes.
+    * @tparam Derived The type of the derived class.
     */
     template<Gene T, typename Derived>
     class GA : public GaInfo
