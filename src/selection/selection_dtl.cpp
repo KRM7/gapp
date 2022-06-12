@@ -318,11 +318,15 @@ namespace genetic_algorithm::selection::dtl
 
         return [z = std::move(z), w = std::move(w)](const std::vector<double>& f) noexcept
         {
+            assert(f.size() == w.size());
+
             double dmax = std::abs(f[0] - z[0]) / w[0];
             for (size_t i = 0; i < f.size(); i++)
             {
-                dmax = std::max(dmax, std::abs(f[i] - z[i]) / w[i]);
+                double d = std::abs(f[i] - z[i]) / w[i];
+                dmax = std::max(dmax, d);
             }
+
             return dmax;
         };
     }
