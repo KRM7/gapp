@@ -25,16 +25,20 @@ namespace genetic_algorithm::detail
     {
         assert(lhs.size() == rhs.size());
 
+        /* 2 loops are better than 1 */
         for (size_t i = first; i < lhs.size(); i++)
         {
             if (floatIsLess(rhs[i], lhs[i])) return false;
         }
         for (size_t i = first; i < lhs.size(); i++)
         {
-            if (floatIsLess(lhs[i], rhs[i])) return true;
+            //if (floatIsLess(lhs[i], rhs[i])) return true;
+
+            /* lhs is def not greater here, the fp comparison can be simplified */
+            if ((rhs[i] - lhs[i]) > std::abs(rhs[i]) * GA_EPSILON) return true;
         }
 
-        return false;
+        return false; /* equal */
     }
 
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept
