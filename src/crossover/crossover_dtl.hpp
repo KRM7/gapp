@@ -107,7 +107,7 @@ namespace genetic_algorithm::crossover::dtl
             }
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
     template<Gene T>
@@ -132,7 +132,7 @@ namespace genetic_algorithm::crossover::dtl
             swap(child1.chromosome[i], child2.chromosome[i]);
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
     template<Gene T>
@@ -161,7 +161,7 @@ namespace genetic_algorithm::crossover::dtl
             swap(child1.chromosome[i], child2.chromosome[i]);
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
     template<Gene T>
