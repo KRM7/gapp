@@ -36,14 +36,8 @@ namespace genetic_algorithm::detail
     /* Pareto comparison for fp vectors. Returns true if lhs is dominated by rhs (lhs < rhs), assuming maximization. */
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
 
-    /* Pareto comparison for fp vectors. Returns true if lhs dominates rhs (lhs > rhs), assuming maximization. */
-    bool paretoCompareGreater(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
-
     /* Pareto comparison starting at idx = first. */
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept;
-
-    /* Pareto comparison starting at idx = first. */
-    bool paretoCompareGreater(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept;
 
     /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept;
