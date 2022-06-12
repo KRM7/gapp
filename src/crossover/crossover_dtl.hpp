@@ -96,7 +96,8 @@ namespace genetic_algorithm::crossover::dtl
             crossover_mask[i] = remaining;
         }
 
-        Candidate child1{ parent1 }, child2{ parent2 };
+        Candidate child1 = parent1;
+        Candidate child2 = parent2;
 
         for (size_t i = 0; i < chrom_len; i++)
         {
@@ -124,7 +125,8 @@ namespace genetic_algorithm::crossover::dtl
 
         size_t crossover_point = rng::randomInt(0_sz, chrom_len);
 
-        Candidate child1{ parent1 }, child2{ parent2 };
+        Candidate child1 = parent1;
+        Candidate child2 = parent2;
 
         for (size_t i = 0; i < crossover_point; i++)
         {
@@ -153,7 +155,8 @@ namespace genetic_algorithm::crossover::dtl
             std::swap(crossover_points[0], crossover_points[1]);
         }
 
-        Candidate child1{ parent1 }, child2{ parent2 };
+        Candidate child1 = parent1;
+        Candidate child2 = parent2;
 
         for (size_t i = crossover_points[0]; i < crossover_points[1]; i++)
         {
@@ -169,13 +172,13 @@ namespace genetic_algorithm::crossover::dtl
     {
         size_t chrom_len = parent1.chromosome.size();
 
-        std::unordered_set<T> direct;
-        for (size_t i = first; i != last; i++)
+        std::unordered_set<T> direct(last - first);
+        while (first != last)
         {
-            direct.insert(parent1.chromosome[i]);
+            direct.insert(parent1.chromosome[first++]);
         }
 
-        Candidate<T> child{ parent1 };
+        Candidate<T> child = parent1;
 
         size_t parent_pos = last % chrom_len;
         size_t child_pos = last % chrom_len;
@@ -195,13 +198,13 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
-        std::unordered_set<T> direct;
+        std::unordered_set<T> direct(last - first);
         for (size_t i = first; i != last; i++)
         {
             direct.insert(parent1.chromosome[i]);
         }
 
-        Candidate<T> child{ parent1 };
+        Candidate<T> child = parent1;
 
         size_t child_pos = (first != 0) ? 0 : last;
         for (size_t parent_pos = 0; parent_pos < parent2.chromosome.size(); parent_pos++)
@@ -222,15 +225,15 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
     {
-        std::unordered_set<T> direct;
-        std::unordered_set<size_t> direct_indices;
+        std::unordered_set<T> direct(indices.size());
+        std::unordered_set<size_t> direct_indices(indices.size());
         for (const auto& idx : indices)
         {
             direct.insert(parent1.chromosome[idx]);
             direct_indices.insert(idx);
         }
 
-        Candidate child{ parent1 };
+        Candidate<T> child = parent1;
 
         size_t child_pos = 0;
         while (direct_indices.contains(child_pos)) child_pos++;
@@ -322,7 +325,7 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T, bool Wrap>
     std::unordered_map<T, std::vector<T>> getNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
     {
-        std::unordered_map<T, std::vector<T>> neighbour_list;
+        std::unordered_map<T, std::vector<T>> neighbour_list(chrom1.size());
 
         size_t len = chrom1.size();
 
@@ -357,7 +360,7 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     size_t minNeighbourCount(const std::unordered_map<T, std::vector<T>>& neighbour_lists, const T& gene)
     {
-        auto& neighbour_list = neighbour_lists.at(gene);
+        const auto& neighbour_list = neighbour_lists.at(gene);
 
         T nb = *std::min_element(neighbour_list.begin(), neighbour_list.end(),
         [&neighbour_lists](const T& lhs, const T& rhs)
@@ -371,7 +374,7 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-        Candidate child{ parent2 };
+        Candidate child = parent2;
 
         size_t chrom_len = parent1.chromosome.size();
         size_t range_len = rng::randomInt(1_sz, chrom_len - 1);
@@ -379,7 +382,7 @@ namespace genetic_algorithm::crossover::dtl
         size_t first = rng::randomInt(0_sz, chrom_len - range_len);
         size_t last = first + range_len;
 
-        std::unordered_set<T> direct;
+        std::unordered_set<T> direct(last - first);
         for (size_t i = first; i < last; i++)
         {
             child.chromosome[i] = parent1.chromosome[i];
