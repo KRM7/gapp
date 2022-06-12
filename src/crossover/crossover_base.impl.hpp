@@ -85,7 +85,7 @@ namespace genetic_algorithm::crossover
             child2.is_evaluated = parent2.is_evaluated;
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
 } // namespace genetic_algorithm::crossover
