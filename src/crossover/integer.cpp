@@ -70,14 +70,15 @@ namespace genetic_algorithm::crossover::integer
         size_t num_swapped = rng::randomBinomialApprox(chrom_len, ps_);
         auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
 
-        Candidate child1{ parent1 }, child2{ parent2 };
+        Candidate child1 = parent1;
+        Candidate child2 = parent2;
 
         for (const auto& idx : swapped_indices)
         {
             std::swap(child1.chromosome[idx], child2.chromosome[idx]);
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
 } // namespace genetic_algorithm::crossover::integer
