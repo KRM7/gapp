@@ -25,20 +25,16 @@ namespace genetic_algorithm::detail
     {
         assert(lhs.size() == rhs.size());
 
-        bool has_lower = false;
         for (size_t i = first; i < lhs.size(); i++)
         {
             if (floatIsLess(rhs[i], lhs[i])) return false;
-            if (floatIsLess(lhs[i], rhs[i])) has_lower = true;
         }
-
-        return has_lower;
-    }
-
         for (size_t i = first; i < lhs.size(); i++)
         {
+            if (floatIsLess(lhs[i], rhs[i])) return true;
         }
 
+        return false;
     }
 
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept
