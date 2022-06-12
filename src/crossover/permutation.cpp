@@ -26,7 +26,7 @@ namespace genetic_algorithm::crossover::perm
         auto child1 = dtl::order1CrossoverImpl(parent1, parent2, first, last);
         auto child2 = dtl::order1CrossoverImpl(parent2, parent1, first, last);
 
-        return { std::move(child1), std::move(child1) };
+        return { std::move(child1), std::move(child2) };
     }
 
     auto Order2::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -47,7 +47,7 @@ namespace genetic_algorithm::crossover::perm
         auto child1 = dtl::order2CrossoverImpl(parent1, parent2, first, last);
         auto child2 = dtl::order2CrossoverImpl(parent2, parent1, first, last);
 
-        return { std::move(child1), std::move(child1) };
+        return { std::move(child1), std::move(child2) };
     }
 
     auto Position::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -67,7 +67,7 @@ namespace genetic_algorithm::crossover::perm
         auto child1 = dtl::positionCrossoverImpl(parent1, parent2, idxs);
         auto child2 = dtl::positionCrossoverImpl(parent2, parent1, idxs);
 
-        return { std::move(child1), std::move(child1) };
+        return { std::move(child1), std::move(child2) };
     }
 
     auto Cycle::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -83,7 +83,8 @@ namespace genetic_algorithm::crossover::perm
 
         auto cycles = dtl::findCycles(parent1.chromosome, parent2.chromosome);
 
-        Candidate child1{ parent1 }, child2{ parent2 };
+        Candidate child1 = parent1;
+        Candidate child2 = parent2;
 
         for (size_t i = 0; i < chrom_len; i++)
         {
@@ -100,7 +101,7 @@ namespace genetic_algorithm::crossover::perm
             /* Even cycle genes were already handled when initializing the children. */
         }
 
-        return { std::move(child1), std::move(child1) };
+        return { std::move(child1), std::move(child2) };
     }
 
     auto Edge::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -120,7 +121,7 @@ namespace genetic_algorithm::crossover::perm
         auto child1 = dtl::edgeCrossoverImpl(parent1, std::move(nl1));
         auto child2 = dtl::edgeCrossoverImpl(parent2, std::move(nl2));
 
-        return { std::move(child1), std::move(child1) };
+        return { std::move(child1), std::move(child2) };
     }
 
     auto PMX::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -137,7 +138,7 @@ namespace genetic_algorithm::crossover::perm
         auto child1 = dtl::pmxCrossoverImpl<GeneType>(parent1, parent2);
         auto child2 = dtl::pmxCrossoverImpl<GeneType>(parent2, parent1);
 
-        return { std::move(child1), std::move(child1) };
+        return { std::move(child1), std::move(child2) };
     }
 
 } // namespace genetic_algorithm::crossover::perm
