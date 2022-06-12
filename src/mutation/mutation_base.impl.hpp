@@ -30,6 +30,7 @@ namespace genetic_algorithm::mutation
     template<Gene T>
     void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
     {
+        // TODO: be more careful with the allocs here (pref not to copy old candidate)
         auto old_candidate = candidate;
 
         mutate(ga, candidate);

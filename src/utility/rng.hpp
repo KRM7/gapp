@@ -109,8 +109,7 @@ namespace genetic_algorithm::rng
 {
     constexpr inline Splitmix64::Splitmix64(state_type seed) noexcept
         : state_(seed)
-    {
-    }
+    {}
 
     inline Splitmix64::result_type Splitmix64::operator()() noexcept
     {
