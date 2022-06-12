@@ -79,7 +79,7 @@ namespace genetic_algorithm::crossover::binary
             std::swap(child1.chromosome[idx], child2.chromosome[idx]);
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
 } // namespace genetic_algorithm::crossover::binary

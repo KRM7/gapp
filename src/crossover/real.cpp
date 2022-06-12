@@ -65,7 +65,7 @@ namespace genetic_algorithm::crossover::real
         }
         /* No bounds check, the generated children's genes will always be within the bounds if the parents' genes were also within them. */
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
     auto BLXa::crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -99,7 +99,7 @@ namespace genetic_algorithm::crossover::real
             child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
     auto SimulatedBinary::crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -150,7 +150,7 @@ namespace genetic_algorithm::crossover::real
             child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
     auto Wright::crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -186,7 +186,7 @@ namespace genetic_algorithm::crossover::real
             child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
         }
 
-        return { child1, child2 };
+        return { std::move(child1), std::move(child2) };
     }
 
 } // namespace genetic_algorithm::crossover::real
