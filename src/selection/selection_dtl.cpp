@@ -116,12 +116,13 @@ namespace genetic_algorithm::selection::dtl
         {
             for (size_t rhs = 1; rhs < lhs; rhs++)
             {
-                if (detail::paretoCompareLess(fmat[lhs], fmat[rhs]))
+                auto comp = detail::paretoCompare(fmat[lhs], fmat[rhs]);
+                if (comp < 0)
                 {
                     better_count[lhs]++;
                     worse_indices[rhs].push_back(lhs);
                 }
-                else if (detail::paretoCompareLess(fmat[rhs], fmat[lhs])) [[likely]]
+                else if (comp > 0) [[likely]]
                 {
                     better_count[rhs]++;
                     worse_indices[lhs].push_back(rhs);
