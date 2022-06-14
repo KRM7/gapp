@@ -29,8 +29,11 @@ refs/
 docs/html/
 docs/TODO.txt
 bin/*.exe
+bin
+!bin/mo_results
 [Oo]bj/
 [Ll]og/
+*.exe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -52,17 +55,6 @@ TestResult.xml
 [Dd]ebugPS/
 [Rr]eleasePS/
 dlldata.c
-
-# Benchmark Results
-BenchmarkDotNet.Artifacts/
-
-# .NET Core
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-# StyleCop
-StyleCopReport.xml
 
 # Files built by Visual Studio
 *_i.c
@@ -92,9 +84,7 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-
-# Chutzpah Test files
-_Chutzpah*
+*.ruleset
 
 # Visual C++ cache files
 ipch/
@@ -116,48 +106,9 @@ ipch/
 # Visual Studio Trace Files
 *.e2e
 
-# TFS 2012 Local Workspace
-$tf/
-
-# Guidance Automation Toolkit
-*.gpState
-
-# ReSharper is a .NET coding add-in
-_ReSharper*/
-*.[Rr]e[Ss]harper
-*.DotSettings.user
-
-# JustCode is a .NET coding add-in
-.JustCode
-
-# TeamCity is a build add-in
-_TeamCity*
-
-# DotCover is a Code Coverage Tool
-*.dotCover
-
-# AxoCover is a Code Coverage Tool
-.axoCover/*
-!.axoCover/settings.json
-
 # Visual Studio code coverage results
 *.coverage
 *.coveragexml
-
-# NCrunch
-_NCrunch_*
-.*crunch*.local.xml
-nCrunchTemp_*
-
-# MightyMoose
-*.mm.*
-AutoTest.Net/
-
-# Web workbench (sass)
-.sass-cache/
-
-# Installshield output folder
-[Ee]xpress/
 
 # DocProject is a documentation generator add-in
 DocProject/buildhelp/
@@ -339,18 +290,3 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
-test/mo_results/nsga2_dtlz1_sols.txt
-test/mo_results/nsga2_dtlz2_sols.txt
-test/mo_results/nsga2_kur_sols.txt
-test/mo_results/nsga2_zdt2_sols.txt
-test/mo_results/nsga2_zdt3_sols.txt
-test/mo_results/nsga2_zdt6_sols.txt
-test/mo_results/nsga3_dtlz1_sols.txt
-test/mo_results/nsga3_dtlz2_sols.txt
-test/mo_results/nsga3_kur_sols.txt
-test/mo_results/nsga3_zdt2_sols.txt
-test/mo_results/nsga3_zdt3_sols.txt
-test/mo_results/nsga3_zdt6_sols.txt
-*.exe
-GeneticAlgorithm.ruleset
-*.ruleset
