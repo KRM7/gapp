@@ -25,20 +25,45 @@ namespace genetic_algorithm::detail
     {
         assert(lhs.size() == rhs.size());
 
-        /* 2 loops are better than 1 */
         for (size_t i = first; i < lhs.size(); i++)
         {
             if (floatIsLess(rhs[i], lhs[i])) return false;
         }
         for (size_t i = first; i < lhs.size(); i++)
         {
-            //if (floatIsLess(lhs[i], rhs[i])) return true;
-
-            /* lhs is def not greater here, the fp comparison can be simplified */
-            if ((rhs[i] - lhs[i]) > std::abs(rhs[i]) * GA_EPSILON) return true;
+            if (floatIsLessAssumeNotGreater(lhs[i], rhs[i])) return true;
         }
 
-        return false; /* equal */
+        return false;
+    }
+
+    std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
+    {
+        return paretoCompare(lhs, rhs, 0);
+    }
+
+    std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept
+    {
+        assert(lhs.size() == rhs.size());
+
+        std::int8_t lhs_has_lower = 0;
+        std::int8_t rhs_has_lower = 0;
+        for (size_t i = first; i < lhs.size(); i++)
+        {
+            auto comp = floatCompare(lhs[i], rhs[i]);
+            if (comp < 0)
+            {
+                if (rhs_has_lower) return 0;
+                lhs_has_lower = 1;
+            }
+            else if (comp > 0)
+            {
+                if (lhs_has_lower) return 0;
+                rhs_has_lower = 1;
+            }
+        }
+
+        return rhs_has_lower - lhs_has_lower;
     }
 
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept

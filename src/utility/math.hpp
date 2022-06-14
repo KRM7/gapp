@@ -6,9 +6,14 @@
 #include "utility.hpp"
 #include <vector>
 #include <concepts>
+#include <cstdint>
 
 namespace genetic_algorithm::detail
 {
+    /* Comparison function for floating point numbers. Returns -1 if (lhs < rhs), +1 if (lhs > rhs), and 0 if (lhs == rhs). */
+    template<std::floating_point T>
+    std::int8_t floatCompare(T lhs, T rhs) noexcept;
+
     /* Equality comparison for floating point numbers. Returns true if lhs is approximately equal to rhs. */
     template<std::floating_point T>
     bool floatIsEqual(T lhs, T rhs) noexcept;
@@ -16,6 +21,10 @@ namespace genetic_algorithm::detail
     /* Less than comparison for floating point numbers. Returns true if lhs is definitely less than rhs. */
     template<std::floating_point T>
     bool floatIsLess(T lhs, T rhs) noexcept;
+
+    /* Less than comparison for fp numbers. Assumes that lhs is not greater than rhs. */
+    template<std::floating_point T>
+    bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept;
 
     /* Greater than comparison for floating point numbers. Returns true if lhs is definitely greater than rhs. */
     template<std::floating_point T>
@@ -38,6 +47,12 @@ namespace genetic_algorithm::detail
 
     /* Pareto comparison starting at idx = first. */
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept;
+
+    /* Pareto comparison for fp vectors. Returns -1 if (lhs < rhs), 1 if (lhs > rhs), and 0 if (lhs == rhs). */
+    std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
+
+    /* Pareto comparison starting at idx = first. Returns -1 if (lhs < rhs), 1 if (lhs > rhs), and 0 if (lhs == rhs). */
+    std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept;
 
     /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept;
@@ -66,6 +81,22 @@ namespace genetic_algorithm::detail
 namespace genetic_algorithm::detail
 {
     template<std::floating_point T>
+    std::int8_t floatCompare(T lhs, T rhs) noexcept
+    {
+        const T tol = std::max({ std::abs(lhs), std::abs(rhs) }) * GA_EPSILON;
+        const T dif = lhs - rhs;
+        if (dif > tol)
+        {
+            return 1;
+        }
+        else if (dif < -tol)
+        {
+            return -1;
+        }
+        else return 0;
+    }
+
+    template<std::floating_point T>
     bool floatIsEqual(T lhs, T rhs) noexcept
     {
         return std::abs(lhs - rhs) <= std::max({ std::abs(lhs), std::abs(rhs) }) * GA_EPSILON;
@@ -75,6 +106,12 @@ namespace genetic_algorithm::detail
     bool floatIsLess(T lhs, T rhs) noexcept
     {
         return (rhs - lhs) > std::max({ std::abs(lhs), std::abs(rhs) }) * GA_EPSILON;
+    }
+
+    template<std::floating_point T>
+    bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
+    {
+        return (rhs - lhs) > std::abs(rhs) * GA_EPSILON;
     }
 
     template<std::floating_point T>
