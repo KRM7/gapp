@@ -171,8 +171,10 @@ namespace genetic_algorithm::crossover::real
         Candidate child1{ parent1 }, child2{ parent2 };
 
         /* p1 is always the better parent. */
-        const Candidate<GeneType>& p1 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent2 : parent1;
-        const Candidate<GeneType>& p2 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent1 : parent2;
+        const auto& [p1, p2] = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ?
+                                    std::make_pair(parent2, parent1) :
+                                    std::make_pair(parent1, parent2);
+
         /* Get random weights. */
         GeneType w1 = rng::randomReal<GeneType>();
         GeneType w2 = rng::randomReal<GeneType>();
