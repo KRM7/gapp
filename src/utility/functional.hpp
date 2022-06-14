@@ -133,7 +133,6 @@ namespace genetic_algorithm::detail
             result.reverse();
             return result;
         }
-        else static_assert(false, "bad container type");
     }
 
     template<template<typename...> class ContainerType, typename KeyType, typename ValueType, typename... Rest, typename F>
