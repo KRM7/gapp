@@ -28,9 +28,9 @@ bld/
 refs/
 docs/html/
 docs/TODO.txt
-bin/*.exe
-bin
-!bin/mo_results
+build/*.exe
+build/
+!build/a.txt
 [Oo]bj/
 [Ll]og/
 *.exe
