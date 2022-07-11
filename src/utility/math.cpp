@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "math.hpp"
-#include "algorithm.hpp"
+#include "functional.hpp"
 #include <algorithm>
 #include <numeric>
 #include <functional>
@@ -93,9 +93,9 @@ namespace genetic_algorithm::detail
         assert(!vec.empty());
 
         return std::accumulate(vec.begin(), vec.end(), 0.0,
-        [n = vec.size()](double acc, double val) noexcept
+        [n = 1.0 / vec.size()](double acc, double val) noexcept
         {
-            return acc + val / n;
+            return acc + val * n;
         });
     }
 
@@ -110,12 +110,12 @@ namespace genetic_algorithm::detail
 
         if (vec.size() == 1) return 0.0;
 
-        auto var = std::accumulate(vec.begin(), vec.end(), 0.0L,
-        [mean, n = vec.size() - 1](long double acc, double val) noexcept
+        auto var = std::accumulate(vec.begin(), vec.end(), 0.0,
+        [mean, n = 1.0 / (vec.size() - 1)](double acc, double val) noexcept
         {
-            return acc + square(val - mean) / n;
+            return acc + square(val - mean) * n;
         });
 
-        return double(std::sqrt(var));
+        return std::sqrt(var);
     }
 }
