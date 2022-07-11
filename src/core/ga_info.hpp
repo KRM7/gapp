@@ -200,6 +200,7 @@ namespace genetic_algorithm
         [[nodiscard]]
         F& stop_condition() &;
 
+
         /* Move-only. */
         GaInfo(const GaInfo&)            = delete;
         GaInfo& operator=(const GaInfo&) = delete;
