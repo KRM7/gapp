@@ -263,7 +263,7 @@ namespace genetic_algorithm::selection::dtl
         assert(dim > 1);
 
         /* Generate reference point candidates randomly. */
-        size_t ratio = max(size_t{ 10 }, 2 * dim);
+        size_t ratio = max(10_sz, 2 * dim);
         vector<Point> candidates(ratio * n - 1);
         generate(candidates.begin(), candidates.end(), [&dim]() { return rng::randomSimplexPoint(dim); });
 
