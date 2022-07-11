@@ -23,9 +23,9 @@
 #endif
 
 #ifndef GA_PRESET_SEED
-#define GA_SEED() (std::random_device{}())
+#define GA_SEED() std::random_device{}()
 #else
-#define GA_SEED() (0x12345678);
+#define GA_SEED() 0x12345678;
 #endif
 
 #define GA_UNREACHABLE() (assert(false), std::terminate())
@@ -34,9 +34,16 @@ namespace genetic_algorithm
 {
     constexpr std::size_t operator ""_sz(unsigned long long n)
     {
-        return static_cast<size_t>(n);
+        return size_t{ n };
     }
 
 } // namespace genetic_algorithm
+
+namespace genetic_algorithm::detail
+{
+
+
+
+} // namespace genetic_algorithm::detail
 
 #endif // !GA_UTILS_HPP
