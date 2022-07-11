@@ -271,7 +271,7 @@ namespace genetic_algorithm
         void initializeAlgorithm();
         [[nodiscard]] Population generatePopulation(size_t pop_size) const;
         void prepareSelections() const;
-        [[nodiscard]] const Candidate& selectCandidate() const;
+        [[nodiscard]] const Candidate& select() const;
         [[nodiscard]] CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const;
         void mutate(Candidate& sol) const;
         void repair(Candidate& sol) const;
@@ -290,6 +290,8 @@ namespace genetic_algorithm
         const Derived& derived() const noexcept;
         [[nodiscard]] Candidate generateCandidate() const;
         [[nodiscard]] size_t findNumObjectives(const FitnessFunction& f) const;
+
+        bool fitnessMatrixIsValid() const noexcept;
     };
 
     /** Genetic algorithm types. */

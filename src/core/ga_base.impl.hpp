@@ -60,11 +60,11 @@ namespace genetic_algorithm
     {
         if (!f) throw std::invalid_argument("The fitness function can't be a nullptr, it is requires for the GA.");
 
-        size_t old_nobjectives = num_objectives();
+        size_t old_objectives = num_objectives();
         fitness_function_ = std::move(f);
         num_objectives(findNumObjectives(fitness_function_));
 
-        if (old_nobjectives != num_objectives())
+        if (old_objectives != num_objectives())
         {
             /* The fitness vectors of the old solutions couldn't be compared to the new ones. */
             can_continue_ = false;
@@ -181,6 +181,27 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
+    bool GA<T, D>::fitnessMatrixIsValid() const noexcept
+    {
+        if (fitness_matrix_.size() != population_.size())
+            return false;
+        if (!std::all_of(fitness_matrix_.begin(), fitness_matrix_.end(), [this](const FitnessVector& fvec) { return fvec.size() == num_objectives_; }))
+            return false;
+        if (!std::all_of(population_.begin(), population_.end(), [this](const Candidate& sol) { return sol.fitness.size() == num_objectives_; }))
+            return false;
+               
+        for (size_t i = 0; i < fitness_matrix_.size(); i++)
+        {
+            for (size_t j = 0; j < fitness_matrix_[0].size(); j++)
+            {
+                if (fitness_matrix_[i][j] != population_[i].fitness[j]) return false;
+            }
+        }
+
+        return true;
+    }
+
+    template<Gene T, typename D>
     size_t GA<T, D>::findNumObjectives(const FitnessFunction& f) const
     {
         Candidate dummy = generateCandidate();
@@ -249,14 +270,14 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::prepareSelections() const
     {
-        // TODO: verify fitness matrix here
+        assert(fitnessMatrixIsValid());
+
         (*selection_).prepare(*this, fitness_matrix());
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::selectCandidate() const -> const Candidate&
+    auto GA<T, D>::select() const -> const Candidate&
     {
-        // TODO: verify fitness matrix here
         size_t idx = (*selection_).select(*this, fitness_matrix());
 
         return population_[idx];
@@ -292,24 +313,22 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::updatePopulation(Population& current_pop, Population&& children)
     {
-        // TODO: verify fitness matrix here
+        assert(fitnessMatrixIsValid());
 
-        /* The current pop should have already been evaluted in the previous generation */
+        /* The current pop has already been evaluted in the previous generation */
         auto child_fmat = evaluatePopulation(children);
 
-        current_pop.insert(current_pop.end(),
-                           std::make_move_iterator(children.begin()),
-                           std::make_move_iterator(children.end()));
-        fitness_matrix_.insert(fitness_matrix_.end(),
-                               std::make_move_iterator(child_fmat.begin()),
-                               std::make_move_iterator(child_fmat.end()));
-        // TODO: verify fitness matrix here
+        std::move(children.begin(), children.end(), std::back_inserter(current_pop));
+        std::move(child_fmat.begin(), child_fmat.end(), std::back_inserter(fitness_matrix_));
+        
+        assert(fitnessMatrixIsValid());
+
         auto next_indices = (*selection_).nextPopulation(*this, fitness_matrix_);
         // TODO: maybe just remove the bad ones instead of creating new vectors
         current_pop = detail::map(next_indices, [&current_pop](size_t idx) { return current_pop[idx]; });
         fitness_matrix_ = detail::map(next_indices, [this](size_t idx) { return fitness_matrix_[idx]; });
 
-        // TODO: verify fitness matrix here
+        assert(fitnessMatrixIsValid());
     }
 
     template<Gene T, typename D>
@@ -351,7 +370,7 @@ namespace genetic_algorithm
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
 
-        // theres probably a better way to do this
+        // TODO: theres probably a better way to do this
         optimal_sols.insert(optimal_sols.end(), pop.begin(), pop.end());
         optimal_sols = detail::findParetoFront(optimal_sols);
         detail::erase_duplicates(optimal_sols);
@@ -369,8 +388,8 @@ namespace genetic_algorithm
         std::generate(GA_EXECUTION_UNSEQ, child_pairs.begin(), child_pairs.end(),
         [this]
         {
-            const auto& parent1 = selectCandidate();
-            const auto& parent2 = selectCandidate();
+            const auto& parent1 = select();
+            const auto& parent2 = select();
 
             return crossover(parent1, parent2);
         });
@@ -415,7 +434,7 @@ namespace genetic_algorithm
 
         max_gen(max_gen_ + num_generations);
 
-        /* no init */
+        /* No init for continue() */
         while (!stopCondition())
         {
             advance();
