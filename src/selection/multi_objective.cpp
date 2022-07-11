@@ -277,7 +277,7 @@ namespace genetic_algorithm::selection::multi_objective
         assert(!fmat.empty());
         assert(std::all_of(fmat.begin(), fmat.end(), [&fmat](const FitnessVector& sol) { return sol.size() == fmat[0].size(); }));
         assert(props.size() == fmat.size());
-
+        // TODO: something is probably wrong in this function, or in something that is called in here
         updateIdealPoint(ideal_point_, fmat);
         updateExtremePoints(extreme_points_, fmat, ideal_point_);
         nadir_point_ = findNadirPoint(extreme_points_);
@@ -298,7 +298,7 @@ namespace genetic_algorithm::selection::multi_objective
         });
     }
 
-    size_t& NSGA3::nicheCountOf(CandidateInfo& info) noexcept
+    size_t& NSGA3::nicheCountOf(const CandidateInfo& info) noexcept
     {
         return ref_points_[info.ref_idx].niche_count;
     }
@@ -381,6 +381,7 @@ namespace genetic_algorithm::selection::multi_objective
 
             /* Find the reference points with minimal niche counts, and pick one. */
             // TODO: find_all_v
+            // TODO: this loop takes a long time
             std::vector<size_t> refs;
             for (const auto& elem : partial_front)
             {

@@ -84,7 +84,7 @@ namespace genetic_algorithm::selection::multi_objective
         void associatePopWithRefs(std::vector<CandidateInfo>& props, const FitnessMatrix& fmat, const std::vector<RefPoint>& refs);
         
         /* Returns the niche counts of the given candidate. */
-        size_t& nicheCountOf(CandidateInfo& info) noexcept;
+        size_t& nicheCountOf(const CandidateInfo& info) noexcept;
         size_t& nicheCountOf(size_t sol_idx) noexcept;
         const size_t& nicheCountOf(const CandidateInfo& info) const noexcept;
         const size_t& nicheCountOf(size_t sol_idx) const noexcept;
