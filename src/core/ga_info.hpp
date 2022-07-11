@@ -45,6 +45,12 @@ namespace genetic_algorithm
         using FitnessMatrix = detail::FitnessMatrix;
 
         /**
+        * The type of the elements of a FitnessMatrix. \n
+        * Contains fitness values along each objective axis.
+        */
+        using FitnessVector = detail::FitnessVector;
+
+        /**
         * The type of the stop condition function if a function or lambda is used instead of a functor
         * derived from StopCondition. \n
         * The function should return true if the algorithm should stop.
