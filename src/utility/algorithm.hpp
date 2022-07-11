@@ -18,41 +18,6 @@
 
 namespace genetic_algorithm::detail
 {
-    template<typename T>
-    constexpr auto lforward(std::remove_reference_t<T>& t) noexcept
-    {
-        return std::ref<std::remove_reference_t<T>>(t);
-    }
-
-    template<typename T>
-    requires(!std::is_lvalue_reference_v<T>)
-    constexpr T&& lforward(std::remove_reference_t<T>&& t) noexcept
-    {
-        return static_cast<T&&>(t);
-    }
-
-    template<typename F>
-    constexpr auto compose(F&& f) noexcept
-    {
-        return [f = lforward<F>(f)] <typename... Args>
-        (Args&&... args) noexcept(std::is_nothrow_invocable_v<F, Args...>)
-        requires std::invocable<F, Args...>
-        {
-            return std::invoke(f, std::forward<Args>(args)...);
-        };
-    }
-
-    template<typename F, typename... Fs>
-    constexpr auto compose(F&& f, Fs&&... fs) noexcept
-    {
-        return [f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args>
-        (Args&&... args) noexcept(std::is_nothrow_invocable_v<F, Args...>)
-        requires std::invocable<F, Args...>
-        {
-            return compose(fs...)(std::invoke(f, std::forward<Args>(args)...));
-        };
-    }
-
     template<std::random_access_iterator Iter,
              typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
@@ -65,7 +30,7 @@ namespace genetic_algorithm::detail
         std::iota(indices.begin(), indices.end(), 0);
 
         std::sort(indices.begin(), indices.end(),
-        [first, comp = lforward<Comp>(comp)](size_t lidx, size_t ridx)
+        [first, &comp](size_t lidx, size_t ridx)
         {
             return std::invoke(comp, *(first + lidx), *(first + ridx));
         });
@@ -86,7 +51,7 @@ namespace genetic_algorithm::detail
         std::iota(indices.begin(), indices.end(), 0);
 
         std::partial_sort(indices.begin(), indices.begin() + std::distance(first, middle), indices.end(),
-        [first, comp = lforward<Comp>(comp)](size_t lidx, size_t ridx)
+        [first, &comp](size_t lidx, size_t ridx)
         {
             return std::invoke(comp, *(first + lidx), *(first + ridx));
         });
@@ -103,10 +68,7 @@ namespace genetic_algorithm::detail
         std::vector<Iter> result;
         while (first != last)
         {
-            if (std::invoke(pred, *first))
-            {
-                result.push_back(first);
-            }
+            if (std::invoke(pred, *first)) result.push_back(first);
             ++first;
         }
 
@@ -124,10 +86,7 @@ namespace genetic_algorithm::detail
         std::vector<ValueType> result;
         while (first != last)
         {
-            if (std::invoke(pred, *first))
-            {
-                result.push_back(*first);
-            }
+            if (std::invoke(pred, *first)) result.push_back(*first);
             ++first;
         }
 
@@ -176,16 +135,16 @@ namespace genetic_algorithm::detail
     std::vector<size_t> find_indices(const std::vector<T>& container, Pred&& pred)
     {
         std::vector<size_t> indices;
-
         for (size_t i = 0; i < container.size(); i++)
         {
             if (std::invoke(pred, container[i])) indices.push_back(i);
         }
+
         return indices;
     }
 
     template<typename T>
-    constexpr bool erase_first_v(std::vector<T>& container, const T& val)
+    constexpr bool erase_first(std::vector<T>& container, const T& val)
     {
         auto pos = std::find(container.cbegin(), container.cend(), val);
         if (pos != container.cend())
@@ -230,14 +189,12 @@ namespace genetic_algorithm::detail
     Acc transform_reduce(Tuple&& tup, Acc&& init, TransformOp&& transform, ReduceOp&& reduce)
     {
         auto transform_reduce_ =
-        [acc = lforward<Acc>(init), tr = lforward<TransformOp>(transform), rd = lforward<ReduceOp>(reduce)]
-        (auto&&... args) mutable -> Acc
+        [&init, &transform, &reduce] (auto&&... args) mutable -> Acc
         {
-            return _::transform_reduce_impl(
-                std::forward<TransformOp>(tr),
-                std::forward<ReduceOp>(rd),
-                std::forward<Acc>(acc),
-                std::forward<decltype(args)>(args)...);
+            return _::transform_reduce_impl(std::forward<TransformOp>(transform),
+                                            std::forward<ReduceOp>(reduce), 
+                                            std::forward<Acc>(init),
+                                            std::forward<decltype(args)>(args)...);
         };
 
         return std::apply(std::move(transform_reduce_), std::forward<Tuple>(tup));

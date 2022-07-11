@@ -19,6 +19,39 @@
 
 namespace genetic_algorithm::detail
 {
+    template<typename T>
+    constexpr auto lforward(std::remove_reference_t<T>& t) noexcept
+    {
+        return std::ref<std::remove_reference_t<T>>(t);
+    }
+
+    template<typename T>
+        requires(!std::is_lvalue_reference_v<T>)
+    constexpr T&& lforward(std::remove_reference_t<T>&& t) noexcept
+    {
+        return static_cast<T&&>(t);
+    }
+
+    template<typename F>
+    constexpr auto compose(F&& f) noexcept
+    {
+        return[f = lforward<F>(f)] <typename... Args>
+            (Args&&... args) requires std::invocable<F, Args...>
+        {
+            return std::invoke(f, std::forward<Args>(args)...);
+        };
+    }
+
+    template<typename F, typename... Fs>
+    constexpr auto compose(F&& f, Fs&&... fs) noexcept
+    {
+        return[f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args>
+            (Args&&... args) requires std::invocable<F, Args...>
+        {
+            return compose(fs...)(std::invoke(f, std::forward<Args>(args)...));
+        };
+    }
+
     namespace _
     {
         template<template<typename...> class T>
@@ -49,9 +82,9 @@ namespace genetic_algorithm::detail
         concept MapContainer = requires { is_map_container<T>; };
     }
 
-    template<typename ValueType, typename... Rest, typename F>
+    template<typename ValueType, typename F>
     requires std::invocable<F, ValueType>
-    auto map(const std::vector<ValueType, Rest...>& cont, F&& f)
+    auto map(const std::vector<ValueType>& cont, F&& f)
     {
         using MappedType = std::invoke_result_t<F, ValueType>;
         using ResultType = std::vector<MappedType>;
@@ -80,9 +113,6 @@ namespace genetic_algorithm::detail
     template<typename ValueType, size_t N, typename F>
     requires std::invocable<F, ValueType>
     constexpr auto map(const std::array<ValueType, N>& cont, F&& f)
-        noexcept(std::is_nothrow_invocable_v<F, ValueType> &&
-                 std::is_nothrow_move_assignable_v<std::invoke_result_t<F, ValueType>> &&
-                 std::is_nothrow_default_constructible_v<std::invoke_result_t<F, ValueType>>)
     {
         using MappedType = std::invoke_result_t<F, ValueType>;
         using ResultType = std::array<MappedType, N>;
@@ -165,7 +195,7 @@ namespace genetic_algorithm::detail
         size_t out_size = 0;
         for (const auto& vec : in)
         {
-            assert( out_size <= (std::numeric_limits<size_t>::max() - vec.size()) );
+            assert(out_size <= (std::numeric_limits<size_t>::max() - vec.size()));
             out_size += vec.size();
         }
 
@@ -176,7 +206,7 @@ namespace genetic_algorithm::detail
         {
             for (size_t j = 0; j < in[i].size(); j++)
             {
-                out.push_back(std::move(in[i][j]));
+                out.push_back(std::move_if_noexcept(in[i][j]));
             }
         }
 
@@ -188,16 +218,32 @@ namespace genetic_algorithm::detail
     {
         assert( in.size() <= (std::numeric_limits<size_t>::max() / 2) );
 
-        std::vector<T> out;
-        out.reserve(2 * in.size());
-
-        for (size_t i = 0; i < in.size(); i++)
+        if constexpr (std::is_scalar_v<T>)
         {
-            out.push_back(std::move(in[i].first));
-            out.push_back(std::move(in[i].second));
-        }
+            std::vector<T> out(2 * in.size());
 
-        return out;
+            for (size_t i = 0; i < in.size(); i++)
+            {
+                size_t idx = 2 * i;
+                out[idx] = std::move_if_noexcept(in[i].first);
+                out[idx + 1] = std::move_if_noexcept(in[i].second);
+            }
+
+            return out;
+        }
+        else
+        {
+            std::vector<T> out;
+            out.reserve(2 * in.size());
+
+            for (size_t i = 0; i < in.size(); i++)
+            {
+                out.push_back(std::move_if_noexcept(in[i].first));
+                out.push_back(std::move_if_noexcept(in[i].second));
+            }
+
+            return out;
+        }
     }
 
 } // namespace genetic_algorithm::detail
