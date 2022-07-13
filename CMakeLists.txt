@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 
+project(GeneticAlgorithm VERSION 0.1 LANGUAGES CXX)
+
 include(GNUInstallDirs)
 
-project(GeneticAlgorithm VERSION 0.1 LANGUAGES CXX)
+option(GA_ENABLE_TESTS "Enable the tests of the library." OFF) # TODO
+option(GA_ENABLE_LTO "Enable link time optimizations for the library." ON)
+option(GA_ENABLE_MARCH_NATIVE "Add -march=native to release builds when using gcc or clang." ON)
+
 
 # Set the output directory for the build files
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
@@ -11,18 +16,31 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
+if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release)$")
+    message(FATAL_ERROR "Unsupported build type: ${CMAKE_BUILD_TYPE}. Use Debug or Release.")
+endif()
 
-# Compilers
+
+# Compiler/linker flags
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    # add option for lto (/GL compiler and /LTCG linker flags)
     set(CMAKE_CXX_FLAGS "-std:c++latest -permissive- -Zc:preprocessor -Zc:rvalueCast -W4 -WX -TP -MP -MD -fp:precise -EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "-Od -ZI -RTC1")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar")
-else()
-    # clang and gcc, maybe intel
-    # TODO (intel TBB for par stl, flags)
-    # message(FATAL_ERROR "Unsupported compiler: ${CMAKE_CXX_COMPILER_ID}")
-    set(CMAKE_CXX_FLAGS "-std=c++20 -Wall -Wextra")
+    if(GA_ENABLE_LTO)
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -GL -LTCG")
+    endif()
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    set(CMAKE_CXX_FLAGS "-std=c++20 -Wall -Wextra -Wshadow -Wpedantic -pedantic-errors -Werror")
+    set(CMAKE_CXX_FLAGS_DEBUG "-Og") # -ltbb_debug
+    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3") # link intel tbb for par stl algos -ltbb
+    if (GA_ENABLE_MARCH_NATIVE)
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
+    endif()
+    if (GA_ENABLE_LTO)
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -Wno-lto-type-mismatch")
+    endif()
+else() # add Intel?
+    message(FATAL_ERROR "Unsupported compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
 
@@ -32,9 +50,9 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.hpp")
 
 add_library(GeneticAlgorithm STATIC ${SOURCES} ${HEADERS})
 
-target_include_directories(GeneticAlgorithm PUBLIC 
-                            "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>"
-                            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/GeneticAlgorithm>")
+target_include_directories(GeneticAlgorithm SYSTEM INTERFACE "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>"
+                                                             "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/GeneticAlgorithm>"
+                                            PRIVATE "${CMAKE_SOURCE_DIR}/src")
 
 # Install library
 install(TARGETS GeneticAlgorithm EXPORT GeneticAlgorithmConfig
@@ -43,8 +61,7 @@ install(TARGETS GeneticAlgorithm EXPORT GeneticAlgorithmConfig
 install(DIRECTORY "src/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/GeneticAlgorithm")
 install(DIRECTORY "docs/" DESTINATION "${CMAKE_INSTALL_DOCDIR}/GeneticAlgorithm")
 
-export(TARGETS GeneticAlgorithm
-       NAMESPACE GeneticAlgorithm:: FILE "build/GeneticAlgorithmConfig.cmake")
+export(TARGETS GeneticAlgorithm NAMESPACE GeneticAlgorithm:: FILE "build/GeneticAlgorithmConfig.cmake")
 
 install(EXPORT GeneticAlgorithmConfig
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/GeneticAlgorithm"
@@ -52,5 +69,7 @@ install(EXPORT GeneticAlgorithmConfig
 
 
 # Benchmarks / tests
-#add_executable(benchmark test/benchmark.cpp)
-#target_link_libraries(benchmark PRIVATE GeneticAlgorithm)
+if(GA_ENABLE_TESTS)
+    add_executable(benchmark test/benchmark.cpp)
+    target_link_libraries(benchmark PRIVATE GeneticAlgorithm)
+endif()
