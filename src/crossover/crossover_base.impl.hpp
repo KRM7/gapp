@@ -6,7 +6,7 @@
 #include "crossover_base.decl.hpp"
 #include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
-#include <algorithm>
+#include <utility>
 #include <stdexcept>
 #include <cassert>
 
