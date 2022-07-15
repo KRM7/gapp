@@ -29,15 +29,13 @@ namespace genetic_algorithm::crossover::dtl
 /* IMPLEMENTATION */
 
 #include <utility>
-#include <cassert>
 
 namespace genetic_algorithm::crossover::dtl
 {
     template<Gene T>
     Lambda<T>::Lambda(CrossoverFunction f)
         : Crossover<T>(), crossover_(std::move(f))
-    {
-    }
+    {}
 
     template<Gene T>
     CandidatePair<T> Lambda<T>::crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
