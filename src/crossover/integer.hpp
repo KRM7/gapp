@@ -5,6 +5,7 @@
 
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
+#include "../encoding/gene_types.hpp"
 #include <cstddef>
 
 /** Predefined crossover operators for the integer encoded genetic algorithms (IntegerGA). */
@@ -15,7 +16,7 @@ namespace genetic_algorithm::crossover::integer
     * A random crossover point (locus) is selected and the genes before the locus are swapped
     * between the parents to create the children.
     */
-    class SinglePoint final : public Crossover<size_t>
+    class SinglePoint final : public Crossover<IntegerGene>
     {
     public:
         using Crossover::Crossover;
@@ -29,7 +30,7 @@ namespace genetic_algorithm::crossover::integer
     * swapped between the parents in order to create the children.
     * (Works as if 2 consecutive single-point crossovers were performed on the parents.)
     */
-    class TwoPoint final : public Crossover<size_t>
+    class TwoPoint final : public Crossover<IntegerGene>
     {
     public:
         using Crossover::Crossover;
@@ -42,7 +43,7 @@ namespace genetic_algorithm::crossover::integer
     * The result of the crossover is equivalent to performing N consecutive single-point
     * crossovers on the parents using different crossover points.
     */
-    class NPoint final : public Crossover<size_t>
+    class NPoint final : public Crossover<IntegerGene>
     {
     public:
         /**
@@ -54,7 +55,7 @@ namespace genetic_algorithm::crossover::integer
 
         /**
         * Set the number of crossover points used for the operator to @p n. \n
-        * The number of crossover points can't be 0, and all values over the chromosome
+        * The number of crossover points can't be 0, and all values greater than the chromosome
         * length are treated the same (as if n == chrom_len).
         *
         * @param n The number of crossover points.
@@ -75,7 +76,7 @@ namespace genetic_algorithm::crossover::integer
     * Uniform crossover operator for the integer encoded algorithms. \n
     * Each pair of genes of the chromosomes are swapped with a set probability between the parents to create the children.
     */
-    class Uniform final : public Crossover<size_t>
+    class Uniform final : public Crossover<IntegerGene>
     {
     public:
         /**

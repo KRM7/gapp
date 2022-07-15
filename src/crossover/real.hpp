@@ -5,6 +5,7 @@
 
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
+#include "../encoding/gene_types.hpp"
 #include <vector>
 #include <utility>
 
@@ -18,7 +19,7 @@ namespace genetic_algorithm::crossover::real
     *   child2 = (1 - alpha) * parent1 + alpha * parent2
     * where alpha is a random number generated from a uniform distribution on [0.0, 1.0).
     */
-    class Arithmetic final : public Crossover<double>
+    class Arithmetic final : public Crossover<RealGene>
     {
     public:
         using Crossover::Crossover;
@@ -29,17 +30,17 @@ namespace genetic_algorithm::crossover::real
     /**
     * BLX-Alpha (blend) crossover operator for the RCGA.
     * The genes of the children are chosen randomly from a uniform distribution based on
-    * the values of the same genes of the parents.
+    * the values of the corresponding genes of the parents.
     * 
     * The intervals the child genes are chosen from are:
     *   [-alpha * I + min(p1, p2), max(p1, p2) + alpha * I]
-    * where I = abs(p1-p2)
+    * where I = abs(p1 - p2)
     * 
     * This crossover operator has 1 parameter (alpha), which controls the length of the
     * intervals the child genes are chosen from. Larger alpha values -> larger intervals.
     * The recommended value of alpha is around 0.5.
     */
-    class BLXa final : public Crossover<double>
+    class BLXa final : public Crossover<RealGene>
     {
     public:
         /**
@@ -76,7 +77,7 @@ namespace genetic_algorithm::crossover::real
     * from the parents, while smaller values will result in the children being closer to the parents.
     * Typical values for eta are [1.0, 5.0].
     */
-    class SimulatedBinary final : public Crossover<double>
+    class SimulatedBinary final : public Crossover<RealGene>
     {
     public:
         /**
@@ -111,7 +112,7 @@ namespace genetic_algorithm::crossover::real
     *   child2 = p1 + w2 * (p1 - p2)
     * where w1 and w2 are random numbers generated from a uniform distribution on [0.0, 1.0).
     */
-    class Wright final : public Crossover<double>
+    class Wright final : public Crossover<RealGene>
     {
     public:
         using Crossover::Crossover;

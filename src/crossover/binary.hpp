@@ -5,6 +5,7 @@
 
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
+#include "../encoding/gene_types.hpp"
 
 /** Predefined crossover operators for the binary encoded genetic algorithms (BinaryGA). */
 namespace genetic_algorithm::crossover::binary
@@ -14,7 +15,7 @@ namespace genetic_algorithm::crossover::binary
     * A random crossover point (locus) is selected and the genes before the locus are swapped
     * between the parents to create the children.
     */
-    class SinglePoint final : public Crossover<char>
+    class SinglePoint final : public Crossover<BinaryGene>
     {
     public:
         using Crossover::Crossover;
@@ -28,7 +29,7 @@ namespace genetic_algorithm::crossover::binary
     * swapped between the parents in order to create the children. \n
     * (Works as if 2 consecutive single-point crossovers were performed on the parents.)
     */
-    class TwoPoint final : public Crossover<char>
+    class TwoPoint final : public Crossover<BinaryGene>
     {
     public:
         using Crossover::Crossover;
@@ -41,7 +42,7 @@ namespace genetic_algorithm::crossover::binary
     * The result of the crossover is equivalent to performing N consecutive single-point
     * crossovers on the parents using different crossover points.
     */
-    class NPoint final : public Crossover<char>
+    class NPoint final : public Crossover<BinaryGene>
     {
     public:
         /**
@@ -53,7 +54,7 @@ namespace genetic_algorithm::crossover::binary
 
         /**
         * Set the number of crossover points used for the operator to @p n. \n
-        * The number of crossover points can't be 0, and all values over the chromosome
+        * The number of crossover points can't be 0, and all values greater than the chromosome
         * length are treated the same (as if n == chrom_len).
         * 
         * @param n The number of crossover points.
@@ -74,7 +75,7 @@ namespace genetic_algorithm::crossover::binary
     * Uniform crossover operator for the binary encoded algorithms. \n
     * Each pair of genes of the chromosomes are swapped with a set probability between the parents to create the children.
     */
-    class Uniform final : public Crossover<char>
+    class Uniform final : public Crossover<BinaryGene>
     {
     public:
         /**

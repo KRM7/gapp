@@ -5,6 +5,7 @@
 
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
+#include "../encoding/gene_types.hpp"
 #include <cstddef>
 
 /** Predefined crossover operators for the permutation encoded GAs (PermutationGA), designed specifically for combinatorial problems. */
@@ -19,7 +20,7 @@ namespace genetic_algorithm::crossover::perm
     * The second child is created by repeating this process with the roles of the two parents swapped.
     * (The same range of genes is used for the directly copied genes.)
     */
-    class Order1 final : public Crossover<size_t>
+    class Order1 final : public Crossover<PermutationGene>
     {
     public:
         using Crossover::Crossover;
@@ -37,7 +38,7 @@ namespace genetic_algorithm::crossover::perm
     * The second child is created by repeating this process with the roles of the two parents swapped.
     * (The same range of genes is used for the directly copied genes.)
     */
-    class Order2 final : public Crossover<size_t>
+    class Order2 final : public Crossover<PermutationGene>
     {
     public:
         using Crossover::Crossover;
@@ -56,7 +57,7 @@ namespace genetic_algorithm::crossover::perm
     * The second child is created by repeating this process with the roles of the two parents swapped
     * (but using the same positions for direct copying that were used to create the first child).
     */
-    class Position final : public Crossover<size_t>
+    class Position final : public Crossover<PermutationGene>
     {
     public:
         using Crossover::Crossover;
@@ -70,7 +71,7 @@ namespace genetic_algorithm::crossover::perm
     * 2 children from these cycles.
     * Each of the genes in the children appears in the same position in one of the parents.
     */
-    class Cycle final : public Crossover<size_t>
+    class Cycle final : public Crossover<PermutationGene>
     {
     public:
         using Crossover::Crossover;
@@ -84,7 +85,7 @@ namespace genetic_algorithm::crossover::perm
     * present in the parents as possible, and not introducing new edges into the children.
     * This crossover operator is significantly slower than the other implemented operators, but produces good results.
     */
-    class Edge final : public Crossover<size_t>
+    class Edge final : public Crossover<PermutationGene>
     {
     public:
         using Crossover::Crossover;
@@ -100,7 +101,7 @@ namespace genetic_algorithm::crossover::perm
     * crossover.
     * The second child is created by performing the same process with the roles of the 2 parents swapped.
     */
-    class PMX final : public Crossover<size_t>
+    class PMX final : public Crossover<PermutationGene>
     {
     public:
         using Crossover::Crossover;
