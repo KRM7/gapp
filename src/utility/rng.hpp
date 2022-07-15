@@ -222,7 +222,10 @@ namespace genetic_algorithm::rng
 
     bool randomBool() noexcept
     {
-        return prng() & 1;
+        constexpr size_t nbits = CHAR_BIT * sizeof(PRNG::result_type);
+        constexpr PRNG::result_type mask = PRNG::result_type{ 1 } << (nbits - 1);
+
+        return prng() & mask;
     }
 
     template<std::integral IntType>
