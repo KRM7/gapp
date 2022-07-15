@@ -5,30 +5,22 @@
 
 #include <limits>
 #include <execution>
-#include <random>
-#include <concepts>
 #include <cstddef>
-#include <exception>
 
 #ifndef GA_EPSILON
 #define GA_EPSILON (4 * std::numeric_limits<double>::epsilon())
 #endif
 
-#ifndef GA_SEQ_EXECUTION
+#ifndef GA_EXCUTION_UNSEQ
 #define GA_EXECUTION_UNSEQ std::execution::par_unseq
+#endif
+#ifndef GA_EXECUTION_SEQ
 #define GA_EXECUTION_SEQ std::execution::par
-#else
-#define GA_EXECUTION_UNSEQ std::execution::unseq
-#define GA_EXECUTION_SEQ std::execution::seq
 #endif
 
-#ifndef GA_PRESET_SEED
-#define GA_SEED() std::random_device{}()
-#else
-#define GA_SEED() 0x12345678;
+#ifndef GA_SEED
+#define GA_SEED 0x3da99432ab975d26LL
 #endif
-
-#define GA_UNREACHABLE() (assert(false), std::terminate())
 
 namespace genetic_algorithm
 {
@@ -38,12 +30,5 @@ namespace genetic_algorithm
     }
 
 } // namespace genetic_algorithm
-
-namespace genetic_algorithm::detail
-{
-
-
-
-} // namespace genetic_algorithm::detail
 
 #endif // !GA_UTILS_HPP
