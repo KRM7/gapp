@@ -7,7 +7,8 @@ include(GNUInstallDirs)
 option(GA_ENABLE_TESTS "Enable the tests for the library." OFF) # TODO
 option(GA_ENABLE_EXAMPLES "Enable building the examples for the library." OFF)
 option(GA_ENABLE_LTO "Enable link time optimizations for the library." ON)
-option(GA_ENABLE_MARCH_NATIVE "Add -march=native to release builds when using gcc or clang." ON)
+option(GA_ENABLE_MARCH_NATIVE "Add -march=native option to release builds when using gcc or clang." ON)
+option(GA_ENABLE_LINK_TBB "Add -ltbb option when using gcc (needed for parallel stl algorithms when using gcc)." ON)
 
 
 # Set the output directory for the build files
@@ -21,22 +22,27 @@ endif()
 
 
 # Compiler/linker flags
-if(MSVC)
+if(MSVC) # MSVC style compiler interface
     set(CMAKE_CXX_FLAGS "-std:c++latest -permissive- -Zc:preprocessor -Zc:rvalueCast -W4 -WX -TP -MP -MD -fp:precise -EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "-Od -ZI -RTC1")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar")
     if(GA_ENABLE_LTO)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -GL -LTCG")
     endif()
-elseif()
+else() # GNU style compiler interface
     set(CMAKE_CXX_FLAGS "-std=c++20 -Wall -Wextra -Wshadow -Wpedantic -pedantic-errors -Werror")
-    set(CMAKE_CXX_FLAGS_DEBUG "-Og") # -ltbb_debug
-    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3") # link intel tbb for par stl algos -ltbb
+    set(CMAKE_CXX_FLAGS_DEBUG "-Og")
+    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3")
+    if (GA_ENABLE_LTO)
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -Wno-lto-type-mismatch")
+    endif()
     if (GA_ENABLE_MARCH_NATIVE)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
     endif()
-    if (GA_ENABLE_LTO)
-        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -Wno-lto-type-mismatch")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU") # gcc specific options
+        if (GA_ENABLE_LINK_TBB)
+            set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ltbb")
+        endif()
     endif()
 endif()
 
