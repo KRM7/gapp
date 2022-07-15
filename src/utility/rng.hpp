@@ -38,7 +38,7 @@ namespace genetic_algorithm::rng
     using PRNG = Splitmix64;
 
     /** PRNG instance used in the genetic algorithms. */
-    inline PRNG prng{ std::random_device{}() };
+    inline PRNG prng{ GA_SEED };
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
     template<std::floating_point RealType = double>
@@ -203,6 +203,8 @@ namespace genetic_algorithm::rng
     template<detail::Container T>
     auto randomElement(const T& cont) -> typename T::value_type
     {
+        assert(!cont.empty());
+
         size_t n = rng::randomInt(0_sz, cont.size() - 1);
 
         return *std::next(cont.begin(), n);
@@ -211,6 +213,8 @@ namespace genetic_algorithm::rng
     template<std::input_iterator Iter>
     auto randomElement(Iter first, Iter last)
     {
+        assert(std::distance(first, last) > 0);
+
         auto n = rng::randomInt<ptrdiff_t>(0, std::distance(first, last) - 1);
 
         return *std::next(first, n);
