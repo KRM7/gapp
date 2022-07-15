@@ -183,12 +183,12 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     bool GA<T, D>::fitnessMatrixIsValid() const noexcept
     {
-        if (fitness_matrix_.size() != population_.size())
+        if (fitness_matrix_.size() != population_.size() ||
+            !std::all_of(fitness_matrix_.begin(), fitness_matrix_.end(), [this](const FitnessVector& fvec) { return fvec.size() == num_objectives_; }) ||
+            !std::all_of(population_.begin(), population_.end(), [this](const Candidate& sol) { return sol.fitness.size() == num_objectives_; }))
+        {
             return false;
-        if (!std::all_of(fitness_matrix_.begin(), fitness_matrix_.end(), [this](const FitnessVector& fvec) { return fvec.size() == num_objectives_; }))
-            return false;
-        if (!std::all_of(population_.begin(), population_.end(), [this](const Candidate& sol) { return sol.fitness.size() == num_objectives_; }))
-            return false;
+        }
                
         for (size_t i = 0; i < fitness_matrix_.size(); i++)
         {
