@@ -48,7 +48,7 @@ namespace genetic_algorithm::crossover
         */
         void crossover_rate(double pc);
 
-        /** @returns The crossover rate set for this operator. */
+        /** @returns The crossover rate set for the operator. */
         [[nodiscard]]
         double crossover_rate() const noexcept { return pc_; }
 
@@ -64,8 +64,10 @@ namespace genetic_algorithm::crossover
 
     protected:
 
-        /* The actual crossover function. Performs the crossover every time and does nothing else. */
+        /* The actual crossover function. Generates 2 new Candidates from the parents (not with some probability). */
         virtual CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
+
+    private:
 
         double pc_;   /* The probability of performing the crossover operation on the parents. */
     };
