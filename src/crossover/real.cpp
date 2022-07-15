@@ -60,8 +60,8 @@ namespace genetic_algorithm::crossover::real
         GeneType alpha = rng::randomReal();
         for (size_t i = 0; i < chrom_len; i++)
         {
-            child1.chromosome[i] = alpha * parent1.chromosome[i] + (1.0 - alpha) * parent2.chromosome[i];
-            child2.chromosome[i] = (1.0 - alpha) * parent1.chromosome[i] + alpha * parent2.chromosome[i];
+            child1.chromosome[i] =    alpha      * parent1.chromosome[i] + (1.0 - alpha) * parent2.chromosome[i];
+            child2.chromosome[i] = (1.0 - alpha) * parent1.chromosome[i] +     alpha     * parent2.chromosome[i];
         }
         /* No bounds check, the generated children's genes will always be within the bounds if the parents' genes were also within them. */
 
@@ -70,7 +70,6 @@ namespace genetic_algorithm::crossover::real
 
     auto BLXa::crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        assert(alpha_ >= 0.0);
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
         size_t chrom_len = parent1.chromosome.size();
@@ -104,7 +103,6 @@ namespace genetic_algorithm::crossover::real
 
     auto SimulatedBinary::crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        assert(eta_ > 0.0);
         auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
         size_t chrom_len = parent1.chromosome.size();
@@ -120,7 +118,6 @@ namespace genetic_algorithm::crossover::real
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
-        /* Perform crossover. */
         for (size_t i = 0; i < chrom_len; i++)
         {
             auto [gene_low, gene_high] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
@@ -134,13 +131,15 @@ namespace genetic_algorithm::crossover::real
             GeneType alpha1 = 2.0 - std::pow(beta1, -(eta_ + 1.0));
             GeneType alpha2 = 2.0 - std::pow(beta2, -(eta_ + 1.0));
 
-            GeneType u = rng::randomReal<GeneType>();
-            GeneType beta1_prime = (u <= 1.0 / alpha1) ? std::pow(u * alpha1, -(eta_ + 1.0)) :
-                                                         std::pow(1.0 / (2.0 - u * alpha1), -(eta_ + 1.0));
+            auto alphaToBetaPrime = [this](GeneType alpha)
+            {
+                double u = rng::randomReal<GeneType>();
+                return (u <= 1.0 / alpha) ? std::pow(u * alpha, -(eta_ + 1.0)) :
+                                            std::pow(1.0 / (2.0 - u * alpha), -(eta_ + 1.0));
+            };
 
-            u = rng::randomReal<GeneType>();
-            GeneType beta2_prime = (u <= 1.0 / alpha2) ? std::pow(u * alpha2, -(eta_ + 1.0)) :
-                                                         std::pow(1.0 / (2.0 - u * alpha2), -(eta_ - 1.0));
+            GeneType beta1_prime = alphaToBetaPrime(alpha1);
+            GeneType beta2_prime = alphaToBetaPrime(alpha2);
 
             child1.chromosome[i] = 0.5 * (parent1.chromosome[i] + parent2.chromosome[i] - beta1_prime * std::abs(parent1.chromosome[i] - parent2.chromosome[i]));
             child2.chromosome[i] = 0.5 * (parent1.chromosome[i] + parent2.chromosome[i] + beta2_prime * std::abs(parent1.chromosome[i] - parent2.chromosome[i]));
@@ -174,10 +173,9 @@ namespace genetic_algorithm::crossover::real
         const auto& p1 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent2 : parent1;
         const auto& p2 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent1 : parent2;
 
-        /* Get random weights. */
         GeneType w1 = rng::randomReal<GeneType>();
         GeneType w2 = rng::randomReal<GeneType>();
-        /* Perform crossover. */
+
         for (size_t i = 0; i < chrom_len; i++)
         {
             child1.chromosome[i] = w1 * (p1.chromosome[i] - p2.chromosome[i]) + p1.chromosome[i];
