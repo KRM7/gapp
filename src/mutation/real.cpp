@@ -64,9 +64,10 @@ namespace genetic_algorithm::mutation::real
             GeneType exponent = std::pow(1.0 - GeneType(ga.generation_cntr()) / ga.max_gen(), beta_);
 
             GeneType multiplier = 1.0 - std::pow(rand, exponent);
-            GeneType bound = rng::randomBool() ? bounds[idx].second : bounds[idx].first;
+            GeneType bound = rng::randomBool() ? bounds[idx].first : bounds[idx].second;
 
             candidate.chromosome[idx] += (bound - candidate.chromosome[idx]) * multiplier;
+            /* The value of the mutated gene might be outside of the allowed interval. */
             candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
         }
     }
@@ -104,6 +105,7 @@ namespace genetic_algorithm::mutation::real
             GeneType SD = (bounds[idx].second - bounds[idx].first) / sigma_;
 
             candidate.chromosome[idx] += rng::randomNormal<GeneType>(0.0, SD);
+            /* The value of the mutated gene might be outside of the allowed interval. */
             candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
         }
     }
@@ -149,6 +151,7 @@ namespace genetic_algorithm::mutation::real
                 GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
                 candidate.chromosome[idx] += delta * (bounds[idx].second - candidate.chromosome[idx]);
             }
+            /* The value of the mutated gene might be outside of the allowed interval. */
             candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
         }
     }
