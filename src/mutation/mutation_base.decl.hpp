@@ -48,12 +48,12 @@ namespace genetic_algorithm::mutation
         */
         void mutation_rate(double pm);
 
-        /** @returns The mutation rate set for this mutation operator. */
+        /** @returns The mutation rate set for the operator. */
         [[nodiscard]]
         double mutation_rate() const noexcept { return pm_; }
 
         /**
-        * Perform the mutation operation on a candidate using the set mutation rate.
+        * Perform mutation on a candidate using the set mutation rate.
         *
         * @param ga The genetic algorithm the crossover operator is being used in.
         * @param candidate The candidate to mutate.
@@ -62,8 +62,11 @@ namespace genetic_algorithm::mutation
 
     protected:
 
-        /* The actual mutation function. Performs the mutation using the set probability. */
+        /* The actual implementation of the mutation function. Performs the mutation using the set probability.
+           This function should only change the chromosome of the candidate. */
         virtual void mutate(const GaInfo& ga, Candidate<T>& candidate) const = 0;
+
+    private:
 
         double pm_;
     };

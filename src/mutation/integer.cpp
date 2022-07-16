@@ -14,7 +14,7 @@ namespace genetic_algorithm::mutation::integer
         size_t base = dynamic_cast<const IntegerGA&>(ga).base();
         size_t chrom_len = candidate.chromosome.size();
 
-        size_t mutate_count = rng::randomBinomialApprox(chrom_len, pm_);
+        size_t mutate_count = rng::randomBinomialApprox(chrom_len, mutation_rate());
         auto mutated_indices = rng::sampleUnique(0_sz, chrom_len, mutate_count);
 
         std::vector<GeneType> alleles(base);

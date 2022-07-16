@@ -41,7 +41,7 @@ namespace genetic_algorithm
     GaInfo::~GaInfo() = default;
 
     GaInfo::GaInfo(size_t chrom_len)
-        : GaInfo(100, chrom_len)
+        : GaInfo(DEFAULT_POPSIZE, chrom_len)
     {}
 
     GaInfo::GaInfo(size_t population_size, size_t chrom_len)

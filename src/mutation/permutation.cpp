@@ -32,7 +32,7 @@ namespace genetic_algorithm::mutation::perm
 
         if (chrom_len < 2) return;
 
-        if (rng::randomReal() < pm_)
+        if (rng::randomReal() < mutation_rate())
         {
             size_t min_len = 2;
             size_t max_len = std::max(size_t(range_max_ * chrom_len), min_len);
@@ -49,7 +49,7 @@ namespace genetic_algorithm::mutation::perm
     {
         if (candidate.chromosome.size() < 2) return;
 
-        if (rng::randomReal() < pm_)
+        if (rng::randomReal() < mutation_rate())
         {
             auto idxs = rng::sampleUnique(0_sz, candidate.chromosome.size(), 2);
 
@@ -62,7 +62,7 @@ namespace genetic_algorithm::mutation::perm
     {
         if (candidate.chromosome.size() < 3) return;
 
-        if (rng::randomReal() < pm_)
+        if (rng::randomReal() < mutation_rate())
         {
             auto idxs = rng::sampleUnique(0_sz, candidate.chromosome.size(), 3);
 
@@ -94,7 +94,7 @@ namespace genetic_algorithm::mutation::perm
 
         if (chrom_len < 2) return;
 
-        if (rng::randomReal() < pm_)
+        if (rng::randomReal() < mutation_rate())
         {
             size_t min_len = 2;
             size_t max_len = std::max(size_t(range_max_ * chrom_len), min_len);
@@ -129,7 +129,7 @@ namespace genetic_algorithm::mutation::perm
 
         if (chrom_len < 2) return;
 
-        if (rng::randomReal() < pm_)
+        if (rng::randomReal() < mutation_rate())
         {
             size_t min_len = 2;
             size_t max_len = std::max(size_t(range_max_ * chrom_len), min_len);

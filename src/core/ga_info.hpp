@@ -235,6 +235,8 @@ namespace genetic_algorithm
 
         void max_gen(size_t max_gen);
         void num_objectives(size_t n);
+
+        inline static constexpr size_t DEFAULT_POPSIZE = 100;
     };
 
 } // namespace genetic_algorithm

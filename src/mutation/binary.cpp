@@ -9,7 +9,7 @@ namespace genetic_algorithm::mutation::binary
 {
     void Flip::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
     {
-        size_t flip_count = rng::randomBinomialApprox(candidate.chromosome.size(), pm_);
+        size_t flip_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
         auto flipped_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), flip_count);
         // TODO try to improve this, maybe masks
         for (const auto& idx : flipped_indices)
