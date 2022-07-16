@@ -17,18 +17,27 @@ namespace genetic_algorithm::mutation::integer
         size_t mutate_count = rng::randomBinomialApprox(chrom_len, mutation_rate());
         auto mutated_indices = rng::sampleUnique(0_sz, chrom_len, mutate_count);
 
-        std::vector<GeneType> alleles(base);
-        std::iota(alleles.begin(), alleles.end(), GeneType{ 0 });
-
-        for (const auto& idx : mutated_indices)
+        if (base < 16) /* Make sure the new value for the changed genes can't be the old ones. */
         {
-            /* Make sure the new value for the changed gene can't be the old one. */
-            auto old_gene = candidate.chromosome[idx];
-            std::swap(alleles[old_gene], alleles.back());
-            GeneType new_gene = rng::randomElement(alleles.begin(), alleles.end() - 1);
-            std::swap(alleles[old_gene], alleles.back());
+            std::vector<GeneType> alleles(base);
+            std::iota(alleles.begin(), alleles.end(), GeneType{ 0 });
 
-            candidate.chromosome[idx] = new_gene;
+            for (const auto& idx : mutated_indices)
+            {
+                auto old_gene = candidate.chromosome[idx];
+                std::swap(alleles[old_gene], alleles.back());
+                GeneType new_gene = rng::randomElement(alleles.begin(), alleles.end() - 1);
+                std::swap(alleles[old_gene], alleles.back());
+
+                candidate.chromosome[idx] = new_gene;
+            }
+        }
+        else /* The mutated gene values might be the same as the old ones, but the probability of this is low. */
+        {
+            for (const auto& idx : mutated_indices)
+            {
+                candidate.chromosome[idx] = rng::randomInt<GeneType>(0, base - 1);
+            }
         }
     }
 
