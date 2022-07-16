@@ -53,8 +53,7 @@ namespace genetic_algorithm::mutation::perm
         {
             auto idxs = rng::sampleUnique(0_sz, candidate.chromosome.size(), 2);
 
-            using std::swap;
-            swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[1]]);
+            std::swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[1]]);
         }
     }
 
@@ -66,9 +65,8 @@ namespace genetic_algorithm::mutation::perm
         {
             auto idxs = rng::sampleUnique(0_sz, candidate.chromosome.size(), 3);
 
-            using std::swap;
-            swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[1]]);
-            swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[2]]);
+            std::swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[1]]);
+            std::swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[2]]);
         }
     }
 
