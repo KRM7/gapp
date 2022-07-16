@@ -24,11 +24,11 @@ namespace genetic_algorithm
     }
 
     RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const Bounds& bounds)
-        : RCGA(100, chrom_len, std::move(fitness_function), bounds)
+        : RCGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), bounds)
     {}
 
     RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds)
-         : RCGA(100, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
+         : RCGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
     {}
 
     RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds)

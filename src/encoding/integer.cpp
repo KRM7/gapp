@@ -14,7 +14,7 @@
 namespace genetic_algorithm
 {
     IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitness_function, GeneType base)
-        : IntegerGA(100, chrom_len, std::move(fitness_function), base)
+        : IntegerGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), base)
     {}
 
     IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, GeneType base)
@@ -29,10 +29,8 @@ namespace genetic_algorithm
 
     void IntegerGA::base(GeneType base)
     {
-        if (base < 2)
-        {
-            throw std::invalid_argument("The base must be at least 2.");
-        }
+        if (base < 2) throw std::invalid_argument("The base must be at least 2.");
+
         base_ = base;
     }
 

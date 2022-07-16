@@ -12,7 +12,7 @@
 namespace genetic_algorithm
 {
     BinaryGA::BinaryGA(size_t chrom_len, FitnessFunction fitness_function)
-        : BinaryGA(100, chrom_len, std::move(fitness_function))
+        : BinaryGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function))
     {}
 
     BinaryGA::BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)

@@ -14,7 +14,7 @@
 namespace genetic_algorithm
 {
     PermutationGA::PermutationGA(size_t chrom_len, FitnessFunction fitness_function)
-        : PermutationGA(100, chrom_len, std::move(fitness_function))
+        : PermutationGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function))
     {}
 
     PermutationGA::PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)

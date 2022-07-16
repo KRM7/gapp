@@ -26,7 +26,7 @@ namespace genetic_algorithm
 {
     template<Gene T, typename D>
     GA<T, D>::GA(size_t chrom_len, FitnessFunction f)
-        : GA<T, D>(100, chrom_len, std::move(f))
+        : GA<T, D>(DEFAULT_POPSIZE, chrom_len, std::move(f))
     {}
 
     template<Gene T, typename D>
@@ -251,6 +251,8 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     auto GA<T, D>::generateCandidate() const -> Candidate
     {
+        assert(chrom_len_ > 0);
+
         return derived().generateCandidate();
     }
 
