@@ -35,8 +35,7 @@ namespace genetic_algorithm::mutation::dtl
     template<Gene T>
     Lambda<T>::Lambda(MutationFunction f)
         : Mutation<T>(0.01), mutate_(std::move(f))
-    {
-    }
+    {}
 
     template<Gene T>
     void Lambda<T>::mutate(const GaInfo& ga, Candidate<T>& candidate) const

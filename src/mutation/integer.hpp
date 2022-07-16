@@ -4,6 +4,7 @@
 #define GA_MUTATION_INTEGER_HPP
 
 #include "mutation_base.hpp"
+#include "../encoding/gene_types.hpp"
 #include <cstddef>
 
 /** Predefined mutation operators for the integer encoded genetic algorithm. */
@@ -14,7 +15,7 @@ namespace genetic_algorithm::mutation::integer
     * Each gene of the chromosome is changed with the specified mutation probability
     * to another value selected from a uniform distribution over all other values.
     */
-    class Uniform : public Mutation<size_t>
+    class Uniform : public Mutation<IntegerGene>
     {
     public:
         using Mutation::Mutation;

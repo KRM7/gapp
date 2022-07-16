@@ -4,6 +4,7 @@
 #define GA_MUTATION_PERMUTATION_HPP
 
 #include "mutation_base.hpp"
+#include "../encoding/gene_types.hpp"
 
 /** Predefined mutation operators for the permutation encoded genetic algorithm. */
 namespace genetic_algorithm::mutation::perm
@@ -13,7 +14,7 @@ namespace genetic_algorithm::mutation::perm
     * Each individual is mutated with the specified mutation probability.
     * In the mutated individuals, a randomly selected range of genes are reversed.
     */
-    class Inversion : public Mutation<size_t>
+    class Inversion : public Mutation<PermutationGene>
     {
     public:
         /**
@@ -34,7 +35,7 @@ namespace genetic_algorithm::mutation::perm
         */
         void range_max(double rm);
 
-        /** @ returns The current value of the range_max parameter. */
+        /** @ returns The value of the range_max parameter. */
         [[nodiscard]]
         double range_max() const noexcept { return range_max_; }
 
@@ -49,7 +50,7 @@ namespace genetic_algorithm::mutation::perm
     * Each individual is mutated with the set mutation probability.
     * Two randomly selected genes are swapped in the mutated individuals.
     */
-    class Swap2 final : public Mutation<size_t>
+    class Swap2 final : public Mutation<PermutationGene>
     {
     public:
         using Mutation::Mutation;
@@ -62,7 +63,7 @@ namespace genetic_algorithm::mutation::perm
     * Each individual is mutated with the set mutation probability.
     * In the mutated candidates, 3 randomly selected genes are reordered as: (a-b-c) -> (c-a-b).
     */
-    class Swap3 final : public Mutation<size_t>
+    class Swap3 final : public Mutation<PermutationGene>
     {
     public:
         using Mutation::Mutation;
@@ -75,7 +76,7 @@ namespace genetic_algorithm::mutation::perm
     * Each individual is mutated with the set mutation probability.
     * In the mutated candidates, a random range of genes is selected and then shuffled.
     */
-    class Shuffle final : public Mutation<size_t>
+    class Shuffle final : public Mutation<PermutationGene>
     {
     public:
         /**
@@ -96,7 +97,7 @@ namespace genetic_algorithm::mutation::perm
         */
         void range_max(double rm);
 
-        /** @ returns The current value of the range_max parameter. */
+        /** @ returns The value of the range_max parameter. */
         [[nodiscard]]
         double range_max() const noexcept { return range_max_; }
 
@@ -112,7 +113,7 @@ namespace genetic_algorithm::mutation::perm
     * In the mutated candidates, a random range of genes is selected and then moved to a
     * different position in the chromosome.
     */
-    class Shift final : public Mutation<size_t>
+    class Shift final : public Mutation<PermutationGene>
     {
     public:
         /**
@@ -133,7 +134,7 @@ namespace genetic_algorithm::mutation::perm
         */
         void range_max(double rm);
 
-        /** @ returns The current value of the range_max parameter. */
+        /** @ returns The value of the range_max parameter. */
         [[nodiscard]]
         double range_max() const noexcept { return range_max_; }
 

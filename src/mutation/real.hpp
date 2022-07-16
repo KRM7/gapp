@@ -4,6 +4,7 @@
 #define GA_MUTATION_REAL_HPP
 
 #include "mutation_base.hpp"
+#include "../encoding/gene_types.hpp"
 #include <vector>
 #include <utility>
 
@@ -15,7 +16,7 @@ namespace genetic_algorithm::mutation::real
     * Each gene of the candidate is mutated with pm probability, and the values
     * of the mutated genes are randomly generated from a uniform distribution within the gene bounds.
     */
-    class Uniform final : public Mutation<double>
+    class Uniform final : public Mutation<RealGene>
     {
     public:
         using Mutation::Mutation;
@@ -36,7 +37,7 @@ namespace genetic_algorithm::mutation::real
     * the distribution is uniform and doesn't change), while larger values will lead to faster change and
     * mutated genes closer to the original ones.
     */
-    class NonUniform final : public Mutation<double>
+    class NonUniform final : public Mutation<RealGene>
     {
     public:
         /**
@@ -54,7 +55,7 @@ namespace genetic_algorithm::mutation::real
         */
         void beta(GeneType beta);
 
-        /** @returns The beta parameter currently set for this operator. */
+        /** @returns The beta parameter currently set for the operator. */
         [[nodiscard]]
         GeneType beta() const noexcept { return beta_; }
 
@@ -74,7 +75,7 @@ namespace genetic_algorithm::mutation::real
     *   SD = (upper_bound - lower_bound) / sigma \n
     * Larger sigma values will lead to mutated gene values closer to their original values.
     */
-    class Gauss final : public Mutation<double>
+    class Gauss final : public Mutation<RealGene>
     {
     public:
         /**
@@ -92,7 +93,7 @@ namespace genetic_algorithm::mutation::real
         */
         void sigma(GeneType sigma);
 
-        /** @returns The sigma parameter currently set for this operator. */
+        /** @returns The sigma parameter currently set for the operator. */
         [[nodiscard]]
         GeneType sigma() const noexcept { return sigma_; }
 
@@ -111,7 +112,7 @@ namespace genetic_algorithm::mutation::real
     * the mutated genes are picked from. The value of eta must be >= 0.0, with larger values leading
     * to mutated genes closer to the original ones. Typical values for eta are [20.0, 100.0].
     */
-    class Polynomial final : public Mutation<double>
+    class Polynomial final : public Mutation<RealGene>
     {
     public:
         /**
@@ -130,14 +131,14 @@ namespace genetic_algorithm::mutation::real
         */
         void eta(GeneType eta);
 
-        /** @returns The eta parameter currently set for this operator. */
+        /** @returns The eta parameter currently set for the operator. */
         [[nodiscard]]
         GeneType eta() const noexcept { return eta_; }
 
     private:
         void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
 
-        GeneType eta_ = 40.0;
+        GeneType eta_;
     };
 
     /**
@@ -145,7 +146,7 @@ namespace genetic_algorithm::mutation::real
     * Each gene of the candidate is mutated with pm probability, and the values of the
     * mutated genes are either the lower or upper bounds of the gene.
     */
-    class Boundary final : public Mutation<double>
+    class Boundary final : public Mutation<RealGene>
     {
     public:
         using Mutation::Mutation;
