@@ -10,6 +10,24 @@
 
 namespace genetic_algorithm::stopping
 {
+    static bool metricImproved(std::vector<double>& best_so_far, const std::vector<double>& new_val, double delta)
+    {
+        assert(best_so_far.size() == new_val.size());
+
+        bool improved = false;
+        for (size_t i = 0; i < new_val.size(); i++)
+        {
+            if (new_val[i] >= (best_so_far[i] + delta))
+            {
+                best_so_far[i] = new_val[i];
+                improved = true;
+                /* No break because the entire fitness vector needs to be updated. */
+            }
+        }
+
+        return improved;
+    }
+
     FitnessEvals::FitnessEvals(size_t max_fitness_evals)
         : StopCondition()
     {
@@ -94,24 +112,10 @@ namespace genetic_algorithm::stopping
             return false;
         }
 
-        bool improved = false;
-        for (size_t i = 0; i < current_mean.size(); i++)
-        {
-            if (current_mean[i] >= best_fitness_mean_[i] + delta_)
-            {
-                best_fitness_mean_[i] = current_mean[i];
-                improved = true;
-            }
-        }
+        bool improved = metricImproved(best_fitness_mean_, current_mean, delta_);
 
-        if (improved)
-        {
-            resetCntr();
-        }
-        else
-        {
-            --cntr_;
-        }
+        if (improved) resetCntr();
+        else --cntr_;
 
         return cntr_ == 0;
     }
@@ -152,24 +156,10 @@ namespace genetic_algorithm::stopping
             return false;
         }
 
-        bool improved = false;
-        for (size_t i = 0; i < current_max.size(); i++)
-        {
-            if (current_max[i] >= best_fitness_max_[i] + delta_)
-            {
-                best_fitness_max_[i] = current_max[i];
-                improved = true;
-            }
-        }
+        bool improved = metricImproved(best_fitness_max_, current_max, delta_);
 
-        if (improved)
-        {
-            resetCntr();
-        }
-        else
-        {
-            --cntr_;
-        }
+        if (improved) resetCntr();
+        else --cntr_;
 
         return cntr_ == 0;
     }
