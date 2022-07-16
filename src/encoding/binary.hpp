@@ -4,6 +4,7 @@
 #define GA_ENCODING_BINARY_HPP
 
 #include "../core/ga_base.hpp"
+#include "gene_types.hpp"
 #include <cstddef>
 
 namespace genetic_algorithm
@@ -12,7 +13,7 @@ namespace genetic_algorithm
     * Standard genetic algorithm with binary encoding. \n
     * The genes are encoded as char.
     */
-    class BinaryGA final : public GA<char, BinaryGA>
+    class BinaryGA final : public GA<BinaryGene, BinaryGA>
     {
     public:
         /**

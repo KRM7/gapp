@@ -28,10 +28,8 @@ namespace genetic_algorithm
 
     PermutationGA::Candidate PermutationGA::generateCandidate() const
     {
-        assert(chrom_len_ > 0);
-
         Candidate solution(chrom_len_);
-        std::iota(solution.chromosome.begin(), solution.chromosome.end(), 0);
+        std::iota(solution.chromosome.begin(), solution.chromosome.end(), GeneType{ 0 });
         std::shuffle(solution.chromosome.begin(), solution.chromosome.end(), rng::prng);
 
         return solution;

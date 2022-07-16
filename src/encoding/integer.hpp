@@ -4,6 +4,7 @@
 #define GA_ENCODING_INTEGER_HPP
 
 #include "../core/ga_base.hpp"
+#include "gene_types.hpp"
 #include <cstddef>
 
 namespace genetic_algorithm
@@ -13,7 +14,7 @@ namespace genetic_algorithm
     * Similar to the @ref BinaryGA, but the values of the genes can be any integer in the interval [0, base), not just 0 or 1. \n
     * It also uses a slightly different mutation function with swaps and inversions.
     */
-    class IntegerGA : public GA<size_t, IntegerGA>
+    class IntegerGA : public GA<IntegerGene, IntegerGA>
     {
     public:
         /**

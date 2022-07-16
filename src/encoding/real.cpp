@@ -27,11 +27,11 @@ namespace genetic_algorithm
         : RCGA(100, chrom_len, std::move(fitness_function), bounds)
     {}
 
-    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const std::pair<double, double>& bounds)
+    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds)
          : RCGA(100, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
     {}
 
-    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const std::pair<double, double>& bounds)
+    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds)
         : RCGA(pop_size, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
     {}
 
@@ -49,7 +49,7 @@ namespace genetic_algorithm
         limits_ = limits;
     }
 
-    void RCGA::limits(const std::pair<double, double>& limits)
+    void RCGA::limits(const std::pair<GeneType, GeneType>& limits)
     {
         this->limits(std::vector(chrom_len_, limits));
     }
@@ -61,7 +61,6 @@ namespace genetic_algorithm
 
     RCGA::Candidate RCGA::generateCandidate() const
     {
-        assert(chrom_len_ > 0);
         assert(chrom_len_ == limits_.size());
 
         Candidate solution(chrom_len_);

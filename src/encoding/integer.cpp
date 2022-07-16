@@ -43,8 +43,6 @@ namespace genetic_algorithm
 
     IntegerGA::Candidate IntegerGA::generateCandidate() const
     {
-        assert(chrom_len_ > 0);
-
         Candidate solution(chrom_len_);
         std::generate(solution.chromosome.begin(), solution.chromosome.end(),
         [this]

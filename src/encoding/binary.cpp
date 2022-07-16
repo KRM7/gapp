@@ -26,8 +26,6 @@ namespace genetic_algorithm
 
     BinaryGA::Candidate BinaryGA::generateCandidate() const
     {
-        assert(chrom_len_ > 0);
-
         Candidate solution(chrom_len_);
         std::generate(solution.chromosome.begin(), solution.chromosome.end(), rng::randomBool);
 

@@ -4,6 +4,7 @@
 #define GA_ENCODING_REAL_HPP
 
 #include "../core/ga_base.hpp"
+#include "gene_types.hpp"
 #include <vector>
 #include <utility>
 #include <cstddef>
@@ -14,11 +15,11 @@ namespace genetic_algorithm
     * Real coded genetic algorithm. \n
     * Each gene of the chromosomes is a floating point value.
     */
-    class RCGA : public GA<double, RCGA>
+    class RCGA : public GA<RealGene, RCGA>
     {
     public:
         /**
-        * For the gene boundaries. \n
+        * Type to represent the gene boundaries. \n
         * Eg.: { {gene1_min, gene1_max}, {gene2_min, gene2_max}, ..., {geneN_min, geneN_max} }
         */
         using Bounds = std::vector<std::pair<GeneType, GeneType>>;
@@ -52,7 +53,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function to find the maximum of with the algorithm.
         * @param bounds The boundaries of every gene (min, and max values).
         */
-        RCGA(size_t chrom_len, FitnessFunction fitness_function, const std::pair<double, double>& bounds);
+        RCGA(size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds);
 
         /**
         * Construct a real encoded genetic algorithm. \n
@@ -63,7 +64,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function to find the maximum of with the algorithm.
         * @param bounds The boundaries of every gene (min, and max values)
         */
-        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const std::pair<double, double>& bounds);
+        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds);
 
         /**
         * Sets the boundaries of the genes. \n
@@ -83,7 +84,7 @@ namespace genetic_algorithm
         *
         * @param limits The lower and upper boundaries of the genes.
         */
-        void limits(const std::pair<double, double>& limits);
+        void limits(const std::pair<GeneType, GeneType>& limits);
 
         /** @returns The current bounds set for the genes. */
         [[nodiscard]]

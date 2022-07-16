@@ -4,15 +4,16 @@
 #define GA_ENCODING_PERMUTATION_HPP
 
 #include "../core/ga_base.hpp"
+#include "gene_types.hpp"
 #include <cstddef>
 
 namespace genetic_algorithm
 {
     /**
-    * Genetic algorithm that uses permutational encoding. \n
+    * Genetic algorithm where the chromosomes encode permutations. \n
     * The genes of the chromosomes are all unique unsigned integers on thhe closed interval [0, chrom_len - 1].
     */
-    class PermutationGA : public GA<size_t, PermutationGA>
+    class PermutationGA : public GA<PermutationGene, PermutationGA>
     {
     public:
         /**
