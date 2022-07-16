@@ -30,16 +30,28 @@ namespace genetic_algorithm::mutation
     template<Gene T>
     void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
     {
-        // TODO: be more careful with the allocs here (pref not to copy old candidate)
-        auto old_candidate = candidate;
-
-        mutate(ga, candidate);
-        candidate.is_evaluated = false;
-
-        if (candidate.chromosome == old_candidate.chromosome)
+        if (!candidate.is_evaluated)
         {
-            candidate.fitness = std::move(old_candidate.fitness);
-            candidate.is_evaluated = old_candidate.is_evaluated;
+            mutate(ga, candidate);
+            candidate.is_evaluated = false;
+        }
+        else
+        {
+            /* If the candidate is already evaluated (happens when the crossover didn't change the candidate),
+               its current fitness vector is valid, and we can save a fitness function call when the mutation
+               doesn't change the chromosome. */
+            auto old_chromosome = candidate.chromosome;
+
+            #ifndef NDEBUG
+                auto old_fitness = candidate.fitness;
+                mutate(ga, candidate);
+                assert(candidate.fitness == old_fitness);
+            #else
+                mutate(ga, candidate);
+            #endif
+
+            /* Assume that the fitness vector of candidate was not changed by mutate() (it shouldn't have been). */
+            candidate.is_evaluated = (candidate.chromosome == old_chromosome);
         }
     }
 
