@@ -86,7 +86,7 @@ namespace genetic_algorithm::detail
     requires std::invocable<F, ValueType>
     auto map(const std::vector<ValueType>& cont, F&& f)
     {
-        using MappedType = std::invoke_result_t<F, ValueType>;
+        using MappedType = std::decay_t<std::invoke_result_t<F, ValueType>>;
         using ResultType = std::vector<MappedType>;
 
         if constexpr (std::is_scalar_v<ResultType>)
@@ -114,7 +114,7 @@ namespace genetic_algorithm::detail
     requires std::invocable<F, ValueType>
     constexpr auto map(const std::array<ValueType, N>& cont, F&& f)
     {
-        using MappedType = std::invoke_result_t<F, ValueType>;
+        using MappedType = std::decay_t<std::invoke_result_t<F, ValueType>>;
         using ResultType = std::array<MappedType, N>;
 
         ResultType result;
@@ -129,7 +129,7 @@ namespace genetic_algorithm::detail
     requires Container<ContainerType<ValueType, Rest...>> && std::invocable<F, ValueType>
     auto map(const ContainerType<ValueType, Rest...>& cont, F&& f)
     {
-        using MappedType = std::invoke_result_t<F, ValueType>;
+        using MappedType = std::decay_t<std::invoke_result_t<F, ValueType>>;
         using ResultType = ContainerType<MappedType>;
 
         ResultType result;
@@ -171,7 +171,7 @@ namespace genetic_algorithm::detail
              std::invocable<F, KeyType, ValueType>
     auto map(const ContainerType<KeyType, ValueType, Rest...>& cont, F&& f)
     {
-        using MappedType = std::invoke_result_t<F, KeyType, ValueType>;
+        using MappedType = std::decay_t<std::invoke_result_t<F, KeyType, ValueType>>;
         static_assert(is_specialization_of_v<MappedType, std::pair>);
         using ResultType = ContainerType<typename MappedType::first_type, typename MappedType::second_type>;
 
