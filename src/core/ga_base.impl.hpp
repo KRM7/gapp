@@ -420,11 +420,9 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     auto GA<T, D>::continueFor(size_t num_generations) -> Candidates
     {
-        if (!can_continue_) throw std::logic_error("Can't continue yet, call run instead.");
-
         max_gen(max_gen_ + num_generations);
 
-        /* No init for continue() */
+        if (!can_continue_) initializeAlgorithm();
         while (!stopCondition())
         {
             advance();
@@ -432,6 +430,7 @@ namespace genetic_algorithm
         updateOptimalSolutions(solutions_, population_);
 
         if (endOfRunCallback) endOfRunCallback(*this);
+        can_continue_ = true;
 
         return solutions_;
     }
