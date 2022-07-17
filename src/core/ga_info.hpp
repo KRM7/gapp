@@ -149,7 +149,8 @@ namespace genetic_algorithm
         *
         * @param method The selection method used in the algorithm.
         */
-        template<selection::SelectionMethod F>
+        template<typename F>
+        requires selection::SelectionMethod<F> && std::is_final_v<F>
         void selection_method(F&& f);
 
         /**
@@ -176,7 +177,8 @@ namespace genetic_algorithm
         *
         * @param f The StopCondition the algorithm should use.
         */
-        template<stopping::StopMethod F>
+        template<typename F>
+        requires stopping::StopMethod<F> && std::is_final_v<F>
         void stop_condition(F&& f);
 
         /**
@@ -251,7 +253,8 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    template<selection::SelectionMethod F>
+    template<typename F>
+    requires selection::SelectionMethod<F> && std::is_final_v<F>
     void GaInfo::selection_method(F&& f)
     {
         selection_method(std::make_unique<F>(std::forward<F>(f)));
@@ -272,7 +275,8 @@ namespace genetic_algorithm
         return dynamic_cast<F&>(*selection_);
     }
 
-    template<stopping::StopMethod F>
+    template<typename F>
+    requires stopping::StopMethod<F>&& std::is_final_v<F>
     void GaInfo::stop_condition(F&& f)
     {
         stop_condition(std::make_unique<F>(std::forward<F>(f)));

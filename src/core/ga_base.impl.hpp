@@ -72,11 +72,11 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    template<crossover::CrossoverMethod<T> F>
-    void GA<T, D>::crossover_method(const F& f)
+    template<typename F>
+    requires crossover::CrossoverMethod<F, T> && std::is_final_v<F>
+    void GA<T, D>::crossover_method(F&& f)
     {
-        static_assert(!std::is_abstract_v<F>);
-        crossover_ = std::make_unique<F>(f);
+        crossover_ = std::make_unique<F>(std::forward<F>(f));
     }
 
     template<Gene T, typename D>
@@ -116,11 +116,11 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    template<mutation::MutationMethod<T> F>
-    void GA<T, D>::mutation_method(const F& f)
+    template<typename F>
+    requires mutation::MutationMethod<F, T> && std::is_final_v<F>
+    void GA<T, D>::mutation_method(F&& f)
     {
-        static_assert(!std::is_abstract_v<F>);
-        mutation_ = std::make_unique<F>(f);
+        mutation_ = std::make_unique<F>(std::forward<F>(f));
     }
 
     template<Gene T, typename D>
