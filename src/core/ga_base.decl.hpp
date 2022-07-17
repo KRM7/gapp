@@ -78,7 +78,7 @@ namespace genetic_algorithm
         using RepairFunction = std::function<Chromosome(const Chromosome&)>;
 
         /** The type of the callback functions used in the algorithm. */
-        using Callback = std::function<void(const GA<T, Derived>&)>;
+        using CallbackFunction = std::function<void(const GA<T, Derived>&)>;
 
         /**
         * Create a genetic algorithm.
@@ -254,10 +254,10 @@ namespace genetic_algorithm
         Candidates continueFor(size_t num_generations);
 
         /** This function will be called exactly once at the end of each generation. */
-        Callback endOfGenerationCallback = nullptr;
+        CallbackFunction endOfGenerationCallback = nullptr;
 
         /** This function will be called exactly once at the end of a run. */
-        Callback endOfRunCallback = nullptr;
+        CallbackFunction endOfRunCallback = nullptr;
 
     protected:
 
