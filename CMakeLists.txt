@@ -4,11 +4,13 @@ project(GeneticAlgorithm VERSION 0.1 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 
-option(GA_ENABLE_TESTS "Enable the tests for the library." OFF) # TODO
-option(GA_ENABLE_EXAMPLES "Enable building the examples for the library." OFF)
+option(GA_ENABLE_TESTING "Enable the tests for the library." OFF) # TODO
+option(GA_ENABLE_EXAMPLES "Enable building the examples for the library." OFF) # TODO
+option(GA_ENABLE_WERROR "Treat warnings as errors during the build." ON)
 option(GA_ENABLE_LTO "Enable link time optimizations for the library." ON)
 option(GA_ENABLE_MARCH_NATIVE "Add -march=native option to release builds when using gcc or clang." ON)
 option(GA_ENABLE_LINK_TBB "Add -ltbb option when using gcc (needed for parallel stl algorithms when using gcc)." ON)
+#option(GA_ENABLE_EXCEPTIONS "Enable exceptions in the library." ON)
 
 
 # Set the output directory for the build files
@@ -21,16 +23,24 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release)$")
 endif()
 
 
-# Compiler/linker flags
+# Compiler/linker setup
 if(MSVC) # MSVC style compiler interface
-    set(CMAKE_CXX_FLAGS "-std:c++latest -permissive- -Zc:preprocessor -Zc:rvalueCast -W4 -WX -TP -MP -MD -fp:precise -EHsc")
+    set(GA_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471")
+    if(GA_ENABLE_WERROR)
+        set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -WX")
+    endif()
+    set(CMAKE_CXX_FLAGS "${GA_DEFINES} -std:c++latest -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -fp:precise -EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "-Od -ZI -RTC1")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar")
     if(GA_ENABLE_LTO)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -GL -LTCG")
     endif()
 else() # GNU style compiler interface
-    set(CMAKE_CXX_FLAGS "-std=c++20 -Wall -Wextra -Wshadow -Wpedantic -pedantic-errors -Werror")
+    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wlogical-op -Wnull-dereference")
+    if(GA_ENABLE_WERROR)
+        set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Werror -pedantic-errors")
+    endif()
+    set(CMAKE_CXX_FLAGS "${GA_DEFINES} -std=c++20 ${GA_WARN_FLAGS}")
     set(CMAKE_CXX_FLAGS_DEBUG "-Og")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3")
     if (GA_ENABLE_LTO)
@@ -72,7 +82,7 @@ install(EXPORT GeneticAlgorithmConfig
 
 
 # Benchmarks / tests
-if(GA_ENABLE_TESTS)
+if(GA_ENABLE_TESTING)
     add_subdirectory("test")
 endif()
 
