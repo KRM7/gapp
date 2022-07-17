@@ -1,6 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "ga_info.hpp"
+#include <utility>
 #include <stdexcept>
 
 namespace genetic_algorithm

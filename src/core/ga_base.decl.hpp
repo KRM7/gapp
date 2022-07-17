@@ -258,6 +258,10 @@ namespace genetic_algorithm
 
     protected:
 
+        void setDefaultAlgorithm();
+
+    private:
+
         Population population_;
         Candidates solutions_;
 
@@ -266,9 +270,9 @@ namespace genetic_algorithm
         std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
         RepairFunction repair_ = nullptr;
 
-        void setDefaultAlgorithm();
-
         void initializeAlgorithm();
+        [[nodiscard]] size_t findNumObjectives(const FitnessFunction& f) const;
+        [[nodiscard]] Candidate generateCandidate() const;
         [[nodiscard]] Population generatePopulation(size_t pop_size) const;
         void prepareSelections() const;
         [[nodiscard]] const Candidate& select() const;
@@ -283,15 +287,23 @@ namespace genetic_algorithm
         void updateOptimalSolutions(Candidates& optimal_sols, const Population& pop) const;
 
         void advance();
-        
-    private:
 
         Derived& derived() noexcept;
         const Derived& derived() const noexcept;
-        [[nodiscard]] Candidate generateCandidate() const;
-        [[nodiscard]] size_t findNumObjectives(const FitnessFunction& f) const;
 
         bool fitnessMatrixIsValid() const noexcept;
+
+        /* Make the protected fields of GaInfo private. */
+        using GaInfo::fitness_matrix_;
+        using GaInfo::selection_;
+        using GaInfo::stop_condition_;
+        using GaInfo::num_fitness_evals_;
+        using GaInfo::generation_cntr_;
+        using GaInfo::num_objectives_;
+        using GaInfo::chrom_len_;
+        using GaInfo::population_size_;
+        using GaInfo::max_gen_;
+        using GaInfo::can_continue_;
     };
 
     /** Genetic algorithm types. */

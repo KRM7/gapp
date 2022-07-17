@@ -20,13 +20,13 @@ namespace genetic_algorithm
     {
         setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());
-        mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / chrom_len_));
+        mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / this->chrom_len()));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     BinaryGA::Candidate BinaryGA::generateCandidate() const
     {
-        Candidate solution(chrom_len_);
+        Candidate solution(this->chrom_len());
         std::generate(solution.chromosome.begin(), solution.chromosome.end(), rng::randomBool);
 
         return solution;

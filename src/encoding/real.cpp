@@ -19,7 +19,7 @@ namespace genetic_algorithm
         this->limits(bounds);
         setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::real::Wright>());
-        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len_));
+        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
@@ -37,7 +37,7 @@ namespace genetic_algorithm
 
     void RCGA::limits(const Bounds& limits)
     {
-        if (limits.size() != chrom_len_)
+        if (limits.size() != this->chrom_len())
         {
             throw std::invalid_argument("The number of limits must be equal to the chromosome length.");
         }
@@ -51,7 +51,7 @@ namespace genetic_algorithm
 
     void RCGA::limits(const std::pair<GeneType, GeneType>& limits)
     {
-        this->limits(std::vector(chrom_len_, limits));
+        this->limits(std::vector(this->chrom_len(), limits));
     }
 
     const RCGA::Bounds& RCGA::limits() const& noexcept
@@ -61,9 +61,9 @@ namespace genetic_algorithm
 
     RCGA::Candidate RCGA::generateCandidate() const
     {
-        assert(chrom_len_ == limits_.size());
+        assert(this->chrom_len() == limits_.size());
 
-        Candidate solution(chrom_len_);
+        Candidate solution(this->chrom_len());
         for (size_t i = 0; i < solution.chromosome.size(); i++)
         {
             solution.chromosome[i] = rng::randomReal(limits_[i].first, limits_[i].second);

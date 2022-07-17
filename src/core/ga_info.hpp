@@ -79,7 +79,7 @@ namespace genetic_algorithm
         */
         void chrom_len(size_t len);
 
-        /** @returns The Chromosome size used for the Candidates of the Population. */
+        /** @returns The Chromosome length used for the Candidates of the Population. */
         [[nodiscard]]
         size_t chrom_len() const noexcept;
 

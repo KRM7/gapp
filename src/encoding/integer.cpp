@@ -23,7 +23,7 @@ namespace genetic_algorithm
         this->base(base);
         setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::integer::TwoPoint>());
-        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len_));
+        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / this->chrom_len()));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
@@ -41,7 +41,7 @@ namespace genetic_algorithm
 
     IntegerGA::Candidate IntegerGA::generateCandidate() const
     {
-        Candidate solution(chrom_len_);
+        Candidate solution(this->chrom_len());
         std::generate(solution.chromosome.begin(), solution.chromosome.end(),
         [this]
         {
