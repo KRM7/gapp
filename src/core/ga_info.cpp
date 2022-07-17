@@ -51,21 +51,6 @@ namespace genetic_algorithm
         this->chrom_len(chrom_len);
     }
 
-    const GaInfo::FitnessMatrix& GaInfo::fitness_matrix() const& noexcept
-    {
-        return fitness_matrix_;
-    }
-
-    size_t GaInfo::num_fitness_evals() const noexcept
-    {
-        return num_fitness_evals_.load();
-    }
-
-    size_t GaInfo::generation_cntr() const noexcept
-    {
-        return generation_cntr_;
-    }
-
     void GaInfo::chrom_len(size_t len)
     {
         if (len == 0) throw std::invalid_argument("The chromosome length must be at least 1.");
@@ -73,31 +58,11 @@ namespace genetic_algorithm
         chrom_len_ = len;
     }
 
-    size_t GaInfo::chrom_len() const noexcept
-    {
-        return chrom_len_;
-    }
-
     void GaInfo::population_size(size_t size)
     {
         if (size == 0) throw std::invalid_argument("The population size must be at least 1.");
 
         population_size_ = size;
-    }
-
-    size_t GaInfo::population_size() const noexcept
-    {
-        return population_size_;
-    }
-
-    size_t GaInfo::max_gen() const noexcept
-    {
-        return max_gen_;
-    }
-
-    size_t GaInfo::num_objectives() const noexcept
-    {
-        return num_objectives_;
     }
 
     void GaInfo::max_gen(size_t max_gen)

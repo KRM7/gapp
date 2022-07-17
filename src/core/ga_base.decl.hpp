@@ -223,7 +223,7 @@ namespace genetic_algorithm
         * found during the run, updated in every generation.
         */
         [[nodiscard]]
-        Candidates solutions() const noexcept;
+        const Candidates& solutions() const noexcept { return solutions_; }
 
         /**
         * @returns The current population of the algorithm.
@@ -231,7 +231,7 @@ namespace genetic_algorithm
         * and may also contain non pareto-optimal solutions).
         */
         [[nodiscard]]
-        Population population() const noexcept;
+        const Population& population() const noexcept { return population_; }
 
         /**
         * Run the genetic algorithm for a set number of generations. \n
@@ -246,6 +246,7 @@ namespace genetic_algorithm
         * Continue running the genetic algorithm for the set number of generations. \n
         * The algorithm can only continue if run has already been called at least once,
         * and the selection_method hasn't been changed since then.
+        * (Otherwise this function will behave the same as calling run().)
         *
         * @param num_generations The number of generations to run the algorithm for.
         * @returns The optimal solutions.

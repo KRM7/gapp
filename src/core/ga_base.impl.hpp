@@ -169,18 +169,6 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    auto GA<T, D>::solutions() const noexcept -> Population
-    {
-        return solutions_;
-    }
-
-    template<Gene T, typename D>
-    auto GA<T, D>::population() const noexcept -> Population
-    {
-        return population_;
-    }
-
-    template<Gene T, typename D>
     bool GA<T, D>::fitnessMatrixIsValid() const noexcept
     {
         if (fitness_matrix_.size() != population_.size() ||

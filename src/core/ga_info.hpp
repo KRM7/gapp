@@ -81,7 +81,7 @@ namespace genetic_algorithm
 
         /** @returns The Chromosome length used for the Candidates of the Population. */
         [[nodiscard]]
-        size_t chrom_len() const noexcept;
+        size_t chrom_len() const noexcept { return chrom_len_; }
 
         /**
         * Set the number of Candidates used in the Population. \n
@@ -93,15 +93,15 @@ namespace genetic_algorithm
 
         /** @returns The number of Candidates in the Population. */
         [[nodiscard]]
-        size_t population_size() const noexcept;
+        size_t population_size() const noexcept { return population_size_; }
 
         /** @returns The maximum number of generations set for the algorithm. */
         [[nodiscard]]
-        size_t max_gen() const noexcept;
+        size_t max_gen() const noexcept { return max_gen_; }
 
         /** @returns The number of objectives as determined by the algorithm based on the fitness function. */
         [[nodiscard]]
-        size_t num_objectives() const noexcept;
+        size_t num_objectives() const noexcept { return num_objectives_; }
 
         /**
         * @returns The fitness matrix of the population.
@@ -109,15 +109,15 @@ namespace genetic_algorithm
         * Eg. fmat[0] is the fitness vector of the first member of the population.
         */
         [[nodiscard]]
-        const FitnessMatrix& fitness_matrix() const& noexcept;
+        const FitnessMatrix& fitness_matrix() const noexcept { return fitness_matrix_; }
 
         /** @returns The number of fitness evaluations performed by the algorithm. This value is updated after every objective function evaluation. */
         [[nodiscard]]
-        size_t num_fitness_evals() const noexcept;
+        size_t num_fitness_evals() const noexcept { return num_fitness_evals_.load(); }
 
         /** @returns The current generation's number. */
         [[nodiscard]]
-        size_t generation_cntr() const noexcept;
+        size_t generation_cntr() const noexcept { return generation_cntr_; }
         
         /**
         * Set the crossover rate of the crossover operator used by the algorithm.
