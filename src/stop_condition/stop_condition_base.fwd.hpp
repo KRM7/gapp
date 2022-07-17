@@ -13,7 +13,6 @@ namespace genetic_algorithm::stopping
     concept StopMethod = requires
     {
         requires std::derived_from<T, StopCondition>;
-        requires std::copy_constructible<T>;
     };
 
 } // namespace genetic_algorithm::stopping

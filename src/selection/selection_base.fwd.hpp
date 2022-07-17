@@ -13,7 +13,6 @@ namespace genetic_algorithm::selection
     concept SelectionMethod = requires
     {
         requires std::derived_from<T, Selection>;
-        requires std::copy_constructible<T>;
     };
 
 

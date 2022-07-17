@@ -16,7 +16,6 @@ namespace genetic_algorithm::mutation
     {
         requires Gene<G>;
         requires std::derived_from<T, Mutation<G>>;
-        requires std::copy_constructible<T>;
     };
 
 } // namespace genetic_algorithm::mutation

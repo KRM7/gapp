@@ -16,7 +16,6 @@ namespace genetic_algorithm::crossover
     {
         requires Gene<G>;
         requires std::derived_from<T, Crossover<G>>;
-        requires std::copy_constructible<T>;
     };
 
 } // namespace genetic_algorithm::crossover
