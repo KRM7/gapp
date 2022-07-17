@@ -129,7 +129,7 @@ namespace genetic_algorithm
     {
         if (!f) throw std::invalid_argument("The mutation method can't be a nullptr.");
         /* Nullptr could be allowed here to disable mutations, but the better way to disable them
-         * would be to set the mutation_rate to 0.0 */
+         * would be to set the mutation_rate to 0 */
 
         mutation_ = std::move(f);
     }
@@ -164,7 +164,7 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::repair_function(const RepairFunction& f)
     {
-        /* Nullptr is fine here */
+        /* Nullptr is fine here, it just won't be called */
         repair_ = f;
     }
 
