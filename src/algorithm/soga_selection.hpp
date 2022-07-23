@@ -3,7 +3,7 @@
 #ifndef GA_ALGORITHM_SOGA_SELECTION_HPP
 #define GA_ALGORITHM_SOGA_SELECTION_HPP
 
-#include "../core/ga_info.hpp"
+#include "algorithm.fwd.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <utility>
@@ -17,6 +17,8 @@ namespace genetic_algorithm
     class GaInfo;
 }
 
+namespace genetic_algorithm::selection_
+{
     /**
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.
     * The probability of selecting an individual from the population is proportional to it's fitness value.
@@ -27,7 +29,7 @@ namespace genetic_algorithm
     class Roulette
     {
     public:
-        void initialize(const GaInfo&) {}
+        void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
         size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
 
@@ -64,7 +66,7 @@ namespace genetic_algorithm
         [[nodiscard]]
         size_t size() const noexcept { return tourney_size_; }
 
-        void initialize(const GaInfo&) {}
+        void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
         size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
 
@@ -130,7 +132,7 @@ namespace genetic_algorithm
         [[nodiscard]]
         std::pair<double, double> weights() const noexcept { return { min_weight_, max_weight_ }; }
 
-        void initialize(const GaInfo&) {}
+        void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
         size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
 
@@ -168,7 +170,7 @@ namespace genetic_algorithm
         [[nodiscard]]
         double scale() const noexcept { return scale_; }
 
-        void initialize(const GaInfo&) {}
+        void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
         size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
 
@@ -197,16 +199,16 @@ namespace genetic_algorithm
         explicit Boltzmann(TemperatureFunction f = boltzmannDefaultTemp);
 
         /**
-        * Sets the temperature function used.
+        * Set the temperature function used.
         * The temperature functions signature should be:
         *   double f(size_t current_generation, size_t max_generation)
         * and return the current temperature.
         *
         * @param f The temperature function.
         */
-        void temperature_function(TemperatureFunction f); 
+        void temperature_function(TemperatureFunction f);
         
-        void initialize(const GaInfo&) {}
+        void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
         size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
     private:
