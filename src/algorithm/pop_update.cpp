@@ -1,8 +1,10 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "pop_update.hpp"
+#include "../core/ga_info.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/math.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <numeric>
 #include <cassert>
@@ -18,6 +20,8 @@ namespace genetic_algorithm::pop_update
         assert(size_t(children_first - first) == ga.population_size());
         assert(children_first - first <= last - children_first);
 
+        GA_UNUSED(first, children_first, last);
+
         std::vector<size_t> child_indices(ga.population_size());
         std::iota(child_indices.begin(), child_indices.end(), ga.population_size());
 
@@ -29,7 +33,7 @@ namespace genetic_algorithm::pop_update
         elite_num(n);
     }
 
-    void Elitism::elite_num(size_t n)
+    void Elitism::elite_num(size_t n) noexcept
     {
         n_ = n;
     }
@@ -43,6 +47,8 @@ namespace genetic_algorithm::pop_update
         assert(size_t(children_first - first) == ga.population_size());
         assert(children_first - first <= last - children_first);
         assert(std::all_of(first, last, [](const FitnessVector& fvec) { return !fvec.empty(); }));
+
+        GA_UNUSED(last);
 
         auto sorted_parent_indices = detail::partial_argsort(first, first + n_, children_first,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
