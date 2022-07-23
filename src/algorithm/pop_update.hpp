@@ -140,9 +140,9 @@ namespace genetic_algorithm::pop_update
                                        FitnessMatrix::const_iterator children_last);
     };
 
-    static_assert(Updater<KeepChildren>);
-    static_assert(Updater<Elitism>);
-    static_assert(Updater<KeepBest>);
+    static_assert(UpdaterType<KeepChildren>);
+    static_assert(UpdaterType<Elitism>);
+    static_assert(UpdaterType<KeepBest>);
 
 } // namespace genetic_algorithm::pop_update
 

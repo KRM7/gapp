@@ -13,7 +13,7 @@ namespace genetic_algorithm::stopping
     * A stop condition that is the combination of other stop conditions, and
     * will evaluate to true if ALL of its members evaluate to true.
     */
-    template<StopMethod T1, StopMethod T2, StopMethod... Rest>
+    template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
     class OR final : public StopCondition
     {
     public:
@@ -33,7 +33,7 @@ namespace genetic_algorithm::stopping
     * A stop condition that is the combination of other stop conditions,
     * and will evaluate to true if ANY of its members evaluate to true.
     */
-    template<StopMethod T1, StopMethod T2, StopMethod... Rest>
+    template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
     class AND final : public StopCondition
     {
     public:
@@ -60,12 +60,12 @@ namespace genetic_algorithm::stopping
 
 namespace genetic_algorithm::stopping
 {
-    template<StopMethod T1, StopMethod T2, StopMethod... Rest>
+    template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
     OR<T1, T2, Rest...>::OR(T1 first, T2 second, Rest... rest)
         : StopCondition(), parts_(std::move(first), std::move(second), std::move(rest)...)
     {}
 
-    template<StopMethod T1, StopMethod T2, StopMethod... Rest>
+    template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
     bool OR<T1, T2, Rest...>::stop_condition(const GaInfo& ga)
     {
         /* All of the member stop conditions should be evaluated, so avoid short circuits with logical ops. */
@@ -73,12 +73,12 @@ namespace genetic_algorithm::stopping
         return detail::transform_reduce(parts_, false, [&ga](auto&& part) { return part(ga); }, std::plus<bool>{});
     }
 
-    template<StopMethod T1, StopMethod T2, StopMethod... Rest>
+    template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
     AND<T1, T2, Rest...>::AND(T1 first, T2 second, Rest... rest)
         : StopCondition(), parts_(std::move(first), std::move(second), std::move(rest)...)
     {}
 
-    template<StopMethod T1, StopMethod T2, StopMethod... Rest>
+    template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
     bool AND<T1, T2, Rest...>::stop_condition(const GaInfo& ga)
     {
         /* All of the member stop conditions should be evaluated, so avoid short circuits with logical ops. */

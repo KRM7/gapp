@@ -13,7 +13,7 @@ namespace genetic_algorithm
     class GaInfo;
 }
 
-/** Selection methods for the genetic algorithms. */
+/** SelectionType methods for the genetic algorithms. */
 namespace genetic_algorithm::selection
 {
     /**

@@ -25,11 +25,11 @@ namespace genetic_algorithm::algorithm
     * for the next generation of the algorithm from the combined parent and child populations
     * of the current generation.
     * 
-    * @tparam Selection The type of the selection method used.
+    * @tparam SelectionType The type of the selection method used.
     * @tparam Updater The type of the population update method used.
     */
-    template<selection_::Selection Selection = selection_::Tournament,
-             pop_update::Updater PopUpdater  = pop_update::KeepBest>
+    template<selection_::SelectionType Selection = selection_::Tournament,
+             pop_update::UpdaterType PopUpdater  = pop_update::KeepBest>
     class SingleObjective final : public Algorithm
     {
     public:

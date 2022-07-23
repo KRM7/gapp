@@ -218,11 +218,11 @@ namespace genetic_algorithm::selection_
         static double boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept;
     };
 
-    static_assert(Selection<Roulette>);
-    static_assert(Selection<Tournament>);
-    static_assert(Selection<Rank>);
-    static_assert(Selection<Sigma>);
-    static_assert(Selection<Boltzmann>);
+    static_assert(SelectionType<Roulette>);
+    static_assert(SelectionType<Tournament>);
+    static_assert(SelectionType<Rank>);
+    static_assert(SelectionType<Sigma>);
+    static_assert(SelectionType<Boltzmann>);
 
 } // namespace genetic_algorithm::selection
 

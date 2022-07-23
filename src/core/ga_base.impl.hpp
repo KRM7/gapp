@@ -78,14 +78,14 @@ namespace genetic_algorithm
 
     template<Gene T, typename D>
     template<typename F>
-    requires crossover::CrossoverMethod<F, T> && std::is_final_v<F>
+    requires crossover::CrossoverType<F, T> && std::is_final_v<F>
     void GA<T, D>::crossover_method(F&& f)
     {
         crossover_ = std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f));
     }
 
     template<Gene T, typename D>
-    template<crossover::CrossoverMethod<T> F>
+    template<crossover::CrossoverType<T> F>
     void GA<T, D>::crossover_method(std::unique_ptr<F>&& f)
     {
         if (!f) throw std::invalid_argument("The crossover method can't be a nullptr.");
@@ -102,7 +102,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    template<crossover::CrossoverMethod<T> F>
+    template<crossover::CrossoverType<T> F>
     F& GA<T, D>::crossover_method() &
     {
         return dynamic_cast<F&>(*crossover_);
@@ -122,14 +122,14 @@ namespace genetic_algorithm
 
     template<Gene T, typename D>
     template<typename F>
-    requires mutation::MutationMethod<F, T> && std::is_final_v<F>
+    requires mutation::MutationType<F, T> && std::is_final_v<F>
     void GA<T, D>::mutation_method(F&& f)
     {
         mutation_ = std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f));
     }
 
     template<Gene T, typename D>
-    template<mutation::MutationMethod<T> F>
+    template<mutation::MutationType<T> F>
     void GA<T, D>::mutation_method(std::unique_ptr<F>&& f)
     {
         if (!f) throw std::invalid_argument("The mutation method can't be a nullptr.");
@@ -146,7 +146,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    template<mutation::MutationMethod<T> F>
+    template<mutation::MutationType<T> F>
     F& GA<T, D>::mutation_method() &
     {
         return dynamic_cast<F&>(*mutation_);

@@ -173,7 +173,7 @@ namespace genetic_algorithm
         */
         template<typename S, typename U>
         requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
-                  pop_update::Updater<U> && !std::derived_from<U, algorithm::Algorithm>)
+                  pop_update::UpdaterType<U> && !std::derived_from<U, algorithm::Algorithm>)
         void algorithm(S&& selection, U&& updater);
 
         /**
@@ -296,11 +296,11 @@ namespace genetic_algorithm
 
     template<typename S, typename U>
     requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
-              pop_update::Updater<U> && !std::derived_from<U, algorithm::Algorithm>)
+              pop_update::UpdaterType<U> && !std::derived_from<U, algorithm::Algorithm>)
     void GaInfo::algorithm(S&& selection, U&& updater)
     {
         using AlgoType = typename algorithm::SingleObjective<std::remove_reference_t<S>, std::remove_reference_t<U>>;
-        algorithm = std::make_unique<AlgoType>(std::forward<S>(selection), std::forward<U>(updater));
+        algorithm_ = std::make_unique<AlgoType>(std::forward<S>(selection), std::forward<U>(updater));
         can_continue_ = false;
     }
 
