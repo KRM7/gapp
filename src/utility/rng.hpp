@@ -17,13 +17,13 @@
 namespace genetic_algorithm::rng
 {
     /**  Splitmix64 PRNG adapted from https://prng.di.unimi.it/splitmix64.c */
-    class Splitmix64
+    class AtomicSplitmix64
     {
     public:
         using result_type = uint64_t;
         using state_type = uint64_t;
 
-        explicit constexpr Splitmix64(state_type seed) noexcept;
+        explicit constexpr AtomicSplitmix64(state_type seed) noexcept;
 
         result_type operator()() noexcept;
 
@@ -35,7 +35,7 @@ namespace genetic_algorithm::rng
     };
 
     /** The PRNG type used in the genetic algorithms. */
-    using PRNG = Splitmix64;
+    using PRNG = AtomicSplitmix64;
 
     /** PRNG instance used in the genetic algorithms. */
     inline PRNG prng{ GA_SEED };
@@ -107,11 +107,11 @@ namespace genetic_algorithm::rng
 
 namespace genetic_algorithm::rng
 {
-    constexpr inline Splitmix64::Splitmix64(state_type seed) noexcept
+    constexpr inline AtomicSplitmix64::AtomicSplitmix64(state_type seed) noexcept
         : state_(seed)
     {}
 
-    inline Splitmix64::result_type Splitmix64::operator()() noexcept
+    inline AtomicSplitmix64::result_type AtomicSplitmix64::operator()() noexcept
     {
         result_type z = state_.fetch_add(0x9e3779b97f4a7c15, std::memory_order::acquire) + 0x9e3779b97f4a7c15;
         z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
@@ -120,12 +120,12 @@ namespace genetic_algorithm::rng
         return z ^ (z >> 31);
     }
 
-    inline constexpr Splitmix64::result_type Splitmix64::min() noexcept
+    inline constexpr AtomicSplitmix64::result_type AtomicSplitmix64::min() noexcept
     {
         return std::numeric_limits<result_type>::min();
     }
 
-    inline constexpr Splitmix64::result_type Splitmix64::max() noexcept
+    inline constexpr AtomicSplitmix64::result_type AtomicSplitmix64::max() noexcept
     {
         return std::numeric_limits<result_type>::max();
     }
