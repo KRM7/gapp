@@ -1,6 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "soga_selection.hpp"
+#include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/algorithm.hpp"
@@ -173,6 +174,13 @@ namespace genetic_algorithm::selection_
     Boltzmann::Boltzmann(TemperatureFunction f)
         : temperature_(std::move(f))
     {
+    }
+
+    void Boltzmann::temperature_function(TemperatureFunction f)
+    {
+        if (!f) throw std::invalid_argument("The temperature function can't be a nullptr.");
+
+        temperature_ = std::move(f);
     }
 
     void Boltzmann::prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat)
