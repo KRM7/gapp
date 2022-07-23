@@ -7,7 +7,7 @@
 namespace genetic_algorithm
 {
     GaInfo::GaInfo(GaInfo&& other) noexcept :
-        selection_(std::move(other.selection_)),
+        algorithm_(std::move(other.algorithm_)),
         stop_condition_(std::move(other.stop_condition_)),
         num_fitness_evals_(other.num_fitness_evals_.load()),
         generation_cntr_(other.generation_cntr_),
@@ -22,7 +22,7 @@ namespace genetic_algorithm
     {
         if (&other != this)
         {
-            selection_ = std::move(other.selection_);
+            algorithm_ = std::move(other.algorithm_);
             stop_condition_ = std::move(other.stop_condition_);
 
             num_fitness_evals_ = other.num_fitness_evals_.load();

@@ -298,7 +298,7 @@ namespace genetic_algorithm
 
         /* Make the protected fields of GaInfo private. */
         using GaInfo::fitness_matrix_;
-        using GaInfo::selection_;
+        using GaInfo::algorithm_;
         using GaInfo::stop_condition_;
         using GaInfo::num_fitness_evals_;
         using GaInfo::generation_cntr_;

@@ -5,7 +5,9 @@
 
 #include "ga_base.decl.hpp"
 #include "../population/population.hpp"
-#include "../selection/selection.hpp"
+#include "../algorithm/algorithm_base.hpp"
+#include "../algorithm/single_objective.hpp"
+#include "../algorithm/nsga3.hpp"
 #include "../crossover/crossover_base.hpp"
 #include "../crossover/lambda.hpp"
 #include "../mutation/mutation_base.hpp"
@@ -207,15 +209,15 @@ namespace genetic_algorithm
         num_objectives(findNumObjectives(fitness_function_));
 
         (num_objectives_ == 1) ?
-            selection_method(std::make_unique<selection::single_objective::Tournament>()) :
-            selection_method(std::make_unique<selection::multi_objective::NSGA3>());
+            algorithm(std::make_unique<algorithm::SingleObjective<selection_::Tournament, pop_update::KeepBest>>()) :
+            algorithm(std::make_unique<algorithm::NSGA3>());
     }
 
     template<Gene T, typename D>
     void GA<T, D>::initializeAlgorithm()
     {
         assert(fitness_function_);
-        assert(selection_ && crossover_ && mutation_ && stop_condition_);
+        assert(algorithm_ && crossover_ && mutation_ && stop_condition_);
 
         /* The number of objectives is determined from the return value of the fitness func,
         *  this assumes that the returned vector will always be the same size during a run.
@@ -237,10 +239,10 @@ namespace genetic_algorithm
         population_ = generatePopulation(population_size_);
         fitness_matrix_ = evaluatePopulation(population_);
 
-        /* Initialize the selection method.
+        /* Initialize the algorithm used.
          * This must be done after the initial population has been created and evaluted,
          * as it might want to use the population's fitness values (fitness_matrix_). */
-        (*selection_).init(*this);
+        (*algorithm_).initialize(*this);
     }
 
     template<Gene T, typename D>
@@ -269,13 +271,13 @@ namespace genetic_algorithm
     {
         assert(fitnessMatrixIsValid());
 
-        (*selection_).prepare(*this, fitness_matrix());
+        (*algorithm_).prepareSelections(*this, fitness_matrix());
     }
 
     template<Gene T, typename D>
     auto GA<T, D>::select() const -> const Candidate&
     {
-        size_t idx = (*selection_).select(*this, fitness_matrix());
+        size_t idx = (*algorithm_).select(*this, fitness_matrix());
         assert(idx < population_.size());
 
         return population_[idx];
@@ -322,7 +324,7 @@ namespace genetic_algorithm
         
         assert(fitnessMatrixIsValid());
 
-        auto next_indices = (*selection_).nextPopulation(*this, fitness_matrix_);
+        auto next_indices = (*algorithm_).nextPopulation(*this, fitness_matrix_.begin(), fitness_matrix_.begin() + population_size_, fitness_matrix_.end());
 
         current_pop = detail::map(next_indices, [&current_pop](size_t idx) { return current_pop[idx]; });
         fitness_matrix_ = detail::map(next_indices, [this](size_t idx) { return fitness_matrix_[idx]; });

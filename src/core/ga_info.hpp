@@ -4,7 +4,7 @@
 #define GA_CORE_GA_INFO_HPP
 
 #include "../population/population.hpp"
-#include "../selection/selection_base.fwd.hpp"
+#include "../algorithm/algorithm.fwd.hpp"
 #include "../stop_condition/stop_condition_base.fwd.hpp"
 #include <vector>
 #include <atomic>
@@ -15,8 +15,7 @@ namespace genetic_algorithm
 {
     /**
     * Base class that all GAs are derived from. \n
-    * Contains all of the general information about a GA that does not depend
-    * on the encoding (gene) type. \n
+    * Contains all of the general information about a GA that does not depend on the encoding (gene) type. \n
     * Move-only.
     */
     class GaInfo
@@ -142,32 +141,42 @@ namespace genetic_algorithm
         virtual double mutation_rate() const noexcept = 0;
 
         /**
-        * Set the selection method used in the algorithm. \n
-        * The selection method will also determine the type of the algorithm (single- or multi-objective),
-        * so it must be consistent with the size of the fitness vectors returned by the fitness function.
-        * @see Selection
+        * Set the algorithm used by the GA. \n
+        * The algorithm type should be consistent with the size of the fitness vectors returned by
+        * the fitness function (single- or multi-objective).
         *
-        * @param method The selection method used in the algorithm.
+        * @param f The algorithm used by the GA.
         */
         template<typename F>
-        requires selection::SelectionMethod<F> && std::is_final_v<F>
-        void selection_method(F&& f);
+        requires algorithm::AlgorithmType<F> && std::is_final_v<F>
+        void algorithm(F&& f);
 
         /**
-        * Set the selection method used in the algorithm. \n
-        * The selection method will also determine the type of the algorithm (single- or multi-objective),
-        * so it must be consistent with the size of the fitness vectors returned by the fitness function.
-        * @see Selection
+        * Set the algorithm used by the GA to a single-objective algorithm that uses the
+        * @p selection as its selection method and the default population update method. \n
+        * The algorithm type should be consistent with the size of the fitness vectors returned by
+        * the fitness function (single- or multi-objective).
         *
-        * @param method The selection method used in the algorithm.
+        * @param selection The selection method used by the algorithm of the GA.
         */
-        template<selection::SelectionMethod F>
-        void selection_method(std::unique_ptr<F>&& f);
+        template<typename S>
+        requires (selection_::Selection<S> && !std::derived_from<S, algorithm::Algorithm>)
+        void algorithm(S&& selection);
 
-        /** @returns The selection method used by the algorithm, cast to type @p F. */
-        template<selection::SelectionMethod F = selection::Selection>
+        /**
+        * Set the algorithm used by the GA. \n
+        * The algorithm type should be consistent with the size of the fitness vectors returned by
+        * the fitness function (single- or multi-objective).
+        *
+        * @param f The algorithm used by the GA.
+        */
+        template<algorithm::AlgorithmType F>
+        void algorithm(std::unique_ptr<F>&& f);
+
+        /** @returns The algorithm used by the GA, cast to @p F. */
+        template<algorithm::AlgorithmType F = algorithm::Algorithm>
         [[nodiscard]]
-        F& selection_method() &;
+        F& algorithm() &;
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
@@ -222,7 +231,7 @@ namespace genetic_algorithm
 
         FitnessMatrix fitness_matrix_;
 
-        std::unique_ptr<selection::Selection> selection_;
+        std::unique_ptr<algorithm::Algorithm> algorithm_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
 
         std::atomic<size_t> num_fitness_evals_ = 0;
@@ -246,7 +255,8 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
-#include "../selection/selection_base.hpp"
+#include "../algorithm/algorithm_base.hpp"
+#include "../algorithm/single_objective.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
 #include <type_traits>
 #include <utility>
@@ -255,25 +265,35 @@ namespace genetic_algorithm
 namespace genetic_algorithm
 {
     template<typename F>
-    requires selection::SelectionMethod<F> && std::is_final_v<F>
-    void GaInfo::selection_method(F&& f)
+    requires algorithm::AlgorithmType<F> && std::is_final_v<F>
+    void GaInfo::algorithm(F&& f)
     {
-        selection_method(std::make_unique<F>(std::forward<F>(f)));
-    }
-
-    template<selection::SelectionMethod F>
-    void GaInfo::selection_method(std::unique_ptr<F>&& f)
-    {
-        if (!f) throw std::invalid_argument("The selection method can't be a nullptr.");
-
-        selection_ = std::move(f);
+        algorithm_ = std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f));
         can_continue_ = false;
     }
 
-    template<selection::SelectionMethod F>
-    F& GaInfo::selection_method() &
+    template<typename S>
+    requires (selection_::Selection<S> && !std::derived_from<S, algorithm::Algorithm>)
+    void GaInfo::algorithm(S&& selection)
     {
-        return dynamic_cast<F&>(*selection_);
+        using AlgoType = typename algorithm::SingleObjective<std::remove_reference_t<S>>;
+        algorithm_ = std::make_unique<AlgoType>(std::forward<S>(selection));
+        can_continue_ = false;
+    }
+
+    template<algorithm::AlgorithmType F>
+    void GaInfo::algorithm(std::unique_ptr<F>&& f)
+    {
+        if (!f) throw std::invalid_argument("The algorithm can't be a nullptr.");
+
+        algorithm_ = std::move(f);
+        can_continue_ = false;
+    }
+
+    template<algorithm::AlgorithmType F>
+    F& GaInfo::algorithm() &
+    {
+        return dynamic_cast<F&>(*algorithm_);
     }
 
     template<typename F>
