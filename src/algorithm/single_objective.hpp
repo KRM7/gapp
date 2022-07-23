@@ -4,45 +4,76 @@
 #define GA_ALGORITHM_SINGLE_OBJECTIVE_HPP
 
 #include "algorithm_base.hpp"
-#include "population_update.hpp"
+#include "soga_selection.hpp"
+#include "pop_update.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
+#include <utility>
 #include <cstddef>
 
 namespace genetic_algorithm::algorithm
 {
-    template<typename Selection, population_update::Updater PopulationUpdate> // concept for selections
+    /**
+    * A generic algorithm for single-objective optimization. \n
+    * The algorithm combines a selection method and a population update
+    * method. The selection method is used to select candidates from the populations
+    * for crossover, while the population update method is used to create the population
+    * for the next generation of the algorithm from the combined parent and child populations
+    * of the current generation.
+    * 
+    * @tparam Selection The type of the selection method used.
+    * @tparam Updater The type of the population update method used.
+    */
+    template<selection_::Selection Selection, pop_update::Updater PopUpdater>
     class SingleObjective final : public Algorithm
     {
     public:
+        /**
+        * Create a single objective algorithm.
+        * 
+        * @param selection The selection method to use in the algorithm.
+        * @param updater The method used to update the populations between generations of the algorithm.
+        */
+        SingleObjective(Selection selection = selection_::Tournament{},
+                        PopUpdater updater  = pop_update::KeepBest{})
+            : selection_(std::move(selection)), updater_(std::move(updater))
+        {}
 
-        SingleObjective(Selection selection, PopulationUpdate pop_update = population_update::KeepBest{}); // default tourney + keepBest
+        /** @returns The selection method of the algorithm. */
+        [[nodiscard]]
+        Selection& selection_method() const noexcept { return selection_; }
 
-        void init(const GaInfo& ga) override
+        /** @returns The population update method of the algorithm. */
+        [[nodiscard]]
+        PopUpdater& update_method() const noexcept { return updater_; }
+
+
+        void initialize(const GaInfo& ga) override
         {
-            selection_.init(ga); // maybe pass algo as 2nd ctxt, probably unnecessary
+            selection_.initialize(ga);
         }
 
-        void prepare(const GaInfo& ga, const FitnessMatrix& population_fmat) override
+        void prepareSelections(const GaInfo& ga, const FitnessMatrix& population_fmat) override
         {
-            selection_.prepare(ga, population_fmat); // maybe pass algo as 2nd ctxt
+            selection_.prepareSelections(ga, population_fmat);
         }
 
         size_t select(const GaInfo& ga, const FitnessMatrix& population_fmat) override
         {
-            return selection_.select(ga, population_fmat); // maybe pass algo as 2nd ctxt
+            return selection_.select(ga, population_fmat);
         }
 
-        std::vector<size_t> nextPopulation(const GaInfo& ga, const FitnessMatrix& population_fmat) override // TODO: params should be iterators
+        std::vector<size_t> nextPopulation(const GaInfo& ga,
+                                           FitnessMatrix::const_iterator first,
+                                           FitnessMatrix::const_iterator children_first,
+                                           FitnessMatrix::const_iterator last) override
         {
-            return update_.nextPopulation(ga, population_fmat); // pass comp function (default pareto comp)
+            return updater_.nextPopulation(ga, population_fmat);
         }
-
-        // selection + update getters/setters
 
     private:
         Selection selection_;
-        PopulationUpdate update_;
+        PopUpdater updater_;
     };
 
 } // namespace genetic_algorithm::algorithm
