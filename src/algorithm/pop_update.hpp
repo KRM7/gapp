@@ -3,37 +3,21 @@
 #ifndef GA_ALGORITHM_POP_UPDATE_HPP
 #define GA_ALGORITHM_POP_UPDATE_HPP
 
+#include "algorithm.fwd.hpp"
 #include "../population/population.hpp"
-#include "../core/ga_info.hpp"
 #include <concepts>
 #include <type_traits>
 #include <vector>
 #include <cstddef>
 
+namespace genetic_algorithm
+{
+    class GaInfo;
+}
+
 /** Predefined methods used to update the populations in each generation of the algorithms. */
 namespace genetic_algorithm::pop_update
 {
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
-
-    /**
-     * Concept specifying the interface required for the population update methods. \n
-     * 
-     * The method should be callable with a const& to a GaInfo object, and the FitnessMatrix
-     * of the combined parent and child populations specified by 3 iterators:
-     * [parents_first, ... , children_first, ... , children_last),
-     * and return the indices of the candidates selected for the next generation's population,
-     * assuming that parents_first points to the idx 0.
-     */
-    template<typename T>
-    concept Updater = requires(T updater, const GaInfo& ga, FitnessMatrix::const_iterator it)
-    {
-        requires std::copyable<std::decay_t<T>>;
-        requires std::destructible<std::decay_t<T>>;
-
-        { updater(ga, it, it, it) } -> std::same_as<std::vector<size_t>>;
-    };
-
     /**
     * A population update method that selects only the child Candidates from the
     * combined parent and child populations, and uses these as the population of
@@ -93,7 +77,7 @@ namespace genetic_algorithm::pop_update
         * @param n The number of the best parents that will be carried over to the next
         *          generation of the algorithm.
         */
-        void elite_num(size_t n);
+        void elite_num(size_t n) noexcept;
 
         /** @returns The number of elites used. */
         [[nodiscard]]
