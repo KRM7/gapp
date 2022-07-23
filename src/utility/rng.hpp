@@ -85,9 +85,9 @@ namespace genetic_algorithm::rng
     /** Generates a random boolean value from a uniform distribution. */
     inline bool randomBool() noexcept;
 
-    /** Generates n unique integers from the range [l_bound, u_bound). */
+    /** Generates k unique integers from the range [l_bound, u_bound). */
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t n);
+    std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t k);
 
     /** Sample a point from a uniform distribution on a unit simplex in dim dimensions. */
     inline std::vector<double> randomSimplexPoint(size_t dim);
@@ -231,23 +231,27 @@ namespace genetic_algorithm::rng
     }
 
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t n)
+    std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t k)
     {
-        assert(n > 0);
-        assert(u_bound - l_bound >= n);
-        assert(l_bound < 0 ? (u_bound < std::numeric_limits<IntType>::max() + l_bound) : true);
+        assert(k > 0);
+        assert(u_bound - l_bound >= k);
+        assert((l_bound < 0) ? (u_bound < std::numeric_limits<IntType>::max() + l_bound) : true);
 
-        if (n == 1) return { randomInt(l_bound, u_bound - 1) };
+        if (k == 1) return { randomInt(l_bound, u_bound - 1) };
 
-        std::vector<IntType> nums(u_bound - l_bound);
+        auto n = size_t(u_bound - l_bound);
+
+        // TODO: if k << n, don't create a big vector
+
+        std::vector<IntType> nums(n);
         std::iota(nums.begin(), nums.end(), l_bound);  // [l_bound, u_bound)
 
-        for (size_t i = 0; i < n - 1; i++)             // i shouldnt reach the last idx
+        for (size_t i = 0; i < k - 1; i++)             // i shouldnt reach the last idx
         {
             size_t j = randomInt(i, nums.size() - 1);  // j = i should be possible
             std::swap(nums[j], nums[i]);
         }
-        nums.resize(n);
+        nums.resize(k);
 
         return nums;
     }
