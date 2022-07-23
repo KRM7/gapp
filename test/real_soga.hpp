@@ -4,7 +4,7 @@
 #define REAL_SOGA_BENCHMARK_HPP
 
 #include "../src/encoding/real.hpp"
-#include "../src/selection/selection.hpp"
+#include "../src/algorithm/algorithm.hpp"
 #include "../src/crossover/real.hpp"
 #include "../src/mutation/real.hpp"
 #include "../src/stop_condition/stop_condition.hpp"
@@ -19,7 +19,7 @@ void real_rastrigin()
 
     RCGA GA(100, fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
-    GA.selection_method(selection::single_objective::Roulette{});
+    GA.algorithm(selection_::Roulette{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.6, 2.0 });
     GA.mutation_method(mutation::real::Gauss{ 0.05 });
     GA.stop_condition(stopping::FitnessValue{ { -0.01 } });
@@ -33,7 +33,7 @@ void real_rosenbrock()
 
     RCGA GA(500, fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
-    GA.selection_method(selection::single_objective::Tournament{});
+    GA.algorithm(selection_::Tournament{});
     GA.crossover_method(crossover::real::BLXa{ 0.9 });
     GA.mutation_method(mutation::real::Uniform{ 1.0 / fitness_func.num_vars });
     GA.stop_condition(stopping::FitnessEvals{ 500 * 1000 });
@@ -47,7 +47,7 @@ void real_schwefel()
 
     RCGA GA(500, fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
-    GA.selection_method(selection::single_objective::Sigma{});
+    GA.algorithm(selection_::Sigma{});
     GA.crossover_method(crossover::real::BLXa{ 0.7 });
     GA.mutation_method(mutation::real::NonUniform{ 1.0 / fitness_func.num_vars });
     GA.stop_condition(stopping::FitnessMeanStall{ 75, 0.01 });
@@ -61,7 +61,7 @@ void real_griewank()
 
     RCGA GA(200, fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
-    GA.selection_method(selection::single_objective::Boltzmann{});
+    GA.algorithm(selection_::Boltzmann{});
     GA.crossover_method(crossover::real::Wright{ 0.85 });
     GA.mutation_method(mutation::real::Gauss{ 0.05 });
 
@@ -74,7 +74,7 @@ void real_ackley()
 
     RCGA GA(200, fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
-    GA.selection_method(selection::single_objective::Boltzmann{});
+    GA.algorithm(selection_::Boltzmann{});
     GA.crossover_method(crossover::real::Arithmetic{ 0.85 });
     GA.mutation_method(mutation::real::Polynomial{ 1.0 / fitness_func.num_vars, 60.0 });
     GA.stop_condition(stopping::FitnessBestStall{ 75, 0.002 });

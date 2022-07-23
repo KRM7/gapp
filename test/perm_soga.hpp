@@ -4,7 +4,7 @@
 #define PERM_SOGA_BENCHMARK_HPP
 
 #include "../src/encoding/permutation.hpp"
-#include "../src/selection/selection.hpp"
+#include "../src/algorithm/algorithm.hpp"
 #include "../src/crossover/permutation.hpp"
 #include "../src/mutation/permutation.hpp"
 #include "fitness_functions.hpp"
@@ -20,7 +20,7 @@ void perm_tsp52()
     PermutationGA GA(tsp52.num_vars(), tsp52);
 
     GA.population_size(500);
-    GA.selection_method(selection::single_objective::Sigma{});
+    GA.algorithm(selection_::Sigma{});
     GA.crossover_method(crossover::perm::Edge{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.05 });
 
@@ -34,7 +34,7 @@ void perm_tsp76()
     PermutationGA GA(tsp76.num_vars(), tsp76);
 
     GA.population_size(400);
-    GA.selection_method(selection::single_objective::Tournament{});
+    GA.algorithm(selection_::Tournament{});
     GA.crossover_method(crossover::perm::Order1{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.1 });
 
@@ -48,7 +48,7 @@ void perm_tsp124()
     PermutationGA GA(tsp124.num_vars(), tsp124);
 
     GA.population_size(500);
-    GA.selection_method(selection::single_objective::Boltzmann{});
+    GA.algorithm(selection_::Boltzmann{});
     GA.crossover_method(crossover::perm::Position{ 0.9 });
     GA.mutation_method(mutation::perm::Swap3{ 0.4 });
 
@@ -62,7 +62,7 @@ void perm_tsp152()
     PermutationGA GA(tsp152.num_vars(), tsp152);
 
     GA.population_size(500);
-    GA.selection_method(selection::single_objective::Tournament{});
+    GA.algorithm(selection_::Tournament{});
     GA.crossover_method(crossover::perm::PMX{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.6 });
 
@@ -76,7 +76,7 @@ void perm_tsp226()
     PermutationGA GA(tsp226.num_vars(), tsp226);
 
     GA.population_size(500);
-    GA.selection_method(selection::single_objective::Roulette{});
+    GA.algorithm(selection_::Roulette{});
     GA.crossover_method(crossover::perm::Cycle{ 0.9 });
     GA.mutation_method(mutation::perm::Shuffle{ 0.2 });
 
@@ -90,7 +90,7 @@ void perm_tsp299()
     PermutationGA GA(tsp299.num_vars(), tsp299);
 
     GA.population_size(500);
-    GA.selection_method(selection::single_objective::Boltzmann{});
+    GA.algorithm(selection_::Boltzmann{});
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
 
@@ -104,7 +104,7 @@ void perm_tsp439()
     PermutationGA GA(tsp439.num_vars(), tsp439);
 
     GA.population_size(500);
-    GA.selection_method(selection::single_objective::Boltzmann{});
+    GA.algorithm(selection_::Boltzmann{});
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
 

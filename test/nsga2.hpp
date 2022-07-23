@@ -4,7 +4,7 @@
 #define NSGA2_BENCHMARK_HPP
 
 #include "../src/encoding/real.hpp"
-#include "../src/selection/selection.hpp"
+#include "../src/algorithm/algorithm.hpp"
 #include "../src/crossover/real.hpp"
 #include "../src/mutation/real.hpp"
 #include "fitness_functions.hpp"
@@ -19,7 +19,7 @@ void nsga2_kur()
     RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
     GA.population_size(100);
-    GA.selection_method(selection::multi_objective::NSGA2{});
+    GA.algorithm(algorithm::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
     GA.mutation_method(mutation::real::Gauss{ 1.0 / fitness_func.bounds().size() });
 
@@ -33,7 +33,7 @@ void nsga2_zdt2()
     RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
     GA.population_size(100);
-    GA.selection_method(selection::multi_objective::NSGA2{});
+    GA.algorithm(algorithm::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
     GA.mutation_method(mutation::real::Gauss{ 1.0 / fitness_func.bounds().size() });
 
@@ -47,7 +47,7 @@ void nsga2_zdt3()
     RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
     GA.population_size(100);
-    GA.selection_method(selection::multi_objective::NSGA2{});
+    GA.algorithm(algorithm::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
     GA.mutation_method(mutation::real::Gauss{ 1.0 / fitness_func.bounds().size() });
 
@@ -61,7 +61,7 @@ void nsga2_zdt6()
     RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
     GA.population_size(100);
-    GA.selection_method(selection::multi_objective::NSGA2{});
+    GA.algorithm(algorithm::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
     GA.mutation_method(mutation::real::Gauss{ 1.0 / fitness_func.bounds().size() });
 
@@ -75,7 +75,7 @@ void nsga2_dtlz1()
     RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
     GA.population_size(100);
-    GA.selection_method(selection::multi_objective::NSGA2{});
+    GA.algorithm(algorithm::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ 1.0 / fitness_func.bounds().size() });
 
@@ -89,7 +89,7 @@ void nsga2_dtlz2()
     RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
 
     GA.population_size(100);
-    GA.selection_method(selection::multi_objective::NSGA2{});
+    GA.algorithm(algorithm::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ 1.0 / fitness_func.bounds().size() });
 
