@@ -8,9 +8,11 @@
 #include <vector>
 #include <random>
 #include <iterator>
+#include <limits>
 #include <cstdint>
 #include <cstddef>
 #include <concepts>
+#include <type_traits>
 #include <atomic>
 
 /** Contains the PRNG classes and functions for generating random numbers. */
@@ -231,9 +233,9 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t n)
     {
-        assert(n != 0);
-        assert(l_bound <= u_bound);
+        assert(n > 0);
         assert(u_bound - l_bound >= n);
+        assert(l_bound < 0 ? (u_bound < std::numeric_limits<IntType>::max() + l_bound) : true);
 
         if (n == 1) return { randomInt(l_bound, u_bound - 1) };
 
