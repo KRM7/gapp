@@ -12,26 +12,10 @@
 #include <type_traits>
 #include <cstddef>
 
-namespace genetic_algorithm::selection_
+namespace genetic_algorithm
 {
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
-
-    /**
-    * Concept specifying the interface required for the selection methods. \n
-    * 
-    * ...
-    */
-    template<typename T>
-    concept Selection = requires(T selection, const GaInfo& ga, FitnessMatrix fmat)
-    {
-        requires std::copyable<std::decay_t<T>>;
-        requires std::destructible<std::decay_t<T>>;
-
-        { selection.initialize(ga) }              -> std::same_as<void>;
-        { selection.prepareSelections(ga, fmat) } -> std::same_as<void>;
-        { selection.select(ga, fmat) }            -> std::same_as<size_t>;
-    };
+    class GaInfo;
+}
 
     /**
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.
