@@ -114,7 +114,7 @@ namespace genetic_algorithm::pop_update
     * parent and child populations (assuming fitness maximization), and uses these as the
     * candidates of the next generation of the algorithm.
     */
-    struct KeepBest
+    class KeepBest
     {
     public:
         /**
