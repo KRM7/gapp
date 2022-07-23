@@ -3,6 +3,7 @@
 #ifndef GA_ALGORITHM_ALGORITHM_BASE_HPP
 #define GA_ALGORITHM_ALGORITHM_BASE_HPP
 
+#include "algorithm.fwd.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <cstddef>
