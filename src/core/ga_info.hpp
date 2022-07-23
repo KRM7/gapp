@@ -164,6 +164,19 @@ namespace genetic_algorithm
         void algorithm(S&& selection);
 
         /**
+        * Set the algorithm used by the GA to a single-objective algorithm that uses the
+        * @p selection as its selection method and @p updater as the population update method. \n
+        * The algorithm type should be consistent with the size of the fitness vectors returned by
+        * the fitness function (single- or multi-objective).
+        *
+        * @param selection The selection method used by the algorithm of the GA.
+        */
+        template<typename S, typename U>
+        requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
+                  pop_update::Updater<U> && !std::derived_from<U, algorithm::Algorithm>)
+        void algorithm(S&& selection, U&& updater);
+
+        /**
         * Set the algorithm used by the GA. \n
         * The algorithm type should be consistent with the size of the fitness vectors returned by
         * the fitness function (single- or multi-objective).
@@ -281,6 +294,16 @@ namespace genetic_algorithm
         can_continue_ = false;
     }
 
+    template<typename S, typename U>
+    requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
+              pop_update::Updater<U> && !std::derived_from<U, algorithm::Algorithm>)
+    void GaInfo::algorithm(S&& selection, U&& updater)
+    {
+        using AlgoType = typename algorithm::SingleObjective<std::remove_reference_t<S>, std::remove_reference_t<U>>;
+        algorithm = std::make_unique<AlgoType>(std::forward<S>(selection), std::forward<U>(updater));
+        can_continue_ = false;
+    }
+
     template<algorithm::AlgorithmType F>
     void GaInfo::algorithm(std::unique_ptr<F>&& f)
     {
@@ -311,7 +334,7 @@ namespace genetic_algorithm
         stop_condition_ = std::move(f);
     }
 
-    template<stopping::StopMethod F>
+    template<stopping::StopConditionType F>
     F& GaInfo::stop_condition() &
     {
         return dynamic_cast<F&>(*stop_condition_);
