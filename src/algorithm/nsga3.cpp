@@ -271,6 +271,8 @@ namespace genetic_algorithm::algorithm
         assert(size_t(children_last - parents_first) >= ga.population_size());
         assert(std::all_of(parents_first, children_last, [&ga](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
 
+        GA_UNUSED(children_first);
+
         std::vector<size_t> new_pop;
         new_pop.reserve(ga.population_size());
 

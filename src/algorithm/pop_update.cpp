@@ -67,6 +67,8 @@ namespace genetic_algorithm::pop_update
         assert(children_first - first <= last - children_first);
         assert(std::all_of(first, last, [](const FitnessVector& fvec) { return !fvec.empty(); }));
 
+        GA_UNUSED(children_first);
+
         auto indices =
         detail::partial_argsort(first, first + ga.population_size(), last,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept

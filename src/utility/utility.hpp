@@ -22,6 +22,8 @@
 #define GA_SEED 0x3da99432ab975d26LL
 #endif
 
+#define GA_UNUSED(...) (void)(__VA_ARGS__)
+
 namespace genetic_algorithm
 {
     constexpr std::size_t operator ""_sz(unsigned long long n)

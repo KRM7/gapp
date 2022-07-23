@@ -15,7 +15,6 @@ namespace genetic_algorithm::selection
         requires std::derived_from<T, Selection>;
     };
 
-
 } // namespace genetic_algorithm::selection
 
 #endif // !GA_SELECTION_BASE_FWD_HPP
