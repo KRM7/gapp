@@ -160,7 +160,7 @@ namespace genetic_algorithm
         * @param selection The selection method used by the algorithm of the GA.
         */
         template<typename S>
-        requires (selection_::Selection<S> && !std::derived_from<S, algorithm::Algorithm>)
+        requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm>)
         void algorithm(S&& selection);
 
         /**
@@ -187,7 +187,7 @@ namespace genetic_algorithm
         * @param f The StopCondition the algorithm should use.
         */
         template<typename F>
-        requires stopping::StopMethod<F> && std::is_final_v<F>
+        requires stopping::StopConditionType<F> && std::is_final_v<F>
         void stop_condition(F&& f);
 
         /**
@@ -198,7 +198,7 @@ namespace genetic_algorithm
         *
         * @param f The StopCondition the algorithm should use.
         */
-        template<stopping::StopMethod F>
+        template<stopping::StopConditionType F>
         void stop_condition(std::unique_ptr<F>&& f);
 
         /**
@@ -213,7 +213,7 @@ namespace genetic_algorithm
         void stop_condition(StopConditionFunction f);
 
         /** @returns The stop condition used by the algorithm, cast to type @p F. */
-        template<stopping::StopMethod F = stopping::StopCondition>
+        template<stopping::StopConditionType F = stopping::StopCondition>
         [[nodiscard]]
         F& stop_condition() &;
 
@@ -273,7 +273,7 @@ namespace genetic_algorithm
     }
 
     template<typename S>
-    requires (selection_::Selection<S> && !std::derived_from<S, algorithm::Algorithm>)
+    requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm>)
     void GaInfo::algorithm(S&& selection)
     {
         using AlgoType = typename algorithm::SingleObjective<std::remove_reference_t<S>>;
@@ -297,13 +297,13 @@ namespace genetic_algorithm
     }
 
     template<typename F>
-    requires stopping::StopMethod<F>&& std::is_final_v<F>
+    requires stopping::StopConditionType<F>&& std::is_final_v<F>
     void GaInfo::stop_condition(F&& f)
     {
         stop_condition(std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f)));
     }
 
-    template<stopping::StopMethod F>
+    template<stopping::StopConditionType F>
     void GaInfo::stop_condition(std::unique_ptr<F>&& f)
     {
         if (!f) throw std::invalid_argument("The stop condition can't be a nullptr.");

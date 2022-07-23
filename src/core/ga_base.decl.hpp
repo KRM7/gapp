@@ -116,7 +116,7 @@ namespace genetic_algorithm
         * @param f The crossover method used by the algorithm.
         */
         template<typename F>
-        requires crossover::CrossoverMethod<F, T> && std::is_final_v<F>
+        requires crossover::CrossoverType<F, T> && std::is_final_v<F>
         void crossover_method(F&& f);
 
         /**
@@ -127,7 +127,7 @@ namespace genetic_algorithm
         *
         * @param f The crossover method used by the algorithm.
         */
-        template<crossover::CrossoverMethod<T> F>
+        template<crossover::CrossoverType<T> F>
         void crossover_method(std::unique_ptr<F>&& f);
 
         /**
@@ -141,7 +141,7 @@ namespace genetic_algorithm
         void crossover_method(CrossoverFunction f);
 
         /** @returns The crossover operator used by the algorithm, cast to type @p F. */
-        template<crossover::CrossoverMethod<T> F = crossover::Crossover<GeneType>>
+        template<crossover::CrossoverType<T> F = crossover::Crossover<GeneType>>
         F& crossover_method() &;
 
         /**
@@ -164,7 +164,7 @@ namespace genetic_algorithm
         * @param f The crossover function that will be used by the algorithm.
         */
         template<typename F>
-        requires mutation::MutationMethod<F, T>&& std::is_final_v<F>
+        requires mutation::MutationType<F, T>&& std::is_final_v<F>
         void mutation_method(F&& f);
 
         /**
@@ -175,7 +175,7 @@ namespace genetic_algorithm
         *
         * @param f The crossover function that will be used by the algorithm.
         */
-        template<mutation::MutationMethod<T> F>
+        template<mutation::MutationType<T> F>
         void mutation_method(std::unique_ptr<F>&& f);
 
         /**
@@ -189,7 +189,7 @@ namespace genetic_algorithm
         void mutation_method(MutationFunction f);
 
         /** @returns The mutation operator used by the algorithm, cast to type @p F. */
-        template<mutation::MutationMethod<T> F = mutation::Mutation<GeneType>>
+        template<mutation::MutationType<T> F = mutation::Mutation<GeneType>>
         F& mutation_method() &;
 
         /**
@@ -311,7 +311,7 @@ namespace genetic_algorithm
 
     /** Genetic algorithm types. */
     template<typename T>
-    concept GeneticAlgorithm = detail::DerivedFromSpecializationOf<T, GA>;
+    concept GeneticAlgorithmType = detail::DerivedFromSpecializationOf<T, GA>;
 
 } // namespace genetic_algorithm
 

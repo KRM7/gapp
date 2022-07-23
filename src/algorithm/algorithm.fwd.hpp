@@ -36,7 +36,7 @@ namespace genetic_algorithm::selection_
     * ...
     */
     template<typename T>
-    concept Selection = requires(T selection, const GaInfo & ga, FitnessMatrix fmat)
+    concept SelectionType = requires(T selection, const GaInfo & ga, FitnessMatrix fmat)
     {
         requires std::copyable<std::decay_t<T>>;
         requires std::destructible<std::decay_t<T>>;
@@ -63,7 +63,7 @@ namespace genetic_algorithm::pop_update
      * assuming that parents_first points to the idx 0.
      */
     template<typename T>
-    concept Updater = requires(T updater, const GaInfo & ga, FitnessMatrix::const_iterator it)
+    concept UpdaterType = requires(T updater, const GaInfo & ga, FitnessMatrix::const_iterator it)
     {
         requires std::copyable<std::decay_t<T>>;
         requires std::destructible<std::decay_t<T>>;

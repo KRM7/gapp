@@ -10,7 +10,7 @@ namespace genetic_algorithm::stopping
     class StopCondition;
 
     template<typename T>
-    concept StopMethod = requires
+    concept StopConditionType = requires
     {
         requires std::derived_from<T, StopCondition>;
     };

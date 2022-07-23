@@ -12,7 +12,7 @@ namespace genetic_algorithm::crossover
     class Crossover;
 
     template<typename T, typename G>
-    concept CrossoverMethod = requires
+    concept CrossoverType = requires
     {
         requires Gene<G>;
         requires std::derived_from<T, Crossover<G>>;

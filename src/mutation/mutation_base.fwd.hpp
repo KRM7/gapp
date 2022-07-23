@@ -12,7 +12,7 @@ namespace genetic_algorithm::mutation
     class Mutation;
 
     template<typename T, typename G>
-    concept MutationMethod = requires
+    concept MutationType = requires
     {
         requires Gene<G>;
         requires std::derived_from<T, Mutation<G>>;
