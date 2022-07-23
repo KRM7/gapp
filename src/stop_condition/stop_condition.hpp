@@ -26,7 +26,7 @@ namespace genetic_algorithm::stopping
         *
         * @param max_fitness_evals The maximum number of fitness function evaluations to perform.
         */
-        explicit FitnessEvals(size_t max_fitness_evals);
+        explicit FitnessEvals(size_t max_fitness_evals) noexcept;
 
         /**
         * Set the maximum number of fitness function evaluations allowed in the algorithm. \n

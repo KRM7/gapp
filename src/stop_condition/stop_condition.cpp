@@ -10,7 +10,7 @@
 
 namespace genetic_algorithm::stopping
 {
-    static bool metricImproved(std::vector<double>& best_so_far, const std::vector<double>& new_val, double delta)
+    static bool metricImproved(std::vector<double>& best_so_far, const std::vector<double>& new_val, double delta) noexcept
     {
         assert(best_so_far.size() == new_val.size());
 
@@ -28,7 +28,7 @@ namespace genetic_algorithm::stopping
         return improved;
     }
 
-    FitnessEvals::FitnessEvals(size_t max_fitness_evals)
+    FitnessEvals::FitnessEvals(size_t max_fitness_evals) noexcept
         : StopCondition()
     {
         this->max_fitness_evals(max_fitness_evals);
