@@ -18,7 +18,7 @@ void binary_rastrigin()
     Rastrigin fitness_func(10);
     BinaryGA GA(400, fitness_func.num_vars * fitness_func.var_bits, fitness_func);
 
-    GA.algorithm(selection_::Roulette{});
+    GA.algorithm(selection_::Roulette{ });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
     GA.stop_condition(stopping::AND(stopping::FitnessMeanStall{ 50, 0.005 },
@@ -32,7 +32,7 @@ void binary_rosenbrock()
     Rosenbrock fitness_func(10);
     BinaryGA GA(300, fitness_func.num_vars * fitness_func.var_bits, fitness_func);
 
-    GA.algorithm(selection_::Tournament{});
+    GA.algorithm(selection_::Tournament{ }, pop_update::KeepChildren{ });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
 
@@ -44,7 +44,7 @@ void binary_schwefel()
     Schwefel fitness_func(10);
     BinaryGA GA(200, fitness_func.num_vars * fitness_func.var_bits, fitness_func);
 
-    GA.algorithm(selection_::Rank{});
+    GA.algorithm(selection_::Rank{ }, pop_update::Elitism{ 10 });
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.stop_condition(stopping::FitnessEvals{ 200 * 1000 });
@@ -57,7 +57,7 @@ void binary_griewank()
     Griewank fitness_func(10);
     BinaryGA GA(250, fitness_func.num_vars * fitness_func.var_bits, fitness_func);
 
-    GA.algorithm(selection_::Sigma{});
+    GA.algorithm(selection_::Sigma{ }, pop_update::KeepBest{ });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.04 });
     GA.stop_condition(stopping::FitnessValue{ { -0.1 } });
@@ -70,9 +70,9 @@ void binary_ackley()
     Ackley fitness_func(10);
     BinaryGA GA(250, fitness_func.num_vars * fitness_func.var_bits, fitness_func);
 
-    GA.algorithm(selection_::Boltzmann{});
+    GA.algorithm(selection_::Boltzmann{ }, pop_update::KeepBest{ });
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
-    GA.mutation_method(mutation::binary::Flip{ 0.04 });
+    GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.stop_condition(stopping::FitnessBestStall{ 50, 0.002 });
 
     benchmarkSoga(GA, 2500, fitness_func, "Ackley function");
