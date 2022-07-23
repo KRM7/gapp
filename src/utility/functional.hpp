@@ -83,10 +83,10 @@ namespace genetic_algorithm::detail
     }
 
     template<typename ValueType, typename F>
-    requires std::invocable<F, ValueType>
+    requires std::invocable<std::remove_reference_t<F>, ValueType>
     auto map(const std::vector<ValueType>& cont, F&& f)
     {
-        using MappedType = std::decay_t<std::invoke_result_t<F, ValueType>>;
+        using MappedType = std::decay_t<std::invoke_result_t<std::remove_reference_t<F>, ValueType>>;
         using ResultType = std::vector<MappedType>;
 
         if constexpr (std::is_scalar_v<ResultType>)
@@ -102,7 +102,7 @@ namespace genetic_algorithm::detail
         {
             ResultType result;
             result.reserve(cont.size());
-            for (const auto& elem : cont)
+            for (auto& elem : cont)
             {
                 result.push_back(std::invoke(f, elem));
             }
@@ -111,10 +111,10 @@ namespace genetic_algorithm::detail
     }
 
     template<typename ValueType, size_t N, typename F>
-    requires std::invocable<F, ValueType>
+    requires std::invocable<std::remove_reference_t<F>, ValueType>
     constexpr auto map(const std::array<ValueType, N>& cont, F&& f)
     {
-        using MappedType = std::decay_t<std::invoke_result_t<F, ValueType>>;
+        using MappedType = std::decay_t<std::invoke_result_t<std::remove_reference_t<F>, ValueType>>;
         using ResultType = std::array<MappedType, N>;
 
         ResultType result;
@@ -126,17 +126,17 @@ namespace genetic_algorithm::detail
     }
 
     template<template<typename...> class ContainerType, typename ValueType, typename... Rest, typename F>
-    requires Container<ContainerType<ValueType, Rest...>> && std::invocable<F, ValueType>
+    requires Container<ContainerType<ValueType, Rest...>> && std::invocable<std::remove_reference_t<F>, ValueType>
     auto map(const ContainerType<ValueType, Rest...>& cont, F&& f)
     {
-        using MappedType = std::decay_t<std::invoke_result_t<F, ValueType>>;
+        using MappedType = std::decay_t<std::invoke_result_t<std::remove_reference_t<F>, ValueType>>;
         using ResultType = ContainerType<MappedType>;
 
         ResultType result;
 
         if constexpr (is_one_of_templ_v<ContainerType, std::deque, std::list>)
         {
-            for (const auto& elem : cont)
+            for (auto& elem : cont)
             {
                 result.push_back(std::invoke(f, elem));
             }
@@ -148,7 +148,7 @@ namespace genetic_algorithm::detail
             {
                 result.reserve(cont.size());
             }
-            for (const auto& elem : cont)
+            for (auto& elem : cont)
             {
                 result.insert(std::invoke(f, elem));
             }
@@ -156,7 +156,7 @@ namespace genetic_algorithm::detail
         }
         else if constexpr (is_same_template_v<ContainerType, std::forward_list>)
         {
-            for (const auto& elem : cont)
+            for (auto& elem : cont)
             {
                 result.push_front(std::invoke(f, elem));
             }
@@ -168,10 +168,10 @@ namespace genetic_algorithm::detail
     template<template<typename...> class ContainerType, typename KeyType, typename ValueType, typename... Rest, typename F>
     requires Container<ContainerType<KeyType, ValueType, Rest...>> &&
              _::MapContainer<ContainerType> &&
-             std::invocable<F, KeyType, ValueType>
+             std::invocable<std::remove_reference_t<F>, KeyType, ValueType>
     auto map(const ContainerType<KeyType, ValueType, Rest...>& cont, F&& f)
     {
-        using MappedType = std::decay_t<std::invoke_result_t<F, KeyType, ValueType>>;
+        using MappedType = std::decay_t<std::invoke_result_t<std::remove_reference_t<F>, KeyType, ValueType>>;
         static_assert(is_specialization_of_v<MappedType, std::pair>);
         using ResultType = ContainerType<typename MappedType::first_type, typename MappedType::second_type>;
 
@@ -181,7 +181,7 @@ namespace genetic_algorithm::detail
             result.reserve(cont.size());
         }
 
-        for (const auto& [key, value] : cont)
+        for (auto& [key, value] : cont)
         {
             result.insert(std::invoke(f, key, value));
         }
@@ -225,7 +225,7 @@ namespace genetic_algorithm::detail
             for (size_t i = 0; i < in.size(); i++)
             {
                 size_t idx = 2 * i;
-                out[idx] = std::move_if_noexcept(in[i].first);
+                out[idx]     = std::move_if_noexcept(in[i].first);
                 out[idx + 1] = std::move_if_noexcept(in[i].second);
             }
 
