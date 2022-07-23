@@ -209,7 +209,7 @@ namespace genetic_algorithm
         num_objectives(findNumObjectives(fitness_function_));
 
         (num_objectives_ == 1) ?
-            algorithm(std::make_unique<algorithm::SingleObjective<selection_::Tournament, pop_update::KeepBest>>()) :
+            algorithm(std::make_unique<algorithm::SingleObjective<selection::Tournament, update::KeepBest>>()) :
             algorithm(std::make_unique<algorithm::NSGA3>());
     }
 

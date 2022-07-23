@@ -15,8 +15,8 @@ namespace genetic_algorithm
     class GaInfo;
 }
 
-/** Predefined methods used to update the populations in each generation of the algorithms. */
-namespace genetic_algorithm::pop_update
+/** Methods used to update the populations in each generation of the algorithms. */
+namespace genetic_algorithm::update
 {
     /**
     * A population update method that selects only the child Candidates from the
@@ -144,7 +144,7 @@ namespace genetic_algorithm::pop_update
     static_assert(UpdaterType<Elitism>);
     static_assert(UpdaterType<KeepBest>);
 
-} // namespace genetic_algorithm::pop_update
+} // namespace genetic_algorithm::update
 
 
 #endif // !GA_ALGORITHM_POP_UPDATE_HPP

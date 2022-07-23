@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <cassert>
 
-namespace genetic_algorithm::selection::single_objective
+namespace genetic_algorithm::_selection_::single_objective
 {
     void Roulette::prepare(const GaInfo&, const FitnessMatrix& pop)
     {

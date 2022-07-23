@@ -14,7 +14,7 @@ namespace genetic_algorithm
 }
 
 /** SelectionType methods for the genetic algorithms. */
-namespace genetic_algorithm::selection
+namespace genetic_algorithm::_selection_
 {
     /**
     * Base class used for all of the selection methods. \n

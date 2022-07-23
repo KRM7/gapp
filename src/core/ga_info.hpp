@@ -160,7 +160,7 @@ namespace genetic_algorithm
         * @param selection The selection method used by the algorithm of the GA.
         */
         template<typename S>
-        requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm>)
+        requires (selection::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm>)
         void algorithm(S&& selection);
 
         /**
@@ -172,8 +172,8 @@ namespace genetic_algorithm
         * @param selection The selection method used by the algorithm of the GA.
         */
         template<typename S, typename U>
-        requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
-                  pop_update::UpdaterType<U> && !std::derived_from<U, algorithm::Algorithm>)
+        requires (selection::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
+                  update::UpdaterType<U> && !std::derived_from<U, algorithm::Algorithm>)
         void algorithm(S&& selection, U&& updater);
 
         /**
@@ -286,7 +286,7 @@ namespace genetic_algorithm
     }
 
     template<typename S>
-    requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm>)
+    requires (selection::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm>)
     void GaInfo::algorithm(S&& selection)
     {
         using AlgoType = typename algorithm::SingleObjective<std::remove_reference_t<S>>;
@@ -295,8 +295,8 @@ namespace genetic_algorithm
     }
 
     template<typename S, typename U>
-    requires (selection_::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
-              pop_update::UpdaterType<U> && !std::derived_from<U, algorithm::Algorithm>)
+    requires (selection::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
+              update::UpdaterType<U> && !std::derived_from<U, algorithm::Algorithm>)
     void GaInfo::algorithm(S&& selection, U&& updater)
     {
         using AlgoType = typename algorithm::SingleObjective<std::remove_reference_t<S>, std::remove_reference_t<U>>;

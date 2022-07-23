@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <cassert>
 
-namespace genetic_algorithm::selection_
+namespace genetic_algorithm::selection
 {
     /* Calculate the cumulative distribution function of the population from the selection weights. */
     static std::vector<double> weightsToCdf(const std::vector<double>& weights)

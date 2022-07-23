@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::selection::multi_objective
+namespace genetic_algorithm::_selection_::multi_objective
 {
     /**
     * Non-dominated sorting genetic algorithm (NSGA-II) for multi-objective optimization.

@@ -5,7 +5,7 @@
 
 #include <concepts>
 
-namespace genetic_algorithm::selection
+namespace genetic_algorithm::_selection_
 {
     class Selection;
 

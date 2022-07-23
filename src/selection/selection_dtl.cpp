@@ -12,7 +12,7 @@
 #include <limits>
 #include <cmath>
 
-namespace genetic_algorithm::selection::dtl
+namespace genetic_algorithm::_selection_::dtl
 {
     std::vector<double> rouletteWeights(const FitnessMatrix& fmat)
     {

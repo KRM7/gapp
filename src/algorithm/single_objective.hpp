@@ -28,8 +28,8 @@ namespace genetic_algorithm::algorithm
     * @tparam SelectionType The type of the selection method used.
     * @tparam Updater The type of the population update method used.
     */
-    template<selection_::SelectionType Selection = selection_::Tournament,
-             pop_update::UpdaterType PopUpdater  = pop_update::KeepBest>
+    template<selection::SelectionType Selection = selection::Tournament,
+             update::UpdaterType PopUpdater     = update::KeepBest>
     class SingleObjective final : public Algorithm
     {
     public:

@@ -15,7 +15,7 @@
 #include <stdexcept>
 #include <cassert>
 
-namespace genetic_algorithm::selection::multi_objective
+namespace genetic_algorithm::_selection_::multi_objective
 {
     void NSGA2::init(const GaInfo& ga)
     {

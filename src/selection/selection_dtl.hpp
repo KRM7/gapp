@@ -9,12 +9,12 @@
 #include <cstddef>
 #include <functional>
 
-namespace genetic_algorithm::selection::dtl
+namespace genetic_algorithm::_selection_::dtl
 {
     using genetic_algorithm::detail::FitnessVector;
     using genetic_algorithm::detail::FitnessMatrix;
-    using Point = genetic_algorithm::selection::multi_objective::NSGA3::Point;
-    using RefPoint = genetic_algorithm::selection::multi_objective::NSGA3::RefPoint;
+    using Point = genetic_algorithm::_selection_::multi_objective::NSGA3::Point;
+    using RefPoint = genetic_algorithm::_selection_::multi_objective::NSGA3::RefPoint;
 
     /* Calculate the selection weights of the population for the roulette selection. */
     std::vector<double> rouletteWeights(const FitnessMatrix& pop);

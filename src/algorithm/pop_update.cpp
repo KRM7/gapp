@@ -9,7 +9,7 @@
 #include <numeric>
 #include <cassert>
 
-namespace genetic_algorithm::pop_update
+namespace genetic_algorithm::update
 {
     std::vector<size_t> KeepChildren::operator()(const GaInfo& ga,
                                                  FitnessMatrix::const_iterator first,
@@ -86,4 +86,4 @@ namespace genetic_algorithm::pop_update
         return indices;
     }
 
-} // namespace genetic_algorithm::pop_update
+} // namespace genetic_algorithm::update

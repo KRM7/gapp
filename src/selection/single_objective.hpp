@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::selection::single_objective
+namespace genetic_algorithm::_selection_::single_objective
 {
     /**
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.

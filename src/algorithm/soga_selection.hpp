@@ -17,7 +17,7 @@ namespace genetic_algorithm
     class GaInfo;
 }
 
-namespace genetic_algorithm::selection_
+namespace genetic_algorithm::selection
 {
     /**
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.

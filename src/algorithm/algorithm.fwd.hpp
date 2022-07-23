@@ -25,7 +25,7 @@ namespace genetic_algorithm::algorithm
 
 } // namespace genetic_algorithm::algorithm
 
-namespace genetic_algorithm::selection_
+namespace genetic_algorithm::selection
 {
     using detail::FitnessVector;
     using detail::FitnessMatrix;
@@ -46,9 +46,9 @@ namespace genetic_algorithm::selection_
         { selection.select(ga, fmat) }            -> std::same_as<size_t>;
     };
 
-} // namespace genetic_algorithm::selection_
+} // namespace genetic_algorithm::selection
 
-namespace genetic_algorithm::pop_update
+namespace genetic_algorithm::update
 {
     using detail::FitnessVector;
     using detail::FitnessMatrix;
@@ -71,6 +71,6 @@ namespace genetic_algorithm::pop_update
         { updater(ga, it, it, it) } -> std::same_as<std::vector<size_t>>;
     };
 
-} // namespace genetic_algorithm::pop_update
+} // namespace genetic_algorithm::update
 
 #endif // !GA_ALGORITHM_ALGORITHM_FWD_HPP

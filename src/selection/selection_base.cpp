@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cassert>
 
-namespace genetic_algorithm::selection
+namespace genetic_algorithm::_selection_
 {
     void Selection::init(const GaInfo&) 
     {
