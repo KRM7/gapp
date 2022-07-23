@@ -1,13 +1,13 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include "population_update.hpp"
+#include "pop_update.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/math.hpp"
 #include <algorithm>
 #include <numeric>
 #include <cassert>
 
-namespace genetic_algorithm::population_update
+namespace genetic_algorithm::pop_update
 {
     std::vector<size_t> KeepChildren::operator()(const GaInfo& ga,
                                                  FitnessMatrix::const_iterator first,
@@ -24,7 +24,7 @@ namespace genetic_algorithm::population_update
         return child_indices;
     }
 
-    Elitism::Elitism(size_t n = 1)
+    Elitism::Elitism(size_t n)
     {
         elite_num(n);
     }
@@ -78,4 +78,4 @@ namespace genetic_algorithm::population_update
         return indices;
     }
 
-} // namespace genetic_algorithm::population_update
+} // namespace genetic_algorithm::pop_update
