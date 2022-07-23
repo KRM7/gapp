@@ -6,10 +6,14 @@
 #include "algorithm_base.hpp"
 #include "soga_selection.hpp"
 #include "pop_update.hpp"
-#include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include <utility>
 #include <cstddef>
+
+namespace genetic_algorithm
+{
+    class GaInfo;
+}
 
 namespace genetic_algorithm::algorithm
 {
@@ -24,7 +28,8 @@ namespace genetic_algorithm::algorithm
     * @tparam Selection The type of the selection method used.
     * @tparam Updater The type of the population update method used.
     */
-    template<selection_::Selection Selection, pop_update::Updater PopUpdater>
+    template<selection_::Selection Selection = selection_::Tournament,
+             pop_update::Updater PopUpdater  = pop_update::KeepBest>
     class SingleObjective final : public Algorithm
     {
     public:
@@ -34,8 +39,7 @@ namespace genetic_algorithm::algorithm
         * @param selection The selection method to use in the algorithm.
         * @param updater The method used to update the populations between generations of the algorithm.
         */
-        SingleObjective(Selection selection = selection_::Tournament{},
-                        PopUpdater updater  = pop_update::KeepBest{})
+        SingleObjective(Selection selection = Selection{}, PopUpdater updater = PopUpdater{})
             : selection_(std::move(selection)), updater_(std::move(updater))
         {}
 
@@ -68,7 +72,7 @@ namespace genetic_algorithm::algorithm
                                            FitnessMatrix::const_iterator children_first,
                                            FitnessMatrix::const_iterator last) override
         {
-            return updater_.nextPopulation(ga, population_fmat);
+            return updater_(ga, first, children_first, last);
         }
 
     private:
