@@ -231,6 +231,7 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t n)
     {
+        assert(n != 0);
         assert(l_bound <= u_bound);
         assert(u_bound - l_bound >= n);
 
@@ -239,10 +240,10 @@ namespace genetic_algorithm::rng
         std::vector<IntType> nums(u_bound - l_bound);
         std::iota(nums.begin(), nums.end(), l_bound);  // [l_bound, u_bound)
 
-        for (size_t i = 0; i < n; i++)
+        for (size_t i = 0; i < n - 1; i++)             // i shouldnt reach the last idx
         {
-            size_t idx = randomInt(i, nums.size() - 1);
-            std::swap(nums[idx], nums[i]);
+            size_t j = randomInt(i, nums.size() - 1);  // j = i should be possible
+            std::swap(nums[j], nums[i]);
         }
         nums.resize(n);
 
