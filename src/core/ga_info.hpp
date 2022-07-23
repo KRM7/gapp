@@ -248,6 +248,7 @@ namespace genetic_algorithm
 
 #include "../selection/selection_base.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
+#include <type_traits>
 #include <utility>
 #include <stdexcept>
 
@@ -279,7 +280,7 @@ namespace genetic_algorithm
     requires stopping::StopMethod<F>&& std::is_final_v<F>
     void GaInfo::stop_condition(F&& f)
     {
-        stop_condition(std::make_unique<F>(std::forward<F>(f)));
+        stop_condition(std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f)));
     }
 
     template<stopping::StopMethod F>

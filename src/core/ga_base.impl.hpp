@@ -14,6 +14,7 @@
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/algorithm.hpp"
+#include <type_traits>
 #include <execution>
 #include <numeric>
 #include <limits>
@@ -78,7 +79,7 @@ namespace genetic_algorithm
     requires crossover::CrossoverMethod<F, T> && std::is_final_v<F>
     void GA<T, D>::crossover_method(F&& f)
     {
-        crossover_ = std::make_unique<F>(std::forward<F>(f));
+        crossover_ = std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f));
     }
 
     template<Gene T, typename D>
@@ -122,7 +123,7 @@ namespace genetic_algorithm
     requires mutation::MutationMethod<F, T> && std::is_final_v<F>
     void GA<T, D>::mutation_method(F&& f)
     {
-        mutation_ = std::make_unique<F>(std::forward<F>(f));
+        mutation_ = std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f));
     }
 
     template<Gene T, typename D>
