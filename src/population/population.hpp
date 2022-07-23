@@ -23,31 +23,31 @@ namespace genetic_algorithm::detail
     using FitnessVector = std::vector<double>;
     using FitnessMatrix = std::vector<std::vector<double>>;
 
-    /* Get the fitness vector of the population (single-objective). */
+    /* Return the fitness vector of the population (single-objective). */
     template<Gene T>
     FitnessVector toFitnessVector(const Population<T>& pop);
 
-    /* Get the fitness matrix of the population (multi-objective). */
+    /* Return the fitness matrix of the population (multi-objective). */
     template<Gene T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop);
 
-    /* Get the fitness vector of the population along the first objective axis from the fitness matrix. */
-    FitnessVector toFitnessVector(const FitnessMatrix& pop);
+    /* Return the fitness vector of a fitness matrix along the first objective axis. */
+    FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-    /* Return the minimum fitness value of the population along each objective axis. */
-    FitnessVector minFitness(const FitnessMatrix& pop);
+    /* Return the minimum fitness values of a fitness matrix along each objective axis. */
+    FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-    /* Return the maximum fitness value of the population along each objective axis. */
-    FitnessVector maxFitness(const FitnessMatrix& pop);
+    /* Return the maximum fitness values of a fitness matrix along each objective axis. */
+    FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-    /* Return the mean fitness value of the population along each objective axis. */
-    FitnessVector fitnessMean(const FitnessMatrix& pop);
+    /* Return the mean fitness values of a fitness matrix along each objective axis. */
+    FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-    /* Return the standard deviation of the fitness values of the population along each objective axis. */
-    FitnessVector fitnessStdDev(const FitnessMatrix& pop);
+    /* Return the standard deviation of the fitness values of a fitness matrix along each objective axis. */
+    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-    /* Return the standard deviation of the fitness values of the population along each objective axis. */
-    FitnessVector fitnessStdDev(const FitnessMatrix& pop, const FitnessVector& mean);
+    /* Return the standard deviation of the fitness values of a fitness matrix along each objective axis. */
+    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean);
 
     /* Finds the pareto-optimal solutions in a population. */
     template<Gene T>

@@ -12,85 +12,89 @@
 
 namespace genetic_algorithm::detail
 {
-    FitnessVector toFitnessVector(const FitnessMatrix& fmat)
+    FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::all_of(fmat.begin(), fmat.end(), [](const FitnessVector& fvec) { return fvec.size() == 1; }));
+        assert(std::all_of(first, last, [](const FitnessVector& fvec) { return fvec.size() == 1; }));
 
-        return detail::map(fmat, [](const FitnessVector& fvec) { return fvec[0]; });
+        std::vector<double> fvec(size_t(last - first));
+        std::transform(first, last, fvec.begin(), [](const FitnessVector& fvec) { return fvec[0]; });
+
+        return fvec;
     }
 
-    FitnessVector minFitness(const FitnessMatrix& pop)
+    FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
+        assert(std::distance(first, last) > 0);
+        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
 
-        FitnessVector min_fitness = pop[0];
-        for (size_t i = 1; i < pop.size(); i++)
+        FitnessVector min_fitness = *first++;
+        for (; first != last; ++first)
         {
-            for (size_t j = 0; j < min_fitness.size(); j++)
+            for (size_t dim = 0; dim < min_fitness.size(); dim++)
             {
-                min_fitness[j] = std::min(min_fitness[j], pop[i][j]);
+                min_fitness[dim] = std::min(min_fitness[dim], (*first)[dim]);
             }
         }
 
         return min_fitness;
     }
 
-    FitnessVector maxFitness(const FitnessMatrix& pop)
+    FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
+        assert(std::distance(first, last) > 0);
+        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
 
-        FitnessVector max_fitness = pop[0];
-        for (size_t i = 1; i < pop.size(); i++)
+        FitnessVector max_fitness = *first++;
+        for (; first != last; ++first)
         {
-            for (size_t j = 0; j < max_fitness.size(); j++)
+            for (size_t dim = 0; dim < max_fitness.size(); dim++)
             {
-                max_fitness[j] = std::max(max_fitness[j], pop[i][j]);
+                max_fitness[dim] = std::max(max_fitness[dim], (*first)[dim]);
             }
         }
 
         return max_fitness;
     }
 
-    FitnessVector fitnessMean(const FitnessMatrix& pop)
+    FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
+        assert(std::distance(first, last) > 0);
+        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
 
-        FitnessVector fitness_mean(pop[0].size(), 0.0);
-        for (const auto& sol : pop)
+        auto n_inv = 1.0 / (last - first);
+
+        FitnessVector fitness_mean(first->size(), 0.0);
+        for (; first != last; ++first)
         {
-            for (size_t i = 0; i < fitness_mean.size(); i++)
+            for (size_t dim = 0; dim < fitness_mean.size(); dim++)
             {
-                fitness_mean[i] += sol[i] / pop.size();
+                fitness_mean[dim] += (*first)[dim] * n_inv;
             }
         }
 
         return fitness_mean;
     }
 
-    FitnessVector fitnessStdDev(const FitnessMatrix& pop)
+    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        return fitnessStdDev(pop, fitnessMean(pop));
+        return fitnessStdDev(first, last, fitnessMean(first, last));
     }
 
-    FitnessVector fitnessStdDev(const FitnessMatrix& pop, const FitnessVector& mean)
+    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean)
     {
-        assert(!pop.empty());
-        assert(std::all_of(pop.begin(), pop.end(), [&pop](const FitnessVector& sol) { return sol.size() == pop[0].size(); }));
+        assert(std::distance(first, last) > 0);
+        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
 
-        if (pop.size() == 1)
-        {
-            return FitnessVector(pop[0].size(), 0.0);
-        }
+        auto variance = FitnessVector(first->size(), 0.0);
 
-        auto variance = FitnessVector(pop[0].size(), 0.0);
-        for (const auto& sol : pop)
+        if (std::distance(first, last) == 1) return variance;
+
+        auto n_inv = 1.0 / (last - first - 1);
+        for (; first != last; ++first)
         {
-            for (size_t i = 0; i < variance.size(); i++)
+            for (size_t dim = 0; dim < variance.size(); dim++)
             {
-                variance[i] += std::pow(sol[i] - mean[i], 2) / (pop.size() - 1.0);
+                variance[dim] += std::pow((*first)[dim] - mean[dim], 2) * n_inv;
             }
         }
         for (auto& elem : variance)

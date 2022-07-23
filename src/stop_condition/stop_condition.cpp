@@ -101,7 +101,7 @@ namespace genetic_algorithm::stopping
 
     bool FitnessMeanStall::stop_condition(const GaInfo& ga)
     {
-        auto current_mean = detail::fitnessMean(ga.fitness_matrix());
+        auto current_mean = detail::fitnessMean(ga.fitness_matrix().begin(), ga.fitness_matrix().end());
 
         /* Init on first gen. */
         if (ga.generation_cntr() == 0)
@@ -145,7 +145,7 @@ namespace genetic_algorithm::stopping
 
     bool FitnessBestStall::stop_condition(const GaInfo& ga)
     {
-        auto current_max = detail::maxFitness(ga.fitness_matrix());
+        auto current_max = detail::maxFitness(ga.fitness_matrix().begin(), ga.fitness_matrix().end());
 
         /* Init on first gen. */
         if (ga.generation_cntr() == 0)

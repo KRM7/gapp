@@ -16,7 +16,7 @@ namespace genetic_algorithm::selection::dtl
 {
     std::vector<double> rouletteWeights(const FitnessMatrix& fmat)
     {
-        auto fvec = detail::toFitnessVector(fmat);
+        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
 
         /* Roulette selection wouldn't work for negative fitness values. */
         double offset = *std::min_element(fvec.begin(), fvec.end());
@@ -36,7 +36,7 @@ namespace genetic_algorithm::selection::dtl
     {
         assert(0.0 <= wmin && wmin <= wmax);
 
-        auto fvec = detail::toFitnessVector(fmat);
+        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         auto indices = detail::argsort(fvec.begin(), fvec.end());
 
         std::vector<double> weights(fmat.size());
@@ -53,7 +53,7 @@ namespace genetic_algorithm::selection::dtl
     {
         assert(scale > 1.0);
 
-        auto fvec = detail::toFitnessVector(fmat);
+        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         double fmean = detail::mean(fvec);
         double fdev = std::max(detail::stdDev(fvec, fmean), 1E-6);
 
@@ -70,7 +70,7 @@ namespace genetic_algorithm::selection::dtl
 
     std::vector<double> boltzmannWeights(const FitnessMatrix& fmat, double temperature)
     {
-        auto fvec = detail::toFitnessVector(fmat);
+        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(),
