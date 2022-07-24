@@ -241,8 +241,6 @@ namespace genetic_algorithm::rng
 
         auto n = size_t(u_bound - l_bound);
 
-        // TODO: if k << n, don't create a big vector
-
         std::vector<IntType> nums(n);
         std::iota(nums.begin(), nums.end(), l_bound);  // [l_bound, u_bound)
 
