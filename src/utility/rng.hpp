@@ -233,10 +233,10 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t k)
     {
-        assert(k > 0);
         assert(u_bound - l_bound >= k);
         assert((l_bound < 0) ? (u_bound < std::numeric_limits<IntType>::max() + l_bound) : true);
 
+        if (k == 0) return {};
         if (k == 1) return { randomInt(l_bound, u_bound - 1) };
 
         auto n = size_t(u_bound - l_bound);
