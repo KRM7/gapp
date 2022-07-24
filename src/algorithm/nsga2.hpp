@@ -8,7 +8,21 @@
 namespace genetic_algorithm::algorithm
 {
     /**
-    * Non-dominated sorting genetic algorithm (NSGA-II) for multi-objective optimization.
+    * Non-dominated sorting genetic algorithm (NSGA-II), used for multi-objective optimization.
+    * (This algorithm doesn't work for single-objective problems.) \n
+    * 
+    * The algorithm uses non-dominated sorting to sort the candidates into
+    * pareto fronts, and then selects the candidates of the best fronts for the population
+    * of the next generation. \n
+    * Candidates that belong to the same front are ranked according to their crowding distances,
+    * which are their distances from the neigbouring solutions in the objective space. \n
+    * 
+    * The algorithm uses a selection operator that selects solutions based on these same criteria
+    * (their pareto ranks and crowding distances). \n
+    * 
+    * The selection and population update methods of this algorithm can't be changed. \n
+    * 
+    * Has no parameters.
     */
     class NSGA2 final : public Algorithm
     {
