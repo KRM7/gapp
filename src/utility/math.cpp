@@ -81,7 +81,7 @@ namespace genetic_algorithm::detail
         assert(!line.empty());
 
         double k = std::inner_product(line.begin(), line.end(), point.begin(), 0.0) /
-                   std::inner_product(line.begin(), line.end(), line.begin(), 0.0);
+                   std::inner_product(line.begin(), line.end(), line.begin(),  0.0);
 
         return std::transform_reduce(point.begin(), point.end(), line.begin(), 0.0,
                                      std::plus<double>{},
