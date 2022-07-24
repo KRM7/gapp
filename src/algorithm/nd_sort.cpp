@@ -18,21 +18,26 @@ namespace genetic_algorithm::algorithm::dtl
 
         /* Find the number of candidates which dominate each candidate, and the indices of the candidates it dominates. */
         std::vector<size_t> better_count(pop_size, 0);
-        std::vector<std::vector<size_t>> worse_indices(pop_size);
 
-        std::for_each(worse_indices.begin(), worse_indices.end(), [&pop_size](std::vector<size_t>& vec) { vec.reserve(pop_size); });
+        static std::vector<std::vector<size_t>> worse_indices;
+        for (auto& vec : worse_indices) vec.clear();
+        if (worse_indices.size() != pop_size)
+        {
+            worse_indices.resize(pop_size);
+            for (auto& vec : worse_indices) vec.shrink_to_fit(), vec.reserve(pop_size);
+        }
 
         for (size_t lhs = 0; lhs < pop_size; lhs++)
         {
             for (size_t rhs = 1; rhs < lhs; rhs++)
             {
-                auto comp = detail::paretoCompare(*(first + lhs), *(first + rhs));
+                auto comp = detail::paretoCompare(first[lhs], first[rhs]);
                 if (comp < 0)
                 {
                     better_count[lhs]++;
                     worse_indices[rhs].push_back(lhs);
                 }
-                else if (comp > 0) [[likely]]
+                else if (comp > 0)
                 {
                     better_count[rhs]++;
                     worse_indices[lhs].push_back(rhs);
