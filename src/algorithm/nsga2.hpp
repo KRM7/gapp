@@ -10,6 +10,8 @@ namespace genetic_algorithm::algorithm
     /**
     * Non-dominated sorting genetic algorithm (NSGA-II), used for multi-objective optimization.
     * (This algorithm doesn't work for single-objective problems.) \n
+    * The aim of the algorithm is to find a set of solutions which are well-spread out
+    * along the entire pareto-front (in the objective-space). \n
     * 
     * The algorithm uses non-dominated sorting to sort the candidates into
     * pareto fronts, and then selects the candidates of the best fronts for the population
