@@ -1,7 +1,6 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "nsga2.hpp"
-#include "nd_sort.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/rng.hpp"
@@ -16,16 +15,14 @@
 
 namespace genetic_algorithm::algorithm
 {
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
     using dtl::ParetoFronts;
 
-    /* Calculate the crowding distances of the solutions in the NSGA2 algorithm. */ // TODO make this a private static member func
-    static std::vector<double> crowdingDistances(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, ParetoFronts pfronts)
+
+    std::vector<double> NSGA2::crowdingDistances(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, ParetoFronts pfronts)
     {
         assert(std::distance(first, last) >= 0);
 
-        std::vector<double> distances(size_t(last - first), 0.0);
+        std::vector cdistances(size_t(last - first), 0.0);
 
         using Iter = ParetoFronts::iterator;
         using IterPair = std::pair<Iter, Iter>;
@@ -33,40 +30,39 @@ namespace genetic_algorithm::algorithm
         auto front_bounds = dtl::paretoFrontBounds(pfronts);
 
         std::for_each(front_bounds.begin(), front_bounds.end(),
-        [&distances, fmat = first](const IterPair& bounds)
+        [&cdistances, fmat = first](const IterPair& bounds)
         {
-            const auto& [first, last] = bounds;
-
+            const auto& [front_first, front_last] = bounds;
+            
             /* Calculate distances along each fitness dimension */
-            for (size_t dim = 0; dim < fmat[0].size(); dim++)
+            for (size_t dim = 0; dim < fmat->size(); dim++)
             {
-                std::sort(first, last,
+                std::sort(front_first, front_last,
                 [fmat, dim](const auto& lhs, const auto& rhs) noexcept
                 {
-                    return fmat[lhs.first][dim] < fmat[rhs.first][dim];
+                    return fmat[lhs.first][dim] < fmat[rhs.first][dim]; // ascending
                 });
 
-                const auto& front = first->first;
-                const auto& back  = (last - 1)->first;
+                const auto& first_idx = front_first->first;
+                const auto& last_idx  = (front_last - 1)->first;
 
-                double finterval = fmat[back][dim] - fmat[front][dim];
-                finterval = std::max(finterval, 1E-6);
+                double finterval = std::max(fmat[last_idx][dim] - fmat[first_idx][dim], 1E-6);
 
-                distances[front] = std::numeric_limits<double>::infinity();
-                distances[back]  = std::numeric_limits<double>::infinity();
+                cdistances[first_idx] = std::numeric_limits<double>::infinity();
+                cdistances[last_idx]  = std::numeric_limits<double>::infinity();
 
-                for (auto it = std::next(first); it < std::prev(last); it++)
+                for (auto it = front_first + 1; it < front_last - 1; ++it)
                 {
                     size_t this_ = it->first;
                     size_t next = std::next(it)->first;
                     size_t prev = std::prev(it)->first;
 
-                    distances[this_] += (fmat[next][dim] - fmat[prev][dim]) / finterval;
+                    cdistances[this_] += (fmat[next][dim] - fmat[prev][dim]) / finterval;
                 }
             }
         });
 
-        return distances;
+        return cdistances;
     }
 
     void NSGA2::initialize(const GaInfo& ga)
