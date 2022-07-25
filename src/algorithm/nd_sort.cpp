@@ -13,6 +13,7 @@ namespace genetic_algorithm::algorithm::dtl
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         assert(std::distance(first, last) >= 0);
+        assert(std::all_of(first, last, [first](const FitnessVector& f) { return f.size() == first->size(); }));
 
         size_t pop_size = size_t(last - first);
 
