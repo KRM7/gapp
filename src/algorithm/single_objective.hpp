@@ -7,8 +7,10 @@
 #include "soga_selection.hpp"
 #include "pop_update.hpp"
 #include "../population/population.hpp"
+#include <algorithm>
 #include <utility>
 #include <cstddef>
+#include <cassert>
 
 namespace genetic_algorithm
 {
@@ -54,6 +56,8 @@ namespace genetic_algorithm::algorithm
 
         void initialize(const GaInfo& ga) override
         {
+            assert(ga.num_objectives() == 1);
+
             selection_.initialize(ga);
         }
 
@@ -72,6 +76,9 @@ namespace genetic_algorithm::algorithm
                                            FitnessMatrix::const_iterator children_first,
                                            FitnessMatrix::const_iterator last) override
         {
+            assert(ga.num_objectives() == 1);
+            assert(std::all_of(first, last, [](const FitnessVector& f) { return f.size() == 1; }));
+
             return updater_(ga, first, children_first, last);
         }
 
