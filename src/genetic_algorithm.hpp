@@ -15,4 +15,6 @@
 #include "encoding/permutation.hpp"
 #include "encoding/integer.hpp"
 
+namespace ga = genetic_algorithm;
+
 #endif // !GA_GENETIC_ALGORITHM_HPP
