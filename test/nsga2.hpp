@@ -79,7 +79,7 @@ void nsga2_dtlz1()
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ 1.0 / fitness_func.bounds().size() });
 
-    benchmarkMoga(GA, 1500, "NSGA2", "DTLZ1");
+    benchmarkMoga(GA, 1000, "NSGA2", "DTLZ1");
 }
 
 void nsga2_dtlz2()
@@ -93,7 +93,7 @@ void nsga2_dtlz2()
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, 15.0 });
     GA.mutation_method(mutation::real::Uniform{ 1.0 / fitness_func.bounds().size() });
 
-    benchmarkMoga(GA, 1500, "NSGA2", "DTLZ2");
+    benchmarkMoga(GA, 1000, "NSGA2", "DTLZ2");
 }
 
 
