@@ -50,7 +50,8 @@ namespace genetic_algorithm::update
 
         GA_UNUSED(last);
 
-        auto sorted_parent_indices = detail::partial_argsort(first, first + n_, children_first,
+        auto sorted_parent_indices =
+        detail::partial_argsort(first, first + n_, children_first,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
             return detail::paretoCompareLess(rhs, lhs); // descending
