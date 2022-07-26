@@ -60,27 +60,27 @@ namespace genetic_algorithm::algorithm::dtl
         }
 
         /* Find all the other pareto fronts. */
-        auto current_first = sorted_indices.cbegin();
-        auto current_last = sorted_indices.cend();
+        auto front_first = sorted_indices.cbegin();
+        auto front_last  = sorted_indices.cend();
 
         while (sorted_indices.size() != pop_size)
         {
-            size_t next_rank = current_first->second + 1;
+            size_t next_rank = front_first->second + 1;
 
             /* Remove the current front from the population and find the next one. */
-            for (; current_first != current_last; current_first++)
+            for (; front_first != front_last; ++front_first)
             {
-                for (const auto& worse_idx : worse_indices[current_first->first])
+                for (size_t worse_idx : worse_indices[front_first->first])
                 {
                     if (--better_count[worse_idx] == 0)
                     {
-                        current_last--;
+                        front_last--;
                         sorted_indices.emplace_back(worse_idx, next_rank);
-                        current_last++;
+                        front_last++;
                     }
                 }
             }
-            current_last = sorted_indices.cend();
+            front_last = sorted_indices.cend();
         }
 
         return sorted_indices;
