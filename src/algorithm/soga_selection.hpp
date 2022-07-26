@@ -3,7 +3,6 @@
 #ifndef GA_ALGORITHM_SOGA_SELECTION_HPP
 #define GA_ALGORITHM_SOGA_SELECTION_HPP
 
-#include "algorithm.fwd.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <utility>
@@ -217,12 +216,6 @@ namespace genetic_algorithm::selection
 
         static double boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept;
     };
-
-    static_assert(SelectionType<Roulette>);
-    static_assert(SelectionType<Tournament>);
-    static_assert(SelectionType<Rank>);
-    static_assert(SelectionType<Sigma>);
-    static_assert(SelectionType<Boltzmann>);
 
 } // namespace genetic_algorithm::selection
 

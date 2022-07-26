@@ -3,7 +3,6 @@
 #ifndef GA_ALGORITHM_POP_UPDATE_HPP
 #define GA_ALGORITHM_POP_UPDATE_HPP
 
-#include "algorithm.fwd.hpp"
 #include "../population/population.hpp"
 #include <concepts>
 #include <type_traits>
@@ -139,10 +138,6 @@ namespace genetic_algorithm::update
                                        FitnessMatrix::const_iterator children_first,
                                        FitnessMatrix::const_iterator children_last);
     };
-
-    static_assert(UpdaterType<KeepChildren>);
-    static_assert(UpdaterType<Elitism>);
-    static_assert(UpdaterType<KeepBest>);
 
 } // namespace genetic_algorithm::update
 
