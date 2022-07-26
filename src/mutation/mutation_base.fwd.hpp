@@ -11,6 +11,7 @@ namespace genetic_algorithm::mutation
     template<Gene T>
     class Mutation;
 
+    /** Mutation method types. */
     template<typename T, typename G>
     concept MutationType = requires
     {

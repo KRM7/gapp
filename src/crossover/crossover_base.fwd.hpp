@@ -11,6 +11,7 @@ namespace genetic_algorithm::crossover
     template<Gene T>
     class Crossover;
 
+    /** Crossover method types. */
     template<typename T, typename G>
     concept CrossoverType = requires
     {

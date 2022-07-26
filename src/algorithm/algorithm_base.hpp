@@ -21,7 +21,7 @@ namespace genetic_algorithm::algorithm
     * 
     * The algorithms define the way the population is evolved over the generations (the selection and
     * population update methods used). They may either be single- or multi-objective (or both), and have 4
-    * methods which must be overriden in the derived classes:
+    * methods which must be overriden in the derived classes: \n
     * 
     *  - initialize:        Initializes the algorithm. \n
     *  - prepareSelections: Prepares the algorithm for the selections. \n

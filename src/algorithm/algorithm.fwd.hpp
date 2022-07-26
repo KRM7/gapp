@@ -17,6 +17,7 @@ namespace genetic_algorithm::algorithm
 {
     class Algorithm;
 
+    /** Algorithm types. */
     template<typename T>
     concept AlgorithmType = requires
     {
@@ -30,13 +31,9 @@ namespace genetic_algorithm::selection
     using detail::FitnessVector;
     using detail::FitnessMatrix;
 
-    /**
-    * Concept specifying the interface required for the selection methods. \n
-    *
-    * ...
-    */
+    /** Concept specifying the interface required for the selection methods. */
     template<typename T>
-    concept SelectionType = requires(T selection, const GaInfo & ga, FitnessMatrix fmat)
+    concept SelectionType = requires(T selection, const GaInfo& ga, FitnessMatrix fmat)
     {
         requires std::copyable<std::decay_t<T>>;
         requires std::destructible<std::decay_t<T>>;
@@ -57,16 +54,16 @@ namespace genetic_algorithm::update
      * Concept specifying the interface required for the population update methods. \n
      *
      * The method should be callable with a const& to a GaInfo object, and the FitnessMatrix
-     * of the combined parent and child populations specified by 3 iterators:
-     * [parents_first, ... , children_first, ... , children_last),
+     * of the combined parent and child populations specified by 3 iterators: \n
+     * [parents_first, ... , children_first, ... , children_last), \n
      * and return the indices of the candidates selected for the next generation's population,
      * assuming that parents_first points to the idx 0.
      */
     template<typename T>
-    concept UpdaterType = requires(T updater, const GaInfo & ga, FitnessMatrix::const_iterator it)
+    concept UpdaterType = requires(T updater, const GaInfo& ga, FitnessMatrix::const_iterator it)
     {
-        requires std::copyable<std::decay_t<T>>;
-        requires std::destructible<std::decay_t<T>>;
+        requires std::copyable<std::remove_reference_t<T>>;
+        requires std::destructible<std::remove_reference_t<T>>;
 
         { updater(ga, it, it, it) } -> std::same_as<std::vector<size_t>>;
     };

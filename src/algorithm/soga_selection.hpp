@@ -21,9 +21,9 @@ namespace genetic_algorithm::selection
 {
     /**
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.
-    * The probability of selecting an individual from the population is proportional to it's fitness value.
+    * The probability of selecting an individual from the population is proportional to it's fitness value. \n
     *
-    * The selection algorithm is slightly modified so that it also works with negative fitness values.
+    * The selection algorithm is slightly modified so that it also works with negative fitness values. \n
     * Has no parameters.
     */
     class Roulette
@@ -38,9 +38,9 @@ namespace genetic_algorithm::selection
     };
 
     /**
-    * Tournament selection operator for single-objective optimization.
+    * Tournament selection operator for single-objective optimization. \n
     * When performing a selection, a number of individuals are randomly chosen (from a uniform distribution)
-    * from the population, and the best one is selected from these (assuming fitness maximization).
+    * from the population, and the best one is selected from these (assuming fitness maximization). \n
     *
     * The number of candidates in the tournaments is determined by the size parameter of the operator.
     */
@@ -76,7 +76,7 @@ namespace genetic_algorithm::selection
     };
 
     /**
-    * Rank selection operator for single-objective optimization.
+    * Rank selection operator for single-objective optimization. \n
     * The individuals of the population are assigned selection weights between a
     * minimum and maximum value based on their rank in the population relative to
     * other individuals (assuming fitness maximization).
@@ -85,7 +85,7 @@ namespace genetic_algorithm::selection
     {
     public:
         /**
-        * Create a rank selection operator with the specified weight limits.
+        * Create a rank selection operator with the specified weight limits. \n
         * The @p min_weight must be on the closed interval [0.0, @p max_weight].
         * The @p max_weight must be greater than @p min_weight.
         *
@@ -95,7 +95,7 @@ namespace genetic_algorithm::selection
         explicit Rank(double min_weight = 0.1, double max_weight = 1.1);
 
         /**
-        * Set the minimum selection weight.
+        * Set the minimum selection weight. \n
         * Must be on the closed interval [0.0, max_weight].
         *
         * @param min_weight The selection weight assigned to the worst individual of the population.
@@ -107,7 +107,7 @@ namespace genetic_algorithm::selection
         double min_weight() const noexcept { return min_weight_; }
 
         /**
-        * Set the maximum selection weight.
+        * Set the maximum selection weight. \n
         * Must be greater than the minimum weight.
         *
         * @param max_weight The selection weight assigned to the best individual of the population.
@@ -119,7 +119,7 @@ namespace genetic_algorithm::selection
         double max_weight() const noexcept { return max_weight_; }
 
         /**
-        * Sets the minimum and maximum selection weights used.
+        * Sets the minimum and maximum selection weights used. \n
         * The @p min_weight must be on the closed interval [0.0, @p max_weight].
         * The @p max_weight must be greater than @p min_weight.
         *
@@ -143,7 +143,7 @@ namespace genetic_algorithm::selection
     };
 
     /**
-    * Sigma scaling selection operator for single-objective optimization.
+    * Sigma scaling selection operator for single-objective optimization. \n
     * The probability of selecting an individual from the population is proportional to
     * its scaled fitness value, which is: f' = (f - f_mean) / (scale * f_sd)
     */
@@ -151,7 +151,7 @@ namespace genetic_algorithm::selection
     {
     public:
         /**
-        * Create a sigma scaling selection operator with the specified scaling.
+        * Create a sigma scaling selection operator with the specified scaling. \n
         * The @p scale must be on the closed interval [1.0, DBL_MAX].
         *
         * @param scale The scaling parameter used.
@@ -159,7 +159,7 @@ namespace genetic_algorithm::selection
         explicit Sigma(double scale = 3.0);
 
         /**
-        * Sets the scaling parameter used.
+        * Sets the scaling parameter used. \n
         * Must be on the closed interval [1.0, DBL_MAX].
         *
         * @param scale The scaling parameter used.
@@ -180,7 +180,7 @@ namespace genetic_algorithm::selection
     };
 
     /**
-    * Boltzmann selection operator for single-objective optimization.
+    * Boltzmann selection operator for single-objective optimization. \n
     * The selection pressure throughout the algorithm is controlled by a temperature function.
     * In the early generations, the temperature is high, resulting in low selection pressure,
     * in the later generations the temperature decreases, resulting in higher selection
@@ -199,9 +199,9 @@ namespace genetic_algorithm::selection
         explicit Boltzmann(TemperatureFunction f = boltzmannDefaultTemp);
 
         /**
-        * Set the temperature function used.
-        * The temperature functions signature should be:
-        *   double f(size_t current_generation, size_t max_generation)
+        * Set the temperature function used. \n
+        * The temperature functions signature should be: \n
+        *   double f(size_t current_generation, size_t max_generation) \n
         * and return the current temperature.
         *
         * @param f The temperature function.

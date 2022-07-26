@@ -9,6 +9,7 @@ namespace genetic_algorithm::stopping
 {
     class StopCondition;
 
+    /** Stop condition types. */
     template<typename T>
     concept StopConditionType = requires
     {
