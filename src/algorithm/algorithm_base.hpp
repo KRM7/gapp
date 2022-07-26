@@ -3,10 +3,10 @@
 #ifndef GA_ALGORITHM_ALGORITHM_BASE_HPP
 #define GA_ALGORITHM_ALGORITHM_BASE_HPP
 
-#include "algorithm.fwd.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <cstddef>
+#include <concepts>
 
 namespace genetic_algorithm
 {
@@ -63,7 +63,7 @@ namespace genetic_algorithm::algorithm
         * @param fmat The fitness matrix of the current population.
         * @returns The selected candidate's index in the fitness matrix.
         */
-        virtual size_t select(const GaInfo& ga, const FitnessMatrix& fmat) = 0;
+        virtual size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const = 0;
 
         /**
         * Select the Candidates of the next generation (next population) from the Candidates of the
@@ -92,6 +92,13 @@ namespace genetic_algorithm::algorithm
         Algorithm& operator=(const Algorithm&)  = default;
         Algorithm& operator=(Algorithm&&)       = default;
         virtual ~Algorithm()                    = default;
+    };
+
+    /** Algorithm types. */
+    template<typename T>
+    concept AlgorithmType = requires
+    {
+        requires std::derived_from<T, Algorithm>;
     };
 
 } // namespace genetic_algorithm::algorithm

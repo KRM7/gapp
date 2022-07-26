@@ -6,7 +6,8 @@
 #include "algorithm_base.hpp"
 #include "soga_selection.hpp"
 #include "pop_update.hpp"
-#include "single_objective.hpp"
+#include "single_objective.decl.hpp"
+#include "single_objective.impl.hpp"
 #include "nsga2.hpp"
 #include "nsga3.hpp"
 

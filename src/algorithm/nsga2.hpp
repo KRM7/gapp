@@ -33,7 +33,7 @@ namespace genetic_algorithm::algorithm
 
         void prepareSelections(const GaInfo&, const FitnessMatrix&) override {}
 
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
 
         std::vector<size_t> nextPopulation(const GaInfo& ga,
                                            FitnessMatrix::const_iterator first,

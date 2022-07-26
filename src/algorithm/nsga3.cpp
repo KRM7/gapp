@@ -399,7 +399,7 @@ namespace genetic_algorithm::algorithm
         }
     }
 
-    size_t NSGA3::select(const GaInfo&, const FitnessMatrix& pop)
+    size_t NSGA3::select(const GaInfo&, const FitnessMatrix& pop) const
     {
         assert(!pop.empty());
 

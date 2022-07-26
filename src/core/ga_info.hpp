@@ -4,7 +4,8 @@
 #define GA_CORE_GA_INFO_HPP
 
 #include "../population/population.hpp"
-#include "../algorithm/algorithm.fwd.hpp"
+#include "../algorithm/algorithm_base.hpp"
+#include "../algorithm/single_objective.fwd.hpp"
 #include "../stop_condition/stop_condition_base.fwd.hpp"
 #include <vector>
 #include <atomic>
@@ -268,8 +269,7 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
-#include "../algorithm/algorithm_base.hpp"
-#include "../algorithm/single_objective.hpp"
+#include "../algorithm/single_objective.decl.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
 #include <type_traits>
 #include <utility>

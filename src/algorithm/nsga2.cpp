@@ -84,7 +84,7 @@ namespace genetic_algorithm::algorithm
             dists_[lidx] > dists_[ridx];
     }
 
-    size_t NSGA2::select(const GaInfo&, const FitnessMatrix& pop)
+    size_t NSGA2::select(const GaInfo&, const FitnessMatrix& pop) const
     {
         assert(!pop.empty() && pop.size() == ranks_.size());
 

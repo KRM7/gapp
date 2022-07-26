@@ -1,37 +1,27 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_ALGORITHM_FWD_HPP
-#define GA_ALGORITHM_ALGORITHM_FWD_HPP
+#ifndef GA_ALGORITHM_SINGLE_OBJECTIVE_FWD_HPP
+#define GA_ALGORITHM_SINGLE_OBJECTIVE_FWD_HPP
 
+#include "../population/population.hpp"
+#include <vector>
 #include <concepts>
 #include <type_traits>
 #include <cstddef>
-#include "../population/population.hpp"
+
 
 namespace genetic_algorithm
 {
     class GaInfo;
-}
 
-namespace genetic_algorithm::algorithm
-{
-    class Algorithm;
-
-    /** Algorithm types. */
-    template<typename T>
-    concept AlgorithmType = requires
-    {
-        requires std::derived_from<T, Algorithm>;
-    };
-
-} // namespace genetic_algorithm::algorithm
+} // namespace genetic_algorithm
 
 namespace genetic_algorithm::selection
 {
     using detail::FitnessVector;
     using detail::FitnessMatrix;
 
-    /** Concept specifying the interface required for the selection methods. */
+    /** Concept specifying the interface required for the single-objective selection methods. */
     template<typename T>
     concept SelectionType = requires(T selection, const GaInfo& ga, FitnessMatrix fmat)
     {
@@ -40,7 +30,7 @@ namespace genetic_algorithm::selection
 
         { selection.initialize(ga) }              -> std::same_as<void>;
         { selection.prepareSelections(ga, fmat) } -> std::same_as<void>;
-        { selection.select(ga, fmat) }            -> std::same_as<size_t>;
+        { selection.select(ga, fmat) }            -> std::same_as<size_t>; /* This method should be thread safe. */
     };
 
 } // namespace genetic_algorithm::selection
@@ -70,4 +60,11 @@ namespace genetic_algorithm::update
 
 } // namespace genetic_algorithm::update
 
-#endif // !GA_ALGORITHM_ALGORITHM_FWD_HPP
+namespace genetic_algorithm::algorithm
+{
+    template<selection::SelectionType Selection, update::UpdaterType PopUpdater>
+    class SingleObjective;
+
+} // namespace genetic_algorithm::algorithm
+
+#endif // !GA_ALGORITHM_SINGLE_OBJECTIVE_FWD_HPP

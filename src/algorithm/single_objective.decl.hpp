@@ -1,21 +1,12 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_SINGLE_OBJECTIVE_HPP
-#define GA_ALGORITHM_SINGLE_OBJECTIVE_HPP
+#ifndef GA_ALGORITHM_SINGLE_OBJECTIVE_DECL_HPP
+#define GA_ALGORITHM_SINGLE_OBJECTIVE_DECL_HPP
 
 #include "algorithm_base.hpp"
+#include "single_objective.fwd.hpp"
 #include "soga_selection.hpp"
 #include "pop_update.hpp"
-#include "../population/population.hpp"
-#include <algorithm>
-#include <utility>
-#include <cstddef>
-#include <cassert>
-
-namespace genetic_algorithm
-{
-    class GaInfo;
-}
 
 namespace genetic_algorithm::algorithm
 {
@@ -41,9 +32,7 @@ namespace genetic_algorithm::algorithm
         * @param selection The selection method to use in the algorithm.
         * @param updater The method used to update the populations between generations of the algorithm.
         */
-        SingleObjective(Selection selection = Selection{}, PopUpdater updater = PopUpdater{})
-            : selection_(std::move(selection)), updater_(std::move(updater))
-        {}
+        SingleObjective(Selection selection = Selection{}, PopUpdater updater = PopUpdater{});
 
         /** @returns The selection method of the algorithm. */
         [[nodiscard]]
@@ -54,33 +43,14 @@ namespace genetic_algorithm::algorithm
         PopUpdater& update_method() const noexcept { return updater_; }
 
 
-        void initialize(const GaInfo& ga) override
-        {
-            assert(ga.num_objectives() == 1);
-
-            selection_.initialize(ga);
-        }
-
-        void prepareSelections(const GaInfo& ga, const FitnessMatrix& population_fmat) override
-        {
-            selection_.prepareSelections(ga, population_fmat);
-        }
-
-        size_t select(const GaInfo& ga, const FitnessMatrix& population_fmat) override
-        {
-            return selection_.select(ga, population_fmat);
-        }
+        void initialize(const GaInfo& ga) override;
+        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
         std::vector<size_t> nextPopulation(const GaInfo& ga,
                                            FitnessMatrix::const_iterator first,
                                            FitnessMatrix::const_iterator children_first,
-                                           FitnessMatrix::const_iterator last) override
-        {
-            assert(ga.num_objectives() == 1);
-            assert(std::all_of(first, last, [](const FitnessVector& f) { return f.size() == 1; }));
-
-            return updater_(ga, first, children_first, last);
-        }
+                                           FitnessMatrix::const_iterator last) override;
 
     private:
         Selection selection_;
@@ -89,4 +59,4 @@ namespace genetic_algorithm::algorithm
 
 } // namespace genetic_algorithm::algorithm
 
-#endif // !GA_ALGORITHM_SINGLE_OBJECTIVE_HPP
+#endif // !GA_ALGORITHM_SINGLE_OBJECTIVE_DECL_HPP

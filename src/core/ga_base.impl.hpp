@@ -6,7 +6,7 @@
 #include "ga_base.decl.hpp"
 #include "../population/population.hpp"
 #include "../algorithm/algorithm_base.hpp"
-#include "../algorithm/single_objective.hpp"
+#include "../algorithm/single_objective.decl.hpp"
 #include "../algorithm/nsga3.hpp"
 #include "../crossover/crossover_base.hpp"
 #include "../crossover/lambda.hpp"
@@ -209,7 +209,7 @@ namespace genetic_algorithm
         num_objectives(findNumObjectives(fitness_function_));
 
         (num_objectives_ == 1) ?
-            algorithm(std::make_unique<algorithm::SingleObjective<selection::Tournament, update::KeepBest>>()) :
+            algorithm(std::make_unique<algorithm::SingleObjective<>>()) :
             algorithm(std::make_unique<algorithm::NSGA3>());
     }
 

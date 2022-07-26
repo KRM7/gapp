@@ -7,8 +7,6 @@
 #include <vector>
 #include <utility>
 #include <functional>
-#include <concepts>
-#include <type_traits>
 #include <cstddef>
 
 namespace genetic_algorithm
@@ -18,6 +16,9 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm::selection
 {
+    using detail::FitnessVector;
+    using detail::FitnessMatrix;
+
     /**
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.
     * The probability of selecting an individual from the population is proportional to it's fitness value. \n
@@ -30,7 +31,7 @@ namespace genetic_algorithm::selection
     public:
         void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
 
     private:
         std::vector<double> cdf_;
@@ -67,7 +68,7 @@ namespace genetic_algorithm::selection
 
         void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
 
     private:
         size_t tourney_size_;
@@ -133,7 +134,7 @@ namespace genetic_algorithm::selection
 
         void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
 
     private:
         double min_weight_;
@@ -171,7 +172,7 @@ namespace genetic_algorithm::selection
 
         void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
 
     private:
         double scale_;
@@ -209,7 +210,7 @@ namespace genetic_algorithm::selection
         
         void initialize(const GaInfo&) noexcept {}
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat);
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
     private:
         TemperatureFunction temperature_;
         std::vector<double> cdf_;

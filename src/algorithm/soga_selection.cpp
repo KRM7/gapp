@@ -44,7 +44,7 @@ namespace genetic_algorithm::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Roulette::select(const GaInfo&, const FitnessMatrix&)
+    size_t Roulette::select(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
@@ -69,7 +69,7 @@ namespace genetic_algorithm::selection
         fvec_ = detail::map(fmat, [](const FitnessVector& fvec) noexcept { return fvec[0]; });
     }
 
-    size_t Tournament::select(const GaInfo&, const FitnessMatrix&)
+    size_t Tournament::select(const GaInfo&, const FitnessMatrix&) const
     {
         auto candidates = rng::sampleUnique(0_sz, fvec_.size(), tourney_size_);
 
@@ -127,7 +127,7 @@ namespace genetic_algorithm::selection
         cdf_ = weightsToCdf(weights);
     }
 
-    size_t Rank::select(const GaInfo&, const FitnessMatrix&)
+    size_t Rank::select(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
@@ -166,7 +166,7 @@ namespace genetic_algorithm::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Sigma::select(const GaInfo&, const FitnessMatrix&)
+    size_t Sigma::select(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
@@ -203,7 +203,7 @@ namespace genetic_algorithm::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Boltzmann::select(const GaInfo&, const FitnessMatrix&)
+    size_t Boltzmann::select(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }

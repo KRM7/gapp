@@ -4,8 +4,6 @@
 #define GA_ALGORITHM_POP_UPDATE_HPP
 
 #include "../population/population.hpp"
-#include <concepts>
-#include <type_traits>
 #include <vector>
 #include <cstddef>
 
@@ -17,6 +15,9 @@ namespace genetic_algorithm
 /** Methods used to update the populations in each generation of the algorithms. */
 namespace genetic_algorithm::update
 {
+    using detail::FitnessVector;
+    using detail::FitnessMatrix;
+
     /**
     * A population update method that selects only the child Candidates from the
     * combined parent and child populations, and uses these as the population of
