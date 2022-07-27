@@ -99,77 +99,70 @@ namespace genetic_algorithm::algorithm
                                               FitnessMatrix::const_iterator children_first,
                                               FitnessMatrix::const_iterator children_last)
     {
+        const size_t popsize = ga.population_size();
+
         assert(ga.num_objectives() > 1);
-        assert(size_t(children_first - parents_first) == ga.population_size());
-        assert(size_t(children_last - parents_first) >= ga.population_size());
+        assert(size_t(children_first - parents_first) == popsize);
+        assert(size_t(children_last - parents_first) >= popsize);
         assert(std::all_of(parents_first, children_last, [&ga](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
 
         GA_UNUSED(children_first);
-
-        std::vector<size_t> new_pop;
-        new_pop.reserve(ga.population_size());
 
         auto pfronts = dtl::nonDominatedSort(parents_first, children_last);
         ranks_ = dtl::paretoRanks(pfronts);
         dists_ = crowdingDistances(parents_first, children_last, pfronts);
 
         /* Keep track of the details of the candidates added to new_pop to avoid a second sort. */
-        std::vector<size_t> new_ranks;
-        std::vector<double> new_dists;
-        new_ranks.reserve(ga.population_size());
-        new_dists.reserve(ga.population_size());
+        std::vector<size_t> new_pop(popsize);
+        std::vector<size_t> new_ranks(popsize);
+        std::vector<double> new_dists(popsize);
 
-        /* Add entire fronts while possible. */
-        auto first = pfronts.begin();
-        auto last = dtl::nextFrontBegin(first, pfronts.end());
-        while (new_pop.size() + std::distance(first, last) <= ga.population_size())
+        /* Check if there is going to be a partial front, and find its bounds. */
+        auto partial_front_first = pfronts.begin() + popsize;
+        auto partial_front_last  = pfronts.begin() + popsize;
+
+        bool has_partial_front = (pfronts.size() > popsize) && (pfronts[popsize - 1].second == pfronts[popsize].second);
+
+        if (has_partial_front)
         {
-            for (; first != last; first++)
-            {
-                size_t idx = first->first;
-                new_pop.push_back(idx);
-                new_ranks.push_back(ranks_[idx]);
-                new_dists.push_back(dists_[idx]);
-            }
-            //first = last; // TODO
-            last = dtl::nextFrontBegin(first, pfronts.end());
-        }
+            size_t partial_front_rank = pfronts[popsize - 1].second;
 
-        /* Add the remaining candidates from the partial front if there is one. */
-        if (new_pop.size() != ga.population_size())
-        {
-            size_t remaining_indices = ga.population_size() - new_pop.size();
-
-            /* Keep track of the candidates added from the partial front,
-             * the crowding distances will only need to be updated for these candidates. */
-            dtl::ParetoFronts partial_front;
-            partial_front.reserve(remaining_indices);
-
-            std::sort(first, last,
-            [this](const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs) noexcept
-            {
-                size_t lidx = lhs.first;
-                size_t ridx = rhs.first;
-                return dists_[lidx] > dists_[ridx]; /* The ranks will always be the same */
+            partial_front_first = std::find_if(pfronts.begin(), pfronts.end(),
+            [partial_front_rank](const auto& sol) noexcept
+            { 
+                return sol.second == partial_front_rank;
             });
 
-            for (; new_pop.size() != ga.population_size(); first++)
-            {
-                size_t idx = first->first;
-
-                new_pop.push_back(idx);
-                new_ranks.push_back(ranks_[idx]);
-                partial_front.push_back(*first);
-            }
-
-            auto changed_dists = crowdingDistances(parents_first, children_last, { partial_front });
-
-            for (size_t i = 0; i < remaining_indices; i++)
-            {
-                double new_dist = changed_dists[partial_front[i].first];
-                new_dists.push_back(new_dist);
-            }
+            partial_front_last = dtl::nextFrontBegin(partial_front_first, pfronts.end());
         }
+
+        /* Find the elements that will be added to the next population from the partial front. */
+        std::sort(partial_front_first, partial_front_last,
+        [this](const auto& lhs, const auto& rhs) noexcept
+        {
+            size_t lidx = lhs.first;
+            size_t ridx = rhs.first;
+            /* The ranks will always be the same within a front, so only compare the distances. */
+            return dists_[lidx] > dists_[ridx]; // descending
+        });
+
+        /* Recalc the crowding distances of the partial front. */
+        dtl::ParetoFronts partial_front(partial_front_first, partial_front_last);
+
+        auto changed_dists = crowdingDistances(parents_first, children_last, partial_front);
+        for (const auto& [sol_idx, _] : partial_front)
+        {
+            dists_[sol_idx] = changed_dists[sol_idx];
+        }
+
+        /* Add the first popsize elements from pfronts to the next pop. */
+        for (size_t i = 0; i < popsize; i++)
+        {
+            new_pop[i] = pfronts[i].first;
+            new_ranks[i] = pfronts[i].second;
+            new_dists[i] = dists_[i];
+        }
+
         ranks_ = std::move(new_ranks);
         dists_ = std::move(new_dists);
 
