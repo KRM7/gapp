@@ -2,7 +2,6 @@
 
 #include "real.hpp"
 #include "../utility/rng.hpp"
-#include "../selection/selection.hpp"
 #include "../crossover/real.hpp"
 #include "../mutation/real.hpp"
 #include "../stop_condition/stop_condition.hpp"

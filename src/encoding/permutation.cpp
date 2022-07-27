@@ -2,7 +2,6 @@
 
 #include "permutation.hpp"
 #include "../utility/rng.hpp"
-#include "../selection/selection.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
 #include "../stop_condition/stop_condition.hpp"

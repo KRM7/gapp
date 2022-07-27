@@ -4,7 +4,7 @@
 #define GA_GENETIC_ALGORITHM_HPP
 
 #include "utility/rng.hpp"
-#include "selection/selection.hpp"
+#include "algorithm/algorithm.hpp"
 #include "crossover/crossover.hpp"
 #include "mutation/mutation.hpp"
 #include "stop_condition/stop_condition.hpp"

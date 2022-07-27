@@ -2,7 +2,6 @@
 
 #include "integer.hpp"
 #include "../utility/rng.hpp"
-#include "../selection/selection.hpp"
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"
 #include "../stop_condition/stop_condition.hpp"
