@@ -14,10 +14,10 @@ namespace genetic_algorithm::detail
 {
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::all_of(first, last, [](const FitnessVector& fvec) { return fvec.size() == 1; }));
+        assert(std::all_of(first, last, [](const FitnessVector& f) { return f.size() == 1; }));
 
-        std::vector<double> fvec(size_t(last - first));
-        std::transform(first, last, fvec.begin(), [](const FitnessVector& fvec) { return fvec[0]; });
+        std::vector<double> fvec(last - first);
+        std::transform(first, last, fvec.begin(), [](const FitnessVector& f) { return f[0]; });
 
         return fvec;
     }
