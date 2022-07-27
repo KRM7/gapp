@@ -100,6 +100,8 @@ namespace genetic_algorithm::algorithm::dtl
 
     ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept
     {
+        if (current == last) return last;    /* There isn't a next front. */
+
         return std::find_if(current, last,
         [current_rank = current->second](const std::pair<size_t, size_t>& elem) noexcept
         {
@@ -110,6 +112,8 @@ namespace genetic_algorithm::algorithm::dtl
 
     auto paretoFrontBounds(ParetoFronts& pareto_fronts) -> std::vector<std::pair<ParetoFronts::iterator, ParetoFronts::iterator>>
     {
+        if (pareto_fronts.empty()) return {};   /* No bounds exist. */
+
         using Iter = ParetoFronts::iterator;
         using IterPair = std::pair<Iter, Iter>;
 
