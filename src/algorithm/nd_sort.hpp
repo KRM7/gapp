@@ -13,23 +13,33 @@ namespace genetic_algorithm::algorithm::dtl
     using detail::FitnessVector;
     using detail::FitnessMatrix;
 
-    /* [solution idx, solution rank] pairs. */
-    using ParetoFronts = std::vector<std::pair<size_t, size_t>>;
+    struct FrontInfo
+    {
+        size_t idx;  // The solution's idx in the fitness matrix
+        size_t rank; // The rank of the pareto front the solution belongs to
+    };
+
+    using ParetoFronts      = std::vector<FrontInfo>;
+    using ParetoFrontsRange = std::pair<ParetoFronts::iterator, ParetoFronts::iterator>;
 
     /* Non-dominated sorting for the multi-objective algorithms.
        Returns the pareto fronts (in the form of [idx, rank] pairs) of the population, in non-descending order based on the ranks. */
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-    /* Returns the pareto rank of each candidate based on the pareto fronts (best rank is 0). */
+    /* Returns the pareto rank of each candidate in the pareto fronts (best rank is 0). */
     std::vector<size_t> paretoRanks(const ParetoFronts& pareto_fronts);
 
-    /* Finds the first element of the front following the front which @p current is a part of.
-       (Assumes that the range is sorted in non-descending order based on the ranks of the elements.) */
+    /* The functions below assume that their ParetoFronts parameters are in the format returned by
+       nonDominatedSort (sorted in non-descending order based on the ranks of the elements). */
+
+    /* Find the first element of the front following the front which @p current is a part of. */
     ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept;
 
-    /* Finds the first and last elements of each front in the pareto fronts vector.
-       (Assumes that the range is sorted in non-descending order based on the ranks of the elements.) */
-    auto paretoFrontBounds(ParetoFronts& pareto_fronts) -> std::vector<std::pair<ParetoFronts::iterator, ParetoFronts::iterator>>;
+    /* Find the first and last elements of each front in the pareto fronts. */
+    std::vector<ParetoFrontsRange> paretoFrontBounds(ParetoFronts& pareto_fronts);
+    
+    /* Find the pareto front with the lowest rank that can't be added to the next population in its entirity. */
+    ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize);
 
 } // namespace genetic_algorithm::algorithm::dtl
 

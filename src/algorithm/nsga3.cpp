@@ -22,6 +22,7 @@ namespace genetic_algorithm::algorithm
 {
     using Point     = NSGA3::Point;
     using RefPoint  = NSGA3::RefPoint;
+    using namespace dtl;
 
     std::vector<Point> NSGA3::generateRefPoints(size_t n, size_t dim)
     {
@@ -87,10 +88,10 @@ namespace genetic_algorithm::algorithm
         {
             assert(fitness.size() == weights.size());
 
-            double dmax = std::abs(fitness[0] - ideal_point[0]) / weights[0]; // TODO
+            double dmax = std::abs(fitness[0] - ideal_point[0]) / weights[0]; // TODO no abs needed, we know w > 0, ideal_point >= fitness
             for (size_t i = 0; i < fitness.size(); i++)
             {
-                double d = std::abs(fitness[i] - ideal_point[i]) / weights[i]; // TODO
+                double d = std::abs(fitness[i] - ideal_point[i]) / weights[i]; // TODO same
                 dmax = std::max(dmax, d);
             }
 
@@ -117,10 +118,11 @@ namespace genetic_algorithm::algorithm
 
         auto refs = generateRefPoints(ga.population_size(), ga.num_objectives());
         ref_points_.reserve(refs.size());
-        for (auto& ref : refs)
-        {
-            ref_points_.emplace_back(std::move(ref));
-        }
+        std::move(refs.begin(), refs.end(), std::back_inserter(ref_points_));
+        //for (auto& ref : refs)
+        //{
+        //    ref_points_.emplace_back(std::move(ref));
+        //}
 
         ideal_point_ = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
         extreme_points_ = {};
@@ -129,12 +131,9 @@ namespace genetic_algorithm::algorithm
         associatePopWithRefs(sol_info_, fitness_matrix.begin(), fitness_matrix.end(), ref_points_);
         updateNicheCounts(ref_points_, sol_info_);
 
-        auto pfronts = dtl::nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());
-        for (const auto& elem : pfronts)
+        auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());
+        for (const auto& [idx, rank] : pfronts)
         {
-            size_t idx = elem.first;
-            size_t rank = elem.second;
-
             sol_info_[idx].rank = rank;
         }
     }
@@ -164,7 +163,7 @@ namespace genetic_algorithm::algorithm
             auto w = weightVector(ideal_point.size(), dim);
             auto ASFi = getASF(ideal_point, std::move(w));
 
-            std::vector chebysev_distances_f(size_t(last - first), 0.0);
+            std::vector chebysev_distances_f(last - first, 0.0);
             std::vector chebysev_distances_e(extreme_points.size(), 0.0);
 
             std::transform(first, last, chebysev_distances_f.begin(), ASFi);
@@ -252,14 +251,8 @@ namespace genetic_algorithm::algorithm
     {
         assert(!refs.empty());
 
-        for (auto& ref : refs)
-        {
-            ref.niche_count = 0;
-        }
-        for (const auto& info : props)
-        {
-            refs[info.ref_idx].niche_count++;
-        }
+        std::for_each(refs.begin(), refs.end(), [](RefPoint& ref) { ref.niche_count = 0; });
+        std::for_each(props.begin(), props.end(), [&](const CandidateInfo& info) { refs[info.ref_idx].niche_count++; });
     }
 
     std::vector<size_t> NSGA3::nextPopulation(const GaInfo& ga,
@@ -280,11 +273,10 @@ namespace genetic_algorithm::algorithm
         auto pfronts = dtl::nonDominatedSort(parents_first, children_last);
 
         sol_info_ = std::vector<CandidateInfo>(size_t(children_last - parents_first));
-        for (size_t i = 0; i < pfronts.size(); i++)
+        for (const auto& [idx, rank] : pfronts)
         {
-            auto& [idx, rank] = pfronts[i];
-            sol_info_[idx].rank = rank; // after this, only the rank is updated, the rest are nonsense (ref idx, ref dist)
-        }
+            sol_info_[idx].rank = rank;
+        } // after this, only the rank is updated, the rest are nonsense (ref idx, ref dist)
         associatePopWithRefs(sol_info_, parents_first, children_last, ref_points_);
 
         std::vector<CandidateInfo> new_info;
@@ -297,9 +289,8 @@ namespace genetic_algorithm::algorithm
         {
             for (; first != last; first++)
             {
-                size_t idx = first->first;
-                new_pop.push_back(idx);
-                new_info.push_back(std::move(sol_info_[idx]));
+                new_pop.push_back(first->idx);
+                new_info.push_back(std::move(sol_info_[first->idx]));
             }
             last = dtl::nextFrontBegin(first, pfronts.end());
         }
@@ -311,22 +302,19 @@ namespace genetic_algorithm::algorithm
         {
             /* Find the lowest niche count in the partial front. */
             auto min = std::min_element(partial_front.begin(), partial_front.end(),
-            [this](const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs) noexcept
+            [this](const FrontInfo& lhs, const FrontInfo& rhs) noexcept
             {
-                size_t lidx = lhs.first;
-                size_t ridx = rhs.first;
-
-                return nicheCountOf(lidx) < nicheCountOf(ridx);
+                return nicheCountOf(lhs.idx) < nicheCountOf(rhs.idx);
             });
-            size_t min_cnt = nicheCountOf(min->first);
+            size_t min_cnt = nicheCountOf(min->idx);
 
             /* Find the reference points with minimal niche counts, and pick one. */
             // TODO: find_all_v
             // TODO: this loop takes a long time
             std::vector<size_t> refs;
-            for (const auto& elem : partial_front)
+            for (const auto& [idx, rank] : partial_front)
             {
-                size_t ref_idx = sol_info_[elem.first].ref_idx;
+                size_t ref_idx = sol_info_[idx].ref_idx;
                 if (ref_points_[ref_idx].niche_count == min_cnt &&
                     !detail::contains(refs.begin(), refs.end(), ref_idx))
                 {
@@ -336,12 +324,10 @@ namespace genetic_algorithm::algorithm
             size_t ref = rng::randomElement(refs);
 
             /* Find the idx of the closest sol in the partial front associated with this ref point. */
-            size_t selected_idx = partial_front[0].first;
+            size_t selected_idx = partial_front[0].idx;
             double dmin = std::numeric_limits<double>::infinity();
-            for (const auto& elem : partial_front)
+            for (const auto& [idx, rank] : partial_front)
             {
-                size_t idx = elem.first;
-
                 if (sol_info_[idx].ref_idx == ref &&
                     sol_info_[idx].ref_dist < dmin)
                 {
@@ -355,7 +341,7 @@ namespace genetic_algorithm::algorithm
             new_info.push_back(sol_info_[selected_idx]);
 
             auto selected = std::find_if(partial_front.begin(), partial_front.end(),
-                [selected_idx](const std::pair<size_t, size_t>& elem) { return elem.first == selected_idx; });
+                [selected_idx](const FrontInfo& elem) { return elem.idx == selected_idx; });
             partial_front.erase(selected);
 
             ref_points_[ref].niche_count++;
@@ -388,13 +374,11 @@ namespace genetic_algorithm::algorithm
         {
             return sol_info_[lhs].rank < sol_info_[rhs].rank;
         }
-        // tiebreak1
-        else if (nicheCountOf(lhs) != nicheCountOf(rhs))
+        else if (nicheCountOf(lhs) != nicheCountOf(rhs)) // tiebreak1
         {
             return nicheCountOf(lhs) < nicheCountOf(rhs);
         }
-        // tiebreak2
-        else
+        else // tiebreak2
         {
             return sol_info_[lhs].ref_dist < sol_info_[rhs].ref_dist;
         }
