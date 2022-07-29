@@ -67,12 +67,7 @@ namespace genetic_algorithm::algorithm
     {
         assert(!refs.empty());
 
-        auto distances = detail::map(refs,
-        [&p](const RefPoint& ref) noexcept
-        {
-            return detail::perpendicularDistanceSq(ref.point, p);
-        });
-
+        auto distances = detail::map(refs, [&p](const RefPoint& ref) { return detail::perpendicularDistanceSq(ref.point, p); });
         auto idx = detail::argmin(distances.begin(), distances.end());
 
         return { idx, distances[idx] };
@@ -88,10 +83,10 @@ namespace genetic_algorithm::algorithm
         {
             assert(fitness.size() == weights.size());
 
-            double dmax = std::abs(fitness[0] - ideal_point[0]) / weights[0]; // TODO no abs needed, we know w > 0, ideal_point >= fitness
+            double dmax = (ideal_point[0] - fitness[0]) / weights[0];
             for (size_t i = 0; i < fitness.size(); i++)
             {
-                double d = std::abs(fitness[i] - ideal_point[i]) / weights[i]; // TODO same
+                double d = (ideal_point[i] - fitness[i]) / weights[i];
                 dmax = std::max(dmax, d);
             }
 
@@ -119,10 +114,6 @@ namespace genetic_algorithm::algorithm
         auto refs = generateRefPoints(ga.population_size(), ga.num_objectives());
         ref_points_.reserve(refs.size());
         std::move(refs.begin(), refs.end(), std::back_inserter(ref_points_));
-        //for (auto& ref : refs)
-        //{
-        //    ref_points_.emplace_back(std::move(ref));
-        //}
 
         ideal_point_ = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
         extreme_points_ = {};
@@ -211,8 +202,7 @@ namespace genetic_algorithm::algorithm
 
         for (size_t i = 0; i < fnorm.size(); i++)
         {
-            double f = (ideal_point[i] - fvec[i]) / std::max(ideal_point[i] - nadir_point[i], 1E-6);
-            fnorm[i] = f;
+            fnorm[i] = (fvec[i] - ideal_point[i]) / (ideal_point[i] - nadir_point[i]);
         }
 
         return fnorm;
