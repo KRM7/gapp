@@ -24,7 +24,11 @@ namespace genetic_algorithm::algorithm
     * (their pareto ranks and crowding distances). \n
     * 
     * The selection and population update methods of this algorithm can't be changed. \n
-    * Has no parameters.
+    * Has no parameters. \n
+    * 
+    * See:
+    *  Deb, K., et al. "A fast and elitist multiobjective genetic algorithm: NSGA-II."
+    *  IEEE transactions on evolutionary computation 6, no. 2 (2002): 182-197.
     */
     class NSGA2 final : public Algorithm
     {
