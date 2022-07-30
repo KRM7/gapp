@@ -26,7 +26,7 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-        requires(!std::is_lvalue_reference_v<T>)
+    requires(!std::is_lvalue_reference_v<T>)
     constexpr T&& lforward(std::remove_reference_t<T>&& t) noexcept
     {
         return static_cast<T&&>(t);
@@ -35,8 +35,8 @@ namespace genetic_algorithm::detail
     template<typename F>
     constexpr auto compose(F&& f) noexcept
     {
-        return[f = lforward<F>(f)] <typename... Args>
-            (Args&&... args) requires std::invocable<F, Args...>
+        return [f = lforward<F>(f)] <typename... Args>
+        (Args&&... args) requires std::invocable<F, Args...>
         {
             return std::invoke(f, std::forward<Args>(args)...);
         };
@@ -45,8 +45,8 @@ namespace genetic_algorithm::detail
     template<typename F, typename... Fs>
     constexpr auto compose(F&& f, Fs&&... fs) noexcept
     {
-        return[f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args>
-            (Args&&... args) requires std::invocable<F, Args...>
+        return [f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args>
+        (Args&&... args) requires std::invocable<F, Args...>
         {
             return compose(fs...)(std::invoke(f, std::forward<Args>(args)...));
         };
@@ -79,7 +79,7 @@ namespace genetic_algorithm::detail
                 std::unordered_multimap>;
 
         template<template<typename...> class T>
-        concept MapContainer = requires { is_map_container<T>; };
+        concept MapContainer = requires { requires is_map_container<T>; };
     }
 
     template<typename ValueType, typename F>
