@@ -12,6 +12,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <functional>
 #include <iterator>
 #include <cmath>
 #include <limits>
@@ -111,6 +112,7 @@ namespace genetic_algorithm::algorithm
 
         auto& fitness_matrix = ga.fitness_matrix();
 
+        /* Create the reference points. */
         auto refs = generateRefPoints(ga.population_size(), ga.num_objectives());
         ref_points_.reserve(refs.size());
         std::move(refs.begin(), refs.end(), std::back_inserter(ref_points_));
@@ -118,9 +120,9 @@ namespace genetic_algorithm::algorithm
         ideal_point_ = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
         extreme_points_ = {};
 
-        sol_info_ = std::vector<CandidateInfo>(fitness_matrix.size());
-        associatePopWithRefs(sol_info_, fitness_matrix.begin(), fitness_matrix.end(), ref_points_);
-        updateNicheCounts(ref_points_, sol_info_);
+        sol_info_.resize(ga.population_size());
+        associatePopWithRefs(fitness_matrix.begin(), fitness_matrix.end());
+        updateNicheCounts(sol_info_);
 
         auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());
         for (const auto& [idx, rank] : pfronts)
@@ -129,80 +131,63 @@ namespace genetic_algorithm::algorithm
         }
     }
 
-    void NSGA3::updateIdealPoint(Point& ideal_point, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    void NSGA3::updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         assert(std::distance(first, last) > 0);
-        assert(ideal_point.size() == first[0].size());
 
-        auto fmax = detail::maxFitness(first, last);
-        for (size_t i = 0; i < ideal_point.size(); i++)
-        {
-            ideal_point[i] = std::max(ideal_point[i], fmax[i]);
-        }
+        ideal_point_ = detail::max(ideal_point_, detail::maxFitness(first, last));
     }
 
-    void NSGA3::updateExtremePoints(std::vector<Point>& extreme_points, const Point& ideal_point, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    void NSGA3::updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         assert(std::distance(first, last) > 0);
-        assert(first->size() == ideal_point.size());
+        assert(first->size() == ideal_point_.size());
+
+        const size_t popsize = size_t(last - first);
 
         std::vector<Point> new_extreme_points;
-        new_extreme_points.reserve(extreme_points.size());
+        new_extreme_points.reserve(extreme_points_.size());
 
-        for (size_t dim = 0; dim < ideal_point.size(); dim++)
+        for (size_t dim = 0; dim < ideal_point_.size(); dim++)
         {
-            auto w = weightVector(ideal_point.size(), dim);
-            auto ASFi = getASF(ideal_point, std::move(w));
+            auto ASFi = getASF(ideal_point_, weightVector(ideal_point_.size(), dim));
 
-            std::vector chebysev_distances_f(last - first, 0.0);
-            std::vector chebysev_distances_e(extreme_points.size(), 0.0);
+            std::vector<double> chebysev_distances;
+            chebysev_distances.reserve(extreme_points_.size() + popsize);
 
-            std::transform(first, last, chebysev_distances_f.begin(), ASFi);
-            std::transform(extreme_points.begin(), extreme_points.end(), chebysev_distances_e.begin(), ASFi);
+            std::transform(first, last, std::back_inserter(chebysev_distances), ASFi);
+            std::transform(extreme_points_.begin(), extreme_points_.end(), std::back_inserter(chebysev_distances), ASFi);
 
-            auto fmin = std::min_element(chebysev_distances_f.begin(), chebysev_distances_f.end());
-            auto emin = std::min_element(chebysev_distances_e.begin(), chebysev_distances_e.end());
-
-            if (!extreme_points.empty() && *emin < *fmin)
-            {
-                size_t argmin = size_t(emin - chebysev_distances_e.begin());
-                new_extreme_points.push_back(extreme_points[argmin]);
-            }
-            else
-            {
-                size_t argmin = size_t(fmin - chebysev_distances_f.begin());
-                new_extreme_points.push_back(first[argmin]);
-            }
+            size_t idx = detail::argmin(chebysev_distances.begin(), chebysev_distances.end());
+            
+            (idx >= popsize) ?
+                new_extreme_points.push_back(extreme_points_[idx - popsize]) :
+                new_extreme_points.push_back(first[idx]);
         }
-        extreme_points = std::move(new_extreme_points);
+        extreme_points_ = std::move(new_extreme_points);
     }
 
     auto NSGA3::findNadirPoint(const std::vector<Point>& extreme_points) -> Point
     {
         assert(!extreme_points.empty());
-        assert(std::all_of(extreme_points.begin(), extreme_points.end(), [&extreme_points](const Point& p) { return extreme_points[0].size() == p.size(); }));
 
         /* Nadir point estimate = minimum of extreme points along each objective axis. */
-        Point nadir = extreme_points[0];
-
+        Point nadir_point = extreme_points[0];
         for (size_t i = 1; i < extreme_points.size(); i++)
         {
-            for (size_t dim = 0; dim < nadir.size(); dim++)
-            {
-                nadir[dim] = std::min(nadir[dim], extreme_points[i][dim]);
-            }
+            nadir_point = detail::min(nadir_point, extreme_points[i]);
         }
 
-        return nadir;
+        return nadir_point;
     }
 
-    auto NSGA3::normalize(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point) -> FitnessVector
+    auto NSGA3::normalize(const FitnessVector& fvec) -> FitnessVector
     {
         FitnessVector fnorm(fvec.size());
 
         for (size_t i = 0; i < fnorm.size(); i++)
         {
-            fnorm[i] = (fvec[i] - ideal_point[i]) / (ideal_point[i] - nadir_point[i]);
+            fnorm[i] = (fvec[i] - ideal_point_[i]) / std::max(ideal_point_[i] - nadir_point_[i], 1E-6);
         }
 
         return fnorm;

@@ -82,17 +82,17 @@ namespace genetic_algorithm::algorithm
         /* Create a weight vector for the given axis (used in the ASF). */
         static std::vector<double> weightVector(size_t dimensions, size_t axis);
 
-        /* Update the approximate ideal point using new points in fmat, assuming maximization. */
-        static void updateIdealPoint(Point& ideal_point, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
+        /* Update the ideal point approximation using the new points in fmat, assuming maximization. */
+        void updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-        /* Update the extreme points with the new points in fmat. */
-        static void updateExtremePoints(std::vector<Point>& extreme_points, const Point& ideal_point, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
+        /* Update the extreme points using the new points in fmat. */
+        void updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
         /* Find an approximation of the nadir point of the pareto front using the minimum of the extreme points. */
-        static Point findNadirPoint(const std::vector<Point>& extreme_points);
+        Point findNadirPoint(const std::vector<Point>& extreme_points);
 
-        /* Map a fitness vector onto the unit simplex using the ideal and nadir points. */
-        static FitnessVector normalize(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point);
+        /* Normalize a fitness vector using the ideal and nadir points. */
+        FitnessVector normalize(const FitnessVector& fvec);
 
         /* Find the closest reference point to each candidate after normalization, and their distances. */
         void associatePopWithRefs(std::vector<CandidateInfo>& props, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const std::vector<RefPoint>& refs);
