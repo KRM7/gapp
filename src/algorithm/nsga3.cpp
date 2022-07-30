@@ -193,41 +193,31 @@ namespace genetic_algorithm::algorithm
         return fnorm;
     }
 
-    void NSGA3::associatePopWithRefs(std::vector<CandidateInfo>& props, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const std::vector<RefPoint>& refs)
+    void NSGA3::associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         assert(std::distance(first, last) > 0);
         assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first[0].size(); }));
-        assert(props.size() == size_t(last - first));
-        // TODO: something is probably wrong in this function, or in something that is called in here
-        updateIdealPoint(ideal_point_, first, last);
-        updateExtremePoints(extreme_points_, ideal_point_, first, last);
+        assert(sol_info_.size() == size_t(last - first));
+
+        updateIdealPoint(first, last);
+        updateExtremePoints(first, last);
         nadir_point_ = findNadirPoint(extreme_points_);
 
-        FitnessMatrix fnorm;
-        fnorm.reserve(size_t(last - first));
-
-        std::transform(first, last, std::back_inserter(fnorm),
-        [this](const FitnessVector& fvec)
+        std::transform(GA_EXECUTION_UNSEQ, first, last, sol_info_.begin(), sol_info_.begin(),
+        [this](const FitnessVector& f, CandidateInfo& props)
         {
-            return normalize(fvec, ideal_point_, nadir_point_);
-        });
+            std::tie(props.ref_idx, props.ref_dist) = findClosestRef(ref_points_, normalize(f));
 
-        /* Associate each candidate with the closest reference point. */
-        std::transform(GA_EXECUTION_UNSEQ, fnorm.begin(), fnorm.end(), props.begin(), props.begin(),
-        [&refs](const FitnessVector& f, CandidateInfo& info) -> CandidateInfo
-        {
-            std::tie(info.ref_idx, info.ref_dist) = findClosestRef(refs, f);
-
-            return info;
+            return props;
         });
     }
 
-    void NSGA3::updateNicheCounts(std::vector<RefPoint>& refs, const std::vector<CandidateInfo>& props) noexcept
+    void NSGA3::updateNicheCounts(const std::vector<CandidateInfo>& props) noexcept
     {
-        assert(!refs.empty());
+        assert(!ref_points_.empty());
 
-        std::for_each(refs.begin(), refs.end(), [](RefPoint& ref) { ref.niche_count = 0; });
-        std::for_each(props.begin(), props.end(), [&](const CandidateInfo& info) { refs[info.ref_idx].niche_count++; });
+        std::for_each(ref_points_.begin(), ref_points_.end(), [](RefPoint& ref) { ref.niche_count = 0; });
+        std::for_each(props.begin(), props.end(), [this](const CandidateInfo& info) { ref_points_[info.ref_idx].niche_count++; });
     }
 
     std::vector<size_t> NSGA3::nextPopulation(const GaInfo& ga,
@@ -252,7 +242,7 @@ namespace genetic_algorithm::algorithm
         {
             sol_info_[idx].rank = rank;
         } // after this, only the rank is updated, the rest are nonsense (ref idx, ref dist)
-        associatePopWithRefs(sol_info_, parents_first, children_last, ref_points_);
+        associatePopWithRefs(parents_first, children_last);
 
         std::vector<CandidateInfo> new_info;
         new_info.reserve(ga.population_size());
@@ -269,7 +259,7 @@ namespace genetic_algorithm::algorithm
             }
             last = dtl::nextFrontBegin(first, pfronts.end());
         }
-        updateNicheCounts(ref_points_, new_info);
+        updateNicheCounts(new_info);
 
         /* Add remaining candidates from the partial front if there is one. */
         dtl::ParetoFronts partial_front(first, last);

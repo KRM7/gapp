@@ -94,14 +94,14 @@ namespace genetic_algorithm::algorithm
         /* Normalize a fitness vector using the ideal and nadir points. */
         FitnessVector normalize(const FitnessVector& fvec);
 
-        /* Find the closest reference point to each candidate after normalization, and their distances. */
-        void associatePopWithRefs(std::vector<CandidateInfo>& props, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const std::vector<RefPoint>& refs);
+        /* Find the closest reference to each normalized fitness vector, and its distances. */
+        void associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
         /* Return true if pop[lhs] is better than pop[rhs]. */
         bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
 
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */
-        static void updateNicheCounts(std::vector<RefPoint>& refs, const std::vector<CandidateInfo>& props) noexcept;
+        void updateNicheCounts(const std::vector<CandidateInfo>& props) noexcept;
 
         /* Return the niche counts of the given candidate. */
         size_t& nicheCountOf(const CandidateInfo& info) noexcept;
