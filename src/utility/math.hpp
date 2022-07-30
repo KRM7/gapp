@@ -69,6 +69,14 @@ namespace genetic_algorithm::detail
     /* Calculate the standard deviation of the values in vec. */
     double stdDev(const std::vector<double>& vec, double mean) noexcept;
 
+    /* Return the elementwise minimum of 2 vectors. */
+    template<typename T>
+    std::vector<T> min(const std::vector<T>& lhs, const std::vector<T>& rhs);
+
+    /* Return the elementwise maximum of 2 vectors. */
+    template<typename T>
+    std::vector<T> max(const std::vector<T>& lhs, const std::vector<T>& rhs);
+
 } // namespace genetic_algorithm::detail
 
 
@@ -132,6 +140,34 @@ namespace genetic_algorithm::detail
     {
         return (lhs.size() == rhs.size()) &&
                std::equal(lhs.begin(), lhs.end(), rhs.begin(), floatIsEqual<T>);
+    }
+
+    template<typename T>
+    std::vector<T> min(const std::vector<T>& lhs, const std::vector<T>& rhs)
+    {
+        assert(lhs.size() == rhs.size());
+
+        std::vector<T> min(lhs.size());
+        for (size_t i = 0; i < lhs.size(); i++)
+        {
+            min[i] = std::min(lhs[i], rhs[i]);
+        }
+
+        return min;
+    }
+
+    template<typename T>
+    std::vector<T> max(const std::vector<T>& lhs, const std::vector<T>& rhs)
+    {
+        assert(lhs.size() == rhs.size());
+
+        std::vector<T> max(lhs.size());
+        for (size_t i = 0; i < lhs.size(); i++)
+        {
+            max[i] = std::max(lhs[i], rhs[i]);
+        }
+
+        return max;
     }
 
 } // namespace genetic_algorithm::detail
