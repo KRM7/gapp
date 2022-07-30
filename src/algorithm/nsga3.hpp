@@ -97,7 +97,7 @@ namespace genetic_algorithm::algorithm
         /* Find the closest reference point to each candidate after normalization, and their distances. */
         void associatePopWithRefs(std::vector<CandidateInfo>& props, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const std::vector<RefPoint>& refs);
 
-        /* Return true if Pop[lhs] is better than Pop[rhs]. */
+        /* Return true if pop[lhs] is better than pop[rhs]. */
         bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
 
         /* Return the niche counts of the ref points and assign niche counts to the candidates. */

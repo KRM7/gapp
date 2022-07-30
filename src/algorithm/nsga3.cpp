@@ -345,18 +345,19 @@ namespace genetic_algorithm::algorithm
 
     bool NSGA3::nichedCompare(size_t lhs, size_t rhs) const noexcept
     {
-        if (sol_info_[lhs].rank != sol_info_[rhs].rank)
+        if (sol_info_[lhs].ref_idx == sol_info_[rhs].ref_idx)
         {
-            return sol_info_[lhs].rank < sol_info_[rhs].rank;
+            if (sol_info_[lhs].rank != sol_info_[rhs].rank)
+            {
+                return sol_info_[lhs].rank < sol_info_[rhs].rank;
+            }
+            else
+            {
+                return sol_info_[lhs].ref_dist < sol_info_[rhs].ref_dist;
+            }
         }
-        else if (nicheCountOf(lhs) != nicheCountOf(rhs)) // tiebreak1
-        {
-            return nicheCountOf(lhs) < nicheCountOf(rhs);
-        }
-        else // tiebreak2
-        {
-            return sol_info_[lhs].ref_dist < sol_info_[rhs].ref_dist;
-        }
+
+        return rng::randomBool();
     }
 
     size_t NSGA3::select(const GaInfo&, const FitnessMatrix& pop) const
