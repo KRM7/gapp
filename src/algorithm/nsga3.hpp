@@ -7,6 +7,8 @@
 
 namespace genetic_algorithm::algorithm
 {
+    namespace dtl { struct FrontInfo; }
+
     /**
     * NSGA-III algorithm, used for many-objective optimization. (Doesn't work for single-objective problems.) \n
     * The aim of the algorithm is to find a set of solutions which are well-spread out
@@ -40,15 +42,13 @@ namespace genetic_algorithm::algorithm
                                            FitnessMatrix::const_iterator children_first,
                                            FitnessMatrix::const_iterator last) override;
 
-        using Point = std::vector<double>;
-
         /* A reference point/direction with its associated niche-count. */
         struct RefPoint
         {
-            const Point point;
+            const std::vector<double> point;
             size_t niche_count = 0;
 
-            RefPoint(const Point& p) : point(p) {}
+            RefPoint(std::vector<double> p) : point(std::move(p)) {}
         };
 
     private:
@@ -60,8 +60,8 @@ namespace genetic_algorithm::algorithm
             double ref_dist = 0.0;
         };
 
-        /* Achievement scalarization function type. */
-        using ASF = std::function<double(const std::vector<double>&)>;
+        using ASF   = std::function<double(const std::vector<double>&)>;  /* Achievement scalarization function type. */
+        using Point = std::vector<double>;
 
         std::vector<CandidateInfo> sol_info_;
         std::vector<RefPoint> ref_points_;
@@ -71,7 +71,7 @@ namespace genetic_algorithm::algorithm
         std::vector<Point> extreme_points_;
 
         /* Generate n reference points on the unit simplex in dim dimensions from a uniform distribution. */
-        static std::vector<Point> generateRefPoints(size_t n, size_t dim);
+        static std::vector<RefPoint> generateRefPoints(size_t n, size_t dim);
 
         /* Find the index and distance of the closest reference line to the point p. */
         static std::pair<size_t, double> findClosestRef(const std::vector<RefPoint>& refs, const Point& p);
@@ -100,14 +100,12 @@ namespace genetic_algorithm::algorithm
         /* Return true if pop[lhs] is better than pop[rhs]. */
         bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
 
-        /* Return the niche counts of the ref points and assign niche counts to the candidates. */
-        void updateNicheCounts(const std::vector<CandidateInfo>& props) noexcept;
+        /* Return the associated reference point of a candidate. */
+        RefPoint& refPointOf(const dtl::FrontInfo& sol) noexcept;
+        const RefPoint& refPointOf(const dtl::FrontInfo& sol) const noexcept;
 
-        /* Return the niche counts of the given candidate. */
-        size_t& nicheCountOf(const CandidateInfo& info) noexcept;
-        size_t& nicheCountOf(size_t sol_idx) noexcept;
-        const size_t& nicheCountOf(const CandidateInfo& info) const noexcept;
-        const size_t& nicheCountOf(size_t sol_idx) const noexcept;
+        /* Return the associated reference point's distance for a candidate. */
+        double refDistOf(const dtl::FrontInfo& sol) const noexcept;
     };
 
 } // namespace genetic_algorithm::algorithm
