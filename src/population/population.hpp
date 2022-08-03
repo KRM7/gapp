@@ -59,7 +59,9 @@ namespace genetic_algorithm::detail::_
 {
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat);
 
-    std::vector<size_t> findParetoFrontND(const FitnessMatrix& fmat);
+    std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat);
+
+    std::vector<size_t> findParetoFrontBest(const FitnessMatrix& fmat);
 
     std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat);
 
@@ -99,7 +101,7 @@ namespace genetic_algorithm::detail
 
         auto optimal_indices = fitness_matrix[0].size() == 1 ?
             _::findParetoFront1D(fitness_matrix) :
-            _::findParetoFrontND(fitness_matrix); // faster than Kung's algorithm
+            _::findParetoFrontSort(fitness_matrix);
 
         return detail::map(optimal_indices, [&pop](size_t idx) { return pop[idx]; });
     }

@@ -371,7 +371,6 @@ namespace genetic_algorithm
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
 
-        // TODO: there might be a better way to do this
         optimal_sols.insert(optimal_sols.end(), pop.begin(), pop.end());
         optimal_sols = detail::findParetoFront(optimal_sols);
         detail::erase_duplicates(optimal_sols);

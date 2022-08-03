@@ -124,7 +124,7 @@ namespace genetic_algorithm::detail::_
         });
     }
 
-    std::vector<size_t> findParetoFrontND(const FitnessMatrix& fmat)
+    std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat)
     {
         auto indices = detail::argsort(fmat.begin(), fmat.end(),
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
@@ -146,6 +146,58 @@ namespace genetic_algorithm::detail::_
                 return detail::paretoCompareLess(fmat[idx], fmat[optimal_idx]);
             });
             if (!dominated) optimal_indices.push_back(idx);
+        }
+
+        return optimal_indices;
+    }
+
+    std::vector<size_t> findParetoFrontBest(const FitnessMatrix& fmat)
+    {
+        /* Implementation of the BEST algorithm based on the description in:
+         * Godfrey et al. "Algorithms and analyses for maximal vector computation." The VLDB Journal 16, no. 1 (2007): 5-28. */
+
+        if (fmat.empty()) return {};
+
+        std::vector<size_t> indices(fmat.size());
+        std::iota(indices.begin(), indices.end(), 0);
+
+        std::vector<size_t> optimal_indices;
+        optimal_indices.reserve(fmat.size());
+
+        auto first = indices.begin();
+        auto last  = indices.end();
+
+        while (first != last)
+        {
+            auto best = first;
+            for (auto it = std::next(first); it < last; ++it)
+            {
+                auto comp = detail::paretoCompare(fmat[*best], fmat[*it]);
+                if (comp > 0)
+                {
+                    std::iter_swap(it--, --last);
+                }
+                else if (comp < 0)
+                {
+                    /* Replace and remove best from the index list (can't swap to the back, as that element hasn't been checked yet). */
+                    std::iter_swap(best, first++);
+                    best = it;
+                }
+            }
+            optimal_indices.push_back(*best);   /* best is definitely optimal */
+
+            /* best was only compared with the elements after it, there could be dominated elements before it still in the index list. */
+            for (auto it = first; it < best; ++it)
+            {
+                if (detail::paretoCompareLess(fmat[*it], fmat[*best]))
+                {
+                    std::iter_swap(it, first++);
+                }
+            }
+            std::iter_swap(best, --last);       /* best shouldn't be selected again. */
+
+            /* None of the remaining indices in [first, last) are dominated by best, but they could be by another element in the list,
+               so they can't be added to the optimal list yet. */
         }
 
         return optimal_indices;
