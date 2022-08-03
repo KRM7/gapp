@@ -85,16 +85,16 @@ namespace genetic_algorithm::algorithm
         /* Update the ideal point approximation using the new points in fmat, assuming maximization. */
         void updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-        /* Update the extreme points using the new points in fmat. */
+        /* Update the extreme points using the new points in fmat, assuming maximization. */
         void updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-        /* Find an approximation of the nadir point of the pareto front using the minimum of the extreme points. */
+        /* Find an approximation of the pareto front's nadir point using the minimum of the extreme points. */
         Point findNadirPoint(const std::vector<Point>& extreme_points);
 
         /* Normalize a fitness vector using the ideal and nadir points. */
         FitnessVector normalize(const FitnessVector& fvec);
 
-        /* Find the closest reference to each normalized fitness vector, and its distances. */
+        /* Find the closest reference and its distance for each of the points in the fitness matrix. */
         void associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
         /* Return true if pop[lhs] is better than pop[rhs]. */
