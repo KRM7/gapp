@@ -155,6 +155,32 @@ namespace genetic_algorithm::detail
         return false;
     }
 
+    template<typename ValueType>
+    std::vector<ValueType> select(const std::vector<ValueType>& cont, const std::vector<size_t>& indices)
+    {
+        assert(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < cont.size(); }));
+
+        std::vector<ValueType> selected;
+        selected.reserve(indices.size());
+
+        std::transform(indices.begin(), indices.end(), std::back_inserter(selected), [&cont](size_t idx) { return cont[idx]; });
+
+        return selected;
+    }
+
+    template<typename ValueType>
+    std::vector<ValueType> select(std::vector<ValueType>&& cont, const std::vector<size_t>& indices)
+    {
+        assert(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < cont.size(); }));
+
+        std::vector<ValueType> selected;
+        selected.reserve(indices.size());
+
+        std::transform(indices.begin(), indices.end(), std::back_inserter(selected), [&cont](size_t idx) { return std::move(cont[idx]); });
+
+        return selected;
+    }
+
     template<typename T,
              std::predicate<T, T> Pred = std::equal_to<T>,
              std::strict_weak_order<T, T> Comp = std::less<T>>

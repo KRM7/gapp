@@ -76,6 +76,7 @@ namespace genetic_algorithm::detail::_
 
 /* IMPLEMENTATION */
 
+#include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include <algorithm>
 #include <cassert>
@@ -109,7 +110,7 @@ namespace genetic_algorithm::detail
             _::findParetoFront1D(fitness_matrix) :
             _::findParetoFrontSort(fitness_matrix);
 
-        return detail::map(optimal_indices, [&pop](size_t idx) { return pop[idx]; });
+        return detail::select(pop, optimal_indices);
     }
     
     template<Gene T>
@@ -128,7 +129,7 @@ namespace genetic_algorithm::detail
         std::vector<size_t> lhs_indices(lhs.size());
         std::iota(lhs_indices.begin(), lhs_indices.end(), 0_sz);
 
-        std::for_each(GA_EXECUTION_UNSEQ, lhs_indices.begin(), lhs_indices.end(), [&](size_t i) noexcept
+        std::for_each(GA_EXECUTION_UNSEQ, lhs_indices.cbegin(), lhs_indices.cend(), [&](size_t i) noexcept
         {
             for (size_t j = 0; j < rhs.size(); j++)
             {

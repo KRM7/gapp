@@ -18,6 +18,9 @@
 #include "../utility/algorithm.hpp"
 #include <type_traits>
 #include <execution>
+#include <algorithm>
+#include <functional>
+#include <utility>
 #include <numeric>
 #include <limits>
 #include <stdexcept>
@@ -314,7 +317,7 @@ namespace genetic_algorithm
     void GA<T, D>::updatePopulation(Population& current_pop, Population&& children)
     {
         assert(fitnessMatrixIsValid());
-        assert(std::all_of(current_pop.begin(), current_pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
+        assert(std::all_of(current_pop.begin(), current_pop.end(), std::mem_fn(&Candidate::is_evaluated)));
 
         /* The current pop has already been evaluted in the previous generation. */
         auto child_fmat = evaluatePopulation(children);
@@ -326,8 +329,8 @@ namespace genetic_algorithm
 
         auto next_indices = (*algorithm_).nextPopulation(*this, fitness_matrix_.begin(), fitness_matrix_.begin() + population_size_, fitness_matrix_.end());
 
-        current_pop = detail::map(next_indices, [&current_pop](size_t idx) { return current_pop[idx]; });
-        fitness_matrix_ = detail::map(next_indices, [this](size_t idx) { return fitness_matrix_[idx]; });
+        current_pop     = detail::select(std::move(current_pop), next_indices);
+        fitness_matrix_ = detail::select(std::move(fitness_matrix_), next_indices);
 
         assert(fitnessMatrixIsValid());
     }
@@ -371,8 +374,13 @@ namespace genetic_algorithm
     {
         assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
 
-        optimal_sols.insert(optimal_sols.end(), pop.begin(), pop.end());
-        optimal_sols = detail::findParetoFront(optimal_sols);
+        auto optimal_indices = algorithm_->optimalSolutions(*this);
+
+        auto optimal_pop = optimal_indices.has_value() ?
+            detail::select(pop, *optimal_indices) :
+            detail::findParetoFront(pop);
+
+        optimal_sols = detail::mergeParetoSets(std::move(optimal_sols), std::move(optimal_pop));
         detail::erase_duplicates(optimal_sols);
     }
 
