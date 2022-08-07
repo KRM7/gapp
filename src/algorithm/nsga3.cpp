@@ -318,6 +318,19 @@ namespace genetic_algorithm::algorithm
         return nichedCompare(idx1, idx2) ? idx1 : idx2;
     }
 
+    std::optional<std::vector<size_t>> NSGA3::optimalSolutions(const GaInfo&) const
+    {
+        std::vector<size_t> optimal_indices;
+        optimal_indices.reserve(sol_info_.size());
+
+        for (size_t i = 0; i < sol_info_.size(); i++)
+        {
+            if (sol_info_[i].rank == 0) optimal_indices.push_back(i);
+        }
+
+        return optimal_indices;
+    }
+
     RefPoint& NSGA3::refPointOf(const dtl::FrontInfo& sol) noexcept
     {
         return ref_points_[sol_info_[sol.idx].ref_idx];

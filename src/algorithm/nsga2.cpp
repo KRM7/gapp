@@ -143,4 +143,17 @@ namespace genetic_algorithm::algorithm
         return new_pop;
     }
 
+    std::optional<std::vector<size_t>> NSGA2::optimalSolutions(const GaInfo&) const
+    {
+        std::vector<size_t> optimal_indices;
+        optimal_indices.reserve(ranks_.size());
+
+        for (size_t i = 0; i < ranks_.size(); i++)
+        {
+            if (ranks_[i] == 0) optimal_indices.push_back(i);
+        }
+
+        return optimal_indices;
+    }
+
 } // namespace genetic_algorithm::algorithm

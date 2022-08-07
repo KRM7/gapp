@@ -44,6 +44,8 @@ namespace genetic_algorithm::algorithm
                                            FitnessMatrix::const_iterator children_first,
                                            FitnessMatrix::const_iterator last) override;
 
+        std::optional<std::vector<size_t>> optimalSolutions(const GaInfo& ga) const override;
+
     private:
         std::vector<size_t> ranks_;
         std::vector<double> dists_;

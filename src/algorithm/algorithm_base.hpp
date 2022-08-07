@@ -7,6 +7,7 @@
 #include <vector>
 #include <cstddef>
 #include <concepts>
+#include <optional>
 
 namespace genetic_algorithm
 {
@@ -84,6 +85,11 @@ namespace genetic_algorithm::algorithm
                                                    FitnessMatrix::const_iterator first,
                                                    FitnessMatrix::const_iterator children_first,
                                                    FitnessMatrix::const_iterator last) = 0;
+
+        /**
+        * ... TODO
+        */
+        virtual std::optional<std::vector<size_t>> optimalSolutions(const GaInfo&) const { return {}; }
 
 
         Algorithm()                             = default;
