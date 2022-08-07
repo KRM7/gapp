@@ -87,7 +87,17 @@ namespace genetic_algorithm::algorithm
                                                    FitnessMatrix::const_iterator last) = 0;
 
         /**
-        * ... TODO
+        * Return the indices of the optimal solutions in a population that was created
+        * using the indices returned by nextPopulation(), assuming the order of the candidates
+        * in the population didn't change. \n
+        * Returns unique indices in the range [0, ga.population_size) \n
+        * 
+        * This function doesn't have to be implemented in the derived algorithms, but it can be
+        * useful if finding the optimal solutions can be implemented more efficiently than the default
+        * algorithm used by the GAs ( calling detail::findParetoFront(ga.population()) ).
+        * 
+        * @param ga The GA that uses the algorithm.
+        * @returns The indices of the optimal candidates.
         */
         virtual std::optional<std::vector<size_t>> optimalSolutions(const GaInfo&) const { return {}; }
 
