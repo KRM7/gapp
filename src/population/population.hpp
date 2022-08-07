@@ -4,7 +4,9 @@
 #define GA_POPULATION_HPP
 
 #include "candidate.hpp"
+#include "../utility/utility.hpp"
 #include <vector>
+#include <atomic>
 
 namespace genetic_algorithm
 {
@@ -49,9 +51,13 @@ namespace genetic_algorithm::detail
     /* Return the standard deviation of the fitness values of a fitness matrix along each objective axis. */
     FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean);
 
-    /* Finds the pareto-optimal solutions in a population. */
+    /* Find the pareto-optimal solutions in a population. */
     template<Gene T>
     Candidates<T> findParetoFront(const Population<T>& pop);
+
+    /* Find the pareto-optimal solutions in the set (lhs U rhs), assuming both lhs and rhs are pareto sets. */
+    template<Gene T>
+    Candidates<T> mergeParetoSets(Candidates<T>&& lhs, Candidates<T>&& rhs);
 
 } // namespace genetic_algorithm::detail
 
@@ -104,6 +110,71 @@ namespace genetic_algorithm::detail
             _::findParetoFrontSort(fitness_matrix);
 
         return detail::map(optimal_indices, [&pop](size_t idx) { return pop[idx]; });
+    }
+    
+    template<Gene T>
+    Candidates<T> mergeParetoSets(Candidates<T>&& A, Candidates<T>&& B)
+    {
+        if (A.empty()) return B;
+        if (B.empty()) return A;
+
+        auto [lhs, rhs] = (A.size() > B.size()) ? std::tie(A, B) : std::tie(B, A);
+
+        enum Dominance : unsigned char { UNKNOWN = 0, OPTIMAL = 1, DOMINATED = 2 };
+
+        std::vector<Dominance> lhs_state(lhs.size());
+        std::vector<std::atomic<Dominance>> rhs_state(rhs.size());
+
+        std::vector<size_t> lhs_indices(lhs.size());
+        std::iota(lhs_indices.begin(), lhs_indices.end(), 0_sz);
+
+        std::for_each(GA_EXECUTION_UNSEQ, lhs_indices.begin(), lhs_indices.end(), [&](size_t i) noexcept
+        {
+            for (size_t j = 0; j < rhs.size(); j++)
+            {
+                if (rhs_state[j] == DOMINATED) continue;
+
+                if (rhs_state[j] == OPTIMAL && detail::paretoCompareLess(lhs[i].fitness, rhs[j].fitness))
+                {
+                    lhs_state[i] = DOMINATED;
+                    continue;
+                }
+
+                if (lhs_state[i] == DOMINATED) continue;
+
+                if (lhs_state[i] == OPTIMAL && detail::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
+                {
+                    rhs_state[j] = DOMINATED;
+                    continue;
+                }
+
+                auto comp = detail::paretoCompare(lhs[i].fitness, rhs[j].fitness);
+                if (comp < 0)
+                {
+                    lhs_state[i] = DOMINATED;
+                    rhs_state[j] = OPTIMAL;
+                }
+                else if (comp > 0)
+                {
+                    lhs_state[i] = OPTIMAL;
+                    rhs_state[j] = DOMINATED;
+                }
+            }
+        });
+
+        Candidates<T> optimal_solutions;
+        optimal_solutions.reserve(lhs.size() + rhs.size());
+
+        for (size_t i = 0; i < lhs.size(); i++)
+        {
+            if (lhs_state[i] != DOMINATED) optimal_solutions.emplace_back(std::move(lhs[i]));
+        }
+        for (size_t i = 0; i < rhs.size(); i++)
+        {
+            if (rhs_state[i] != DOMINATED) optimal_solutions.emplace_back(std::move(rhs[i]));
+        }
+
+        return optimal_solutions;
     }
 
 } // namespace genetic_algorithm::detail
