@@ -18,11 +18,10 @@ namespace genetic_algorithm::algorithm
     * for the next generation of the algorithm from the combined parent and child populations
     * of the current generation.
     * 
-    * @tparam SelectionType The type of the selection method used.
+    * @tparam Selection The type of the selection method used.
     * @tparam Updater The type of the population update method used.
     */
-    template<selection::SelectionType Selection = selection::Tournament,
-             update::UpdaterType PopUpdater     = update::KeepBest>
+    template<selection::SelectionType Selection = selection::Tournament, update::UpdaterType Updater = update::KeepBest>
     class SingleObjective final : public Algorithm
     {
     public:
@@ -32,7 +31,7 @@ namespace genetic_algorithm::algorithm
         * @param selection The selection method to use in the algorithm.
         * @param updater The method used to update the populations between generations of the algorithm.
         */
-        SingleObjective(Selection selection = Selection{}, PopUpdater updater = PopUpdater{});
+        SingleObjective(Selection selection = Selection{ }, Updater updater = Updater{ });
 
         /** @returns The selection method of the algorithm. */
         [[nodiscard]]
@@ -40,7 +39,7 @@ namespace genetic_algorithm::algorithm
 
         /** @returns The population update method of the algorithm. */
         [[nodiscard]]
-        PopUpdater& update_method() const noexcept { return updater_; }
+        Updater& update_method() const noexcept { return updater_; }
 
 
         void initialize(const GaInfo& ga) override;
@@ -54,7 +53,7 @@ namespace genetic_algorithm::algorithm
 
     private:
         Selection selection_;
-        PopUpdater updater_;
+        Updater updater_;
     };
 
 } // namespace genetic_algorithm::algorithm

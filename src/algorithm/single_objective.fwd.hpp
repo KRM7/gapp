@@ -25,8 +25,9 @@ namespace genetic_algorithm::selection
     template<typename T>
     concept SelectionType = requires(T selection, const GaInfo& ga, FitnessMatrix fmat)
     {
-        requires std::copyable<std::decay_t<T>>;
-        requires std::destructible<std::decay_t<T>>;
+        requires !std::is_reference_v<T>;
+        requires std::copyable<T>;
+        requires std::destructible<T>;
 
         { selection.initialize(ga) }              -> std::same_as<void>;
         { selection.prepareSelections(ga, fmat) } -> std::same_as<void>;
@@ -52,8 +53,9 @@ namespace genetic_algorithm::update
     template<typename T>
     concept UpdaterType = requires(T updater, const GaInfo& ga, FitnessMatrix::const_iterator it)
     {
-        requires std::copyable<std::remove_reference_t<T>>;
-        requires std::destructible<std::remove_reference_t<T>>;
+        requires !std::is_reference_v<T>;
+        requires std::copyable<T>;
+        requires std::destructible<T>;
 
         { updater(ga, it, it, it) } -> std::same_as<std::vector<size_t>>;
     };
@@ -62,7 +64,7 @@ namespace genetic_algorithm::update
 
 namespace genetic_algorithm::algorithm
 {
-    template<selection::SelectionType Selection, update::UpdaterType PopUpdater>
+    template<selection::SelectionType Selection, update::UpdaterType Updater>
     class SingleObjective;
 
 } // namespace genetic_algorithm::algorithm
