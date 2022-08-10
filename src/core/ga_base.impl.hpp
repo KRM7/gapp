@@ -39,7 +39,7 @@ namespace genetic_algorithm
     GA<T, D>::GA(size_t population_size, size_t chrom_len, FitnessFunction f)
         : GaInfo(population_size, chrom_len)
     {
-        if (!f) throw std::invalid_argument("The fitness function can't be a nullptr, it is requires for the GA.");
+        if (!f) throw std::invalid_argument("The fitness function can't be a nullptr.");
 
         fitness_function_ = std::move(f);
         /* Can't call findNumObjectives() here yet (and the setter can't be called either because of this),
@@ -81,10 +81,10 @@ namespace genetic_algorithm
 
     template<Gene T, typename D>
     template<typename F>
-    requires crossover::CrossoverType<F, T> && std::is_final_v<F>
+    requires crossover::CrossoverType<std::remove_cvref_t<F>, T> && std::is_final_v<std::remove_cvref_t<F>>
     void GA<T, D>::crossover_method(F&& f)
     {
-        crossover_ = std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f));
+        crossover_ = std::make_unique<std::remove_cvref_t<F>>(std::forward<F>(f));
     }
 
     template<Gene T, typename D>
@@ -125,10 +125,10 @@ namespace genetic_algorithm
 
     template<Gene T, typename D>
     template<typename F>
-    requires mutation::MutationType<F, T> && std::is_final_v<F>
+    requires mutation::MutationType<std::remove_cvref_t<F>, T> && std::is_final_v<std::remove_cvref_t<F>>
     void GA<T, D>::mutation_method(F&& f)
     {
-        mutation_ = std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f));
+        mutation_ = std::make_unique<std::remove_cvref_t<F>>(std::forward<F>(f));
     }
 
     template<Gene T, typename D>
@@ -178,8 +178,8 @@ namespace genetic_algorithm
     bool GA<T, D>::fitnessMatrixIsValid() const noexcept
     {
         if (fitness_matrix_.size() != population_.size() ||
-            !std::all_of(fitness_matrix_.begin(), fitness_matrix_.end(), [this](const FitnessVector& fvec) { return fvec.size() == num_objectives_; }) ||
-            !std::all_of(population_.begin(), population_.end(), [this](const Candidate& sol) { return sol.fitness.size() == num_objectives_; }))
+            std::any_of(fitness_matrix_.begin(), fitness_matrix_.end(), [this](const FitnessVector& fvec) { return fvec.size() != num_objectives_; }) ||
+            std::any_of(population_.begin(), population_.end(), [this](const Candidate& sol) { return sol.fitness.size() != num_objectives_; }))
         {
             return false;
         }
@@ -274,13 +274,13 @@ namespace genetic_algorithm
     {
         assert(fitnessMatrixIsValid());
 
-        (*algorithm_).prepareSelections(*this, fitness_matrix());
+        algorithm_->prepareSelections(*this, fitness_matrix());
     }
 
     template<Gene T, typename D>
     auto GA<T, D>::select() const -> const Candidate&
     {
-        size_t idx = (*algorithm_).select(*this, fitness_matrix());
+        size_t idx = algorithm_->select(*this, fitness_matrix());
         assert(idx < population_.size());
 
         return population_[idx];
@@ -327,7 +327,7 @@ namespace genetic_algorithm
         
         assert(fitnessMatrixIsValid());
 
-        auto next_indices = (*algorithm_).nextPopulation(*this, fitness_matrix_.begin(), fitness_matrix_.begin() + population_size_, fitness_matrix_.end());
+        auto next_indices = algorithm_->nextPopulation(*this, fitness_matrix_.begin(), fitness_matrix_.begin() + population_size_, fitness_matrix_.end());
 
         current_pop     = detail::select(std::move(current_pop), next_indices);
         fitness_matrix_ = detail::select(std::move(fitness_matrix_), next_indices);
@@ -372,7 +372,7 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     void GA<T, D>::updateOptimalSolutions(Candidates& optimal_sols, const Population& pop) const
     {
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate& sol) { return sol.is_evaluated; }));
+        assert(std::all_of(pop.begin(), pop.end(), std::mem_fn(&Candidate::is_evaluated)));
 
         auto optimal_indices = algorithm_->optimalSolutions(*this);
 

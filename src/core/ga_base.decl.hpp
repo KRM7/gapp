@@ -116,7 +116,7 @@ namespace genetic_algorithm
         * @param f The crossover method used by the algorithm.
         */
         template<typename F>
-        requires crossover::CrossoverType<F, T> && std::is_final_v<F>
+        requires crossover::CrossoverType<std::remove_cvref_t<F>, T> && std::is_final_v<std::remove_cvref_t<F>>
         void crossover_method(F&& f);
 
         /**
@@ -164,7 +164,7 @@ namespace genetic_algorithm
         * @param f The crossover function that will be used by the algorithm.
         */
         template<typename F>
-        requires mutation::MutationType<F, T>&& std::is_final_v<F>
+        requires mutation::MutationType<std::remove_cvref_t<F>, T>&& std::is_final_v<std::remove_cvref_t<F>>
         void mutation_method(F&& f);
 
         /**

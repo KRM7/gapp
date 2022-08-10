@@ -8,6 +8,7 @@
 #include "../algorithm/single_objective.fwd.hpp"
 #include "../stop_condition/stop_condition_base.fwd.hpp"
 #include <vector>
+#include <type_traits>
 #include <atomic>
 #include <memory>
 #include <cstddef>
@@ -149,7 +150,7 @@ namespace genetic_algorithm
         * @param f The algorithm used by the GA.
         */
         template<typename F>
-        requires algorithm::AlgorithmType<F> && std::is_final_v<F>
+        requires algorithm::AlgorithmType<std::remove_cvref_t<F>> && std::is_final_v<std::remove_cvref_t<F>>
         void algorithm(F&& f);
 
         /**
@@ -161,7 +162,7 @@ namespace genetic_algorithm
         * @param selection The selection method used by the algorithm of the GA.
         */
         template<typename S>
-        requires (selection::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm>)
+        requires (selection::SelectionType<std::remove_cvref_t<S>> && std::is_final_v<std::remove_cvref_t<S>> && !std::derived_from<std::remove_cvref_t<S>, algorithm::Algorithm>)
         void algorithm(S&& selection);
 
         /**
@@ -173,8 +174,8 @@ namespace genetic_algorithm
         * @param selection The selection method used by the algorithm of the GA.
         */
         template<typename S, typename U>
-        requires (selection::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
-                  update::UpdaterType<U> && !std::derived_from<U, algorithm::Algorithm>)
+        requires (selection::SelectionType<std::remove_cvref_t<S>> && std::is_final_v<std::remove_cvref_t<S>> && !std::derived_from<std::remove_cvref_t<S>, algorithm::Algorithm> &&
+                  update::UpdaterType<std::remove_cvref_t<U>> && std::is_final_v<std::remove_cvref_t<U>> && !std::derived_from<std::remove_cvref_t<U>, algorithm::Algorithm>)
         void algorithm(S&& selection, U&& updater);
 
         /**
@@ -201,7 +202,7 @@ namespace genetic_algorithm
         * @param f The StopCondition the algorithm should use.
         */
         template<typename F>
-        requires stopping::StopConditionType<F> && std::is_final_v<F>
+        requires stopping::StopConditionType<std::remove_cvref_t<F>> && std::is_final_v<std::remove_cvref_t<F>>
         void stop_condition(F&& f);
 
         /**
@@ -278,28 +279,28 @@ namespace genetic_algorithm
 namespace genetic_algorithm
 {
     template<typename F>
-    requires algorithm::AlgorithmType<F> && std::is_final_v<F>
+    requires algorithm::AlgorithmType<std::remove_cvref_t<F>> && std::is_final_v<std::remove_cvref_t<F>>
     void GaInfo::algorithm(F&& f)
     {
-        algorithm_ = std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f));
+        algorithm_ = std::make_unique<std::remove_cvref_t<F>>(std::forward<F>(f));
         can_continue_ = false;
     }
 
     template<typename S>
-    requires (selection::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm>)
+    requires (selection::SelectionType<std::remove_cvref_t<S>> && std::is_final_v<std::remove_cvref_t<S>> && !std::derived_from<std::remove_cvref_t<S>, algorithm::Algorithm>)
     void GaInfo::algorithm(S&& selection)
     {
-        using AlgoType = typename algorithm::SingleObjective<std::remove_reference_t<S>>;
+        using AlgoType = algorithm::SingleObjective<std::remove_cvref_t<S>>;
         algorithm_ = std::make_unique<AlgoType>(std::forward<S>(selection));
         can_continue_ = false;
     }
 
     template<typename S, typename U>
-    requires (selection::SelectionType<S> && !std::derived_from<S, algorithm::Algorithm> &&
-              update::UpdaterType<U> && !std::derived_from<U, algorithm::Algorithm>)
+    requires (selection::SelectionType<std::remove_cvref_t<S>> && std::is_final_v<std::remove_cvref_t<S>> && !std::derived_from<std::remove_cvref_t<S>, algorithm::Algorithm> &&
+              update::UpdaterType<std::remove_cvref_t<U>> && std::is_final_v<std::remove_cvref_t<U>> && !std::derived_from<std::remove_cvref_t<U>, algorithm::Algorithm>)
     void GaInfo::algorithm(S&& selection, U&& updater)
     {
-        using AlgoType = typename algorithm::SingleObjective<std::remove_reference_t<S>, std::remove_reference_t<U>>;
+        using AlgoType = algorithm::SingleObjective<std::remove_cvref_t<S>, std::remove_cvref_t<U>>;
         algorithm_ = std::make_unique<AlgoType>(std::forward<S>(selection), std::forward<U>(updater));
         can_continue_ = false;
     }
@@ -320,10 +321,10 @@ namespace genetic_algorithm
     }
 
     template<typename F>
-    requires stopping::StopConditionType<F>&& std::is_final_v<F>
+    requires stopping::StopConditionType<std::remove_cvref_t<F>> && std::is_final_v<std::remove_cvref_t<F>>
     void GaInfo::stop_condition(F&& f)
     {
-        stop_condition(std::make_unique<std::remove_reference_t<F>>(std::forward<F>(f)));
+        stop_condition(std::make_unique<std::remove_cvref_t<F>>(std::forward<F>(f)));
     }
 
     template<stopping::StopConditionType F>
