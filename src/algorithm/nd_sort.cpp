@@ -1,9 +1,11 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "nd_sort.hpp"
+#include "../utility/algorithm.hpp"
 #include "../utility/math.hpp"
 #include <algorithm>
 #include <iterator>
+#include <numeric>
 #include <vector>
 #include <utility>
 #include <cstddef>
@@ -144,6 +146,31 @@ namespace genetic_algorithm::algorithm::dtl
         }
 
         return { partial_front_first, partial_front_last };
+    }
+
+    DominanceMatrix createDominanceMatrix(const FitnessMatrix& fmat)
+    {
+        /* this matrix could be static, TODO: benchmark (would have to return const ref, or just copy this function inline into the ndsort func) */
+        DominanceMatrix dom_mat(fmat.size(), DominanceMatrix::value_type(fmat.size(), 0));
+
+        std::vector<size_t> objs(fmat[0].size());
+        std::iota(objs.begin(), objs.end(), 0);
+
+        /* Could be parallel with atomic ints as the dominance matrix values, could be par, TODO: benchmark */
+        std::for_each(objs.cbegin(), objs.cend(), [&](size_t obj)
+        {
+            auto indices = detail::argsort(fmat.begin(), fmat.end(), [&](const FitnessVector& lhs, const FitnessVector& rhs) { return lhs[obj] < rhs[obj]; });
+
+            for (auto small = indices.cbegin(); small != indices.cend(); ++small)
+            {
+                for (auto big = small; big != indices.cend(); ++big)
+                {
+                    ++dom_mat[*small][*big];
+                }
+            }
+        });
+
+        return dom_mat;
     }
 
 } // namespace genetic_algorithm::algorithm::dtl
