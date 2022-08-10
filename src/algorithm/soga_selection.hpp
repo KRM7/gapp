@@ -26,7 +26,7 @@ namespace genetic_algorithm::selection
     * The selection algorithm is slightly modified so that it also works with negative fitness values. \n
     * Has no parameters.
     */
-    class Roulette
+    class Roulette final
     {
     public:
         void initialize(const GaInfo&) noexcept {}
@@ -44,7 +44,7 @@ namespace genetic_algorithm::selection
     *
     * The number of candidates in the tournaments is determined by the size parameter of the operator.
     */
-    class Tournament
+    class Tournament final
     {
     public:
         /**
@@ -81,7 +81,7 @@ namespace genetic_algorithm::selection
     * minimum and maximum value based on their rank in the population relative to
     * other individuals (assuming fitness maximization).
     */
-    class Rank
+    class Rank final
     {
     public:
         /**
@@ -147,7 +147,7 @@ namespace genetic_algorithm::selection
     * The probability of selecting an individual from the population is proportional to
     * its scaled fitness value, which is: f' = (f - f_mean) / (scale * f_sd)
     */
-    class Sigma
+    class Sigma final
     {
     public:
         /**
@@ -186,7 +186,7 @@ namespace genetic_algorithm::selection
     * in the later generations the temperature decreases, resulting in higher selection
     * pressure.
     */
-    class Boltzmann
+    class Boltzmann final
     {
     public:
         using TemperatureFunction = std::function<double(size_t, size_t)>;  /**< The type of the temperature function. */

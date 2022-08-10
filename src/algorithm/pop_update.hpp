@@ -25,7 +25,7 @@ namespace genetic_algorithm::update
     * If the number of children is greater than the population size used in the algorithm,
     * only the first pop_size children will be selected.
     */
-    class KeepChildren
+    class KeepChildren final
     {
     public:
         /**
@@ -60,7 +60,7 @@ namespace genetic_algorithm::update
     * If N = 0, this is equivalent to only keeping the children for the next
     * generation (KeepChildren).
     */
-    class Elitism
+    class Elitism final
     {
     public:
         /**
@@ -114,7 +114,7 @@ namespace genetic_algorithm::update
     * parent and child populations (assuming fitness maximization), and uses these as the
     * candidates of the next generation of the algorithm.
     */
-    class KeepBest
+    class KeepBest final
     {
     public:
         /**
