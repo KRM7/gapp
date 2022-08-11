@@ -81,10 +81,10 @@ namespace genetic_algorithm
 
     template<Gene T, typename D>
     template<typename F>
-    requires crossover::CrossoverType<std::remove_cvref_t<F>, T> && std::is_final_v<std::remove_cvref_t<F>>
-    void GA<T, D>::crossover_method(F&& f)
+    requires crossover::CrossoverType<F, T> && std::is_final_v<F>
+    void GA<T, D>::crossover_method(F f)
     {
-        crossover_ = std::make_unique<std::remove_cvref_t<F>>(std::forward<F>(f));
+        crossover_ = std::make_unique<F>(std::move(f));
     }
 
     template<Gene T, typename D>
@@ -125,10 +125,10 @@ namespace genetic_algorithm
 
     template<Gene T, typename D>
     template<typename F>
-    requires mutation::MutationType<std::remove_cvref_t<F>, T> && std::is_final_v<std::remove_cvref_t<F>>
-    void GA<T, D>::mutation_method(F&& f)
+    requires mutation::MutationType<F, T> && std::is_final_v<F>
+    void GA<T, D>::mutation_method(F f)
     {
-        mutation_ = std::make_unique<std::remove_cvref_t<F>>(std::forward<F>(f));
+        mutation_ = std::make_unique<F>(std::move(f));
     }
 
     template<Gene T, typename D>
@@ -177,33 +177,17 @@ namespace genetic_algorithm
     template<Gene T, typename D>
     bool GA<T, D>::fitnessMatrixIsValid() const noexcept
     {
-        if (fitness_matrix_.size() != population_.size() ||
-            std::any_of(fitness_matrix_.begin(), fitness_matrix_.end(), [this](const FitnessVector& fvec) { return fvec.size() != num_objectives_; }) ||
-            std::any_of(population_.begin(), population_.end(), [this](const Candidate& sol) { return sol.fitness.size() != num_objectives_; }))
+        return std::equal(fitness_matrix_.begin(), fitness_matrix_.end(), population_.begin(), population_.end(),
+        [this](const FitnessVector& fvec, const Candidate& sol)
         {
-            return false;
-        }
-               
-        for (size_t i = 0; i < fitness_matrix_.size(); i++)
-        {
-            for (size_t j = 0; j < fitness_matrix_[0].size(); j++)
-            {
-                if (fitness_matrix_[i][j] != population_[i].fitness[j])
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+            return fvec == sol.fitness;
+        });
     }
 
     template<Gene T, typename D>
     size_t GA<T, D>::findNumObjectives(const FitnessFunction& f) const
     {
-        Candidate dummy = generateCandidate();
-        auto fvec = f(dummy.chromosome);
-        return fvec.size();
+        return f(generateCandidate().chromosome).size();
     }
 
     template<Gene T, typename D>

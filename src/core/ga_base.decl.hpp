@@ -31,7 +31,6 @@ namespace genetic_algorithm
     class GA : public GaInfo
     {
     public:
-
         using GeneType = T;                             /**< The gene type used in the chromosomes. */
         using Candidate = Candidate<GeneType>;          /**< The type used for the candidates in the algorithm. */
         using Chromosome = std::vector<GeneType>;       /**< The type of the chromosomes of the Candidates, representing a solution. */
@@ -116,8 +115,8 @@ namespace genetic_algorithm
         * @param f The crossover method used by the algorithm.
         */
         template<typename F>
-        requires crossover::CrossoverType<std::remove_cvref_t<F>, T> && std::is_final_v<std::remove_cvref_t<F>>
-        void crossover_method(F&& f);
+        requires crossover::CrossoverType<F, T> && std::is_final_v<F>
+        void crossover_method(F f);
 
         /**
         * Set the crossover method the algorithm will use. \n
@@ -164,8 +163,8 @@ namespace genetic_algorithm
         * @param f The crossover function that will be used by the algorithm.
         */
         template<typename F>
-        requires mutation::MutationType<std::remove_cvref_t<F>, T>&& std::is_final_v<std::remove_cvref_t<F>>
-        void mutation_method(F&& f);
+        requires mutation::MutationType<F, T> && std::is_final_v<F>
+        void mutation_method(F f);
 
         /**
         * Set the mutation method the algorithm will use. \n
