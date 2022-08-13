@@ -41,11 +41,6 @@ namespace genetic_algorithm::algorithm::dtl
     /* Find the pareto front with the lowest rank that can't be added to the next population in its entirity. */
     ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize);
 
-
-    using DominanceMatrix  = std::vector<std::vector<unsigned>>;
-
-    DominanceMatrix createDominanceMatrix(const FitnessMatrix& fmat);
-
 } // namespace genetic_algorithm::algorithm::dtl
 
 #endif // !GA_ALGORITHM_NDSORT_HPP

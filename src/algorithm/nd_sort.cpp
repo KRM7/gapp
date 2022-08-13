@@ -12,12 +12,69 @@
 
 namespace genetic_algorithm::algorithm::dtl
 {
-    ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    std::vector<size_t> paretoRanks(const ParetoFronts& pfronts)
     {
-        assert(std::distance(first, last) >= 0);
+        std::vector<size_t> ranks(pfronts.size());
+        
+        for (const auto& [idx, rank] : pfronts) ranks[idx] = rank;
+
+        return ranks;
+    }
+
+    ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept
+    {
+        return std::find_if(current, last,
+        [current](const FrontInfo& sol) noexcept
+        {
+            return sol.rank != current->rank;
+        });
+    }
+
+    std::vector<ParetoFrontsRange> paretoFrontBounds(ParetoFronts& pareto_fronts)
+    {
+        if (pareto_fronts.empty()) return {};   /* No bounds exist. */
+
+        using Iter = ParetoFronts::iterator;
+        using IterPair = std::pair<Iter, Iter>;
+
+        std::vector<IterPair> front_bounds;
+        front_bounds.reserve(pareto_fronts.back().rank + 1);
+
+        for (auto first = pareto_fronts.begin(); first != pareto_fronts.end(); )
+        {
+            auto last = nextFrontBegin(first, pareto_fronts.end());
+            front_bounds.emplace_back(first, last);
+            first = last;
+        }
+
+        return front_bounds;
+    }
+
+    ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize)
+    {
+        assert(size_t(last - first) >= popsize);
+
+        if (size_t(last - first) == popsize) return { last, last };
+
+        auto partial_front_first = std::find_if(first, first + popsize, [&](const FrontInfo& sol)
+        {
+            return sol.rank == first[popsize].rank;
+        });
+        auto partial_front_last = (partial_front_first == first + popsize) ? partial_front_first : nextFrontBegin(partial_front_first, last);
+
+        return { partial_front_first, partial_front_last };
+    }
+
+
+    /* Fast non-dominated sorting algorithm (FNDS) */
+
+    static ParetoFronts fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    {
         assert(std::all_of(first, last, [first](const FitnessVector& f) { return f.size() == first->size(); }));
 
         size_t popsize = size_t(last - first);
+
+        if (popsize == 0) return {};
 
         /* Find the number of candidates which dominate each candidate, and the indices of the candidates it dominates. */
         std::vector<size_t> better_count(popsize, 0);
@@ -48,20 +105,20 @@ namespace genetic_algorithm::algorithm::dtl
             }
         }
 
-        ParetoFronts sorted_indices;
-        sorted_indices.reserve(popsize);
+        ParetoFronts pfronts;
+        pfronts.reserve(popsize);
 
         /* Find the indices of all non-dominated candidates (the first/best pareto front). */
         for (size_t i = 0; i < popsize; i++)
         {
-            if (better_count[i] == 0) sorted_indices.emplace_back(i, 0);
+            if (better_count[i] == 0) pfronts.emplace_back(i, 0);
         }
 
         /* Find all the other pareto fronts. */
-        auto front_first = sorted_indices.cbegin();
-        auto front_last  = sorted_indices.cend();
+        auto front_first = pfronts.cbegin();
+        auto front_last  = pfronts.cend();
 
-        while (sorted_indices.size() != popsize)
+        while (pfronts.size() != popsize)
         {
             size_t next_rank = front_first->rank + 1;
 
@@ -73,104 +130,211 @@ namespace genetic_algorithm::algorithm::dtl
                     if (--better_count[worse_idx] == 0)
                     {
                         front_last--;
-                        sorted_indices.emplace_back(worse_idx, next_rank);
+                        pfronts.emplace_back(worse_idx, next_rank);
                         front_last++;
                     }
                 }
             }
-            front_last = sorted_indices.cend();
+            front_last = pfronts.cend();
         }
 
-        return sorted_indices;
+        return pfronts;
     }
 
-    std::vector<size_t> paretoRanks(const ParetoFronts& pfronts)
-    {
-        std::vector<size_t> ranks(pfronts.size());
-        
-        for (const auto& [idx, rank] : pfronts) ranks[idx] = rank;
 
-        return ranks;
-    }
+    /* Dominance-degree sorting algorithm (DDS). */
 
-    ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept
+    template<typename T>
+    using Matrix = std::vector<std::vector<T>>;
+
+    template<typename T>
+    using MRow = Matrix<T>::value_type;
+
+    static Matrix<int>& getDominanceMatrix(size_t size)
     {
-        return std::find_if(current, last,
-        [current](const FrontInfo& elem) noexcept
+        static Matrix<int> dmat;
+
+        if (dmat.size() != size)
         {
-            return elem.rank != current->rank;
-        });
+            dmat.resize(size);
+            for (auto& row : dmat) row.resize(size);
+        }
+        for (auto& row : dmat) std::fill(row.begin(), row.end(), 0);
+
+        return dmat;
     }
 
-    std::vector<ParetoFrontsRange> paretoFrontBounds(ParetoFronts& pareto_fronts)
+    static Matrix<bool>& getNormDominanceMatrix(size_t size)
     {
-        if (pareto_fronts.empty()) return {};   /* No bounds exist. */
+        static Matrix<bool> ndmat;
 
-        using Iter = ParetoFronts::iterator;
-        using IterPair = std::pair<Iter, Iter>;
-
-        std::vector<IterPair> front_bounds;
-        front_bounds.reserve(pareto_fronts.back().rank + 1);
-
-        for (auto first = pareto_fronts.begin(); first != pareto_fronts.end(); )
+        if (ndmat.size() != size)
         {
-            auto last = nextFrontBegin(first, pareto_fronts.end());
-            front_bounds.emplace_back(first, last);
-            first = last;
+            ndmat.resize(size);
+            for (auto& row : ndmat) row.resize(size);
         }
 
-        return front_bounds;
+        return ndmat;
     }
 
-    ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize)
+    static Matrix<int>& createDominanceMatrix(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(size_t(last - first) >= popsize);
+        assert(std::distance(first, last) >= 0);
 
-        auto partial_front_first = first + popsize;
-        auto partial_front_last  = first + popsize;
+        const size_t popsize = std::distance(first, last);
 
-        bool has_partial_front = (size_t(last - first) > popsize) && 
-                                 (first[popsize - 1].rank == first[popsize].rank);
+        auto& dom_mat = getDominanceMatrix(popsize);
 
-        if (has_partial_front)
-        {
-            size_t partial_front_rank = first[popsize - 1].rank;
+        if (popsize == 0) return dom_mat;
 
-            partial_front_first = std::find_if(first, last,
-            [&](const FrontInfo& sol) noexcept
-            {
-                return sol.rank == partial_front_rank;
-            });
-
-            partial_front_last = nextFrontBegin(partial_front_first, last);
-        }
-
-        return { partial_front_first, partial_front_last };
-    }
-
-    DominanceMatrix createDominanceMatrix(const FitnessMatrix& fmat)
-    {
-        /* this matrix could be static, TODO: benchmark (would have to return const ref, or just copy this function inline into the ndsort func) */
-        DominanceMatrix dom_mat(fmat.size(), DominanceMatrix::value_type(fmat.size(), 0));
-
-        std::vector<size_t> objs(fmat[0].size());
+        std::vector<size_t> objs(first->size());
         std::iota(objs.begin(), objs.end(), 0);
 
         /* Could be parallel with atomic ints as the dominance matrix values, could be par, TODO: benchmark */
         std::for_each(objs.cbegin(), objs.cend(), [&](size_t obj)
         {
-            auto indices = detail::argsort(fmat.begin(), fmat.end(), [&](const FitnessVector& lhs, const FitnessVector& rhs) { return lhs[obj] < rhs[obj]; });
+            const auto fmat_rows = detail::argsort(first, last, [&](const FitnessVector& lhs, const FitnessVector& rhs) { return lhs[obj] > rhs[obj]; });
 
-            for (auto small = indices.cbegin(); small != indices.cend(); ++small)
+            auto current_row = fmat_rows.begin();
+            while (current_row != fmat_rows.end())
             {
-                for (auto big = small; big != indices.cend(); ++big)
+                auto first_col = current_row;
+                auto last_col = fmat_rows.end();
+
+                auto next_row = std::find_if(current_row, fmat_rows.end(), [&](size_t row)
                 {
-                    ++dom_mat[*small][*big];
-                }
+                    return !detail::floatIsEqual(first[*current_row][obj], first[row][obj]);
+                });
+
+                std::for_each(current_row, next_row, [&](size_t row)
+                {
+                    std::for_each(first_col, last_col, [&](size_t col) { ++dom_mat[row][col]; });
+                });
+                current_row = next_row;
             }
         });
 
+        /* For solutions with identical fitness vectors, set the corresponding elements of the dominance matrix to 0. */
+        for (size_t i = 0; i != dom_mat.size(); i++)
+        {
+            dom_mat[i][i] = 0;
+            for (size_t j = i + 1; j != dom_mat.size(); j++)
+            {
+                if (dom_mat[i][j] == objs.size() && dom_mat[j][i] == objs.size())
+                {
+                    dom_mat[i][j] = dom_mat[j][i] = 0;
+                }
+            }
+        }
+
         return dom_mat;
+    }
+
+    static Matrix<bool>& normalizeDominanceMatrix(const Matrix<int>& dmat, size_t nobjs)
+    {
+        auto& ndmat = getNormDominanceMatrix(dmat.size());
+
+        ndmat.resize(dmat.size());
+        for (auto& row : ndmat) row.resize(dmat.size());
+
+        for (size_t row = 0; row < ndmat.size(); row++)
+        {
+            for (size_t col = 0; col < ndmat.size(); col++)
+            {
+                ndmat[row][col] = (dmat[row][col] == nobjs);
+            }
+        }
+
+        return ndmat;
+    }
+
+    static ParetoFronts dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    {
+        assert(std::distance(first, last) >= 0);
+
+        const size_t popsize = std::distance(first, last);
+
+        ParetoFronts pfronts;
+        auto& dmat = createDominanceMatrix(first, last); // expensive 11.4
+
+        /* Separate function */
+        struct Row { size_t idx; int sum; int minus; };
+
+        std::vector<Row> cols(dmat.size());
+        for (size_t i = 0; i < dmat.size(); i++)
+        {
+            cols[i].idx = i;
+            for (const auto& row : dmat) cols[i].sum += (row[i] == first->size()); // expensive 4.8, wrong access pattern, do it the other way around
+        }
+
+        size_t front = 0;
+
+        while (pfronts.size() != popsize) // while rows !empty
+        {
+            for (ptrdiff_t i = cols.size() - 1; i >= 0; i--)
+            {
+                if (cols[i].sum == 0)
+                {
+                    pfronts.emplace_back(cols[i].idx, front); // 0.5
+
+                    /* Remove row */ // this is before the remove col stuff because we use cols[i].idx (idx to remove)
+                    for (auto& [idx, sum, minus] : cols)
+                    {
+                        if (dmat[cols[i].idx][idx] == first->size()) minus++; // expensive 5.0 for the entire loop
+                        dmat[cols[i].idx][idx] = 0;
+                    }
+
+                    /* Remove col */
+                    std::swap(cols[i], cols.back());
+                    cols.pop_back();
+                }
+            }
+
+            for (auto& col : cols)
+            {
+                col.sum -= col.minus;
+                col.minus = 0;
+            }
+
+            front++;
+        }
+
+        return pfronts;
+    }
+
+    ParetoFronts defGoodSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    {
+        std::vector<size_t> indices(last - first);
+        std::iota(indices.begin(), indices.end(), 0);
+
+        std::vector<size_t> this_front;
+
+        ParetoFronts pfronts;
+        
+        size_t front = 0;
+        while (pfronts.size() != size_t(last - first))
+        {
+            for (auto idx : indices)
+            {
+                if (std::none_of(indices.begin(), indices.end(), [&](size_t idx2) { return detail::paretoCompareLess(first[idx], first[idx2]); }))
+                {
+                    pfronts.emplace_back(idx, front);
+                    this_front.push_back(idx);
+                }
+            }
+            indices.erase(std::remove_if(indices.begin(), indices.end(), [&](size_t idx) { return detail::contains(this_front.begin(), this_front.end(), idx); }), indices.end());
+            front++;
+        }
+
+        return pfronts;
+    }
+
+    ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    {
+        //auto good = defGoodSort(first, last);
+        auto test = dominanceDegreeSort(first, last);
+        //assert(std::is_permutation(good.begin(), good.end(), test.begin(), test.end(), [](auto& lhs, auto& rhs) { return (lhs.idx == rhs.idx && lhs.rank == rhs.rank); }));
+        return test;
     }
 
 } // namespace genetic_algorithm::algorithm::dtl
