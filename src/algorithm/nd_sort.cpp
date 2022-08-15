@@ -3,9 +3,12 @@
 #include "nd_sort.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/math.hpp"
+#include "../utility/utility.hpp"
+#include "../utility/matrix.hpp"
 #include <algorithm>
 #include <iterator>
 #include <numeric>
+#include <atomic>
 #include <vector>
 #include <utility>
 #include <cstddef>
@@ -144,108 +147,95 @@ namespace genetic_algorithm::algorithm::dtl
 
     /* Dominance-degree sorting algorithm (DDS). */
 
-    template<typename T>
-    using Matrix = std::vector<std::vector<T>>;
+    //using DominanceMatrix = std::vector<std::vector<std::atomic_bool>>;
+    using DominanceMatrix = detail::Matrix<std::atomic_bool>;
 
-    template<typename T>
-    using MRow = Matrix<T>::value_type;
-
-    static Matrix<int>& getDominanceMatrix(size_t size)
+    static DominanceMatrix& getDominanceMatrix(size_t size)
     {
-        static Matrix<int> dmat;
+        static DominanceMatrix dmat;
 
-        if (dmat.size() != size)
+        if (dmat.nrows() != size)
         {
-            dmat.resize(size);
-            for (auto& row : dmat) row.resize(size);
+            dmat = DominanceMatrix(size, size);
         }
-        for (auto& row : dmat) std::fill(row.begin(), row.end(), 0);
+
+        for (auto& flag : dmat)
+        {
+            flag.store(true, std::memory_order_relaxed);
+        }
+        /* If we get rid of the static matrix, we could use false as the default value, and set to true when creating the matrix */
+        /* When counting, use max - sum, etc... */
 
         return dmat;
     }
 
-    static Matrix<bool>& getNormDominanceMatrix(size_t size)
-    {
-        static Matrix<bool> ndmat;
-
-        if (ndmat.size() != size)
-        {
-            ndmat.resize(size);
-            for (auto& row : ndmat) row.resize(size);
-        }
-
-        return ndmat;
-    }
-
-    static Matrix<int>& createDominanceMatrix(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    static DominanceMatrix& createDominanceMatrix(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         assert(std::distance(first, last) >= 0);
 
         const size_t popsize = std::distance(first, last);
-
-        auto& dom_mat = getDominanceMatrix(popsize);
+        auto& dom_mat = getDominanceMatrix(popsize); // 1.16
 
         if (popsize == 0) return dom_mat;
 
         std::vector<size_t> objs(first->size());
         std::iota(objs.begin(), objs.end(), 0);
 
-        /* Could be parallel with atomic ints as the dominance matrix values, could be par, TODO: benchmark */
-        std::for_each(objs.cbegin(), objs.cend(), [&](size_t obj)
+        std::for_each(GA_EXECUTION_UNSEQ, objs.cbegin(), objs.cend(), [&](size_t obj)
         {
-            const auto fmat_rows = detail::argsort(first, last, [&](const FitnessVector& lhs, const FitnessVector& rhs) { return lhs[obj] > rhs[obj]; });
+            FitnessVector fvec(popsize);
+            std::transform(first, last, fvec.begin(), [obj](const FitnessVector& row) { return row[obj]; });
 
-            auto current_row = fmat_rows.begin();
-            while (current_row != fmat_rows.end())
+            const auto indices = detail::argsort(fvec.rbegin(), fvec.rend()); // ascending
+
+            std::for_each(indices.rbegin(), indices.rend(), [&, current = indices.rbegin()](size_t row) mutable
             {
-                auto first_col = current_row;
-                auto last_col = fmat_rows.end();
-
-                auto next_row = std::find_if(current_row, fmat_rows.end(), [&](size_t row)
+                auto last_col = std::find_if(++current, indices.rend(), [&](size_t prev_row)
                 {
-                    return !detail::floatIsEqual(first[*current_row][obj], first[row][obj]);
+                    return !detail::floatIsEqual(fvec[prev_row], fvec[row]);
                 });
 
-                std::for_each(current_row, next_row, [&](size_t row)
-                {
-                    std::for_each(first_col, last_col, [&](size_t col) { ++dom_mat[row][col]; });
+                std::for_each(last_col, indices.rend(), [&](size_t col)
+                { 
+                    //dom_mat[row][col].store(false, std::memory_order_relaxed);
+                    dom_mat(row, col).store(false, std::memory_order_relaxed);
                 });
-                current_row = next_row;
-            }
-        });
+            });
+
+            /*
+            * The same strategy can be used to construct the columnwise counts:
+            * start with max_count for each column, and subtract one when we
+            * set an element in that column to false
+            * 
+            * When making the loop par, try to avoid making the outer loop parallel:
+            * there are not that many objectives, running parallel over the rows instead
+            * will provide the same benefit, but you dont have to use vec_atomic_flag
+            */
+        }); // 4
 
         /* For solutions with identical fitness vectors, set the corresponding elements of the dominance matrix to 0. */
-        for (size_t i = 0; i != dom_mat.size(); i++)
+        //std::vector<size_t> indices(dom_mat.size());
+        std::vector<size_t> indices(dom_mat.nrows());
+        std::iota(indices.begin(), indices.end(), 0);
+
+        std::for_each(GA_EXECUTION_UNSEQ, indices.begin(), indices.end(), [&](size_t row)
         {
-            dom_mat[i][i] = 0;
-            for (size_t j = i + 1; j != dom_mat.size(); j++)
+            std::for_each(indices.begin() + row, indices.end(), [&](size_t col)
             {
-                if (dom_mat[i][j] == objs.size() && dom_mat[j][i] == objs.size())
+                /*if (dom_mat[row][col].load(std::memory_order_relaxed) && dom_mat[col][row].load(std::memory_order_relaxed))
                 {
-                    dom_mat[i][j] = dom_mat[j][i] = 0;
+                    dom_mat[row][col].store(false, std::memory_order_relaxed);
+                    dom_mat[col][row].store(false, std::memory_order_relaxed);
+                }*/
+                if (dom_mat(row, col).load(std::memory_order_relaxed) && dom_mat(col, row).load(std::memory_order_relaxed))
+                {
+                    dom_mat(row, col).store(false, std::memory_order_relaxed);
+                    dom_mat(col, row).store(false, std::memory_order_relaxed);
                 }
-            }
-        }
+            });
+        });
 
         return dom_mat;
-    }
-
-    static Matrix<bool>& normalizeDominanceMatrix(const Matrix<int>& dmat, size_t nobjs)
-    {
-        auto& ndmat = getNormDominanceMatrix(dmat.size());
-
-        ndmat.resize(dmat.size());
-        for (auto& row : ndmat) row.resize(dmat.size());
-
-        for (size_t row = 0; row < ndmat.size(); row++)
-        {
-            for (size_t col = 0; col < ndmat.size(); col++)
-            {
-                ndmat[row][col] = (dmat[row][col] == nobjs);
-            }
-        }
-
-        return ndmat;
     }
 
     static ParetoFronts dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
@@ -253,48 +243,43 @@ namespace genetic_algorithm::algorithm::dtl
         assert(std::distance(first, last) >= 0);
 
         const size_t popsize = std::distance(first, last);
-
-        ParetoFronts pfronts;
-        auto& dmat = createDominanceMatrix(first, last); // expensive 11.4
+        auto& dmat = createDominanceMatrix(first, last); // expensive 7.1
 
         /* Separate function */
-        struct Row { size_t idx; int sum; int minus; };
 
-        std::vector<Row> cols(dmat.size());
-        for (size_t i = 0; i < dmat.size(); i++)
-        {
-            cols[i].idx = i;
-            for (const auto& row : dmat) cols[i].sum += (row[i] == first->size()); // expensive 4.8, wrong access pattern, do it the other way around
-        }
+        struct Col { size_t sum; bool removed = false; };
+
+        // try to transpose the matrix here
+
+        std::vector<Col> cols(dmat.ncols());
+        dmat.for_each([&](size_t, size_t col, auto& val) { cols[col].sum += val.load(std::memory_order_relaxed); }); // overall 3.0 to create cols
+
+
+        ParetoFronts pfronts;
+        pfronts.reserve(popsize);
 
         size_t front = 0;
-
-        while (pfronts.size() != popsize) // while rows !empty
+        while (pfronts.size() != popsize)
         {
-            for (ptrdiff_t i = cols.size() - 1; i >= 0; i--)
+            const auto front_indices = detail::find_indices(cols, [](const Col& col) { return !col.removed && !col.sum; });
+
+            std::for_each(front_indices.begin(), front_indices.end(), [&](size_t idx)
             {
-                if (cols[i].sum == 0)
+                pfronts.emplace_back(idx, front);
+
+                /* Remove col */
+                cols[idx].removed = true;
+
+                /* Remove row */
+                for (size_t i = 0; i < cols.size(); i++)
                 {
-                    pfronts.emplace_back(cols[i].idx, front); // 0.5
-
-                    /* Remove row */ // this is before the remove col stuff because we use cols[i].idx (idx to remove)
-                    for (auto& [idx, sum, minus] : cols)
-                    {
-                        if (dmat[cols[i].idx][idx] == first->size()) minus++; // expensive 5.0 for the entire loop
-                        dmat[cols[i].idx][idx] = 0;
-                    }
-
-                    /* Remove col */
-                    std::swap(cols[i], cols.back());
-                    cols.pop_back();
+                    // if not removed unhelpful
+                    //cols[i].sum -= dmat[idx][i].load(std::memory_order_relaxed);
+                    //dmat[idx][i].store(false, std::memory_order_relaxed);
+                    cols[i].sum -= dmat(idx, i).load(std::memory_order_relaxed);
+                    dmat(idx, i).store(false, std::memory_order_relaxed);
                 }
-            }
-
-            for (auto& col : cols)
-            {
-                col.sum -= col.minus;
-                col.minus = 0;
-            }
+            });
 
             front++;
         }
