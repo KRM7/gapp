@@ -4,6 +4,7 @@
 #define GA_ALGORITHM_HPP
 
 #include "concepts.hpp"
+#include "type_traits.hpp"
 #include <vector>
 #include <tuple>
 #include <algorithm>
@@ -29,11 +30,21 @@ namespace genetic_algorithm::detail
         std::vector<size_t> indices(std::distance(first, last));
         std::iota(indices.begin(), indices.end(), 0);
 
-        std::sort(indices.begin(), indices.end(),
-        [first, &comp](size_t lidx, size_t ridx)
+        if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
-            return std::invoke(comp, *(first + lidx), *(first + ridx));
-        });
+            const size_t last_idx = indices.back();
+            std::sort(indices.begin(), indices.end(), [&](size_t lidx, size_t ridx)
+            {
+                return std::invoke(comp, *(first + last_idx - ridx), *(first + last_idx - lidx));
+            });
+        }
+        else
+        {
+            std::sort(indices.begin(), indices.end(), [&](size_t lidx, size_t ridx)
+            {
+                return std::invoke(comp, *(first + lidx), *(first + ridx));
+            });
+        }
 
         return indices;
     }
@@ -50,11 +61,23 @@ namespace genetic_algorithm::detail
         std::vector<size_t> indices(std::distance(first, last));
         std::iota(indices.begin(), indices.end(), 0);
 
-        std::partial_sort(indices.begin(), indices.begin() + std::distance(first, middle), indices.end(),
-        [first, &comp](size_t lidx, size_t ridx)
+        if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
-            return std::invoke(comp, *(first + lidx), *(first + ridx));
-        });
+            const size_t last_idx = indices.back();
+            std::partial_sort(indices.begin(), indices.begin() + std::distance(first, middle), indices.end(),
+            [&](size_t lidx, size_t ridx)
+            {
+                return std::invoke(comp, *(first + last_idx - ridx), *(first + last_idx - lidx));
+            });
+        }
+        else
+        {
+            std::partial_sort(indices.begin(), indices.begin() + std::distance(first, middle), indices.end(),
+            [&](size_t lidx, size_t ridx)
+            {
+                return std::invoke(comp, *(first + lidx), *(first + ridx));
+            });
+        }
 
         return indices;
     }
@@ -233,7 +256,19 @@ namespace genetic_algorithm::detail
     constexpr size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
         assert(first != last);
-        return size_t(std::max_element(first, last, std::forward<Comp>(comp)) - first);
+
+        const auto it = std::max_element(first, last, std::forward<Comp>(comp));
+        const size_t idx = size_t(it - first);
+
+        if constexpr (detail::is_reverse_iterator_v<Iter>)
+        {
+            const size_t last_idx = std::distance(first, last) - 1;
+            return last_idx - idx;
+        }
+        else
+        {
+            return idx;
+        }
     }
 
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
@@ -242,7 +277,19 @@ namespace genetic_algorithm::detail
     constexpr size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
         assert(first != last);
-        return size_t(std::min_element(first, last, std::forward<Comp>(comp)) - first);
+
+        const auto it = std::min_element(first, last, std::forward<Comp>(comp));
+        const size_t idx = size_t(it - first);
+
+        if constexpr (detail::is_reverse_iterator_v<Iter>)
+        {
+            const size_t last_idx = std::distance(first, last) - 1;
+            return last_idx - idx;
+        }
+        else
+        {
+            return idx;
+        }
     }
 
 }
