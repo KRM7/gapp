@@ -2,6 +2,7 @@
 #define GA_TYPE_TRAITS_HPP
 
 #include <type_traits>
+#include <iterator>
 
 namespace genetic_algorithm::detail
 {
@@ -24,7 +25,7 @@ namespace genetic_algorithm::detail
              template<typename...> class... Targets>
     struct is_one_of_templ<Match, Target, Targets...>
         : std::bool_constant<std::disjunction_v<is_same_template<Match, Target>,
-                                                is_one_of_templ<Match, Targets...>>>
+                             is_one_of_templ<Match, Targets...>>>
     {};
 
     template<template<typename...> class T, template<typename...> class... Ts>
@@ -54,7 +55,7 @@ namespace genetic_algorithm::detail
     template<typename... Ts>
     inline constexpr size_t number_of_types_v = number_of_types<Ts...>::value;
 
-    
+
 
     template<size_t N, typename... Args>
     struct nth_type_of {};
@@ -106,6 +107,16 @@ namespace genetic_algorithm::detail
     template<typename S, template<typename...> class Templ>
     inline constexpr bool is_specialization_of_v = is_specialization_of<S, Templ>::value;
 
+
+
+    template<typename T>
+    struct is_reverse_iterator : std::false_type {};
+
+    template<typename T>
+    struct is_reverse_iterator<std::reverse_iterator<T>> : std::bool_constant<!is_reverse_iterator<T>::value> {};
+
+    template<typename T>
+    inline constexpr bool is_reverse_iterator_v = is_reverse_iterator<T>::value;
 
 } // namespace genetic_algorithm::detail
 
