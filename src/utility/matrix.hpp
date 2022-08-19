@@ -175,6 +175,9 @@ namespace genetic_algorithm::detail
             const_col_iterator(std::vector<T>::const_iterator iter, difference_type stride) :
                 iter_(iter), stride_(stride) {}
 
+            const_col_iterator(std::vector<T>::iterator iter, difference_type stride) :
+                iter_(iter), stride_(stride) {}
+
             bool operator==(const const_col_iterator& rhs) const noexcept { return iter_ == rhs.iter_; }
             bool operator!=(const const_col_iterator& rhs) const noexcept { return iter_ != rhs.iter_; }
             bool operator<(const const_col_iterator& rhs) const noexcept  { return iter_ < rhs.iter_; }
@@ -257,16 +260,14 @@ namespace genetic_algorithm::detail
     Matrix<T>::col_iterator operator+(typename Matrix<T>::col_iterator::difference_type n,
                                       const typename Matrix<T>::col_iterator& it) noexcept
     {
-        auto temp = Matrix<T>::col_iterator(it);
-        return temp += n;
+        return Matrix<T>::col_iterator(it) + n;
     }
 
     template<typename T>
     Matrix<T>::const_col_iterator operator+(typename Matrix<T>::const_col_iterator::difference_type n,
                                             const typename Matrix<T>::const_col_iterator& it) noexcept
     {
-        auto temp = Matrix<T>::const_col_iterator(it);
-        return temp += n;
+        return Matrix<T>::const_col_iterator(it) + n;
     }
 
 } // namespace genetic_algorithm::detail
