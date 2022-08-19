@@ -150,6 +150,8 @@ namespace genetic_algorithm::algorithm::dtl
     using DominanceMatrix = detail::Matrix<unsigned char>;
     enum : unsigned char { MAXIMAL = true, NONMAXIMAL = false };
 
+    struct Col { size_t idx; size_t sum; };
+
     static DominanceMatrix constructDominanceMatrix(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         assert(std::distance(first, last) >= 0);
@@ -182,15 +184,12 @@ namespace genetic_algorithm::algorithm::dtl
                     dmat_entry.store(NONMAXIMAL, std::memory_order_relaxed);
                 });
             });
-
-            /*
-            * The same strategy can be used to construct the columnwise counts:
-            * start with max_count for each column, and subtract one when we
-            * set an element in that column to false
-            */
         }); // 4
 
         /* Eliminate solutions with identical fitness vectors. */
+        //std::vector<Col> cols(popsize);
+        //for (size_t i = 0; i < cols.size(); i++) cols[i].idx = i;
+
         std::vector<size_t> indices(popsize);
         std::iota(indices.begin(), indices.end(), 0);
 
@@ -214,11 +213,9 @@ namespace genetic_algorithm::algorithm::dtl
         assert(std::distance(first, last) >= 0);
 
         const size_t popsize = std::distance(first, last);
-        DominanceMatrix dmat = constructDominanceMatrix(first, last); // expensive 7.1
+        DominanceMatrix dmat = constructDominanceMatrix(first, last);
 
         /* Separate function */
-
-        struct Col { size_t idx; size_t sum; size_t removed_sum; bool removed; };
 
         std::vector<Col> cols(dmat.ncols());
         for (size_t i = 0; i < cols.size(); i++) cols[i].idx = i;
@@ -232,41 +229,33 @@ namespace genetic_algorithm::algorithm::dtl
         pfronts.reserve(popsize);
 
         size_t current_rank = 0;
-        auto col_indices = detail::find_indices(cols.begin(), cols.end(), [](const Col& col) { return col.sum == 0; });
-
         while (pfronts.size() != popsize)
         {
+            std::vector<size_t> removed_rows;
 
-
-
-            /* Add to pfront */
-            std::for_each(col_indices.begin(), col_indices.end(), [&](size_t col_idx) { pfronts.emplace_back(cols[col_idx].idx, current_rank); });
-            /* Remove rows and cols */
-            std::for_each(col_indices.begin(), col_indices.end(), [&](size_t idx) // 5.0
+            /* Remove cols */
+            for (auto& col : cols)
             {
-                /* Remove col */
-                cols[idx].removed = true;
-
-                /* Remove row */
-                const size_t row_idx = cols[idx].idx;
-                for (size_t col_idx = 0; col_idx < cols.size(); col_idx++)
+                if (col.sum == 0)
                 {
-                    if (dmat(row_idx, cols[col_idx].idx) == MAXIMAL)
+                    pfronts.emplace_back(col.idx, current_rank);
+                    removed_rows.push_back(col.idx);
+                }
+            }
+            std::erase_if(cols, [](const Col& col) { return col.sum == 0; });
+
+            /* Remove rows */
+            std::for_each(removed_rows.begin(), removed_rows.end(), [&](size_t row)
+            {
+                for (auto& col : cols)
+                {
+                    if (dmat(row, col.idx) == MAXIMAL)
                     {
-                        cols[col_idx].removed_sum++;
-                        dmat(row_idx, cols[col_idx].idx) = NONMAXIMAL;
+                        dmat(row, col.idx) = NONMAXIMAL;
+                        col.sum--;
                     }
                 }
             });
-            std::erase_if(cols, [](const Col& col) { return col.removed; });
-
-            col_indices.clear();
-            for (size_t i = 0; i < cols.size(); i++)
-            {
-                cols[i].sum -= cols[i].removed_sum;
-                cols[i].removed_sum = 0;
-                if (cols[i].sum == 0) col_indices.push_back(i);
-            }
 
             current_rank++;
         }
