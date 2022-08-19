@@ -89,10 +89,11 @@ namespace genetic_algorithm::detail
         assert(std::distance(first, last) >= 0);
 
         std::vector<Iter> result;
-        while (first != last)
+        result.reserve(last - first);
+
+        for (; first != last; ++first)
         {
             if (std::invoke(pred, *first)) result.push_back(first);
-            ++first;
         }
 
         return result;
@@ -107,13 +108,60 @@ namespace genetic_algorithm::detail
         using ValueType = typename std::iterator_traits<Iter>::value_type;
 
         std::vector<ValueType> result;
-        while (first != last)
-        {
-            if (std::invoke(pred, *first)) result.push_back(*first);
-            ++first;
-        }
+        result.reserve(last - first);
+
+        std::copy_if(first, last, std::back_inserter(result), std::forward<Pred>(pred));
 
         return result;
+    }
+
+    template<std::random_access_iterator Iter, typename Pred>
+    requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
+    std::vector<size_t> find_indices(Iter first, Iter last, Pred&& pred)
+    {
+        assert(std::distance(first, last) >= 0);
+
+        std::vector<size_t> indices;
+        indices.reserve(last - first);
+
+        for (auto current = first; current != last; ++current)
+        {
+            if (std::invoke(pred, *current)) indices.push_back(size_t(current - first));
+        }
+
+        return indices;
+    }
+
+    template<typename T, std::predicate<T> Pred>
+    std::vector<size_t> find_indices(const std::vector<T>& container, Pred&& pred)
+    {
+        std::vector<size_t> indices;
+        indices.reserve(indices.size());
+
+        for (size_t i = 0; i < container.size(); i++)
+        {
+            if (std::invoke(pred, container[i])) indices.push_back(i);
+        }
+
+        return indices;
+    }
+
+    template<typename T>
+    constexpr size_t index_of(const std::vector<T>& container, const T& val)
+    {
+        size_t idx = std::distance(container.begin(), std::find(container.begin(), container.end(), val));
+        assert(idx != container.size());
+
+        return idx;
+    }
+
+    template<typename T, std::predicate<T> Pred>
+    constexpr size_t find_index(const std::vector<T>& container, Pred&& pred)
+    {
+        size_t idx = std::distance(container.begin(), std::find_if(container.begin(), container.end(), std::forward<Pred>(pred)));
+        assert(idx != container.size());
+
+        return idx;
     }
 
     template<std::input_iterator Iter>
@@ -121,49 +169,7 @@ namespace genetic_algorithm::detail
     {
         assert(std::distance(first, last) >= 0);
 
-        while (first != last)
-        {
-            if (*first++ == val) return true;
-        }
-        return false;
-    }
-
-    template<typename T>
-    constexpr size_t index_of(const std::vector<T>& container, const T& val)
-    {
-        assert(!container.empty());
-
-        for (size_t i = 0; i < container.size(); i++)
-        {
-            if (container[i] == val) return i;
-        }
-        assert(false);
-        return 0;
-    }
-
-    template<typename T, std::predicate<T> Pred>
-    constexpr size_t find_index(const std::vector<T>& container, Pred&& pred)
-    {
-        assert(!container.empty());
-
-        for (size_t i = 0; i < container.size(); i++)
-        {
-            if (std::invoke(pred, container[i])) return i;
-        }
-        assert(false);
-        return 0;
-    }
-
-    template<typename T, std::predicate<T> Pred>
-    std::vector<size_t> find_indices(const std::vector<T>& container, Pred&& pred)
-    {
-        std::vector<size_t> indices;
-        for (size_t i = 0; i < container.size(); i++)
-        {
-            if (std::invoke(pred, container[i])) indices.push_back(i);
-        }
-
-        return indices;
+        return std::any_of(first, last, [&val](const auto& elem) { return elem == val; });
     }
 
     template<typename T>
@@ -255,7 +261,7 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     constexpr size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(first != last);
+        assert(std::distance(first, last) > 0);
 
         const auto it = std::max_element(first, last, std::forward<Comp>(comp));
         const size_t idx = size_t(it - first);
@@ -276,7 +282,7 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     constexpr size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(first != last);
+        assert(std::distance(first, last) > 0);
 
         const auto it = std::min_element(first, last, std::forward<Comp>(comp));
         const size_t idx = size_t(it - first);
