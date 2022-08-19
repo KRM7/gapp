@@ -189,9 +189,10 @@ namespace genetic_algorithm::algorithm::dtl
         std::vector<size_t> indices(popsize);
         std::iota(indices.begin(), indices.end(), 0);
 
-        std::for_each(indices.begin(), indices.end(), [&](size_t row) noexcept
+        std::for_each(GA_EXECUTION_UNSEQ, indices.begin(), indices.end(), [&](size_t row) noexcept
         {
-            std::for_each(indices.begin() + row, indices.end(), [&](size_t col) noexcept
+            dmat(row, row) = NONMAXIMAL;
+            std::for_each(indices.begin() + row + 1, indices.end(), [&](size_t col) noexcept
             {
                 if (dmat(row, col) == MAXIMAL && dmat(col, row) == MAXIMAL)
                 {
@@ -199,7 +200,7 @@ namespace genetic_algorithm::algorithm::dtl
                     dmat(col, row) = NONMAXIMAL;
                 }
             });
-        }); // 2.2
+        });
 
         return dmat;
     }
@@ -207,7 +208,6 @@ namespace genetic_algorithm::algorithm::dtl
     static std::vector<Col> colwiseSums(const DominanceMatrix& dmat)
     {
         std::vector<Col> cols(dmat.ncols());
-
         for (size_t i = 0; i < cols.size(); i++) cols[i].idx = i;
 
         for (size_t row = 0; row < dmat.nrows(); row++)
@@ -264,39 +264,9 @@ namespace genetic_algorithm::algorithm::dtl
         return pfronts;
     }
 
-    ParetoFronts defGoodSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
-    {
-        std::vector<size_t> indices(last - first);
-        std::iota(indices.begin(), indices.end(), 0);
-
-        std::vector<size_t> this_front;
-
-        ParetoFronts pfronts;
-        
-        size_t front = 0;
-        while (pfronts.size() != size_t(last - first))
-        {
-            for (auto idx : indices)
-            {
-                if (std::none_of(indices.begin(), indices.end(), [&](size_t idx2) { return detail::paretoCompareLess(first[idx], first[idx2]); }))
-                {
-                    pfronts.emplace_back(idx, front);
-                    this_front.push_back(idx);
-                }
-            }
-            indices.erase(std::remove_if(indices.begin(), indices.end(), [&](size_t idx) { return detail::contains(this_front.begin(), this_front.end(), idx); }), indices.end());
-            front++;
-        }
-
-        return pfronts;
-    }
-
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        //auto good = defGoodSort(first, last);
-        auto test = dominanceDegreeSort(first, last);
-        //assert(std::is_permutation(good.begin(), good.end(), test.begin(), test.end(), [](auto& lhs, auto& rhs) { return (lhs.idx == rhs.idx && lhs.rank == rhs.rank); }));
-        return test;
+        return dominanceDegreeSort(first, last);
     }
 
 } // namespace genetic_algorithm::algorithm::dtl
