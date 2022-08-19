@@ -184,16 +184,12 @@ namespace genetic_algorithm::algorithm::dtl
                     dmat_entry.store(NONMAXIMAL, std::memory_order_relaxed);
                 });
             });
-        }); // 4
-
-        /* Eliminate solutions with identical fitness vectors. */
-        //std::vector<Col> cols(popsize);
-        //for (size_t i = 0; i < cols.size(); i++) cols[i].idx = i;
+        });
 
         std::vector<size_t> indices(popsize);
         std::iota(indices.begin(), indices.end(), 0);
 
-        std::for_each(GA_EXECUTION_UNSEQ, indices.begin(), indices.end(), [&](size_t row) noexcept
+        std::for_each(indices.begin(), indices.end(), [&](size_t row) noexcept
         {
             std::for_each(indices.begin() + row, indices.end(), [&](size_t col) noexcept
             {
@@ -208,21 +204,26 @@ namespace genetic_algorithm::algorithm::dtl
         return dmat;
     }
 
+    static std::vector<Col> colwiseSums(const DominanceMatrix& dmat)
+    {
+        std::vector<Col> cols(dmat.ncols());
+
+        for (size_t i = 0; i < cols.size(); i++) cols[i].idx = i;
+
+        for (size_t row = 0; row < dmat.nrows(); row++)
+            for (size_t col = 0; col < dmat.ncols(); col++)
+                cols[col].sum += dmat(row, col);
+
+        return cols;
+    }
+
     static ParetoFronts dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         assert(std::distance(first, last) >= 0);
 
         const size_t popsize = std::distance(first, last);
         DominanceMatrix dmat = constructDominanceMatrix(first, last);
-
-        /* Separate function */
-
-        std::vector<Col> cols(dmat.ncols());
-        for (size_t i = 0; i < cols.size(); i++) cols[i].idx = i;
-        dmat.for_each([&](size_t, size_t col, DominanceMatrix::value_type entry) noexcept
-        {
-            cols[col].sum += entry;
-        }); // overall 3.0 to create cols
+        std::vector<Col> cols = colwiseSums(dmat);
 
         /* Assign each solution to a pareto-front. */
         ParetoFronts pfronts;
