@@ -58,8 +58,7 @@ namespace genetic_algorithm::detail
 
         /* Operators */
 
-        bool operator==(const Matrix&) const = default;
-        bool operator!=(const Matrix&) const = default;
+        friend bool operator==(const Matrix&, const Matrix&) = default;
 
         /* Member access */
 
@@ -240,14 +239,6 @@ namespace genetic_algorithm::detail
             for (size_type row = 0; row < nrows(); row++)
                 for (size_type col = row + 1; col < ncols(); col++)
                     std::swap(operator()(row, col), operator()(col, row));
-        }
-
-        template<typename F>
-        void for_each(F&& f)
-        {
-            for (size_t row = 0; row < nrows(); row++)
-                for (size_t col = 0; col < ncols(); col++)
-                    std::invoke(f, row, col, operator()(row, col));
         }
 
     private:
