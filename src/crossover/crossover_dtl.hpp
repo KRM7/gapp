@@ -264,7 +264,7 @@ namespace genetic_algorithm::crossover::dtl
 
             while (chrom2[pos] != chrom1[0])
             {
-                pos = detail::index_of(chrom1, chrom2[pos]);
+                pos = *detail::index_of(chrom1, chrom2[pos]);
                 top = chrom1[pos];
                 cycle.push_back(top);
             }
@@ -397,7 +397,7 @@ namespace genetic_algorithm::crossover::dtl
                 while (first <= pos && pos < last)
                 {
                     T gene = parent1.chromosome[pos];
-                    pos = detail::index_of(parent2.chromosome, gene);
+                    pos = *detail::index_of(parent2.chromosome, gene);
                 }
                 child.chromosome[pos] = parent2.chromosome[i];
             }

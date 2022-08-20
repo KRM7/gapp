@@ -88,13 +88,13 @@ namespace genetic_algorithm::crossover::perm
 
         for (size_t i = 0; i < chrom_len; i++)
         {
-            size_t cycle_idx = detail::find_index(cycles,
+            auto cycle_idx = detail::find_index(cycles,
             [gene = parent1.chromosome[i]](const auto& cycle)
             {
                 return detail::contains(cycle.begin(), cycle.end(), gene);
             });
-
-            if (cycle_idx % 2)
+            
+            if (cycle_idx.value() % 2)
             {
                 std::swap(child1.chromosome[i], child2.chromosome[i]);
             }
