@@ -277,7 +277,7 @@ namespace genetic_algorithm::algorithm::dtl
 
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        return fastNonDominatedSort(first, last);
+        return dominanceDegreeSort(first, last);
     }
 
 } // namespace genetic_algorithm::algorithm::dtl
