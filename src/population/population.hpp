@@ -58,7 +58,7 @@ namespace genetic_algorithm::detail
 
     /* Find the pareto-optimal solutions in the set (lhs U rhs), assuming both lhs and rhs are pareto sets. */
     template<Gene T>
-    Candidates<T> mergeParetoSets(Candidates<T>&& lhs, Candidates<T>&& rhs);
+    Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs);
 
 } // namespace genetic_algorithm::detail
 
@@ -115,7 +115,7 @@ namespace genetic_algorithm::detail
     }
     
     template<Gene T>
-    Candidates<T> mergeParetoSets(Candidates<T>&& A, Candidates<T>&& B)
+    Candidates<T> mergeParetoSets(Candidates<T> A, Candidates<T> B)
     {
         if (A.empty()) return B;
         if (B.empty()) return A;
