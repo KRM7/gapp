@@ -69,7 +69,12 @@ namespace genetic_algorithm::algorithm::dtl
     }
 
 
-    /* Fast non-dominated sorting algorithm (FNDS) */
+    /* Fast non-dominated sorting algorithm (FNDS)
+    * 
+    * See:
+    *  Deb, K., et al. "A fast and elitist multiobjective genetic algorithm: NSGA-II."
+    *  IEEE transactions on evolutionary computation 6, no. 2 (2002): 182-197.
+    */
 
     static ParetoFronts fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
@@ -92,7 +97,7 @@ namespace genetic_algorithm::algorithm::dtl
 
         for (size_t lhs = 0; lhs < popsize; lhs++)
         {
-            for (size_t rhs = 1; rhs < lhs; rhs++)
+            for (size_t rhs = 0; rhs < lhs; rhs++)
             {
                 auto comp = detail::paretoCompare(first[lhs], first[rhs]);
                 if (comp < 0)
@@ -145,7 +150,15 @@ namespace genetic_algorithm::algorithm::dtl
     }
 
 
-    /* Dominance-degree sorting algorithm (DDS). */
+    /* Dominance-degree sorting algorithm (DDS).
+     * 
+     * See:
+     *  Zhou, Yuren, Zefeng Chen, and Jun Zhang. "Ranking vectors by means of the dominance degree matrix."
+     *  IEEE Transactions on Evolutionary Computation 21, no. 1 (2016): 34-51.
+     * 
+     *  Mishra, S., et al. "Time complexity analysis of the dominance degree approach for non-dominated sorting."
+     *  Proceedings of the 2020 Genetic and Evolutionary Computation Conference Companion, pp. 169-170. 2020.
+     */
 
     using DominanceMatrix = detail::Matrix<unsigned char>;
     enum : unsigned char { MAXIMAL = true, NONMAXIMAL = false };

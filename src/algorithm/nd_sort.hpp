@@ -17,6 +17,8 @@ namespace genetic_algorithm::algorithm::dtl
     {
         size_t idx;  // The solution's idx in the fitness matrix
         size_t rank; // The rank of the pareto front the solution belongs to
+
+        friend bool operator==(const FrontInfo&, const FrontInfo&) = default;
     };
 
     using ParetoFronts      = std::vector<FrontInfo>;
