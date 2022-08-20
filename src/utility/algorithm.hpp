@@ -7,13 +7,14 @@
 #include "type_traits.hpp"
 #include <vector>
 #include <tuple>
+#include <optional>
 #include <algorithm>
 #include <numeric>
-#include <iterator>
 #include <functional>
-#include <utility>
+#include <iterator>
 #include <type_traits>
 #include <concepts>
+#include <utility>
 #include <cstddef>
 #include <cassert>
 
@@ -153,38 +154,36 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    constexpr size_t index_of(const std::vector<T>& container, const T& val)
+    std::optional<size_t> index_of(const std::vector<T>& container, const T& val)
     {
-        size_t idx = std::distance(container.begin(), std::find(container.begin(), container.end(), val));
-        assert(idx != container.size());
-
-        return idx;
+        const auto found = std::find(container.begin(), container.end(), val);
+        const size_t idx = std::distance(container.begin(), found);
+        
+        return idx == container.size() ? std::optional<size_t>{} : idx;
     }
 
     template<typename T, std::predicate<T> Pred>
-    constexpr size_t find_index(const std::vector<T>& container, Pred&& pred)
+    std::optional<size_t> find_index(const std::vector<T>& container, Pred&& pred)
     {
-        size_t idx = std::distance(container.begin(), std::find_if(container.begin(), container.end(), std::forward<Pred>(pred)));
-        assert(idx != container.size());
+        const auto found = std::find_if(container.begin(), container.end(), std::forward<Pred>(pred));
+        const size_t idx = std::distance(container.begin(), found);
 
-        return idx;
+        return idx == container.size() ? std::optional<size_t>{} : idx;
     }
 
     template<std::input_iterator Iter>
     constexpr bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
     {
-        assert(std::distance(first, last) >= 0);
-
-        return std::any_of(first, last, [&val](const auto& elem) { return elem == val; });
+        return std::any_of(first, last, [&](const auto& elem) { return elem == val; });
     }
 
     template<typename T>
-    constexpr bool erase_first(std::vector<T>& container, const T& val)
+    bool erase_first(std::vector<T>& container, const T& val)
     {
-        auto pos = std::find(container.cbegin(), container.cend(), val);
-        if (pos != container.cend())
+        const auto found = std::find(container.cbegin(), container.cend(), val);
+        if (found != container.cend())
         {
-            container.erase(pos);
+            container.erase(found);
             return true;
         }
         return false;
@@ -198,7 +197,7 @@ namespace genetic_algorithm::detail
         std::vector<ValueType> selected;
         selected.reserve(indices.size());
 
-        std::transform(indices.begin(), indices.end(), std::back_inserter(selected), [&cont](size_t idx) { return cont[idx]; });
+        std::transform(indices.begin(), indices.end(), std::back_inserter(selected), [&](size_t idx) { return cont[idx]; });
 
         return selected;
     }
@@ -211,7 +210,7 @@ namespace genetic_algorithm::detail
         std::vector<ValueType> selected;
         selected.reserve(indices.size());
 
-        std::transform(indices.begin(), indices.end(), std::back_inserter(selected), [&cont](size_t idx) { return std::move(cont[idx]); });
+        std::transform(indices.begin(), indices.end(), std::back_inserter(selected), [&](size_t idx) { return std::move(cont[idx]); });
 
         return selected;
     }
@@ -222,7 +221,7 @@ namespace genetic_algorithm::detail
     constexpr void erase_duplicates(std::vector<T>& container, Pred&& pred = std::equal_to<T>{}, Comp&& comp = std::less<T>{})
     {
         std::sort(container.begin(), container.end(), std::forward<Comp>(comp));
-        auto last = std::unique(container.begin(), container.end(), std::forward<Pred>(pred));
+        const auto last = std::unique(container.begin(), container.end(), std::forward<Pred>(pred));
         container.erase(last, container.end());
     }
 
