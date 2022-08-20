@@ -18,18 +18,18 @@ namespace genetic_algorithm::detail
 
 
     template<template<typename...> class...>
-    struct is_one_of_templ : std::false_type {};
+    struct is_one_of_templates : std::false_type {};
 
     template<template<typename...> class Match,
              template<typename...> class Target,
              template<typename...> class... Targets>
-    struct is_one_of_templ<Match, Target, Targets...>
+    struct is_one_of_templates<Match, Target, Targets...>
         : std::bool_constant<std::disjunction_v<is_same_template<Match, Target>,
-                             is_one_of_templ<Match, Targets...>>>
+                             is_one_of_templates<Match, Targets...>>>
     {};
 
     template<template<typename...> class T, template<typename...> class... Ts>
-    inline constexpr bool is_one_of_templ_v = is_one_of_templ<T, Ts...>::value;
+    inline constexpr bool is_one_of_templates_v = is_one_of_templates<T, Ts...>::value;
 
 
 
@@ -58,19 +58,19 @@ namespace genetic_algorithm::detail
 
 
     template<size_t N, typename... Args>
-    struct nth_type_of {};
+    struct nth_type {};
 
     template<typename Arg, typename... Args>
-    struct nth_type_of<0, Arg, Args...> : std::type_identity<Arg> {};
+    struct nth_type<0, Arg, Args...> : std::type_identity<Arg> {};
 
     template<size_t N, typename Arg, typename... Args>
-    struct nth_type_of<N, Arg, Args...>
+    struct nth_type<N, Arg, Args...>
     {
-        using type = typename nth_type_of<N - 1, Args...>::type;
+        using type = typename nth_type<N - 1, Args...>::type;
     };
 
     template<size_t N, typename... Args>
-    using nth_type_of_t = typename nth_type_of<N, Args...>::type;
+    using nth_type_t = typename nth_type<N, Args...>::type;
 
 
 

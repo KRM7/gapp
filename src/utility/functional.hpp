@@ -56,7 +56,7 @@ namespace genetic_algorithm::detail
     {
         template<template<typename...> class T>
         inline constexpr bool is_set_container =
-            is_one_of_templ_v<T,
+            is_one_of_templates_v<T,
                 std::set,
                 std::multiset,
                 std::unordered_set,
@@ -64,7 +64,7 @@ namespace genetic_algorithm::detail
 
         template<template<typename...> class T>
         inline constexpr bool is_map_container =
-            is_one_of_templ_v<T,
+            is_one_of_templates_v<T,
                 std::map,
                 std::multimap,
                 std::unordered_map,
@@ -72,7 +72,7 @@ namespace genetic_algorithm::detail
 
         template<template<typename...> class T>
         inline constexpr bool is_unordered_container =
-            is_one_of_templ_v<T,
+            is_one_of_templates_v<T,
                 std::unordered_set,
                 std::unordered_multiset,
                 std::unordered_map,
@@ -102,7 +102,7 @@ namespace genetic_algorithm::detail
         {
             ResultType result;
             result.reserve(cont.size());
-            for (auto& elem : cont)
+            for (const auto& elem : cont)
             {
                 result.push_back(std::invoke(f, elem));
             }
@@ -134,9 +134,9 @@ namespace genetic_algorithm::detail
 
         ResultType result;
 
-        if constexpr (is_one_of_templ_v<ContainerType, std::deque, std::list>)
+        if constexpr (is_one_of_templates_v<ContainerType, std::deque, std::list>)
         {
-            for (auto& elem : cont)
+            for (const auto& elem : cont)
             {
                 result.push_back(std::invoke(f, elem));
             }
@@ -148,7 +148,7 @@ namespace genetic_algorithm::detail
             {
                 result.reserve(cont.size());
             }
-            for (auto& elem : cont)
+            for (const auto& elem : cont)
             {
                 result.insert(std::invoke(f, elem));
             }
@@ -156,7 +156,7 @@ namespace genetic_algorithm::detail
         }
         else if constexpr (is_same_template_v<ContainerType, std::forward_list>)
         {
-            for (auto& elem : cont)
+            for (const auto& elem : cont)
             {
                 result.push_front(std::invoke(f, elem));
             }
@@ -181,7 +181,7 @@ namespace genetic_algorithm::detail
             result.reserve(cont.size());
         }
 
-        for (auto& [key, value] : cont)
+        for (const auto& [key, value] : cont)
         {
             result.insert(std::invoke(f, key, value));
         }
