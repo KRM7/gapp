@@ -158,8 +158,7 @@ namespace genetic_algorithm::detail::_
 
         if (fmat.empty()) return {};
 
-        std::vector<size_t> indices(fmat.size());
-        std::iota(indices.begin(), indices.end(), 0);
+        auto indices = detail::index_vector(fmat.size());
 
         std::vector<size_t> optimal_indices;
         optimal_indices.reserve(fmat.size());

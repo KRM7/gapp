@@ -19,16 +19,23 @@
 
 namespace genetic_algorithm::detail
 {
+    inline std::vector<size_t> index_vector(size_t n, size_t first = 0)
+    {
+        std::vector<size_t> indices(n);
+        std::iota(indices.begin(), indices.end(), first);
+
+        return indices;
+    }
+
     template<std::random_access_iterator Iter,
              typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    auto argsort(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    std::vector<size_t> argsort(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
         assert(std::distance(first, last) >= 0);
 
-        std::vector<size_t> indices(std::distance(first, last));
-        std::iota(indices.begin(), indices.end(), 0);
+        auto indices = detail::index_vector(std::distance(first, last));
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
@@ -53,13 +60,12 @@ namespace genetic_algorithm::detail
              typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    auto partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    std::vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
         assert(std::distance(first, middle) >= 0);
         assert(std::distance(middle, last) >= 0);
 
-        std::vector<size_t> indices(std::distance(first, last));
-        std::iota(indices.begin(), indices.end(), 0);
+        auto indices = detail::index_vector(std::distance(first, last));
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
@@ -84,7 +90,7 @@ namespace genetic_algorithm::detail
 
     template<std::input_iterator Iter, typename Pred>
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
-    auto find_all(Iter first, Iter last, Pred&& pred)
+    std::vector<Iter> find_all(Iter first, Iter last, Pred&& pred)
     {
         assert(std::distance(first, last) >= 0);
 

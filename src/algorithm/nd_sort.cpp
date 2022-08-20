@@ -174,8 +174,7 @@ namespace genetic_algorithm::algorithm::dtl
 
         if (popsize == 0) return dmat;
 
-        std::vector<size_t> objectives(first->size());
-        std::iota(objectives.begin(), objectives.end(), 0);
+        const auto objectives = detail::index_vector(first->size());
 
         std::for_each(GA_EXECUTION_UNSEQ, objectives.cbegin(), objectives.cend(), [&](size_t obj)
         {
@@ -199,8 +198,7 @@ namespace genetic_algorithm::algorithm::dtl
             });
         });
 
-        std::vector<size_t> indices(popsize);
-        std::iota(indices.begin(), indices.end(), 0);
+        const auto indices = detail::index_vector(popsize);
 
         std::for_each(GA_EXECUTION_UNSEQ, indices.begin(), indices.end(), [&](size_t row) noexcept
         {
@@ -279,7 +277,7 @@ namespace genetic_algorithm::algorithm::dtl
 
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        return dominanceDegreeSort(first, last);
+        return fastNonDominatedSort(first, last);
     }
 
 } // namespace genetic_algorithm::algorithm::dtl

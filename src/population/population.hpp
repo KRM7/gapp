@@ -5,6 +5,7 @@
 
 #include "candidate.hpp"
 #include "../utility/utility.hpp"
+#include "../utility/algorithm.hpp"
 #include <vector>
 #include <atomic>
 
@@ -126,8 +127,7 @@ namespace genetic_algorithm::detail
         std::vector<Dominance> lhs_state(lhs.size());
         std::vector<std::atomic<Dominance>> rhs_state(rhs.size());
 
-        std::vector<size_t> lhs_indices(lhs.size());
-        std::iota(lhs_indices.begin(), lhs_indices.end(), 0_sz);
+        const auto lhs_indices = detail::index_vector(lhs.size());
 
         std::for_each(GA_EXECUTION_UNSEQ, lhs_indices.cbegin(), lhs_indices.cend(), [&](size_t i) noexcept
         {

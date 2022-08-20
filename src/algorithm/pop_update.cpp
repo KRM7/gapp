@@ -22,10 +22,7 @@ namespace genetic_algorithm::update
 
         GA_UNUSED(first, children_first, last);
 
-        std::vector<size_t> child_indices(ga.population_size());
-        std::iota(child_indices.begin(), child_indices.end(), ga.population_size());
-
-        return child_indices;
+        return detail::index_vector(ga.population_size(), ga.population_size());
     }
 
     Elitism::Elitism(size_t n)
