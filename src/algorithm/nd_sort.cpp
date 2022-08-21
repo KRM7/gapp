@@ -17,17 +17,18 @@ namespace genetic_algorithm::algorithm::dtl
 {
     std::vector<size_t> paretoRanks(const ParetoFronts& pfronts)
     {
-        std::vector<size_t> ranks(pfronts.size());
-        
-        for (const auto& [idx, rank] : pfronts) ranks[idx] = rank;
+        std::vector<size_t> ranks(pfronts.size());     
+        for (const auto& [idx, rank] : pfronts)
+        {
+            ranks[idx] = rank;
+        }
 
         return ranks;
     }
 
     ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept
     {
-        return std::find_if(current, last,
-        [current](const FrontInfo& sol) noexcept
+        return std::find_if(current, last, [&](const FrontInfo& sol) noexcept
         {
             return sol.rank != current->rank;
         });
@@ -35,10 +36,10 @@ namespace genetic_algorithm::algorithm::dtl
 
     std::vector<ParetoFrontsRange> paretoFrontBounds(ParetoFronts& pareto_fronts)
     {
-        if (pareto_fronts.empty()) return {};   /* No bounds exist. */
-
         using Iter = ParetoFronts::iterator;
         using IterPair = std::pair<Iter, Iter>;
+
+        if (pareto_fronts.empty()) return {};   /* No bounds exist. */
 
         std::vector<IterPair> front_bounds;
         front_bounds.reserve(pareto_fronts.back().rank + 1);
@@ -76,25 +77,44 @@ namespace genetic_algorithm::algorithm::dtl
     *  IEEE transactions on evolutionary computation 6, no. 2 (2002): 182-197.
     */
 
-    static ParetoFronts fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    struct DominanceList
     {
-        assert(std::all_of(first, last, [first](const FitnessVector& f) { return f.size() == first->size(); }));
+        size_t better_count;                /* Number of solutions dominating this one. */
+        std::vector<size_t> worse_indices;  /* Indices of the solutions dominated by this one. */
+    };
+    using DominanceLists = std::vector<DominanceList>;
 
-        size_t popsize = size_t(last - first);
+    static DominanceLists& getDominanceLists(size_t popsize)
+    {
+        static DominanceLists dlists;
 
-        if (popsize == 0) return {};
-
-        /* Find the number of candidates which dominate each candidate, and the indices of the candidates it dominates. */
-        std::vector<size_t> better_count(popsize, 0);
-
-        static std::vector<std::vector<size_t>> worse_indices;
-        for (auto& vec : worse_indices) vec.clear();
-        if (worse_indices.size() != popsize)
+        /* Resize if popsize changes */
+        if (dlists.size() != popsize)
         {
-            worse_indices.resize(popsize);
-            for (auto& vec : worse_indices) vec.shrink_to_fit(), vec.reserve(popsize);
+            dlists.resize(popsize);
+            for (auto& dlist : dlists)
+            {
+                dlist.worse_indices.shrink_to_fit();
+                dlist.worse_indices.reserve(popsize);
+            }
         }
 
+        /* Clear */
+        for (auto& dlist : dlists)
+        {
+            dlist.worse_indices.clear();
+            dlist.better_count = 0;
+        }
+
+        return dlists;
+    }
+
+    static DominanceLists& constructDominanceLists(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    {
+        const size_t popsize = std::distance(first, last);
+        auto& dom_lists = getDominanceLists(popsize);
+
+        /* Find the number of candidates which dominate each candidate, and the indices of the candidates it dominates. */
         for (size_t lhs = 0; lhs < popsize; lhs++)
         {
             for (size_t rhs = 0; rhs < lhs; rhs++)
@@ -102,16 +122,24 @@ namespace genetic_algorithm::algorithm::dtl
                 auto comp = detail::paretoCompare(first[lhs], first[rhs]);
                 if (comp < 0)
                 {
-                    better_count[lhs]++;
-                    worse_indices[rhs].push_back(lhs);
+                    dom_lists[lhs].better_count++;
+                    dom_lists[rhs].worse_indices.push_back(lhs);
                 }
                 else if (comp > 0)
                 {
-                    better_count[rhs]++;
-                    worse_indices[lhs].push_back(rhs);
+                    dom_lists[rhs].better_count++;
+                    dom_lists[lhs].worse_indices.push_back(rhs);
                 }
             }
         }
+
+        return dom_lists;
+    }
+
+    static ParetoFronts fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    {
+        const size_t popsize = std::distance(first, last);
+        auto& dom_lists = constructDominanceLists(first, last);
 
         ParetoFronts pfronts;
         pfronts.reserve(popsize);
@@ -119,31 +147,33 @@ namespace genetic_algorithm::algorithm::dtl
         /* Find the indices of all non-dominated candidates (the first/best pareto front). */
         for (size_t i = 0; i < popsize; i++)
         {
-            if (better_count[i] == 0) pfronts.emplace_back(i, 0);
+            if (dom_lists[i].better_count == 0) pfronts.emplace_back(i, 0);
         }
 
         /* Find all the other pareto fronts. */
-        auto front_first = pfronts.cbegin();
-        auto front_last  = pfronts.cend();
+        auto current_front_first = pfronts.cbegin();
+        auto current_front_last  = pfronts.cend();
 
         while (pfronts.size() != popsize)
         {
-            size_t next_rank = front_first->rank + 1;
-
             /* Remove the current front from the population and find the next one. */
-            for (; front_first != front_last; ++front_first)
+            const size_t next_front_rank = current_front_first->rank + 1;
+
+            for (; current_front_first != current_front_last; ++current_front_first)
             {
-                for (size_t worse_idx : worse_indices[front_first->idx])
+                const size_t sol_idx = current_front_first->idx;
+
+                for (size_t worse_idx : dom_lists[sol_idx].worse_indices)
                 {
-                    if (--better_count[worse_idx] == 0)
+                    if (--dom_lists[worse_idx].better_count == 0)
                     {
-                        front_last--;
-                        pfronts.emplace_back(worse_idx, next_rank);
-                        front_last++;
+                        current_front_last--;
+                        pfronts.emplace_back(worse_idx, next_front_rank);
+                        current_front_last++;
                     }
                 }
             }
-            front_last = pfronts.cend();
+            current_front_last = pfronts.cend();
         }
 
         return pfronts;
@@ -163,12 +193,10 @@ namespace genetic_algorithm::algorithm::dtl
     using DominanceMatrix = detail::Matrix<unsigned char>;
     enum : unsigned char { MAXIMAL = true, NONMAXIMAL = false };
 
-    struct Col { size_t idx; size_t sum; };
+    struct Col { size_t idx; size_t sum; }; /* Index and colwise sum of a column in the dominance matrix. */
 
     static DominanceMatrix constructDominanceMatrix(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::distance(first, last) >= 0);
-
         const size_t popsize = std::distance(first, last);
         DominanceMatrix dmat(popsize, popsize, MAXIMAL);
 
@@ -230,8 +258,6 @@ namespace genetic_algorithm::algorithm::dtl
 
     static ParetoFronts dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::distance(first, last) >= 0);
-
         const size_t popsize = std::distance(first, last);
         DominanceMatrix dmat = constructDominanceMatrix(first, last);
         std::vector<Col> cols = colwiseSums(dmat);
@@ -277,6 +303,9 @@ namespace genetic_algorithm::algorithm::dtl
 
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
+        assert(std::distance(first, last) >= 0);
+        assert(std::all_of(first, last, [first](const FitnessVector& f) { return f.size() == first->size(); }));
+
         return dominanceDegreeSort(first, last);
     }
 
