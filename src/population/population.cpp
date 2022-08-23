@@ -117,7 +117,7 @@ namespace genetic_algorithm::detail::_
             return lhs[0] < rhs[0];
         });
 
-        return detail::find_indices(fmat,
+        return detail::find_indices(fmat, 
         [best](const FitnessVector& fvec) noexcept
         {
             return detail::floatIsEqual((*best)[0], fvec[0]);
