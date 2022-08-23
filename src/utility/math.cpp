@@ -71,8 +71,8 @@ namespace genetic_algorithm::detail
         assert(v1.size() == v2.size());
 
         return std::transform_reduce(v1.begin(), v1.end(), v2.begin(), 0.0,
-                                     std::plus<double>{},
-                                     compose(std::minus<double>{}, square));
+                                     std::plus{},
+                                     compose(std::minus{}, square));
     }
 
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept
@@ -84,7 +84,7 @@ namespace genetic_algorithm::detail
                    std::inner_product(line.begin(), line.end(), line.begin(),  0.0);
 
         return std::transform_reduce(point.begin(), point.end(), line.begin(), 0.0,
-                                     std::plus<double>{},
+                                     std::plus{},
                                      [k](double p, double l) noexcept { return square(p - k * l); });
     }
 
