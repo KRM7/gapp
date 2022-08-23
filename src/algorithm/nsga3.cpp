@@ -2,6 +2,7 @@
 
 #include "nsga3.hpp"
 #include "nd_sort.hpp"
+#include "reference_points.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
@@ -14,91 +15,35 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include <cmath>
 #include <limits>
 #include <cstddef>
 #include <cassert>
 
 namespace genetic_algorithm::algorithm
 {
-    using RefPoint  = NSGA3::RefPoint;
     using namespace dtl;
+    using FitnessVector = detail::FitnessVector;
+    using FitnessMatrix = detail::FitnessMatrix;
 
-    std::vector<RefPoint> NSGA3::generateRefPoints(size_t n, size_t dim)
+    /* Achievement scalarization function. */
+    static double ASF(const std::vector<double>& ideal_point, const std::vector<double>& weights, const std::vector<double>& fitness) noexcept
     {
-        assert(n > 0);
-        assert(dim > 1);
-
-        /* Generate reference point candidates randomly. */
-        size_t ratio = std::max(10_sz, 2 * dim);
-        std::vector<Point> candidates(ratio * n - 1);
-        std::generate(candidates.begin(), candidates.end(), [&dim]() { return rng::randomSimplexPoint(dim); });
-
-        std::vector<Point> points;
-        points.reserve(n);
-        points.push_back(rng::randomSimplexPoint(dim));
-
-        std::vector<double> min_distances(candidates.size(), std::numeric_limits<double>::infinity());
-        while (points.size() < n)
-        {
-            /* Calc the distance of each candidate to the closest ref point. */
-            std::transform(GA_EXECUTION_UNSEQ, candidates.begin(), candidates.end(), min_distances.begin(), min_distances.begin(),
-            [&points](const Point& candidate, double dmin) noexcept
-            {
-                double d = detail::euclideanDistanceSq(candidate, points.back());
-                return std::min(dmin, d);
-            });
-
-            /* Add the candidate with highest min_distance to the refs. */
-            size_t argmax = detail::argmax(min_distances.begin(), min_distances.end());
-            points.push_back(std::move(candidates[argmax]));
-
-            /* Remove the added candidate and the corresponding min_distance. */
-            std::swap(candidates[argmax], candidates.back());
-            candidates.pop_back();
-            std::swap(min_distances[argmax], min_distances.back());
-            min_distances.pop_back();
-        }
-
-        std::vector<RefPoint> refs;
-        refs.reserve(points.size());
-        std::move(points.begin(), points.end(), std::back_inserter(refs));
-
-        return refs;
-    }
-
-    std::pair<size_t, double> NSGA3::findClosestRef(const std::vector<RefPoint>& refs, const Point& p)
-    {
-        assert(!refs.empty());
-
-        auto distances = detail::map(refs, [&p](const RefPoint& ref) { return detail::perpendicularDistanceSq(ref.point, p); });
-        auto idx = detail::argmin(distances.begin(), distances.end());
-
-        return { idx, distances[idx] };
-    }
-
-    NSGA3::ASF NSGA3::getASF(std::vector<double> ideal_point, std::vector<double> weights) noexcept
-    {
-        assert(!weights.empty());
+        assert(!ideal_point.empty());
         assert(weights.size() == ideal_point.size());
+        assert(fitness.size() == weights.size());
 
-        return [ideal_point = std::move(ideal_point), weights = std::move(weights)]
-        (const std::vector<double>& fitness) noexcept
+        double dmax = (ideal_point[0] - fitness[0]) / weights[0];
+        for (size_t i = 1; i < fitness.size(); i++)
         {
-            assert(fitness.size() == weights.size());
-
-            double dmax = (ideal_point[0] - fitness[0]) / weights[0];
-            for (size_t i = 0; i < fitness.size(); i++)
-            {
-                double d = (ideal_point[i] - fitness[i]) / weights[i];
-                dmax = std::max(dmax, d);
-            }
-
-            return dmax;
-        };
+            double d = (ideal_point[i] - fitness[i]) / weights[i];
+            dmax = std::max(dmax, d);
+        }
+        
+        return dmax;
     }
 
-    std::vector<double> NSGA3::weightVector(size_t dimensions, size_t axis)
+    /* Create a weight vector for the given axis (used in the ASF). */
+    static std::vector<double> weightVector(size_t dimensions, size_t axis)
     {
         assert(dimensions > axis);
 
@@ -108,6 +53,37 @@ namespace genetic_algorithm::algorithm
         return weights;
     }
 
+    /* Find an approximation of the pareto front's nadir point using the minimum of the extreme points. */
+    static Point findNadirPoint(const std::vector<Point>& extreme_points)
+    {
+        assert(!extreme_points.empty());
+
+        /* Nadir point estimate = minimum of extreme points along each objective axis. */
+        Point nadir_point = extreme_points[0];
+        for (size_t i = 1; i < extreme_points.size(); i++)
+        {
+            nadir_point = detail::elementwise_min(nadir_point, extreme_points[i]);
+        }
+
+        return nadir_point;
+    }
+
+    /* Normalize a fitness vector using the ideal and nadir points. */
+    static FitnessVector normalizeFitnessVec(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point)
+    {
+        assert(fvec.size() == ideal_point.size());
+        assert(ideal_point.size() == nadir_point.size());
+
+        FitnessVector fnorm(fvec.size());
+        for (size_t i = 0; i < fnorm.size(); i++)
+        {
+            fnorm[i] = (fvec[i] - ideal_point[i]) / std::max(ideal_point[i] - nadir_point[i], 1E-6);
+        }
+
+        return fnorm;
+    }
+
+
     void NSGA3::initialize(const GaInfo& ga)
     {
         assert(ga.num_objectives() > 1);
@@ -115,8 +91,7 @@ namespace genetic_algorithm::algorithm
 
         auto& fitness_matrix = ga.fitness_matrix();
 
-        ref_points_ = generateRefPoints(ga.population_size(), ga.num_objectives());
-
+        ref_points_ = dtl::generateReferencePoints(ga.num_objectives(), ga.population_size());
         ideal_point_ = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
         extreme_points_ = {};
 
@@ -145,7 +120,10 @@ namespace genetic_algorithm::algorithm
 
         for (size_t dim = 0; dim < ideal_point_.size(); dim++)
         {
-            auto ASFi = getASF(ideal_point_, weightVector(ideal_point_.size(), dim));
+            auto ASFi = [&, weights = weightVector(ideal_point_.size(), dim)](const FitnessVector& fvec) noexcept
+            {
+                return ASF(ideal_point_, weights, fvec);
+            };
 
             std::vector<double> chebysev_distances;
             chebysev_distances.reserve(extreme_points_.size() + popsize);
@@ -163,30 +141,10 @@ namespace genetic_algorithm::algorithm
         extreme_points_ = std::move(new_extreme_points);
     }
 
-    auto NSGA3::findNadirPoint(const std::vector<Point>& extreme_points) -> Point
+    void NSGA3::updateNadirPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(!extreme_points.empty());
-
-        /* Nadir point estimate = minimum of extreme points along each objective axis. */
-        Point nadir_point = extreme_points[0];
-        for (size_t i = 1; i < extreme_points.size(); i++)
-        {
-            nadir_point = detail::min(nadir_point, extreme_points[i]);
-        }
-
-        return nadir_point;
-    }
-
-    auto NSGA3::normalize(const FitnessVector& fvec) -> FitnessVector
-    {
-        FitnessVector fnorm(fvec.size());
-
-        for (size_t i = 0; i < fnorm.size(); i++)
-        {
-            fnorm[i] = (fvec[i] - ideal_point_[i]) / std::max(ideal_point_[i] - nadir_point_[i], 1E-6);
-        }
-
-        return fnorm;
+        updateExtremePoints(first, last);
+        nadir_point_ = findNadirPoint(extreme_points_);
     }
 
     void NSGA3::associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
@@ -203,12 +161,12 @@ namespace genetic_algorithm::algorithm
         std::transform(GA_EXECUTION_UNSEQ, first, last, sol_info_.begin(), sol_info_.begin(),
         [this](const FitnessVector& f, CandidateInfo& props)
         {
-            std::tie(props.ref_idx, props.ref_dist) = findClosestRef(ref_points_, normalize(f));
+            std::tie(props.ref_idx, props.ref_dist) = findClosestRef(ref_points_, normalizeFitnessVec(f, ideal_point_, nadir_point_));
 
             return props;
         });
 
-        std::for_each(ref_points_.begin(), ref_points_.end(), [](RefPoint& ref) { ref.niche_count = 0; });
+        std::for_each(ref_points_.begin(), ref_points_.end(), [](ReferencePoint& ref) { ref.niche_count = 0; });
         std::for_each(sol_info_.begin(), sol_info_.end(), [this](const CandidateInfo& info) { ref_points_[info.ref_idx].niche_count++; });
     }
 
@@ -229,7 +187,7 @@ namespace genetic_algorithm::algorithm
 
         associatePopWithRefs(parents_first, children_last);
         std::for_each(pfronts.begin(), pfronts.end(), [this](const FrontInfo& sol) { sol_info_[sol.idx].rank = sol.rank; });
-        std::for_each(ref_points_.begin(), ref_points_.end(), [](RefPoint& ref) { ref.niche_count = 0; });
+        std::for_each(ref_points_.begin(), ref_points_.end(), [](ReferencePoint& ref) { ref.niche_count = 0; });
 
         auto [partial_front_first, partial_front_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);
 
@@ -247,17 +205,17 @@ namespace genetic_algorithm::algorithm
         }
 
         /* Add remaining candidates from the partial front if there is one. */
-        std::vector<RefPoint*> refs(partial_front_last - partial_front_first);
+        std::vector<ReferencePoint*> refs(partial_front_last - partial_front_first);
         std::transform(partial_front_first, partial_front_last, refs.begin(), [this](const FrontInfo& sol) { return &refPointOf(sol); });
 
         detail::erase_duplicates(refs);
-        std::sort(refs.begin(), refs.end(), [](RefPoint* lhs, RefPoint* rhs) { return lhs->niche_count < rhs->niche_count; });
+        std::sort(refs.begin(), refs.end(), [](ReferencePoint* lhs, ReferencePoint* rhs) { return lhs->niche_count < rhs->niche_count; });
 
         while (new_pop.size() != ga.population_size())
         {
             /* Choose a random reference point with minimal niche count. */
-            auto last_min = std::find_if(refs.begin(), refs.end(), [&refs](RefPoint* ref) { return ref->niche_count != refs[0]->niche_count; });
-            RefPoint* ref = rng::randomElement(refs.begin(), last_min);
+            auto last_min = std::find_if(refs.begin(), refs.end(), [&refs](ReferencePoint* ref) { return ref->niche_count != refs[0]->niche_count; });
+            ReferencePoint* ref = rng::randomElement(refs.begin(), last_min);
 
             /* Find the idx of the closest sol in the partial front associated with this ref point. */
             auto candidates = detail::find_all(partial_front_first, partial_front_last,
@@ -331,15 +289,15 @@ namespace genetic_algorithm::algorithm
         return optimal_indices;
     }
 
-    RefPoint& NSGA3::refPointOf(const dtl::FrontInfo& sol) noexcept
+    ReferencePoint& NSGA3::refPointOf(const FrontInfo& sol) noexcept
     {
         return ref_points_[sol_info_[sol.idx].ref_idx];
     }
-    const RefPoint& NSGA3::refPointOf(const dtl::FrontInfo& sol) const noexcept
+    const ReferencePoint& NSGA3::refPointOf(const FrontInfo& sol) const noexcept
     {
         return ref_points_[sol_info_[sol.idx].ref_idx];
     }
-    double NSGA3::refDistOf(const dtl::FrontInfo& sol) const noexcept
+    double NSGA3::refDistOf(const FrontInfo& sol) const noexcept
     {
         return sol_info_[sol.idx].ref_dist;
     }

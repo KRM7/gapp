@@ -4,6 +4,7 @@
 #define GA_ALGORITHM_NSGA3_HPP
 
 #include "algorithm_base.hpp"
+#include "reference_points.hpp"
 
 namespace genetic_algorithm::algorithm
 {
@@ -35,9 +36,7 @@ namespace genetic_algorithm::algorithm
     {
     public:
         void initialize(const GaInfo& ga) override;
-
         void prepareSelections(const GaInfo&, const FitnessMatrix&) override {}
-
         size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
         std::vector<size_t> nextPopulation(const GaInfo& ga,
@@ -47,45 +46,23 @@ namespace genetic_algorithm::algorithm
 
         std::optional<std::vector<size_t>> optimalSolutions(const GaInfo& ga) const override;
 
-        /* A reference point/direction with its associated niche-count. */
-        struct RefPoint
-        {
-            const std::vector<double> point;
-            size_t niche_count = 0;
-
-            RefPoint(std::vector<double> p) : point(std::move(p)) {}
-        };
-
     private:
         /* Stats associated with each of the solutions. */
         struct CandidateInfo
         {
-            size_t rank = 0;
-            size_t ref_idx = 0;
-            double ref_dist = 0.0;
+            size_t rank;
+            size_t ref_idx;
+            double ref_dist;
         };
 
-        using ASF   = std::function<double(const std::vector<double>&)>;  /* Achievement scalarization function type. */
         using Point = std::vector<double>;
 
         std::vector<CandidateInfo> sol_info_;
-        std::vector<RefPoint> ref_points_;
+        std::vector<dtl::ReferencePoint> ref_points_;
 
         Point ideal_point_;
         Point nadir_point_;
         std::vector<Point> extreme_points_;
-
-        /* Generate n reference points on the unit simplex in dim dimensions from a uniform distribution. */
-        static std::vector<RefPoint> generateRefPoints(size_t n, size_t dim);
-
-        /* Find the index and distance of the closest reference line to the point p. */
-        static std::pair<size_t, double> findClosestRef(const std::vector<RefPoint>& refs, const Point& p);
-
-        /* Create an achievement scalarization function. */
-        static ASF getASF(std::vector<double> ideal_point, std::vector<double> weights) noexcept;
-
-        /* Create a weight vector for the given axis (used in the ASF). */
-        static std::vector<double> weightVector(size_t dimensions, size_t axis);
 
         /* Update the ideal point approximation using the new points in fmat, assuming maximization. */
         void updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
@@ -93,11 +70,8 @@ namespace genetic_algorithm::algorithm
         /* Update the extreme points using the new points in fmat, assuming maximization. */
         void updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-        /* Find an approximation of the pareto front's nadir point using the minimum of the extreme points. */
-        Point findNadirPoint(const std::vector<Point>& extreme_points);
-
-        /* Normalize a fitness vector using the ideal and nadir points. */
-        FitnessVector normalize(const FitnessVector& fvec);
+        /* Update the current nadir point based on the extreme points. */
+        void updateNadirPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
         /* Find the closest reference and its distance for each of the points in the fitness matrix. */
         void associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
@@ -105,9 +79,10 @@ namespace genetic_algorithm::algorithm
         /* Return true if pop[lhs] is better than pop[rhs]. */
         bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
 
+
         /* Return the associated reference point of a candidate. */
-        RefPoint& refPointOf(const dtl::FrontInfo& sol) noexcept;
-        const RefPoint& refPointOf(const dtl::FrontInfo& sol) const noexcept;
+        dtl::ReferencePoint& refPointOf(const dtl::FrontInfo& sol) noexcept;
+        const dtl::ReferencePoint& refPointOf(const dtl::FrontInfo& sol) const noexcept;
 
         /* Return the associated reference point's distance for a candidate. */
         double refDistOf(const dtl::FrontInfo& sol) const noexcept;

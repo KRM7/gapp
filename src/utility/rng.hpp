@@ -89,9 +89,6 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t k);
 
-    /** Sample a point from a uniform distribution on a unit simplex in dim dimensions. */
-    inline std::vector<double> randomSimplexPoint(size_t dim);
-
     /** Select an index based on a discrete CDF. */
     inline size_t sampleCdf(const std::vector<double>& cdf);
 
@@ -251,26 +248,6 @@ namespace genetic_algorithm::rng
         nums.resize(k);
 
         return nums;
-    }
-
-    std::vector<double> randomSimplexPoint(size_t dim)
-    {
-        assert(dim > 0);
-
-        std::vector<double> point(dim);
-
-        double sum = 0.0;
-        for (auto& coord : point)
-        {
-            coord = -std::log(randomReal());
-            sum += coord;
-        }
-        for (auto& coord : point)
-        {
-            coord /= sum;
-        }
-
-        return point;
     }
 
     size_t sampleCdf(const std::vector<double>& cdf)
