@@ -1,20 +1,12 @@
 #ifndef GA_FUNCTIONAL_HPP
 #define GA_FUNCTIONAL_HPP
 
-#include "concepts.hpp"
-#include "type_traits.hpp"
 #include <array>
 #include <vector>
-#include <list>
-#include <forward_list>
-#include <deque>
-#include <set>
-#include <unordered_set>
-#include <map>
-#include <unordered_map>
 #include <utility>
 #include <limits>
 #include <type_traits>
+#include <concepts>
 #include <cassert>
 
 namespace genetic_algorithm::detail
@@ -52,70 +44,43 @@ namespace genetic_algorithm::detail
         };
     }
 
-    namespace _
-    {
-        template<template<typename...> class T>
-        inline constexpr bool is_set_container =
-            is_one_of_templates_v<T,
-                std::set,
-                std::multiset,
-                std::unordered_set,
-                std::unordered_multiset>;
-
-        template<template<typename...> class T>
-        inline constexpr bool is_map_container =
-            is_one_of_templates_v<T,
-                std::map,
-                std::multimap,
-                std::unordered_map,
-                std::unordered_multimap>;
-
-        template<template<typename...> class T>
-        inline constexpr bool is_unordered_container =
-            is_one_of_templates_v<T,
-                std::unordered_set,
-                std::unordered_multiset,
-                std::unordered_map,
-                std::unordered_multimap>;
-
-        template<template<typename...> class T>
-        concept MapContainer = requires { requires is_map_container<T>; };
-    }
-
-    template<typename ValueType, typename F>
-    requires std::invocable<std::remove_reference_t<F>, ValueType>
+    template<typename ValueType, std::invocable<ValueType> F>
     auto map(const std::vector<ValueType>& cont, F&& f)
     {
-        using MappedType = std::decay_t<std::invoke_result_t<std::remove_reference_t<F>, ValueType>>;
-        using ResultType = std::vector<MappedType>;
+        using MappedType = std::invoke_result_t<std::remove_reference_t<F>, ValueType>;
+        using ResultType = std::vector<std::decay_t<MappedType>>;
 
-        if constexpr (std::is_scalar_v<ResultType>)
+        ResultType result;
+        result.reserve(cont.size());
+        for (const auto& elem : cont)
         {
-            ResultType result(cont.size());
-            for (size_t i = 0; i < cont.size(); i++)
-            {
-                result[i] = std::invoke(f, cont[i]);
-            }
-            return result;
+            result.push_back(std::invoke(f, elem));
         }
-        else
+
+        return result;
+    }
+
+    template<typename ValueType, std::invocable<ValueType> F>
+    auto map(const std::vector<ValueType>& cont, F&& f) requires std::is_scalar_v<ValueType>
+    {
+        using MappedType = std::invoke_result_t<std::remove_reference_t<F>, ValueType>;
+        using ResultType = std::vector<std::decay_t<MappedType>>;
+
+        ResultType result(cont.size());
+        for (size_t i = 0; i < cont.size(); i++)
         {
-            ResultType result;
-            result.reserve(cont.size());
-            for (const auto& elem : cont)
-            {
-                result.push_back(std::invoke(f, elem));
-            }
-            return result;
+            result[i] = std::invoke(f, cont[i]);
         }
+
+        return result;
     }
 
     template<typename ValueType, size_t N, typename F>
     requires std::invocable<std::remove_reference_t<F>, ValueType>
     constexpr auto map(const std::array<ValueType, N>& cont, F&& f)
     {
-        using MappedType = std::decay_t<std::invoke_result_t<std::remove_reference_t<F>, ValueType>>;
-        using ResultType = std::array<MappedType, N>;
+        using MappedType = std::invoke_result_t<std::remove_reference_t<F>, ValueType>;
+        using ResultType = std::array<std::decay_t<MappedType>, N>;
 
         ResultType result;
         for (size_t i = 0; i < N; i++)
@@ -125,125 +90,38 @@ namespace genetic_algorithm::detail
         return result;
     }
 
-    template<template<typename...> class ContainerType, typename ValueType, typename... Rest, typename F>
-    requires Container<ContainerType<ValueType, Rest...>> && std::invocable<std::remove_reference_t<F>, ValueType>
-    auto map(const ContainerType<ValueType, Rest...>& cont, F&& f)
+    template<typename T>
+    std::vector<T> flatten(const std::vector<std::pair<T, T>>& pairs)
     {
-        using MappedType = std::decay_t<std::invoke_result_t<std::remove_reference_t<F>, ValueType>>;
-        using ResultType = ContainerType<MappedType>;
+        assert(pairs.size() <= (std::numeric_limits<size_t>::max() / 2));
 
-        ResultType result;
+        std::vector<T> flat;
+        flat.reserve(2 * pairs.size());
 
-        if constexpr (is_one_of_templates_v<ContainerType, std::deque, std::list>)
+        for (size_t i = 0; i < pairs.size(); i++)
         {
-            for (const auto& elem : cont)
-            {
-                result.push_back(std::invoke(f, elem));
-            }
-            return result;
-        }
-        else if constexpr (_::is_set_container<ContainerType>)
-        {
-            if constexpr (_::is_unordered_container<ContainerType>)
-            {
-                result.reserve(cont.size());
-            }
-            for (const auto& elem : cont)
-            {
-                result.insert(std::invoke(f, elem));
-            }
-            return result;
-        }
-        else if constexpr (is_same_template_v<ContainerType, std::forward_list>)
-        {
-            for (const auto& elem : cont)
-            {
-                result.push_front(std::invoke(f, elem));
-            }
-            result.reverse();
-            return result;
-        }
-    }
-
-    template<template<typename...> class ContainerType, typename KeyType, typename ValueType, typename... Rest, typename F>
-    requires Container<ContainerType<KeyType, ValueType, Rest...>> &&
-             _::MapContainer<ContainerType> &&
-             std::invocable<std::remove_reference_t<F>, KeyType, ValueType>
-    auto map(const ContainerType<KeyType, ValueType, Rest...>& cont, F&& f)
-    {
-        using MappedType = std::decay_t<std::invoke_result_t<std::remove_reference_t<F>, KeyType, ValueType>>;
-        static_assert(is_specialization_of_v<MappedType, std::pair>);
-        using ResultType = ContainerType<typename MappedType::first_type, typename MappedType::second_type>;
-
-        ResultType result;
-        if constexpr (_::is_unordered_container<ContainerType>)
-        {
-            result.reserve(cont.size());
+            flat.push_back(pairs[i].first);
+            flat.push_back(pairs[i].second);
         }
 
-        for (const auto& [key, value] : cont)
-        {
-            result.insert(std::invoke(f, key, value));
-        }
-
-        return result;
+        return flat;
     }
 
     template<typename T>
-    std::vector<T> flatten(std::vector<std::vector<T>>&& in)
+    std::vector<T> flatten(std::vector<std::pair<T, T>>&& pairs)
     {
-        size_t out_size = 0;
-        for (const auto& vec : in)
+        assert(pairs.size() <= (std::numeric_limits<size_t>::max() / 2));
+
+        std::vector<T> flat;
+        flat.reserve(2 * pairs.size());
+
+        for (size_t i = 0; i < pairs.size(); i++)
         {
-            assert(out_size <= (std::numeric_limits<size_t>::max() - vec.size()));
-            out_size += vec.size();
+            flat.push_back(std::move_if_noexcept(pairs[i].first));
+            flat.push_back(std::move_if_noexcept(pairs[i].second));
         }
 
-        std::vector<T> out;
-        out.reserve(out_size);
-
-        for (size_t i = 0; i < in.size(); i++)
-        {
-            for (size_t j = 0; j < in[i].size(); j++)
-            {
-                out.push_back(std::move_if_noexcept(in[i][j]));
-            }
-        }
-
-        return out;
-    }
-
-    template<typename T>
-    std::vector<T> flatten(std::vector<std::pair<T, T>>&& in)
-    {
-        assert( in.size() <= (std::numeric_limits<size_t>::max() / 2) );
-
-        if constexpr (std::is_scalar_v<T>)
-        {
-            std::vector<T> out(2 * in.size());
-
-            for (size_t i = 0; i < in.size(); i++)
-            {
-                size_t idx = 2 * i;
-                out[idx]     = std::move_if_noexcept(in[i].first);
-                out[idx + 1] = std::move_if_noexcept(in[i].second);
-            }
-
-            return out;
-        }
-        else
-        {
-            std::vector<T> out;
-            out.reserve(2 * in.size());
-
-            for (size_t i = 0; i < in.size(); i++)
-            {
-                out.push_back(std::move_if_noexcept(in[i].first));
-                out.push_back(std::move_if_noexcept(in[i].second));
-            }
-
-            return out;
-        }
+        return flat;
     }
 
 } // namespace genetic_algorithm::detail
