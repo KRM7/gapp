@@ -130,7 +130,7 @@ namespace genetic_algorithm::algorithm
     {
         assert(std::distance(first, last) > 0);
 
-        ideal_point_ = detail::max(ideal_point_, detail::maxFitness(first, last));
+        ideal_point_ = detail::elementwise_max(ideal_point_, detail::maxFitness(first, last));
     }
 
     void NSGA3::updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
