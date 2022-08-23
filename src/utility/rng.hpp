@@ -100,10 +100,9 @@ namespace genetic_algorithm::rng
 
 /* IMPLEMENTATION */
 
-#include <limits>
 #include <utility>
 #include <numeric>
-#include <mutex>
+#include <cmath>
 #include <climits>
 #include <cassert>
 
