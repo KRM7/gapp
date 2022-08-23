@@ -79,7 +79,7 @@ namespace genetic_algorithm::algorithm::dtl
 
     struct DominanceList
     {
-        size_t better_count;                /* Number of solutions dominating this one. */
+        size_t better_count = 0;            /* Number of solutions dominating this one. */
         std::vector<size_t> worse_indices;  /* Indices of the solutions dominated by this one. */
     };
     using DominanceLists = std::vector<DominanceList>;
