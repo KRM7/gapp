@@ -272,8 +272,8 @@ namespace genetic_algorithm::crossover::dtl
             /* Delete the values in this cycle from chrom1 and chrom2 without changing the order of the remaining genes. */
             for (const auto& gene : cycle)
             {
-                detail::erase_first(chrom1, gene);
-                detail::erase_first(chrom2, gene);
+                detail::erase_first_stable(chrom1, gene);
+                detail::erase_first_stable(chrom2, gene);
             }
             cycles.push_back(cycle);
         }
