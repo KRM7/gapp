@@ -7,6 +7,7 @@
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include <algorithm>
+#include <numeric>
 #include <vector>
 #include <cmath>
 #include <stdexcept>
@@ -17,13 +18,12 @@ namespace genetic_algorithm::selection
     /* Calculate the cumulative distribution function of the population from the selection weights. */
     static std::vector<double> weightsToCdf(const std::vector<double>& weights)
     {
-        double wmean = detail::mean(weights);
+        double wsum = std::reduce(weights.begin(), weights.end());
 
-        return detail::map(weights,
-        [cdf = 0.0, wmean, n = weights.size()](double w) mutable
-        {
-            return cdf += w / wmean / n;
-        });
+        std::vector<double> cdf(weights.size());
+        std::transform_inclusive_scan(weights.begin(), weights.end(), cdf.begin(), std::plus{}, detail::divide_by(wsum));
+
+        return cdf;
     }
 
     void Roulette::prepareSelections(const GaInfo&, const FitnessMatrix& fmat)
