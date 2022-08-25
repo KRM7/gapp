@@ -132,34 +132,6 @@ namespace genetic_algorithm::detail
     }
 
     template<std::input_iterator Iter>
-    requires std::is_arithmetic_v<typename std::iterator_traits<Iter>::value_type>
-    constexpr auto maximum(Iter first, Iter last)
-    {
-        assert(std::distance(first, last) > 0);
-
-        using T = typename std::iterator_traits<Iter>::value_type;
-
-        return std::reduce(std::next(first), last, *first, [](T lhs, T rhs)
-        {
-            return lhs < rhs ? rhs : lhs;
-        });
-    }
-
-    template<std::input_iterator Iter>
-    requires std::is_arithmetic_v<typename std::iterator_traits<Iter>::value_type>
-    constexpr auto minimum(Iter first, Iter last)
-    {
-        assert(std::distance(first, last) > 0);
-
-        using T = typename std::iterator_traits<Iter>::value_type;
-
-        return std::reduce(std::next(first), last, *first, [](T lhs, T rhs)
-        {
-            return lhs < rhs ? lhs : rhs;
-        });
-    }
-
-    template<std::input_iterator Iter>
     constexpr bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
     {
         return std::any_of(first, last, [&](const auto& elem) { return elem == val; });
