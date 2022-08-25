@@ -131,6 +131,36 @@ namespace genetic_algorithm::detail
         }
     }
 
+    template<std::input_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
+    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
+                                          typename std::iterator_traits<Iter>::value_type>
+    constexpr auto maximum(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    {
+        assert(std::distance(first, last) > 0);
+
+        using ValueType = typename std::iterator_traits<Iter>::value_type;
+
+        return std::reduce(std::next(first), last, *first, [&](const ValueType& lhs, const ValueType& rhs)
+        {
+            return comp(lhs, rhs) ? rhs : lhs;
+        });
+    }
+
+    template<std::input_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
+    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
+                                          typename std::iterator_traits<Iter>::value_type>
+    constexpr auto minimum(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    {
+        assert(std::distance(first, last) > 0);
+
+        using ValueType = typename std::iterator_traits<Iter>::value_type;
+
+        return std::reduce(std::next(first), last, *first, [&](const ValueType& lhs, const ValueType& rhs)
+        {
+            return comp(lhs, rhs) ? lhs : rhs;
+        });
+    }
+
     template<std::input_iterator Iter>
     constexpr bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
     {
