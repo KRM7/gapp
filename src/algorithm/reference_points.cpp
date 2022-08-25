@@ -60,7 +60,7 @@ namespace genetic_algorithm::algorithm::dtl
 
         while (points.size() < n)
         {
-            size_t idx = detail::argmax(min_distances.begin(), min_distances.end());
+            size_t idx = detail::argmax(min_distances.begin(), min_distances.begin(), min_distances.end());
             points.push_back(std::move(candidate_points[idx]));
 
             /* Remove the added candidate and the corresponding min_distance. */
@@ -99,7 +99,7 @@ namespace genetic_algorithm::algorithm::dtl
         assert(std::all_of(refs.begin(), refs.end(), [&](const ReferencePoint& ref) { return ref.point.size() == p.size(); }));
 
         auto distances = detail::map(refs, [&](const ReferencePoint& ref) { return detail::perpendicularDistanceSq(p, ref.point); });
-        auto closest_idx = detail::argmin(distances.begin(), distances.end());
+        auto closest_idx = detail::argmin(distances.begin(), distances.begin(), distances.end());
 
         return { closest_idx, distances[closest_idx] };
     }
