@@ -12,31 +12,31 @@ namespace genetic_algorithm::detail
 {
     /* Comparison function for floating point numbers. Returns -1 if (lhs < rhs), +1 if (lhs > rhs), and 0 if (lhs == rhs). */
     template<std::floating_point T>
-    inline constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept;
+    constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept;
 
     /* Equality comparison for floating point numbers. Returns true if lhs is approximately equal to rhs. */
     template<std::floating_point T>
-    inline constexpr bool floatIsEqual(T lhs, T rhs) noexcept;
+    constexpr bool floatIsEqual(T lhs, T rhs) noexcept;
 
     /* Less than comparison for floating point numbers. Returns true if lhs is definitely less than rhs. */
     template<std::floating_point T>
-    inline constexpr bool floatIsLess(T lhs, T rhs) noexcept;
+    constexpr bool floatIsLess(T lhs, T rhs) noexcept;
 
     /* Less than comparison for fp numbers. Assumes that lhs is not greater than rhs. */
     template<std::floating_point T>
-    inline constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept;
+    constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept;
 
     /* Greater than comparison for floating point numbers. Returns true if lhs is definitely greater than rhs. */
     template<std::floating_point T>
-    inline constexpr bool floatIsGreater(T lhs, T rhs) noexcept;
+    constexpr bool floatIsGreater(T lhs, T rhs) noexcept;
 
     /* Less than or equal to comparison for floating point numbers. Returns true if lhs is less than or approximately equal to rhs. */
     template<std::floating_point T>
-    inline constexpr bool floatIsLessEq(T lhs, T rhs) noexcept;
+    constexpr bool floatIsLessEq(T lhs, T rhs) noexcept;
 
     /* Greater than or equal to comparison for floating point numbers. Returns true if lhs is greater than or approximately equal to rhs. */
     template<std::floating_point T>
-    inline constexpr bool floatIsGreaterEq(T lhs, T rhs) noexcept;
+    constexpr bool floatIsGreaterEq(T lhs, T rhs) noexcept;
 
     /* Equality comparison for fp vectors. Returns true if the elements of the vectors are approximately equal. */
     template<std::floating_point T>
@@ -81,7 +81,7 @@ namespace genetic_algorithm::detail
 namespace genetic_algorithm::detail
 {
     template<std::floating_point T>
-    inline constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
+    constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
     {
         const T tol = std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
         const T dif = lhs - rhs;
@@ -92,37 +92,37 @@ namespace genetic_algorithm::detail
     }
 
     template<std::floating_point T>
-    inline constexpr bool floatIsEqual(T lhs, T rhs) noexcept
+    constexpr bool floatIsEqual(T lhs, T rhs) noexcept
     {
         return std::abs(lhs - rhs) <= std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
     }
 
     template<std::floating_point T>
-    inline constexpr bool floatIsLess(T lhs, T rhs) noexcept
+    constexpr bool floatIsLess(T lhs, T rhs) noexcept
     {
         return (rhs - lhs) > std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
     }
 
     template<std::floating_point T>
-    inline constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
+    constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
     {
         return (rhs - lhs) > std::abs(rhs) * GA_EPSILON;
     }
 
     template<std::floating_point T>
-    inline constexpr bool floatIsGreater(T lhs, T rhs) noexcept
+    constexpr bool floatIsGreater(T lhs, T rhs) noexcept
     {
         return (lhs - rhs) > std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
     }
 
     template<std::floating_point T>
-    inline constexpr bool floatIsLessEq(T lhs, T rhs) noexcept
+    constexpr bool floatIsLessEq(T lhs, T rhs) noexcept
     {
         return !floatIsGreater(lhs, rhs);
     }
 
     template<std::floating_point T>
-    inline constexpr bool floatIsGreaterEq(T lhs, T rhs) noexcept
+    constexpr bool floatIsGreaterEq(T lhs, T rhs) noexcept
     {
         return !floatIsLess(lhs, rhs);
     }
