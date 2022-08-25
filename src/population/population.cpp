@@ -27,16 +27,7 @@ namespace genetic_algorithm::detail
         assert(std::distance(first, last) > 0);
         assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
 
-        FitnessVector min_fitness = *first++;
-        for (; first != last; ++first)
-        {
-            for (size_t dim = 0; dim < min_fitness.size(); dim++)
-            {
-                min_fitness[dim] = std::min(min_fitness[dim], (*first)[dim]);
-            }
-        }
-
-        return min_fitness;
+        return std::reduce(std::next(first), last, *first, detail::elementwise_min<double>);
     }
 
     FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
@@ -44,16 +35,7 @@ namespace genetic_algorithm::detail
         assert(std::distance(first, last) > 0);
         assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
 
-        FitnessVector max_fitness = *first++;
-        for (; first != last; ++first)
-        {
-            for (size_t dim = 0; dim < max_fitness.size(); dim++)
-            {
-                max_fitness[dim] = std::max(max_fitness[dim], (*first)[dim]);
-            }
-        }
-
-        return max_fitness;
+        return std::reduce(std::next(first), last, *first, detail::elementwise_max<double>);
     }
 
     FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
@@ -61,16 +43,15 @@ namespace genetic_algorithm::detail
         assert(std::distance(first, last) > 0);
         assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
 
-        auto n_inv = 1.0 / (last - first);
-
-        FitnessVector fitness_mean(first->size(), 0.0);
-        for (; first != last; ++first)
+        FitnessVector fitness_mean(first->size());
+        std::for_each(first, last, [&](const FitnessVector& fvec)
         {
-            for (size_t dim = 0; dim < fitness_mean.size(); dim++)
+            std::transform(fvec.begin(), fvec.end(), fitness_mean.begin(), fitness_mean.begin(),
+            [ninv = 1.0 / (first - last)](double mean, double f) noexcept
             {
-                fitness_mean[dim] += (*first)[dim] * n_inv;
-            }
-        }
+                return mean + f * ninv;
+            });
+        });
 
         return fitness_mean;
     }
@@ -85,21 +66,23 @@ namespace genetic_algorithm::detail
         assert(std::distance(first, last) > 0);
         assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
 
-        auto variance = FitnessVector(first->size(), 0.0);
+        FitnessVector variance(first->size());
 
         if (std::distance(first, last) == 1) return variance;
 
-        auto n_inv = 1.0 / (last - first - 1);
-        for (; first != last; ++first)
+        const double ninv = 1.0 / (last - first - 1);
+
+        std::for_each(first, last, [&](const FitnessVector& fvec) noexcept
         {
-            for (size_t dim = 0; dim < variance.size(); dim++)
+            for (size_t dim = 0; dim < fvec.size(); dim++)
             {
-                variance[dim] += std::pow((*first)[dim] - mean[dim], 2) * n_inv;
+                variance[dim] += std::pow(fvec[dim] - mean[dim], 2) * ninv;
             }
-        }
-        for (auto& elem : variance)
-        {
-            elem = std::sqrt(elem);
+        });
+
+        for (double& var : variance)
+        { 
+            var = std::sqrt(var);
         }
 
         return variance;
