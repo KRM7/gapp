@@ -90,16 +90,17 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    constexpr size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    constexpr size_t argmax(Iter begin, Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
+        assert(std::distance(begin, first) >= 0);
         assert(std::distance(first, last) > 0);
 
         const auto it = std::max_element(first, last, std::forward<Comp>(comp));
-        const size_t idx = size_t(it - first);
+        const size_t idx = std::distance(begin, it);
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
-            const size_t last_idx = std::distance(first, last) - 1;
+            const size_t last_idx = std::distance(begin, last) - 1;
             return last_idx - idx;
         }
         else
@@ -111,16 +112,17 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    constexpr size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    constexpr size_t argmin(Iter begin, Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
+        assert(std::distance(begin, first) >= 0);
         assert(std::distance(first, last) > 0);
 
         const auto it = std::min_element(first, last, std::forward<Comp>(comp));
-        const size_t idx = size_t(it - first);
+        const size_t idx = std::distance(begin, it);
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
-            const size_t last_idx = std::distance(first, last) - 1;
+            const size_t last_idx = std::distance(begin, last) - 1;
             return last_idx - idx;
         }
         else
@@ -223,7 +225,7 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    bool erase_first(std::vector<T>& container, const T& val)
+    bool erase_first_stable(std::vector<T>& container, const T& val)
     {
         const auto found = std::find(container.cbegin(), container.cend(), val);
         if (found != container.cend())
