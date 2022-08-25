@@ -132,7 +132,7 @@ namespace genetic_algorithm::detail
     {
         return [=](const T& value) noexcept(noexcept(value * value))
         {
-            return multiplier * value;
+            return value * multiplier;
         };
     }
 
@@ -142,7 +142,7 @@ namespace genetic_algorithm::detail
     {
         return [idiv = 1.0 / divisor](const T& value) noexcept(noexcept(value * value))
         {
-            return idiv * value;
+            return value * idiv;
         };
     }
 
