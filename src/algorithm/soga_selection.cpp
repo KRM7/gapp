@@ -35,8 +35,7 @@ namespace genetic_algorithm::selection
         offset = 2.0 * offset;              /* The selection probability of the worst candidate should also be > 0. */
         offset = std::min(0.0, offset);     /* Only adjust fitness values if it's neccesary (there are negative fitness values). */
 
-        std::transform(fvec.begin(), fvec.end(), fvec.begin(),
-        [offset](double f)
+        std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&](double f)
         {
             return f - offset;
         });
@@ -187,14 +186,14 @@ namespace genetic_algorithm::selection
     {
         auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
+        double df = std::max(*fmax - *fmin, 1E-6);
 
         auto temperature = temperature_(ga.generation_cntr(), ga.max_gen());
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(),
         // dont try to capture the iterators by ref or value here
-        [fmin = *fmin, fmax = *fmax, temperature](double f) noexcept
+        [fmin = *fmin, df, temperature](double f) noexcept
         {
-            double df = std::max(fmax - fmin, 1E-6);
             double fnorm = (f - fmin) / df;
 
             return std::exp(fnorm / temperature);
