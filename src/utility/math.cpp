@@ -11,7 +11,7 @@
 
 namespace genetic_algorithm::detail
 {
-    constexpr double square(double n) noexcept
+    static constexpr double square(double n) noexcept
     {
         return n * n;
     }
@@ -72,7 +72,7 @@ namespace genetic_algorithm::detail
 
         return std::transform_reduce(v1.begin(), v1.end(), v2.begin(), 0.0,
                                      std::plus{},
-                                     compose(std::minus{}, square));
+                                     [](double lhs, double rhs) noexcept { return square(lhs - rhs); });
     }
 
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept
@@ -92,11 +92,7 @@ namespace genetic_algorithm::detail
     {
         assert(!vec.empty());
 
-        return std::accumulate(vec.begin(), vec.end(), 0.0,
-        [n = 1.0 / vec.size()](double acc, double val) noexcept
-        {
-            return acc + val * n;
-        });
+        return std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{}, detail::divide_by(double(vec.size())));
     }
 
     double stdDev(const std::vector<double>& vec) noexcept
@@ -110,10 +106,10 @@ namespace genetic_algorithm::detail
 
         if (vec.size() == 1) return 0.0;
 
-        auto var = std::accumulate(vec.begin(), vec.end(), 0.0,
-        [mean, n = 1.0 / (vec.size() - 1)](double acc, double val) noexcept
+        auto var = std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{},
+        [mean, n = 1.0 / (vec.size() - 1)](double val) noexcept
         {
-            return acc + square(val - mean) * n;
+            return square(val - mean) * n;
         });
 
         return std::sqrt(var);
