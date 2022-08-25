@@ -254,9 +254,9 @@ namespace genetic_algorithm::rng
     {
         assert(!cdf.empty());
 
-        auto it = std::lower_bound(cdf.begin(), cdf.end(), randomReal(0.0, cdf.back())); // cdf.back() in case it's not exactly 1.0
+        auto selected = std::lower_bound(cdf.begin(), cdf.end(), randomReal(0.0, cdf.back())); // cdf.back() in case it's not exactly 1.0
 
-        return size_t(it - cdf.begin());
+        return size_t(selected - cdf.begin());
     }
 
 }
