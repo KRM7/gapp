@@ -72,28 +72,27 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t n)
     {
-        assert(n);
-
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        if (parent1.chromosome.size() == parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the n-point crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the n-point crossover.");
         }
+
+        const size_t chrom_len = parent1.chromosome.size();
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        size_t num_crossover_points = std::min(n, chrom_len);
-        auto crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
+        const size_t num_crossover_points = std::min(n, chrom_len);
+        const auto crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
 
-        std::vector<size_t> crossover_mask(chrom_len, 0);
+        /* Create crossover mask */
+        std::vector<bool> crossover_mask(chrom_len, false);
         for (size_t i = 0, remaining = num_crossover_points; i < chrom_len; i++)
         {
             if (detail::contains(crossover_points.begin(), crossover_points.end(), i))
             {
                 if (--remaining == 0) break;
             }
-            crossover_mask[i] = remaining;
+            crossover_mask[i] = remaining % 2;
         }
 
         Candidate child1 = parent1;
@@ -101,7 +100,7 @@ namespace genetic_algorithm::crossover::dtl
 
         for (size_t i = 0; i < chrom_len; i++)
         {
-            if (crossover_mask[i] % 2)
+            if (crossover_mask[i])
             {
                 using std::swap;
                 swap(child1.chromosome[i], child2.chromosome[i]);
@@ -114,16 +113,13 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> singlePointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the n-point crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the n-point crossover.");
         }
 
-        if (chrom_len < 2) return { parent1, parent2 };
-
-        size_t crossover_point = rng::randomInt(0_sz, chrom_len);
+        const size_t chrom_len = parent1.chromosome.size();
+        const size_t crossover_point = rng::randomInt(0_sz, chrom_len);
 
         Candidate child1 = parent1;
         Candidate child2 = parent2;
@@ -140,15 +136,12 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> twoPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the n-point crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the n-point crossover.");
         }
 
-        if (chrom_len < 2) return { parent1, parent2 };
-
+        const size_t chrom_len = parent1.chromosome.size();
         auto crossover_points = rng::sampleUnique(0_sz, chrom_len, 2);
         if (crossover_points[0] > crossover_points[1])
         {

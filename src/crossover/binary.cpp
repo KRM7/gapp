@@ -27,10 +27,7 @@ namespace genetic_algorithm::crossover::binary
 
     void NPoint::num_crossover_points(size_t n)
     {
-        if (n == 0)
-        {
-            throw std::invalid_argument("The number of crossover points must be at least 1 for the n-point crossover.");
-        }
+        if (n == 0) GA_THROW(std::invalid_argument, "The number of crossover points must be at least 1 for the n-point crossover.");
 
         n_ = n;
     }
@@ -62,15 +59,14 @@ namespace genetic_algorithm::crossover::binary
 
     auto Uniform::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the uniform crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the uniform crossover.");
         }
 
-        size_t num_swapped = rng::randomBinomialApprox(chrom_len, ps_);
-        auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
+        const size_t chrom_len = parent1.chromosome.size();
+        const size_t num_swapped = rng::randomBinomialApprox(chrom_len, ps_);
+        const auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
