@@ -11,11 +11,11 @@ namespace genetic_algorithm::mutation::integer
 {
     void Uniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
-        size_t base = dynamic_cast<const IntegerGA&>(ga).base();
-        size_t chrom_len = candidate.chromosome.size();
+        const size_t base = dynamic_cast<const IntegerGA&>(ga).base();
+        const size_t chrom_len = candidate.chromosome.size();
 
-        size_t mutate_count = rng::randomBinomialApprox(chrom_len, mutation_rate());
-        auto mutated_indices = rng::sampleUnique(0_sz, chrom_len, mutate_count);
+        const size_t mutate_count = rng::randomBinomialApprox(chrom_len, mutation_rate());
+        const auto mutated_indices = rng::sampleUnique(0_sz, chrom_len, mutate_count);
 
         if (base < 16) /* Make sure the new value for the changed genes can't be the old ones. */
         {
@@ -24,10 +24,11 @@ namespace genetic_algorithm::mutation::integer
 
             for (const auto& idx : mutated_indices)
             {
-                auto old_gene = candidate.chromosome[idx];
-                std::swap(alleles[old_gene], alleles.back());
-                GeneType new_gene = rng::randomElement(alleles.begin(), alleles.end() - 1);
-                std::swap(alleles[old_gene], alleles.back());
+                using std::swap;
+                const auto old_gene = candidate.chromosome[idx];
+                swap(alleles[old_gene], alleles.back());
+                const GeneType new_gene = rng::randomElement(alleles.begin(), alleles.end() - 1);
+                swap(alleles[old_gene], alleles.back());
 
                 candidate.chromosome[idx] = new_gene;
             }
