@@ -42,6 +42,7 @@ namespace genetic_algorithm::rng
     /** PRNG instance used in the genetic algorithms. */
     inline PRNG prng{ GA_SEED };
 
+
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
     template<std::floating_point RealType = double>
     RealType randomReal();
@@ -159,12 +160,16 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     IntType randomBinomial(IntType n, double p)
     {
+        assert(0.0 <= p && p <= 1.0);
+
         return std::binomial_distribution{ n, p }(prng);
     }
 
     template<std::integral IntType>
     IntType randomBinomialApprox(IntType n, double p)
     {
+        assert(0.0 <= p && p <= 1.0);
+
         double mean = n * p;
         if (mean >= 2.0)
         {
