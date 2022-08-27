@@ -101,7 +101,8 @@ namespace genetic_algorithm::detail
     template<Gene T>
     Candidates<T> findParetoFront(const Population<T>& pop)
     {
-        assert(!pop.empty());
+        if (pop.empty()) return {};
+
         assert(pop[0].fitness.size() > 0);
         assert(std::all_of(pop.begin(), pop.end(), [&pop](const auto& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
