@@ -7,6 +7,7 @@
 #include "../algorithm/algorithm_base.hpp"
 #include "../algorithm/single_objective.fwd.hpp"
 #include "../stop_condition/stop_condition_base.fwd.hpp"
+#include "../utility/probability.hpp"
 #include <vector>
 #include <type_traits>
 #include <atomic>
@@ -59,22 +60,10 @@ namespace genetic_algorithm
         using StopConditionFunction = std::function<bool(const GaInfo&)>;
 
         /**
-        * Should be set to false if the fitness function does not change while running the algorithm. \n
-        * (The fitness function will always return the same fitness values for a given Chromosome.) \n
-        * Used to eliminate unnecessary objective function evaluations.
-        */
-        bool dynamic_fitness = false;
-
-        /**
-        * All pareto optimal optimal Candidates found by the algorithm will be stored and kept in the solutions,
-        * regardless of when they were founds,
-        * not just the optimal solutions of the last Population if this is set to true. \n
-        */
-        bool keep_all_optimal_solutions = false;
-
-        /**
         * Set the size of the chromosomes (number of genes) of the Candidate solutions used in the algorithm. \n
-        * The chromosome length must be at least 1.
+        * The chromosome length must be at least 1. \n
+        * 
+        * With variable chromosome lengths, this value is only used to generate the initial population.
         *
         * @param len The length of the Chromosomes.
         */
@@ -232,6 +221,39 @@ namespace genetic_algorithm
         [[nodiscard]]
         F& stop_condition() &;
 
+        /**
+        * Enable/disable support for dynamic fitness functions (disabled by default). \n
+        *
+        * Should be set to false if the fitness function does not change while running the algorithm. \n
+        * (The fitness function will always return the same fitness values for a given Chromosome.) \n
+        *
+        * When set to false, this is used to eliminate unnecessary objective function evaluations.
+        *
+        * @param enable Whether dynamic fitness functions should be allowed.
+        */
+        void dynamic_fitness(bool enable) noexcept { dynamic_fitness_ = enable; }
+
+        /** @returns true if dynamic fitness function support is enabled. */
+        [[nodiscard]]
+        bool dynamic_fitness() const noexcept { return dynamic_fitness_; }
+
+        /**
+        * When set to true, all pareto optimal Candidates found by the algorithm during a run
+        * will be kept and stored in the solutions set, regardless of which generation they were
+        * found in. \n
+        * When set to false, the optimal solutions returned by the algorithm at the end of a run
+        * are the optimal solutions of the last generation. \n
+        *
+        * Disabled by default. \n
+        *
+        * @param enable Whether all pareto optimal solutions should be kept.
+        */
+        void keep_all_optimal_solutions(bool enable) noexcept { keep_all_optimal_sols_ = enable; }
+
+        /** @returns true if all pareto optimal solutions are kept during a run. */
+        [[nodiscard]]
+        bool keep_all_optimal_solutions() const noexcept { return keep_all_optimal_sols_; }
+
 
         /* Move-only. */
         GaInfo(const GaInfo&)            = delete;
@@ -257,6 +279,8 @@ namespace genetic_algorithm
         size_t population_size_ = 100;
         size_t max_gen_ = 500;
 
+        bool dynamic_fitness_ = false;
+        bool keep_all_optimal_sols_ = false;
         bool can_continue_ = false;
 
         void max_gen(size_t max_gen);
