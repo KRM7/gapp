@@ -4,13 +4,14 @@
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/math.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <stdexcept>
 #include <cassert>
 
 namespace genetic_algorithm::stopping
 {
-    static bool metricImproved(std::vector<double>& best_so_far, const std::vector<double>& new_val, double delta) noexcept
+    static bool metricImproved(FitnessVector& best_so_far, const FitnessVector& new_val, double delta) noexcept
     {
         assert(best_so_far.size() == new_val.size());
 
@@ -44,17 +45,17 @@ namespace genetic_algorithm::stopping
         return (ga.num_fitness_evals() >= max_fitness_evals_);
     }
 
-    FitnessValue::FitnessValue(const std::vector<double>& fitness_threshold)
+    FitnessValue::FitnessValue(const FitnessVector& fitness_threshold)
         : StopCondition()
     {
         this->fitness_threshold(fitness_threshold);
     }
 
-    void FitnessValue::fitness_threshold(const std::vector<double>& fitness_threshold)
+    void FitnessValue::fitness_threshold(const FitnessVector& fitness_threshold)
     {
         if (fitness_threshold.empty())
         {
-            throw std::invalid_argument("Empty fitness threshold vector.");
+            GA_THROW(std::invalid_argument, "Empty fitness threshold vector.");
         }
 
         fitness_threshold_ = fitness_threshold;
@@ -64,10 +65,10 @@ namespace genetic_algorithm::stopping
     {
         if (ga.num_objectives() != fitness_threshold_.size())
         {
-            throw std::domain_error("The size of the fitness threshold vector does not match the size of the fitness vectors.");
+            GA_THROW(std::domain_error, "The size of the fitness threshold vector does not match the size of the fitness vectors.");
         }
 
-        auto& fitness_matrix = ga.fitness_matrix();
+        const auto& fitness_matrix = ga.fitness_matrix();
 
         return std::any_of(fitness_matrix.begin(), fitness_matrix.end(),
         [this](const auto& fvec) noexcept
@@ -101,7 +102,7 @@ namespace genetic_algorithm::stopping
 
     bool FitnessMeanStall::stop_condition(const GaInfo& ga)
     {
-        auto current_mean = detail::fitnessMean(ga.fitness_matrix().begin(), ga.fitness_matrix().end());
+        const auto current_mean = detail::fitnessMean(ga.fitness_matrix().begin(), ga.fitness_matrix().end());
 
         /* Init on first gen. */
         if (ga.generation_cntr() == 0)
@@ -112,7 +113,7 @@ namespace genetic_algorithm::stopping
             return false;
         }
 
-        bool improved = metricImproved(best_fitness_mean_, current_mean, delta_);
+        const bool improved = metricImproved(best_fitness_mean_, current_mean, delta_);
 
         if (improved) resetCntr();
         else --cntr_;
@@ -145,7 +146,7 @@ namespace genetic_algorithm::stopping
 
     bool FitnessBestStall::stop_condition(const GaInfo& ga)
     {
-        auto current_max = detail::maxFitness(ga.fitness_matrix().begin(), ga.fitness_matrix().end());
+        const auto current_max = detail::maxFitness(ga.fitness_matrix().begin(), ga.fitness_matrix().end());
 
         /* Init on first gen. */
         if (ga.generation_cntr() == 0)
@@ -156,7 +157,7 @@ namespace genetic_algorithm::stopping
             return false;
         }
 
-        bool improved = metricImproved(best_fitness_max_, current_max, delta_);
+        const bool improved = metricImproved(best_fitness_max_, current_max, delta_);
 
         if (improved) resetCntr();
         else --cntr_;

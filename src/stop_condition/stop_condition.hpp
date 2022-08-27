@@ -5,12 +5,16 @@
 
 #include "stop_condition_base.hpp"
 #include "../population/candidate.hpp"
+#include "../population/population.hpp"
 #include <vector>
 #include <cstddef>
 
 /* Early stop conditions for the genetic algorithms. */
 namespace genetic_algorithm::stopping
 {
+    using FitnessVector = detail::FitnessVector;
+    using FitnessMatrix = detail::FitnessMatrix;
+
     /**
     * Early stop condition based on the number of fitness function evaluations performed. \n
     * The algorithm will stop early if the set maximum number of objective function evaluations
@@ -60,21 +64,21 @@ namespace genetic_algorithm::stopping
         *
         * @param fitness_threshold The fitness threshold vector used for checking the stop condition (assuming fitness maximization).
         */
-        explicit FitnessValue(const std::vector<double>& fitness_threshold);
+        explicit FitnessValue(const FitnessVector& fitness_threshold);
 
         /**
         * Set the fitness threshold vector used when evaluating the stop condition.
         *
         * @param threshold The fitness threshold at which the algorithm will be stopped (assuming fitness maximization).
         */
-        void fitness_threshold(const std::vector<double>& threshold);
+        void fitness_threshold(const FitnessVector& threshold);
 
         /** @returns The currently set fitness threshold vector. */
         [[nodiscard]]
-        const std::vector<double>& fitness_threshold() const noexcept { return fitness_threshold_; }
+        const FitnessVector& fitness_threshold() const noexcept { return fitness_threshold_; }
 
     private:
-        std::vector<double> fitness_threshold_;
+        FitnessVector fitness_threshold_;
 
         bool stop_condition(const GaInfo& ga) override;
     };
@@ -124,7 +128,7 @@ namespace genetic_algorithm::stopping
         size_t patience_;
         double delta_;
         size_t cntr_;
-        std::vector<double> best_fitness_mean_;
+        FitnessVector best_fitness_mean_;
 
         void resetCntr() noexcept;
         bool stop_condition(const GaInfo& ga) override;
@@ -175,7 +179,7 @@ namespace genetic_algorithm::stopping
         size_t patience_;
         double delta_;
         size_t cntr_;
-        std::vector<double> best_fitness_max_;
+        FitnessVector best_fitness_max_;
 
         void resetCntr() noexcept;
         bool stop_condition(const GaInfo& ga) override;
