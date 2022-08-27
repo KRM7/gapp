@@ -18,11 +18,11 @@ namespace genetic_algorithm::mutation::real
 
         if (candidate.chromosome.size() != bounds.size())
         {
-            throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Uniform mutation.");
+            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Uniform mutation.");
         }
 
-        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
-        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+        const size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
+        const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
         {
@@ -30,7 +30,7 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    NonUniform::NonUniform(double pm, GeneType beta) :
+    NonUniform::NonUniform(Probability pm, GeneType beta) :
         Mutation(pm)
     {
         this->beta(beta);
@@ -40,7 +40,7 @@ namespace genetic_algorithm::mutation::real
     {
         if (!(0.0 <= beta && beta <= std::numeric_limits<GeneType>::max()))
         {
-            throw std::invalid_argument("The beta parameter must be a nonnegative, finite value.");
+            GA_THROW(std::invalid_argument, "The beta parameter must be a nonnegative, finite value.");
         }
 
         beta_ = beta;
@@ -52,19 +52,19 @@ namespace genetic_algorithm::mutation::real
 
         if (candidate.chromosome.size() != bounds.size())
         {
-            throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Non-Uniform mutation.");
+            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Non-Uniform mutation.");
         }
 
-        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
-        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+        const size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
+        const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
         {
-            GeneType rand = rng::randomReal<GeneType>();
-            GeneType exponent = std::pow(1.0 - GeneType(ga.generation_cntr()) / ga.max_gen(), beta_);
+            const GeneType rand = rng::randomReal<GeneType>();
+            const GeneType exponent = std::pow(1.0 - GeneType(ga.generation_cntr()) / ga.max_gen(), beta_);
 
-            GeneType multiplier = 1.0 - std::pow(rand, exponent);
-            GeneType bound = rng::randomBool() ? bounds[idx].first : bounds[idx].second;
+            const GeneType multiplier = 1.0 - std::pow(rand, exponent);
+            const GeneType bound = rng::randomBool() ? bounds[idx].first : bounds[idx].second;
 
             candidate.chromosome[idx] += (bound - candidate.chromosome[idx]) * multiplier;
             /* The value of the mutated gene might be outside of the allowed interval. */
@@ -72,7 +72,7 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    Gauss::Gauss(double pm, GeneType sigma) :
+    Gauss::Gauss(Probability pm, GeneType sigma) :
         Mutation(pm)
     {
         this->sigma(sigma);
@@ -82,7 +82,7 @@ namespace genetic_algorithm::mutation::real
     {
         if (!(0.0 < sigma && sigma <= std::numeric_limits<GeneType>::max()))
         {
-            throw std::invalid_argument("Sigma must be a positive, finite value.");
+            GA_THROW(std::invalid_argument, "Sigma must be a positive, finite value.");
         }
 
         sigma_ = sigma;
@@ -94,15 +94,15 @@ namespace genetic_algorithm::mutation::real
 
         if (candidate.chromosome.size() != bounds.size())
         {
-            throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Gauss mutation.");
+            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Gauss mutation.");
         }
 
-        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
-        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+        const size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
+        const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
         {
-            GeneType SD = (bounds[idx].second - bounds[idx].first) / sigma_;
+            const GeneType SD = (bounds[idx].second - bounds[idx].first) / sigma_;
 
             candidate.chromosome[idx] += rng::randomNormal<GeneType>(0.0, SD);
             /* The value of the mutated gene might be outside of the allowed interval. */
@@ -110,7 +110,7 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    Polynomial::Polynomial(double pm, GeneType eta)
+    Polynomial::Polynomial(Probability pm, GeneType eta)
         : Mutation(pm)
     {
         this->eta(eta);
@@ -120,7 +120,7 @@ namespace genetic_algorithm::mutation::real
     {
         if (!(0.0 <= eta && eta <= std::numeric_limits<GeneType>::max()))
         {
-            throw std::invalid_argument("Eta must be a nonnegative, finite value.");
+            GA_THROW(std::invalid_argument, "Eta must be a nonnegative, finite value.");
         }
 
         eta_ = eta;
@@ -132,23 +132,23 @@ namespace genetic_algorithm::mutation::real
 
         if (candidate.chromosome.size() != bounds.size())
         {
-            throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Polynomial mutation.");
+            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Polynomial mutation.");
         }
 
-        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
-        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+        const size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
+        const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
         {
-            GeneType alpha = rng::randomReal<GeneType>();
+            const GeneType alpha = rng::randomReal<GeneType>();
             if (alpha <= 0.5)
             {
-                GeneType delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
+                const GeneType delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
                 candidate.chromosome[idx] += delta * (candidate.chromosome[idx] - bounds[idx].first);
             }
             else
             {
-                GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
+                const GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
                 candidate.chromosome[idx] += delta * (bounds[idx].second - candidate.chromosome[idx]);
             }
             /* The value of the mutated gene might be outside of the allowed interval. */
@@ -162,11 +162,11 @@ namespace genetic_algorithm::mutation::real
 
         if (candidate.chromosome.size() != bounds.size())
         {
-            throw std::invalid_argument("The length of the chromosome must be the same as the bounds vector to perform the Boundary mutation.");
+            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Boundary mutation.");
         }
 
-        size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
-        auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
+        const size_t mutate_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
+        const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
         {

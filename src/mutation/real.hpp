@@ -46,7 +46,7 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param beta The beta parameter of the non-uniform crossover. Must be >= 0.0.
         */
-        explicit NonUniform(double pm, GeneType beta = 2.0);
+        explicit NonUniform(Probability pm, GeneType beta = 2.0);
         
         /**
         * Sets the beta parameter for the crossover.
@@ -84,7 +84,7 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param sigma The sigma parameter of the gauss crossover. Must be > 0.0.
         */
-        explicit Gauss(double pm, GeneType sigma = 6.0);
+        explicit Gauss(Probability pm, GeneType sigma = 6.0);
 
         /**
         * Sets the sigma parameter for the crossover.
@@ -122,7 +122,7 @@ namespace genetic_algorithm::mutation::real
         * @param pm The mutation probability used.
         * @param eta The eta parameter of the polynomial mutation. Must be >= 0.0.
         */
-        explicit Polynomial(double pm, GeneType eta = 40.0);
+        explicit Polynomial(Probability pm, GeneType eta = 40.0);
 
         /**
         * Sets the eta parameter for the crossover.
