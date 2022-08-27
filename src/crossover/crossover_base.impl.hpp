@@ -6,6 +6,7 @@
 #include "crossover_base.decl.hpp"
 #include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
 #include <utility>
 #include <stdexcept>
 #include <cassert>
@@ -13,19 +14,15 @@
 namespace genetic_algorithm::crossover
 {
     template<Gene T>
-    Crossover<T>::Crossover(double pc)
+    Crossover<T>::Crossover(Probability pc) :
+        pc_(pc)
     {
         crossover_rate(pc);
     }
 
     template<Gene T>
-    void Crossover<T>::crossover_rate(double pc)
+    void Crossover<T>::crossover_rate(Probability pc)
     {
-        if (!(0.0 <= pc && pc <= 1.0))
-        {
-            throw std::invalid_argument("The crossover probability must be in the closed range [0.0, 1.0]");
-        }
-
         pc_ = pc;
     }
 

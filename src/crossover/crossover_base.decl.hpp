@@ -4,6 +4,7 @@
 #define GA_CROSSOVER_BASE_DECL_HPP
 
 #include "crossover_base.fwd.hpp"
+#include "../utility/probability.hpp"
 #include <vector>
 #include <utility>
 
@@ -33,7 +34,7 @@ namespace genetic_algorithm::crossover
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Crossover(double pc = 0.8);
+        explicit Crossover(Probability pc = 0.8);
 
         Crossover(const Crossover&)             = default;
         Crossover(Crossover&&)                  = default;
@@ -46,11 +47,11 @@ namespace genetic_algorithm::crossover
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        void crossover_rate(double pc);
+        void crossover_rate(Probability pc);
 
         /** @returns The crossover rate set for the operator. */
         [[nodiscard]]
-        double crossover_rate() const noexcept { return pc_; }
+        Probability crossover_rate() const noexcept { return pc_; }
 
         /**
         * Perform the crossover operation on 2 individuals with the set probability.
@@ -69,7 +70,7 @@ namespace genetic_algorithm::crossover
 
     private:
 
-        double pc_;   /* The probability of performing the crossover operation on the parents. */
+        Probability pc_;   /* The probability of performing the crossover operation on the parents. */
     };
 
 } // namespace genetic_algorithm::crossover
