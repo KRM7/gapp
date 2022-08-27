@@ -4,6 +4,7 @@
 #define GA_MUTATION_BASE_DECL_HPP
 
 #include "mutation_base.fwd.hpp"
+#include "../utility/probability.hpp"
 #include <vector>
 #include <utility>
 
@@ -33,7 +34,8 @@ namespace genetic_algorithm::mutation
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Mutation(double pm);
+        explicit Mutation(Probability pm) noexcept :
+            pm_(pm) {}
 
         Mutation(const Mutation&)               = default;
         Mutation(Mutation&&)                    = default;
@@ -46,11 +48,11 @@ namespace genetic_algorithm::mutation
         * 
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        void mutation_rate(double pm);
+        void mutation_rate(Probability pm) { pm_ = pm; };
 
         /** @returns The mutation rate set for the operator. */
         [[nodiscard]]
-        double mutation_rate() const noexcept { return pm_; }
+        Probability mutation_rate() const noexcept { return pm_; }
 
         /**
         * Perform mutation on a candidate using the set mutation rate.
@@ -67,8 +69,7 @@ namespace genetic_algorithm::mutation
         virtual void mutate(const GaInfo& ga, Candidate<T>& candidate) const = 0;
 
     private:
-
-        double pm_;
+        Probability pm_;
     };
 
 } // namespace genetic_algorithm::mutation

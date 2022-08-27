@@ -6,30 +6,18 @@
 #include "mutation_base.decl.hpp"
 #include "../core/ga_base.hpp"
 #include <algorithm>
+#include <utility>
+#include <cassert>
 #include <stdexcept>
 
 namespace genetic_algorithm::mutation
 {
     template<Gene T>
-    Mutation<T>::Mutation(double pm)
-    {
-        mutation_rate(pm);
-    }
-
-    template<Gene T>
-    void Mutation<T>::mutation_rate(double pm)
-    {
-        if (!(0.0 <= pm && pm <= 1.0))
-        {
-            throw std::invalid_argument("The mutation probability must be in the closed range [0.0, 1.0]");
-        }
-
-        pm_ = pm;
-    }
-
-    template<Gene T>
     void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
     {
+        assert(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives());
+        assert(ga.variable_chromosome_length() || candidate.chromosome.size() == ga.chrom_len());
+
         if (!candidate.is_evaluated)
         {
             mutate(ga, candidate);
@@ -40,18 +28,22 @@ namespace genetic_algorithm::mutation
             /* If the candidate is already evaluated (happens when the crossover didn't change the candidate),
                its current fitness vector is valid, and we can save a fitness function call when the mutation
                doesn't change the chromosome. */
-            auto old_chromosome = candidate.chromosome;
+            const auto old_chromosome = candidate.chromosome;
+            auto old_fitness = candidate.fitness;
 
-            #ifndef NDEBUG
-                auto old_fitness = candidate.fitness;
-                mutate(ga, candidate);
-                assert(candidate.fitness == old_fitness);
-            #else
-                mutate(ga, candidate);
-            #endif
+            mutate(ga, candidate);
+            candidate.is_evaluated = false;
 
-            /* Assume that the fitness vector of candidate was not changed by mutate() (it shouldn't have been). */
-            candidate.is_evaluated = (candidate.chromosome == old_chromosome);
+            if (candidate.chromosome == old_chromosome)
+            {
+                candidate.fitness = std::move(old_fitness);
+                candidate.is_evaluated = true;
+            }
+        }
+
+        if (!ga.variable_chromosome_length() && candidate.chromosome.size() != ga.chrom_len())
+        {
+            GA_THROW(std::logic_error, "The mutation resulted in a candidate with incorrect chromosome length.");
         }
     }
 
