@@ -238,6 +238,17 @@ namespace genetic_algorithm
         bool dynamic_fitness() const noexcept { return dynamic_fitness_; }
 
         /**
+        * Enable/disable support for variable chromosome lengths (disabled by default). \n
+        *
+        * @param enable Whether variable chromosome lengths should be allowed.
+        */
+        void variable_chromosome_length(bool enable) noexcept { variable_chrom_len_ = enable; }
+
+        /** @returns true if variable chromosome lengths are allowed. */
+        [[nodiscard]]
+        bool variable_chromosome_length() const noexcept { return variable_chrom_len_; }
+
+        /**
         * When set to true, all pareto optimal Candidates found by the algorithm during a run
         * will be kept and stored in the solutions set, regardless of which generation they were
         * found in. \n
@@ -280,6 +291,7 @@ namespace genetic_algorithm
         size_t max_gen_ = 500;
 
         bool dynamic_fitness_ = false;
+        bool variable_chrom_len_ = false;
         bool keep_all_optimal_sols_ = false;
         bool can_continue_ = false;
 
