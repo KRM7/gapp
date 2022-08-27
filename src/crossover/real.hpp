@@ -49,7 +49,7 @@ namespace genetic_algorithm::crossover::real
         * @param pc The crossover probability used.
         * @param alpha The alpha parameter of the BLX-alpha crossover. Must be >= 0.0.
         */
-        explicit BLXa(double pc = 0.8, GeneType alpha = 0.5);
+        explicit BLXa(Probability pc = 0.8, GeneType alpha = 0.5);
 
         /**
         * Sets the alpha parameter for the crossover.
@@ -86,7 +86,7 @@ namespace genetic_algorithm::crossover::real
         * @param pc The crossover probability used.
         * @param eta The shape parameter of the simulated binary crossover.
         */
-        explicit SimulatedBinary(double pc = 0.8, GeneType eta = 4.0);
+        explicit SimulatedBinary(Probability pc = 0.8, GeneType eta = 4.0);
 
         /**
         * Sets the shape parameter (eta) of the simulated binary crossover.
