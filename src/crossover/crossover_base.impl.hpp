@@ -17,7 +17,6 @@ namespace genetic_algorithm::crossover
     Crossover<T>::Crossover(Probability pc) :
         pc_(pc)
     {
-        crossover_rate(pc);
     }
 
     template<Gene T>
@@ -30,6 +29,10 @@ namespace genetic_algorithm::crossover
     CandidatePair<T> Crossover<T>::operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         assert(0.0 <= pc_ && pc_ <= 1.0);
+        assert(parent1.is_evaluated && parent2.is_evaluated);
+        assert(parent1.fitness.size() == ga.num_objectives() && parent2.fitness.size() == ga.num_objectives());
+        assert(ga.variable_chromosome_length() || (parent1.chromosome.size() == ga.chrom_len() &&
+                                                   parent2.chromosome.size() == ga.chrom_len()));
 
         /* Only need to perform the crossover with the set pc probability. Return early with (1 - pc) probability. */
         if (rng::randomReal() >= pc_)
@@ -50,6 +53,14 @@ namespace genetic_algorithm::crossover
 
         /* Perform the actual crossover. */
         auto [child1, child2] = crossover(ga, parent1, parent2);
+
+        if (!ga.variable_chromosome_length())
+        {
+            if (child1.chromosome.size() != ga.chrom_len() || child2.chromosome.size() != ga.chrom_len())
+            {
+                GA_THROW(std::logic_error, "The crossover function returned a candidate with incorrect chromosome length.");
+            }
+        }
 
         child1.is_evaluated = false;
         child2.is_evaluated = false;
