@@ -14,18 +14,6 @@
 namespace genetic_algorithm::crossover
 {
     template<Gene T>
-    Crossover<T>::Crossover(Probability pc) noexcept :
-        pc_(pc)
-    {
-    }
-
-    template<Gene T>
-    void Crossover<T>::crossover_rate(Probability pc)
-    {
-        pc_ = pc;
-    }
-
-    template<Gene T>
     CandidatePair<T> Crossover<T>::operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         assert(0.0 <= pc_ && pc_ <= 1.0);

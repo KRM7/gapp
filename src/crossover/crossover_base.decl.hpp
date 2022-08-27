@@ -34,7 +34,8 @@ namespace genetic_algorithm::crossover
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Crossover(Probability pc = 0.8) noexcept;
+        explicit Crossover(Probability pc = 0.8) noexcept :
+            pc_(pc) {}
 
         Crossover(const Crossover&)             = default;
         Crossover(Crossover&&)                  = default;
@@ -43,11 +44,11 @@ namespace genetic_algorithm::crossover
         virtual ~Crossover()                    = default;
 
         /**
-        * Set the crossover rate used by the operator. 
+        * Set the crossover rate used by the operator.
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        void crossover_rate(Probability pc);
+        void crossover_rate(Probability pc) { pc_ = pc; }
 
         /** @returns The crossover rate set for the operator. */
         [[nodiscard]]
