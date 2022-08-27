@@ -5,7 +5,6 @@
 
 #include "utility.hpp"
 #include <stdexcept>
-#include <compare>
 
 namespace genetic_algorithm
 {
@@ -13,11 +12,12 @@ namespace genetic_algorithm
     class Probability
     {
     public:
-        /** Create a probability with a value of 0. */
-        constexpr Probability() = default;
-
-        /** Create a probability with a value of p. This value must be in the closed range [0.0, 1.0]. */
-        constexpr Probability(double p)
+        /**
+        * Create a probability with a value of p.
+        * 
+        * @param p The probability value. Must be in the closed range [0.0, 1.0]
+        */
+        constexpr /* implicit */ Probability(double p)
         {
             if (!(0.0 <= p && p <= 1.0))
             {
@@ -26,13 +26,11 @@ namespace genetic_algorithm
             p_ = p;
         }
 
-        constexpr operator double() const noexcept { return p_; }           /**< Implicit conversion to double. */
-        constexpr const double operator*() const noexcept { return p_; }    /**< Convert to double. */
-
-        constexpr friend auto operator<=>(const Probability&, const Probability&) = default;
+        constexpr /* implicit */ operator double() const noexcept { return p_; }
+        constexpr const double operator*() const noexcept { return p_; }
 
     private:
-        double p_ = 0.0;
+        double p_;
     };
 
 } // namespace genetic_algorithm
