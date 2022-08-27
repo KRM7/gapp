@@ -4,6 +4,7 @@
 #include "crossover_dtl.hpp"
 #include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
 #include <utility>
 #include <stdexcept>
 #include <cstddef>
@@ -20,7 +21,14 @@ namespace genetic_algorithm::crossover::binary
         return dtl::twoPointCrossoverImpl(parent1, parent2);
     }
 
-    NPoint::NPoint(size_t n)
+    NPoint::NPoint(size_t n) :
+        Crossover()
+    {
+        num_crossover_points(n);
+    }
+
+    NPoint::NPoint(Probability pc, size_t n) :
+        Crossover(pc)
     {
         num_crossover_points(n);
     }
@@ -42,18 +50,13 @@ namespace genetic_algorithm::crossover::binary
             return dtl::nPointCrossoverImpl(parent1, parent2, n_);
     }
 
-    Uniform::Uniform(double ps)
+    Uniform::Uniform(Probability pc, Probability ps) noexcept :
+        Crossover(pc), ps_(ps)
     {
-        swap_probability(ps);
     }
 
-    void Uniform::swap_probability(double ps)
+    void Uniform::swap_probability(Probability ps)
     {
-        if (!(0.0 <= ps && ps <= 1.0))
-        {
-            throw std::invalid_argument("The swap probability must be in the range [0.0, 1.0] for the uniform crossover.");
-        }
-
         ps_ = ps;
     }
 

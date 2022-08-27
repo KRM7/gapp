@@ -48,9 +48,17 @@ namespace genetic_algorithm::crossover::binary
         /**
         * Create an N-point crossover operator.
         * 
-        * @param n The number of crossover points (must be > 0).
+        * @param n The number of crossover points. Must be greater than 0.
         */
         explicit NPoint(size_t n);
+
+        /**
+        * Create an N-point crossover operator.
+        *
+        * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
+        * @param n The number of crossover points. Must be greater than 0.
+        */
+        NPoint(Probability pc, size_t n);
 
         /**
         * Set the number of crossover points used for the operator to @p n. \n
@@ -80,10 +88,11 @@ namespace genetic_algorithm::crossover::binary
     public:
         /**
         * Create a uniform crossover operator.
-        * 
+        *
+        * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         * @param swap_prob The probability of swapping each pair of genes between the 2 parents. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Uniform(double swap_prob = 0.5);
+        explicit Uniform(Probability pc, Probability swap_prob = 0.5) noexcept;
 
         /**
         * Set the probability of swapping each pair of genes between the parents during
@@ -91,16 +100,16 @@ namespace genetic_algorithm::crossover::binary
         * 
         * @param swap_prob The probability of swapping each pair of genes between the 2 parents.
         */
-        void swap_probability(double ps);
+        void swap_probability(Probability ps);
 
         /** @returns The swap probability set. */
         [[nodiscard]]
-        double swap_probability() const noexcept { return ps_; }
+        Probability swap_probability() const noexcept { return ps_; }
 
     private:
         CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
-        double ps_;
+        Probability ps_;
     };
 
 } // namespace genetic_algorithm::crossover::binary
