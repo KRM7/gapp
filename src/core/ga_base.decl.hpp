@@ -12,10 +12,10 @@
 #include <utility>
 #include <functional>
 #include <type_traits>
+#include <concepts>
+#include <memory>
 #include <atomic>
 #include <cstddef>
-#include <memory>
-#include <concepts>
 
 namespace genetic_algorithm
 {
@@ -305,6 +305,9 @@ namespace genetic_algorithm
         using GaInfo::chrom_len_;
         using GaInfo::population_size_;
         using GaInfo::max_gen_;
+        using GaInfo::dynamic_fitness_;
+        using GaInfo::variable_chrom_len_;
+        using GaInfo::keep_all_optimal_sols_;
         using GaInfo::can_continue_;
     };
 
