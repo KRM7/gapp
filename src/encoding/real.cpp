@@ -38,11 +38,11 @@ namespace genetic_algorithm
     {
         if (limits.size() != this->chrom_len())
         {
-            throw std::invalid_argument("The number of limits must be equal to the chromosome length.");
+            GA_THROW(std::invalid_argument, "The number of limits must be equal to the chromosome length.");
         }
-        if (std::any_of(limits.begin(), limits.end(), [](const std::pair<GeneType, GeneType>& b) {return b.first > b.second; }))
+        if (std::any_of(limits.begin(), limits.end(), [](const auto& limit) { return limit.first > limit.second; }))
         {
-            throw std::invalid_argument("The lower bound must be lower than the upper bound for each gene.");
+            GA_THROW(std::invalid_argument, "The lower bound must be lower than the upper bound for each gene.");
         }
 
         limits_ = limits;

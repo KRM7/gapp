@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <numeric>
 #include <memory>
-#include <cassert>
 
 namespace genetic_algorithm
 {

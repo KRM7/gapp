@@ -2,13 +2,13 @@
 
 #include "integer.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"
 #include "../stop_condition/stop_condition.hpp"
 #include <utility>
 #include <memory>
 #include <stdexcept>
-#include <cassert>
 
 namespace genetic_algorithm
 {
@@ -28,7 +28,7 @@ namespace genetic_algorithm
 
     void IntegerGA::base(GeneType base)
     {
-        if (base < 2) throw std::invalid_argument("The base must be at least 2.");
+        if (base < 2) GA_THROW(std::invalid_argument, "The base must be at least 2.");
 
         base_ = base;
     }

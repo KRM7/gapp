@@ -7,7 +7,6 @@
 #include "../stop_condition/stop_condition.hpp"
 #include <utility>
 #include <memory>
-#include <cassert>
 
 namespace genetic_algorithm
 {
