@@ -10,18 +10,19 @@ namespace genetic_algorithm::crossover::perm
 {
     auto Order1::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        /* The genes of the parent chromosomes must be unique. */
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the Order1 crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the Order1 crossover.");
         }
+
+        const size_t chrom_len = parent1.chromosome.size();
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        size_t length = rng::randomInt(1_sz, chrom_len - 1);
-        size_t first = rng::randomInt(0_sz, chrom_len - length);
-        size_t last = first + length;
+        const size_t length = rng::randomInt(1_sz, chrom_len - 1);
+        const size_t first = rng::randomInt(0_sz, chrom_len - length);
+        const size_t last = first + length;
 
         auto child1 = dtl::order1CrossoverImpl(parent1, parent2, first, last);
         auto child2 = dtl::order1CrossoverImpl(parent2, parent1, first, last);
@@ -31,18 +32,19 @@ namespace genetic_algorithm::crossover::perm
 
     auto Order2::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        /* The genes of the parent chromosomes must be unique. */
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the Order2 crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the Order2 crossover.");
         }
+
+        const size_t chrom_len = parent1.chromosome.size();
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        size_t length = rng::randomInt(1_sz, chrom_len - 1);
-        size_t first = rng::randomInt(0_sz, chrom_len - length);
-        size_t last = first + length;
+        const size_t length = rng::randomInt(1_sz, chrom_len - 1);
+        const size_t first = rng::randomInt(0_sz, chrom_len - length);
+        const size_t last = first + length;
 
         auto child1 = dtl::order2CrossoverImpl(parent1, parent2, first, last);
         auto child2 = dtl::order2CrossoverImpl(parent2, parent1, first, last);
@@ -52,17 +54,18 @@ namespace genetic_algorithm::crossover::perm
 
     auto Position::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        /* The genes of the parent chromosomes must be unique. */
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the Position crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the Position crossover.");
         }
+
+        const size_t chrom_len = parent1.chromosome.size();
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        size_t ns = rng::randomInt(1_sz, chrom_len - 1);
-        auto idxs = rng::sampleUnique(0_sz, chrom_len, ns);
+        const size_t ns = rng::randomInt(1_sz, chrom_len - 1);
+        const auto idxs = rng::sampleUnique(0_sz, chrom_len, ns);
 
         auto child1 = dtl::positionCrossoverImpl(parent1, parent2, idxs);
         auto child2 = dtl::positionCrossoverImpl(parent2, parent1, idxs);
@@ -72,33 +75,34 @@ namespace genetic_algorithm::crossover::perm
 
     auto Cycle::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        /* The genes of the parent chromosomes must be unique. */
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the Cycle crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the Cycle crossover.");
         }
+
+        const size_t chrom_len = parent1.chromosome.size();
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        auto cycles = dtl::findCycles(parent1.chromosome, parent2.chromosome);
+        const auto cycles = dtl::findCycles(parent1.chromosome, parent2.chromosome);
 
         Candidate child1 = parent1;
         Candidate child2 = parent2;
 
         for (size_t i = 0; i < chrom_len; i++)
         {
-            auto cycle_idx = detail::find_index(cycles,
-            [gene = parent1.chromosome[i]](const auto& cycle)
+            const auto cycle_idx = detail::find_index(cycles, [&](const auto& cycle)
             {
-                return detail::contains(cycle.begin(), cycle.end(), gene);
+                return detail::contains(cycle.begin(), cycle.end(), parent1.chromosome[i]);
             });
-            
-            if (cycle_idx.value() % 2)
+
+            if (*cycle_idx % 2)
             {
-                std::swap(child1.chromosome[i], child2.chromosome[i]);
+                using std::swap;
+                swap(child1.chromosome[i], child2.chromosome[i]);
             }
-            /* Even cycle genes were already handled when initializing the children. */
+            /* Even cycle idx genes were already handled when initializing the children. */
         }
 
         return { std::move(child1), std::move(child2) };
@@ -106,12 +110,13 @@ namespace genetic_algorithm::crossover::perm
 
     auto Edge::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        /* The genes of the parent chromosomes must be unique. */
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the Edge crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the Edge crossover.");
         }
+
+        const size_t chrom_len = parent1.chromosome.size();
 
         if (chrom_len < 2) return { parent1, parent2 };
 
@@ -126,12 +131,12 @@ namespace genetic_algorithm::crossover::perm
 
     auto PMX::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the PMX crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the PMX crossover.");
         }
+
+        const size_t chrom_len = parent1.chromosome.size();
         
         if (chrom_len < 2) return { parent1, parent2 };
 

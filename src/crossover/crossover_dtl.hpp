@@ -160,13 +160,10 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
-        size_t chrom_len = parent1.chromosome.size();
+        const size_t chrom_len = parent1.chromosome.size();
 
         std::unordered_set<T> direct(last - first);
-        while (first != last)
-        {
-            direct.insert(parent1.chromosome[first++]);
-        }
+        while (first != last) direct.insert(parent1.chromosome[first++]);
 
         Candidate<T> child = parent1;
 
@@ -202,10 +199,8 @@ namespace genetic_algorithm::crossover::dtl
             if (!direct.contains(parent2.chromosome[parent_pos]))
             {
                 child.chromosome[child_pos] = parent2.chromosome[parent_pos];
-                if (++child_pos == first)
-                {
-                    child_pos = last;
-                }
+
+                if (++child_pos == first) child_pos = last;
             }
         }
 
@@ -246,20 +241,17 @@ namespace genetic_algorithm::crossover::dtl
 
         while (!chrom1.empty())
         {
-            std::vector<T> cycle;
-
+            /* Find a cycle. */
             size_t pos = 0;
-            T top = chrom1[pos];
-            cycle.push_back(top);
+            std::vector<T> cycle{ chrom1[pos] };
 
-            while (chrom2[pos] != chrom1[0])
+            while (chrom2[pos] != cycle.front())
             {
                 pos = *detail::index_of(chrom1, chrom2[pos]);
-                top = chrom1[pos];
-                cycle.push_back(top);
+                cycle.push_back(chrom1[pos]);
             }
 
-            /* Delete the values in this cycle from chrom1 and chrom2 without changing the order of the remaining genes. */
+            /* Delete this cycle from the chromosomes without changing the order of the remaining genes. */
             for (const auto& gene : cycle)
             {
                 detail::erase_first_stable(chrom1, gene);
@@ -274,7 +266,7 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, std::unordered_map<T, std::vector<T>>&& neighbour_lists)
     {
-        size_t chrom_len = parent1.chromosome.size();
+        const size_t chrom_len = parent1.chromosome.size();
 
         Candidate<T> child;
         child.chromosome.reserve(chrom_len);
@@ -294,19 +286,15 @@ namespace genetic_algorithm::crossover::dtl
             if (child.chromosome.size() == chrom_len) break;
 
             /* Get next gene */
-            if (neighbour_lists[gene].empty())
+            auto candidate_genes = detail::find_all_v(neighbour_lists[gene].begin(), neighbour_lists[gene].end(),
+            [&neighbour_lists, n = dtl::minNeighbourCount(neighbour_lists, gene)](const T& val)
             {
-                gene = rng::randomElement(remaining_genes);
-            }
-            else
-            {
-                auto candidate_genes = detail::find_all_v(neighbour_lists[gene].begin(), neighbour_lists[gene].end(),
-                [&neighbour_lists, n = dtl::minNeighbourCount(neighbour_lists, gene)](const T& val)
-                {
-                    return neighbour_lists[val].size() == n;
-                });
-                gene = rng::randomElement(candidate_genes);
-            }
+                return neighbour_lists[val].size() == n;
+            });
+
+            gene = candidate_genes.empty() ?
+                rng::randomElement(remaining_genes) :
+                rng::randomElement(candidate_genes);
         }
 
         return child;
@@ -317,7 +305,7 @@ namespace genetic_algorithm::crossover::dtl
     {
         std::unordered_map<T, std::vector<T>> neighbour_list(chrom1.size());
 
-        size_t len = chrom1.size();
+        const size_t len = chrom1.size();
 
         neighbour_list[chrom1.front()].push_back(chrom1[1]);
         neighbour_list[chrom1.back()].push_back(chrom1[len - 2]);
