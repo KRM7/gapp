@@ -134,32 +134,36 @@ namespace genetic_algorithm::detail
         {
             for (size_t j = 0; j < rhs.size(); j++)
             {
-                if (rhs_state[j] == DOMINATED) continue;
-
-                if (rhs_state[j] == OPTIMAL && detail::paretoCompareLess(lhs[i].fitness, rhs[j].fitness))
-                {
-                    lhs_state[i] = DOMINATED;
-                    continue;
-                }
-
                 if (lhs_state[i] == DOMINATED) continue;
+                if (rhs_state[j].load(std::memory_order_relaxed) == DOMINATED) continue;
 
-                if (lhs_state[i] == OPTIMAL && detail::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
+                if (lhs_state[i] == OPTIMAL)
                 {
-                    rhs_state[j] = DOMINATED;
+                    if (detail::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
+                    {
+                        rhs_state[j].store(DOMINATED, std::memory_order_relaxed);
+                    }
+                    continue;
+                }
+                if (rhs_state[j].load(std::memory_order_relaxed) == OPTIMAL)
+                {
+                    if (detail::paretoCompareLess(lhs[i].fitness, rhs[j].fitness))
+                    {
+                        lhs_state[i] = DOMINATED;
+                    }
                     continue;
                 }
 
-                auto comp = detail::paretoCompare(lhs[i].fitness, rhs[j].fitness);
+                const auto comp = detail::paretoCompare(lhs[i].fitness, rhs[j].fitness);
                 if (comp < 0)
                 {
                     lhs_state[i] = DOMINATED;
-                    rhs_state[j] = OPTIMAL;
+                    rhs_state[j].store(OPTIMAL, std::memory_order_relaxed);
                 }
                 else if (comp > 0)
                 {
                     lhs_state[i] = OPTIMAL;
-                    rhs_state[j] = DOMINATED;
+                    rhs_state[j].store(DOMINATED, std::memory_order_relaxed);
                 }
             }
         });
@@ -173,7 +177,7 @@ namespace genetic_algorithm::detail
         }
         for (size_t i = 0; i < rhs.size(); i++)
         {
-            if (rhs_state[i] != DOMINATED) optimal_solutions.emplace_back(std::move(rhs[i]));
+            if (rhs_state[i].load(std::memory_order_relaxed) != DOMINATED) optimal_solutions.emplace_back(std::move(rhs[i]));
         }
 
         return optimal_solutions;
