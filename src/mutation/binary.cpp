@@ -9,12 +9,12 @@ namespace genetic_algorithm::mutation::binary
 {
     void Flip::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
     {
-        size_t flip_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
-        auto flipped_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), flip_count);
+        const size_t flip_count = rng::randomBinomialApprox(candidate.chromosome.size(), mutation_rate());
+        const auto flipped_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), flip_count);
 
         for (const auto& idx : flipped_indices)
         {
-            candidate.chromosome[idx] = !bool(candidate.chromosome[idx]);
+            candidate.chromosome[idx] = !static_cast<bool>(candidate.chromosome[idx]);
         }
     }
 
