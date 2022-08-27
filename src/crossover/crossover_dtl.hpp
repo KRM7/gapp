@@ -354,11 +354,11 @@ namespace genetic_algorithm::crossover::dtl
     {
         Candidate child = parent2;
 
-        size_t chrom_len = parent1.chromosome.size();
-        size_t range_len = rng::randomInt(1_sz, chrom_len - 1);
+        const size_t chrom_len = parent1.chromosome.size();
+        const size_t range_len = rng::randomInt(1_sz, chrom_len - 1);
 
-        size_t first = rng::randomInt(0_sz, chrom_len - range_len);
-        size_t last = first + range_len;
+        const size_t first = rng::randomInt(0_sz, chrom_len - range_len);
+        const size_t last = first + range_len;
 
         std::unordered_set<T> direct(last - first);
         for (size_t i = first; i < last; i++)
@@ -374,8 +374,7 @@ namespace genetic_algorithm::crossover::dtl
                 size_t pos = i;
                 while (first <= pos && pos < last)
                 {
-                    T gene = parent1.chromosome[pos];
-                    pos = *detail::index_of(parent2.chromosome, gene);
+                    pos = *detail::index_of(parent2.chromosome, parent1.chromosome[pos]);
                 }
                 child.chromosome[pos] = parent2.chromosome[i];
             }
