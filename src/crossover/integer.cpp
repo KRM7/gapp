@@ -18,17 +18,21 @@ namespace genetic_algorithm::crossover::integer
         return dtl::twoPointCrossoverImpl(parent1, parent2);
     }
 
-    NPoint::NPoint(size_t n)
+    NPoint::NPoint(size_t n) :
+        Crossover()
+    {
+        num_crossover_points(n);
+    }
+
+    NPoint::NPoint(Probability pc, size_t n) :
+        Crossover(pc)
     {
         num_crossover_points(n);
     }
 
     void NPoint::num_crossover_points(size_t n)
     {
-        if (n == 0)
-        {
-            throw std::invalid_argument("The number of crossover points must be at least 1 for the n-point crossover.");
-        }
+        if (n == 0) GA_THROW(std::invalid_argument, "The number of crossover points must be at least 1 for the n-point crossover.");
 
         n_ = n;
     }
@@ -43,39 +47,34 @@ namespace genetic_algorithm::crossover::integer
             return dtl::nPointCrossoverImpl(parent1, parent2, n_);
     }
 
-    Uniform::Uniform(double ps)
+    Uniform::Uniform(Probability pc, Probability swap_prob) noexcept :
+        Crossover(pc), ps_(swap_prob)
     {
-        swap_probability(ps);
     }
 
-    void Uniform::swap_probability(double ps)
+    void Uniform::swap_probability(Probability ps)
     {
-        if (!(0.0 <= ps && ps <= 1.0))
-        {
-            throw std::invalid_argument("The swap probability must be in the range [0.0, 1.0] for the uniform crossover.");
-        }
-
         ps_ = ps;
     }
 
     auto Uniform::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        size_t chrom_len = parent1.chromosome.size();
-
-        if (parent2.chromosome.size() != chrom_len)
+        if (parent1.chromosome.size() != parent2.chromosome.size())
         {
-            throw std::invalid_argument("The parent chromosomes must be the same length for the uniform crossover.");
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the uniform crossover.");
         }
         
-        size_t num_swapped = rng::randomBinomialApprox(chrom_len, ps_);
-        auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
+        const size_t chrom_len = parent1.chromosome.size();
+        const size_t num_swapped = rng::randomBinomialApprox(chrom_len, ps_);
+        const auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
 
         Candidate child1 = parent1;
         Candidate child2 = parent2;
 
         for (const auto& idx : swapped_indices)
         {
-            std::swap(child1.chromosome[idx], child2.chromosome[idx]);
+            using std::swap;
+            swap(child1.chromosome[idx], child2.chromosome[idx]);
         }
 
         return { std::move(child1), std::move(child2) };
