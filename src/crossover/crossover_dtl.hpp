@@ -78,21 +78,18 @@ namespace genetic_algorithm::crossover::dtl
         }
 
         const size_t chrom_len = parent1.chromosome.size();
-
-        if (chrom_len < 2) return { parent1, parent2 };
-
         const size_t num_crossover_points = std::min(n, chrom_len);
         const auto crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
 
         /* Create crossover mask */
-        std::vector<bool> crossover_mask(chrom_len, false);
+        std::vector<size_t> crossover_mask(chrom_len, 0);
         for (size_t i = 0, remaining = num_crossover_points; i < chrom_len; i++)
         {
             if (detail::contains(crossover_points.begin(), crossover_points.end(), i))
             {
                 if (--remaining == 0) break;
             }
-            crossover_mask[i] = remaining % 2;
+            crossover_mask[i] = remaining;
         }
 
         Candidate child1 = parent1;
@@ -100,7 +97,7 @@ namespace genetic_algorithm::crossover::dtl
 
         for (size_t i = 0; i < chrom_len; i++)
         {
-            if (crossover_mask[i])
+            if (crossover_mask[i] % 2)
             {
                 using std::swap;
                 swap(child1.chromosome[i], child2.chromosome[i]);
