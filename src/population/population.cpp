@@ -70,9 +70,7 @@ namespace genetic_algorithm::detail
 
         if (std::distance(first, last) == 1) return variance;
 
-        const double ninv = 1.0 / (last - first - 1);
-
-        std::for_each(first, last, [&](const FitnessVector& fvec) noexcept
+        std::for_each(first, last, [&, ninv = 1.0 / (last - first - 1)](const FitnessVector& fvec) noexcept
         {
             for (size_t dim = 0; dim < fvec.size(); dim++)
             {
@@ -94,16 +92,16 @@ namespace genetic_algorithm::detail::_
 {
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
     {
-        auto best = std::max_element(fmat.begin(), fmat.end(),
+        const auto best = std::max_element(fmat.begin(), fmat.end(),
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
             return lhs[0] < rhs[0];
         });
 
         return detail::find_indices(fmat, 
-        [best](const FitnessVector& fvec) noexcept
+        [fmax = (*best)[0]](const FitnessVector& fvec) noexcept
         {
-            return detail::floatIsEqual((*best)[0], fvec[0]);
+            return detail::floatIsEqual(fmax, fvec[0]);
         });
     }
 
@@ -197,7 +195,7 @@ namespace genetic_algorithm::detail::_
         return is_dominated || is_equal;
     }
 
-    std::vector<size_t> findParetoFrontKungImpl(const FitnessMatrix& fmat, std::vector<size_t>::iterator first, std::vector<size_t>::iterator last)
+    std::vector<size_t> findParetoFrontKungImpl(const FitnessMatrix& fmat, std::vector<size_t>::const_iterator first, std::vector<size_t>::const_iterator last)
     {
         if (std::distance(first, last) == 1) return { *first };
 
@@ -238,7 +236,7 @@ namespace genetic_algorithm::detail::_
             return false;
         });
 
-        return _::findParetoFrontKungImpl(fmat, indices.begin(), indices.end());
+        return _::findParetoFrontKungImpl(fmat, indices.cbegin(), indices.cend());
     }
 
 } // namespace genetic_algorithm::detail::_
