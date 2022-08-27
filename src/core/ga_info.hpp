@@ -272,6 +272,7 @@ namespace genetic_algorithm
 
 #include "../algorithm/single_objective.decl.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
+#include "../utility/utility.hpp"
 #include <type_traits>
 #include <utility>
 #include <stdexcept>
@@ -306,7 +307,7 @@ namespace genetic_algorithm
     template<algorithm::AlgorithmType F>
     void GaInfo::algorithm(std::unique_ptr<F>&& f)
     {
-        if (!f) throw std::invalid_argument("The algorithm can't be a nullptr.");
+        if (!f) GA_THROW(std::invalid_argument, "The algorithm can't be a nullptr.");
 
         algorithm_ = std::move(f);
         can_continue_ = false;
@@ -328,7 +329,7 @@ namespace genetic_algorithm
     template<stopping::StopConditionType F>
     void GaInfo::stop_condition(std::unique_ptr<F>&& f)
     {
-        if (!f) throw std::invalid_argument("The stop condition can't be a nullptr.");
+        if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
 
         stop_condition_ = std::move(f);
     }
