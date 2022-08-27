@@ -16,7 +16,7 @@ namespace genetic_algorithm::mutation
     void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
     {
         assert(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives());
-        assert(ga.variable_chromosome_length() || candidate.chromosome.size() == ga.chrom_len());
+        assert(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len());
 
         if (!candidate.is_evaluated)
         {
@@ -41,7 +41,7 @@ namespace genetic_algorithm::mutation
             }
         }
 
-        if (!ga.variable_chromosome_length() && candidate.chromosome.size() != ga.chrom_len())
+        if (!ga.variable_chrom_len() && candidate.chromosome.size() != ga.chrom_len())
         {
             GA_THROW(std::logic_error, "The mutation resulted in a candidate with incorrect chromosome length.");
         }

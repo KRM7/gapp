@@ -242,11 +242,11 @@ namespace genetic_algorithm
         *
         * @param enable Whether variable chromosome lengths should be allowed.
         */
-        void variable_chromosome_length(bool enable) noexcept { variable_chrom_len_ = enable; }
+        void variable_chrom_len(bool enable) noexcept { variable_chrom_len_ = enable; }
 
         /** @returns true if variable chromosome lengths are allowed. */
         [[nodiscard]]
-        bool variable_chromosome_length() const noexcept { return variable_chrom_len_; }
+        bool variable_chrom_len() const noexcept { return variable_chrom_len_; }
 
         /**
         * When set to true, all pareto optimal Candidates found by the algorithm during a run

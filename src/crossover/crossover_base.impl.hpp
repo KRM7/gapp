@@ -19,8 +19,8 @@ namespace genetic_algorithm::crossover
         assert(0.0 <= pc_ && pc_ <= 1.0);
         assert(parent1.is_evaluated && parent2.is_evaluated);
         assert(parent1.fitness.size() == ga.num_objectives() && parent2.fitness.size() == ga.num_objectives());
-        assert(ga.variable_chromosome_length() || (parent1.chromosome.size() == ga.chrom_len() &&
-                                                   parent2.chromosome.size() == ga.chrom_len()));
+        assert(ga.variable_chrom_len() || (parent1.chromosome.size() == ga.chrom_len() &&
+                                           parent2.chromosome.size() == ga.chrom_len()));
 
         /* Only need to perform the crossover with the set pc probability. Return early with (1 - pc) probability. */
         if (rng::randomReal() >= pc_)
@@ -42,7 +42,7 @@ namespace genetic_algorithm::crossover
         /* Perform the actual crossover. */
         auto [child1, child2] = crossover(ga, parent1, parent2);
 
-        if (!ga.variable_chromosome_length())
+        if (!ga.variable_chrom_len())
         {
             if (child1.chromosome.size() != ga.chrom_len() || child2.chromosome.size() != ga.chrom_len())
             {
