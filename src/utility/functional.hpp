@@ -205,6 +205,46 @@ namespace genetic_algorithm::detail
             return lhs != rhs;
         };
     }
+
+    template<typename T>
+    constexpr auto greater_than(const T& rhs)
+    noexcept(std::is_nothrow_copy_constructible_v<T>)
+    {
+        return [=](const T& lhs) noexcept(noexcept(lhs > lhs))
+        {
+            return lhs > rhs;
+        };
+    }
+
+    template<typename T>
+    constexpr auto greater_eq_than(const T& rhs)
+    noexcept(std::is_nothrow_copy_constructible_v<T>)
+    {
+        return [=](const T& lhs) noexcept(noexcept(lhs >= lhs))
+        {
+            return lhs >= rhs;
+        };
+    }
+
+    template<typename T>
+    constexpr auto less_than(const T& rhs)
+    noexcept(std::is_nothrow_copy_constructible_v<T>)
+    {
+        return [=](const T& lhs) noexcept(noexcept(lhs < lhs))
+        {
+            return lhs < rhs;
+        };
+    }
+
+    template<typename T>
+    constexpr auto less_eq_than(const T& rhs)
+    noexcept(std::is_nothrow_copy_constructible_v<T>)
+    {
+        return [=](const T& lhs) noexcept(noexcept(lhs <= lhs))
+        {
+            return lhs <= rhs;
+        };
+    }
     
 } // namespace genetic_algorithm::detail
 
