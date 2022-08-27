@@ -23,7 +23,7 @@ namespace genetic_algorithm::mutation::perm
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         * @param range_max The value of the range max parameter. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Inversion(double pm, double range_max = 0.75);
+        explicit Inversion(Probability pm, double range_max = 0.75);
 
         /**
         * Set the value of the maximum range length parameter for the operator. \n
@@ -85,7 +85,7 @@ namespace genetic_algorithm::mutation::perm
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         * @param range_max The value of the range_max parameter. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Shuffle(double pm, double range_max = 0.5);
+        explicit Shuffle(Probability pm, double range_max = 0.5);
 
         /**
         * Set the value of the maximum range length parameter for the operator. \n
@@ -122,7 +122,7 @@ namespace genetic_algorithm::mutation::perm
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         * @param range_max The value of the range_max parameter. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Shift(double pm, double range_max = 0.75);
+        explicit Shift(Probability pm, double range_max = 0.75);
 
         /**
         * Set the value of the maximum range length parameter for the operator. \n
