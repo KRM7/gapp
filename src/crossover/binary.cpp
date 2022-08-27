@@ -75,7 +75,8 @@ namespace genetic_algorithm::crossover::binary
 
         for (const auto& idx : swapped_indices)
         {
-            std::swap(child1.chromosome[idx], child2.chromosome[idx]);
+            using std::swap;
+            swap(child1.chromosome[idx], child2.chromosome[idx]);
         }
 
         return { std::move(child1), std::move(child2) };
