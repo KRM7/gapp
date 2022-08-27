@@ -14,7 +14,7 @@
 namespace genetic_algorithm::crossover
 {
     template<Gene T>
-    Crossover<T>::Crossover(Probability pc) :
+    Crossover<T>::Crossover(Probability pc) noexcept :
         pc_(pc)
     {
     }

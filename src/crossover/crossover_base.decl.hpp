@@ -34,7 +34,7 @@ namespace genetic_algorithm::crossover
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Crossover(Probability pc = 0.8);
+        explicit Crossover(Probability pc = 0.8) noexcept;
 
         Crossover(const Crossover&)             = default;
         Crossover(Crossover&&)                  = default;
@@ -69,7 +69,6 @@ namespace genetic_algorithm::crossover
         virtual CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
 
     private:
-
         Probability pc_;   /* The probability of performing the crossover operation on the parents. */
     };
 
