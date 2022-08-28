@@ -148,11 +148,11 @@ namespace genetic_algorithm
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        void crossover_rate(double pc) final;
+        void crossover_rate(Probability pc) final;
 
         /** @returns The crossover rate set for the crossover operator. */
         [[nodiscard]]
-        double crossover_rate() const noexcept final;
+        Probability crossover_rate() const noexcept final;
 
         /**
         * Set the mutation method the algorithm will use. \n
@@ -196,11 +196,11 @@ namespace genetic_algorithm
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        void mutation_rate(double pm) final;
+        void mutation_rate(Probability pm) final;
 
         /** @returns The mutation rate of the mutation operator. */
         [[nodiscard]]
-        double mutation_rate() const noexcept final;
+        Probability mutation_rate() const noexcept final;
 
         /**
         * Set a repair function for the algorithm. \n

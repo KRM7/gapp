@@ -114,22 +114,22 @@ namespace genetic_algorithm
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        virtual void crossover_rate(double pc) = 0;
+        virtual void crossover_rate(Probability pc) = 0;
 
         /** @returns The crossover rate set for the crossover operator. */
         [[nodiscard]]
-        virtual double crossover_rate() const noexcept = 0;
+        virtual Probability crossover_rate() const noexcept = 0;
 
         /**
         * Set the mutation rate of the mutation operator used by the algorithm.
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        virtual void mutation_rate(double pm) = 0;
+        virtual void mutation_rate(Probability pm) = 0;
 
         /** @returns The mutation rate set for the mutation operator. */
         [[nodiscard]]
-        virtual double mutation_rate() const noexcept = 0;
+        virtual Probability mutation_rate() const noexcept = 0;
 
         /**
         * Set the algorithm used by the GA. \n

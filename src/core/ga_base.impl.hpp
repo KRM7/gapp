@@ -112,13 +112,13 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::crossover_rate(double pc)
+    void GA<T, D>::crossover_rate(Probability pc)
     {
         crossover_->crossover_rate(pc);
     }
 
     template<Gene T, typename D>
-    double GA<T, D>::crossover_rate() const noexcept
+    Probability GA<T, D>::crossover_rate() const noexcept
     {
         return crossover_->crossover_rate();
     }
@@ -156,13 +156,13 @@ namespace genetic_algorithm
     }
 
     template<Gene T, typename D>
-    void GA<T, D>::mutation_rate(double pm)
+    void GA<T, D>::mutation_rate(Probability pm)
     {
         mutation_->mutation_rate(pm);
     }
 
     template<Gene T, typename D>
-    double GA<T, D>::mutation_rate() const noexcept
+    Probability GA<T, D>::mutation_rate() const noexcept
     {
         return mutation_->mutation_rate();
     }
