@@ -7,49 +7,9 @@
 
 namespace genetic_algorithm
 {
-    GaInfo::GaInfo(GaInfo&& other) noexcept :
-        fitness_matrix_(std::move(other.fitness_matrix_)),
-        algorithm_(std::move(other.algorithm_)),
-        stop_condition_(std::move(other.stop_condition_)),
-        num_fitness_evals_(other.num_fitness_evals_.load()),
-        generation_cntr_(other.generation_cntr_),
-        num_objectives_(other.num_objectives_),
-        chrom_len_(other.chrom_len_),
-        population_size_(other.population_size_),
-        max_gen_(other.max_gen_),
-        dynamic_fitness_(other.dynamic_fitness_),
-        variable_chrom_len_(other.variable_chrom_len_),
-        keep_all_optimal_sols_(other.keep_all_optimal_sols_),
-        can_continue_(other.can_continue_)
-    {}
-
-    GaInfo& GaInfo::operator=(GaInfo&& other) noexcept
-    {
-        if (&other != this)
-        {
-            fitness_matrix_ = std::move(other.fitness_matrix_);
-
-            algorithm_ = std::move(other.algorithm_);
-            stop_condition_ = std::move(other.stop_condition_);
-
-            num_fitness_evals_ = other.num_fitness_evals_.load();
-            generation_cntr_ = other.generation_cntr_;
-            num_objectives_ = other.num_objectives_;
-
-            chrom_len_ = other.chrom_len_;
-            population_size_ = other.population_size_;
-            max_gen_ = other.max_gen_;
-
-            dynamic_fitness_ = other.dynamic_fitness_;
-            variable_chrom_len_ = other.variable_chrom_len_;
-            keep_all_optimal_sols_ = other.keep_all_optimal_sols_;
-            can_continue_ = other.can_continue_;
-        }
-
-        return *this;
-    }
-
-    GaInfo::~GaInfo() = default;
+    GaInfo::GaInfo(GaInfo&&)            = default;
+    GaInfo& GaInfo::operator=(GaInfo&&) = default;
+    GaInfo::~GaInfo()                   = default;
 
     GaInfo::GaInfo(size_t chrom_len)
         : GaInfo(DEFAULT_POPSIZE, chrom_len)

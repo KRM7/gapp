@@ -14,7 +14,6 @@
 #include <type_traits>
 #include <concepts>
 #include <memory>
-#include <atomic>
 #include <cstddef>
 
 namespace genetic_algorithm

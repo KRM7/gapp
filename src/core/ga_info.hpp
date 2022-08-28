@@ -10,7 +10,6 @@
 #include "../utility/probability.hpp"
 #include <vector>
 #include <type_traits>
-#include <atomic>
 #include <memory>
 #include <cstddef>
 
@@ -103,7 +102,7 @@ namespace genetic_algorithm
 
         /** @returns The number of fitness evaluations performed by the algorithm. This value is updated after every objective function evaluation. */
         [[nodiscard]]
-        size_t num_fitness_evals() const noexcept { return num_fitness_evals_.load(); }
+        size_t num_fitness_evals() const noexcept { return num_fitness_evals_; }
 
         /** @returns The current generation's number. */
         [[nodiscard]]
@@ -267,12 +266,8 @@ namespace genetic_algorithm
 
 
         /* Move-only. */
-        GaInfo(const GaInfo&)            = delete;
-        GaInfo& operator=(const GaInfo&) = delete;
-
-        GaInfo(GaInfo&&) noexcept;
-        GaInfo& operator=(GaInfo&&) noexcept;
-
+        GaInfo(GaInfo&&);
+        GaInfo& operator=(GaInfo&&);
         virtual ~GaInfo();
 
     protected:
@@ -282,7 +277,7 @@ namespace genetic_algorithm
         std::unique_ptr<algorithm::Algorithm> algorithm_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
 
-        std::atomic<size_t> num_fitness_evals_ = 0;
+        size_t num_fitness_evals_ = 0;
         size_t generation_cntr_ = 0;
         size_t num_objectives_ = 0;
 

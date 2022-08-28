@@ -18,6 +18,7 @@
 #include "../utility/algorithm.hpp"
 #include <type_traits>
 #include <execution>
+#include <atomic>
 #include <algorithm>
 #include <functional>
 #include <utility>
@@ -218,7 +219,7 @@ namespace genetic_algorithm
         /* Reset state variables just in case run() has already been called before. */
         can_continue_ = false;
         generation_cntr_ = 0;
-        num_fitness_evals_.store(0, std::memory_order::relaxed);
+        num_fitness_evals_ = 0;
         solutions_.clear();
         population_.clear();
 
@@ -336,10 +337,8 @@ namespace genetic_algorithm
             sol.fitness = fitness_function_(sol.chromosome);
             sol.is_evaluated = true;
 
-            num_fitness_evals_.fetch_add(1, std::memory_order::relaxed);
-
-            assert(sol.fitness.size() == num_objectives_);
-            assert(std::all_of(sol.fitness.begin(), sol.fitness.end(), std::isfinite<double>));
+            std::atomic_ref fitness_evals{ num_fitness_evals_ };
+            fitness_evals.fetch_add(1, std::memory_order::relaxed);
         }
     }
 
