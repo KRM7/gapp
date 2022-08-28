@@ -23,8 +23,8 @@ namespace genetic_algorithm::algorithm::dtl
         Point point(dim);
         std::generate(point.begin(), point.end(), []{ return -std::log(rng::randomReal()); });
 
-        double isum = 1.0 / std::reduce(point.begin(), point.end(), 0.0);
-        std::transform(point.begin(), point.end(), point.begin(), [&](double coord) { return isum * coord; });
+        const double sum = std::reduce(point.begin(), point.end(), 0.0);
+        std::transform(point.begin(), point.end(), point.begin(), detail::divide_by(sum));
 
         return point;
     }
@@ -73,7 +73,7 @@ namespace genetic_algorithm::algorithm::dtl
             std::transform(GA_EXECUTION_UNSEQ, candidate_points.begin(), candidate_points.end(), min_distances.begin(), min_distances.begin(),
             [&last_point = points.back()](const Point& candidate, double current_min) noexcept
             {
-                double dist = detail::euclideanDistanceSq(candidate, last_point);
+                const double dist = detail::euclideanDistanceSq(candidate, last_point);
                 return std::min(current_min, dist);
             });
         }
