@@ -4,7 +4,6 @@
 #include "integer_soga.hpp"
 #include "nsga2.hpp"
 #include "nsga3.hpp"
-#include <tuple>
 
 int main()
 {
@@ -47,5 +46,5 @@ int main()
     nsga3_dtlz1();
     nsga3_dtlz2();
 
-    std::cin.ignore();
+    //std::cin.ignore();
 }
