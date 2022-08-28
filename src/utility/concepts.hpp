@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CONCEPTS_HPP
-#define GA_CONCEPTS_HPP
+#ifndef GA_UTILITY_CONCEPTS_HPP
+#define GA_UTILITY_CONCEPTS_HPP
 
 #include <concepts>
 #include <functional>
@@ -86,4 +86,4 @@ namespace genetic_algorithm::detail
 
 } // namespace genetic_algorithm::detail
 
-#endif // !GA_CONCEPTS_HPP
+#endif // !GA_UTILITY_CONCEPTS_HPP

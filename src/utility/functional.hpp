@@ -1,5 +1,5 @@
-#ifndef GA_FUNCTIONAL_HPP
-#define GA_FUNCTIONAL_HPP
+#ifndef GA_UTILITY_FUNCTIONAL_HPP
+#define GA_UTILITY_FUNCTIONAL_HPP
 
 #include <array>
 #include <vector>
@@ -248,4 +248,4 @@ namespace genetic_algorithm::detail
     
 } // namespace genetic_algorithm::detail
 
-#endif // !GA_FUNCTIONAL_HPP
+#endif // !GA_UTILITY_FUNCTIONAL_HPP

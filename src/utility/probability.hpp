@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_PROBABILITY
-#define GA_UTILITY_PROBABILITY
+#ifndef GA_UTILITY_PROBABILITY_HPP
+#define GA_UTILITY_PROBABILITY_HPP
 
 #include "utility.hpp"
 #include <stdexcept>
@@ -35,4 +35,4 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-#endif // !GA_UTILITY_PROBABILITY
+#endif // !GA_UTILITY_PROBABILITY_HPP

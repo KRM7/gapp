@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_RANDOM_HPP
-#define GA_RANDOM_HPP
+#ifndef GA_UTILITY_RNG_HPP
+#define GA_UTILITY_RNG_HPP
 
 #include "utility.hpp"
 #include "concepts.hpp"
@@ -266,4 +266,4 @@ namespace genetic_algorithm::rng
 
 }
 
-#endif // !GA_RANDOM_HPP
+#endif // !GA_UTILITY_RNG_HPP

@@ -1,5 +1,5 @@
-#ifndef GA_TYPE_TRAITS_HPP
-#define GA_TYPE_TRAITS_HPP
+#ifndef GA_UTILITY_TYPE_TRAITS_HPP
+#define GA_UTILITY_TYPE_TRAITS_HPP
 
 #include <type_traits>
 #include <iterator>
@@ -120,4 +120,4 @@ namespace genetic_algorithm::detail
 
 } // namespace genetic_algorithm::detail
 
-#endif // !GA_TYPE_TRAITS_HPP
+#endif // !GA_UTILITY_TYPE_TRAITS_HPP
