@@ -149,7 +149,7 @@ namespace genetic_algorithm::selection
     {
         assert(scale_ > 1.0);
 
-        const auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
+        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const double fmean = detail::mean(fvec);
         const double fdev = std::max(detail::stdDev(fvec, fmean), 1E-6);
 
@@ -182,7 +182,7 @@ namespace genetic_algorithm::selection
 
     void Boltzmann::prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat)
     {
-        const auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
+        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
         const double df = std::max(*fmax - *fmin, 1E-6);
 
@@ -192,7 +192,7 @@ namespace genetic_algorithm::selection
         // dont try to capture the iterators by ref or value here
         [fmin = *fmin, df, temperature](double f) noexcept
         {
-            double fnorm = (f - fmin) / df;
+            const double fnorm = (f - fmin) / df;
 
             return std::exp(fnorm / temperature);
         });
