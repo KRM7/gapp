@@ -16,9 +16,9 @@ namespace genetic_algorithm::update
                                                  FitnessMatrix::const_iterator children_first,
                                                  FitnessMatrix::const_iterator last)
     {
-        assert(children_first - first > 0);
+        assert((children_first - first) > 0);
         assert(size_t(children_first - first) == ga.population_size());
-        assert(children_first - first <= last - children_first);
+        assert((children_first - first) <= (last - children_first));
 
         GA_UNUSED(first, children_first, last);
 
@@ -73,15 +73,15 @@ namespace genetic_algorithm::update
 
         GA_UNUSED(children_first);
 
-        auto indices =
+        auto sorted_indices =
         detail::partial_argsort(first, first + ga.population_size(), last,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
             return detail::paretoCompareLess(rhs, lhs); // descending
         });
-        indices.resize(ga.population_size());
+        sorted_indices.resize(ga.population_size());
 
-        return indices;
+        return sorted_indices;
     }
 
 } // namespace genetic_algorithm::update
