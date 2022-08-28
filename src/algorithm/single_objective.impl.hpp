@@ -5,9 +5,10 @@
 
 #include "single_objective.decl.hpp"
 #include "../core/ga_info.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <utility>
-#include <cassert>
+#include <stdexcept>
 
 namespace genetic_algorithm::algorithm
 {
@@ -21,7 +22,10 @@ namespace genetic_algorithm::algorithm
     template<selection::SelectionType S, update::UpdaterType U>
     void SingleObjective<S, U>::initialize(const GaInfo& ga)
     {
-        assert(ga.num_objectives() == 1);
+        if (ga.num_objectives() != 1)
+        {
+            GA_THROW(std::logic_error, "The number of objectives must be 1 for the single-objective algorithms.");
+        }
 
         selection_.initialize(ga);
     }
@@ -44,8 +48,10 @@ namespace genetic_algorithm::algorithm
                                                               FitnessMatrix::const_iterator children_first,
                                                               FitnessMatrix::const_iterator last)
     {
-        assert(ga.num_objectives() == 1);
-        assert(std::all_of(first, last, [](const FitnessVector& f) { return f.size() == 1; }));
+        if (ga.num_objectives() != 1)
+        {
+            GA_THROW(std::logic_error, "The number of objectives must be 1 for the single-objective algorithms.");
+        }
 
         return updater_(ga, first, children_first, last);
     }
