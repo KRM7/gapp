@@ -22,8 +22,8 @@ namespace genetic_algorithm::rng
     class AtomicSplitmix64
     {
     public:
-        using result_type = uint64_t;
-        using state_type = uint64_t;
+        using result_type = std::uint64_t;
+        using state_type  = std::uint64_t;
 
         explicit constexpr AtomicSplitmix64(state_type seed) noexcept;
 
@@ -91,7 +91,8 @@ namespace genetic_algorithm::rng
     std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t k);
 
     /** Select an index based on a discrete CDF. */
-    inline size_t sampleCdf(const std::vector<double>& cdf);
+    template<std::floating_point T>
+    size_t sampleCdf(const std::vector<T>& cdf);
 
 } // namespace genetic_algorithm::rng
 
@@ -112,7 +113,7 @@ namespace genetic_algorithm::rng
 
     inline AtomicSplitmix64::result_type AtomicSplitmix64::operator()() noexcept
     {
-        result_type z = state_.fetch_add(0x9e3779b97f4a7c15, std::memory_order::acquire) + 0x9e3779b97f4a7c15;
+        result_type z = state_.fetch_add(0x9e3779b97f4a7c15, std::memory_order_relaxed) + 0x9e3779b97f4a7c15;
         z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
         z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
 
@@ -132,7 +133,7 @@ namespace genetic_algorithm::rng
     template<std::floating_point RealType>
     RealType randomReal()
     {
-        return std::uniform_real_distribution<RealType>{ 0.0, 1.0 }(prng);
+        return std::uniform_real_distribution<RealType>{ 0.0, 1.0 }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -140,13 +141,13 @@ namespace genetic_algorithm::rng
     {
         assert(l_bound <= u_bound);
 
-        return std::uniform_real_distribution{ l_bound, u_bound }(prng);
+        return std::uniform_real_distribution{ l_bound, u_bound }(rng::prng);
     }
 
     template<std::floating_point RealType>
     RealType randomNormal()
     {
-        return std::normal_distribution<RealType>{ 0.0, 1.0 }(prng);
+        return std::normal_distribution<RealType>{ 0.0, 1.0 }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -154,7 +155,7 @@ namespace genetic_algorithm::rng
     {
         assert(SD > 0.0);
 
-        return std::normal_distribution{ mean, SD }(prng);
+        return std::normal_distribution{ mean, SD }(rng::prng);
     }
 
     template<std::integral IntType>
@@ -162,7 +163,7 @@ namespace genetic_algorithm::rng
     {
         assert(0.0 <= p && p <= 1.0);
 
-        return std::binomial_distribution{ n, p }(prng);
+        return std::binomial_distribution{ n, p }(rng::prng);
     }
 
     template<std::integral IntType>
@@ -173,17 +174,18 @@ namespace genetic_algorithm::rng
         double mean = n * p;
         if (mean >= 2.0)
         {
-            double SD = std::sqrt(mean * (1.0 - p));
+            const double SD = std::sqrt(mean * (1.0 - p));
 
-            double r = randomNormal(mean, SD);
-            while (r <= -0.5) { r = randomNormal(mean, SD); }
+            double rand = rng::randomNormal(mean, SD);
+            while (rand <= -0.5) { rand = rng::randomNormal(mean, SD); }
 
-            IntType result = IntType(std::round(r));
-            return std::min(result, n);
+            const IntType rounded = IntType(std::round(rand));
+
+            return std::min(rounded, n);
         }
         else
         {
-            return randomBinomial(n, p);
+            return rng::randomBinomial(n, p);
         }
     }
 
@@ -192,7 +194,7 @@ namespace genetic_algorithm::rng
     {
         assert(l_bound <= u_bound);
 
-        return std::uniform_int_distribution{ l_bound, u_bound }(prng);
+        return std::uniform_int_distribution{ l_bound, u_bound }(rng::prng);
     }
 
     template<detail::IndexableContainer T>
@@ -200,7 +202,7 @@ namespace genetic_algorithm::rng
     {
         assert(!container.empty());
 
-        return std::uniform_int_distribution{ 0_sz, container.size() - 1 }(prng);
+        return std::uniform_int_distribution{ 0_sz, container.size() - 1 }(rng::prng);
     }
 
     template<detail::Container T>
@@ -208,7 +210,7 @@ namespace genetic_algorithm::rng
     {
         assert(!cont.empty());
 
-        size_t n = rng::randomInt(0_sz, cont.size() - 1);
+        const size_t n = rng::randomInt(0_sz, cont.size() - 1);
 
         return *std::next(cont.begin(), n);
     }
@@ -218,7 +220,7 @@ namespace genetic_algorithm::rng
     {
         assert(std::distance(first, last) > 0);
 
-        auto n = rng::randomInt<ptrdiff_t>(0, std::distance(first, last) - 1);
+        const auto n = rng::randomInt<ptrdiff_t>(0, std::distance(first, last) - 1);
 
         return *std::next(first, n);
     }
@@ -228,7 +230,7 @@ namespace genetic_algorithm::rng
         constexpr size_t nbits = CHAR_BIT * sizeof(PRNG::result_type);
         constexpr PRNG::result_type mask = PRNG::result_type{ 1 } << (nbits - 1);
 
-        return prng() & mask;
+        return rng::prng() & mask;
     }
 
     template<std::integral IntType>
@@ -238,16 +240,16 @@ namespace genetic_algorithm::rng
         assert((l_bound < 0) ? (u_bound < std::numeric_limits<IntType>::max() + l_bound) : true);
 
         if (k == 0) return {};
-        if (k == 1) return { randomInt(l_bound, u_bound - 1) };
+        if (k == 1) return { rng::randomInt(l_bound, u_bound - 1) };
 
-        auto n = size_t(u_bound - l_bound);
+        const auto n = size_t(u_bound - l_bound);
 
         std::vector<IntType> nums(n);
         std::iota(nums.begin(), nums.end(), l_bound);  // [l_bound, u_bound)
 
         for (size_t i = 0; i < k; i++)
         {
-            size_t j = randomInt(i, nums.size() - 1);
+            size_t j = rng::randomInt(i, nums.size() - 1);
             std::swap(nums[j], nums[i]);
         }
         nums.resize(k);
@@ -255,11 +257,13 @@ namespace genetic_algorithm::rng
         return nums;
     }
 
-    size_t sampleCdf(const std::vector<double>& cdf)
+    template<std::floating_point T>
+    size_t sampleCdf(const std::vector<T>& cdf)
     {
         assert(!cdf.empty());
 
-        auto selected = std::lower_bound(cdf.begin(), cdf.end(), randomReal(0.0, cdf.back())); // cdf.back() in case it's not exactly 1.0
+        const auto selected = std::lower_bound(cdf.begin(), cdf.end(),
+                                               rng::randomReal<T>(0.0, cdf.back())); // use cdf.back() in case it's not exactly 1.0
 
         return size_t(selected - cdf.begin());
     }
