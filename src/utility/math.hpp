@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_MATH_HPP
-#define GA_MATH_HPP
+#ifndef GA_UTILITY_MATH_HPP
+#define GA_UTILITY_MATH_HPP
 
 #include "utility.hpp"
 #include <vector>
@@ -83,57 +83,56 @@ namespace genetic_algorithm::detail
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
     {
-        const T tol = std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
+        const T tol = std::max(std::abs(lhs), std::abs(rhs)) * detail::epsilon<T>;
         const T dif = lhs - rhs;
 
-        if      (dif > tol)  return  1;     // lhs < rhs
-        else if (dif < -tol) return -1;     // lhs > rhs
-        else                 return  0;     // lhs == rhs
+        if (dif > tol)  return  1;  // lhs < rhs
+        if (dif < -tol) return -1;  // lhs > rhs
+        return 0;                   // lhs == rhs
     }
 
     template<std::floating_point T>
     constexpr bool floatIsEqual(T lhs, T rhs) noexcept
     {
-        return std::abs(lhs - rhs) <= std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
+        return std::abs(lhs - rhs) <= std::max(std::abs(lhs), std::abs(rhs)) * detail::epsilon<T>;
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLess(T lhs, T rhs) noexcept
     {
-        return (rhs - lhs) > std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
+        return (rhs - lhs) > std::max(std::abs(lhs), std::abs(rhs)) * detail::epsilon<T>;
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
     {
-        return (rhs - lhs) > std::abs(rhs) * GA_EPSILON;
+        return (rhs - lhs) > std::abs(rhs) * detail::epsilon<T>;
     }
 
     template<std::floating_point T>
     constexpr bool floatIsGreater(T lhs, T rhs) noexcept
     {
-        return (lhs - rhs) > std::max(std::abs(lhs), std::abs(rhs)) * GA_EPSILON;
+        return (lhs - rhs) > std::max(std::abs(lhs), std::abs(rhs)) * detail::epsilon<T>;
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLessEq(T lhs, T rhs) noexcept
     {
-        return !floatIsGreater(lhs, rhs);
+        return !detail::floatIsGreater(lhs, rhs);
     }
 
     template<std::floating_point T>
     constexpr bool floatIsGreaterEq(T lhs, T rhs) noexcept
     {
-        return !floatIsLess(lhs, rhs);
+        return !detail::floatIsLess(lhs, rhs);
     }
 
     template<std::floating_point T>
     bool floatVecIsEqual(const std::vector<T>& lhs, const std::vector<T>& rhs) noexcept
     {
-        return (lhs.size() == rhs.size()) &&
-               std::equal(lhs.begin(), lhs.end(), rhs.begin(), floatIsEqual<T>);
+        return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), detail::floatIsEqual<T>);
     }
 
 } // namespace genetic_algorithm::detail
 
-#endif // !GA_MATH_HPP
+#endif // !GA_UTILITY_MATH_HPP
