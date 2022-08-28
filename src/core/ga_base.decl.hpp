@@ -292,7 +292,11 @@ namespace genetic_algorithm
         Derived& derived() noexcept;
         const Derived& derived() const noexcept;
 
-        bool fitnessMatrixIsValid() const noexcept;
+        bool hasValidFitness(const Candidate& sol) const;
+        bool hasValidChromosome(const Candidate& sol) const;
+        bool fitnessMatrixIsSynced() const;
+        bool populationIsValid(const Population& pop) const;
+
 
         /* Make the protected fields of GaInfo private. */
         using GaInfo::fitness_matrix_;
