@@ -5,6 +5,7 @@
 
 #include "concepts.hpp"
 #include "type_traits.hpp"
+#include "utility.hpp"
 #include <vector>
 #include <tuple>
 #include <optional>
@@ -12,6 +13,7 @@
 #include <numeric>
 #include <functional>
 #include <iterator>
+#include <random>
 #include <type_traits>
 #include <concepts>
 #include <utility>
@@ -128,6 +130,20 @@ namespace genetic_algorithm::detail
         else
         {
             return idx;
+        }
+    }
+
+    template<std::random_access_iterator Iter, typename URBG>
+    void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)
+    {
+        for (; first != middle; ++first)
+        {
+            const auto max_offset = std::distance(first, last) - 1;
+            const auto distribution = std::uniform_int_distribution{ 0_pd, max_offset };
+            const auto offset = distribution(gen);
+            const auto new_pos = std::next(first, offset);
+
+            std::iter_swap(first, new_pos);
         }
     }
 
