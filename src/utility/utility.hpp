@@ -41,9 +41,14 @@ namespace genetic_algorithm::detail
 
 namespace genetic_algorithm
 {
-    constexpr std::size_t operator ""_sz(unsigned long long n)
+    constexpr std::size_t operator ""_sz(unsigned long long arg)
     {
-        return size_t{ n };
+        return static_cast<std::size_t>(arg);
+    }
+
+    constexpr std::ptrdiff_t operator ""_pd(unsigned long long arg)
+    {
+        return static_cast<std::ptrdiff_t>(arg);
     }
 
 } // namespace genetic_algorithm
