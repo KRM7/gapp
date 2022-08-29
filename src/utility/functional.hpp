@@ -1,6 +1,7 @@
 #ifndef GA_UTILITY_FUNCTIONAL_HPP
 #define GA_UTILITY_FUNCTIONAL_HPP
 
+#include <functional>
 #include <array>
 #include <vector>
 #include <cmath>
