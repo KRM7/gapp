@@ -220,9 +220,9 @@ namespace genetic_algorithm::rng
     {
         assert(std::distance(first, last) > 0);
 
-        const auto n = rng::randomInt<ptrdiff_t>(0, std::distance(first, last) - 1);
+        const auto steps = rng::randomInt(0_pd, std::distance(first, last) - 1);
 
-        return *std::next(first, n);
+        return *std::next(first, steps);
     }
 
     bool randomBool() noexcept
