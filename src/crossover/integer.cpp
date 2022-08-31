@@ -65,7 +65,7 @@ namespace genetic_algorithm::crossover::integer
         }
         
         const size_t chrom_len = parent1.chromosome.size();
-        const size_t num_swapped = rng::randomBinomialApprox(chrom_len, ps_);
+        const size_t num_swapped = rng::randomBinomial(chrom_len, ps_);
         const auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
 
         Candidate child1 = parent1;

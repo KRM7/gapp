@@ -14,7 +14,7 @@ namespace genetic_algorithm::mutation::integer
         const size_t base = dynamic_cast<const IntegerGA&>(ga).base();
         const size_t chrom_len = candidate.chromosome.size();
 
-        const size_t mutate_count = rng::randomBinomialApprox(chrom_len, mutation_rate());
+        const size_t mutate_count = rng::randomBinomial(chrom_len, mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chrom_len, mutate_count);
 
         if (base < 16) /* Make sure the new value for the changed genes can't be the old ones. */

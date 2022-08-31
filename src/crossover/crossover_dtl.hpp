@@ -293,8 +293,8 @@ namespace genetic_algorithm::crossover::dtl
             });
 
             gene = candidate_genes.empty() ?
-                rng::randomElement(remaining_genes) :
-                rng::randomElement(candidate_genes);
+                rng::randomElement(remaining_genes.begin(), remaining_genes.end()) :
+                rng::randomElement(candidate_genes.begin(), candidate_genes.end());
         }
 
         return child;
