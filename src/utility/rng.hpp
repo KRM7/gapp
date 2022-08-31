@@ -234,7 +234,7 @@ namespace genetic_algorithm::rng
 
         for (IntType i = ubound - IntType(n); i < ubound; i++)
         {
-            const IntType num = rng::randomInt(lbound, i - 1);
+            const IntType num = rng::randomInt(lbound, i);
             const size_t ppos = size_t(num - lbound);
             const size_t npos = size_t(i + IntType(n) - ubound);
 
