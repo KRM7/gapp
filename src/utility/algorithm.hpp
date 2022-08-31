@@ -139,7 +139,7 @@ namespace genetic_algorithm::detail
         for (; first != middle; ++first)
         {
             const auto max_offset = std::distance(first, last) - 1;
-            const auto distribution = std::uniform_int_distribution{ 0_pd, max_offset };
+            const auto distribution = std::uniform_int_distribution(0_pd, max_offset);
             const auto offset = distribution(gen);
             const auto new_pos = std::next(first, offset);
 
