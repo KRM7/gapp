@@ -62,13 +62,12 @@ namespace genetic_algorithm::mutation
         */
         void operator()(const GaInfo& ga, Candidate<T>& candidate) const;
 
-    protected:
+    private:
 
         /* The actual implementation of the mutation function. Performs the mutation using the set probability.
            This function should only change the chromosome of the candidate. */
         virtual void mutate(const GaInfo& ga, Candidate<T>& candidate) const = 0;
 
-    private:
         Probability pm_;
     };
 

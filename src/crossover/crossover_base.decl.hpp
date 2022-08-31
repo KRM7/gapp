@@ -64,12 +64,11 @@ namespace genetic_algorithm::crossover
         */
         CandidatePair<T> operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
 
-    protected:
+    private:
 
         /* The actual crossover function. Generates 2 new Candidates from the parents (not with some probability). */
         virtual CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
 
-    private:
         Probability pc_;   /* The probability of performing the crossover operation on the parents. */
     };
 
