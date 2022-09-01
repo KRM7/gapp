@@ -19,6 +19,8 @@ namespace genetic_algorithm::algorithm::dtl
         ReferencePoint(Point p) :
             point(std::move(p)),
             niche_count(0) {}
+
+        friend bool operator==(const ReferencePoint& lhs, const ReferencePoint& rhs) = default;
     };
 
     using ReferencePoints = std::vector<ReferencePoint>;
