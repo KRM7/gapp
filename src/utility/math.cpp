@@ -66,6 +66,27 @@ namespace genetic_algorithm::detail
         return rhs_has_lower - lhs_has_lower;
     }
 
+    double euclideanNorm(const std::vector<double>& vec) noexcept
+    {
+        return std::sqrt(std::inner_product(vec.begin(), vec.end(), vec.begin(), 0.0));
+    }
+
+    std::vector<double> normalizeVector(const std::vector<double>& vec) noexcept
+    {
+        const double mag = euclideanNorm(vec);
+
+        return detail::map(vec, detail::divide_by(mag));
+    }
+
+    std::vector<double> normalizeVector(std::vector<double>&& vec) noexcept
+    {
+        const double mag = euclideanNorm(vec);
+
+        std::transform(vec.begin(), vec.end(), vec.begin(), detail::divide_by(mag));
+
+        return std::move(vec);
+    }
+
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept
     {
         assert(v1.size() == v2.size());

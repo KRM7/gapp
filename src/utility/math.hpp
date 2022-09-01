@@ -54,6 +54,15 @@ namespace genetic_algorithm::detail
     /* Pareto comparison starting at idx = first. Returns -1 if (lhs < rhs), 1 if (lhs > rhs), and 0 if (lhs == rhs). */
     std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept;
 
+    /* Calculate the length of a vector. */
+    double euclideanNorm(const std::vector<double>& vec) noexcept;
+
+    /* Normalize the vector vec (divide by magnitude). */
+    std::vector<double> normalizeVector(const std::vector<double>& vec) noexcept;
+
+    /* Normalize the vector vec (divide by magnitude). */
+    std::vector<double> normalizeVector(std::vector<double>&& vec) noexcept;
+
     /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept;
 
