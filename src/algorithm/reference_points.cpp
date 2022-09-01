@@ -93,15 +93,25 @@ namespace genetic_algorithm::algorithm::dtl
         return refs;
     }
 
+    double inverseCosineSimilarity(const Point& p, const ReferencePoint& ref)
+    {
+        const auto refnorm = detail::normalizeVector(ref.point);
+
+        return std::inner_product(p.begin(), p.end(), refnorm.begin(), 0.0);
+    }
+
     std::pair<size_t, double> findClosestRef(const std::vector<ReferencePoint>& refs, const Point& p)
     {
         assert(!refs.empty());
         assert(std::all_of(refs.begin(), refs.end(), [&](const ReferencePoint& ref) { return ref.point.size() == p.size(); }));
 
-        auto distances = detail::map(refs, [&](const ReferencePoint& ref) { return detail::perpendicularDistanceSq(p, ref.point); });
-        auto closest_idx = detail::argmin(distances.begin(), distances.begin(), distances.end());
+        auto inverseAngle = std::bind_front(dtl::inverseCosineSimilarity, std::ref(p));
+        auto iangles = detail::map(refs, inverseAngle);
 
-        return { closest_idx, distances[closest_idx] };
+        size_t closest_idx = detail::argmax(iangles.begin(), iangles.begin(), iangles.end());
+        double distance = detail::perpendicularDistanceSq(refs[closest_idx].point, p);
+
+        return { closest_idx, distance };
     }
 
 } // namespace genetic_algorithm::algorithm::dtl
