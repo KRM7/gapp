@@ -30,13 +30,16 @@ namespace genetic_algorithm::detail
 
         size_t size() const noexcept { return data_.size(); }
 
+        /* Returns the closest point in the tree to the point, and its distance. */
+        std::pair<T*, double> findBestMatch(const Point& point);
+
     private:
         using Point = std::vector<double>;
 
         struct Node
         {
             Point center;
-            double radius_sq;
+            double radius;
             std::vector<T*> elements;
 
             std::unique_ptr<Node> left;
@@ -46,8 +49,11 @@ namespace genetic_algorithm::detail
         Node root_;
         Proj proj_;
         std::vector<T> data_;
+        size_t dim_;
 
-        inline static constexpr size_t MAX_LEAF_ELEMENTS = 1;   /* The maximum number of elements allowed in a leaf node. */
+        /* The maximum number of elements allowed in a leaf node. */
+        inline static constexpr size_t MAX_LEAF_ELEMENTS = 4;
+
 
         /* Find the 2 center points that will be used to split the node elements into 2 parts. */
         std::pair<T*, T*> splitData(const std::vector<T*>& node_elements) const;
@@ -60,6 +66,19 @@ namespace genetic_algorithm::detail
 
         /* Expand the tree starting from a node. */
         void buildTree(Node& node) const;
+
+
+        /* Returns true if the node is a leaf node. */
+        bool isLeafNode(const Node& node) const noexcept;
+
+        /* Return the max possible inner product between the point and a point inside the node. */
+        double maxInnerProduct(const Point& point, const Node& node) const;
+
+        /* Find the best match among node_elements using linear search. */
+        std::pair<T*, double> findBestMatchLinear(const Point& point, const std::vector<T*>& node_elements) const;
+
+        /* Find the best match under the node. */
+        std::pair<T*, double> findBestMatch(const Point& point, Node& node) const;
     };
 
 } // namespace genetic_algorithm::detail
@@ -67,8 +86,10 @@ namespace genetic_algorithm::detail
 
 /* IMPLEMENTATION */
 
+#include <stack>
 #include <algorithm>
 #include <numeric>
+#include <limits>
 #include "algorithm.hpp"
 #include "functional.hpp"
 #include "utility.hpp"
@@ -83,10 +104,11 @@ namespace genetic_algorithm::detail
     template<std::input_iterator Iter, typename Projection>
     requires std::is_invocable_r_v<Point, Projection, T>
     ConeTree<T, P>::ConeTree(Iter first, Iter last, Projection&& proj) :
-        data_(first, last), proj_(std::forward<Projection>(proj))
+        data_(first, last), proj_(std::forward<Projection>(proj)), dim_(std::invoke(proj_, *first).size())
     {
-        assert(std::all_of(first, last, [&](const auto& elem) { return std::invoke(proj, elem).size() == std::invoke(proj, *first).size(); }));
+        assert(std::all_of(first, last, [&](const auto& elem) { return std::invoke(proj, elem).size() == dim_; }));
 
+        root_.elements.reserve(data_.size());
         std::transform(data_.begin(), data_.end(), std::back_inserter(root_.elements), [](T& elem) { return &elem; });
 
         buildTree(root_);
@@ -95,9 +117,11 @@ namespace genetic_algorithm::detail
     template<typename T, typename P>
     std::pair<T*, T*> ConeTree<T, P>::splitData(const std::vector<T*>& node_elements) const
     {
+        assert(!node_elements.empty());
+
         const T* rand_node = node_elements.front();
 
-        const auto distances1 = detail::map(node_elements, [&](const T* elem)
+        auto distances = detail::map(node_elements, [&](const T* elem)
         {
             const Point& p1 = std::invoke(proj_, *rand_node);
             const Point& p2 = std::invoke(proj_, *elem);
@@ -105,9 +129,10 @@ namespace genetic_algorithm::detail
             return detail::euclideanDistanceSq(p1, p2);
         });
 
-        const size_t first_idx = detail::argmax(distances1.begin(), distances1.begin(), distances1.end());
+        const size_t first_idx = detail::argmax(distances.begin(), distances.begin(), distances.end());
 
-        const auto distances2 = detail::map(node_elements, [&](const T* elem)
+        std::transform(node_elements.begin(), node_elements.end(), distances.begin(),
+        [&](const T* elem)
         {
             const Point& p1 = std::invoke(proj_, *node_elements[first_idx]);
             const Point& p2 = std::invoke(proj_, *elem);
@@ -115,7 +140,7 @@ namespace genetic_algorithm::detail
             return detail::euclideanDistanceSq(p1, p2);
         });
 
-        const size_t second_idx = detail::argmax(distances2.begin(), distances2.begin(), distances2.end());
+        const size_t second_idx = detail::argmax(distances.begin(), distances.begin(), distances.end());
 
         return { node_elements[first_idx], node_elements[second_idx] };
     }
@@ -123,6 +148,8 @@ namespace genetic_algorithm::detail
     template<typename T, typename P>
     std::vector<double> ConeTree<T, P>::findNodeCenter(const std::vector<T*>& node_elements) const
     {
+        assert(!node_elements.empty());
+
         const size_t ndim = std::invoke(proj_, node_elements.front()).size();
 
         Point center = std::accumulate(node_elements.begin(), node_elements.end(), Point(ndim, 0.0),
@@ -151,14 +178,14 @@ namespace genetic_algorithm::detail
         const size_t furthest_idx = detail::argmax(distances.begin(), distances.begin(), distances.end());
         const Point& furthest_point = std::invoke(proj_, *node_elements[furthest_idx]);
 
-        return detail::euclideanDistanceSq(center, furthest_point);
+        return std::sqrt(detail::euclideanDistanceSq(center, furthest_point));
     }
 
     template<typename T, typename P>
     void ConeTree<T, P>::buildTree(Node& node) const
     {
         node.center = findNodeCenter(node.elements);
-        node.radius_sq = findNodeRadius(node.elements, node.center);
+        node.radius = findNodeRadius(node.elements, node.center);
 
         /* Leaf node. */
         if (node.elements.size() <= MAX_LEAF_ELEMENTS)
@@ -186,6 +213,9 @@ namespace genetic_algorithm::detail
             node.left = std::make_unique<Node>();
             node.right = std::make_unique<Node>();
 
+            node.left->elements.reserve(size_t(0.6 * node.elements.size()));
+            node.right->elements.reserve(size_t(0.6 * node.elements.size()));
+
             for (size_t i = 0; i < distances.size(); i++)
             {
                 (distances[i].first <= distances[i].second) ?
@@ -196,6 +226,99 @@ namespace genetic_algorithm::detail
             buildTree(*node.left);
             buildTree(*node.right);
         }
+    }
+
+
+    template<typename T, typename P>
+    bool ConeTree<T, P>::isLeafNode(const Node& node) const noexcept
+    {
+        return !bool(node.left) && !bool(node.right);
+    }
+
+    template<typename T, typename P>
+    double ConeTree<T, P>::maxInnerProduct(const Point& point, const Node& node) const
+    {
+        const double center_prod = std::inner_product(point.begin(), point.end(), node.center.begin(), 0.0);
+        
+        return center_prod + node.radius * detail::euclideanNorm(point);
+    }
+
+    template<typename T, typename P>
+    std::pair<T*, double> ConeTree<T, P>::findBestMatchLinear(const Point& point, const std::vector<T*>& node_elements) const
+    {
+        assert(!node_elements.empty());
+
+        const auto products = detail::map(node_elements, [&](const T* elem)
+        {
+            const Point& other = std::invoke(proj_, *elem);
+            return std::inner_product(point.begin(), point.end(), other.begin(), 0.0);
+        });
+
+        size_t best_idx = detail::argmax(products.begin(), products.begin(), products.end());
+
+        return { node_elements[best_idx], products[best_idx] };
+    }
+
+    template<typename T, typename P>
+    std::pair<T*, double> ConeTree<T, P>::findBestMatch(const Point& point, Node& root) const
+    {
+        std::stack<Node*> nodes;
+        nodes.push(&root);
+
+        T* best_match = nullptr;
+        double max_prod = -std::numeric_limits<double>::infinity();
+
+        while (!nodes.empty())
+        {
+            Node* cur_node = nodes.top();
+            nodes.pop();
+
+            /* Skip node if it can't be better. */
+            if (max_prod >= maxInnerProduct(point, *cur_node)) continue;
+             
+            if (isLeafNode(*cur_node))
+            {
+                auto [elem, prod] = findBestMatchLinear(point, cur_node->elements);
+                if (prod > max_prod)
+                {
+                    best_match = elem;
+                    max_prod = prod;
+                }
+            }
+            else if (cur_node->left == nullptr)
+            {
+                /* Only need to visit right child. */
+                nodes.push(cur_node->right.get());
+            }
+            else if (cur_node->right == nullptr)
+            {
+                /* Only need to visit left child. */
+                nodes.push(cur_node->left.get());
+            }
+            else
+            {
+                if (maxInnerProduct(point, *(cur_node->left)) < maxInnerProduct(point, *(cur_node->right)))
+                {
+                    /* Visit right child first. */
+                    nodes.push(cur_node->left.get());
+                    nodes.push(cur_node->right.get());
+                }
+                else
+                {
+                    /* Visit left child first. */
+                    nodes.push(cur_node->right.get());
+                    nodes.push(cur_node->left.get());
+                }
+            }
+        }
+
+        return { best_match, max_prod };
+    }
+
+    template<typename T, typename P>
+    std::pair<T*, double> ConeTree<T, P>::findBestMatch(const Point& point)
+    {
+        return findBestMatch(point, root_);
     }
 
 } // namespace genetic_algorithm::detail
