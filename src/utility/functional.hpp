@@ -11,6 +11,16 @@
 #include <concepts>
 #include <cassert>
 
+namespace genetic_algorithm
+{
+    template<auto F>
+    inline constexpr auto Fn = [](auto&&... args) -> decltype(auto)
+    {
+        return std::invoke(F, std::forward<decltype(args)>(args)...);
+    };
+
+} // namespace genetic_algorithm
+
 namespace genetic_algorithm::detail
 {
     template<typename T>
