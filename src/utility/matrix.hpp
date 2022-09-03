@@ -102,129 +102,6 @@ namespace genetic_algorithm::detail
         const_reverse_iterator rend() const noexcept    { return data_.rend(); }
         const_reverse_iterator crend() const noexcept   { return data_.crend(); }
 
-        /* Row iterators */
-
-        iterator row_begin(size_type row) noexcept              { assert(row < nrows_); return data_.begin() + row * ncols_; }
-        const_iterator row_begin(size_type row) const noexcept  { assert(row < nrows_); return data_.begin() + row * ncols_; }
-        const_iterator row_cbegin(size_type row) const noexcept { assert(row < nrows_); return data_.cbegin() + row * ncols_; }
-        iterator row_end(size_type row) noexcept                { assert(row < nrows_); return data_.begin() + (row + 1) * ncols_; }
-        const_iterator row_end(size_type row) const noexcept    { assert(row < nrows_); return data_.begin() + (row + 1) * ncols_; }
-        const_iterator row_cend(size_type row) const noexcept   { assert(row < nrows_); return data_.cbegin() + (row + 1) * ncols_; }
-
-        reverse_iterator row_rbegin(size_type row) noexcept              { assert(row < nrows_); return data_.rbegin() + row * ncols_; }
-        const_reverse_iterator row_rbegin(size_type row) const noexcept  { assert(row < nrows_); return data_.rbegin() + row * ncols_; }
-        const_reverse_iterator row_crbegin(size_type row) const noexcept { assert(row < nrows_); return data_.crbegin() + row * ncols_; }
-        reverse_iterator row_rend(size_type row) noexcept                { assert(row < nrows_); return data_.rbegin() + (row + 1) * ncols_; }
-        const_reverse_iterator row_rend(size_type row) const noexcept    { assert(row < nrows_); return data_.rbegin() + (row + 1) * ncols_; }
-        const_reverse_iterator row_crend(size_type row) const noexcept   { assert(row < nrows_); return data_.crbegin() + (row + 1) * ncols_; }
-
-        /* Column iterators */
-
-        class col_iterator
-        {
-        public:
-            using iterator_category = std::iterator_traits<typename std::vector<T>::iterator>::iterator_category;
-            using value_type        = std::iterator_traits<typename std::vector<T>::iterator>::value_type;
-            using difference_type   = std::iterator_traits<typename std::vector<T>::iterator>::difference_type;
-            using pointer           = std::iterator_traits<typename std::vector<T>::iterator>::pointer;
-            using reference         = std::iterator_traits<typename std::vector<T>::iterator>::reference;
-
-            col_iterator(std::vector<T>::iterator iter, difference_type stride) :
-                iter_(iter), stride_(stride) {}
-
-            bool operator==(const col_iterator& rhs) const noexcept { return iter_ == rhs.iter_; }
-            bool operator!=(const col_iterator& rhs) const noexcept { return iter_ != rhs.iter_; }
-            bool operator<(const col_iterator& rhs) const noexcept  { return iter_ < rhs.iter_; }
-            bool operator<=(const col_iterator& rhs) const noexcept { return iter_ <= rhs.iter_; }
-            bool operator>(const col_iterator& rhs) const noexcept  { return iter_ > rhs.iter_; }
-            bool operator>=(const col_iterator& rhs) const noexcept { return iter_ >= rhs.iter_; }
-
-            col_iterator& operator++() noexcept { iter_ += stride_; return *this; }
-            col_iterator& operator--() noexcept { iter_ -= stride_; return *this; }
-            col_iterator operator++(int) noexcept { auto temp = *this; iter_ += stride_; return temp; }
-            col_iterator operator--(int) noexcept { auto temp = *this; iter_ -= stride_; return temp; }
-
-            col_iterator& operator+=(difference_type n) noexcept { iter_ += (stride_ * n); return *this; }
-            col_iterator& operator-=(difference_type n) noexcept { iter_ -= (stride_ * n); return *this; }
-            col_iterator operator+(difference_type n) const { auto temp = col_iterator(*this); return temp += n; }
-            col_iterator operator-(difference_type n) const { auto temp = col_iterator(*this); return temp -= n; }
-            friend col_iterator operator+(difference_type, const col_iterator&) noexcept;
-
-            difference_type operator-(const col_iterator& rhs) const noexcept { return (iter_ - rhs.iter_) % stride_; }
-
-            reference operator*() const noexcept { return *iter_; }
-            pointer operator->() const noexcept { return iter_.operator->(); }
-            reference operator[](difference_type n) const noexcept { return iter_[stride_ * n]; }
-
-        private:
-            const difference_type stride_;
-            std::vector<T>::iterator iter_;
-        };
-
-
-        class const_col_iterator
-        {
-        public:
-            using iterator_category = std::iterator_traits<typename std::vector<T>::const_iterator>::iterator_category;
-            using value_type        = std::iterator_traits<typename std::vector<T>::const_iterator>::value_type;
-            using difference_type   = std::iterator_traits<typename std::vector<T>::const_iterator>::difference_type;
-            using pointer           = std::iterator_traits<typename std::vector<T>::const_iterator>::pointer;
-            using reference         = std::iterator_traits<typename std::vector<T>::const_iterator>::reference;
-
-            const_col_iterator(std::vector<T>::const_iterator iter, difference_type stride) :
-                iter_(iter), stride_(stride) {}
-
-            const_col_iterator(std::vector<T>::iterator iter, difference_type stride) :
-                iter_(iter), stride_(stride) {}
-
-            bool operator==(const const_col_iterator& rhs) const noexcept { return iter_ == rhs.iter_; }
-            bool operator!=(const const_col_iterator& rhs) const noexcept { return iter_ != rhs.iter_; }
-            bool operator<(const const_col_iterator& rhs) const noexcept  { return iter_ < rhs.iter_; }
-            bool operator<=(const const_col_iterator& rhs) const noexcept { return iter_ <= rhs.iter_; }
-            bool operator>(const const_col_iterator& rhs) const noexcept  { return iter_ > rhs.iter_; }
-            bool operator>=(const const_col_iterator& rhs) const noexcept { return iter_ >= rhs.iter_; }
-
-            const_col_iterator& operator++() noexcept { iter_ += stride_; return *this; }
-            const_col_iterator& operator--() noexcept { iter_ -= stride_; return *this; }
-            const_col_iterator operator++(int) noexcept { auto temp = *this; iter_ += stride_; return temp; }
-            const_col_iterator operator--(int) noexcept { auto temp = *this; iter_ -= stride_; return temp; }
-
-            const_col_iterator& operator+=(difference_type n) noexcept { iter_ += (stride_ * n); return *this; }
-            const_col_iterator& operator-=(difference_type n) noexcept { iter_ -= (stride_ * n); return *this; }
-            const_col_iterator operator+(difference_type n) const { auto temp = const_col_iterator(*this); return temp += n; }
-            const_col_iterator operator-(difference_type n) const { auto temp = const_col_iterator(*this); return temp -= n; }
-            friend const_col_iterator operator+(difference_type, const const_col_iterator&) noexcept;
-
-            difference_type operator-(const const_col_iterator& rhs) const noexcept { return (iter_ - rhs.iter_) % stride_; }
-
-            reference operator*() const noexcept { return *iter_; }
-            pointer operator->() const noexcept { return iter_.operator->(); }
-            reference operator[](difference_type n) const noexcept { return iter_[stride_ * n]; }
-
-        private:
-            const difference_type stride_;
-            std::vector<T>::const_iterator iter_;
-        };
-
-        using reverse_col_iterator       = std::reverse_iterator<col_iterator>;
-        using const_reverse_col_iterator = std::reverse_iterator<const_col_iterator>;
-
-
-        col_iterator col_begin(size_type col) noexcept              { assert(col < ncols_); return { data_.begin() + col, ncols_ }; }
-        const_col_iterator col_begin(size_type col) const noexcept  { assert(col < ncols_); return { data_.begin() + col, ncols_ }; }
-        const_col_iterator col_cbegin(size_type col) const noexcept { assert(col < ncols_); return { data_.cbegin() + col, ncols_ }; }
-        col_iterator col_end(size_type col) noexcept                { assert(col < ncols_); return { data_.end() + col, ncols_}; }
-        const_col_iterator col_end(size_type col) const noexcept    { assert(col < ncols_); return { data_.end() + col, ncols_ }; }
-        const_col_iterator col_cend(size_type col) const noexcept   { assert(col < ncols_); return { data_.cend() + col, ncols_ }; }
-
-        reverse_col_iterator col_rbegin(size_type col) noexcept              { assert(col < ncols_); return std::make_reverse_iterator(col_iterator(data_.end() + col, ncols_)); }
-        const_reverse_col_iterator col_rbegin(size_type col) const noexcept  { assert(col < ncols_); return std::make_reverse_iterator(const_col_iterator(data_.end() + col, ncols_)); }
-        const_reverse_col_iterator col_crbegin(size_type col) const noexcept { assert(col < ncols_); return std::make_reverse_iterator(const_col_iterator(data_.cend() + col, ncols_)); }
-        reverse_col_iterator col_rend(size_type col) noexcept                { assert(col < ncols_); return std::make_reverse_iterator(col_iterator(data_.begin() + col, ncols_)); }
-        const_reverse_col_iterator col_rend(size_type col) const noexcept    { assert(col < ncols_); return std::make_reverse_iterator(const_col_iterator(data_.begin() + col, ncols_)); }
-        const_reverse_col_iterator col_crend(size_type col) const noexcept   { assert(col < ncols_); return std::make_reverse_iterator(const_col_iterator(data_.cbegin() + col, ncols_)); }
-
-
         /* Other */
 
         void swap(Matrix& other) noexcept(std::is_nothrow_swappable_v<T>)
@@ -248,17 +125,9 @@ namespace genetic_algorithm::detail
     };
 
     template<typename T>
-    Matrix<T>::col_iterator operator+(typename Matrix<T>::col_iterator::difference_type n,
-                                      const typename Matrix<T>::col_iterator& it) noexcept
+    void swap(Matrix<T>& lhs, Matrix<T>& rhs) noexcept(std::is_nothrow_swappable_v<T>)
     {
-        return Matrix<T>::col_iterator(it) + n;
-    }
-
-    template<typename T>
-    Matrix<T>::const_col_iterator operator+(typename Matrix<T>::const_col_iterator::difference_type n,
-                                            const typename Matrix<T>::const_col_iterator& it) noexcept
-    {
-        return Matrix<T>::const_col_iterator(it) + n;
+        lhs.swap(rhs);
     }
 
 } // namespace genetic_algorithm::detail
