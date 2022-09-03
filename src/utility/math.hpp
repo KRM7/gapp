@@ -10,6 +10,8 @@
 
 namespace genetic_algorithm::detail
 {
+    using Point = std::vector<double>;
+
     /* Comparison function for floating point numbers. Returns -1 if (lhs < rhs), +1 if (lhs > rhs), and 0 if (lhs == rhs). */
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept;
