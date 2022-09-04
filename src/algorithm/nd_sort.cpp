@@ -119,7 +119,7 @@ namespace genetic_algorithm::algorithm::dtl
         {
             for (size_t rhs = 0; rhs < lhs; rhs++)
             {
-                auto comp = detail::paretoCompare(first[lhs], first[rhs]);
+                auto comp = math::paretoCompare(first[lhs], first[rhs]);
                 if (comp < 0)
                 {
                     dom_lists[lhs].better_count++;
@@ -215,7 +215,7 @@ namespace genetic_algorithm::algorithm::dtl
             {
                 auto last_col = std::find_if(++current, indices.rend(), [&](size_t prev_row) noexcept
                 {
-                    return !detail::floatIsEqual(fvec[prev_row], fvec[row]);
+                    return !math::floatIsEqual(fvec[prev_row], fvec[row]);
                 });
 
                 std::for_each(last_col, indices.rend(), [&](size_t col) noexcept

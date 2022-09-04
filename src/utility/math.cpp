@@ -9,13 +9,8 @@
 #include <cstddef>
 #include <cassert>
 
-namespace genetic_algorithm::detail
+namespace genetic_algorithm::math
 {
-    static constexpr double square(double n) noexcept
-    {
-        return n * n;
-    }
-
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
     {
         return paretoCompareLess(lhs, rhs, 0);
@@ -93,7 +88,7 @@ namespace genetic_algorithm::detail
 
         return std::transform_reduce(v1.begin(), v1.end(), v2.begin(), 0.0,
                                      std::plus{},
-                                     [](double lhs, double rhs) noexcept { return square(lhs - rhs); });
+                                     [](double lhs, double rhs) noexcept { return std::pow(lhs - rhs, 2); });
     }
 
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept
@@ -106,7 +101,7 @@ namespace genetic_algorithm::detail
 
         return std::transform_reduce(point.begin(), point.end(), line.begin(), 0.0,
                                      std::plus{},
-                                     [k](double p, double l) noexcept { return square(p - k * l); });
+                                     [k](double p, double l) noexcept { return std::pow(p - k * l, 2); });
     }
 
     double mean(const std::vector<double>& vec) noexcept
@@ -130,9 +125,10 @@ namespace genetic_algorithm::detail
         auto var = std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{},
         [mean, n = 1.0 / (vec.size() - 1)](double val) noexcept
         {
-            return square(val - mean) * n;
+            return std::pow(val - mean, 2) * n;
         });
 
         return std::sqrt(var);
     }
-}
+
+} // namespace genetic_algorithm::math

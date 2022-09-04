@@ -119,7 +119,7 @@ namespace genetic_algorithm::crossover::real
             const auto& [gene_low, gene_high] = std::minmax(parent1.chromosome[i], parent2.chromosome[i]);
 
             /* Handle the edge case where the 2 genes are equal. */
-            if (detail::floatIsEqual(gene_high, gene_low)) continue;
+            if (math::floatIsEqual(gene_high, gene_low)) continue;
 
             const GeneType beta1 = 1.0 + 2.0 * (gene_low - bounds[i].first) / (gene_high - gene_low);
             const GeneType beta2 = 1.0 + 2.0 * (bounds[i].second - gene_high) / (gene_high - gene_low);
@@ -166,8 +166,8 @@ namespace genetic_algorithm::crossover::real
         Candidate child1{ parent1 }, child2{ parent2 };
 
         /* p1 is always the better parent. */
-        const auto& p1 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent2 : parent1;
-        const auto& p2 = detail::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent1 : parent2;
+        const auto& p1 = math::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent2 : parent1;
+        const auto& p2 = math::paretoCompareLess(parent1.fitness, parent2.fitness) ? parent1 : parent2;
 
         const GeneType w1 = rng::randomReal<GeneType>();
         const GeneType w2 = rng::randomReal<GeneType>();

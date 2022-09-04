@@ -24,17 +24,18 @@ namespace genetic_algorithm::detail
     class ConeTree
     {
     public:
-
         struct FindResult
         {
             T* elem;
             double prod;
         };
 
+        using Point = math::Point;
+
         ConeTree() = default;
 
         template<std::input_iterator Iter>
-        requires std::is_invocable_r_v<Point, Proj, T>
+        requires std::is_invocable_r_v<math::Point, Proj, T>
         ConeTree(Iter first, Iter last, Proj proj = {});
 
         size_t size() const noexcept { return data_.size(); }
@@ -46,8 +47,6 @@ namespace genetic_algorithm::detail
         FindResult findBestMatch(const Point& query_point) const;
 
     private:
-        using Point = std::vector<double>;
-
         struct Node
         {
             Point center;
@@ -112,7 +111,7 @@ namespace genetic_algorithm::detail
 
     template<typename T, typename P>
     template<std::input_iterator Iter>
-    requires std::is_invocable_r_v<Point, P, T>
+    requires std::is_invocable_r_v<math::Point, P, T>
     ConeTree<T, P>::ConeTree(Iter first, Iter last, P proj) :
         data_(first, last),
         proj_(std::move(proj)),
@@ -132,29 +131,40 @@ namespace genetic_algorithm::detail
         assert(!node.elements.empty());
 
         const T* rand_node = node.elements.front();
+        const Point& rand_point = std::invoke(proj_, *rand_node);
 
-        auto distances = detail::map(node.elements, [&](const T* elem)
+        const T* first_elem = nullptr;
+        double max_distance = -std::numeric_limits<double>::infinity();
+
+        for (T* elem : node.elements)
         {
-            const Point& p1 = std::invoke(proj_, *rand_node);
-            const Point& p2 = std::invoke(proj_, *elem);
+            const Point& elem_point = std::invoke(proj_, *elem);
+            const double distance = math::euclideanDistanceSq(elem_point, rand_point);
 
-            return detail::euclideanDistanceSq(p1, p2);
-        });
+            if (distance >= max_distance)
+            {
+                first_elem = elem;
+                max_distance = distance;
+            }
+        }
 
-        const size_t first_idx = detail::argmax(distances.begin(), distances.begin(), distances.end());
+        const Point& first_point = std::invoke(proj_, *first_elem);
 
-        std::transform(node.elements.begin(), node.elements.end(), distances.begin(),
-        [&](const T* elem)
+        const T* second_elem = nullptr;
+        max_distance = -std::numeric_limits<double>::infinity();
+
+        for (T* elem : node.elements)
         {
-            const Point& p1 = std::invoke(proj_, *node.elements[first_idx]);
-            const Point& p2 = std::invoke(proj_, *elem);
+            const Point& elem_point = std::invoke(proj_, *elem);
+            const double distance = math::euclideanDistanceSq(elem_point, first_point);
 
-            return detail::euclideanDistanceSq(p1, p2);
-        });
-
-        const size_t second_idx = detail::argmax(distances.begin(), distances.begin(), distances.end());
-
-        return { node.elements[first_idx], node.elements[second_idx] };
+            if (distance >= max_distance)
+            {
+                second_elem = elem;
+                max_distance = distance;
+            }
+        }
+        return { first_elem, second_elem };
     }
 
     template<typename T, typename P>
@@ -181,15 +191,17 @@ namespace genetic_algorithm::detail
     template<typename T, typename P>
     double ConeTree<T, P>::findNodeRadius(const Node& node) const
     {
-        const auto distances = detail::map(node.elements, [&](const T* elem)
+        double max_distance = -std::numeric_limits<double>::infinity();
+
+        for (T* elem : node.elements)
         {
             const Point& point = std::invoke(proj_, *elem);
-            return detail::euclideanDistanceSq(node.center, point);
-        });
+            const double distance = math::euclideanDistanceSq(node.center, point);
 
-        const size_t furthest_idx = detail::argmax(distances.begin(), distances.begin(), distances.end());
+            max_distance = std::max(max_distance, distance);
+        }
 
-        return std::sqrt(distances[furthest_idx]);
+        return std::sqrt(max_distance);
     }
 
     template<typename T, typename P>
@@ -223,8 +235,8 @@ namespace genetic_algorithm::detail
             const auto distances = detail::map(node.elements, [&](const T* elem)
             {
                 const Point& elem_point = std::invoke(proj_, *elem);
-                const double left_distance = detail::euclideanDistanceSq(left_point, elem_point);
-                const double right_distance = detail::euclideanDistanceSq(right_point, elem_point);
+                const double left_distance = math::euclideanDistanceSq(left_point, elem_point);
+                const double right_distance = math::euclideanDistanceSq(right_point, elem_point);
 
                 return std::make_pair(left_distance, right_distance);
             });
@@ -285,7 +297,7 @@ namespace genetic_algorithm::detail
         assert(!root.elements.empty());
         assert(query_point.size() == dim_);
 
-        const double point_norm = detail::euclideanNorm(query_point);
+        const double point_norm = math::euclideanNorm(query_point);
 
         std::vector<const Node*> nodes;
         nodes.reserve(size());

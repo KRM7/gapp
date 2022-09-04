@@ -108,7 +108,7 @@ namespace genetic_algorithm
     {
         if constexpr (std::is_floating_point_v<T>)
         {
-            return detail::floatVecIsEqual(lhs.chromosome, rhs.chromosome);
+            return math::floatVecIsEqual(lhs.chromosome, rhs.chromosome);
         }
         else
         {
@@ -129,7 +129,7 @@ namespace genetic_algorithm
         {
             return std::lexicographical_compare(lhs.chromosome.begin(), lhs.chromosome.end(),
                                                 rhs.chromosome.begin(), rhs.chromosome.end(), 
-                                                detail::floatIsLess<T>);
+                                                math::floatIsLess<T>);
         }
         else
         {

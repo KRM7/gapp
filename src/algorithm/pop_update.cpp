@@ -51,7 +51,7 @@ namespace genetic_algorithm::update
         detail::partial_argsort(first, first + n_, children_first,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
-            return detail::paretoCompareLess(rhs, lhs); // descending
+            return math::paretoCompareLess(rhs, lhs); // descending
         });
 
         std::vector<size_t> indices(ga.population_size());
@@ -77,7 +77,7 @@ namespace genetic_algorithm::update
         detail::partial_argsort(first, first + ga.population_size(), last,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
-            return detail::paretoCompareLess(rhs, lhs); // descending
+            return math::paretoCompareLess(rhs, lhs); // descending
         });
         sorted_indices.resize(ga.population_size());
 

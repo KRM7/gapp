@@ -98,10 +98,11 @@ namespace genetic_algorithm::detail::_
             return lhs[0] < rhs[0];
         });
 
-        return detail::find_indices(fmat, 
-        [fmax = (*best)[0]](const FitnessVector& fvec) noexcept
+        const double max_fitness = (*best)[0];
+
+        return detail::find_indices(fmat, [&](const FitnessVector& fvec) noexcept
         {
-            return detail::floatIsEqual(fmax, fvec[0]);
+            return math::floatIsEqual(max_fitness, fvec[0]);
         });
     }
 
@@ -124,7 +125,7 @@ namespace genetic_algorithm::detail::_
             bool dominated = std::any_of(optimal_indices.begin(), optimal_indices.end(),
             [&fmat, idx](size_t optimal_idx) noexcept
             {
-                return detail::paretoCompareLess(fmat[idx], fmat[optimal_idx]);
+                return math::paretoCompareLess(fmat[idx], fmat[optimal_idx]);
             });
             if (!dominated) optimal_indices.push_back(idx);
         }
@@ -152,7 +153,7 @@ namespace genetic_algorithm::detail::_
             auto best = first;
             for (auto it = std::next(first); it < last; ++it)
             {
-                auto comp = detail::paretoCompare(fmat[*best], fmat[*it]);
+                auto comp = math::paretoCompare(fmat[*best], fmat[*it]);
                 if (comp > 0)
                 {
                     std::iter_swap(it--, --last);
@@ -169,7 +170,7 @@ namespace genetic_algorithm::detail::_
             /* best was only compared with the elements after it, there could be dominated elements before it still in the index list. */
             for (auto it = first; it < best; ++it)
             {
-                if (detail::paretoCompareLess(fmat[*it], fmat[*best]))
+                if (math::paretoCompareLess(fmat[*it], fmat[*best]))
                 {
                     std::iter_swap(it, first++);
                 }
@@ -185,12 +186,12 @@ namespace genetic_algorithm::detail::_
 
     bool kungCompareLess(const FitnessVector& lhs, const FitnessVector& rhs) noexcept
     {
-        bool is_dominated = detail::paretoCompareLess(lhs, rhs, 1);
+        bool is_dominated = math::paretoCompareLess(lhs, rhs, 1);
 
-        bool is_equal = !detail::floatIsEqual(lhs[0], rhs[0]) &&
+        bool is_equal = !math::floatIsEqual(lhs[0], rhs[0]) &&
                         std::equal(lhs.begin() + 1, lhs.end(),
                                    rhs.begin() + 1,
-                                   detail::floatIsEqual<double>);
+                                   math::floatIsEqual<double>);
 
         return is_dominated || is_equal;
     }

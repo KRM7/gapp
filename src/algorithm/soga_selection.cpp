@@ -150,8 +150,8 @@ namespace genetic_algorithm::selection
         assert(scale_ > 1.0);
 
         auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
-        const double fmean = detail::mean(fvec);
-        const double fdev = std::max(detail::stdDev(fvec, fmean), 1E-6);
+        const double fmean = math::mean(fvec);
+        const double fdev = std::max(math::stdDev(fvec, fmean), 1E-6);
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&](double f)
         {

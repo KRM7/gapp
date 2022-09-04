@@ -56,7 +56,7 @@ namespace genetic_algorithm::algorithm::dtl
         points.push_back(candidate_points.back());
         candidate_points.pop_back();
 
-        auto min_distances = detail::map(candidate_points, [&](const Point& p) { return detail::euclideanDistanceSq(p, points.back()); });
+        auto min_distances = detail::map(candidate_points, [&](const Point& p) { return math::euclideanDistanceSq(p, points.back()); });
 
         while (points.size() < n)
         {
@@ -73,7 +73,7 @@ namespace genetic_algorithm::algorithm::dtl
             std::transform(GA_EXECUTION_UNSEQ, candidate_points.begin(), candidate_points.end(), min_distances.begin(), min_distances.begin(),
             [&last_point = points.back()](const Point& candidate, double current_min) noexcept
             {
-                const double dist = detail::euclideanDistanceSq(candidate, last_point);
+                const double dist = math::euclideanDistanceSq(candidate, last_point);
                 return std::min(current_min, dist);
             });
         }
@@ -85,7 +85,7 @@ namespace genetic_algorithm::algorithm::dtl
     std::vector<RefLine> generateReferencePoints(size_t dim, size_t n)
     {
         std::vector<Point> points = generateRandomRefpointsPick(dim, n);
-        std::transform(points.begin(), points.end(), points.begin(), [](Point p) { return detail::normalizeVector(std::move(p)); });
+        std::transform(points.begin(), points.end(), points.begin(), [](Point p) { return math::normalizeVector(std::move(p)); });
 
         std::vector<RefLine> refs;
         refs.reserve(points.size());

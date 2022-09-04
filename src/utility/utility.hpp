@@ -32,12 +32,12 @@
 #define GA_EPSILON 4
 #endif
 
-namespace genetic_algorithm::detail
+namespace genetic_algorithm::math
 {
     template<typename T>
     inline constexpr T epsilon = GA_EPSILON * std::numeric_limits<T>::epsilon();
 
-} // namespace genetic_algorithm::detail
+} // namespace genetic_algorithm::math
 
 namespace genetic_algorithm
 {

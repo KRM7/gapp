@@ -10,7 +10,7 @@
 
 namespace genetic_algorithm::algorithm::dtl
 {
-    using Point = detail::Point;
+    using math::Point;
 
     /* A reference direction for the NSGA-III algorithm. */
     struct RefLine

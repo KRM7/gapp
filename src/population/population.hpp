@@ -95,7 +95,7 @@ namespace genetic_algorithm::detail
     template<Gene T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop)
     {
-        return detail::map(pop, &Candidate<T>::fitness);
+        return detail::map(pop, Fn<&Candidate<T>::fitness>);
     }
 
     template<Gene T>
@@ -139,7 +139,7 @@ namespace genetic_algorithm::detail
 
                 if (lhs_state[i] == OPTIMAL)
                 {
-                    if (detail::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
+                    if (math::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
                     {
                         rhs_state[j].store(DOMINATED, std::memory_order_relaxed);
                     }
@@ -147,14 +147,14 @@ namespace genetic_algorithm::detail
                 }
                 if (rhs_state[j].load(std::memory_order_relaxed) == OPTIMAL)
                 {
-                    if (detail::paretoCompareLess(lhs[i].fitness, rhs[j].fitness))
+                    if (math::paretoCompareLess(lhs[i].fitness, rhs[j].fitness))
                     {
                         lhs_state[i] = DOMINATED;
                     }
                     continue;
                 }
 
-                const auto comp = detail::paretoCompare(lhs[i].fitness, rhs[j].fitness);
+                const auto comp = math::paretoCompare(lhs[i].fitness, rhs[j].fitness);
                 if (comp < 0)
                 {
                     lhs_state[i] = DOMINATED;
