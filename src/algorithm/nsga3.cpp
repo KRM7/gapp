@@ -77,7 +77,7 @@ namespace genetic_algorithm::algorithm
         FitnessVector fnorm(fvec.size());
         for (size_t i = 0; i < fnorm.size(); i++)
         {
-            fnorm[i] = (fvec[i] - ideal_point[i]) / std::max(ideal_point[i] - nadir_point[i], 1E-6);
+            fnorm[i] = (ideal_point[i] - fvec[i]) / std::max(ideal_point[i] - nadir_point[i], 1E-6);
         }
 
         return fnorm;
