@@ -11,7 +11,7 @@
 
 namespace genetic_algorithm::detail
 {
-    template<typename T, size_t I = 0, typename ReduceOp = std::plus<T>>
+    template<typename T, size_t Instance = 0, typename ReduceOp = std::plus<T>>
     class tl_vector_accumulator
     {
     public:
