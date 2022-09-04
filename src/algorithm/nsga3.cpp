@@ -91,10 +91,10 @@ namespace genetic_algorithm::algorithm
 
     /* NSGA3 IMPLEMENTATION */
 
-    static constexpr auto RefTreeProj = Fn<&RefLine::direction>;
+    static constexpr auto RefProjection = Fn<&RefLine::direction>;
 
-    using RefTreeProjType = std::remove_cvref_t<decltype(RefTreeProj)>;
-    using RefTree = detail::ConeTree<RefLine, RefTreeProjType>;
+    using RefProjectionType = std::remove_cvref_t<decltype(RefProjection)>;
+    using RefLineSearchTree = detail::ConeTree<RefLine, RefProjectionType>;
 
     struct NSGA3::Impl
     {
@@ -106,7 +106,7 @@ namespace genetic_algorithm::algorithm
         };
 
         std::vector<CandidateInfo> sol_info_;
-        RefTree ref_lines_;
+        RefLineSearchTree ref_lines_;
 
         Point ideal_point_;
         Point nadir_point_;
@@ -222,7 +222,7 @@ namespace genetic_algorithm::algorithm
             const auto best = ref_lines_.findBestMatch(fnorm);
 
             props.ref = best.elem;
-            props.ref_dist = 1.0 / best.prod; /* This isn't the actual distance, but it doesn't matter. */
+            props.ref_dist = math::perpendicularDistanceSq(best.elem->direction, fnorm);
 
             return props;
         });
@@ -280,7 +280,7 @@ namespace genetic_algorithm::algorithm
 
         pimpl_->ref_lines_ = detail::ConeTree(std::make_move_iterator(ref_lines_.begin()),
                                               std::make_move_iterator(ref_lines_.end()),
-                                              RefTreeProj);
+                                              RefProjection);
 
         pimpl_->associatePopWithRefs(fitness_matrix.begin(), fitness_matrix.end());
 
