@@ -4,7 +4,7 @@
 #define GA_ALGORITHM_NSGA3_HPP
 
 #include "algorithm_base.hpp"
-#include "reference_points.hpp"
+#include "reference_lines.hpp"
 
 namespace genetic_algorithm::algorithm
 {

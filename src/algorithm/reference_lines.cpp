@@ -1,6 +1,6 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include "reference_points.hpp"
+#include "reference_lines.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/rng.hpp"
@@ -29,8 +29,8 @@ namespace genetic_algorithm::algorithm::dtl
         return point;
     }
 
-    /* Generate n random reference points in dim dimensions. */
-    static std::vector<Point> generateRandomRefpoints(size_t dim, size_t n)
+    /* Generate n random points on a unit simplex in dim dimensions. */
+    static std::vector<Point> randomSimplexPoints(size_t dim, size_t n)
     {
         assert(dim > 0);
 
@@ -49,7 +49,7 @@ namespace genetic_algorithm::algorithm::dtl
         assert(n > 0);
 
         const size_t npoints = n * std::max(10_sz, 2 * dim);
-        std::vector<Point> candidate_points = generateRandomRefpoints(dim, npoints);
+        std::vector<Point> candidate_points = randomSimplexPoints(dim, npoints);
 
         std::vector<Point> points;
         points.reserve(n);
@@ -82,36 +82,16 @@ namespace genetic_algorithm::algorithm::dtl
     }
 
 
-    ReferencePoints generateReferencePoints(size_t dim, size_t n)
+    std::vector<RefLine> generateReferencePoints(size_t dim, size_t n)
     {
         std::vector<Point> points = generateRandomRefpointsPick(dim, n);
+        std::transform(points.begin(), points.end(), points.begin(), [](Point p) { return detail::normalizeVector(std::move(p)); });
 
-        ReferencePoints refs;
+        std::vector<RefLine> refs;
         refs.reserve(points.size());
         std::move(points.begin(), points.end(), std::back_inserter(refs));
 
         return refs;
-    }
-
-    double inverseCosineSimilarity(const Point& p, const ReferencePoint& ref)
-    {
-        const auto refnorm = detail::normalizeVector(ref.point);
-
-        return std::inner_product(p.begin(), p.end(), refnorm.begin(), 0.0);
-    }
-
-    std::pair<size_t, double> findClosestRef(const std::vector<ReferencePoint>& refs, const Point& p)
-    {
-        assert(!refs.empty());
-        assert(std::all_of(refs.begin(), refs.end(), [&](const ReferencePoint& ref) { return ref.point.size() == p.size(); }));
-
-        auto inverseAngle = std::bind_front(dtl::inverseCosineSimilarity, std::ref(p));
-        auto iangles = detail::map(refs, inverseAngle);
-
-        size_t closest_idx = detail::argmax(iangles.begin(), iangles.begin(), iangles.end());
-        double distance = detail::perpendicularDistanceSq(refs[closest_idx].point, p);
-
-        return { closest_idx, distance };
     }
 
 } // namespace genetic_algorithm::algorithm::dtl

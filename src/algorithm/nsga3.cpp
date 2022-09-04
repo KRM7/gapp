@@ -2,7 +2,7 @@
 
 #include "nsga3.hpp"
 #include "nd_sort.hpp"
-#include "reference_points.hpp"
+#include "reference_lines.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
