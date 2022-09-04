@@ -29,24 +29,25 @@ namespace genetic_algorithm::algorithm
 
 
     /* Achievement scalarization function. */
-    static double ASF(const std::vector<double>& ideal_point, const std::vector<double>& weights, const std::vector<double>& fitness) noexcept
+    static inline double ASF(const std::vector<double>& ideal_point, const std::vector<double>& weights, const std::vector<double>& fitness) noexcept
     {
         assert(!ideal_point.empty());
         assert(weights.size() == ideal_point.size());
         assert(fitness.size() == weights.size());
 
-        double dmax = (ideal_point[0] - fitness[0]) / weights[0];
-        for (size_t i = 1; i < fitness.size(); i++)
+        double dmax = -std::numeric_limits<double>::infinity();
+
+        for (size_t i = 0; i < fitness.size(); i++)
         {
-            double d = (ideal_point[i] - fitness[i]) / weights[i];
-            dmax = std::max(dmax, d);
+            const double distance = (ideal_point[i] - fitness[i]) / weights[i];
+            dmax = std::max(dmax, distance);
         }
         
         return dmax;
     }
 
     /* Create a weight vector for the given axis (used in the ASF). */
-    static std::vector<double> weightVector(size_t dimensions, size_t axis)
+    static inline std::vector<double> weightVector(size_t dimensions, size_t axis)
     {
         assert(dimensions > axis);
 
@@ -57,7 +58,7 @@ namespace genetic_algorithm::algorithm
     }
 
     /* Find an approximation of the pareto front's nadir point using the minimum of the extreme points. */
-    static Point findNadirPoint(const std::vector<Point>& extreme_points)
+    static inline Point findNadirPoint(const std::vector<Point>& extreme_points)
     {
         assert(!extreme_points.empty());
 
@@ -72,12 +73,13 @@ namespace genetic_algorithm::algorithm
     }
 
     /* Normalize a fitness vector using the ideal and nadir points. */
-    static FitnessVector normalizeFitnessVec(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point)
+    static inline FitnessVector normalizeFitnessVec(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point)
     {
         assert(fvec.size() == ideal_point.size());
         assert(ideal_point.size() == nadir_point.size());
 
         FitnessVector fnorm(fvec.size());
+
         for (size_t i = 0; i < fnorm.size(); i++)
         {
             fnorm[i] = (ideal_point[i] - fvec[i]) / std::max(ideal_point[i] - nadir_point[i], 1E-6);
@@ -89,6 +91,11 @@ namespace genetic_algorithm::algorithm
 
     /* NSGA3 IMPLEMENTATION */
 
+    static constexpr auto RefTreeProj = Fn<&RefLine::direction>;
+
+    using RefTreeProjType = std::remove_cvref_t<decltype(RefTreeProj)>;
+    using RefTree = detail::ConeTree<RefLine, RefTreeProjType>;
+
     struct NSGA3::Impl
     {
         struct CandidateInfo
@@ -99,7 +106,7 @@ namespace genetic_algorithm::algorithm
         };
 
         std::vector<CandidateInfo> sol_info_;
-        detail::ConeTree<RefLine, decltype(&RefLine::direction)> ref_lines_;
+        RefTree ref_lines_;
 
         Point ideal_point_;
         Point nadir_point_;
@@ -273,7 +280,7 @@ namespace genetic_algorithm::algorithm
 
         pimpl_->ref_lines_ = detail::ConeTree(std::make_move_iterator(ref_lines_.begin()),
                                               std::make_move_iterator(ref_lines_.end()),
-                                              &RefLine::direction);
+                                              RefTreeProj);
 
         pimpl_->associatePopWithRefs(fitness_matrix.begin(), fitness_matrix.end());
 
