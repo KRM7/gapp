@@ -13,6 +13,8 @@
 
 namespace genetic_algorithm::detail
 {
+    using math::Point;
+
     /* 
     * This data structure is used to solve the maximum inner product search problem in the NSGA-III algorithm
     * when looking for the nearest reference point to a candidate solution.
@@ -30,12 +32,10 @@ namespace genetic_algorithm::detail
             double prod;
         };
 
-        using Point = math::Point;
-
         ConeTree() = default;
 
         template<std::input_iterator Iter>
-        requires std::is_invocable_r_v<math::Point, Proj, T>
+        requires std::is_invocable_r_v<Point, Proj, T>
         ConeTree(Iter first, Iter last, Proj proj = {});
 
         size_t size() const noexcept { return data_.size(); }
@@ -111,7 +111,7 @@ namespace genetic_algorithm::detail
 
     template<typename T, typename P>
     template<std::input_iterator Iter>
-    requires std::is_invocable_r_v<math::Point, P, T>
+    requires std::is_invocable_r_v<Point, P, T>
     ConeTree<T, P>::ConeTree(Iter first, Iter last, P proj) :
         data_(first, last),
         proj_(std::move(proj)),
