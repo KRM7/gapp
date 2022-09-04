@@ -251,13 +251,13 @@ namespace genetic_algorithm
         /* Initialize the algorithm used.
          * This must be done after the initial population has been created and evaluted,
          * as it might want to use the population's fitness values (fitness_matrix_). */
-        (*algorithm_).initialize(*this);
+        algorithm_->initialize(*this);
     }
 
     template<Gene T, typename D>
     auto GA<T, D>::generateCandidate() const -> Candidate
     {
-        auto sol = derived().generateCandidate();
+        Candidate sol = derived().generateCandidate();
 
         if (!hasValidChromosome(sol))
         {
