@@ -219,25 +219,23 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    std::vector<T> elementwise_min(const std::vector<T>& lhs, const std::vector<T>& rhs)
+    std::vector<T> elementwise_min(std::vector<T> lhs, const std::vector<T>& rhs)
     {
         assert(lhs.size() == rhs.size());
 
-        std::vector<T> min(lhs.size());
-        std::transform(lhs.begin(), lhs.end(), rhs.begin(), min.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? lhs : rhs; });
+        std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? lhs : rhs; });
 
-        return min;
+        return std::move(lhs);
     }
 
     template<typename T>
-    std::vector<T> elementwise_max(const std::vector<T>& lhs, const std::vector<T>& rhs)
+    std::vector<T> elementwise_max(std::vector<T> lhs, const std::vector<T>& rhs)
     {
         assert(lhs.size() == rhs.size());
 
-        std::vector<T> max(lhs.size());
-        std::transform(lhs.begin(), lhs.end(), rhs.begin(), max.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? rhs : lhs; });
+        std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? rhs : lhs; });
 
-        return max;
+        return std::move(lhs);
     }
 
     template<typename T>
