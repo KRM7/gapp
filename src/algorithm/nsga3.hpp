@@ -3,12 +3,12 @@
 #ifndef GA_ALGORITHM_NSGA3_HPP
 #define GA_ALGORITHM_NSGA3_HPP
 
+#include <memory>
 #include "algorithm_base.hpp"
-#include "reference_lines.hpp"
 
 namespace genetic_algorithm::algorithm
 {
-    namespace dtl { struct FrontInfo; }
+    namespace dtl { struct FrontInfo; struct RefLine; }
 
     /**
     * NSGA-III algorithm, used for many-objective optimization. (Doesn't work for single-objective problems.) \n
@@ -46,46 +46,15 @@ namespace genetic_algorithm::algorithm
 
         std::optional<std::vector<size_t>> optimalSolutions(const GaInfo& ga) const override;
 
+        NSGA3();
+        NSGA3(NSGA3&&);
+        NSGA3& operator=(NSGA3&&);
+        ~NSGA3() override;
+
     private:
-        /* Stats associated with each of the solutions. */
-        struct CandidateInfo
-        {
-            size_t rank;
-            size_t ref_idx;
-            double ref_dist;
-        };
+        struct Impl;
 
-        using Point = std::vector<double>;
-
-        std::vector<CandidateInfo> sol_info_;
-        std::vector<dtl::ReferencePoint> ref_points_;
-
-        Point ideal_point_;
-        Point nadir_point_;
-        std::vector<Point> extreme_points_;
-
-        /* Update the ideal point approximation using the new points in fmat, assuming maximization. */
-        void updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-        /* Update the extreme points using the new points in fmat, assuming maximization. */
-        void updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-        /* Update the current nadir point based on the extreme points. */
-        void updateNadirPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-        /* Find the closest reference and its distance for each of the points in the fitness matrix. */
-        void associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-        /* Return true if pop[lhs] is better than pop[rhs]. */
-        bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
-
-
-        /* Return the associated reference point of a candidate. */
-        dtl::ReferencePoint& refPointOf(const dtl::FrontInfo& sol) noexcept;
-        const dtl::ReferencePoint& refPointOf(const dtl::FrontInfo& sol) const noexcept;
-
-        /* Return the associated reference point's distance for a candidate. */
-        double refDistOf(const dtl::FrontInfo& sol) const noexcept;
+        std::unique_ptr<Impl> pimpl_;
     };
 
 } // namespace genetic_algorithm::algorithm
