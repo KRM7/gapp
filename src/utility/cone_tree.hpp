@@ -24,14 +24,26 @@ namespace genetic_algorithm::detail
     class ConeTree
     {
     public:
-        template<std::input_iterator Iter, typename P = std::identity>
-        requires std::is_invocable_r_v<Point, P, T>
-        ConeTree(Iter first, Iter last, P&& p = std::identity{});
+
+        struct FindResult
+        {
+            T* elem;
+            double prod;
+        };
+
+        ConeTree() = default;
+
+        template<std::input_iterator Iter>
+        requires std::is_invocable_r_v<Point, Proj, T>
+        ConeTree(Iter first, Iter last, Proj proj = {});
 
         size_t size() const noexcept { return data_.size(); }
+        
+        std::vector<T>& data() noexcept { return data_; }
+        const std::vector<T>& data() const noexcept { return data_; }
 
         /* Returns the closest point in the tree to the point, and its distance. */
-        std::pair<const T*, double> findBestMatch(const Point& query_point) const;
+        FindResult findBestMatch(const Point& query_point) const;
 
     private:
         using Point = std::vector<double>;
@@ -40,7 +52,7 @@ namespace genetic_algorithm::detail
         {
             Point center;
             double radius;
-            std::vector<const T*> elements;
+            std::vector<T*> elements;
 
             std::unique_ptr<Node> left;
             std::unique_ptr<Node> right;
@@ -52,7 +64,7 @@ namespace genetic_algorithm::detail
         size_t dim_;
 
         /* The maximum number of elements allowed in a leaf node. */
-        inline static constexpr size_t MAX_LEAF_ELEMENTS = 4;
+        inline static constexpr size_t MAX_LEAF_ELEMENTS = 24;
 
 
         /* Find the 2 center points that will be used to split the node elements into 2 parts. */
@@ -72,13 +84,13 @@ namespace genetic_algorithm::detail
         bool isLeafNode(const Node& node) const noexcept;
 
         /* Return the max possible inner product between the point and a point inside the node. */
-        double innerProductUpperBound(const Point& point, const Node& node) const;
+        double innerProductUpperBound(const Point& point, double point_norm, const Node& node) const;
 
         /* Find the best match among node_elements using linear search. */
-        std::pair<const T*, double> findBestMatchLinear(const Point& query_point, const Node& node) const;
+        FindResult findBestMatchLinear(const Point& query_point, const Node& node) const;
 
         /* Find the best match under the node. */
-        std::pair<const T*, double> findBestMatchDFS(const Point& query_point, const Node& node) const;
+        FindResult findBestMatchDFS(const Point& query_point, const Node& node) const;
     };
 
 } // namespace genetic_algorithm::detail
@@ -86,7 +98,6 @@ namespace genetic_algorithm::detail
 
 /* IMPLEMENTATION */
 
-#include <stack>
 #include <algorithm>
 #include <numeric>
 #include <limits>
@@ -97,21 +108,20 @@ namespace genetic_algorithm::detail
 namespace genetic_algorithm::detail
 {
     template<typename Iter, typename Proj>
-    ConeTree(Iter, Iter, Proj&&) -> ConeTree<typename std::iterator_traits<Iter>::value_type, Proj>;
-
+    ConeTree(Iter, Iter, Proj) -> ConeTree<typename std::iterator_traits<Iter>::value_type, Proj>;
 
     template<typename T, typename P>
-    template<std::input_iterator Iter, typename Projection>
-    requires std::is_invocable_r_v<Point, Projection, T>
-    ConeTree<T, P>::ConeTree(Iter first, Iter last, Projection&& proj) :
+    template<std::input_iterator Iter>
+    requires std::is_invocable_r_v<Point, P, T>
+    ConeTree<T, P>::ConeTree(Iter first, Iter last, P proj) :
         data_(first, last),
-        proj_(std::forward<Projection>(proj)),
+        proj_(std::move(proj)),
         dim_(std::invoke(proj_, *first).size())
     {
         assert(std::all_of(first, last, [&](const auto& elem) { return std::invoke(proj_, elem).size() == dim_; }));
 
         root_.elements.reserve(data_.size());
-        std::transform(data_.begin(), data_.end(), std::back_inserter(root_.elements), [](const T& elem) { return &elem; });
+        std::transform(data_.begin(), data_.end(), std::back_inserter(root_.elements), [](T& elem) { return &elem; });
 
         recursiveExpandNode(root_);
     }
@@ -185,6 +195,8 @@ namespace genetic_algorithm::detail
     template<typename T, typename P>
     void ConeTree<T, P>::recursiveExpandNode(Node& node) const
     {
+        // TODO what if node is empty <- not possible because pickNodeSplit ensures that at least 1 point will belong to a Node
+
         node.center = findNodeCenter(node);
         node.radius = findNodeRadius(node);
 
@@ -231,97 +243,106 @@ namespace genetic_algorithm::detail
 
 
     template<typename T, typename P>
-    bool ConeTree<T, P>::isLeafNode(const Node& node) const noexcept
+    inline bool ConeTree<T, P>::isLeafNode(const Node& node) const noexcept
     {
         return (node.left == nullptr) && (node.right == nullptr);
     }
 
     template<typename T, typename P>
-    double ConeTree<T, P>::innerProductUpperBound(const Point& point, const Node& node) const
+    inline double ConeTree<T, P>::innerProductUpperBound(const Point& point, double point_norm, const Node& node) const
     {
         const double center_prod = std::inner_product(point.begin(), point.end(), node.center.begin(), 0.0);
         
-        return center_prod + detail::euclideanNorm(point) * node.radius;
+        return center_prod + point_norm * node.radius;
     }
 
     template<typename T, typename P>
-    std::pair<const T*, double> ConeTree<T, P>::findBestMatchLinear(const Point& query_point, const Node& node) const
+    auto ConeTree<T, P>::findBestMatchLinear(const Point& query_point, const Node& node) const -> FindResult
     {
         assert(!node.elements.empty());
         assert(query_point.size() == dim_);
 
-        const auto products = detail::map(node.elements, [&](const T* elem)
+        FindResult best = { nullptr, -std::numeric_limits<double>::infinity() };
+        
+        for (T* elem : node.elements)
         {
             const Point& node_point = std::invoke(proj_, *elem);
-            return std::inner_product(query_point.begin(), query_point.end(), node_point.begin(), 0.0);
-        });
+            const double inner_prod = std::inner_product(query_point.begin(), query_point.end(), node_point.begin(), 0.0);
 
-        const size_t best_idx = detail::argmax(products.begin(), products.begin(), products.end());
-
-        return { node.elements[best_idx], products[best_idx] };
+            if (inner_prod > best.prod)
+            {
+                best.elem = elem;
+                best.prod = inner_prod;
+            }
+        }
+        
+        return best;
     }
 
     template<typename T, typename P>
-    std::pair<const T*, double> ConeTree<T, P>::findBestMatchDFS(const Point& query_point, const Node& root) const
+    auto ConeTree<T, P>::findBestMatchDFS(const Point& query_point, const Node& root) const -> FindResult
     {
         assert(!root.elements.empty());
         assert(query_point.size() == dim_);
 
-        std::stack<const Node*> nodes;
-        nodes.push(&root);
+        const double point_norm = detail::euclideanNorm(query_point);
 
-        const T* best_match = nullptr;
-        double max_prod = -std::numeric_limits<double>::infinity();
+        std::vector<const Node*> nodes;
+        nodes.reserve(size());
+        nodes.push_back(&root);
+
+        FindResult best{ nullptr, -std::numeric_limits<double>::infinity() };
 
         while (!nodes.empty())
         {
-            const Node* cur_node = nodes.top();
-            nodes.pop();
+            const Node* cur_node = nodes.back();
+            nodes.pop_back();
 
             /* Skip node if it can't be better. */
-            if (max_prod >= innerProductUpperBound(query_point, *cur_node)) continue;
+            if (best.prod >= innerProductUpperBound(query_point, point_norm, *cur_node)) continue;
              
             if (isLeafNode(*cur_node))
             {
                 auto [elem, inner_prod] = findBestMatchLinear(query_point, *cur_node);
-                if (inner_prod > max_prod)
+                if (inner_prod > best.prod)
                 {
-                    best_match = elem;
-                    max_prod = inner_prod;
+                    best.elem = elem;
+                    best.prod = inner_prod;
                 }
             }
             else if (cur_node->left == nullptr)
             {
                 /* Only need to visit right child. */
-                nodes.push(cur_node->right.get());
+                nodes.push_back(cur_node->right.get());
             }
             else if (cur_node->right == nullptr)
             {
                 /* Only need to visit left child. */
-                nodes.push(cur_node->left.get());
+                nodes.push_back(cur_node->left.get());
             }
             else
             {
-                if (innerProductUpperBound(query_point, *(cur_node->left)) < innerProductUpperBound(query_point, *(cur_node->right)))
+                if (innerProductUpperBound(query_point, point_norm, *(cur_node->left)) <
+                    innerProductUpperBound(query_point, point_norm, *(cur_node->right)))
                 {
                     /* Visit right child first. */
-                    nodes.push(cur_node->left.get());
-                    nodes.push(cur_node->right.get());
+                    nodes.push_back(cur_node->left.get());
+                    nodes.push_back(cur_node->right.get());
                 }
                 else
                 {
                     /* Visit left child first. */
-                    nodes.push(cur_node->right.get());
-                    nodes.push(cur_node->left.get());
+                    nodes.push_back(cur_node->right.get());
+                    nodes.push_back(cur_node->left.get());
                 }
             }
         }
 
-        return { best_match, max_prod };
+        return best;
     }
 
     template<typename T, typename P>
-    std::pair<const T*, double> ConeTree<T, P>::findBestMatch(const Point& point) const
+    inline auto ConeTree<T, P>::findBestMatch(const Point& point) const -> FindResult
     {
         return findBestMatchDFS(point, root_);
     }
