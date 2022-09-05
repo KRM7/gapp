@@ -208,7 +208,7 @@ namespace genetic_algorithm::algorithm
     {
         assert(std::distance(first, last) > 0);
         assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first[0].size(); }));
-        assert(!ref_tree_.size() == 0);
+        assert(!ref_lines_.size() == 0);
 
         updateIdealPoint(first, last);
         updateExtremePoints(first, last);
