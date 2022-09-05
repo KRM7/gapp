@@ -21,7 +21,7 @@ namespace genetic_algorithm::mutation::real
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
     };
 
     /**
@@ -60,7 +60,7 @@ namespace genetic_algorithm::mutation::real
         GeneType beta() const noexcept { return beta_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
         GeneType beta_;
     };
@@ -98,7 +98,7 @@ namespace genetic_algorithm::mutation::real
         GeneType sigma() const noexcept { return sigma_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
         GeneType sigma_;
     };
@@ -136,7 +136,7 @@ namespace genetic_algorithm::mutation::real
         GeneType eta() const noexcept { return eta_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
         GeneType eta_;
     };
@@ -151,7 +151,7 @@ namespace genetic_algorithm::mutation::real
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
     };
 
 } // namespace genetic_algorithm::mutation::real

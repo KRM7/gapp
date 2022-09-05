@@ -41,6 +41,7 @@ namespace genetic_algorithm
         * Takes a vector of genes (chromosome) and returns the fitness vector of the chromosome. \n
         * The returned fitness vector should only contain finite values, and always be the same length
         * during a run. \n
+        * 
         * The fitness function is allowed to return different fitness vectors for the
         * same chromosome if dynamic_fitness is set to true.
         */
@@ -50,32 +51,35 @@ namespace genetic_algorithm
         * The type of the crossover function. \n
         * Takes two candidate solutions (parents), and returns two candidates generated from these
         * parent solutions (children). \n
+        * 
         * The returned children's chromosomes don't have to be the same length as the parents, but
         * all of the other operators used should be able to handle different chromosome lengths in this case
         * (fitness function, mutation, repair).
         */
-        using CrossoverFunction = std::function<CandidatePair(const GaInfo&, const Candidate&, const Candidate&)>;
+        using CrossoverFunction = std::function<CandidatePair(const GA&, const Candidate&, const Candidate&)>;
 
         /**
         * The type of the mutation function. \n
         * Takes a candidate solution, and mutates this solution. \n
+        * 
         * The function is allowed to change the candidate's chromosome's length, but
         * all of the other operators used should be able to handle different chromosome lengths in this
         * case (fitness function, crossover, repair).
         */
-        using MutationFunction = std::function<void(const GaInfo&, Candidate&)>;
+        using MutationFunction = std::function<void(const GA&, Candidate&)>;
 
         /**
         * The type of the repair function. \n
         * Takes a candidate solution, and performs some operation on it. \n
+        * 
         * This function is allowed the change the candidate's chromosome's length, but
         * all of the other operators used should be able to handle different chromosome lengths in this
         * case (fitness function, crossover, mutation).
         */
-        using RepairFunction = std::function<Chromosome(const GA<T>&, const Chromosome&)>;
+        using RepairFunction = std::function<Chromosome(const GA&, const Chromosome&)>;
 
         /** The type of the callback functions used in the algorithm. */
-        using CallbackFunction = std::function<void(const GA<T>&)>;
+        using CallbackFunction = std::function<void(const GA&)>;
 
         /**
         * Create a genetic algorithm.

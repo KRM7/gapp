@@ -18,7 +18,7 @@ namespace genetic_algorithm::mutation::binary
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
     };
 
 } // namespace genetic_algorithm::mutation::binary

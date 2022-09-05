@@ -26,7 +26,7 @@ namespace genetic_algorithm::mutation::perm
         range_max_ = rm;
     }
 
-    void Inversion::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
+    void Inversion::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
         const size_t chrom_len = candidate.chromosome.size();
 
@@ -45,7 +45,7 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Swap2::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
+    void Swap2::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
         if (candidate.chromosome.size() < 2) return;
 
@@ -58,7 +58,7 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    void Swap3::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
+    void Swap3::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
         if (candidate.chromosome.size() < 3) return;
 
@@ -88,7 +88,7 @@ namespace genetic_algorithm::mutation::perm
         range_max_ = rm;
     }
 
-    void Shuffle::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
+    void Shuffle::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
         const size_t chrom_len = candidate.chromosome.size();
 
@@ -123,7 +123,7 @@ namespace genetic_algorithm::mutation::perm
         range_max_ = rm;
     }
 
-    void Shift::mutate(const GaInfo&, Candidate<GeneType>& candidate) const
+    void Shift::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
         const size_t chrom_len = candidate.chromosome.size();
 

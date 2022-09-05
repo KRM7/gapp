@@ -13,12 +13,12 @@ namespace genetic_algorithm::mutation::dtl
     class Lambda final : public Mutation<T>
     {
     public:
-        using MutationFunction = std::function<void(const GaInfo&, Candidate<T>&)>;
+        using MutationFunction = std::function<void(const GA<T>&, Candidate<T>&)>;
 
         explicit Lambda(MutationFunction f);
 
     private:
-        void mutate(const GaInfo& ga, Candidate<T>& candidate) const override;
+        void mutate(const GA<T>& ga, Candidate<T>& candidate) const override;
 
         MutationFunction mutate_;
     };
@@ -38,7 +38,7 @@ namespace genetic_algorithm::mutation::dtl
     {}
 
     template<Gene T>
-    void Lambda<T>::mutate(const GaInfo& ga, Candidate<T>& candidate) const
+    void Lambda<T>::mutate(const GA<T>& ga, Candidate<T>& candidate) const
     {
         mutate_(ga, candidate);
     }

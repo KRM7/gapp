@@ -10,7 +10,8 @@
 
 namespace genetic_algorithm
 {
-    class GaInfo;
+    template<Gene T>
+    class GA;
 
 } // namespace genetic_algorithm
 
@@ -60,13 +61,13 @@ namespace genetic_algorithm::mutation
         * @param ga The genetic algorithm the crossover operator is being used in.
         * @param candidate The candidate to mutate.
         */
-        void operator()(const GaInfo& ga, Candidate<T>& candidate) const;
+        void operator()(const GA<T>& ga, Candidate<T>& candidate) const;
 
     private:
 
         /* The actual implementation of the mutation function. Performs the mutation using the set probability.
            This function should only change the chromosome of the candidate. */
-        virtual void mutate(const GaInfo& ga, Candidate<T>& candidate) const = 0;
+        virtual void mutate(const GA<T>& ga, Candidate<T>& candidate) const = 0;
 
         Probability pm_;
     };

@@ -9,7 +9,7 @@
 
 namespace genetic_algorithm::mutation::integer
 {
-    void Uniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
+    void Uniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
         const size_t base = dynamic_cast<const IntegerGA&>(ga).base();
         const size_t chrom_len = candidate.chromosome.size();

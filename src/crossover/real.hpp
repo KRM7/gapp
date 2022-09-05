@@ -24,7 +24,7 @@ namespace genetic_algorithm::crossover::real
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -63,7 +63,7 @@ namespace genetic_algorithm::crossover::real
         GeneType alpha() const noexcept { return alpha_; }
 
     private:
-        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
         GeneType alpha_;    /* The range parameter (alpha) of the BLX-alpha crossover. */
     };
@@ -100,7 +100,7 @@ namespace genetic_algorithm::crossover::real
         GeneType eta() const noexcept { return eta_; }
 
     private:
-        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
         GeneType eta_;  /* The shape parameter (eta) for the distribution of the simulated binary crossover. */
     };
@@ -117,7 +117,7 @@ namespace genetic_algorithm::crossover::real
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
 

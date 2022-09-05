@@ -13,7 +13,7 @@
 namespace genetic_algorithm::mutation
 {
     template<Gene T>
-    void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
+    void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
     {
         assert(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives());
         assert(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len());

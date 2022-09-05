@@ -14,7 +14,7 @@
 namespace genetic_algorithm::crossover
 {
     template<Gene T>
-    CandidatePair<T> Crossover<T>::operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
+    CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         assert(0.0 <= pc_ && pc_ <= 1.0);
         assert(parent1.is_evaluated && parent2.is_evaluated);

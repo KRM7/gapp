@@ -12,7 +12,7 @@
 
 namespace genetic_algorithm::mutation::real
 {
-    void Uniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
+    void Uniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
         const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
@@ -46,7 +46,7 @@ namespace genetic_algorithm::mutation::real
         beta_ = beta;
     }
 
-    void NonUniform::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
+    void NonUniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
         const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
@@ -88,7 +88,7 @@ namespace genetic_algorithm::mutation::real
         sigma_ = sigma;
     }
 
-    void Gauss::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
+    void Gauss::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
         const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
@@ -126,7 +126,7 @@ namespace genetic_algorithm::mutation::real
         eta_ = eta;
     }
 
-    void Polynomial::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
+    void Polynomial::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
         const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 
@@ -156,7 +156,7 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    void Boundary::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
+    void Boundary::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
         const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
 

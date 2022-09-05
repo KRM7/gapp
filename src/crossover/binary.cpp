@@ -11,12 +11,12 @@
 
 namespace genetic_algorithm::crossover::binary
 {
-    auto SinglePoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
+    auto SinglePoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         return dtl::singlePointCrossoverImpl(parent1, parent2);
     }
 
-    auto TwoPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
+    auto TwoPoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         return dtl::twoPointCrossoverImpl(parent1, parent2);
     }
@@ -40,7 +40,7 @@ namespace genetic_algorithm::crossover::binary
         n_ = n;
     }
 
-    auto NPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
+    auto NPoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         if (n_ == 1)
             return dtl::singlePointCrossoverImpl(parent1, parent2);
@@ -60,7 +60,7 @@ namespace genetic_algorithm::crossover::binary
         ps_ = ps;
     }
 
-    auto Uniform::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
+    auto Uniform::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {

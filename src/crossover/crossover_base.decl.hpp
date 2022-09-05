@@ -10,7 +10,8 @@
 
 namespace genetic_algorithm
 {
-    class GaInfo;
+    template<Gene T>
+    class GA;
 }
 
 /** Crossover operators used in the algorithms. */
@@ -62,12 +63,12 @@ namespace genetic_algorithm::crossover
         * @param parent2 The second parent.
         * @returns The pair of children resulting from the crossover.
         */
-        CandidatePair<T> operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
+        CandidatePair<T> operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
 
     private:
 
         /* The actual crossover function. Generates 2 new Candidates from the parents (not with some probability). */
-        virtual CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
+        virtual CandidatePair<T> crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
 
         Probability pc_;   /* The probability of performing the crossover operation on the parents. */
     };

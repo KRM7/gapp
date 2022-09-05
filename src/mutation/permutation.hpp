@@ -40,7 +40,7 @@ namespace genetic_algorithm::mutation::perm
         double range_max() const noexcept { return range_max_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
         double range_max_;
     };
@@ -55,7 +55,7 @@ namespace genetic_algorithm::mutation::perm
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
     };
 
     /**
@@ -68,7 +68,7 @@ namespace genetic_algorithm::mutation::perm
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
     };
 
     /**
@@ -102,7 +102,7 @@ namespace genetic_algorithm::mutation::perm
         double range_max() const noexcept { return range_max_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
         double range_max_;
     };
@@ -139,7 +139,7 @@ namespace genetic_algorithm::mutation::perm
         double range_max() const noexcept { return range_max_; }
 
     private:
-        void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
         double range_max_;
     };

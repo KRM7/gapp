@@ -21,7 +21,7 @@ namespace genetic_algorithm::crossover::integer
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -35,7 +35,7 @@ namespace genetic_algorithm::crossover::integer
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -75,7 +75,7 @@ namespace genetic_algorithm::crossover::integer
         size_t num_crossover_points() const noexcept { return n_; };
 
     private:
-        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
         size_t n_;
     };
@@ -108,7 +108,7 @@ namespace genetic_algorithm::crossover::integer
         Probability swap_probability() const noexcept { return ps_; }
 
     private:
-        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
         Probability ps_;
     };
