@@ -13,7 +13,7 @@ namespace genetic_algorithm
     * Standard genetic algorithm with binary encoding. \n
     * The genes are encoded as char.
     */
-    class BinaryGA final : public GA<BinaryGene, BinaryGA>
+    class BinaryGA final : public GA<BinaryGene>
     {
     public:
         /**
@@ -34,9 +34,7 @@ namespace genetic_algorithm
         BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
 
     private:
-        friend class GA<GeneType, BinaryGA>;
-
-        Candidate generateCandidate() const;
+        Candidate generateCandidate() const override;
     };
 
 } // namespace genetic_algorithm

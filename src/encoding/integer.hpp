@@ -14,7 +14,7 @@ namespace genetic_algorithm
     * Similar to the @ref BinaryGA, but the values of the genes can be any integer in the interval [0, base), not just 0 or 1. \n
     * It also uses a slightly different mutation function with swaps and inversions.
     */
-    class IntegerGA : public GA<IntegerGene, IntegerGA>
+    class IntegerGA : public GA<IntegerGene>
     {
     public:
         /**
@@ -50,11 +50,9 @@ namespace genetic_algorithm
         GeneType base() const noexcept;
 
     private:
-        friend class GA<GeneType, IntegerGA>;
-
         GeneType base_ = 4;
 
-        Candidate generateCandidate() const;
+        Candidate generateCandidate() const override;
     };
 
 } // namespace genetic_algorithm

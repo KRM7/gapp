@@ -15,7 +15,7 @@ namespace genetic_algorithm
     * Real coded genetic algorithm. \n
     * Each gene of the chromosomes is a floating point value.
     */
-    class RCGA : public GA<RealGene, RCGA>
+    class RCGA : public GA<RealGene>
     {
     public:
         /**
@@ -91,11 +91,9 @@ namespace genetic_algorithm
         const Bounds& limits() const& noexcept;
 
     private:
-        friend class GA<GeneType, RCGA>;
-
         Bounds limits_;
 
-        Candidate generateCandidate() const;
+        Candidate generateCandidate() const override;
     };
 
 } // namespace genetic_algorithm

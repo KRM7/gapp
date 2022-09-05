@@ -24,9 +24,8 @@ namespace genetic_algorithm
     * generateCandidate() function, which should be implemented in the derived classes.
     *
     * @tparam Gene The type of the genes in the candidates' chromosomes.
-    * @tparam Derived The type of the derived class.
     */
-    template<Gene T, typename Derived>
+    template<Gene T>
     class GA : public GaInfo
     {
     public:
@@ -73,10 +72,10 @@ namespace genetic_algorithm
         * all of the other operators used should be able to handle different chromosome lengths in this
         * case (fitness function, crossover, mutation).
         */
-        using RepairFunction = std::function<Chromosome(const Chromosome&)>;
+        using RepairFunction = std::function<Chromosome(const GA<T>&, const Chromosome&)>;
 
         /** The type of the callback functions used in the algorithm. */
-        using CallbackFunction = std::function<void(const GA<T, Derived>&)>;
+        using CallbackFunction = std::function<void(const GA<T>&)>;
 
         /**
         * Create a genetic algorithm.
@@ -273,7 +272,7 @@ namespace genetic_algorithm
 
         void initializeAlgorithm();
         [[nodiscard]] size_t findNumObjectives(const FitnessFunction& f) const;
-        [[nodiscard]] Candidate generateCandidate() const;
+        virtual Candidate generateCandidate() const = 0;
         [[nodiscard]] Population generatePopulation(size_t pop_size) const;
         void prepareSelections() const;
         [[nodiscard]] const Candidate& select() const;
@@ -289,8 +288,8 @@ namespace genetic_algorithm
 
         void advance();
 
-        Derived& derived() noexcept;
-        const Derived& derived() const noexcept;
+        //Derived& derived() noexcept;
+        //const Derived& derived() const noexcept;
 
         bool hasValidFitness(const Candidate& sol) const;
         bool hasValidChromosome(const Candidate& sol) const;

@@ -13,7 +13,7 @@ namespace genetic_algorithm
     * Genetic algorithm where the chromosomes encode permutations. \n
     * The genes of the chromosomes are all unique unsigned integers on thhe closed interval [0, chrom_len - 1].
     */
-    class PermutationGA : public GA<PermutationGene, PermutationGA>
+    class PermutationGA : public GA<PermutationGene>
     {
     public:
         /**
@@ -34,9 +34,7 @@ namespace genetic_algorithm
         PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
 
     private:
-        friend class GA<GeneType, PermutationGA>;
-
-        Candidate generateCandidate() const;
+        Candidate generateCandidate() const override;
     };
 
 } // namespace genetic_algorithm
