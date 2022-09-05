@@ -37,6 +37,9 @@ namespace genetic_algorithm::math
     template<typename T>
     inline constexpr T epsilon = GA_EPSILON * std::numeric_limits<T>::epsilon();
 
+    template<typename T>
+    inline constexpr T inf = std::numeric_limits<T>::infinity();
+
 } // namespace genetic_algorithm::math
 
 namespace genetic_algorithm
