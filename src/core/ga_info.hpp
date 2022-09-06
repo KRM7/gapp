@@ -293,6 +293,10 @@ namespace genetic_algorithm
         void max_gen(size_t max_gen);
         void num_objectives(size_t n);
 
+        virtual size_t findNumObjectives() const = 0;
+
+        void setDefaultAlgorithm();
+
         inline static constexpr size_t DEFAULT_POPSIZE = 100;
     };
 
@@ -312,7 +316,7 @@ namespace genetic_algorithm
 {
     template<typename F>
     requires algorithm::AlgorithmType<F> && std::is_final_v<F>
-    void GaInfo::algorithm(F f)
+    inline void GaInfo::algorithm(F f)
     {
         algorithm_ = std::make_unique<F>(std::move(f));
         can_continue_ = false;
@@ -320,7 +324,7 @@ namespace genetic_algorithm
 
     template<typename S>
     requires (selection::SelectionType<S> && std::is_final_v<S> && !std::derived_from<S, algorithm::Algorithm>)
-    void GaInfo::algorithm(S selection)
+    inline void GaInfo::algorithm(S selection)
     {
         algorithm_ = std::make_unique<algorithm::SingleObjective<S>>(std::move(selection));
         can_continue_ = false;
@@ -329,14 +333,14 @@ namespace genetic_algorithm
     template<typename S, typename U>
     requires (selection::SelectionType<S> && std::is_final_v<S> && !std::derived_from<S, algorithm::Algorithm> &&
               update::UpdaterType<U> && std::is_final_v<U> && !std::derived_from<U, algorithm::Algorithm>)
-    void GaInfo::algorithm(S selection, U updater)
+    inline void GaInfo::algorithm(S selection, U updater)
     {
         algorithm_ = std::make_unique<algorithm::SingleObjective<S, U>>(std::move(selection), std::move(updater));
         can_continue_ = false;
     }
 
     template<algorithm::AlgorithmType F>
-    void GaInfo::algorithm(std::unique_ptr<F>&& f)
+    inline void GaInfo::algorithm(std::unique_ptr<F>&& f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The algorithm can't be a nullptr.");
 
@@ -345,20 +349,22 @@ namespace genetic_algorithm
     }
 
     template<algorithm::AlgorithmType F>
-    F& GaInfo::algorithm() &
+    inline F& GaInfo::algorithm() &
     {
-        return dynamic_cast<F&>(*algorithm_);
+        assert(algorithm_ != nullptr);
+
+        return static_cast<F&>(*algorithm_);
     }
 
     template<typename F>
     requires stopping::StopConditionType<F> && std::is_final_v<F>
-    void GaInfo::stop_condition(F f)
+    inline void GaInfo::stop_condition(F f)
     {
         stop_condition_ = std::make_unique<F>(std::move(f));
     }
 
     template<stopping::StopConditionType F>
-    void GaInfo::stop_condition(std::unique_ptr<F>&& f)
+    inline void GaInfo::stop_condition(std::unique_ptr<F>&& f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
 
@@ -366,9 +372,11 @@ namespace genetic_algorithm
     }
 
     template<stopping::StopConditionType F>
-    F& GaInfo::stop_condition() &
+    inline F& GaInfo::stop_condition() &
     {
-        return dynamic_cast<F&>(*stop_condition_);
+        assert(stop_condition_ != nullptr);
+
+        return static_cast<F&>(*stop_condition_);
     }
 
 } // namespace genetic_algorithm

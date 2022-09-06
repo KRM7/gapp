@@ -260,10 +260,6 @@ namespace genetic_algorithm
         /** This function will be called exactly once at the end of a run. */
         CallbackFunction endOfRunCallback = nullptr;
 
-    protected:
-
-        void setDefaultAlgorithm();
-
     private:
 
         Population population_;
@@ -274,17 +270,18 @@ namespace genetic_algorithm
         std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
         RepairFunction repair_ = nullptr;
 
-        void initializeAlgorithm();
-        [[nodiscard]] size_t findNumObjectives(const FitnessFunction& f) const;
         virtual Candidate generateCandidate() const = 0;
-        [[nodiscard]] Population generatePopulation(size_t pop_size) const;
+
+        void initializeAlgorithm();
+        size_t findNumObjectives() const final;
+        Population generatePopulation(size_t pop_size) const;
         void prepareSelections() const;
-        [[nodiscard]] const Candidate& select() const;
-        [[nodiscard]] CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const;
+        const Candidate& select() const;
+        CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const;
         void mutate(Candidate& sol) const;
         void repair(Candidate& sol) const;
         void updatePopulation(Population& pop, Population&& children);
-        [[nodiscard]] bool stopCondition() const;
+        bool stopCondition() const;
 
         void evaluateSolution(Candidate& sol);
         [[nodiscard]] FitnessMatrix evaluatePopulation(Population& pop);
@@ -292,16 +289,13 @@ namespace genetic_algorithm
 
         void advance();
 
-        //Derived& derived() noexcept;
-        //const Derived& derived() const noexcept;
-
         bool hasValidFitness(const Candidate& sol) const;
         bool hasValidChromosome(const Candidate& sol) const;
         bool fitnessMatrixIsSynced() const;
         bool populationIsValid(const Population& pop) const;
 
 
-        /* Make the protected fields of GaInfo private. */
+        /* Make the protected members of GaInfo private. */
         using GaInfo::fitness_matrix_;
         using GaInfo::algorithm_;
         using GaInfo::stop_condition_;

@@ -1,6 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "ga_info.hpp"
+#include "../algorithm/single_objective.decl.hpp"
+#include "../algorithm/nsga3.hpp"
 #include "../utility/utility.hpp"
 #include <utility>
 #include <stdexcept>
@@ -54,6 +56,15 @@ namespace genetic_algorithm
         if (!f) GA_THROW(std::invalid_argument, "The stop condition function can't be a nullptr.");
 
         stop_condition_ = std::make_unique<stopping::dtl::Lambda>(std::move(f));
+    }
+
+    void GaInfo::setDefaultAlgorithm()
+    {
+        num_objectives(findNumObjectives());
+
+        (num_objectives_ == 1) ?
+            algorithm(std::make_unique<algorithm::SingleObjective<>>()) :
+            algorithm(std::make_unique<algorithm::NSGA3>());
     }
 
 } // namespace genetic_algorithm
