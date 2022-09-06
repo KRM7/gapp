@@ -30,6 +30,7 @@ namespace genetic_algorithm
     {
     public:
         using GeneType = T;                             /**< The gene type used in the chromosomes. */
+        using GeneBounds = std::pair<T, T>;             /**< The type used for the lower and upper bounds of a gene. */
         using Candidate = Candidate<GeneType>;          /**< The type used for the candidates in the algorithm. */
         using Chromosome = std::vector<GeneType>;       /**< The type of the chromosomes of the Candidates, representing a solution. */
         using CandidatePair = CandidatePair<GeneType>;  /**< A pair of Candidates. */
@@ -104,6 +105,17 @@ namespace genetic_algorithm
         * @param f The function the algorithm should find the maximum of.
         */
         void fitness_function(FitnessFunction f);
+
+        /**
+        * Set the lower and upper boundaries used for the genes of the chromosomes.
+        * 
+        * @param The gene bounds.
+        */
+        virtual void gene_bounds(std::vector<GeneBounds> bounds) = 0;
+
+        /** @returns The lower and upper boundaries of the chromosomes' genes. */
+        [[nodiscard]]
+        virtual const std::vector<GeneBounds>& gene_bounds() const noexcept = 0;
 
         /**
         * Set the crossover method the algorithm will use. \n
