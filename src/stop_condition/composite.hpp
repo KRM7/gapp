@@ -21,7 +21,7 @@ namespace genetic_algorithm::stopping
         * Create a composite stop condition from other stop conditions. \n
         * This composite stop condition will return true if ANY of its members return true.
         */
-        OR(T1 first, T2 second, Rest... rest);
+        OR(T1 first, T2 second, Rest... rest) noexcept;
 
     private:
         bool stop_condition(const GaInfo& ga) override;
@@ -41,7 +41,7 @@ namespace genetic_algorithm::stopping
         * Create a composite stop condition from other stop conditions. \n
         * This composite stop condition will return true if ALL of its members return true.
         */
-        AND(T1 first, T2 second, Rest... rest);
+        AND(T1 first, T2 second, Rest... rest) noexcept;
 
     private:
         bool stop_condition(const GaInfo& ga) override;
@@ -61,7 +61,7 @@ namespace genetic_algorithm::stopping
 namespace genetic_algorithm::stopping
 {
     template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
-    OR<T1, T2, Rest...>::OR(T1 first, T2 second, Rest... rest)
+    OR<T1, T2, Rest...>::OR(T1 first, T2 second, Rest... rest) noexcept
         : StopCondition(), parts_(std::move(first), std::move(second), std::move(rest)...)
     {}
 
@@ -74,7 +74,7 @@ namespace genetic_algorithm::stopping
     }
 
     template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
-    AND<T1, T2, Rest...>::AND(T1 first, T2 second, Rest... rest)
+    AND<T1, T2, Rest...>::AND(T1 first, T2 second, Rest... rest) noexcept
         : StopCondition(), parts_(std::move(first), std::move(second), std::move(rest)...)
     {}
 
