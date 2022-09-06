@@ -243,6 +243,8 @@ namespace genetic_algorithm
 
         /**
         * Enable/disable support for variable chromosome lengths (disabled by default). \n
+        * (The crossover, mutation, repair, and fitness functions used also need to be able to handle
+        * variable chromosome lengths if enabled.)
         *
         * @param enable Whether variable chromosome lengths should be allowed.
         */
@@ -270,7 +272,7 @@ namespace genetic_algorithm
         bool keep_all_optimal_solutions() const noexcept { return keep_all_optimal_sols_; }
 
 
-        /** This function will be called exactly once at the end of each generation. */
+        /** This function will be called once at the end of each generation. */
         CallbackFunction endOfGenerationCallback = nullptr;
 
         /** This function will be called exactly once at the end of a run. */
@@ -278,8 +280,12 @@ namespace genetic_algorithm
 
 
         /* Move-only. */
-        GaInfo(GaInfo&&);
-        GaInfo& operator=(GaInfo&&);
+        GaInfo(const GaInfo&)            = delete;
+        GaInfo& operator=(const GaInfo&) = delete;
+
+        GaInfo(GaInfo&&) noexcept;
+        GaInfo& operator=(GaInfo&&) noexcept;
+
         virtual ~GaInfo();
 
     protected:

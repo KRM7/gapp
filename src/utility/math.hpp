@@ -60,7 +60,7 @@ namespace genetic_algorithm::math
     double euclideanNorm(const std::vector<double>& vec) noexcept;
 
     /* Normalize the vector vec (divide by magnitude). */
-    std::vector<double> normalizeVector(const std::vector<double>& vec) noexcept;
+    std::vector<double> normalizeVector(const std::vector<double>& vec);
 
     /* Normalize the vector vec (divide by magnitude). */
     std::vector<double> normalizeVector(std::vector<double>&& vec) noexcept;

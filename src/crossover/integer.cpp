@@ -52,7 +52,7 @@ namespace genetic_algorithm::crossover::integer
     {
     }
 
-    void Uniform::swap_probability(Probability ps)
+    void Uniform::swap_probability(Probability ps) noexcept
     {
         ps_ = ps;
     }

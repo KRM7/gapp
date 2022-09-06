@@ -35,7 +35,7 @@ namespace genetic_algorithm::algorithm
         assert(weights.size() == ideal_point.size());
         assert(fitness.size() == weights.size());
 
-        double dmax = -std::numeric_limits<double>::infinity();
+        double dmax = -math::inf<double>;
 
         for (size_t i = 0; i < fitness.size(); i++)
         {
@@ -143,9 +143,9 @@ namespace genetic_algorithm::algorithm
 
     NSGA3::NSGA3() : pimpl_(std::make_unique<Impl>()) {}
 
-    NSGA3::NSGA3(NSGA3&&)               = default;
-    NSGA3& NSGA3::operator=(NSGA3&&)    = default;
-    NSGA3::~NSGA3()                     = default;
+    NSGA3::NSGA3(NSGA3&&) noexcept            = default;
+    NSGA3& NSGA3::operator=(NSGA3&&) noexcept = default;
+    NSGA3::~NSGA3()                           = default;
 
     inline void NSGA3::Impl::updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {

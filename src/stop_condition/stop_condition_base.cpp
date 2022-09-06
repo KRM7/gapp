@@ -15,7 +15,7 @@ namespace genetic_algorithm::stopping
 
 namespace genetic_algorithm::stopping::dtl
 {
-    Lambda::Lambda(StopConditionFunction f)
+    Lambda::Lambda(StopConditionFunction f) noexcept
         : f_(std::move(f))
     {
     }

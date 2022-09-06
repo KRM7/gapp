@@ -49,7 +49,7 @@ namespace genetic_algorithm::crossover
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        void crossover_rate(Probability pc) { pc_ = pc; }
+        void crossover_rate(Probability pc) noexcept { pc_ = pc; }
 
         /** @returns The crossover rate set for the operator. */
         [[nodiscard]]

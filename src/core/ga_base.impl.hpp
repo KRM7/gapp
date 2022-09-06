@@ -167,13 +167,13 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline bool GA<T>::hasValidFitness(const Candidate& sol) const
+    inline bool GA<T>::hasValidFitness(const Candidate& sol) const noexcept
     {
         return sol.fitness.size() == num_objectives_;
     }
 
     template<Gene T>
-    inline bool GA<T>::hasValidChromosome(const Candidate& sol) const
+    inline bool GA<T>::hasValidChromosome(const Candidate& sol) const noexcept
     {
         return variable_chrom_len_ || (sol.chromosome.size() == chrom_len_);
     }

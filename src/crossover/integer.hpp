@@ -101,7 +101,7 @@ namespace genetic_algorithm::crossover::integer
         *
         * @param swap_prob The probability of swapping each pair of genes between the 2 parents.
         */
-        void swap_probability(Probability ps);
+        void swap_probability(Probability ps) noexcept;
 
         /** @returns The swap probability set. */
         [[nodiscard]]

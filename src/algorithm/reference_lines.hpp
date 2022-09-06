@@ -18,8 +18,9 @@ namespace genetic_algorithm::algorithm::dtl
         const Point direction;
         size_t niche_count;
 
-        RefLine(Point p) :
-            direction(std::move(p)), niche_count(0)
+        RefLine(Point p) noexcept :
+            direction(std::move(p)),
+            niche_count(0)
         {}
     };
 

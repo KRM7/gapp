@@ -9,9 +9,9 @@
 
 namespace genetic_algorithm
 {
-    GaInfo::GaInfo(GaInfo&&)            = default;
-    GaInfo& GaInfo::operator=(GaInfo&&) = default;
-    GaInfo::~GaInfo()                   = default;
+    GaInfo::GaInfo(GaInfo&&) noexcept            = default;
+    GaInfo& GaInfo::operator=(GaInfo&&) noexcept = default;
+    GaInfo::~GaInfo()                            = default;
 
     GaInfo::GaInfo(size_t chrom_len)
         : GaInfo(DEFAULT_POPSIZE, chrom_len)

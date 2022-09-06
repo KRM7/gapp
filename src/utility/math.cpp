@@ -66,7 +66,7 @@ namespace genetic_algorithm::math
         return std::sqrt(std::inner_product(vec.begin(), vec.end(), vec.begin(), 0.0));
     }
 
-    std::vector<double> normalizeVector(const std::vector<double>& vec) noexcept
+    std::vector<double> normalizeVector(const std::vector<double>& vec)
     {
         const double mag = euclideanNorm(vec);
 

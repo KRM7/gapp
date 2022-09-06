@@ -46,9 +46,15 @@ namespace genetic_algorithm::algorithm
 
         std::optional<std::vector<size_t>> optimalSolutions(const GaInfo& ga) const override;
 
+
         NSGA3();
-        NSGA3(NSGA3&&);
-        NSGA3& operator=(NSGA3&&);
+
+        NSGA3(const NSGA3&)            = delete;
+        NSGA3& operator=(const NSGA3&) = delete;
+
+        NSGA3(NSGA3&&) noexcept;
+        NSGA3& operator=(NSGA3&&) noexcept;
+
         ~NSGA3() override;
 
     private:

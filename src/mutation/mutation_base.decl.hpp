@@ -49,7 +49,7 @@ namespace genetic_algorithm::mutation
         * 
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        void mutation_rate(Probability pm) { pm_ = pm; };
+        void mutation_rate(Probability pm) noexcept { pm_ = pm; };
 
         /** @returns The mutation rate set for the operator. */
         [[nodiscard]]

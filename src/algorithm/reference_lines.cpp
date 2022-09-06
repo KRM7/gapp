@@ -85,7 +85,7 @@ namespace genetic_algorithm::algorithm::dtl
     std::vector<RefLine> generateReferencePoints(size_t dim, size_t n)
     {
         std::vector<Point> points = generateRandomRefpointsPick(dim, n);
-        std::transform(points.begin(), points.end(), points.begin(), [](Point p) { return math::normalizeVector(std::move(p)); });
+        std::transform(points.begin(), points.end(), points.begin(), [](Point p) noexcept { return math::normalizeVector(std::move(p)); });
 
         std::vector<RefLine> refs;
         refs.reserve(points.size());

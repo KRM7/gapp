@@ -280,8 +280,8 @@ namespace genetic_algorithm
 
         void advance();
 
-        bool hasValidFitness(const Candidate& sol) const;
-        bool hasValidChromosome(const Candidate& sol) const;
+        bool hasValidFitness(const Candidate& sol) const noexcept;
+        bool hasValidChromosome(const Candidate& sol) const noexcept;
         bool fitnessMatrixIsSynced() const;
         bool populationIsValid(const Population& pop) const;
 
