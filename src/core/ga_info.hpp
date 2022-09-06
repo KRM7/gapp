@@ -38,6 +38,7 @@ namespace genetic_algorithm
         */
         GaInfo(size_t population_size, size_t chrom_len);
 
+
         /**
         * Type returned by fitness_matrix(), used to represent the fitness matrix of the population. \n
         * Each element of the matrix is the fitness vector of the corresponding solution of the population. \n
@@ -57,6 +58,10 @@ namespace genetic_algorithm
         * The function should return true if the algorithm should stop.
         */
         using StopConditionFunction = std::function<bool(const GaInfo&)>;
+
+        /** The type of the callback functions used in the algorithm. */
+        using CallbackFunction = std::function<void(const GaInfo&)>;
+
 
         /**
         * Set the size of the chromosomes (number of genes) of the Candidate solutions used in the algorithm. \n
@@ -265,6 +270,13 @@ namespace genetic_algorithm
         bool keep_all_optimal_solutions() const noexcept { return keep_all_optimal_sols_; }
 
 
+        /** This function will be called exactly once at the end of each generation. */
+        CallbackFunction endOfGenerationCallback = nullptr;
+
+        /** This function will be called exactly once at the end of a run. */
+        CallbackFunction endOfRunCallback = nullptr;
+
+
         /* Move-only. */
         GaInfo(GaInfo&&);
         GaInfo& operator=(GaInfo&&);
@@ -288,6 +300,7 @@ namespace genetic_algorithm
         bool dynamic_fitness_ = false;
         bool variable_chrom_len_ = false;
         bool keep_all_optimal_sols_ = false;
+        //bool cache_solutions_ = false;
         bool can_continue_ = false;
 
         void max_gen(size_t max_gen);
