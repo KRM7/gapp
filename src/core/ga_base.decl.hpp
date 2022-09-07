@@ -30,7 +30,8 @@ namespace genetic_algorithm
     {
     public:
         using GeneType = T;                             /**< The gene type used in the chromosomes. */
-        using GeneBounds = std::pair<T, T>;             /**< The type used for the lower and upper bounds of a gene. */
+        using GeneBounds = std::pair<T, T>;             /**< The type used to represent the lower and upper bounds of a gene. */
+        using BoundsVector = std::vector<GeneBounds>;   /**< A vector of GeneBounds. */
         using Candidate = Candidate<GeneType>;          /**< The type used for the candidates in the algorithm. */
         using Chromosome = std::vector<GeneType>;       /**< The type of the chromosomes of the Candidates, representing a solution. */
         using CandidatePair = CandidatePair<GeneType>;  /**< A pair of Candidates. */
@@ -79,6 +80,7 @@ namespace genetic_algorithm
         */
         using RepairFunction = std::function<Chromosome(const GA&, const Chromosome&)>;
 
+
         /**
         * Create a genetic algorithm.
         *
@@ -96,6 +98,7 @@ namespace genetic_algorithm
         */
         GA(size_t population_size, size_t chrom_len, FitnessFunction fitness_function);
 
+
         /**
         * Set the fitness function used by the algorithm. \n
         * The fitness function should return a vector with a size equal to the number of objectives. \n
@@ -106,16 +109,9 @@ namespace genetic_algorithm
         */
         void fitness_function(FitnessFunction f);
 
-        /**
-        * Set the lower and upper boundaries used for the genes of the chromosomes.
-        * 
-        * @param The gene bounds.
-        */
-        virtual void gene_bounds(std::vector<GeneBounds> bounds) = 0;
-
-        /** @returns The lower and upper boundaries of the chromosomes' genes. */
+        /** @returns The lower and upper bounds of the chromosomes' genes. */
         [[nodiscard]]
-        virtual const std::vector<GeneBounds>& gene_bounds() const noexcept = 0;
+        virtual const BoundsVector& gene_bounds() const noexcept = 0;
 
         /**
         * Set the crossover method the algorithm will use. \n
@@ -262,6 +258,10 @@ namespace genetic_algorithm
         * @returns The optimal solutions.
         */
         Candidates continueFor(size_t num_generations);
+
+    protected:
+
+        BoundsVector bounds_;
 
     private:
 
