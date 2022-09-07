@@ -12,14 +12,16 @@
 
 namespace genetic_algorithm
 {
-    IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitness_function, GeneType base)
-        : IntegerGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), base)
+    IntegerGA::IntegerGA(size_t chrom_len, FitnessFunction fitness_function, GeneType base, GeneType offset)
+        : IntegerGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), base, offset)
     {}
 
-    IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, GeneType base)
+    IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, GeneType base, GeneType offset)
         : GA(pop_size, chrom_len, std::move(fitness_function))
     {
+        bounds_ = BoundsVector(chrom_len, GeneBounds(offset, offset + base - 1));
         this->base(base);
+        this->offset(offset);
         setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::integer::TwoPoint>());
         mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / this->chrom_len()));
@@ -31,11 +33,13 @@ namespace genetic_algorithm
         if (base < 2) GA_THROW(std::invalid_argument, "The base must be at least 2.");
 
         base_ = base;
+        bounds_ = BoundsVector(chrom_len(), GeneBounds(offset_, offset_ + base - 1));
     }
 
-    IntegerGA::GeneType IntegerGA::base() const noexcept
+    void IntegerGA::offset(GeneType offset)
     {
-        return base_;
+        offset_ = offset;
+        bounds_ = BoundsVector(chrom_len(), GeneBounds(offset, offset + base_ - 1));
     }
 
     IntegerGA::Candidate IntegerGA::generateCandidate() const
@@ -44,7 +48,7 @@ namespace genetic_algorithm
         std::generate(solution.chromosome.begin(), solution.chromosome.end(),
         [this]
         {
-            return rng::randomInt<GeneType>(0, base_ - 1);
+            return rng::randomInt<GeneType>(offset_, offset_ + base_ - 1);
         });
 
         return solution;
