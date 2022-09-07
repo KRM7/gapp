@@ -68,7 +68,7 @@ namespace genetic_algorithm::crossover::real
 
     auto BLXa::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
         const size_t chrom_len = parent1.chromosome.size();
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
@@ -100,7 +100,7 @@ namespace genetic_algorithm::crossover::real
 
     auto SimulatedBinary::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
         const size_t chrom_len = parent1.chromosome.size();
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
@@ -151,7 +151,7 @@ namespace genetic_algorithm::crossover::real
 
     auto Wright::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
         const size_t chrom_len = parent1.chromosome.size();
 
         if (parent1.chromosome.size() != parent2.chromosome.size())

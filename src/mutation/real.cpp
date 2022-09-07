@@ -14,7 +14,7 @@ namespace genetic_algorithm::mutation::real
 {
     void Uniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -48,7 +48,7 @@ namespace genetic_algorithm::mutation::real
 
     void NonUniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -90,7 +90,7 @@ namespace genetic_algorithm::mutation::real
 
     void Gauss::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -128,7 +128,7 @@ namespace genetic_algorithm::mutation::real
 
     void Polynomial::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -158,7 +158,7 @@ namespace genetic_algorithm::mutation::real
 
     void Boundary::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).limits();
+        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
