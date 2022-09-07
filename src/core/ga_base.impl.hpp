@@ -85,12 +85,19 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    template<crossover::CrossoverType<T> F>
-    inline F& GA<T>::crossover_method() &
+    inline crossover::Crossover<T>& GA<T>::crossover_method() &
     {
         assert(crossover_ != nullptr);
 
-        return static_cast<F&>(*crossover_);
+        return *crossover_;
+    }
+
+    template<Gene T>
+    inline const crossover::Crossover<T>& GA<T>::crossover_method() const&
+    {
+        assert(crossover_ != nullptr);
+
+        return *crossover_;
     }
 
     template<Gene T>
@@ -135,12 +142,19 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    template<mutation::MutationType<T> F>
-    inline F& GA<T>::mutation_method() &
+    inline mutation::Mutation<T>& GA<T>::mutation_method() &
     {
         assert(mutation_ != nullptr);
 
-        return static_cast<F&>(*mutation_);
+        return *mutation_;
+    }
+
+    template<Gene T>
+    inline const mutation::Mutation<T>& GA<T>::mutation_method() const&
+    {
+        assert(mutation_ != nullptr);
+
+        return *mutation_;
     }
 
     template<Gene T>

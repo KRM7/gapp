@@ -2,6 +2,7 @@
 
 #include "ga_info.hpp"
 #include "../algorithm/single_objective.decl.hpp"
+#include "../stop_condition/stop_condition_base.hpp"
 #include "../algorithm/nsga3.hpp"
 #include "../utility/utility.hpp"
 #include <utility>

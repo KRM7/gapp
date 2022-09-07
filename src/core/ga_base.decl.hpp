@@ -146,9 +146,13 @@ namespace genetic_algorithm
         */
         void crossover_method(CrossoverFunction f);
 
-        /** @returns The crossover operator used by the algorithm, cast to type @p F. */
-        template<crossover::CrossoverType<T> F = crossover::Crossover<GeneType>>
-        F& crossover_method() &;
+        /** @returns The crossover operator used by the algorithm. */
+        [[nodiscard]]
+        crossover::Crossover<T>& crossover_method() &;
+
+        /** @returns The crossover operator used by the algorithm. */
+        [[nodiscard]]
+        const crossover::Crossover<T>& crossover_method() const&;
 
         /**
         * Set the crossover rate of the crossover operator used by the algorithm.
@@ -194,9 +198,13 @@ namespace genetic_algorithm
         */
         void mutation_method(MutationFunction f);
 
-        /** @returns The mutation operator used by the algorithm, cast to type @p F. */
-        template<mutation::MutationType<T> F = mutation::Mutation<GeneType>>
-        F& mutation_method() &;
+        /** @returns The mutation operator used by the algorithm. */
+        [[nodiscard]]
+        mutation::Mutation<T>& mutation_method() &;
+
+        /** @returns The mutation operator used by the algorithm. */
+        [[nodiscard]]
+        const mutation::Mutation<T>& mutation_method() const&;
 
         /**
         * Set the mutation rate of the mutation operator.

@@ -67,7 +67,7 @@ namespace genetic_algorithm
         * Set the size of the chromosomes (number of genes) of the Candidate solutions used in the algorithm. \n
         * The chromosome length must be at least 1. \n
         * 
-        * With variable chromosome lengths, this value is only used to generate the initial population.
+        * With variable chromosome lengths, the chromosome lengths may differ from this value.
         *
         * @param len The length of the Chromosomes.
         */
@@ -113,6 +113,7 @@ namespace genetic_algorithm
         [[nodiscard]]
         size_t generation_cntr() const noexcept { return generation_cntr_; }
         
+
         /**
         * Set the crossover rate of the crossover operator used by the algorithm.
         *
@@ -134,6 +135,7 @@ namespace genetic_algorithm
         /** @returns The mutation rate set for the mutation operator. */
         [[nodiscard]]
         virtual Probability mutation_rate() const noexcept = 0;
+
 
         /**
         * Set the algorithm used by the GA. \n
@@ -181,10 +183,14 @@ namespace genetic_algorithm
         template<algorithm::AlgorithmType F>
         void algorithm(std::unique_ptr<F>&& f);
 
-        /** @returns The algorithm used by the GA, cast to @p F. */
-        template<algorithm::AlgorithmType F = algorithm::Algorithm>
+        /** @returns The algorithm used by the GA. */
         [[nodiscard]]
-        F& algorithm() &;
+        algorithm::Algorithm& algorithm() & { return *algorithm_; }
+
+        /** @returns The algorithm used by the GA. */
+        [[nodiscard]]
+        const algorithm::Algorithm& algorithm() const& { return *algorithm_; }
+
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
@@ -220,10 +226,14 @@ namespace genetic_algorithm
         */
         void stop_condition(StopConditionFunction f);
 
-        /** @returns The stop condition used by the algorithm, cast to type @p F. */
-        template<stopping::StopConditionType F = stopping::StopCondition>
+        /** @returns The stop condition used by the algorithm. */
         [[nodiscard]]
-        F& stop_condition() &;
+        stopping::StopCondition& stop_condition() & { return *stop_condition_; }
+
+        /** @returns The stop condition used by the algorithm. */
+        [[nodiscard]]
+        const stopping::StopCondition& stop_condition() const& { return *stop_condition_; }
+
 
         /**
         * Enable/disable support for dynamic fitness functions (disabled by default). \n
@@ -306,7 +316,6 @@ namespace genetic_algorithm
         bool dynamic_fitness_ = false;
         bool variable_chrom_len_ = false;
         bool keep_all_optimal_sols_ = false;
-        //bool cache_solutions_ = false;
         bool can_continue_ = false;
 
         void max_gen(size_t max_gen);
@@ -325,7 +334,6 @@ namespace genetic_algorithm
 /* IMPLEMENTATION */
 
 #include "../algorithm/single_objective.decl.hpp"
-#include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/utility.hpp"
 #include <type_traits>
 #include <utility>
@@ -367,14 +375,6 @@ namespace genetic_algorithm
         can_continue_ = false;
     }
 
-    template<algorithm::AlgorithmType F>
-    inline F& GaInfo::algorithm() &
-    {
-        assert(algorithm_ != nullptr);
-
-        return static_cast<F&>(*algorithm_);
-    }
-
     template<typename F>
     requires stopping::StopConditionType<F> && std::is_final_v<F>
     inline void GaInfo::stop_condition(F f)
@@ -388,14 +388,6 @@ namespace genetic_algorithm
         if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
 
         stop_condition_ = std::move(f);
-    }
-
-    template<stopping::StopConditionType F>
-    inline F& GaInfo::stop_condition() &
-    {
-        assert(stop_condition_ != nullptr);
-
-        return static_cast<F&>(*stop_condition_);
     }
 
 } // namespace genetic_algorithm
