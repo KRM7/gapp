@@ -33,6 +33,9 @@ namespace genetic_algorithm
         */
         PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
 
+        /** @returns The bounds of the genes (the ranges are inclusive). All of the bounds will be [0, chrom_len - 1]. */
+        const BoundsVector& gene_bounds() const noexcept override { return bounds_; }
+
     private:
         Candidate generateCandidate() const override;
     };

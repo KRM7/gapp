@@ -17,6 +17,7 @@ namespace genetic_algorithm
     BinaryGA::BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)
         : GA(pop_size, chrom_len, std::move(fitness_function))
     {
+        bounds_ = BoundsVector(chrom_len, GeneBounds(false, true));
         setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());
         mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / this->chrom_len()));

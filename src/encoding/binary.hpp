@@ -9,10 +9,7 @@
 
 namespace genetic_algorithm
 {
-    /**
-    * Standard genetic algorithm with binary encoding. \n
-    * The genes are encoded as char.
-    */
+    /** Standard binary encoded genetic algorithm. */
     class BinaryGA final : public GA<BinaryGene>
     {
     public:
@@ -32,6 +29,10 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function to find the maximum of in the algorithm.
         */
         BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
+
+        /** @returns The bounds of the genes (the ranges are inclusive). All of the bounds will be [false, true]. */
+        [[nodiscard]]
+        const BoundsVector& gene_bounds() const noexcept override { return bounds_; }
 
     private:
         Candidate generateCandidate() const override;
