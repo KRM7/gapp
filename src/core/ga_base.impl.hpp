@@ -435,6 +435,12 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
+    inline auto GA<T>::run() -> Candidates
+    {
+        return run(max_gen());
+    }
+
+    template<Gene T>
     auto GA<T>::run(size_t num_generations) -> Candidates
     {
         max_gen(num_generations);
