@@ -29,8 +29,9 @@ namespace genetic_algorithm
     class GA : public GaInfo
     {
     public:
+        struct GeneBounds { T lower; T upper; };        /**< The type used to represent the lower and upper bounds of a gene. */
+        
         using GeneType = T;                             /**< The gene type used in the chromosomes. */
-        using GeneBounds = std::pair<T, T>;             /**< The type used to represent the lower and upper bounds of a gene. */
         using BoundsVector = std::vector<GeneBounds>;   /**< A vector of GeneBounds. */
         using Candidate = Candidate<GeneType>;          /**< The type used for the candidates in the algorithm. */
         using Chromosome = std::vector<GeneType>;       /**< The type of the chromosomes of the Candidates, representing a solution. */

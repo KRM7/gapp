@@ -12,60 +12,55 @@
 
 namespace genetic_algorithm
 {
-    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const Bounds& bounds)
+    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const BoundsVector& bounds)
         : GA(pop_size, chrom_len, std::move(fitness_function))
     {
-        this->limits(bounds);
+        this->gene_bounds(bounds);
         setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::real::Wright>());
         mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
-    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const Bounds& bounds)
+    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const BoundsVector& bounds)
         : RCGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), bounds)
     {}
 
-    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds)
+    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const GeneBounds& bounds)
          : RCGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
     {}
 
-    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds)
+    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const GeneBounds& bounds)
         : RCGA(pop_size, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
     {}
 
-    void RCGA::limits(const Bounds& limits)
+    void RCGA::gene_bounds(const BoundsVector& limits)
     {
         if (limits.size() != this->chrom_len())
         {
             GA_THROW(std::invalid_argument, "The number of limits must be equal to the chromosome length.");
         }
-        if (std::any_of(limits.begin(), limits.end(), [](const auto& limit) { return limit.first > limit.second; }))
+        if (std::any_of(limits.begin(), limits.end(), [](const auto& limit) { return limit.lower > limit.upper; }))
         {
             GA_THROW(std::invalid_argument, "The lower bound must be lower than the upper bound for each gene.");
         }
 
-        limits_ = limits;
+        bounds_ = limits;
     }
 
-    void RCGA::limits(const std::pair<GeneType, GeneType>& limits)
+    void RCGA::gene_bounds(const GeneBounds& limits)
     {
-        this->limits(std::vector(this->chrom_len(), limits));
-    }
-
-    const RCGA::Bounds& RCGA::limits() const& noexcept
-    {
-        return limits_;
+        gene_bounds(BoundsVector(chrom_len(), limits));
     }
 
     RCGA::Candidate RCGA::generateCandidate() const
     {
-        assert(this->chrom_len() == limits_.size());
+        assert(chrom_len() == bounds_.size());
 
-        Candidate solution(this->chrom_len());
+        Candidate solution(chrom_len());
         for (size_t i = 0; i < solution.chromosome.size(); i++)
         {
-            solution.chromosome[i] = rng::randomReal(limits_[i].first, limits_[i].second);
+            solution.chromosome[i] = rng::randomReal(bounds_[i].lower, bounds_[i].upper);
         }
 
         return solution;

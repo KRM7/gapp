@@ -19,12 +19,6 @@ namespace genetic_algorithm
     {
     public:
         /**
-        * Type to represent the gene boundaries. \n
-        * Eg.: { {gene1_min, gene1_max}, {gene2_min, gene2_max}, ..., {geneN_min, geneN_max} }
-        */
-        using Bounds = std::vector<std::pair<GeneType, GeneType>>;
-
-        /**
         * Construct a real encoded genetic algorithm. \n
         * The gene bounds are specified for each gene separately.
         *
@@ -32,7 +26,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function to find the maximum of with the algorithm.
         * @param bounds The boundaries of the genes (their min and max values), specified for each gene.
         */
-        RCGA(size_t chrom_len, FitnessFunction fitness_function, const Bounds& bounds);
+        RCGA(size_t chrom_len, FitnessFunction fitness_function, const BoundsVector& bounds);
 
         /**
         * Construct a real encoded genetic algorithm. \n
@@ -43,7 +37,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function to find the maximum of with the algorithm.
         * @param bounds The boundaries of the genes (their min and max values), specified for each gene.
         */
-        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const Bounds& bounds);
+        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const BoundsVector& bounds);
 
         /**
         * Construct a real encoded genetic algorithm. \n
@@ -51,9 +45,9 @@ namespace genetic_algorithm
         *
         * @param chrom_len The number of genes in the chromosomes of the candidates.
         * @param fitness_function The fitness function to find the maximum of with the algorithm.
-        * @param bounds The boundaries of every gene (min, and max values).
+        * @param bounds The boundaries used for every gene (min, and max values).
         */
-        RCGA(size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds);
+        RCGA(size_t chrom_len, FitnessFunction fitness_function, const GeneBounds& bounds);
 
         /**
         * Construct a real encoded genetic algorithm. \n
@@ -64,7 +58,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function to find the maximum of with the algorithm.
         * @param bounds The boundaries of every gene (min, and max values)
         */
-        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const std::pair<GeneType, GeneType>& bounds);
+        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const GeneBounds& bounds);
 
         /**
         * Sets the boundaries of the genes. \n
@@ -75,7 +69,7 @@ namespace genetic_algorithm
         *
         * @param limits The lower and upper boundaries of the genes.
         */
-        void limits(const Bounds& limits);
+        void gene_bounds(const BoundsVector& limits);
 
         /**
         * Sets the the same lower and upper bounds for every gene. \n
@@ -84,15 +78,13 @@ namespace genetic_algorithm
         *
         * @param limits The lower and upper boundaries of the genes.
         */
-        void limits(const std::pair<GeneType, GeneType>& limits);
+        void gene_bounds(const GeneBounds& limits);
 
         /** @returns The current bounds set for the genes. */
         [[nodiscard]]
-        const Bounds& limits() const& noexcept;
+        const BoundsVector& gene_bounds() const noexcept override { return bounds_; };
 
     private:
-        Bounds limits_;
-
         Candidate generateCandidate() const override;
     };
 
