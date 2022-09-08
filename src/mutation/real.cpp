@@ -14,7 +14,7 @@ namespace genetic_algorithm::mutation::real
 {
     void Uniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
+        const auto& bounds = ga.gene_bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -26,7 +26,7 @@ namespace genetic_algorithm::mutation::real
 
         for (const auto& idx : mutated_indices)
         {
-            candidate.chromosome[idx] = rng::randomReal(bounds[idx].first, bounds[idx].second);
+            candidate.chromosome[idx] = rng::randomReal(bounds[idx].lower, bounds[idx].upper);
         }
     }
 
@@ -48,7 +48,7 @@ namespace genetic_algorithm::mutation::real
 
     void NonUniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
+        const auto& bounds = ga.gene_bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -64,11 +64,11 @@ namespace genetic_algorithm::mutation::real
             const GeneType exponent = std::pow(1.0 - GeneType(ga.generation_cntr()) / ga.max_gen(), beta_);
 
             const GeneType multiplier = 1.0 - std::pow(rand, exponent);
-            const GeneType bound = rng::randomBool() ? bounds[idx].first : bounds[idx].second;
+            const GeneType bound = rng::randomBool() ? bounds[idx].lower : bounds[idx].upper;
 
             candidate.chromosome[idx] += (bound - candidate.chromosome[idx]) * multiplier;
             /* The value of the mutated gene might be outside of the allowed interval. */
-            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
+            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].lower, bounds[idx].upper);
         }
     }
 
@@ -90,7 +90,7 @@ namespace genetic_algorithm::mutation::real
 
     void Gauss::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
+        const auto& bounds = ga.gene_bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -102,11 +102,11 @@ namespace genetic_algorithm::mutation::real
 
         for (const auto& idx : mutated_indices)
         {
-            const GeneType SD = (bounds[idx].second - bounds[idx].first) / sigma_;
+            const GeneType SD = (bounds[idx].upper - bounds[idx].lower) / sigma_;
 
             candidate.chromosome[idx] += rng::randomNormal<GeneType>(0.0, SD);
             /* The value of the mutated gene might be outside of the allowed interval. */
-            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
+            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].lower, bounds[idx].upper);
         }
     }
 
@@ -128,7 +128,7 @@ namespace genetic_algorithm::mutation::real
 
     void Polynomial::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
+        const auto& bounds = ga.gene_bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -144,21 +144,21 @@ namespace genetic_algorithm::mutation::real
             if (alpha <= 0.5)
             {
                 const GeneType delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
-                candidate.chromosome[idx] += delta * (candidate.chromosome[idx] - bounds[idx].first);
+                candidate.chromosome[idx] += delta * (candidate.chromosome[idx] - bounds[idx].lower);
             }
             else
             {
                 const GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
-                candidate.chromosome[idx] += delta * (bounds[idx].second - candidate.chromosome[idx]);
+                candidate.chromosome[idx] += delta * (bounds[idx].upper - candidate.chromosome[idx]);
             }
             /* The value of the mutated gene might be outside of the allowed interval. */
-            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].first, bounds[idx].second);
+            candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].lower, bounds[idx].upper);
         }
     }
 
     void Boundary::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
+        const auto& bounds = ga.gene_bounds();
 
         if (candidate.chromosome.size() != bounds.size())
         {
@@ -170,7 +170,7 @@ namespace genetic_algorithm::mutation::real
 
         for (const auto& idx : mutated_indices)
         {
-            candidate.chromosome[idx] = rng::randomBool() ? bounds[idx].first : bounds[idx].second;
+            candidate.chromosome[idx] = rng::randomBool() ? bounds[idx].lower : bounds[idx].upper;
         }
     }
 

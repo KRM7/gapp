@@ -68,14 +68,14 @@ namespace genetic_algorithm::crossover::real
 
     auto BLXa::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
+        const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = parent1.chromosome.size();
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the BLXa crossover.");
         }
-        if (bounds.size() != parent1.chromosome.size())
+        if (bounds.size() != chrom_len)
         {
             GA_THROW(std::invalid_argument, "The chromosome and bounds vector sizes must be the same to perform the BLXa crossover.");
         }
@@ -91,8 +91,8 @@ namespace genetic_algorithm::crossover::real
             child1.chromosome[i] = rng::randomReal(range_min - range_ext, range_max + range_ext);
             child2.chromosome[i] = rng::randomReal(range_min - range_ext, range_max + range_ext);
             /* The children's genes might be outside the allowed interval. */
-            child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
-            child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
+            child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].lower, bounds[i].upper);
+            child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].lower, bounds[i].upper);
         }
 
         return { std::move(child1), std::move(child2) };
@@ -100,7 +100,7 @@ namespace genetic_algorithm::crossover::real
 
     auto SimulatedBinary::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
+        const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = parent1.chromosome.size();
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
@@ -121,8 +121,8 @@ namespace genetic_algorithm::crossover::real
             /* Handle the edge case where the 2 genes are equal. */
             if (math::floatIsEqual(gene_high, gene_low)) continue;
 
-            const GeneType beta1 = 1.0 + 2.0 * (gene_low - bounds[i].first) / (gene_high - gene_low);
-            const GeneType beta2 = 1.0 + 2.0 * (bounds[i].second - gene_high) / (gene_high - gene_low);
+            const GeneType beta1 = 1.0 + 2.0 * (gene_low - bounds[i].lower) / (gene_high - gene_low);
+            const GeneType beta2 = 1.0 + 2.0 * (bounds[i].upper - gene_high) / (gene_high - gene_low);
 
             const GeneType alpha1 = 2.0 - std::pow(beta1, -(eta_ + 1.0));
             const GeneType alpha2 = 2.0 - std::pow(beta2, -(eta_ + 1.0));
@@ -142,8 +142,8 @@ namespace genetic_algorithm::crossover::real
             child2.chromosome[i] = 0.5 * (parent1.chromosome[i] + parent2.chromosome[i] + beta2_prime * std::abs(parent1.chromosome[i] - parent2.chromosome[i]));
 
             /* The children's genes might be outside the allowed interval. */
-            child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
-            child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
+            child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].lower, bounds[i].upper);
+            child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].lower, bounds[i].upper);
         }
 
         return { std::move(child1), std::move(child2) };
@@ -151,7 +151,7 @@ namespace genetic_algorithm::crossover::real
 
     auto Wright::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        const auto& bounds = dynamic_cast<const RCGA&>(ga).bounds();
+        const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = parent1.chromosome.size();
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
@@ -177,8 +177,8 @@ namespace genetic_algorithm::crossover::real
             child1.chromosome[i] = w1 * (p1.chromosome[i] - p2.chromosome[i]) + p1.chromosome[i];
             child2.chromosome[i] = w2 * (p1.chromosome[i] - p2.chromosome[i]) + p1.chromosome[i];
             /* The children's genes might be outside the allowed intervals. */
-            child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].first, bounds[i].second);
-            child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].first, bounds[i].second);
+            child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].lower, bounds[i].upper);
+            child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].lower, bounds[i].upper);
         }
 
         return { std::move(child1), std::move(child2) };

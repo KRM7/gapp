@@ -11,34 +11,22 @@ namespace genetic_algorithm::mutation::integer
 {
     void Uniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const size_t base = dynamic_cast<const IntegerGA&>(ga).base();
+        const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = candidate.chromosome.size();
 
         const size_t mutate_count = rng::randomBinomial(chrom_len, mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chrom_len, mutate_count);
 
-        if (base < 16) /* Make sure the new value for the changed genes can't be the old ones. */
+        for (const auto& idx : mutated_indices)
         {
-            std::vector<GeneType> alleles(base);
-            std::iota(alleles.begin(), alleles.end(), GeneType{ 0 });
+            GeneType new_gene = rng::randomInt(bounds[idx].lower, bounds[idx].upper);
 
-            for (const auto& idx : mutated_indices)
+            while (new_gene == candidate.chromosome[idx])
             {
-                using std::swap;
-                const auto old_gene = candidate.chromosome[idx];
-                swap(alleles[old_gene], alleles.back());
-                const GeneType new_gene = rng::randomElement(alleles.begin(), alleles.end() - 1);
-                swap(alleles[old_gene], alleles.back());
+                new_gene = rng::randomInt(bounds[idx].lower, bounds[idx].upper);
+            }
 
-                candidate.chromosome[idx] = new_gene;
-            }
-        }
-        else /* The mutated gene values might be the same as the old ones, but the probability of this is low. */
-        {
-            for (const auto& idx : mutated_indices)
-            {
-                candidate.chromosome[idx] = rng::randomInt<GeneType>(0, base - 1);
-            }
+            candidate.chromosome[idx] = new_gene;
         }
     }
 
