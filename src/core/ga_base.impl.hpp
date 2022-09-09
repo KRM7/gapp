@@ -60,6 +60,12 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
+    inline auto GA<T>::gene_bounds() const noexcept -> const BoundsVector&
+    {
+        return bounds_;
+    }
+
+    template<Gene T>
     template<typename F>
     requires crossover::CrossoverType<F, T> && std::is_final_v<F>
     inline void GA<T>::crossover_method(F f)

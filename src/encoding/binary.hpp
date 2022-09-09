@@ -30,10 +30,6 @@ namespace genetic_algorithm
         */
         BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
 
-        /** @returns The bounds of the genes (the ranges are inclusive). All of the bounds will be [false, true]. */
-        [[nodiscard]]
-        const BoundsVector& gene_bounds() const noexcept override { return bounds_; }
-
     private:
         Candidate generateCandidate() const override;
     };

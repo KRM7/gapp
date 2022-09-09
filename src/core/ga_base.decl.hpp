@@ -110,9 +110,9 @@ namespace genetic_algorithm
         */
         void fitness_function(FitnessFunction f);
 
-        /** @returns The lower and upper bounds of the chromosomes' genes. */
+        /** @returns The lower and upper bounds of each of the chromosomes' genes (the ranges are inclusive). */
         [[nodiscard]]
-        virtual const BoundsVector& gene_bounds() const noexcept = 0;
+        const BoundsVector& gene_bounds() const noexcept;
 
         /**
         * Set the crossover method the algorithm will use. \n

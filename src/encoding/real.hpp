@@ -80,10 +80,6 @@ namespace genetic_algorithm
         */
         void gene_bounds(const GeneBounds& limits);
 
-        /** @returns The current bounds set for the genes. */
-        [[nodiscard]]
-        const BoundsVector& gene_bounds() const noexcept override { return bounds_; };
-
     private:
         Candidate generateCandidate() const override;
     };

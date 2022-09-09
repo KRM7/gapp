@@ -66,10 +66,6 @@ namespace genetic_algorithm
         [[nodiscard]]
         GeneType offset() const noexcept { return offset_; }
 
-        /** @returns The bounds of the genes (the ranges are inclusive). All of the bounds will be [offset, offset + base - 1]. */
-        [[nodiscard]]
-        const BoundsVector& gene_bounds() const noexcept override { return bounds_; }
-
     private:
         GeneType base_ = 4;
         GeneType offset_ = 0;
