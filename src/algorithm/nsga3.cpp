@@ -388,15 +388,9 @@ namespace genetic_algorithm::algorithm
 
     std::optional<std::vector<size_t>> NSGA3::optimalSolutions(const GaInfo&) const
     {
-        std::vector<size_t> optimal_indices;
-        optimal_indices.reserve(pimpl_->sol_info_.size());
-
-        for (size_t i = 0; i < pimpl_->sol_info_.size(); i++)
-        {
-            if (pimpl_->sol_info_[i].rank == 0) optimal_indices.push_back(i);
-        }
-
-        return optimal_indices;
+        return detail::find_indices(pimpl_->sol_info_,
+                                    detail::compose(&Impl::CandidateInfo::rank,
+                                                    detail::equal_to(0_sz)));
     }
 
 } // namespace genetic_algorithm::algorithm

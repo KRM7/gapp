@@ -3,6 +3,8 @@
 #include "nsga2.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
+#include "../utility/algorithm.hpp"
+#include "../utility/functional.hpp"
 #include "../utility/math.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
@@ -147,15 +149,7 @@ namespace genetic_algorithm::algorithm
 
     std::optional<std::vector<size_t>> NSGA2::optimalSolutions(const GaInfo&) const
     {
-        std::vector<size_t> optimal_indices;
-        optimal_indices.reserve(ranks_.size());
-
-        for (size_t i = 0; i < ranks_.size(); i++)
-        {
-            if (ranks_[i] == 0) optimal_indices.push_back(i);
-        }
-
-        return optimal_indices;
+        return detail::find_indices(ranks_, detail::equal_to(0_sz));
     }
 
 } // namespace genetic_algorithm::algorithm
