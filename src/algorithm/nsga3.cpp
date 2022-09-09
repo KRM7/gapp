@@ -380,8 +380,8 @@ namespace genetic_algorithm::algorithm
     {
         assert(!pop.empty());
 
-        size_t idx1 = rng::randomIdx(pop);
-        size_t idx2 = rng::randomIdx(pop);
+        const size_t idx1 = rng::randomIdx(pop);
+        const size_t idx2 = rng::randomIdx(pop);
 
         return pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
     }
