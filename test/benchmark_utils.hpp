@@ -85,7 +85,9 @@ void printSol(const std::vector<T>& chrom)
 template<genetic_algorithm::GeneticAlgorithmType GA, typename F>
 void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::string& problem_name)
 {
-    auto [sols, time_spent] = invoke_timed(&GA::run, ga, max_gen);
+    using RunFn = GA::Candidates(GA::*)(size_t);
+
+    auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&GA::run), ga, max_gen);
 
     std::cout 
     << std::format("\n\nOptimum found for the {} is (actual best is {}):\n", problem_name, fitness_func.optimal_x());
@@ -117,7 +119,9 @@ void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::str
 template<genetic_algorithm::GeneticAlgorithmType GA>
 void benchmarkMoga(GA& ga, size_t max_gen, const std::string& ga_name, const std::string& problem_name)
 {
-    auto [sols, time_spent] = invoke_timed(&GA::run, ga, max_gen);
+    using RunFn = GA::Candidates(GA::*)(size_t);
+
+    auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&GA::run), ga, max_gen);
 
     std::string msg = "\n\nOptimal solutions found for the {} problem with the {}: {}\n"
                       "Number of fitness function evaluations: {}\n"
