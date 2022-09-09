@@ -31,6 +31,7 @@ namespace genetic_algorithm
         BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
 
     private:
+        void initializeAlgorithmImpl() override;
         Candidate generateCandidate() const override;
     };
 

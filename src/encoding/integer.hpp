@@ -70,6 +70,7 @@ namespace genetic_algorithm
         GeneType base_ = 4;
         GeneType offset_ = 0;
 
+        void initializeAlgorithmImpl() override;
         Candidate generateCandidate() const override;
     };
 

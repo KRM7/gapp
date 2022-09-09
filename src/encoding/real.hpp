@@ -81,6 +81,7 @@ namespace genetic_algorithm
         void gene_bounds(const GeneBounds& limits);
 
     private:
+        void initializeAlgorithmImpl();
         Candidate generateCandidate() const override;
     };
 

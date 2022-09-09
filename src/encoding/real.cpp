@@ -53,6 +53,14 @@ namespace genetic_algorithm
         gene_bounds(BoundsVector(chrom_len(), limits));
     }
 
+    void RCGA::initializeAlgorithmImpl()
+    {
+        if (bounds_.size() != chrom_len())
+        {
+            GA_THROW(std::logic_error, "The size of the bounds vector must match the chromosome length for the RCGA.");
+        }
+    }
+
     RCGA::Candidate RCGA::generateCandidate() const
     {
         assert(chrom_len() == bounds_.size());
