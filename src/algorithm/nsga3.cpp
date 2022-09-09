@@ -19,6 +19,7 @@
 #include <limits>
 #include <cstddef>
 #include <cassert>
+#include <stdexcept>
 
 namespace genetic_algorithm::algorithm
 {
@@ -268,8 +269,12 @@ namespace genetic_algorithm::algorithm
 
     void NSGA3::initialize(const GaInfo& ga)
     {
-        assert(ga.num_objectives() > 1);
         assert(ga.population_size() != 0);
+
+        if (ga.num_objectives() <= 1)
+        {
+            GA_THROW(std::logic_error, "The number of objectives must be greater than 1 for the NSGA-III algorithm.");
+        }
 
         auto& fitness_matrix = ga.fitness_matrix();
 

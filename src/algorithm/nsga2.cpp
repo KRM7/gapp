@@ -3,6 +3,7 @@
 #include "nsga2.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
+#include "../utility/math.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
@@ -12,9 +13,7 @@
 #include <utility>
 #include <cstddef>
 #include <cassert>
-
-#include <numeric>
-#include <execution>
+#include <stdexcept>
 
 namespace genetic_algorithm::algorithm
 {
@@ -35,8 +34,7 @@ namespace genetic_algorithm::algorithm
         {
             for (const auto& [front_first, front_last] : front_bounds)
             {
-                std::sort(front_first, front_last,
-                [&](const FrontInfo& lhs, const FrontInfo& rhs) noexcept
+                std::sort(front_first, front_last, [&](const FrontInfo& lhs, const FrontInfo& rhs) noexcept
                 {
                     return fmat[lhs.idx][dim] < fmat[rhs.idx][dim]; // ascending
                 });
@@ -46,14 +44,14 @@ namespace genetic_algorithm::algorithm
 
                 double finterval = std::max(fmat[last_idx][dim] - fmat[first_idx][dim], 1E-6);
 
-                cdistances[first_idx] = std::numeric_limits<double>::infinity();
+                cdistances[first_idx] = math::inf<double>;
                 for (auto it = front_first + 1; it < front_last - 1; ++it)
                 {
                     size_t next = std::next(it)->idx;
                     size_t prev = std::prev(it)->idx;
                     cdistances[it->idx] += (fmat[next][dim] - fmat[prev][dim]) / finterval;
                 }
-                cdistances[last_idx] = std::numeric_limits<double>::infinity();
+                cdistances[last_idx] = math::inf<double>;
             }
         }
 
@@ -62,8 +60,12 @@ namespace genetic_algorithm::algorithm
 
     void NSGA2::initialize(const GaInfo& ga)
     {
-        assert(ga.num_objectives() > 1);
         assert(ga.population_size() != 0);
+
+        if (ga.num_objectives() <= 1)
+        {
+            GA_THROW(std::logic_error, "The number of objectives must be greater than 1 for the NSGA-II algorithm.");
+        }
 
         auto& fmat = ga.fitness_matrix();
         auto pfronts = nonDominatedSort(fmat.begin(), fmat.end());
