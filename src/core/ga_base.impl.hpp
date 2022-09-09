@@ -49,8 +49,8 @@ namespace genetic_algorithm
         if (!f) GA_THROW(std::invalid_argument, "The fitness function can't be a nullptr.");
 
         size_t old_objectives = num_objectives();
-        num_objectives(findNumObjectives(f));
         fitness_function_ = std::move(f);
+        num_objectives(findNumObjectives());
 
         if (old_objectives != num_objectives())
         {
