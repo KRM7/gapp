@@ -89,6 +89,15 @@ namespace genetic_algorithm
         [[nodiscard]]
         size_t population_size() const noexcept { return population_size_; }
 
+        /**
+        * Set the maximum number of generations a run can last for. \n
+        * The algorthm will always stop when reaching this generation, even if another stop condition was set. \n
+        * Must be at least 1.
+        * 
+        * @param max_gen The maximum number of generations.
+        */
+        void max_gen(size_t max_gen);
+
         /** @returns The maximum number of generations set for the algorithm. */
         [[nodiscard]]
         size_t max_gen() const noexcept { return max_gen_; }
@@ -318,7 +327,6 @@ namespace genetic_algorithm
         bool keep_all_optimal_sols_ = false;
         bool can_continue_ = false;
 
-        void max_gen(size_t max_gen);
         void num_objectives(size_t n);
 
         virtual size_t findNumObjectives() const = 0;
