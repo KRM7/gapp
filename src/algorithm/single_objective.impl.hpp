@@ -20,7 +20,7 @@ namespace genetic_algorithm::algorithm
     }
 
     template<selection::SelectionType S, update::UpdaterType U>
-    void SingleObjective<S, U>::initialize(const GaInfo& ga)
+    void SingleObjective<S, U>::initializeImpl(const GaInfo& ga)
     {
         if (ga.num_objectives() != 1)
         {
@@ -31,23 +31,27 @@ namespace genetic_algorithm::algorithm
     }
 
     template<selection::SelectionType S, update::UpdaterType U>
-    void SingleObjective<S, U>::prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat)
+    void SingleObjective<S, U>::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         selection_.prepareSelections(ga, fmat);
     }
 
     template<selection::SelectionType S, update::UpdaterType U>
-    size_t SingleObjective<S, U>::select(const GaInfo& ga, const FitnessMatrix& fmat) const
+    size_t SingleObjective<S, U>::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
     {
         return selection_.select(ga, fmat);
     }
 
     template<selection::SelectionType S, update::UpdaterType U>
-    std::vector<size_t> SingleObjective<S, U>::nextPopulation(const GaInfo& ga,
-                                                              FitnessMatrix::const_iterator first,
-                                                              FitnessMatrix::const_iterator children_first,
-                                                              FitnessMatrix::const_iterator last)
+    std::vector<size_t> SingleObjective<S, U>::nextPopulationImpl(const GaInfo& ga,
+                                                                  FitnessMatrix::const_iterator first,
+                                                                  FitnessMatrix::const_iterator children_first,
+                                                                  FitnessMatrix::const_iterator last)
     {
+        assert(size_t(children_first - first) == ga.population_size());
+        assert(size_t(last - children_first) >= ga.population_size());
+        assert(std::all_of(first, last, [](const FitnessVector& fvec) { return fvec.size() == 1; }));
+
         if (ga.num_objectives() != 1)
         {
             GA_THROW(std::logic_error, "The number of objectives must be 1 for the single-objective algorithms.");

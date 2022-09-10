@@ -24,10 +24,10 @@ namespace genetic_algorithm::algorithm
     * population update methods used). They may either be single- or multi-objective (or both), and have 4
     * methods which must be overriden in the derived classes: \n
     * 
-    *  - initialize:        Initializes the algorithm. \n
-    *  - prepareSelections: Prepares the algorithm for the selections. \n
-    *  - select:            Selects a candidate from the population (this should be thread-safe). \n
-    *  - nextPopulation:    Select the candidates of the next population from the parents and the children.
+    *  - initialize:         Initializes the algorithm (at the start of a run). \n
+    *  - prepareSelections:  Prepares the algorithm for the selections if needed. \n
+    *  - select:             Selects a candidate from the population (this should be thread-safe). \n
+    *  - nextPopulation:     Select the candidates of the next population from the parents and the children.
     */
     class Algorithm
     {
@@ -42,7 +42,7 @@ namespace genetic_algorithm::algorithm
         *
         * @param ga The GA that uses the algorithm.
         */
-        virtual void initialize(const GaInfo& ga) = 0;
+        void initialize(const GaInfo& ga) { initializeImpl(ga); };
 
         /**
         * Prepare the algorithm for the selections beforehand if neccesary. \n
@@ -51,7 +51,7 @@ namespace genetic_algorithm::algorithm
         * @param ga The GA that uses the algorithm.
         * @param fmat The fitness matrix of the population of the GA.
         */
-        virtual void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat) = 0;
+        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat) { prepareSelectionsImpl(ga, fmat); }
 
         /**
         * Select a single candidate from the population. \n
@@ -64,7 +64,17 @@ namespace genetic_algorithm::algorithm
         * @param fmat The fitness matrix of the current population.
         * @returns The selected candidate's index in the fitness matrix.
         */
-        virtual size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const = 0;
+        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const
+        {
+            size_t selected_idx = selectImpl(ga, fmat);
+
+            if (selected_idx >= ga.population_size())
+            {
+                GA_THROW(std::logic_error, "An invalid candidate was selected by the algorithm.");
+            }
+
+            return selected_idx;
+        }
 
         /**
         * Select the Candidates of the next generation (next population) from the Candidates of the
@@ -81,10 +91,24 @@ namespace genetic_algorithm::algorithm
         * @param last The end of the fitness matrix.
         * @returns The selected candidates' indices in the fitness matrix, assuming that the index of @p first is 0.
         */
-        virtual std::vector<size_t> nextPopulation(const GaInfo& ga,
-                                                   FitnessMatrix::const_iterator first,
-                                                   FitnessMatrix::const_iterator children_first,
-                                                   FitnessMatrix::const_iterator last) = 0;
+        std::vector<size_t> nextPopulation(const GaInfo& ga,
+                                           FitnessMatrix::const_iterator first,
+                                           FitnessMatrix::const_iterator children_first,
+                                           FitnessMatrix::const_iterator last)
+        {
+            assert(size_t(children_first - first) == ga.population_size());
+            assert(size_t(last - children_first) >= ga.population_size());
+            assert(std::all_of(first, last, [&](const FitnessVector& f) { return f.size() == first->size(); }));
+
+            auto next_indices = nextPopulationImpl(ga, first, children_first, last);
+
+            if (std::any_of(next_indices.begin(), next_indices.end(), detail::greater_eq_than(ga.population_size())))
+            {
+                GA_THROW(std::logic_error, "An invalid candidate was selected for the next population by the algorithm.");
+            }
+
+            return next_indices;
+        }
 
         /**
         * Return the indices of the optimal solutions in a population that was created
@@ -99,7 +123,7 @@ namespace genetic_algorithm::algorithm
         * @param ga The GA that uses the algorithm.
         * @returns The indices of the optimal candidates.
         */
-        virtual std::optional<std::vector<size_t>> optimalSolutions(const GaInfo&) const { return {}; }
+        std::optional<std::vector<size_t>> optimalSolutions(const GaInfo& ga) const { return optimalSolutionsImpl(ga); }
 
 
         Algorithm()                             = default;
@@ -108,6 +132,26 @@ namespace genetic_algorithm::algorithm
         Algorithm& operator=(const Algorithm&)  = default;
         Algorithm& operator=(Algorithm&&)       = default;
         virtual ~Algorithm()                    = default;
+
+    private:
+
+        /** Implementation of the initialize function. */
+        virtual void initializeImpl(const GaInfo& ga) = 0;
+
+        /** Implementation of the prepareSelections function. */
+        virtual void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) = 0;
+
+        /** Implementation of the select function. */
+        virtual size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const = 0;
+
+        /** Implementation of the nextPopulation function. */
+        virtual std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
+                                                       FitnessMatrix::const_iterator first,
+                                                       FitnessMatrix::const_iterator children_first,
+                                                       FitnessMatrix::const_iterator last) = 0;
+
+        /** Implementation of the optimalSolutions function. */
+        virtual std::optional<std::vector<size_t>> optimalSolutionsImpl(const GaInfo&) const { return {}; }
     };
 
     /** Algorithm types. */

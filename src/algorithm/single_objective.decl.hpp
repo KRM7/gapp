@@ -41,19 +41,18 @@ namespace genetic_algorithm::algorithm
         [[nodiscard]]
         Updater& update_method() const noexcept { return updater_; }
 
-
-        void initialize(const GaInfo& ga) override;
-        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat) override;
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
-
-        std::vector<size_t> nextPopulation(const GaInfo& ga,
-                                           FitnessMatrix::const_iterator first,
-                                           FitnessMatrix::const_iterator children_first,
-                                           FitnessMatrix::const_iterator last) override;
-
     private:
         Selection selection_;
         Updater updater_;
+
+        void initializeImpl(const GaInfo& ga) override;
+        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
+                                               FitnessMatrix::const_iterator first,
+                                               FitnessMatrix::const_iterator children_first,
+                                               FitnessMatrix::const_iterator last) override;
     };
 
 } // namespace genetic_algorithm::algorithm

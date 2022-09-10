@@ -31,7 +31,7 @@ namespace genetic_algorithm::selection
 
         { selection.initialize(ga) }              -> std::same_as<void>;
         { selection.prepareSelections(ga, fmat) } -> std::same_as<void>;
-        { selection.select(ga, fmat) }            -> std::same_as<size_t>; /* This method should be thread safe. */
+        { selection.select(ga, fmat) }            -> std::same_as<size_t>;
     };
 
 } // namespace genetic_algorithm::selection
