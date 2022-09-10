@@ -46,22 +46,32 @@ namespace genetic_algorithm::crossover::real
     }
 
 
-    auto Arithmetic::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
+    auto Arithmetic::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
+        const auto& bounds = ga.gene_bounds();
+        const size_t chrom_len = parent1.chromosome.size();
+
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
             GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the arithmetic crossover.");
+        }
+        if (bounds.size() != chrom_len)
+        {
+            GA_THROW(std::invalid_argument, "The chromosome and bounds vector sizes must be the same to perform the BLXa crossover.");
         }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
         const GeneType alpha = rng::randomReal();
-        for (size_t i = 0; i < parent1.chromosome.size(); i++)
+        for (size_t i = 0; i < chrom_len; i++)
         {
             child1.chromosome[i] =    alpha      * parent1.chromosome[i] + (1.0 - alpha) * parent2.chromosome[i];
             child2.chromosome[i] = (1.0 - alpha) * parent1.chromosome[i] +     alpha     * parent2.chromosome[i];
+
+            /* The children's genes might be outside the allowed interval (really). */
+            child1.chromosome[i] = std::clamp(child1.chromosome[i], bounds[i].lower, bounds[i].upper);
+            child2.chromosome[i] = std::clamp(child2.chromosome[i], bounds[i].lower, bounds[i].upper);
         }
-        /* No bounds check, the generated children's genes will always be within the bounds if the parents' genes were also within them. */
 
         return { std::move(child1), std::move(child2) };
     }
