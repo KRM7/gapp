@@ -64,16 +64,17 @@ namespace genetic_algorithm::algorithm
         * @param fmat The fitness matrix of the current population.
         * @returns The selected candidate's index in the fitness matrix.
         */
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const
+        template<Gene T>
+        const Candidate<T>& select(const GaInfo& ga, const Population<T>& pop, const FitnessMatrix& fmat) const
         {
-            size_t selected_idx = selectImpl(ga, fmat);
+            const size_t selected_idx = selectImpl(ga, fmat);
 
-            if (selected_idx >= fmat.size())
+            if (selected_idx >= pop.size())
             {
                 GA_THROW(std::logic_error, "An invalid candidate was selected by the algorithm.");
             }
 
-            return selected_idx;
+            return pop[selected_idx];
         }
 
         /**
@@ -91,23 +92,21 @@ namespace genetic_algorithm::algorithm
         * @param last The end of the fitness matrix.
         * @returns The selected candidates' indices in the fitness matrix, assuming that the index of @p first is 0.
         */
-        std::vector<size_t> nextPopulation(const GaInfo& ga,
-                                           FitnessMatrix::const_iterator first,
-                                           FitnessMatrix::const_iterator children_first,
-                                           FitnessMatrix::const_iterator last)
+        template<Gene T>
+        Population<T> nextPopulation(const GaInfo& ga, const Population<T>& pop, const FitnessMatrix& fmat)
         {
-            assert(size_t(children_first - first) == ga.population_size());
-            assert(size_t(last - children_first) >= ga.population_size());
-            assert(std::all_of(first, last, [&](const FitnessVector& f) { return f.size() == first->size(); }));
+            //assert(size_t(children_first - first) == ga.population_size());
+            //assert(size_t(last - children_first) >= ga.population_size());
+            //assert(std::all_of(first, last, [&](const FitnessVector& f) { return f.size() == first->size(); }));
 
-            auto next_indices = nextPopulationImpl(ga, first, children_first, last);
+            auto next_indices = nextPopulationImpl(ga, fmat.begin(), children_first, last);
 
-            if (std::any_of(next_indices.begin(), next_indices.end(), detail::greater_eq_than(ga.population_size())))
+            if (std::any_of(next_indices.begin(), next_indices.end(), detail::greater_eq_than(size_t(children_first - first))))
             {
                 GA_THROW(std::logic_error, "An invalid candidate was selected for the next population by the algorithm.");
             }
 
-            return next_indices;
+            return detail::select(pop, next_indices);
         }
 
         /**
@@ -166,7 +165,7 @@ namespace genetic_algorithm::algorithm
                                                        FitnessMatrix::const_iterator children_first,
                                                        FitnessMatrix::const_iterator last) = 0;
 
-        /** Implementation of the optimalSolutions function. */
+        /** Implementation of the optimalSolutions function. Returns the indices of the optimal solutions in the population. */
         virtual std::optional<std::vector<size_t>> optimalSolutionsImpl(const GaInfo&) const { return {}; }
     };
 

@@ -295,11 +295,7 @@ namespace genetic_algorithm
     template<Gene T>
     inline auto GA<T>::select() const -> const Candidate&
     {
-        const size_t selected_idx = algorithm_->select(*this, fitness_matrix());
-
-        return population_[selected_idx];
-
-        //return algorithm_->select(*this, population(), fitness_matrix());
+        return algorithm_->select(*this, population(), fitness_matrix());
     }
 
     template<Gene T>
