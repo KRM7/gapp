@@ -35,32 +35,28 @@ namespace genetic_algorithm::algorithm
     class NSGA3 final : public Algorithm
     {
     public:
-        void initialize(const GaInfo& ga) override;
-        void prepareSelections(const GaInfo&, const FitnessMatrix&) override {}
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const override;
-
-        std::vector<size_t> nextPopulation(const GaInfo& ga,
-                                           FitnessMatrix::const_iterator first,
-                                           FitnessMatrix::const_iterator children_first,
-                                           FitnessMatrix::const_iterator last) override;
-
-        std::optional<std::vector<size_t>> optimalSolutions(const GaInfo& ga) const override;
-
-
         NSGA3();
-
-        NSGA3(const NSGA3&)            = delete;
-        NSGA3& operator=(const NSGA3&) = delete;
-
+        //NSGA3(const NSGA3&);
+        //NSGA3& operator=(const NSGA3&);
         NSGA3(NSGA3&&) noexcept;
         NSGA3& operator=(NSGA3&&) noexcept;
-
         ~NSGA3() override;
 
     private:
         struct Impl;
 
         std::unique_ptr<Impl> pimpl_;
+
+        void initializeImpl(const GaInfo& ga) override;
+        void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) override {}
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
+                                               FitnessMatrix::const_iterator first,
+                                               FitnessMatrix::const_iterator children_first,
+                                               FitnessMatrix::const_iterator last) override;
+
+        std::optional<std::vector<size_t>> optimalSolutionsImpl(const GaInfo& ga) const override;
     };
 
 } // namespace genetic_algorithm::algorithm

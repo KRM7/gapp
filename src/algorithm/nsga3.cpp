@@ -142,7 +142,18 @@ namespace genetic_algorithm::algorithm
         double refDistOf(const FrontInfo& sol) const noexcept;
     };
 
-    NSGA3::NSGA3() : pimpl_(std::make_unique<Impl>()) {}
+    NSGA3::NSGA3() :
+        pimpl_(std::make_unique<Impl>())
+    {}
+
+    //NSGA3::NSGA3(const NSGA3& rhs) :
+    //    pimpl_(std::make_unique<Impl>(*rhs.pimpl_))
+    //{}
+
+    //NSGA3& NSGA3::operator=(const NSGA3& rhs)
+    //{
+    //    pimpl_ = std::make_unique<Impl>(*rhs.pimpl_);
+    //}
 
     NSGA3::NSGA3(NSGA3&&) noexcept            = default;
     NSGA3& NSGA3::operator=(NSGA3&&) noexcept = default;
@@ -267,7 +278,7 @@ namespace genetic_algorithm::algorithm
 
     /* NSGA3 INTERFACE FUNCTIONS */
 
-    void NSGA3::initialize(const GaInfo& ga)
+    void NSGA3::initializeImpl(const GaInfo& ga)
     {
         assert(ga.population_size() != 0);
 
@@ -293,7 +304,7 @@ namespace genetic_algorithm::algorithm
         std::for_each(pfronts.begin(), pfronts.end(), [this](const FrontInfo& sol) { pimpl_->sol_info_[sol.idx].rank = sol.rank; });
     }
 
-    std::vector<size_t> NSGA3::nextPopulation(const GaInfo& ga,
+    std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga,
                                               FitnessMatrix::const_iterator parents_first,
                                               FitnessMatrix::const_iterator children_first,
                                               FitnessMatrix::const_iterator children_last)
@@ -376,7 +387,7 @@ namespace genetic_algorithm::algorithm
         return new_pop;
     }
 
-    size_t NSGA3::select(const GaInfo&, const FitnessMatrix& pop) const
+    size_t NSGA3::selectImpl(const GaInfo&, const FitnessMatrix& pop) const
     {
         assert(!pop.empty());
 
@@ -386,7 +397,7 @@ namespace genetic_algorithm::algorithm
         return pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
     }
 
-    std::optional<std::vector<size_t>> NSGA3::optimalSolutions(const GaInfo&) const
+    std::optional<std::vector<size_t>> NSGA3::optimalSolutionsImpl(const GaInfo&) const
     {
         return detail::find_indices(pimpl_->sol_info_,
                                     detail::compose(&Impl::CandidateInfo::rank,
