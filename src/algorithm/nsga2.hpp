@@ -4,7 +4,6 @@
 #define GA_ALGORITHM_NSGA2_HPP
 
 #include "algorithm_base.hpp"
-#include "nd_sort.hpp"
 
 namespace genetic_algorithm::algorithm
 {
@@ -32,29 +31,20 @@ namespace genetic_algorithm::algorithm
     */
     class NSGA2 final : public Algorithm
     {
-    public:
-        void initialize(const GaInfo& ga) override;
-        void prepareSelections(const GaInfo&, const FitnessMatrix&) override {}
-        size_t select(const GaInfo& ga, const FitnessMatrix& pop) const override;
-
-        std::vector<size_t> nextPopulation(const GaInfo& ga,
-                                           FitnessMatrix::const_iterator first,
-                                           FitnessMatrix::const_iterator children_first,
-                                           FitnessMatrix::const_iterator last) override;
-
-        std::optional<std::vector<size_t>> optimalSolutions(const GaInfo& ga) const override;
-
     private:
         std::vector<size_t> ranks_;
         std::vector<double> dists_;
 
-        /* Returns true if pop[lidx] is better than pop[ridx]. */
-        bool crowdedCompare(size_t lidx, size_t ridx) const noexcept;
+        void initializeImpl(const GaInfo& ga) override;
+        void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) override {}
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& pop) const override;
 
-        /* Calculate the crowding distances of the solutions in pfronts. */
-        static std::vector<double> crowdingDistances(FitnessMatrix::const_iterator first,
-                                                     FitnessMatrix::const_iterator last,
-                                                     dtl::ParetoFronts pfronts);
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
+                                               FitnessMatrix::const_iterator first,
+                                               FitnessMatrix::const_iterator children_first,
+                                               FitnessMatrix::const_iterator last) override;
+
+        std::optional<std::vector<size_t>> optimalSolutionsImpl(const GaInfo& ga) const override;
     };
 
 } // namespace genetic_algorithm::algorithm
