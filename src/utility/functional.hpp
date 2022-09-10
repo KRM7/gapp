@@ -14,7 +14,7 @@
 namespace genetic_algorithm
 {
     template<auto F>
-    inline constexpr auto Fn = [](auto&&... args) -> decltype(auto)
+    constexpr auto Fn = [](auto&&... args) noexcept(std::is_nothrow_invocable_v<decltype(F), decltype(args)...>) -> decltype(auto)
     {
         return std::invoke(F, std::forward<decltype(args)>(args)...);
     };
@@ -39,8 +39,8 @@ namespace genetic_algorithm::detail
     template<typename F>
     constexpr auto compose(F&& f) noexcept
     {
-        return [f = lforward<F>(f)] <typename... Args>
-        (Args&&... args) noexcept(std::is_nothrow_invocable_v<F, Args...>)
+        return [f = lforward<F>(f)] <typename... Args> (Args&&... args)
+        noexcept(std::is_nothrow_invocable_v<F, Args...>) -> decltype(auto)
         requires std::invocable<F, Args...>
         {
             return std::invoke(f, std::forward<Args>(args)...);
@@ -50,8 +50,11 @@ namespace genetic_algorithm::detail
     template<typename F, typename... Fs>
     constexpr auto compose(F&& f, Fs&&... fs) noexcept
     {
-        return [f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args>
-        (Args&&... args) requires std::invocable<F, Args...>
+        return [f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args> (Args&&... args)
+        noexcept(std::is_nothrow_invocable_v<F, Args...> &&
+                 std::is_nothrow_invocable_v<decltype(compose(fs...)), std::invoke_result_t<F, Args...>>) -> decltype(auto)
+        requires (std::invocable<F, Args...> &&
+                  std::invocable<decltype(compose(fs...)), std::invoke_result_t<F, Args...>>)
         {
             return compose(fs...)(std::invoke(f, std::forward<Args>(args)...));
         };
