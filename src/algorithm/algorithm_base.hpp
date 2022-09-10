@@ -21,7 +21,7 @@ namespace genetic_algorithm::algorithm
     * Base class used for all of the algorithms. \n
     * 
     * The algorithms define the way the population is evolved over the generations (the selection and
-    * population update methods used). They may either be single- or multi-objective (or both), and have 4
+    * population update methods used). They may be single- or multi-objective (or both), and have 4
     * methods which must be overriden in the derived classes: \n
     * 
     *  - initialize:         Initializes the algorithm (at the start of a run). \n
@@ -36,7 +36,7 @@ namespace genetic_algorithm::algorithm
         using FitnessMatrix = detail::FitnessMatrix;
 
         /**
-        * Initialize the algorithm method if needed. \n
+        * Initialize the algorithm if needed. \n
         * This method will be called exactly once at start of the genetic algorithm,
         * after the initial population has already been created. \n
         *
@@ -68,7 +68,7 @@ namespace genetic_algorithm::algorithm
         {
             size_t selected_idx = selectImpl(ga, fmat);
 
-            if (selected_idx >= ga.population_size())
+            if (selected_idx >= fmat.size())
             {
                 GA_THROW(std::logic_error, "An invalid candidate was selected by the algorithm.");
             }
@@ -123,7 +123,23 @@ namespace genetic_algorithm::algorithm
         * @param ga The GA that uses the algorithm.
         * @returns The indices of the optimal candidates.
         */
-        std::optional<std::vector<size_t>> optimalSolutions(const GaInfo& ga) const { return optimalSolutionsImpl(ga); }
+        template<Gene T>
+        Candidates<T> optimalSolutions(const GaInfo& ga, const Population<T>& pop) const
+        {
+            const auto optimal_indices = optimalSolutionsImpl(ga);
+
+            if (optimal_indices.has_value() &&
+                std::any_of(optimal_indices->begin(), optimal_indices->end(), detail::greater_eq_than(pop.size())))
+            {
+                GA_THROW(std::logic_error, "An invalid optimal solution index was returned by optimalSolutionsImpl.");
+            }
+
+            auto optimal_sols = optimal_indices.has_value() ?
+                detail::select(pop, *optimal_indices) :
+                detail::findParetoFront(pop);
+
+            return optimal_sols;
+        }
 
 
         Algorithm()                             = default;
@@ -136,10 +152,10 @@ namespace genetic_algorithm::algorithm
     private:
 
         /** Implementation of the initialize function. */
-        virtual void initializeImpl(const GaInfo& ga) = 0;
+        virtual void initializeImpl(const GaInfo&) {}
 
         /** Implementation of the prepareSelections function. */
-        virtual void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) = 0;
+        virtual void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) {}
 
         /** Implementation of the select function. */
         virtual size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const = 0;

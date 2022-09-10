@@ -48,8 +48,6 @@ namespace genetic_algorithm::algorithm
                                                                   FitnessMatrix::const_iterator children_first,
                                                                   FitnessMatrix::const_iterator last)
     {
-        assert(size_t(children_first - first) == ga.population_size());
-        assert(size_t(last - children_first) >= ga.population_size());
         assert(std::all_of(first, last, [](const FitnessVector& fvec) { return fvec.size() == 1; }));
 
         if (ga.num_objectives() != 1)

@@ -298,6 +298,8 @@ namespace genetic_algorithm
         const size_t selected_idx = algorithm_->select(*this, fitness_matrix());
 
         return population_[selected_idx];
+
+        //return algorithm_->select(*this, population(), fitness_matrix());
     }
 
     template<Gene T>
@@ -394,11 +396,7 @@ namespace genetic_algorithm
     template<Gene T>
     void GA<T>::updateOptimalSolutions(Candidates& optimal_sols, const Population& pop) const
     {
-        const auto optimal_indices = algorithm_->optimalSolutions(*this);
-
-        auto optimal_pop = optimal_indices.has_value() ?
-            detail::select(pop, *optimal_indices) :
-            detail::findParetoFront(pop);
+        auto optimal_pop = algorithm_->optimalSolutions(*this, pop);
 
         optimal_sols = detail::mergeParetoSets(std::move(optimal_sols), std::move(optimal_pop));
         detail::erase_duplicates(optimal_sols);
