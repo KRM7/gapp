@@ -141,7 +141,7 @@ namespace genetic_algorithm::detail
     constexpr auto multiply_by(const T& multiplier)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& value) noexcept(noexcept(value * value))
+        return [=](const auto& value) noexcept(noexcept(value * multiplier))
         {
             return value * multiplier;
         };
@@ -151,7 +151,7 @@ namespace genetic_algorithm::detail
     constexpr auto divide_by(const T& divisor)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [idiv = 1.0 / divisor](const T& value) noexcept(noexcept(value * value))
+        return [idiv = 1.0 / divisor](const auto& value) noexcept(noexcept(value * value))
         {
             return value * idiv;
         };
@@ -161,7 +161,7 @@ namespace genetic_algorithm::detail
     constexpr auto add(const T& increment)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& value) noexcept(noexcept(value + value))
+        return [=](const auto& value) noexcept(noexcept(value + increment))
         {
             return value + increment;
         };
@@ -171,29 +171,19 @@ namespace genetic_algorithm::detail
     constexpr auto subtract(const T& decrement)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& value) noexcept(noexcept(value - value))
+        return [=](const auto& value) noexcept(noexcept(value - decrement))
         {
             return value - decrement;
         };
     }
 
-    template<typename T>
-    constexpr auto multiply_add(const T& multiplier, const T& increment)
-    noexcept(std::is_nothrow_copy_constructible_v<T>)
+    template<typename T, typename U>
+    constexpr auto multiply_add(const T& multiplier, const U& increment)
+    noexcept(std::is_nothrow_copy_constructible_v<T> && std::is_nothrow_copy_constructible_v<U>)
     {
-        return [=](const T& value) noexcept(noexcept(value * value - value))
+        return [=](const auto& value) noexcept(noexcept(multiplier * value + increment))
         {
             return multiplier * value + increment;
-        };
-    }
-
-    template<typename T>
-    requires (std::is_arithmetic_v<T>)
-    constexpr auto multiply_add(const T& multiplier, const T& increment) noexcept
-    {
-        return [=](const T& value) noexcept
-        {
-            return std::fma(multiplier, value, increment);
         };
     }
 
@@ -201,7 +191,7 @@ namespace genetic_algorithm::detail
     constexpr auto equal_to(const T& rhs)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& lhs) noexcept(noexcept(lhs == lhs))
+        return [=](const auto& lhs) noexcept(noexcept(lhs == rhs))
         {
             return lhs == rhs;
         };
@@ -211,7 +201,7 @@ namespace genetic_algorithm::detail
     constexpr auto not_equal_to(const T& rhs)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& lhs) noexcept(noexcept(lhs != lhs))
+        return [=](const auto& lhs) noexcept(noexcept(lhs != rhs))
         {
             return lhs != rhs;
         };
@@ -221,7 +211,7 @@ namespace genetic_algorithm::detail
     constexpr auto greater_than(const T& rhs)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& lhs) noexcept(noexcept(lhs > lhs))
+        return [=](const auto& lhs) noexcept(noexcept(lhs > rhs))
         {
             return lhs > rhs;
         };
@@ -231,7 +221,7 @@ namespace genetic_algorithm::detail
     constexpr auto greater_eq_than(const T& rhs)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& lhs) noexcept(noexcept(lhs >= lhs))
+        return [=](const auto& lhs) noexcept(noexcept(lhs >= rhs))
         {
             return lhs >= rhs;
         };
@@ -241,7 +231,7 @@ namespace genetic_algorithm::detail
     constexpr auto less_than(const T& rhs)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& lhs) noexcept(noexcept(lhs < lhs))
+        return [=](const auto& lhs) noexcept(noexcept(lhs < rhs))
         {
             return lhs < rhs;
         };
@@ -251,7 +241,7 @@ namespace genetic_algorithm::detail
     constexpr auto less_eq_than(const T& rhs)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [=](const T& lhs) noexcept(noexcept(lhs <= lhs))
+        return [=](const auto& lhs) noexcept(noexcept(lhs <= rhs))
         {
             return lhs <= rhs;
         };

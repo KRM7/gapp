@@ -180,7 +180,7 @@ namespace genetic_algorithm::detail
             std::transform(center.begin(), center.end(), point.begin(), center.begin(), std::plus{});
         }
 
-        std::transform(center.begin(), center.end(), center.begin(), detail::divide_by(double(node.elements.size())));
+        std::transform(center.begin(), center.end(), center.begin(), detail::divide_by(node.elements.size()));
 
         return center;
     }

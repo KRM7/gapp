@@ -108,7 +108,7 @@ namespace genetic_algorithm::math
     {
         assert(!vec.empty());
 
-        return std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{}, detail::divide_by(double(vec.size())));
+        return std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{}, detail::divide_by(vec.size()));
     }
 
     double stdDev(const std::vector<double>& vec) noexcept
