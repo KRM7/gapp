@@ -80,6 +80,8 @@ namespace genetic_algorithm
         */
         void gene_bounds(const GeneBounds& limits);
 
+        using GA::gene_bounds;
+
     private:
         void initializeAlgorithmImpl();
         Candidate generateCandidate() const override;
