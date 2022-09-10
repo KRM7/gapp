@@ -13,7 +13,7 @@
 namespace genetic_algorithm::algorithm
 {
     template<selection::SelectionType S, update::UpdaterType U>
-    SingleObjective<S, U>::SingleObjective(S selection, U updater) :
+    SingleObjective<S, U>::SingleObjective(S selection, U updater) noexcept :
         selection_(std::move(selection)),
         updater_(std::move(updater))
     {

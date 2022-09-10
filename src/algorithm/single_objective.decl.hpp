@@ -31,7 +31,7 @@ namespace genetic_algorithm::algorithm
         * @param selection The selection method to use in the algorithm.
         * @param updater The method used to update the populations between generations of the algorithm.
         */
-        SingleObjective(Selection selection = Selection{}, Updater updater = Updater{});
+        SingleObjective(Selection selection = Selection{}, Updater updater = Updater{}) noexcept;
 
         /** @returns The selection method of the algorithm. */
         [[nodiscard]]
