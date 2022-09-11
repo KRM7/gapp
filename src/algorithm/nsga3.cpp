@@ -132,14 +132,12 @@ namespace genetic_algorithm::algorithm
         /* Update the current nadir point based on the extreme points. */
         void updateNadirPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-        /* Reset each reference lines niche count to 0. */
-        void resetNicheCounts();
-
-        /* Recalculate the niche counts of the reference lines based on each solutions associated ref line. */
-        void recalcNicheCounts();
+        /* Recalculate the niche counts of the reference lines based on the ref lines associated with the candidates in [first, last). */
+        void recalcNicheCounts(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
 
         /* Find the closest reference and its distance for each of the points in the fitness matrix. */
-        void associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
+        void associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last,
+                                  ParetoFronts::const_iterator pfirst, ParetoFronts::const_iterator plast);
 
         /* Return true if pop[lhs] is better than pop[rhs]. */
         bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
@@ -218,18 +216,14 @@ namespace genetic_algorithm::algorithm
         nadir_point_ = findNadirPoint(extreme_points_);
     }
 
-    inline void NSGA3::Impl::resetNicheCounts()
+    inline void NSGA3::Impl::recalcNicheCounts(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
     {
         std::for_each(ref_lines_.data().begin(), ref_lines_.data().end(), [](RefLine& ref) { ref.niche_count = 0; });
+        std::for_each(first, last, [&](const FrontInfo& sol) { refPointOf(sol).niche_count++; });
     }
 
-    inline void NSGA3::Impl::recalcNicheCounts()
-    {
-        resetNicheCounts();
-        std::for_each(sol_info_.begin(), sol_info_.end(), [](const CandidateInfo& info) { info.ref->niche_count++; });
-    }
-
-    void NSGA3::Impl::associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    void NSGA3::Impl::associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last,
+                                           ParetoFronts::const_iterator pfirst, ParetoFronts::const_iterator plast)
     {
         assert(std::distance(first, last) > 0);
         assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first[0].size(); }));
@@ -238,21 +232,19 @@ namespace genetic_algorithm::algorithm
         updateIdealPoint(first, last);
         updateExtremePoints(first, last);
         nadir_point_ = findNadirPoint(extreme_points_);
+
         sol_info_.resize(last - first);
 
-        std::transform(GA_EXECUTION_UNSEQ, first, last, sol_info_.begin(), sol_info_.begin(),
-        [this](const FitnessVector& f, Impl::CandidateInfo& props)
+        std::for_each(GA_EXECUTION_UNSEQ, pfirst, plast, [&](const FrontInfo& sol) /* par exec is worse here for popsize 100 */
         {
-            const auto fnorm = normalizeFitnessVec(f, ideal_point_, nadir_point_);
+            const FitnessVector& fvec = first[sol.idx];
+            const FitnessVector fnorm = normalizeFitnessVec(fvec, ideal_point_, nadir_point_);
+
             const auto best = ref_lines_.findBestMatch(fnorm);
 
-            props.ref = best.elem;
-            props.ref_dist = math::perpendicularDistanceSq(best.elem->direction, fnorm);
-
-            return props;
+            sol_info_[sol.idx].ref = best.elem;
+            sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(best.elem->direction, fnorm);
         });
-
-        recalcNicheCounts();
     }
 
     inline bool NSGA3::Impl::nichedCompare(size_t lhs, size_t rhs) const noexcept
@@ -330,7 +322,8 @@ namespace genetic_algorithm::algorithm
         pimpl_->sol_info_.resize(ga.population_size());
         std::for_each(pfronts.begin(), pfronts.end(), [this](const FrontInfo& sol) { pimpl_->sol_info_[sol.idx].rank = sol.rank; });
 
-        pimpl_->associatePopWithRefs(fitness_matrix.begin(), fitness_matrix.end());
+        pimpl_->associatePopWithRefs(fitness_matrix.begin(), fitness_matrix.end(), pfronts.begin(), pfronts.end());
+        pimpl_->recalcNicheCounts(pfronts.begin(), pfronts.end());
     }
 
     std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga,
@@ -346,13 +339,17 @@ namespace genetic_algorithm::algorithm
 
         GA_UNUSED(children_first);
 
-        auto pfronts = dtl::nonDominatedSort(parents_first, children_last);
+        pimpl_->sol_info_.resize(children_last - parents_first);
 
-        pimpl_->associatePopWithRefs(parents_first, children_last);
+        auto pfronts = dtl::nonDominatedSort(parents_first, children_last);
         std::for_each(pfronts.begin(), pfronts.end(), [this](const FrontInfo& sol) { pimpl_->sol_info_[sol.idx].rank = sol.rank; });
-        pimpl_->resetNicheCounts();
 
         auto [partial_front_first, partial_front_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);
+
+        /* The ref lines of the candidates after partial_front_last are irrelevant, as they can never be part of the next population. */
+        pimpl_->associatePopWithRefs(parents_first, children_last, pfronts.begin(), partial_front_last);
+        /* The niche counts should be calculated excluding the partial front for now. */
+        pimpl_->recalcNicheCounts(pfronts.begin(), partial_front_first);
 
         /* Keep track of the details of the candidates added to new_pop to avoid a second sort in prepareSelections(). */
         std::vector<size_t> new_pop;
@@ -364,7 +361,6 @@ namespace genetic_algorithm::algorithm
         {
             new_pop.push_back(sol->idx);
             new_info.push_back(pimpl_->sol_info_[sol->idx]);
-            pimpl_->refPointOf(*sol).niche_count++;
         }
 
         /* Add remaining candidates from the partial front if there is one. */
