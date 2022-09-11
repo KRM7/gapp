@@ -21,16 +21,6 @@ namespace genetic_algorithm::update
         return detail::index_vector(ga.population_size(), ga.population_size());
     }
 
-    Elitism::Elitism(size_t n)
-    {
-        elite_num(n);
-    }
-
-    void Elitism::elite_num(size_t n) noexcept
-    {
-        n_ = n;
-    }
-
     std::vector<size_t> Elitism::operator()(const GaInfo& ga,
                                             FitnessMatrix::const_iterator first,
                                             FitnessMatrix::const_iterator children_first,

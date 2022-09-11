@@ -51,14 +51,15 @@ namespace genetic_algorithm::update
         * 
         * @param n The number of solutions from the parent population that will be carried over to the next generation of the algorithm.
         */
-        Elitism(size_t n = 1);
+        Elitism(size_t n = 1) noexcept : n_(n)
+        {}
 
         /**
         * Set the number of elite solutions used to @p n.
         * 
         * @param n The number of solutions from the parent population that will be carried over to the next generation of the algorithm.
         */
-        void elite_num(size_t n) noexcept;
+        void elite_num(size_t n) noexcept { n_ = n; }
 
         /** @returns The number of elite solutions used. */
         [[nodiscard]]
