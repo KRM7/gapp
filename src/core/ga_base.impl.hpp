@@ -249,7 +249,8 @@ namespace genetic_algorithm
 
         /* Create and evaluate the initial population of the algorithm. */
         population_ = generatePopulation(population_size_);
-        fitness_matrix_ = evaluatePopulation(population_);
+        evaluatePopulation(population_);
+        fitness_matrix_ = detail::toFitnessMatrix(population_);
 
         assert(populationIsValid(population_));
         assert(fitnessMatrixIsSynced());
@@ -333,22 +334,17 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    void GA<T>::updatePopulation(Population& current_pop, Population&& children)
+    void GA<T>::updatePopulation(Population&& children)
     {
         assert(fitnessMatrixIsSynced());
-        assert(populationIsValid(current_pop));
-        assert(std::all_of(current_pop.begin(), current_pop.end(), std::mem_fn(&Candidate::is_evaluated)));
+        assert(populationIsValid(population_));
+        assert(std::all_of(population_.begin(), population_.end(), std::mem_fn(&Candidate::is_evaluated)));
 
         /* The current pop has already been evaluted in the previous generation. */
-        auto child_fmat = evaluatePopulation(children);
+        evaluatePopulation(children);
 
-        std::move(children.begin(), children.end(), std::back_inserter(current_pop));
-        std::move(child_fmat.begin(), child_fmat.end(), std::back_inserter(fitness_matrix_));
-
-        const auto next_indices = algorithm_->nextPopulation(*this, fitness_matrix_.begin(), fitness_matrix_.begin() + population_size_, fitness_matrix_.end());
-
-        current_pop     = detail::select(std::move(current_pop), next_indices);
-        fitness_matrix_ = detail::select(std::move(fitness_matrix_), next_indices);
+        population_ = algorithm_->nextPopulation(*this, std::move(population_), std::move(children));
+        fitness_matrix_ = detail::toFitnessMatrix(population_);
     }
 
     template<Gene T>
@@ -374,19 +370,20 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    auto GA<T>::evaluatePopulation(Population& pop) -> FitnessMatrix
+    void GA<T>::evaluatePopulation(Population& pop)
     {
         assert(fitness_function_);
         assert(std::all_of(pop.begin(), pop.end(), [this](const Candidate& sol) { return hasValidChromosome(sol); }));
 
-        std::for_each(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(), [this](Candidate& sol) { evaluateSolution(sol); });
+        std::for_each(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(), [this](Candidate& sol)
+        {
+            evaluateSolution(sol);
+        });
 
         if (!std::all_of(pop.begin(), pop.end(), [this](const Candidate& sol) { return hasValidFitness(sol); }))
         {
             GA_THROW(std::logic_error, "A fitness vector with incorrect size was returned by the fitness function.");
         }
-
-        return detail::toFitnessMatrix(pop);
     }
 
     template<Gene T>
@@ -430,7 +427,7 @@ namespace genetic_algorithm
             repair(child);
         });
 
-        updatePopulation(population_, std::move(children));
+        updatePopulation(std::move(children));
 
         if (endOfGenerationCallback) endOfGenerationCallback(*this);
         generation_cntr_++;

@@ -93,20 +93,23 @@ namespace genetic_algorithm::algorithm
         * @returns The selected candidates' indices in the fitness matrix, assuming that the index of @p first is 0.
         */
         template<Gene T>
-        Population<T> nextPopulation(const GaInfo& ga, const Population<T>& pop, const FitnessMatrix& fmat)
+        Population<T> nextPopulation(const GaInfo& ga, Population<T>&& parents, Population<T>&& children)
         {
-            //assert(size_t(children_first - first) == ga.population_size());
-            //assert(size_t(last - children_first) >= ga.population_size());
-            //assert(std::all_of(first, last, [&](const FitnessVector& f) { return f.size() == first->size(); }));
+            const size_t popsize = parents.size();
+            parents.reserve(parents.size() + children.size());
 
-            auto next_indices = nextPopulationImpl(ga, fmat.begin(), children_first, last);
+            std::move(children.begin(), children.end(), std::back_inserter(parents));
 
-            if (std::any_of(next_indices.begin(), next_indices.end(), detail::greater_eq_than(size_t(children_first - first))))
+            const FitnessMatrix fmat = detail::toFitnessMatrix(parents);
+
+            const auto next_indices = nextPopulationImpl(ga, fmat.begin(), fmat.begin() + popsize, fmat.end());
+
+            if (std::any_of(next_indices.begin(), next_indices.end(), detail::greater_eq_than(parents.size())))
             {
                 GA_THROW(std::logic_error, "An invalid candidate was selected for the next population by the algorithm.");
             }
 
-            return detail::select(pop, next_indices);
+            return detail::select(parents, next_indices);
         }
 
         /**

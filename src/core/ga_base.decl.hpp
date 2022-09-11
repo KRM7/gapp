@@ -300,11 +300,11 @@ namespace genetic_algorithm
         CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const;
         void mutate(Candidate& sol) const;
         void repair(Candidate& sol) const;
-        void updatePopulation(Population& pop, Population&& children);
+        void updatePopulation(Population&& children);
         bool stopCondition() const;
 
         void evaluateSolution(Candidate& sol);
-        [[nodiscard]] FitnessMatrix evaluatePopulation(Population& pop);
+        void evaluatePopulation(Population& pop);
         void updateOptimalSolutions(Candidates& optimal_sols, const Population& pop) const;
 
         void advance();
