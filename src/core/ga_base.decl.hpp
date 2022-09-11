@@ -290,7 +290,7 @@ namespace genetic_algorithm
         RepairFunction repair_ = nullptr;
 
         virtual Candidate generateCandidate() const = 0;
-        virtual void initializeAlgorithmImpl() = 0;
+        virtual void initialize() = 0;
 
         void initializeAlgorithm();
         size_t findNumObjectives() const final;

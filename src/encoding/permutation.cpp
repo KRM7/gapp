@@ -27,7 +27,7 @@ namespace genetic_algorithm
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
-    void PermutationGA::initializeAlgorithmImpl()
+    void PermutationGA::initialize()
     {
         bounds_.resize(chrom_len(), GeneBounds(0, chrom_len() - 1));
     }

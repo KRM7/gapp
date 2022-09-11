@@ -53,7 +53,7 @@ namespace genetic_algorithm
         gene_bounds(BoundsVector(chrom_len(), limits));
     }
 
-    void RCGA::initializeAlgorithmImpl()
+    void RCGA::initialize()
     {
         if (bounds_.size() != chrom_len())
         {

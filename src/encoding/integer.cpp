@@ -42,7 +42,7 @@ namespace genetic_algorithm
         bounds_ = BoundsVector(chrom_len(), GeneBounds(offset, offset + base_ - 1));
     }
 
-    void IntegerGA::initializeAlgorithmImpl()
+    void IntegerGA::initialize()
     {
         bounds_.resize(chrom_len(), GeneBounds(offset_, offset_ + base_ - 1));
     }

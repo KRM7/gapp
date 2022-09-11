@@ -229,7 +229,7 @@ namespace genetic_algorithm
         assert(fitness_function_);
         assert(algorithm_ && crossover_ && mutation_ && stop_condition_);
 
-        initializeAlgorithmImpl();
+        initialize();
 
         /* The number of objectives is determined from the return value of the fitness func,
         *  this assumes that the returned vector will always be the same size during a run.

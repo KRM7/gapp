@@ -24,7 +24,7 @@ namespace genetic_algorithm
         stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
-    void BinaryGA::initializeAlgorithmImpl()
+    void BinaryGA::initialize()
     {
         bounds_.resize(chrom_len(), GeneBounds(false, true));
     }
