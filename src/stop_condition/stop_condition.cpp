@@ -122,7 +122,7 @@ namespace genetic_algorithm::stopping
     }
 
     FitnessBestStall::FitnessBestStall(size_t patience, double delta) :
-        StopCondition()
+        StopCondition(), cntr_(0)
     {
         this->patience(patience);
         this->delta(delta);
@@ -163,11 +163,6 @@ namespace genetic_algorithm::stopping
         else --cntr_;
 
         return cntr_ == 0;
-    }
-
-    bool NoEarlyStop::stop_condition(const GaInfo&)
-    {
-        return false;
     }
 
 } // namespace genetic_algorithm::stopping

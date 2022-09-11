@@ -43,13 +43,18 @@ namespace genetic_algorithm::crossover::real
     class BLXa final : public Crossover<RealGene>
     {
     public:
+        /** Create a BLX-alpha crossover operator using the default parameter values. */
+        BLXa() noexcept :
+            Crossover(), alpha_(GeneType{ 0.5 })
+        {}
+
         /**
         * Create a BLX-alpha crossover operator with the specified parameters.
         *
         * @param pc The crossover probability used.
         * @param alpha The alpha parameter of the BLX-alpha crossover. Must be >= 0.0.
         */
-        explicit BLXa(Probability pc = 0.8, GeneType alpha = 0.5);
+        explicit BLXa(Probability pc, GeneType alpha = 0.5);
 
         /**
         * Sets the alpha parameter for the crossover.
@@ -80,13 +85,18 @@ namespace genetic_algorithm::crossover::real
     class SimulatedBinary final : public Crossover<RealGene>
     {
     public:
+        /** Create a simulated binary crossover operator using the default parameter values. */
+        SimulatedBinary() noexcept :
+            Crossover(), eta_(GeneType{ 4.0 })
+        {}
+
         /**
         * Create a simulated binary crossover operator with the specified parameters.
         *
         * @param pc The crossover probability used.
         * @param eta The shape parameter of the simulated binary crossover.
         */
-        explicit SimulatedBinary(Probability pc = 0.8, GeneType eta = 4.0);
+        explicit SimulatedBinary(Probability pc, GeneType eta = 4.0);
 
         /**
         * Sets the shape parameter (eta) of the simulated binary crossover.

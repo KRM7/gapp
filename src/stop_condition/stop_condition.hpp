@@ -93,13 +93,18 @@ namespace genetic_algorithm::stopping
     class FitnessMeanStall final : public StopCondition
     {
     public:
+        /** Create a stop condition based on the mean fitness values of the population. */
+        FitnessMeanStall() noexcept :
+            StopCondition(), patience_(0), delta_(1E-6), cntr_(0)
+        {}
+
         /**
         * Create a stop condition based on the mean fitness values of the population.
         *
         * @param patience The number of generations to wait without stopping even if there is no improvement.
         * @param delta The minimum fitness difference considered an improvement.
         */
-        explicit FitnessMeanStall(size_t patience = 0, double delta = 1E-6);
+        explicit FitnessMeanStall(size_t patience, double delta = 1E-6);
 
         /**
         * Set the patience value used for the stop condition.
@@ -144,13 +149,18 @@ namespace genetic_algorithm::stopping
     class FitnessBestStall final : public StopCondition
     {
     public:
+        /** Create a stop condition based on the best fitness values of the population. */
+        FitnessBestStall() noexcept :
+            StopCondition(), patience_(0), delta_(1E-6), cntr_(0)
+        {}
+
         /**
         * Create a stop condition based on the best fitness values of the population.
         *
         * @param patience The number of generations to wait without stopping even if there is no improvement.
         * @param delta The minimum fitness difference considered an improvement.
         */
-        explicit FitnessBestStall(size_t patience = 0, double delta = 1E-6);
+        explicit FitnessBestStall(size_t patience, double delta = 1E-6);
 
         /**
         * Set the patience value used for the stop condition.
@@ -195,7 +205,7 @@ namespace genetic_algorithm::stopping
     public:
         using StopCondition::StopCondition;
     private:
-        bool stop_condition(const GaInfo& ga) override;
+        bool stop_condition(const GaInfo&) override { return false; };
     };
 
 } // namespace genetic_algorithm::stopping

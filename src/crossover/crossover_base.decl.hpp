@@ -30,12 +30,16 @@ namespace genetic_algorithm::crossover
     public:
         using GeneType = T;
 
+        /** Create a crossover operator with a crossover probability of 0.8. */
+        explicit Crossover() noexcept :
+            pc_(0.8) {}
+
         /**
         * Create a crossover operator.
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Crossover(Probability pc = 0.8) noexcept :
+        explicit Crossover(Probability pc) noexcept :
             pc_(pc) {}
 
         Crossover(const Crossover&)             = default;
