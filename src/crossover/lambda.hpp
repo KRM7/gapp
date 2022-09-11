@@ -15,7 +15,7 @@ namespace genetic_algorithm::crossover::dtl
     public:
         using CrossoverFunction = std::function<CandidatePair<T>(const GA<T>&, const Candidate<T>&, const Candidate<T>&)>;
 
-        explicit Lambda(CrossoverFunction f);
+        explicit Lambda(CrossoverFunction f) noexcept;
 
     private:
         CandidatePair<T> crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const override;
@@ -33,7 +33,7 @@ namespace genetic_algorithm::crossover::dtl
 namespace genetic_algorithm::crossover::dtl
 {
     template<Gene T>
-    Lambda<T>::Lambda(CrossoverFunction f)
+    Lambda<T>::Lambda(CrossoverFunction f) noexcept
         : Crossover<T>(), crossover_(std::move(f))
     {}
 
