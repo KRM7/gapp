@@ -3,8 +3,8 @@
 #ifndef GA_ALGORITHM_SINGLE_OBJECTIVE_DECL_HPP
 #define GA_ALGORITHM_SINGLE_OBJECTIVE_DECL_HPP
 
-#include "algorithm_base.hpp"
 #include "single_objective.fwd.hpp"
+#include "algorithm_base.decl.hpp"
 #include "soga_selection.hpp"
 #include "pop_update.hpp"
 

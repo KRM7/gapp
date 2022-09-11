@@ -4,7 +4,7 @@
 #define GA_CORE_GA_INFO_HPP
 
 #include "../population/population.hpp"
-#include "../algorithm/algorithm_base.hpp"
+#include "../algorithm/algorithm_base.fwd.hpp"
 #include "../algorithm/single_objective.fwd.hpp"
 #include "../stop_condition/stop_condition_base.fwd.hpp"
 #include "../utility/probability.hpp"
@@ -73,15 +73,15 @@ namespace genetic_algorithm
         */
         void chrom_len(size_t len);
 
-        /** @returns The Chromosome length used for the Candidates of the Population. */
+        /** @returns The chromosome length used for the candidates of the population. */
         [[nodiscard]]
         size_t chrom_len() const noexcept { return chrom_len_; }
 
         /**
-        * Set the number of Candidates used in the Population. \n
+        * Set the number of candidates used in the population. \n
         * Must be at least 1.
         *
-        * @param size The number of Candidates in a Population.
+        * @param size The number of candidates in a population.
         */
         void population_size(size_t size);
 
@@ -327,13 +327,14 @@ namespace genetic_algorithm
         bool keep_all_optimal_sols_ = false;
         bool can_continue_ = false;
 
-        void num_objectives(size_t n);
-
-        virtual size_t findNumObjectives() const = 0;
+        inline static constexpr size_t DEFAULT_POPSIZE = 100;
 
         void setDefaultAlgorithm();
 
-        inline static constexpr size_t DEFAULT_POPSIZE = 100;
+    private:
+
+        virtual size_t findNumObjectives() const = 0;
+
     };
 
 } // namespace genetic_algorithm
@@ -341,6 +342,7 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
+#include "../algorithm/algorithm_base.decl.hpp"
 #include "../algorithm/single_objective.decl.hpp"
 #include "../utility/utility.hpp"
 #include <type_traits>

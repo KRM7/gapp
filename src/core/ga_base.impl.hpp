@@ -6,10 +6,12 @@
 #include "ga_base.decl.hpp"
 #include "../population/population.hpp"
 #include "../algorithm/algorithm_base.hpp"
+#include "../algorithm/single_objective.hpp"
 #include "../crossover/crossover_base.hpp"
 #include "../crossover/lambda.hpp"
 #include "../mutation/mutation_base.hpp"
 #include "../mutation/lambda.hpp"
+#include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/utility.hpp"
@@ -220,7 +222,11 @@ namespace genetic_algorithm
     template<Gene T>
     inline size_t GA<T>::findNumObjectives() const
     {
-        return fitness_function_(generateCandidate().chromosome).size();
+        size_t n = fitness_function_(generateCandidate().chromosome).size();
+
+        if (n == 0) GA_THROW(std::logic_error, "The size of the fitness vector returned by the fitness function must be at least 1.");
+
+        return n;
     }
 
     template<Gene T>
@@ -229,16 +235,17 @@ namespace genetic_algorithm
         assert(fitness_function_);
         assert(algorithm_ && crossover_ && mutation_ && stop_condition_);
 
+        /* Derived GA. */
         initialize();
 
-        /* The number of objectives is determined from the return value of the fitness func,
-        *  this assumes that the returned vector will always be the same size during a run.
+        /* The number of objectives is determined from the return value of the fitness function.
+        *  This assumes that the returned vector will always be the same size during a run.
         *
         *  This also needs generateCandidate() to create a dummy solution to pass to the fitness
         *  function, which might only return valid values after the derived class contructor set
         *  up some stuff for the candidate generation (eg. bounds), so this can't be called earlier,
         *  eg. in the ctor. */
-        num_objectives(findNumObjectives());
+        num_objectives_ = findNumObjectives();
 
         /* Reset state variables just in case run() has already been called before. */
         can_continue_ = false;

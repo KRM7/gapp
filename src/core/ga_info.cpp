@@ -1,6 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "ga_info.hpp"
+#include "../algorithm/algorithm_base.decl.hpp"
 #include "../algorithm/single_objective.decl.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
 #include "../algorithm/nsga3.hpp"
@@ -45,13 +46,6 @@ namespace genetic_algorithm
         max_gen_ = max_gen;
     }
 
-    void GaInfo::num_objectives(size_t n)
-    {
-        if (n == 0) GA_THROW(std::invalid_argument, "There must be at least 1 objective function.");
-
-        num_objectives_ = n;
-    }
-
     void GaInfo::stop_condition(StopConditionFunction f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The stop condition function can't be a nullptr.");
@@ -61,7 +55,7 @@ namespace genetic_algorithm
 
     void GaInfo::setDefaultAlgorithm()
     {
-        num_objectives(findNumObjectives());
+        num_objectives_ = findNumObjectives();
 
         (num_objectives_ == 1) ?
             algorithm(std::make_unique<algorithm::SingleObjective<>>()) :
