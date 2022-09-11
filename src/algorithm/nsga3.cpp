@@ -40,8 +40,7 @@ namespace genetic_algorithm::algorithm
 
         for (size_t i = 0; i < fitness.size(); i++)
         {
-            const double distance = (ideal_point[i] - fitness[i]) / weights[i];
-            dmax = std::max(dmax, distance);
+            dmax = std::max(dmax, (ideal_point[i] - fitness[i]) / weights[i]);
         }
         
         return dmax;
@@ -87,6 +86,17 @@ namespace genetic_algorithm::algorithm
         }
 
         return fnorm;
+    }
+
+    /* Increment the niche count of ref, while keeping refs sorted based on niche counts. */
+    inline static void incrementNicheCount(std::vector<RefLine*>& refs, RefLine* ref)
+    {
+        ref->niche_count++;
+
+        auto current = std::find(refs.begin(), refs.end(), ref);
+        auto first_eq = std::find_if(std::next(current), refs.end(), [&](const RefLine* r) { return r->niche_count >= (*current)->niche_count; });
+
+        std::iter_swap(current, std::prev(first_eq));
     }
 
 
@@ -140,6 +150,9 @@ namespace genetic_algorithm::algorithm
 
         /* Return the associated reference direction's distance for a candidate. */
         double refDistOf(const FrontInfo& sol) const noexcept;
+
+        /* Return the (unique) reference lines that are associated with at least one element in the range [first, last), sorted based on their niche counts. */
+        std::vector<RefLine*> referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
     };
 
     NSGA3::NSGA3() :
@@ -213,7 +226,7 @@ namespace genetic_algorithm::algorithm
     inline void NSGA3::Impl::recalcNicheCounts()
     {
         resetNicheCounts();
-        std::for_each(sol_info_.begin(), sol_info_.end(), [this](const CandidateInfo& info) { info.ref->niche_count++; });
+        std::for_each(sol_info_.begin(), sol_info_.end(), [](const CandidateInfo& info) { info.ref->niche_count++; });
     }
 
     void NSGA3::Impl::associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
@@ -275,6 +288,20 @@ namespace genetic_algorithm::algorithm
         return sol_info_[sol.idx].ref_dist;
     }
 
+    inline std::vector<RefLine*> NSGA3::Impl::referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
+    {
+        std::vector<RefLine*> refs(last - first);
+        std::transform(first, last, refs.begin(), [this](const FrontInfo& sol) { return &refPointOf(sol); });
+
+        detail::erase_duplicates(refs);
+        std::sort(refs.begin(), refs.end(), [](const RefLine* lhs, const RefLine* rhs)
+        {
+            return lhs->niche_count < rhs->niche_count;
+        });
+
+        return refs;
+    }
+
 
     /* NSGA3 INTERFACE FUNCTIONS */
 
@@ -292,16 +319,18 @@ namespace genetic_algorithm::algorithm
         pimpl_->ideal_point_ = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
         pimpl_->extreme_points_ = {};
 
-        auto ref_lines_ = dtl::generateReferencePoints(ga.num_objectives(), ga.population_size());
+        auto ref_lines = dtl::generateReferencePoints(ga.num_objectives(), ga.population_size());
 
-        pimpl_->ref_lines_ = detail::ConeTree(std::make_move_iterator(ref_lines_.begin()),
-                                              std::make_move_iterator(ref_lines_.end()),
+        pimpl_->ref_lines_ = detail::ConeTree(std::make_move_iterator(ref_lines.begin()),
+                                              std::make_move_iterator(ref_lines.end()),
                                               RefProjection);
 
-        pimpl_->associatePopWithRefs(fitness_matrix.begin(), fitness_matrix.end());
-
         auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());
+
+        pimpl_->sol_info_.resize(ga.population_size());
         std::for_each(pfronts.begin(), pfronts.end(), [this](const FrontInfo& sol) { pimpl_->sol_info_[sol.idx].rank = sol.rank; });
+
+        pimpl_->associatePopWithRefs(fitness_matrix.begin(), fitness_matrix.end());
     }
 
     std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga,
@@ -339,19 +368,12 @@ namespace genetic_algorithm::algorithm
         }
 
         /* Add remaining candidates from the partial front if there is one. */
-        std::vector<RefLine*> refs(partial_front_last - partial_front_first);
-        std::transform(partial_front_first, partial_front_last, refs.begin(), [this](const FrontInfo& sol) { return &pimpl_->refPointOf(sol); });
-
-        detail::erase_duplicates(refs);
-        std::sort(refs.begin(), refs.end(), [](const RefLine* lhs, const RefLine* rhs)
-        {
-            return lhs->niche_count < rhs->niche_count;
-        });
+        std::vector<RefLine*> refs = pimpl_->referenceSetOf(partial_front_first, partial_front_last);
 
         while (new_pop.size() != ga.population_size())
         {
             /* Choose a random reference direction with minimal niche count. */
-            auto last_minimal = std::find_if(refs.begin(), refs.end(), [&](const RefLine* ref) { return ref->niche_count != refs[0]->niche_count; });
+            const auto last_minimal = std::find_if(refs.begin(), refs.end(), [&](const RefLine* ref) { return ref->niche_count != refs[0]->niche_count; });
             RefLine* ref = rng::randomElement(refs.begin(), last_minimal);
 
             /* Find the idx of the closest sol in the partial front associated with this ref direction. */
@@ -363,7 +385,8 @@ namespace genetic_algorithm::algorithm
 
             new_pop.push_back(selected->idx);
             new_info.push_back(pimpl_->sol_info_[selected->idx]);
-            std::iter_swap(selected, --partial_front_last); /* Remove the selected candidate from the partial front so it can't be selected again. */
+            /* Remove the selected candidate from the partial front so it can't be selected again. */
+            std::iter_swap(selected, partial_front_first++);
 
             /* If the selected candidate was the only one in the partial front associated with this reference direction,
                the reference direction needs to also be removed. */
@@ -373,13 +396,7 @@ namespace genetic_algorithm::algorithm
             }
             else /* Otherwise just increase its niche count, and make sure the refs are still sorted. */
             {
-                /* TODO separate function */
-                ref->niche_count++;
-                for (auto current = std::find(refs.begin(), refs.end(), ref); current != refs.end() - 1; ++current)
-                {
-                    if ((*current)->niche_count <= (*(current + 1))->niche_count) break;
-                    std::iter_swap(current, current + 1);
-                }
+                incrementNicheCount(refs, ref);
             }
         }
         pimpl_->sol_info_ = std::move(new_info);
