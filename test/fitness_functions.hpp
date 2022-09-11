@@ -700,7 +700,7 @@ public:
 
     size_t num_vars() const noexcept { return num_vars_; }
     constexpr static size_t num_obj() noexcept { return 1; }
-    constexpr static double optimal_x() noexcept { return static_cast<double>(NAN); }
+    constexpr static double optimal_x() noexcept { return std::numeric_limits<double>::quiet_NaN(); }
     double optimal_value() const noexcept
     {
         switch (num_vars_)
