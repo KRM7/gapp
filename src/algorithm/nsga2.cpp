@@ -23,43 +23,47 @@ namespace genetic_algorithm::algorithm
     using namespace dtl;
 
     /* Calculate the crowding distances of the solutions in pfronts. */
-    static std::vector<double> crowdingDistances(FitnessMatrix::const_iterator fmat, FitnessMatrix::const_iterator last, ParetoFronts pfronts)
+    static std::vector<double> crowdingDistances(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, ParetoFronts pfronts)
     {
-        assert(std::distance(fmat, last) >= 0);
+        assert(std::distance(first, last) >= 0);
 
-        std::vector<double> cdistances(last - fmat);
+        std::vector<double> crowding_distances(last - first, 0.0);
 
         using Iter     = ParetoFronts::iterator;
         using IterPair = std::pair<Iter, Iter>;
 
-        auto front_bounds = paretoFrontBounds(pfronts);
+        const auto front_bounds = paretoFrontBounds(pfronts);
 
-        for (size_t dim = 0; dim < fmat->size(); dim++)
+        for (size_t dim = 0; dim < first->size(); dim++)
         {
-            for (const auto& [front_first, front_last] : front_bounds)
+            FitnessVector fvec(last - first, 0.0);
+            std::transform(first, last, fvec.begin(), [&](const FitnessVector& f) { return f[dim]; });
+
+            for (auto [front_first, front_last] : front_bounds)
             {
                 std::sort(front_first, front_last, [&](const FrontInfo& lhs, const FrontInfo& rhs) noexcept
                 {
-                    return fmat[lhs.idx][dim] < fmat[rhs.idx][dim]; // ascending
+                    return fvec[lhs.idx] < fvec[rhs.idx]; // ascending
                 });
 
-                size_t first_idx = front_first->idx;
-                size_t last_idx = (front_last - 1)->idx;
+                const size_t first_idx = front_first->idx;
+                const size_t last_idx = (front_last - 1)->idx;
 
-                double finterval = std::max(fmat[last_idx][dim] - fmat[first_idx][dim], 1E-6);
+                const double finterval = std::max(fvec[last_idx] - fvec[first_idx], 1E-6);
 
-                cdistances[first_idx] = math::inf<double>;
+                crowding_distances[first_idx] = math::inf<double>;
+                crowding_distances[last_idx] = math::inf<double>;
+
                 for (auto it = front_first + 1; it < front_last - 1; ++it)
                 {
-                    size_t next = std::next(it)->idx;
-                    size_t prev = std::prev(it)->idx;
-                    cdistances[it->idx] += (fmat[next][dim] - fmat[prev][dim]) / finterval;
+                    const size_t next = std::next(it)->idx;
+                    const size_t prev = std::prev(it)->idx;
+                    crowding_distances[it->idx] += (fvec[next] - fvec[prev]) / finterval;
                 }
-                cdistances[last_idx] = math::inf<double>;
             }
         }
 
-        return cdistances;
+        return crowding_distances;
     }
 
     void NSGA2::initializeImpl(const GaInfo& ga)
