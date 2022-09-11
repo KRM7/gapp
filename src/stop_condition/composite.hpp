@@ -70,7 +70,7 @@ namespace genetic_algorithm::stopping
     {
         /* All of the member stop conditions should be evaluated, so avoid short circuits with logical ops. */
         /* (The stop conditions might rely on side effects of operator() to maintain their state.) */
-        return detail::transform_reduce(parts_, false, [&](auto&& part) { return part(ga); }, std::plus{});
+        return detail::transform_reduce(parts_, false, [&](auto& part) { return part(ga); }, std::plus{});
     }
 
     template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
@@ -83,7 +83,7 @@ namespace genetic_algorithm::stopping
     {
         /* All of the member stop conditions should be evaluated, so avoid short circuits with logical ops. */
         /* (The stop conditions might rely on side effects of operator() to maintain their state.) */
-        return detail::transform_reduce(parts_, false, [&](auto&& part) { return part(ga); }, std::multiplies{});
+        return detail::transform_reduce(parts_, false, [&](auto& part) { return part(ga); }, std::multiplies{});
     }
 
 } // namespace genetic_algorithm::stopping
