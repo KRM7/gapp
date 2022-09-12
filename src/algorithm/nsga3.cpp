@@ -151,6 +151,12 @@ namespace genetic_algorithm::algorithm
 
         /* Return the (unique) reference lines that are associated with at least one element in the range [first, last), sorted based on their niche counts. */
         std::vector<RefLine*> referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
+
+        /* Return the closest solution associated with ref in [first, last). */
+        ParetoFronts::iterator findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, const RefLine& ref) const;
+
+        /* Create a new population from the pareto fronts range [first, last). */
+        std::vector<size_t> createPopulation(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
     };
 
     NSGA3::NSGA3() :
@@ -294,6 +300,41 @@ namespace genetic_algorithm::algorithm
         return refs;
     }
 
+    inline ParetoFronts::iterator NSGA3::Impl::findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, const RefLine& ref) const
+    {
+        auto closest = first;
+        double min_dist = math::inf<double>;
+
+        for (; first != last; ++first)
+        {
+            if (&refPointOf(*first) == &ref && refDistOf(*first) < min_dist)
+            {
+                closest = first;
+                min_dist = refDistOf(*first);
+            }
+        }
+
+        return closest;
+    }
+
+    std::vector<size_t> NSGA3::Impl::createPopulation(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
+    {
+        std::vector<size_t> new_pop;
+        std::vector<Impl::CandidateInfo> new_info;
+
+        new_pop.reserve(last - first);
+        new_info.reserve(last - first);
+
+        for (; first != last; ++first)
+        {
+            new_pop.push_back(first->idx);
+            new_info.push_back(sol_info_[first->idx]);
+        }
+        sol_info_ = std::move(new_info);
+
+        return new_pop;
+    }
+
 
     /* NSGA3 INTERFACE FUNCTIONS */
 
@@ -326,78 +367,51 @@ namespace genetic_algorithm::algorithm
         pimpl_->recalcNicheCounts(pfronts.begin(), pfronts.end());
     }
 
-    std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga,
-                                              FitnessMatrix::const_iterator parents_first,
-                                              FitnessMatrix::const_iterator children_first,
-                                              FitnessMatrix::const_iterator children_last)
+    std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator parents_first,
+                                                                    FitnessMatrix::const_iterator,
+                                                                    FitnessMatrix::const_iterator children_last)
     {
+        assert(ga.num_objectives() > 1);
+        assert(size_t(children_last - parents_first) >= ga.population_size());
+        assert(std::all_of(parents_first, children_last, [&](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
+
         const size_t popsize = ga.population_size();
 
-        assert(ga.num_objectives() > 1);
-        assert(size_t(children_first - parents_first) == popsize);
-        assert(std::all_of(parents_first, children_last, [&ga](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
-
-        GA_UNUSED(children_first);
+        auto pfronts = dtl::nonDominatedSort(parents_first, children_last);
+        auto [partial_first, partial_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);
 
         pimpl_->sol_info_.resize(children_last - parents_first);
-
-        auto pfronts = dtl::nonDominatedSort(parents_first, children_last);
         std::for_each(pfronts.begin(), pfronts.end(), [this](const FrontInfo& sol) { pimpl_->sol_info_[sol.idx].rank = sol.rank; });
 
-        auto [partial_front_first, partial_front_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);
-
         /* The ref lines of the candidates after partial_front_last are irrelevant, as they can never be part of the next population. */
-        pimpl_->associatePopWithRefs(parents_first, children_last, pfronts.begin(), partial_front_last);
+        pimpl_->associatePopWithRefs(parents_first, children_last, pfronts.begin(), partial_last);
         /* The niche counts should be calculated excluding the partial front for now. */
-        pimpl_->recalcNicheCounts(pfronts.begin(), partial_front_first);
+        pimpl_->recalcNicheCounts(pfronts.begin(), partial_first);
 
-        /* Keep track of the details of the candidates added to new_pop to avoid a second sort in prepareSelections(). */
-        std::vector<size_t> new_pop;
-        std::vector<Impl::CandidateInfo> new_info;
-        new_pop.reserve(popsize);
-        new_info.reserve(popsize);
+        /* Find the reference lines associated with the partial front. */
+        std::vector<RefLine*> refs = pimpl_->referenceSetOf(partial_first, partial_last);
 
-        for (auto sol = pfronts.begin(); sol != partial_front_first; ++sol)
+        /* Move the best elements to the front of the partial front. */
+        while (partial_first != pfronts.begin() + popsize)
         {
-            new_pop.push_back(sol->idx);
-            new_info.push_back(pimpl_->sol_info_[sol->idx]);
-        }
+            const size_t min_count = refs.front()->niche_count;
+            const auto min_last = std::find_if(refs.begin(), refs.end(), [&](const RefLine* ref) { return ref->niche_count != min_count; });
 
-        /* Add remaining candidates from the partial front if there is one. */
-        std::vector<RefLine*> refs = pimpl_->referenceSetOf(partial_front_first, partial_front_last);
+            RefLine* ref = rng::randomElement(refs.begin(), min_last);
+            incrementNicheCount(refs, ref);
 
-        while (new_pop.size() != ga.population_size())
-        {
-            /* Choose a random reference direction with minimal niche count. */
-            const auto last_minimal = std::find_if(refs.begin(), refs.end(), [&](const RefLine* ref) { return ref->niche_count != refs[0]->niche_count; });
-            RefLine* ref = rng::randomElement(refs.begin(), last_minimal);
+            const size_t assoc_count = std::count_if(partial_first, partial_last, [&](const FrontInfo& sol) { return &pimpl_->refPointOf(sol) == ref; });
+            const auto closest = pimpl_->findClosestAssociated(partial_first, partial_last, *ref);
 
-            /* Find the idx of the closest sol in the partial front associated with this ref direction. */
-            auto candidates = detail::find_all(partial_front_first, partial_front_last,
-                                               [this, ref](const FrontInfo& sol) { return &pimpl_->refPointOf(sol) == ref; });
-
-            auto& selected = *std::min_element(candidates.begin(), candidates.end(),
-                                               [this](const auto& lhs, const auto& rhs) { return pimpl_->refDistOf(*lhs) < pimpl_->refDistOf(*rhs); });
-
-            new_pop.push_back(selected->idx);
-            new_info.push_back(pimpl_->sol_info_[selected->idx]);
-            /* Remove the selected candidate from the partial front so it can't be selected again. */
-            std::iter_swap(selected, partial_front_first++);
+            /* Move the selected candidate to the front of the partial front so it can't be selected again. */
+            std::iter_swap(closest, partial_first++);
 
             /* If the selected candidate was the only one in the partial front associated with this reference direction,
                the reference direction needs to also be removed. */
-            if (candidates.size() == 1)
-            {
-                detail::erase_first_stable(refs, ref);
-            }
-            else /* Otherwise just increase its niche count, and make sure the refs are still sorted. */
-            {
-                incrementNicheCount(refs, ref);
-            }
+            if (assoc_count == 1) detail::erase_first_stable(refs, ref);
         }
-        pimpl_->sol_info_ = std::move(new_info);
 
-        return new_pop;
+        return pimpl_->createPopulation(pfronts.begin(), pfronts.begin() + popsize);
     }
 
     size_t NSGA3::selectImpl(const GaInfo&, const FitnessMatrix& pop) const
