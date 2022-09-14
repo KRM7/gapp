@@ -11,7 +11,7 @@ namespace genetic_algorithm::stopping
 {
     /**
     * A stop condition that is the combination of other stop conditions, and
-    * will evaluate to true if ALL of its members evaluate to true.
+    * will evaluate to true if any of its members evaluate to true.
     */
     template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
     class OR final : public StopCondition
@@ -19,7 +19,7 @@ namespace genetic_algorithm::stopping
     public:
         /**
         * Create a composite stop condition from other stop conditions. \n
-        * This composite stop condition will return true if ANY of its members return true.
+        * This composite stop condition will return true if any of its members return true.
         */
         OR(T1 first, T2 second, Rest... rest) noexcept;
 
@@ -31,7 +31,7 @@ namespace genetic_algorithm::stopping
 
     /**
     * A stop condition that is the combination of other stop conditions,
-    * and will evaluate to true if ANY of its members evaluate to true.
+    * and will evaluate to true if all of its members evaluate to true.
     */
     template<StopConditionType T1, StopConditionType T2, StopConditionType... Rest>
     class AND final : public StopCondition
@@ -39,7 +39,7 @@ namespace genetic_algorithm::stopping
     public:
         /**
         * Create a composite stop condition from other stop conditions. \n
-        * This composite stop condition will return true if ALL of its members return true.
+        * This composite stop condition will return true if all of its members return true.
         */
         AND(T1 first, T2 second, Rest... rest) noexcept;
 
