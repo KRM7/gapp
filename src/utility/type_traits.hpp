@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+
 #ifndef GA_UTILITY_TYPE_TRAITS_HPP
 #define GA_UTILITY_TYPE_TRAITS_HPP
 
