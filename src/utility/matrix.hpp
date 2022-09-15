@@ -81,11 +81,13 @@ namespace genetic_algorithm::detail
 
         reference operator()(size_type row, size_type col) noexcept
         {
+            assert(row < nrows_ && col < ncols_);
             return data_[row * ncols_ + col];
         }
 
         const_reference operator()(size_type row, size_type col) const noexcept
         {
+            assert(row < nrows_ && col < ncols_);
             return data_[row * ncols_ + col];
         }
 
@@ -158,14 +160,6 @@ namespace genetic_algorithm::detail
             std::swap(data_, other.data_);
             std::swap(nrows_, other.nrows_);
             std::swap(ncols_, other.ncols_);
-        }
-
-        void transpose() noexcept(std::is_nothrow_swappable_v<T>)
-        {
-            using std::swap;
-            for (size_type row = 0; row < nrows(); row++)
-                for (size_type col = row + 1; col < ncols(); col++)
-                    swap((*this)(row, col), (*this)(col, row));
         }
 
     private:
