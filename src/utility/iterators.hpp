@@ -4,6 +4,7 @@
 #define GA_UTILITY_ITERATORS_HPP
 
 #include <iterator>
+#include <cstddef>
 
 namespace genetic_algorithm::detail
 {
@@ -105,8 +106,6 @@ namespace genetic_algorithm::detail
         }
 
     private:
-        constexpr Derived& derived() noexcept { return *static_cast<Derived*>(this); }
-        constexpr const Derived& derived() const noexcept { return *static_cast<const Derived*>(this); }
         constexpr Derived& derived() noexcept { return static_cast<Derived&>(this); }
         constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(this); }
     };
@@ -145,6 +144,76 @@ namespace genetic_algorithm::detail
         constexpr Derived& derived() noexcept { return static_cast<Derived&>(this); }
         constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(this); }
     };
+
+
+    /* Random access iterator that can't be invalidated. */
+    template<typename Container>
+    class stable_iterator : public random_access_iterator_interface<stable_iterator<Container>>
+    {
+    public:
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = typename Container::value_type;
+        using reference = typename Container::reference;
+        using typename random_access_iterator_interface<stable_iterator>::difference_type;
+
+        stable_iterator() :
+            data_(nullptr), idx_(0)
+        {}
+
+        stable_iterator(Container& container, size_t idx) :
+            data_(&container), idx_(idx)
+        {}
+
+        reference operator*() const
+        {
+            assert(data_ && data_->size() > idx_);
+            return data_[idx_];
+        }
+
+        friend bool operator==(stable_iterator lhs, stable_iterator rhs)
+        {
+            assert(lhs.data_ == rhs.data_);
+            return (lhs.data_ == rhs.data_) && (lhs.idx_ == rhs.idx_);
+        }
+
+        friend bool operator<(stable_iterator lhs, stable_iterator rhs)
+        {
+            assert(lhs.data_ == rhs.data_);
+            return lhs.idx_ < rhs.idx_;
+        }
+
+        stable_iterator& operator++()
+        {
+            assert(data_);
+            ++idx_;
+            return *this;
+        }
+
+        stable_iterator& operator--()
+        {
+            assert(data_ && idx_ != 0);
+            --idx_;
+            return *this;
+        }
+
+        stable_iterator& operator+=(difference_type n)
+        {
+            assert(data_); assert(n < 0 ? (idx_ >= -n) : true);
+            idx_ += n;
+            return *this;
+        }
+
+        friend difference_type operator-(stable_iterator lhs, stable_iterator rhs)
+        {
+            assert(lhs.data_ && lhs.data_ == rhs.data_);
+            return difference_type(lhs.idx_) - difference_type(rhs.idx_);
+        }
+
+    private:
+        Container* data_;
+        size_t idx_;
+    };
+
 
 } // namespace genetic_algorithm::detail
 
