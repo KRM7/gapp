@@ -19,8 +19,8 @@ namespace genetic_algorithm::detail
         auto cbegin() const { return derived.begin(); };
         auto cend() const { return derived.end(); };
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
     /*
@@ -39,8 +39,8 @@ namespace genetic_algorithm::detail
         auto crend() const   { return std::make_reverse_iterator(derived().begin()); }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
@@ -66,14 +66,14 @@ namespace genetic_algorithm::detail
             return &*derived();
         }
 
-        bool operator!=(const Derived& rhs) const
+        friend bool operator!=(const Derived& lhs, const Derived& rhs)
         {
-            return !(*this == rhs);
+            return !(lhs == rhs);
         }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
@@ -106,8 +106,8 @@ namespace genetic_algorithm::detail
         }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
     
@@ -141,8 +141,8 @@ namespace genetic_algorithm::detail
         const auto operator[](difference_type n) const { return *(*this + n); }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
