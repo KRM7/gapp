@@ -137,8 +137,7 @@ namespace genetic_algorithm::detail
         Derived& operator-=(difference_type n) { return *this += -n; }
         friend Derived operator-(const Derived& iter, difference_type n) { return iter -= n; }
 
-        auto operator[](difference_type n) { return *(*this + n); }
-        const auto operator[](difference_type n) const { return *(*this + n); }
+        auto operator[](difference_type n) const { return *(*this + n); }
 
     private:
         constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
@@ -146,21 +145,161 @@ namespace genetic_algorithm::detail
     };
 
 
-    /* Random access iterator that can't be invalidated. */
-    template<typename Container>
+    template<typename Derived,
+             typename ValueType,
+             typename Reference,
+             typename Pointer>
+    class stable_iterator_base : public random_access_iterator_interface<Derived>
+    {
+    public:
+
+        using _my_base = random_access_iterator_interface<Derived>;
+
+        using iterator_category = std::random_access_iterator_tag;
+
+        using value_type = ValueType;
+        using reference  = Reference;
+        using pointer    = Pointer;
+        using typename _my_base::difference_type;
+
+        reference operator*() const
+        {
+            assert(derived().data_ && derived().data_->size() > derived().idx_);
+            return derived().data_[derived().idx_];
+        }
+
+        friend bool operator==(Derived lhs, Derived rhs)
+        {
+            assert(lhs.data_ == rhs.data_);
+            return (lhs.data_ == rhs.data_) && (lhs.idx_ == rhs.idx_);
+        }
+
+        friend bool operator<(Derived lhs, Derived rhs)
+        {
+            assert(lhs.data_ == rhs.data_);
+            return lhs.idx_ < rhs.idx_;
+        }
+
+        Derived& operator++()
+        {
+            assert(derived().data_);
+            derived().idx_++;
+            return derived();
+        }
+
+        Derived& operator--()
+        {
+            assert(derived().data_ && derived().idx_ != 0);
+            derived().idx_--;
+            return derived();
+        }
+
+        Derived& operator+=(difference_type n)
+        {
+            assert(derived().data_); assert(n < 0 ? (derived().idx_ >= -n) : true);
+            derived().idx_ += n;
+            return derived();
+        }
+
+        friend difference_type operator-(Derived lhs, Derived rhs)
+        {
+            assert(lhs.data_ && lhs.data_ == rhs.data_);
+            return difference_type(lhs.idx_) - difference_type(rhs.idx_);
+        }
+
+    private:
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+    };
+
+
+    template<typename Container,
+             typename ValueType = typename Container::value_type,
+             typename Reference = typename Container::reference,
+             typename Pointer   = typename Container::pointer>
+    class stable_iterator : public stable_iterator_base<stable_iterator<Container, ValueType, Reference, Pointer>,
+                                                        ValueType, Reference, Pointer>
+    {
+    public:
+        using _my_base = stable_iterator_base<stable_iterator, ValueType, Reference, Pointer>;
+
+        using typename _my_base::iterator_category;
+        using typename _my_base::difference_type;
+        using typename _my_base::value_type;
+        using typename _my_base::reference;
+        using typename _my_base::pointer;
+
+        stable_iterator() noexcept :
+            _my_base(), data_(nullptr), idx_(0)
+        {}
+
+        stable_iterator(Container& container, size_t idx) noexcept :
+            _my_base(), data_(&container), idx_(idx)
+        {}
+
+    private:
+        Container* data_;
+        size_t idx_;
+
+        friend class _my_base;
+    };
+
+
+    template<typename Container,
+             typename ValueType = typename Container::value_type,
+             typename Reference = typename Container::reference,
+             typename Pointer   = typename Container::pointer>
+    class const_stable_iterator : public stable_iterator_base<const_stable_iterator<Container, ValueType, Reference, Pointer>,
+                                                              const ValueType, const Reference, const Pointer>
+    {
+    public:
+        using _my_base = stable_iterator_base<const_stable_iterator, const ValueType, const Reference, const Pointer>;
+
+        using typename _my_base::iterator_category;
+        using typename _my_base::difference_type;
+        using typename _my_base::value_type;
+        using typename _my_base::reference;
+        using typename _my_base::pointer;
+
+        const_stable_iterator() noexcept :
+            data_(nullptr), idx_(0)
+        {}
+
+        const_stable_iterator(const Container& container, size_t idx) noexcept :
+            data_(&container), idx_(idx)
+        {}
+
+        const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer> it) noexcept :
+            data_(it.data_), idx_(it.idx)
+        {}
+
+    private:
+        const Container* data_;
+        size_t idx_;
+
+        friend class _my_base;
+    };
+
+
+    /*template<typename Container,
+             typename ValueType = typename Container::value_type,
+             typename Reference = typename Container::reference,
+             typename Pointer   = typename Container::pointer>
     class stable_iterator : public random_access_iterator_interface<stable_iterator<Container>>
     {
     public:
         using iterator_category = std::random_access_iterator_tag;
-        using value_type = typename Container::value_type;
-        using reference = typename Container::reference;
-        using typename random_access_iterator_interface<stable_iterator>::difference_type;
 
-        stable_iterator() :
+        using typename random_access_iterator_interface<stable_iterator>::difference_type;
+        using value_type = ValueType;
+        using reference  = Reference;
+        using pointer    = Pointer;
+
+        stable_iterator() noexcept :
             data_(nullptr), idx_(0)
         {}
 
-        stable_iterator(Container& container, size_t idx) :
+        stable_iterator(Container& container, size_t idx) noexcept :
             data_(&container), idx_(idx)
         {}
 
@@ -214,6 +353,107 @@ namespace genetic_algorithm::detail
         size_t idx_;
     };
 
+    
+    template<typename Container,
+             typename ValueType = typename Container::value_type,
+             typename Reference = typename Container::reference,
+             typename Pointer   = typename Container::pointer>
+    class const_stable_iterator : public random_access_iterator_interface<const_stable_iterator<Container>>
+    {
+    public:
+        using iterator_category = std::random_access_iterator_tag;
+
+        using typename random_access_iterator_interface<const_stable_iterator>::difference_type;
+        using value_type = const ValueType;
+        using reference  = const Reference;
+        using pointer    = const Pointer;
+
+        const_stable_iterator() noexcept :
+            data_(nullptr), idx_(0)
+        {}
+
+        const_stable_iterator(const Container& container, size_t idx) noexcept :
+            data_(&container), idx_(idx)
+        {}
+
+        const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer> it) noexcept :
+            data_(it.data_), idx_(it.idx)
+        {}
+
+        reference operator*() const
+        {
+            assert(data_ && data_->size() > idx_);
+            return data_[idx_];
+        }
+
+        friend bool operator==(const_stable_iterator lhs, const_stable_iterator rhs)
+        {
+            assert(lhs.data_ == rhs.data_);
+            return (lhs.data_ == rhs.data_) && (lhs.idx_ == rhs.idx_);
+        }
+
+        friend bool operator<(const_stable_iterator lhs, const_stable_iterator rhs)
+        {
+            assert(lhs.data_ == rhs.data_);
+            return lhs.idx_ < rhs.idx_;
+        }
+
+        const_stable_iterator& operator++()
+        {
+            assert(data_);
+            ++idx_;
+            return *this;
+        }
+
+        const_stable_iterator& operator--()
+        {
+            assert(data_ && idx_ != 0);
+            --idx_;
+            return *this;
+        }
+
+        const_stable_iterator& operator+=(difference_type n)
+        {
+            assert(data_); assert(n < 0 ? (idx_ >= -n) : true);
+            idx_ += n;
+            return *this;
+        }
+
+        friend difference_type operator-(const_stable_iterator lhs, const_stable_iterator rhs)
+        {
+            assert(lhs.data_ && lhs.data_ == rhs.data_);
+            return difference_type(lhs.idx_) - difference_type(rhs.idx_);
+        }
+        
+    private:
+        const Container* data_;
+        size_t idx_;
+    };*/
+
+
+    template<typename Container>
+    auto stable_begin(Container& container) noexcept
+    {
+        return stable_iterator<Container>(container, 0);
+    }
+
+    template<typename Container>
+    auto stable_end(Container& container) noexcept
+    {
+        return stable_iterator<Container>(container, container.size());
+    }
+
+    template<typename Container>
+    auto stable_begin(const Container& container) noexcept
+    {
+        return const_stable_iterator<Container>(container, 0);
+    }
+
+    template<typename Container>
+    auto stable_end(const Container& container) noexcept
+    {
+        return const_stable_iterator<Container>(container, container.size());
+    }
 
 } // namespace genetic_algorithm::detail
 
