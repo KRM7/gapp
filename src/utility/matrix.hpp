@@ -213,6 +213,8 @@ namespace genetic_algorithm::detail
         const_iterator end() const noexcept    { return mat_.begin() + (row_ + 1) * mat_.ncols(); }   
 
 
+        Row& operator*() const noexcept { return *this; }
+
         reference operator[](size_t col) noexcept
         {
             assert(mat_.ncols() > col);
