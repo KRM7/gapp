@@ -208,10 +208,8 @@ namespace genetic_algorithm::detail
 
         iterator begin() noexcept              { return mat_.begin() + row_ * mat_.ncols(); }
         const_iterator begin() const noexcept  { return mat_.begin() + row_ * mat_.ncols(); }
-        const_iterator cbegin() const noexcept { return mat_.cbegin() + row_ * mat_.ncols(); }
         iterator end() noexcept                { return mat_.begin() + (row_ + 1) * mat_.ncols(); }
-        const_iterator end() const noexcept    { return mat_.begin() + (row_ + 1) * mat_.ncols(); }
-        const_iterator cend() const noexcept   { return mat_.cbegin() + (row_ + 1) * mat_.ncols(); }       
+        const_iterator end() const noexcept    { return mat_.begin() + (row_ + 1) * mat_.ncols(); }   
 
 
         reference operator[](size_t col) noexcept
