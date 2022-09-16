@@ -2,6 +2,7 @@
 
 #include "nd_sort.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/iterators.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/matrix.hpp"
@@ -151,8 +152,8 @@ namespace genetic_algorithm::algorithm::dtl
         }
 
         /* Find all the other pareto fronts. */
-        auto current_front_first = pfronts.cbegin();
-        auto current_front_last  = pfronts.cend();
+        auto current_front_first = detail::stable_begin(pfronts);
+        auto current_front_last = detail::stable_end(pfronts);
 
         while (pfronts.size() != popsize)
         {
@@ -167,13 +168,11 @@ namespace genetic_algorithm::algorithm::dtl
                 {
                     if (--dom_lists[worse_idx].better_count == 0)
                     {
-                        current_front_last--;
                         pfronts.emplace_back(worse_idx, next_front_rank);
-                        current_front_last++;
                     }
                 }
             }
-            current_front_last = pfronts.cend();
+            current_front_last = detail::stable_end(pfronts);
         }
 
         return pfronts;
