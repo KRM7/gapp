@@ -145,6 +145,7 @@ namespace genetic_algorithm::detail
 
         /* Size / capacity */
 
+        size_type size() const noexcept { return nrows_; }
         size_type nrows() const noexcept { return nrows_; }
         size_type ncols() const noexcept { return ncols_; }
         size_type empty() const noexcept { return data_.empty(); }
