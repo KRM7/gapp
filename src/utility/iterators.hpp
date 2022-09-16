@@ -54,6 +54,8 @@ namespace genetic_algorithm::detail
     class input_iterator_interface
     {
     public:
+        using iterator_category = std::input_iterator_tag;
+
         Derived& operator++()
         {
             return derived().increment();
@@ -89,7 +91,11 @@ namespace genetic_algorithm::detail
     *   increment() function (equivalent to prefix operator++)
     */
     template<typename Derived>
-    using forward_iterator_interface = input_iterator_interface<Derived>;
+    class forward_iterator_interface : public input_iterator_interface<Derived>
+    {
+    public:
+        using iterator_category = std::forward_iterator_tag;
+    };
 
 
     /*
@@ -103,6 +109,8 @@ namespace genetic_algorithm::detail
     class bidirectional_iterator_interface : public forward_iterator_interface<Derived>
     {
     public:
+        using iterator_category = std::bidirectional_iterator_tag;
+
         Derived& operator--()
         {
             return derived().decrement();
@@ -135,6 +143,7 @@ namespace genetic_algorithm::detail
     class random_access_iterator_interface : public bidirectional_iterator_interface<Derived>
     {
     public:
+        using iterator_category = std::random_access_iterator_tag;
         using difference_type = std::ptrdiff_t;
 
         friend bool operator>(const Derived& lhs, const Derived& rhs)  { return rhs < lhs; }
@@ -164,12 +173,11 @@ namespace genetic_algorithm::detail
     public:
         using _my_base = random_access_iterator_interface<Derived>;
 
-        using iterator_category = std::random_access_iterator_tag;
-
+        using typename _my_base::iterator_category;
+        using typename _my_base::difference_type;
         using value_type = ValueType;
         using reference  = Reference;
         using pointer    = Pointer;
-        using typename _my_base::difference_type;
 
         reference operator*()
         {
@@ -278,7 +286,7 @@ namespace genetic_algorithm::detail
             data_(&container), idx_(idx)
         {}
 
-        const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer> it) noexcept :
+        /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer> it) noexcept :
             data_(it.data_), idx_(it.idx)
         {}
 
