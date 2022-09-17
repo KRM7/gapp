@@ -16,8 +16,8 @@ namespace genetic_algorithm::detail
     class iterator_interface
     {
     public:
-        auto cbegin() const { return derived.begin(); };
-        auto cend() const { return derived.end(); };
+        auto cbegin() const { return derived().begin(); };
+        auto cend() const { return derived().end(); };
     private:
         constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
         constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
@@ -68,7 +68,7 @@ namespace genetic_algorithm::detail
             return old_value;
         }
 
-        auto operator->()
+        auto operator->() requires (std::is_lvalue_reference_v<decltype(*this->derived())>)
         {
             return &*derived();
         }
@@ -139,12 +139,12 @@ namespace genetic_algorithm::detail
     *   operator +=(n)
     *   operator-(it, it)
     */
-    template<typename Derived>
+    template<typename Derived, typename Distance = std::ptrdiff_t>
     class random_access_iterator_interface : public bidirectional_iterator_interface<Derived>
     {
     public:
         using iterator_category = std::random_access_iterator_tag;
-        using difference_type = std::ptrdiff_t;
+        using difference_type = Distance;
 
         friend bool operator>(const Derived& lhs, const Derived& rhs)  { return rhs < lhs; }
         friend bool operator<=(const Derived& lhs, const Derived& rhs) { return !(rhs < lhs); }
@@ -167,8 +167,9 @@ namespace genetic_algorithm::detail
     template<typename Derived,
              typename ValueType,
              typename Reference,
-             typename Pointer>
-    class stable_iterator_base : public random_access_iterator_interface<Derived>
+             typename Pointer,
+             typename Distance = std::ptrdiff_t>
+    class stable_iterator_base : public random_access_iterator_interface<Derived, Distance>
     {
     public:
         using _my_base = random_access_iterator_interface<Derived>;
@@ -213,7 +214,9 @@ namespace genetic_algorithm::detail
 
         Derived& operator+=(difference_type n)
         {
-            assert(derived().data_); assert(n < 0 ? (derived().idx_ >= -n) : true);
+            assert(derived().data_);
+            assert(n < 0 ? (difference_type(derived().idx_) >= -n) : true);
+
             derived().idx_ += n;
             return derived();
         }
@@ -233,12 +236,14 @@ namespace genetic_algorithm::detail
     template<typename Container,
              typename ValueType = typename Container::value_type,
              typename Reference = typename Container::reference,
-             typename Pointer   = typename Container::pointer>
-    class stable_iterator : public stable_iterator_base<stable_iterator<Container, ValueType, Reference, Pointer>,
-                                                        ValueType, Reference, Pointer>
+             typename Pointer   = typename Container::pointer,
+             typename Distance  = typename Container::difference_type>
+    class stable_iterator :
+        public stable_iterator_base<stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
+                                    ValueType, Reference, Pointer, Distance>
     {
     public:
-        using _my_base = stable_iterator_base<stable_iterator, ValueType, Reference, Pointer>;
+        using _my_base = stable_iterator_base<stable_iterator, ValueType, Reference, Pointer, Distance>;
 
         using typename _my_base::iterator_category;
         using typename _my_base::difference_type;
@@ -265,12 +270,14 @@ namespace genetic_algorithm::detail
     template<typename Container,
              typename ValueType = typename Container::value_type,
              typename Reference = typename Container::reference,
-             typename Pointer   = typename Container::pointer>
-    class const_stable_iterator : public stable_iterator_base<const_stable_iterator<Container, ValueType, Reference, Pointer>,
-                                                              const ValueType, const Reference, const Pointer>
+             typename Pointer   = typename Container::pointer,
+             typename Distance  = typename Container::difference_type>
+    class const_stable_iterator :
+        public stable_iterator_base<const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
+                                    const ValueType, const Reference, const Pointer, Distance>
     {
     public:
-        using _my_base = stable_iterator_base<const_stable_iterator, const ValueType, const Reference, const Pointer>;
+        using _my_base = stable_iterator_base<const_stable_iterator, const ValueType, const Reference, const Pointer, Distance>;
 
         using typename _my_base::iterator_category;
         using typename _my_base::difference_type;
@@ -286,7 +293,7 @@ namespace genetic_algorithm::detail
             data_(&container), idx_(idx)
         {}
 
-        /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer> it) noexcept :
+        /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) noexcept :
             data_(it.data_), idx_(it.idx)
         {}
 
