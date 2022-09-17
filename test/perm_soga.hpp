@@ -10,7 +10,6 @@
 #include "fitness_functions.hpp"
 #include "benchmark_utils.hpp"
 
-using namespace std;
 using namespace genetic_algorithm;
 
 void perm_tsp52()

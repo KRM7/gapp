@@ -21,7 +21,6 @@
 #include "../src/genetic_algorithm.hpp"
 #include "benchmark_utils.hpp"
 
-using namespace std;
 using GeneBounds = genetic_algorithm::GA<double>::GeneBounds;
 
 constexpr double PI = 3.14159265358979323846;
@@ -41,22 +40,22 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
         double fx = 10.0 * x.size();
         for (size_t i = 0; i < x.size(); i++)
         {
-            fx += pow(x[i], 2) - 10.0 * cos(2 * PI * x[i]);
+            fx += std::pow(x[i], 2) - 10.0 * cos(2 * PI * x[i]);
         }
 
         return { -fx };	/* For maximization. */
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -89,10 +88,10 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
         double fx = 0.0;
         for (size_t i = 0; i < x.size() - 1; i++)
@@ -104,7 +103,7 @@ public:
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -137,22 +136,22 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
         double fx = 418.9829 * x.size();
         for (size_t i = 0; i < x.size(); i++)
         {
-            fx -= x[i] * sin(sqrt(abs(x[i])));
+            fx -= x[i] * std::sin(std::sqrt(std::abs(x[i])));
         }
 
         return { -fx }; /* For maximization. */
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -185,17 +184,17 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
         double fx = 1.0;
         double fminus = 1.0;
         for (size_t i = 0; i < x.size(); i++)
         {
             fx += x[i] * x[i] / 4000.0;
-            fminus *= cos(x[i] / sqrt(i + 1.0));
+            fminus *= std::cos(x[i] / std::sqrt(i + 1.0));
         }
         fx -= fminus;
 
@@ -203,7 +202,7 @@ public:
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -236,28 +235,28 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
         double f1 = 0.0;
         double f2 = 0.0;
         for (size_t i = 0; i < x.size(); i++)
         {
-            f1 += pow(x[i], 2);
-            f2 += cos(2.0 * PI * x[i]);
+            f1 += std::pow(x[i], 2);
+            f2 += std::cos(2.0 * PI * x[i]);
         }
-        f1 = exp(-0.2 * sqrt(f1 / num_vars));
-        f2 = exp(f2 / num_vars);
+        f1 = std::exp(-0.2 * std::sqrt(f1 / num_vars));
+        f2 = std::exp(f2 / num_vars);
         
-        double fx = -20.0 * f1 - f2 + 20.0 + exp(1.0);
+        double fx = -20.0 * f1 - f2 + 20.0 + std::exp(1.0);
 
         return { -fx }; /* For maximization. */
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -293,28 +292,28 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() > 1);
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
         double f1 = 0.0;
         for (size_t i = 0; i < x.size() - 1; i++)
         {
-            f1 += -10.0 * exp(-0.2 * sqrt(pow(x[i], 2) + pow(x[i + 1], 2)));
+            f1 += -10.0 * std::exp(-0.2 * std::sqrt(std::pow(x[i], 2) + std::pow(x[i + 1], 2)));
         }
         double f2 = 0.0;
         for (size_t i = 0; i < x.size(); i++)
         {
-            f2 += pow(abs(x[i]), 0.8) + 5 * sin(pow(x[i], 3));
+            f2 += std::pow(std::abs(x[i]), 0.8) + 5 * std::sin(std::pow(x[i], 3));
         }
 
         return { -f1, -f2 };
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -345,14 +344,14 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() > 1);
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
         double f1 = x[0];
-        double g = accumulate(x.begin() + 1, x.end(), 0.0);
+        double g = std::accumulate(x.begin() + 1, x.end(), 0.0);
         g = 9 * g / (x.size() - 1.0) + 1;
         double f2 = g * (1.0 - pow(x[0] / g, 2));
 
@@ -360,7 +359,7 @@ public:
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -391,22 +390,22 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() > 1);
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
         double f1 = x[0];
-        double g = accumulate(x.begin() + 1, x.end(), 0.0);
+        double g = std::accumulate(x.begin() + 1, x.end(), 0.0);
         g = 1 + 9 * g / (x.size() - 1.0);
-        double f2 = g * (1 - sqrt(x[0] / g) - (x[0] / g) * sin(10 * PI * x[0]));
+        double f2 = g * (1 - std::sqrt(x[0] / g) - (x[0] / g) * std::sin(10 * PI * x[0]));
 
         return { -f1, -f2 };
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -437,22 +436,22 @@ public:
         num_vars(num_vars) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() > 1);
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
-        double f1 = 1 - exp(-4 * x[0]) * pow(sin(6 * PI * x[0]), 6);
-        double g = accumulate(x.begin() + 1, x.end(), 0.0);
-        g = 9.0 * pow(g / (x.size() - 1.0), 0.25) + 1;
-        double f2 = g * (1 - pow(f1 / g, 2));
+        double f1 = 1 - std::exp(-4 * x[0]) * std::pow(std::sin(6 * PI * x[0]), 6);
+        double g = std::accumulate(x.begin() + 1, x.end(), 0.0);
+        g = 9.0 * std::pow(g / (x.size() - 1.0), 0.25) + 1;
+        double f2 = g * (1 - std::pow(f1 / g, 2));
 
         return { -f1, -f2 };
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -488,18 +487,18 @@ public:
         num_obj(num_obj) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() > num_obj);
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
-        vector<double> x1(x.begin(), x.begin() + num_obj - 1);
-        vector<double> x2(x.begin() + num_obj - 1, x.end());
+        std::vector<double> x1(x.begin(), x.begin() + num_obj - 1);
+        std::vector<double> x2(x.begin() + num_obj - 1, x.end());
 
         double gm = g(x2);
 
-        vector<double> fitness(num_obj, 1.0);
+        std::vector<double> fitness(num_obj, 1.0);
         
         /* F0 */
         for (const auto& val : x1)
@@ -527,7 +526,7 @@ public:
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -546,7 +545,7 @@ public:
 
 private:
 
-    static double g(const vector<double>& xm) noexcept
+    static double g(const std::vector<double>& xm) noexcept
     {
         double g = double(xm.size());
         for (const auto& val : xm)
@@ -573,23 +572,23 @@ public:
         num_obj(num_obj) {}
 
     /* For real chromosomes. */
-    vector<double> operator()(const vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const
     {
         assert(x.size() > num_obj);
         assert(x.size() == num_vars);
-        assert(all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
+        assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
 
-        vector<double> x1(x.begin(), x.begin() + num_obj - 1);
-        vector<double> x2(x.begin() + num_obj - 1, x.end());
+        std::vector<double> x1(x.begin(), x.begin() + num_obj - 1);
+        std::vector<double> x2(x.begin() + num_obj - 1, x.end());
 
         double gm = g(x2);
 
-        vector<double> fitness(num_obj, 1.0);
+        std::vector<double> fitness(num_obj, 1.0);
 
         /* F0 */
         for (const auto& val : x1)
         {
-            fitness[0] *= cos(val * PI / 2.0);
+            fitness[0] *= std::cos(val * PI / 2.0);
         }
 
         /* F1- */
@@ -597,9 +596,9 @@ public:
         {
             for (size_t j = 0; j < x1.size() - i; j++)
             {
-                fitness[i] *= cos(x1[j] * PI / 2.0);
+                fitness[i] *= std::cos(x1[j] * PI / 2.0);
             }
-            fitness[i] *= sin(x1[x1.size() - i] * PI / 2.0);
+            fitness[i] *= std::sin(x1[x1.size() - i] * PI / 2.0);
         }
 
         /* Maximization. */
@@ -612,7 +611,7 @@ public:
     }
 
     /* For binary chromosomes. */
-    vector<double> operator()(const vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -631,12 +630,12 @@ public:
 
 private:
 
-    static double g(const vector<double>& xm) noexcept
+    static double g(const std::vector<double>& xm) noexcept
     {
         double g = 0.0;
         for (const auto& val : xm)
         {
-            g += pow(val - 0.5, 2);
+            g += std::pow(val - 0.5, 2);
         }
 
         return g;
@@ -653,18 +652,18 @@ class TSP
 private:
 
     size_t num_vars_ = 0;
-    vector<pair<double, double>> coords;
-    vector<vector<double>> dmat;
+    std::vector<std::pair<double, double>> coords;
+    std::vector<std::vector<double>> dmat;
 public:
 
-    TSP(string fname)
+    TSP(std::string fname)
     {
-        ifstream file(fname);
+        std::ifstream file(fname);
 
-        string line;
-        while (getline(file, line))
+        std::string line;
+        while (std::getline(file, line))
         {
-            stringstream linestream(line);
+            std::stringstream linestream(line);
             int idx;
             double c1, c2;
 
@@ -675,7 +674,7 @@ public:
 
         num_vars_ = coords.size();
 
-        vector<vector<double>> mat(coords.size(), vector<double>(coords.size()));
+        std::vector<std::vector<double>> mat(coords.size(), std::vector<double>(coords.size()));
         for (size_t i = 0; i < mat.size(); i++)
         for (size_t j = 0; j < mat[i].size(); j++)
         {
@@ -684,7 +683,7 @@ public:
         dmat = mat;
     }
 
-    vector<double> operator()(const vector<size_t>& x) const
+    std::vector<double> operator()(const std::vector<size_t>& x) const
     {
         assert(x.size() == num_vars());
 
@@ -735,11 +734,11 @@ class MatchString
 {
 public:
 
-    explicit MatchString(string target) :
+    explicit MatchString(std::string target) :
         target_(target),
         num_vars_(target.size()) {}
 
-    vector<double> operator()(const vector<size_t>& x) const
+    std::vector<double> operator()(const std::vector<size_t>& x) const
     {
         assert(x.size() == num_vars());
 
@@ -755,10 +754,10 @@ public:
     size_t num_vars() const noexcept { return num_vars_; }
     constexpr static size_t num_obj() noexcept { return 1; }
     double optimal_value() const noexcept { return double(num_vars_); }
-    string optimal_x() const noexcept { return target_; }
+    std::string optimal_x() const noexcept { return target_; }
 
 private:
-    string target_;
+    std::string target_;
     size_t num_vars_;
 };
 
