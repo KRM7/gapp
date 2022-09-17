@@ -4,6 +4,7 @@
 #define GA_UTILITY_ITERATORS_HPP
 
 #include <iterator>
+#include <type_traits>
 #include <cstddef>
 
 namespace genetic_algorithm::detail
@@ -18,9 +19,10 @@ namespace genetic_algorithm::detail
     public:
         auto cbegin() const { return derived().begin(); };
         auto cend() const { return derived().end(); };
+
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
     /*
@@ -39,8 +41,8 @@ namespace genetic_algorithm::detail
         auto crend() const   { return std::make_reverse_iterator(derived().begin()); }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
@@ -79,8 +81,8 @@ namespace genetic_algorithm::detail
         }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
@@ -124,8 +126,8 @@ namespace genetic_algorithm::detail
         }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
     
@@ -156,13 +158,14 @@ namespace genetic_algorithm::detail
         friend Derived& operator-=(Derived& lhs, difference_type n) { return lhs += -n; }
         friend Derived operator-(Derived iter, difference_type n) { return iter -= n; }
 
-        auto operator[](difference_type n) const { return *(derived() + n); }
+        decltype(auto) operator[](difference_type n) const { return *(derived() + n); }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
+    /* Iterators for random-access containers that aren't invalidated on reallocation/insertions */
 
     template<typename Derived,
              typename ValueType,
@@ -228,8 +231,8 @@ namespace genetic_algorithm::detail
         }
 
     private:
-        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
