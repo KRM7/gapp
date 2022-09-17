@@ -154,6 +154,19 @@ namespace genetic_algorithm::detail
     }
 
     template<std::input_iterator Iter, typename Pred>
+    requires std::predicate<Pred, dereference_t<typename std::iterator_traits<Iter>::value_type>>
+    Iter find_if_ptr(Iter first, Iter last, Pred&& pred)
+    {
+        assert(std::distance(first, last) >= 0);
+
+        for (; first != last; ++first)
+        {
+            if (std::invoke(pred, **first)) break;
+        }
+        return first;
+    }
+
+    template<std::input_iterator Iter, typename Pred>
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
     std::vector<Iter> find_all(Iter first, Iter last, Pred&& pred)
     {
