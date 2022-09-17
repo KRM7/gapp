@@ -7,7 +7,6 @@
 #include <ostream>
 #include <vector>
 #include <memory>
-#include <iterator>
 #include <type_traits>
 #include <utility>
 #include <cstddef>
@@ -182,7 +181,7 @@ namespace genetic_algorithm::detail
         template<typename T>
         struct PtrHelper
         {
-            /* implicit */ PtrHelper(const std::remove_reference_t<T>& row) : row_(row) {}
+            /* implicit */ PtrHelper(const std::remove_cvref_t<T>& row) : row_(row) {}
             T* operator->() const { return &row_; }
             T row_;
         };
@@ -430,7 +429,7 @@ namespace genetic_algorithm::detail
             _my_base(), data_(&mat), idx_(row)
         {}
 
-        ConstRowIterator(RowIterator it) noexcept :
+        /* implicit */ ConstRowIterator(RowIterator it) noexcept :
             _my_base(), data_(it.data_), idx_(it.idx_)
         {}
 
