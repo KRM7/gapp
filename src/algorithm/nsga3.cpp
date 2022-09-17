@@ -249,7 +249,8 @@ namespace genetic_algorithm::algorithm
             const auto best = ref_lines_.findBestMatch(fnorm);
 
             sol_info_[sol.idx].ref = &*best.elem;
-            sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(best.elem->direction, fnorm);
+            //sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(best.elem->direction, fnorm);
+            sol_info_[sol.idx].ref_dist = -best.prod;
         });
     }
 

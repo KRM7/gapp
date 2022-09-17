@@ -73,7 +73,7 @@ namespace genetic_algorithm::detail
         size_t dim_;
 
         /* The maximum number of elements allowed in a leaf node. */
-        inline static constexpr size_t MAX_LEAF_ELEMENTS = 24;
+        inline static constexpr size_t MAX_LEAF_ELEMENTS = 22;
 
 
         /* Find the element in the range [first, last) furthest from an element (using Euclidean distances). */
@@ -314,8 +314,8 @@ namespace genetic_algorithm::detail
 
         const double query_norm = math::euclideanNorm(query_point);
 
-        std::vector<const Node*> node_stack;
-        node_stack.reserve(nodes_.size() / 2);
+        static thread_local std::vector<const Node*> node_stack(nodes_.size() / 2);
+        node_stack.clear();
         node_stack.push_back(&root);
 
         FindResult best{ {}, -math::inf<double> };
