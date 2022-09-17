@@ -120,6 +120,14 @@ namespace genetic_algorithm::detail
     template<typename T>
     inline constexpr bool is_reverse_iterator_v = is_reverse_iterator<T>::value;
 
+
+
+    template<typename T>
+    struct dereference : std::type_identity<decltype(*std::declval<T>())> {};
+
+    template<typename T>
+    using dereference_t = typename dereference<T>::type;
+
 } // namespace genetic_algorithm::detail
 
 #endif // !GA_UTILITY_TYPE_TRAITS_HPP
