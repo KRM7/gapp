@@ -191,8 +191,9 @@ namespace genetic_algorithm::detail
 
         bool operator==(Derived rhs) const
         {
-            assert(derived().data_ == rhs.data_);
-            return (derived().data_ == rhs.data_) && (derived().idx_ == rhs.idx_);
+            assert(derived().data_ == rhs.data_ || (derived().data_ == nullptr && rhs.data_ == nullptr));
+            return ((derived().data_ == rhs.data_) && (derived().idx_ == rhs.idx_)) ||
+                   ((derived().data_ == nullptr) && (rhs.data_ == nullptr));
         }
 
         bool operator<(Derived rhs) const
