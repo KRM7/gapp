@@ -36,8 +36,8 @@ namespace genetic_algorithm::algorithm
     {
     public:
         NSGA3();
-        //NSGA3(const NSGA3&);
-        //NSGA3& operator=(const NSGA3&);
+        NSGA3(const NSGA3&);
+        NSGA3& operator=(const NSGA3&);
         NSGA3(NSGA3&&) noexcept;
         NSGA3& operator=(NSGA3&&) noexcept;
         ~NSGA3() override;

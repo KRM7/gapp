@@ -150,14 +150,14 @@ namespace genetic_algorithm::algorithm
         pimpl_(std::make_unique<Impl>())
     {}
 
-    //NSGA3::NSGA3(const NSGA3& rhs) :
-    //    pimpl_(std::make_unique<Impl>(*rhs.pimpl_))
-    //{}
+    NSGA3::NSGA3(const NSGA3& rhs) :
+        pimpl_(std::make_unique<Impl>(*rhs.pimpl_))
+    {}
 
-    //NSGA3& NSGA3::operator=(const NSGA3& rhs)
-    //{
-    //    pimpl_ = std::make_unique<Impl>(*rhs.pimpl_);
-    //}
+    NSGA3& NSGA3::operator=(const NSGA3& rhs)
+    {
+        pimpl_ = std::make_unique<Impl>(*rhs.pimpl_);
+    }
 
     NSGA3::NSGA3(NSGA3&&) noexcept            = default;
     NSGA3& NSGA3::operator=(NSGA3&&) noexcept = default;
