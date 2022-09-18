@@ -182,7 +182,7 @@ namespace genetic_algorithm::detail
         struct PtrHelper
         {
             /* implicit */ PtrHelper(const std::remove_cvref_t<T>& row) : row_(row) {}
-            T* operator->() const { return &row_; }
+            T* operator->() { return &row_; }
             T row_;
         };
     };
@@ -404,6 +404,7 @@ namespace genetic_algorithm::detail
         size_t idx_;
 
         friend class _my_base;
+        friend class ConstRowIterator;
     };
 
     template<typename T, typename A>

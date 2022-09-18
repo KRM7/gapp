@@ -91,6 +91,14 @@ namespace genetic_algorithm::math
                                      [](double lhs, double rhs) noexcept { return std::pow(lhs - rhs, 2); });
     }
 
+    double euclideanDistanceSq(std::vector<double>::const_iterator first1, std::vector<double>::const_iterator last1,
+                               std::vector<double>::const_iterator first2) noexcept
+    {
+        return std::transform_reduce(first1, last1, first2, 0.0,
+                                     std::plus{},
+                                     [](double lhs, double rhs) noexcept { return std::pow(lhs - rhs, 2); });
+    }
+
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept
     {
         assert(line.size() == point.size());

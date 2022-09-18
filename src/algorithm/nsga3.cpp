@@ -91,11 +91,6 @@ namespace genetic_algorithm::algorithm
 
     /* NSGA3 IMPLEMENTATION */
 
-    static constexpr auto RefProjection = Fn<&RefLine::direction>;
-
-    using RefProjectionType = std::remove_cvref_t<decltype(RefProjection)>;
-    using RefLineSearchTree = detail::ConeTree<RefLine, RefProjectionType>;
-
     struct NSGA3::Impl
     {
         struct CandidateInfo
@@ -106,7 +101,7 @@ namespace genetic_algorithm::algorithm
         };
 
         std::vector<CandidateInfo> sol_info_;
-        RefLineSearchTree ref_lines_;
+        detail::ConeTree ref_lines_;
         std::vector<size_t> niche_counts_;
 
         Point ideal_point_;
@@ -238,9 +233,9 @@ namespace genetic_algorithm::algorithm
             const FitnessVector& fvec = first[sol.idx];
             const FitnessVector fnorm = normalizeFitnessVec(fvec, ideal_point_, nadir_point_);
 
-            const auto best = ref_lines_.findBestMatch(fnorm); // TODO find best match idx
+            const auto best = ref_lines_.findBestMatch(fnorm);
 
-            sol_info_[sol.idx].ref_idx = size_t(best.elem - ref_lines_.begin());
+            sol_info_[sol.idx].ref_idx = size_t(best.elem - ref_lines_.data().begin());
             sol_info_[sol.idx].ref_dist = -best.prod;
         });
     }
@@ -259,10 +254,6 @@ namespace genetic_algorithm::algorithm
                 return sol_info_[lhs].ref_dist < sol_info_[rhs].ref_dist;
             }
         }
-        //else
-        //{
-        //    return niche_counts_[lhs] < niche_counts_[rhs];
-        //}
 
         return rng::randomBool();
     }
@@ -355,9 +346,7 @@ namespace genetic_algorithm::algorithm
 
         auto ref_lines = dtl::generateReferencePoints(ga.num_objectives(), ga.population_size());
 
-        pimpl_->ref_lines_ = detail::ConeTree(std::make_move_iterator(ref_lines.begin()),
-                                              std::make_move_iterator(ref_lines.end()),
-                                              RefProjection);
+        pimpl_->ref_lines_ = detail::ConeTree(std::make_move_iterator(ref_lines.begin()), std::make_move_iterator(ref_lines.end()));
         pimpl_->niche_counts_.resize(pimpl_->ref_lines_.size());
 
         auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());

@@ -12,20 +12,8 @@ namespace genetic_algorithm::algorithm::dtl
 {
     using math::Point;
 
-    /* A reference direction for the NSGA-III algorithm. */
-    struct RefLine
-    {
-        Point direction;
-        size_t niche_count;
-
-        RefLine(Point p) noexcept :
-            direction(std::move(p)),
-            niche_count(0)
-        {}
-    };
-
     /* Generate n reference points in dim dimensions. */
-    std::vector<RefLine> generateReferencePoints(size_t dim, size_t n);
+    std::vector<Point> generateReferencePoints(size_t dim, size_t n);
 
 } // namespace genetic_algorithm::algorithm::dtl
 

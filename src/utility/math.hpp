@@ -68,6 +68,10 @@ namespace genetic_algorithm::math
     /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept;
 
+    /* Calculate the square of the Euclidean distance between the vectors [first1, last1), [first2, first2 + last1 - first1). */
+    double euclideanDistanceSq(std::vector<double>::const_iterator first1, std::vector<double>::const_iterator last1,
+                               std::vector<double>::const_iterator first2) noexcept;
+
     /* Calculate the square of the perpendicular distance between a line and a point. */
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept;
 
