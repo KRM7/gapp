@@ -88,17 +88,6 @@ namespace genetic_algorithm::algorithm
         return fnorm;
     }
 
-    /* Increment the niche count of ref, while keeping refs sorted based on niche counts. */
-    inline static void incrementNicheCount(std::vector<RefLine*>& refs, RefLine* ref)
-    {
-        ref->niche_count++;
-
-        auto current = std::find(refs.begin(), refs.end(), ref);
-        auto first_eq = std::find_if(std::next(current), refs.end(), [&](const RefLine* r) { return r->niche_count >= (*current)->niche_count; });
-
-        std::iter_swap(current, std::prev(first_eq));
-    }
-
 
     /* NSGA3 IMPLEMENTATION */
 
@@ -112,12 +101,13 @@ namespace genetic_algorithm::algorithm
         struct CandidateInfo
         {
             size_t rank;
-            RefLine* ref;
+            size_t ref_idx;
             double ref_dist;
         };
 
         std::vector<CandidateInfo> sol_info_;
         RefLineSearchTree ref_lines_;
+        std::vector<size_t> niche_counts_;
 
         Point ideal_point_;
         Point nadir_point_;
@@ -143,17 +133,19 @@ namespace genetic_algorithm::algorithm
         bool nichedCompare(size_t lhs, size_t rhs) const noexcept;
 
         /* Return the associated reference direction of a candidate. */
-        RefLine& refPointOf(const FrontInfo& sol) noexcept;
-        const RefLine& refPointOf(const FrontInfo& sol) const noexcept;
+        size_t refIndexOf(const FrontInfo& sol) const noexcept;
 
         /* Return the associated reference direction's distance for a candidate. */
         double refDistOf(const FrontInfo& sol) const noexcept;
 
-        /* Return the (unique) reference lines that are associated with at least one element in the range [first, last), sorted based on their niche counts. */
-        std::vector<RefLine*> referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
+        /* Return the (unique) reference indices that are associated with at least one element in the range [first, last), sorted based on their niche counts. */
+        std::vector<size_t> referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
 
         /* Return the closest solution associated with ref in [first, last). */
-        ParetoFronts::iterator findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, const RefLine& ref) const;
+        ParetoFronts::iterator findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t ref_idx) const;
+
+        /* Increment the niche count of ref, while keeping refs sorted based on niche counts. */
+        void incrementNicheCount(std::vector<size_t>& refs, size_t ref);
 
         /* Create a new population from the pareto fronts range [first, last). */
         std::vector<size_t> createPopulation(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
@@ -224,8 +216,8 @@ namespace genetic_algorithm::algorithm
 
     inline void NSGA3::Impl::recalcNicheCounts(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
     {
-        std::for_each(ref_lines_.data().begin(), ref_lines_.data().end(), [](RefLine& ref) { ref.niche_count = 0; });
-        std::for_each(first, last, [&](const FrontInfo& sol) { refPointOf(sol).niche_count++; });
+        std::fill(niche_counts_.begin(), niche_counts_.end(), 0_sz);
+        std::for_each(first, last, [&](const FrontInfo& sol) { niche_counts_[refIndexOf(sol)]++; });
     }
 
     void NSGA3::Impl::associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last,
@@ -241,15 +233,14 @@ namespace genetic_algorithm::algorithm
 
         sol_info_.resize(last - first);
 
-        std::for_each(GA_EXECUTION_UNSEQ, pfirst, plast, [&](const FrontInfo& sol) /* par exec is worse here for popsize 100 */
+        std::for_each(GA_EXECUTION_UNSEQ, pfirst, plast, [&](const FrontInfo& sol)
         {
             const FitnessVector& fvec = first[sol.idx];
             const FitnessVector fnorm = normalizeFitnessVec(fvec, ideal_point_, nadir_point_);
 
-            const auto best = ref_lines_.findBestMatch(fnorm);
+            const auto best = ref_lines_.findBestMatch(fnorm); // TODO find best match idx
 
-            sol_info_[sol.idx].ref = &*best.elem;
-            //sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(best.elem->direction, fnorm);
+            sol_info_[sol.idx].ref_idx = size_t(best.elem - ref_lines_.begin());
             sol_info_[sol.idx].ref_dist = -best.prod;
         });
     }
@@ -257,7 +248,7 @@ namespace genetic_algorithm::algorithm
     inline bool NSGA3::Impl::nichedCompare(size_t lhs, size_t rhs) const noexcept
     {
         /* This version of the compare implementation is from the U-NSGA-III algorithm. */
-        if (sol_info_[lhs].ref == sol_info_[rhs].ref)
+        if (sol_info_[lhs].ref_idx == sol_info_[rhs].ref_idx)
         {
             if (sol_info_[lhs].rank != sol_info_[rhs].rank)
             {
@@ -268,18 +259,17 @@ namespace genetic_algorithm::algorithm
                 return sol_info_[lhs].ref_dist < sol_info_[rhs].ref_dist;
             }
         }
+        //else
+        //{
+        //    return niche_counts_[lhs] < niche_counts_[rhs];
+        //}
 
         return rng::randomBool();
     }
 
-    inline RefLine& NSGA3::Impl::refPointOf(const FrontInfo& sol) noexcept
+    inline size_t NSGA3::Impl::refIndexOf(const FrontInfo& sol) const noexcept
     {
-        return *sol_info_[sol.idx].ref;
-    }
-
-    inline const RefLine& NSGA3::Impl::refPointOf(const FrontInfo& sol) const noexcept
-    {
-        return *sol_info_[sol.idx].ref;
+        return sol_info_[sol.idx].ref_idx;
     }
 
     inline double NSGA3::Impl::refDistOf(const FrontInfo& sol) const noexcept
@@ -287,28 +277,28 @@ namespace genetic_algorithm::algorithm
         return sol_info_[sol.idx].ref_dist;
     }
 
-    inline std::vector<RefLine*> NSGA3::Impl::referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
+    inline std::vector<size_t> NSGA3::Impl::referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
     {
-        std::vector<RefLine*> refs(last - first);
-        std::transform(first, last, refs.begin(), [this](const FrontInfo& sol) { return &refPointOf(sol); });
+        std::vector<size_t> refs(last - first);
+        std::transform(first, last, refs.begin(), [this](const FrontInfo& sol) { return refIndexOf(sol); });
 
         detail::erase_duplicates(refs);
-        std::sort(refs.begin(), refs.end(), [](const RefLine* lhs, const RefLine* rhs)
+        std::sort(refs.begin(), refs.end(), [this](size_t lhs, size_t rhs)
         {
-            return lhs->niche_count < rhs->niche_count;
+            return niche_counts_[lhs] < niche_counts_[rhs];
         });
 
         return refs;
     }
 
-    inline ParetoFronts::iterator NSGA3::Impl::findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, const RefLine& ref) const
+    inline ParetoFronts::iterator NSGA3::Impl::findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t ref) const
     {
         auto closest = first;
         double min_dist = math::inf<double>;
 
         for (; first != last; ++first)
         {
-            if (&refPointOf(*first) == &ref && refDistOf(*first) < min_dist)
+            if (refIndexOf(*first) == ref && refDistOf(*first) < min_dist)
             {
                 closest = first;
                 min_dist = refDistOf(*first);
@@ -316,6 +306,16 @@ namespace genetic_algorithm::algorithm
         }
 
         return closest;
+    }
+
+    inline void NSGA3::Impl::incrementNicheCount(std::vector<size_t>& refs, size_t ref)
+    {
+        niche_counts_[ref]++;
+
+        auto current = std::find(refs.begin(), refs.end(), ref);
+        auto first_eq = std::find_if(std::next(current), refs.end(), [&](size_t idx) { return niche_counts_[idx] >= niche_counts_[ref]; });
+
+        std::iter_swap(current, std::prev(first_eq));
     }
 
     std::vector<size_t> NSGA3::Impl::createPopulation(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
@@ -358,6 +358,7 @@ namespace genetic_algorithm::algorithm
         pimpl_->ref_lines_ = detail::ConeTree(std::make_move_iterator(ref_lines.begin()),
                                               std::make_move_iterator(ref_lines.end()),
                                               RefProjection);
+        pimpl_->niche_counts_.resize(pimpl_->ref_lines_.size());
 
         auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());
 
@@ -390,19 +391,19 @@ namespace genetic_algorithm::algorithm
         pimpl_->recalcNicheCounts(pfronts.begin(), partial_first);
 
         /* Find the reference lines associated with the partial front. */
-        std::vector<RefLine*> refs = pimpl_->referenceSetOf(partial_first, partial_last);
+        std::vector<size_t> refs = pimpl_->referenceSetOf(partial_first, partial_last);
 
         /* Move the best elements to the front of the partial front. */
         while (partial_first != pfronts.begin() + popsize)
         {
-            const size_t min_count = refs.front()->niche_count;
-            const auto min_last = std::find_if(refs.begin(), refs.end(), [&](const RefLine* ref) { return ref->niche_count != min_count; });
+            const size_t min_count = pimpl_->niche_counts_[refs[0]];
+            const auto min_last = std::find_if(refs.begin(), refs.end(), [&](size_t idx) { return pimpl_->niche_counts_[idx] != min_count; });
 
-            RefLine* ref = rng::randomElement(refs.begin(), min_last);
-            incrementNicheCount(refs, ref);
+            size_t ref = rng::randomElement(refs.begin(), min_last);
+            pimpl_->incrementNicheCount(refs, ref);
 
-            const size_t assoc_count = std::count_if(partial_first, partial_last, [&](const FrontInfo& sol) { return &pimpl_->refPointOf(sol) == ref; });
-            const auto closest = pimpl_->findClosestAssociated(partial_first, partial_last, *ref);
+            const size_t assoc_count = std::count_if(partial_first, partial_last, [&](const FrontInfo& sol) { return pimpl_->refIndexOf(sol) == ref; });
+            const auto closest = pimpl_->findClosestAssociated(partial_first, partial_last, ref);
 
             /* Move the selected candidate to the front of the partial front so it can't be selected again. */
             std::iter_swap(closest, partial_first++);
