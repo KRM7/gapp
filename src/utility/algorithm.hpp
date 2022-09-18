@@ -161,7 +161,9 @@ namespace genetic_algorithm::detail
 
         for (; first != last; ++first)
         {
-            if (std::invoke(pred, **first)) break;
+            auto* ptr = *first;
+            assert(ptr != nullptr);
+            if (std::invoke(pred, *ptr)) break;
         }
         return first;
     }
