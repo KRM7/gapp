@@ -15,7 +15,7 @@ namespace genetic_algorithm::algorithm::dtl
     /* A reference direction for the NSGA-III algorithm. */
     struct RefLine
     {
-        const Point direction;
+        Point direction;
         size_t niche_count;
 
         RefLine(Point p) noexcept :
