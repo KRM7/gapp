@@ -346,7 +346,7 @@ namespace genetic_algorithm::algorithm
 
         auto ref_lines = dtl::generateReferencePoints(ga.num_objectives(), ga.population_size());
 
-        pimpl_->ref_lines_ = detail::ConeTree(std::make_move_iterator(ref_lines.begin()), std::make_move_iterator(ref_lines.end()));
+        pimpl_->ref_lines_ = detail::ConeTree(ref_lines.begin(), ref_lines.end());
         pimpl_->niche_counts_.resize(pimpl_->ref_lines_.size());
 
         auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());
