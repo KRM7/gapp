@@ -50,8 +50,6 @@ namespace genetic_algorithm::detail
         ConeTree(Iter first, Iter last);
 
         size_t size() const noexcept { return points_.size(); }
-
-        Matrix<double>& data() noexcept { return points_; }
         const Matrix<double>& data() const noexcept { return points_; }
 
         /* Returns the closest point in the tree to the point, and its distance. */
