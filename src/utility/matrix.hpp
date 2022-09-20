@@ -374,11 +374,12 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     class Matrix<T, A>::RowIterator :
         public stable_iterator_base<typename Matrix<T, A>::RowIterator,
+                                    typename Matrix<T, A>,
                                     typename Matrix<T, A>::RowReference, typename Matrix<T, A>::RowReference, typename Matrix<T, A>::RowReference,
                                     typename Matrix<T, A>::difference_type>
     {
     public:
-        using _my_base = stable_iterator_base<RowIterator, RowReference, RowReference, RowReference, difference_type>;
+        using _my_base = stable_iterator_base<RowIterator, Matrix, RowReference, RowReference, RowReference, difference_type>;
 
         using typename _my_base::iterator_category;
         using typename _my_base::difference_type;
@@ -386,35 +387,25 @@ namespace genetic_algorithm::detail
         using typename _my_base::reference;
         using typename _my_base::pointer;
 
-        RowIterator() noexcept :
-            _my_base(), data_(nullptr), idx_(0)
-        {}
-
-        RowIterator(Matrix& mat, size_t row) noexcept :
-            _my_base(), data_(&mat), idx_(row)
-        {}
+        using _my_base::_my_base;
 
         PtrHelper<RowReference> operator->() const
         {
-            return (*data_)[idx_];
+            return (*this->data_)[this->idx_];
         }
 
-    private:
-        Matrix* data_;
-        size_t idx_;
-
-        friend class _my_base;
         friend class ConstRowIterator;
     };
 
     template<typename T, typename A>
     class Matrix<T, A>::ConstRowIterator :
         public stable_iterator_base<typename Matrix<T, A>::ConstRowIterator,
+                                    const typename Matrix<T, A>,
                                     const typename Matrix<T, A>::RowReference, const typename Matrix<T, A>::RowReference, const typename Matrix<T, A>::RowReference,
                                     typename Matrix<T, A>::difference_type>
     {
     public:
-        using _my_base = stable_iterator_base<ConstRowIterator, const RowReference, const RowReference, const RowReference, difference_type>;
+        using _my_base = stable_iterator_base<ConstRowIterator, const Matrix, const RowReference, const RowReference, const RowReference, difference_type>;
 
         using typename _my_base::iterator_category;
         using typename _my_base::difference_type;
@@ -422,28 +413,19 @@ namespace genetic_algorithm::detail
         using typename _my_base::reference;
         using typename _my_base::pointer;
 
-        ConstRowIterator() noexcept :
-            _my_base(), data_(nullptr), idx_(0)
-        {}
-
-        ConstRowIterator(const Matrix& mat, size_t row) noexcept :
-            _my_base(), data_(&mat), idx_(row)
-        {}
+        using _my_base::_my_base;
 
         /* implicit */ ConstRowIterator(RowIterator it) noexcept :
-            _my_base(), data_(it.data_), idx_(it.idx_)
-        {}
+            _my_base()
+        {
+            this->data_ = it.data_;
+            this->idx_ = it.idx_;
+        }
 
         PtrHelper<const RowReference> operator->() const
         {
-            return (*data_)[idx_];
+            return (*this->data_)[this->idx_];
         }
-
-    private:
-        const Matrix* data_;
-        size_t idx_;
-
-        friend class _my_base;
     };
 
 } // namespace genetic_algorithm::detail

@@ -3,6 +3,7 @@
 #ifndef GA_UTILITY_ITERATORS_HPP
 #define GA_UTILITY_ITERATORS_HPP
 
+#include "utility.hpp"
 #include <iterator>
 #include <type_traits>
 #include <cstddef>
@@ -24,6 +25,7 @@ namespace genetic_algorithm::detail
         Derived& derived() noexcept { return static_cast<Derived&>(*this); }
         const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
+
 
     /*
     * The following should be implemented in Derived:
@@ -70,7 +72,7 @@ namespace genetic_algorithm::detail
             return old_value;
         }
 
-        auto operator->() requires (std::is_lvalue_reference_v<decltype(*this->derived())>)
+        auto operator->() const requires (std::is_lvalue_reference_v<decltype(*this->derived())>)
         {
             return &*derived();
         }
@@ -165,9 +167,11 @@ namespace genetic_algorithm::detail
         const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
-    /* Iterators for random-access containers that aren't invalidated on reallocation/insertions */
+
+    /* Iterators for random-access containers that aren't invalidated on reallocations and insertions. */
 
     template<typename Derived,
+             typename Container,
              typename ValueType,
              typename Reference,
              typename Pointer,
@@ -183,58 +187,86 @@ namespace genetic_algorithm::detail
         using reference  = Reference;
         using pointer    = Pointer;
 
-        reference operator*()
+        stable_iterator_base() noexcept :
+            data_(nullptr), idx_(0)
+        {}
+
+        stable_iterator_base(Container& container, size_t idx) noexcept :
+            data_(&container), idx_(idx)
         {
-            assert(derived().data_ && derived().data_->size() > derived().idx_);
-            return (*derived().data_)[derived().idx_];
+            GA_ASSERT(data_->size() >= idx_, "Iterator can't refer to element past the end of the range.");
+        }
+
+        reference operator*() const
+        {
+            GA_ASSERT(data_, "Can't dereference value initialized iterator.");
+            GA_ASSERT(data_->size() > idx_, "Can't dereference past-the-end iterator.");
+
+            return (*data_)[idx_];
         }
 
         bool operator==(Derived rhs) const
         {
-            assert(derived().data_ == rhs.data_ || (derived().data_ == nullptr && rhs.data_ == nullptr));
-            return ((derived().data_ == rhs.data_) && (derived().idx_ == rhs.idx_)) ||
-                   ((derived().data_ == nullptr) && (rhs.data_ == nullptr));
+            GA_ASSERT(data_ == rhs.data_, "Can't compare iterators of different ranges.");
+
+            return (idx_ == rhs.idx_) || (data_ == nullptr && rhs.data_ == nullptr);
         }
 
         bool operator<(Derived rhs) const
         {
-            assert(derived().data_ == rhs.data_);
-            return derived().idx_ < rhs.idx_;
+            GA_ASSERT(data_ == rhs.data_, "Can't compare iterators of different ranges.");
+
+            return idx_ < rhs.idx_;
         }
 
         Derived& increment() noexcept
         {
-            assert(derived().data_);
-            derived().idx_++;
+            GA_ASSERT(data_, "Can't increment value initialized iterator.");
+
+            idx_++;
             return derived();
         }
 
         Derived& decrement() noexcept
         {
-            assert(derived().data_ && derived().idx_ != 0);
-            derived().idx_--;
+            GA_ASSERT(data_, "Can't decrement value initialized iterator.");
+
+            idx_--;
             return derived();
         }
 
         Derived& operator+=(difference_type n)
         {
-            assert(derived().data_);
-            assert(n < 0 ? (difference_type(derived().idx_) >= -n) : true);
+            GA_ASSERT(derived().data_, "Can't offset value initialized iterator.");
+            GA_ASSERT(n < 0 ? (difference_type(idx_) >= -n) : true, "Can't move iterator to before the start of the range.");
+            GA_ASSERT(n > 0 ? (idx_ + n) <= data_->size() : true, "Can't move iterator past the end of the range.");
 
-            derived().idx_ += n;
+            idx_ += n;
             return derived();
         }
 
         difference_type operator-(Derived rhs) const
         {
-            assert(derived().data_ && derived().data_ == rhs.data_);
-            return difference_type(derived().idx_) - difference_type(rhs.idx_);
+            GA_ASSERT(data_ && rhs.data_, "Can't get the difference of value initialized iterators.");
+            GA_ASSERT(data_ == rhs.data_, "Can't get the distance of iterators of different ranges");
+
+            return difference_type(idx_) - difference_type(rhs.idx_);
         }
 
+    protected:
+
+        Container* data_;
+        size_t idx_;
+
     private:
+
         Derived& derived() noexcept { return static_cast<Derived&>(*this); }
         const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
+
+
+    template<typename, typename, typename, typename, typename>
+    class const_stable_iterator;
 
 
     template<typename Container,
@@ -244,10 +276,10 @@ namespace genetic_algorithm::detail
              typename Distance  = typename Container::difference_type>
     class stable_iterator :
         public stable_iterator_base<stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
-                                    ValueType, Reference, Pointer, Distance>
+                                    Container, ValueType, Reference, Pointer, Distance>
     {
     public:
-        using _my_base = stable_iterator_base<stable_iterator, ValueType, Reference, Pointer, Distance>;
+        using _my_base = stable_iterator_base<stable_iterator, Container, ValueType, Reference, Pointer, Distance>;
 
         using typename _my_base::iterator_category;
         using typename _my_base::difference_type;
@@ -255,19 +287,9 @@ namespace genetic_algorithm::detail
         using typename _my_base::reference;
         using typename _my_base::pointer;
 
-        stable_iterator() noexcept :
-            _my_base(), data_(nullptr), idx_(0)
-        {}
+        using _my_base::_my_base;
 
-        stable_iterator(Container& container, size_t idx) noexcept :
-            _my_base(), data_(&container), idx_(idx)
-        {}
-
-    private:
-        Container* data_;
-        size_t idx_;
-
-        friend class _my_base;
+        friend class const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>;
     };
 
 
@@ -278,10 +300,10 @@ namespace genetic_algorithm::detail
              typename Distance  = typename Container::difference_type>
     class const_stable_iterator :
         public stable_iterator_base<const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
-                                    const ValueType, const Reference, const Pointer, Distance>
+                                    const Container, const ValueType, const Reference, const Pointer, Distance>
     {
     public:
-        using _my_base = stable_iterator_base<const_stable_iterator, const ValueType, const Reference, const Pointer, Distance>;
+        using _my_base = stable_iterator_base<const_stable_iterator, const Container, const ValueType, const Reference, const Pointer, Distance>;
 
         using typename _my_base::iterator_category;
         using typename _my_base::difference_type;
@@ -289,23 +311,14 @@ namespace genetic_algorithm::detail
         using typename _my_base::reference;
         using typename _my_base::pointer;
 
-        const_stable_iterator() noexcept :
-            data_(nullptr), idx_(0)
-        {}
-
-        const_stable_iterator(const Container& container, size_t idx) noexcept :
-            data_(&container), idx_(idx)
-        {}
+        using _my_base::_my_base;
 
         /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) noexcept :
-            data_(it.data_), idx_(it.idx)
-        {}
-
-    private:
-        const Container* data_;
-        size_t idx_;
-
-        friend class _my_base;
+            _my_base()
+        {
+            this->data_ = it.data_;
+            this->idx_ = it.idx_;
+        }
     };
 
 
@@ -329,6 +342,18 @@ namespace genetic_algorithm::detail
 
     template<typename Container>
     inline auto stable_end(const Container& container) noexcept
+    {
+        return const_stable_iterator<Container>(container, container.size());
+    }
+
+    template<typename Container>
+    inline auto stable_cbegin(const Container& container) noexcept
+    {
+        return const_stable_iterator<Container>(container, 0);
+    }
+
+    template<typename Container>
+    inline auto stable_cend(const Container& container) noexcept
     {
         return const_stable_iterator<Container>(container, container.size());
     }
