@@ -199,7 +199,7 @@ namespace genetic_algorithm::detail
 
         reference operator*() const
         {
-            GA_ASSERT(data_, "Can't dereference value initialized iterator.");
+            GA_ASSERT(data_ != nullptr, "Can't dereference value initialized iterator.");
             GA_ASSERT(data_->size() > idx_, "Can't dereference past-the-end iterator.");
 
             return (*data_)[idx_];
@@ -221,28 +221,28 @@ namespace genetic_algorithm::detail
 
         Derived& increment() noexcept
         {
-            GA_ASSERT(data_, "Can't increment value initialized iterator.");
+            GA_ASSERT(data_ != nullptr, "Can't increment value initialized iterator.");
 
-            idx_++;
-            return derived();
+            ++idx_;
+            return static_cast<Derived&>(*this);
         }
 
         Derived& decrement() noexcept
         {
-            GA_ASSERT(data_, "Can't decrement value initialized iterator.");
+            GA_ASSERT(data_ != nullptr, "Can't decrement value initialized iterator.");
 
-            idx_--;
-            return derived();
+            --idx_;
+            return static_cast<Derived&>(*this);
         }
 
         Derived& operator+=(difference_type n)
         {
-            GA_ASSERT(derived().data_, "Can't offset value initialized iterator.");
+            GA_ASSERT(data_ != nullptr, "Can't offset value initialized iterator.");
             GA_ASSERT(n < 0 ? (difference_type(idx_) >= -n) : true, "Can't move iterator to before the start of the range.");
             GA_ASSERT(n > 0 ? (idx_ + n) <= data_->size() : true, "Can't move iterator past the end of the range.");
 
             idx_ += n;
-            return derived();
+            return static_cast<Derived&>(*this);
         }
 
         difference_type operator-(Derived rhs) const
@@ -254,14 +254,8 @@ namespace genetic_algorithm::detail
         }
 
     protected:
-
         Container* data_;
         size_t idx_;
-
-    private:
-
-        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
