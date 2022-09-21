@@ -54,25 +54,25 @@ namespace genetic_algorithm::detail
         requires std::regular<C>;
         requires std::destructible<C>;
 
-        { c.operator=(c) } -> std::same_as<C&>;
+        { c.operator=(c) }  -> std::same_as<C&>;
         { c.operator=(cc) } -> std::same_as<C&>;
         { c.operator=(rc) } -> std::same_as<C&>;
 
-        { c.begin() } -> std::same_as<typename C::iterator>;
-        { cc.begin() } -> std::same_as<typename C::const_iterator>;
-        { c.end() } -> std::same_as<typename C::iterator>;
-        { cc.end() } -> std::same_as<typename C::const_iterator>;
-        { c.cbegin() } -> std::same_as<typename C::const_iterator>;
-        { c.cbegin() } -> std::same_as<typename C::const_iterator>;
+        { c.begin() }   -> std::same_as<typename C::iterator>;
+        { cc.begin() }  -> std::same_as<typename C::const_iterator>;
+        { c.end() }     -> std::same_as<typename C::iterator>;
+        { cc.end() }    -> std::same_as<typename C::const_iterator>;
+        { c.cbegin() }  -> std::same_as<typename C::const_iterator>;
+        { c.cbegin() }  -> std::same_as<typename C::const_iterator>;
         { cc.cbegin() } -> std::same_as<typename C::const_iterator>;
         { cc.cbegin() } -> std::same_as<typename C::const_iterator>;
 
-        { c.size() } -> std::same_as<typename C::size_type>;
-        { c.max_size() } -> std::same_as<typename C::size_type>;
-        { cc.size() } -> std::same_as<typename C::size_type>;
+        { c.size() }      -> std::same_as<typename C::size_type>;
+        { c.max_size() }  -> std::same_as<typename C::size_type>;
+        { cc.size() }     -> std::same_as<typename C::size_type>;
         { cc.max_size() } -> std::same_as<typename C::size_type>;
 
-        { c.empty() } -> std::convertible_to<bool>;
+        { c.empty() }  -> std::convertible_to<bool>;
         { cc.empty() } -> std::convertible_to<bool>;
     };
 
@@ -80,7 +80,8 @@ namespace genetic_algorithm::detail
     concept IndexableContainer = requires(C c, const C cc, size_t idx)
     {
         requires Container<C>;
-        { c.operator[](idx) } -> std::same_as<typename C::reference>;
+
+        { c.operator[](idx) }  -> std::same_as<typename C::reference>;
         { cc.operator[](idx) } -> std::same_as<typename C::const_reference>;
     };
 
