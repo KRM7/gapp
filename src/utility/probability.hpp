@@ -8,15 +8,10 @@
 
 namespace genetic_algorithm
 {
-    /** Class representing a probability value in the closed range [0.0, 1.0]. */
+    /* Class representing a probability value in the closed range [0.0, 1.0]. */
     class Probability
     {
     public:
-        /**
-        * Create a probability with a value of p.
-        * 
-        * @param p The probability value. Must be in the closed range [0.0, 1.0]
-        */
         constexpr /* implicit */ Probability(double p)
         {
             if (!(0.0 <= p && p <= 1.0))
