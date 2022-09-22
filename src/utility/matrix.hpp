@@ -4,7 +4,7 @@
 #define GA_UTILITY_MATRIX_HPP
 
 #include "iterators.hpp"
-#include <ostream>
+#include "utility.hpp"
 #include <vector>
 #include <memory>
 #include <type_traits>
@@ -15,7 +15,14 @@
 namespace genetic_algorithm::detail
 {
     template<typename T, typename A>
-    class RowReference;
+    class RowBase;
+
+    template<typename T, typename A>
+    class Row;
+
+    template<typename T, typename A>
+    class ConstRow;
+
 
     template<typename T, typename A = std::allocator<T>>
     class Matrix : public reverse_iterator_interface<Matrix<T, A>>
@@ -33,10 +40,13 @@ namespace genetic_algorithm::detail
         using const_reference   = typename storage_type::const_reference;
         using const_pointer     = typename storage_type::const_pointer;
 
-        /* Iterators */
+        using Row = Row<T, A>;
+        using ConstRow = ConstRow<T, A>;
 
-        friend class RowReference<T, A>; /* Not nested for free swap template argument deduction */
-        using RowReference = RowReference<T, A>;
+        friend class Row;
+        friend class ConstRow;
+
+        /* Iterators */
 
         class RowIterator;
         class ConstRowIterator;
@@ -69,31 +79,35 @@ namespace genetic_algorithm::detail
             nrows_(nrows), ncols_(ncols), data_(nrows * ncols, init, alloc)
         {}
 
-        /* Operators */
-
-        friend bool operator==(const Matrix&, const Matrix&) = default;
-
-        RowReference operator[](size_t row) noexcept
-        {
-            return RowReference(*this, row);
-        }
-
-        const RowReference operator[](size_t row) const noexcept
-        {
-            return RowReference(*this, row);
-        }
-
         /* Member access */
+
+        Row operator[](size_t row) noexcept
+        {
+            GA_ASSERT(row < nrows_, "Row index out of bounds.");
+
+            return Row(*this, row);
+        }
+
+        ConstRow operator[](size_t row) const noexcept
+        {
+            GA_ASSERT(row < nrows_, "Row index out of bounds.");
+
+            return ConstRow(*this, row);
+        }
 
         reference operator()(size_type row, size_type col) noexcept
         {
-            assert(row < nrows_ && col < ncols_);
+            GA_ASSERT(row < nrows_, "Row index out of bounds.");
+            GA_ASSERT(col < ncols_, "Col index out of bounds.");
+
             return data_[row * ncols_ + col];
         }
 
         const_reference operator()(size_type row, size_type col) const noexcept
         {
-            assert(row < nrows_ && col < ncols_);
+            GA_ASSERT(row < nrows_, "Row index out of bounds.");
+            GA_ASSERT(col < ncols_, "Col index out of bounds.");
+
             return data_[row * ncols_ + col];
         }
 
@@ -104,7 +118,7 @@ namespace genetic_algorithm::detail
 
         void push_back(const std::vector<T>& row)
         {
-            assert(row.size() == ncols_);
+            GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
             data_.reserve(data_.size() + row.size());
             data_.insert(data_.end(), row.begin(), row.end());
@@ -113,16 +127,16 @@ namespace genetic_algorithm::detail
 
         void push_back(std::vector<T>&& row)
         {
-            assert(row.size() == ncols_);
+            GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
             data_.reserve(data_.size() + row.size());
             data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
             nrows_++;
         }
 
-        void push_back(const RowReference& row)
+        void push_back(ConstRow row)
         {
-            assert(row.size() == ncols_);
+            GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
             data_.reserve(data_.size() + row.size());
             data_.insert(data_.end(), row.begin(), row.end());
@@ -131,10 +145,9 @@ namespace genetic_algorithm::detail
 
         void pop_back()
         {
-            assert(nrows_ != 0);
+            GA_ASSERT(nrows_ != 0, "Can't call pop_back on an empty container.");
             data_.resize(--nrows_ * ncols_);
         }
-
 
         /* Size / capacity */
 
@@ -146,30 +159,15 @@ namespace genetic_algorithm::detail
         void reserve(size_type nrows, size_type ncols) { data_.reserve(nrows * ncols); }
         void resize(size_type nrows, size_type ncols) { data_.resize(nrows * ncols); nrows_ = nrows; ncols_ = ncols; }
 
-
         /* Other */
+
+        friend bool operator==(const Matrix&, const Matrix&) = default;
 
         void swap(Matrix& other) noexcept(std::is_nothrow_swappable_v<T>)
         {
             std::swap(data_, other.data_);
             std::swap(nrows_, other.nrows_);
             std::swap(ncols_, other.ncols_);
-        }
-
-        friend std::ostream& operator<<(std::ostream& out, const Matrix& mat)
-        {
-            for (const auto& row : mat)
-            {
-                out << "\n[ ";
-                for (const auto& elem : row)
-                {
-                    out << elem << ", ";
-                }
-                out << "\b\b],";
-            }
-            out << "\b\n";
-
-            return out;
         }
 
     private:
@@ -196,190 +194,234 @@ namespace genetic_algorithm::detail
 
     /* MATRIX ROW PROXY IMPLEMENTATION */
 
-    template<typename T, typename A>
-    class RowReference : public reverse_iterator_interface<RowReference<T, A>>
+    template<typename Derived, typename MatrixType>
+    class RowBase : public reverse_iterator_interface<Derived>
     {
     public:
-        using value_type        = typename Matrix<T, A>::storage_type::value_type;
-        using size_type         = typename Matrix<T, A>::storage_type::size_type;
-        using difference_type   = typename Matrix<T, A>::storage_type::difference_type;
-        using reference         = typename Matrix<T, A>::storage_type::reference;
-        using const_reference   = typename Matrix<T, A>::storage_type::const_reference;
+        using value_type      = typename MatrixType::storage_type::value_type;
+        using size_type       = typename MatrixType::storage_type::size_type;
+        using difference_type = typename MatrixType::storage_type::difference_type;
 
+        RowBase(MatrixType& mat, size_type row) :
+            mat_(&mat), row_(row)
+        {}
 
-        RowReference(const Matrix<T, A>& mat, size_t row) noexcept :
-            mat_(const_cast<Matrix<T, A>&>(mat)), row_(row) { assert(mat.nrows() > row); }
+        size_type size() const noexcept { return mat_->ncols(); }
 
-        RowReference(const RowReference&) = default;
-        RowReference(RowReference&&)      = default;
-
-        ~RowReference() = default;
-
-
-        using iterator               = typename Matrix<T, A>::storage_type::iterator;
-        using const_iterator         = typename Matrix<T, A>::storage_type::const_iterator;
-        using reverse_iterator       = typename Matrix<T, A>::storage_type::reverse_iterator;
-        using const_reverse_iterator = typename Matrix<T, A>::storage_type::const_reverse_iterator;
-
-        iterator begin() noexcept              { return mat_.data_.begin() + row_ * mat_.ncols(); }
-        iterator end() noexcept                { return mat_.data_.begin() + (row_ + 1) * mat_.ncols(); }
-
-        const_iterator begin() const noexcept  { return mat_.data_.cbegin() + row_ * mat_.ncols(); }
-        const_iterator end() const noexcept    { return mat_.data_.cbegin() + (row_ + 1) * mat_.ncols(); }
-
-        reference operator[](size_t col) noexcept
+        explicit operator std::vector<value_type>() const
         {
-            assert(mat_.ncols() > col);
-            return mat_(row_, col);
+            auto& derived = static_cast<const Derived&>(*this);
+            return std::vector<value_type>(derived.begin(), derived.end());
         }
 
-        const_reference operator[](size_t col) const noexcept
+        friend bool operator==(const Derived& lhs, const Derived& rhs)
         {
-            assert(mat_.ncols() > col);
-            return mat_(row_, col);
-        }
-
-        reference at(size_t col) { return mat_.at(row_, col); }
-        const_reference at(size_t col) const { return mat_.at(row_, col); }
-
-        size_type size() const noexcept { return mat_.ncols(); }
-
-
-        RowReference& operator=(RowReference rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
-        {
-            assert(rhs.size() == this->size());
-
-            for (size_t col = 0; col < rhs.size(); col++)
+            if (lhs.size() != rhs.size())
             {
-                mat_(row_, col) = rhs[col];
+                return false;
             }
 
-            return *this;
-        }
-
-        RowReference& operator=(const std::vector<T>& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
-        {
-            assert(rhs.size() == this->size());
-
-            for (size_t col = 0; col < rhs.size(); col++)
+            if (lhs.mat_ == rhs.mat_ && lhs.row_ == rhs.row_)
             {
-                mat_(row_, col) = rhs[col];
+                return true;
             }
 
-            return *this;
-        }
-
-        RowReference& operator=(std::vector<T>&& rhs)
-        {
-            assert(rhs.size() == this->size());
-
-            for (size_t col = 0; col < rhs.size(); col++)
+            for (size_t col = 0; col < lhs.size(); col++)
             {
-                mat_(row_, col) = std::move_if_noexcept(rhs[col]);
-            }
-
-            return *this;
-        }
-
-
-        void swap(RowReference other) noexcept(std::is_nothrow_swappable_v<T>)
-        {
-            assert(other.size() == this->size());
-
-            for (size_t col = 0; col < other.size(); col++)
-            {
-                using std::swap;
-                swap(mat_(row_, col), other[col]);
-            }
-        }
-
-        void swap(std::vector<T>& other) noexcept(std::is_nothrow_swappable_v<T>)
-        {
-            assert(other.size() == this->size());
-
-            for (size_t col = 0; col < other.size(); col++)
-            {
-                using std::swap;
-                swap(mat_(row_, col), other[col]);
-            }
-        }
-
-        explicit operator std::vector<T>() const
-        {
-            return std::vector<T>(this->begin(), this->end());
-        }
-
-        bool operator==(const RowReference& other) const noexcept(noexcept(std::declval<T>() != std::declval<T>()))
-        {
-            if ((&mat_ == &other.mat_) && (row_ == other.row_)) return true;
-
-            if (this->size() != other.size()) return false;
-
-            for (size_t col = 0; col < other.size(); col++)
-            {
-                if (mat_(row_, col) != other[col]) return false;
+                if (lhs[col] != rhs[col]) return false;
             }
 
             return true;
         }
 
-        bool operator!=(const RowReference& other) const noexcept(noexcept(std::declval<T>() != std::declval<T>()))
+        friend bool operator!=(const Derived& lhs, const Derived& rhs)
         {
-            return !(*this == other);
+            return !(lhs == rhs);
         }
 
-        bool operator==(const std::vector<T>& other) const noexcept(noexcept(std::declval<T>() != std::declval<T>()))
+        bool operator==(const std::vector<value_type>& rhs) const
         {
-            if (this->size() != other.size()) return false;
-
-            for (size_t col = 0; col < other.size(); col++)
+            if (this->size() != rhs.size())
             {
-                if (mat_(row_, col) != other[col]) return false;
+                return false;
+            }
+
+            for (size_t col = 0; col < rhs.size(); col++)
+            {
+                if ((*mat_)(row_, col) != rhs[col]) return false;
             }
 
             return true;
         }
 
-        bool operator!=(const std::vector<T>& other) const noexcept(noexcept(std::declval<T>() != std::declval<T>()))
+        bool operator!=(const std::vector<value_type>& rhs) const
         {
-            return !(*this == other);
+            return !(*this == rhs);
         }
 
-    private:
-        Matrix<T, A>& mat_;
-        size_t row_;
+    protected:
+        MatrixType* mat_;
+        size_type row_;
     };
 
     template<typename T, typename A>
-    inline void swap(RowReference<T, A> lhs, RowReference<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    class Row : public RowBase<Row<T, A>, Matrix<T, A>>
+    {
+    public:
+        using _my_base = RowBase<Row<T, A>, Matrix<T, A>>;
+
+        friend class ConstRow<T, A>;
+
+        using typename _my_base::value_type;
+        using typename _my_base::size_type;
+        using typename _my_base::difference_type;
+        using reference = typename Matrix<T, A>::storage_type::reference;
+        using pointer   = typename Matrix<T, A>::storage_type::pointer;
+
+        using _my_base::_my_base;
+
+        Row(const Row&) = default;
+        Row(Row&&)      = default;
+
+        using iterator         = typename Matrix<T, A>::storage_type::iterator;
+        using reverse_iterator = typename Matrix<T, A>::storage_type::reverse_iterator;
+
+        iterator begin() const noexcept { return this->mat_->data_.begin() + this->row_ * this->mat_->ncols(); }
+        iterator end() const noexcept { return this->mat_->data_.begin() + (this->row_ + 1) * this->mat_->ncols(); }
+
+        reference operator[](size_type col) const
+        {
+            GA_ASSERT(this->mat_->ncols() > col, "Col index out of bounds.");
+            return (*this->mat_)(this->row_, col);
+        }
+
+        Row& operator=(Row rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
+        {
+            GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+
+            if (rhs.mat_ == this->mat_ && rhs.row_ == this->row_) return *this;
+
+            for (size_t col = 0; col < rhs.size(); col++)
+            {
+                (*this->mat_)(this->row_, col) = rhs[col];
+            }
+
+            return *this;
+        }
+
+        Row& operator=(const std::vector<T>& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
+        {
+            GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+
+            for (size_t col = 0; col < rhs.size(); col++)
+            {
+                (*this->mat_)(this->row_, col) = rhs[col];
+            }
+
+            return *this;
+        }
+
+        Row& operator=(std::vector<T>&& rhs) const
+        {
+            GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+
+            for (size_t col = 0; col < rhs.size(); col++)
+            {
+                (*this->mat_)(this->row_, col) = std::move_if_noexcept(rhs[col]);
+            }
+
+            return *this;
+        }
+
+        void swap(Row other) const noexcept(std::is_nothrow_swappable_v<T>)
+        {
+            GA_ASSERT(other.size() == this->size(), "Rows must be the same size.");
+
+            for (size_t col = 0; col < other.size(); col++)
+            {
+                using std::swap;
+                swap((*this->mat_)(this->row_, col), other[col]);
+            }
+        }
+
+        void swap(std::vector<T>& other) const noexcept(std::is_nothrow_swappable_v<T>)
+        {
+            GA_ASSERT(other.size() == this->size(), "Rows must be the same size.");
+
+            for (size_t col = 0; col < other.size(); col++)
+            {
+                using std::swap;
+                swap((*this->mat_)(this->row_, col), other[col]);
+            }
+        }
+    };
+
+    template<typename T, typename A>
+    inline void swap(Row<T, A> lhs, Row<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
-    inline void swap(RowReference<T, A> lhs, std::vector<T, A>& rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    inline void swap(Row<T, A> lhs, std::vector<T, A>& rhs) noexcept(std::is_nothrow_swappable_v<T>)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
-    inline void swap(std::vector<T, A>& lhs, RowReference<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    inline void swap(std::vector<T, A>& lhs, Row<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
     {
         rhs.swap(lhs);
     }
+
+    template<typename T, typename A>
+    class ConstRow : public RowBase<ConstRow<T, A>, const Matrix<T, A>>
+    {
+    public:
+        using _my_base = RowBase<ConstRow<T, A>, const Matrix<T, A>>;
+
+        using typename _my_base::value_type;
+        using typename _my_base::size_type;
+        using typename _my_base::difference_type;
+        using reference = typename Matrix<T, A>::storage_type::const_reference;
+        using pointer   = typename Matrix<T, A>::storage_type::const_pointer;
+
+        using _my_base::_my_base;
+
+        ConstRow(const Row<T, A>& row) :
+            _my_base(row.mat_, row.idx_)
+        {}
+
+        ConstRow(const ConstRow&)            = default;
+        ConstRow(ConstRow&&)                 = default;
+
+        ConstRow& operator=(const ConstRow&) = delete;
+        ConstRow& operator=(ConstRow&&)      = delete;
+
+        using iterator         = typename Matrix<T, A>::storage_type::const_iterator;
+        using reverse_iterator = typename Matrix<T, A>::storage_type::reverse_iterator;
+
+        iterator begin() const noexcept { return this->mat_->data_.begin() + this->row_ * this->mat_->ncols(); }
+        iterator end() const noexcept { return this->mat_->data_.begin() + (this->row_ + 1) * this->mat_->ncols(); }
+
+        reference operator[](size_type col) const
+        {
+            GA_ASSERT(this->mat_->ncols() > col, "Col index out of bounds.");
+            return (*this->mat_)(this->row_, col);
+        }
+    };
     
 
     /* MATRIX ROW ITERATORS IMPLEMENTATIONS */
 
     template<typename T, typename A>
     class Matrix<T, A>::RowIterator :
-        public stable_iterator_base<typename Matrix<T, A>::RowIterator,
-                                    typename Matrix<T, A>,
-                                    typename Matrix<T, A>::RowReference, typename Matrix<T, A>::RowReference, typename Matrix<T, A>::RowReference,
+        public stable_iterator_base<typename Matrix<T, A>::RowIterator, Matrix<T, A>,
+                                    typename Matrix<T, A>::Row, typename Matrix<T, A>::Row, typename Matrix<T, A>::Row,
                                     typename Matrix<T, A>::difference_type>
     {
     public:
-        using _my_base = stable_iterator_base<RowIterator, Matrix, RowReference, RowReference, RowReference, difference_type>;
+        using _my_base = stable_iterator_base<RowIterator, Matrix, Row, Row, Row, difference_type>;
 
         using typename _my_base::iterator_category;
         using typename _my_base::difference_type;
@@ -389,23 +431,19 @@ namespace genetic_algorithm::detail
 
         using _my_base::_my_base;
 
-        PtrHelper<RowReference> operator->() const
-        {
-            return (*this->data_)[this->idx_];
-        }
+        PtrHelper<Row> operator->() const { return **this; }
 
         friend class ConstRowIterator;
     };
 
     template<typename T, typename A>
     class Matrix<T, A>::ConstRowIterator :
-        public stable_iterator_base<typename Matrix<T, A>::ConstRowIterator,
-                                    const typename Matrix<T, A>,
-                                    const typename Matrix<T, A>::RowReference, const typename Matrix<T, A>::RowReference, const typename Matrix<T, A>::RowReference,
+        public stable_iterator_base<typename Matrix<T, A>::ConstRowIterator, const Matrix<T, A>,
+                                    typename Matrix<T, A>::ConstRow, typename Matrix<T, A>::ConstRow, typename Matrix<T, A>::ConstRow,
                                     typename Matrix<T, A>::difference_type>
     {
     public:
-        using _my_base = stable_iterator_base<ConstRowIterator, const Matrix, const RowReference, const RowReference, const RowReference, difference_type>;
+        using _my_base = stable_iterator_base<ConstRowIterator, const Matrix, ConstRow, ConstRow, ConstRow, difference_type>;
 
         using typename _my_base::iterator_category;
         using typename _my_base::difference_type;
@@ -416,16 +454,10 @@ namespace genetic_algorithm::detail
         using _my_base::_my_base;
 
         /* implicit */ ConstRowIterator(RowIterator it) noexcept :
-            _my_base()
-        {
-            this->data_ = it.data_;
-            this->idx_ = it.idx_;
-        }
+            _my_base(*it.data_, it.idx_)
+        {}
 
-        PtrHelper<const RowReference> operator->() const
-        {
-            return (*this->data_)[this->idx_];
-        }
+        PtrHelper<ConstRow> operator->() const { return **this; }
     };
 
 } // namespace genetic_algorithm::detail
