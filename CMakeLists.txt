@@ -25,7 +25,7 @@ endif()
 
 # Compiler/linker setup
 if(MSVC) # MSVC style compiler interface
-    set(GA_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471")
+    set(GA_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471 -wd4505")
     if(GA_ENABLE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -WX")
     endif()
