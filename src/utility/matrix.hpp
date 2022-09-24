@@ -10,7 +10,6 @@
 #include <type_traits>
 #include <utility>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::detail
 {
@@ -43,8 +42,8 @@ namespace genetic_algorithm::detail
         using Row = Row<T, A>;
         using ConstRow = ConstRow<T, A>;
 
-        friend class Row;
-        friend class ConstRow;
+        friend class RowBase<Row, Matrix>;
+        friend class RowBase<ConstRow, const Matrix>;
 
         /* Iterators */
 
@@ -120,7 +119,6 @@ namespace genetic_algorithm::detail
         {
             GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
-            data_.reserve(data_.size() + row.size());
             data_.insert(data_.end(), row.begin(), row.end());
             nrows_++;
         }
@@ -129,7 +127,6 @@ namespace genetic_algorithm::detail
         {
             GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
-            data_.reserve(data_.size() + row.size());
             data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
             nrows_++;
         }
@@ -138,7 +135,6 @@ namespace genetic_algorithm::detail
         {
             GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
-            data_.reserve(data_.size() + row.size());
             data_.insert(data_.end(), row.begin(), row.end());
             nrows_++;
         }
@@ -202,17 +198,51 @@ namespace genetic_algorithm::detail
         using size_type       = typename MatrixType::storage_type::size_type;
         using difference_type = typename MatrixType::storage_type::difference_type;
 
-        RowBase(MatrixType& mat, size_type row) :
+        using reference = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::const_reference, typename MatrixType::reference>;
+        using pointer   = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::const_pointer, typename MatrixType::pointer>;
+
+        using iterator = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::storage_type::const_iterator,
+                                                                         typename MatrixType::storage_type::iterator>;
+        using reverse_iterator = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::storage_type::const_reverse_iterator,
+                                                                                 typename MatrixType::storage_type::reverse_iterator>;
+
+        RowBase(MatrixType& mat, size_type row) noexcept :
             mat_(&mat), row_(row)
         {}
 
-        size_type size() const noexcept { return mat_->ncols(); }
+        iterator begin() const noexcept
+        {
+            return mat_->data_.begin() + row_ * mat_->ncols();
+        }
+
+        iterator end() const noexcept
+        {
+            return begin() + mat_->ncols();
+        }
+
+        reference operator[](size_type col) const
+        {
+            GA_ASSERT(mat_->ncols() > col, "Col index out of bounds.");
+
+            return (*mat_)(row_, col);
+        }
+
+        size_type size() const noexcept
+        {
+            return mat_->ncols();
+        }
+
+        size_type ncols() const noexcept
+        {
+            return mat_->ncols();
+        }
 
         explicit operator std::vector<value_type>() const
         {
-            auto& derived = static_cast<const Derived&>(*this);
-            return std::vector<value_type>(derived.begin(), derived.end());
+            return std::vector<value_type>(begin(), end());
         }
+
+        /* Comparison operators */
 
         friend bool operator==(const Derived& lhs, const Derived& rhs)
         {
@@ -221,7 +251,7 @@ namespace genetic_algorithm::detail
                 return false;
             }
 
-            if (lhs.mat_ == rhs.mat_ && lhs.row_ == rhs.row_)
+            if ((lhs.mat_ == rhs.mat_) && (lhs.row_ == rhs.row_))
             {
                 return true;
             }
@@ -259,6 +289,16 @@ namespace genetic_algorithm::detail
             return !(*this == rhs);
         }
 
+        friend bool operator==(const std::vector<value_type>& lhs, const Derived& rhs)
+        {
+            return rhs == lhs;
+        }
+
+        friend bool operator!=(const std::vector<value_type>& lhs, const Derived& rhs)
+        {
+            return rhs != lhs;
+        }
+
     protected:
         MatrixType* mat_;
         size_type row_;
@@ -268,38 +308,22 @@ namespace genetic_algorithm::detail
     class Row : public RowBase<Row<T, A>, Matrix<T, A>>
     {
     public:
-        using _my_base = RowBase<Row<T, A>, Matrix<T, A>>;
-
         friend class ConstRow<T, A>;
 
-        using typename _my_base::value_type;
-        using typename _my_base::size_type;
-        using typename _my_base::difference_type;
-        using reference = typename Matrix<T, A>::storage_type::reference;
-        using pointer   = typename Matrix<T, A>::storage_type::pointer;
-
+        using _my_base = RowBase<Row<T, A>, Matrix<T, A>>;
         using _my_base::_my_base;
 
         Row(const Row&) = default;
         Row(Row&&)      = default;
 
-        using iterator         = typename Matrix<T, A>::storage_type::iterator;
-        using reverse_iterator = typename Matrix<T, A>::storage_type::reverse_iterator;
-
-        iterator begin() const noexcept { return this->mat_->data_.begin() + this->row_ * this->mat_->ncols(); }
-        iterator end() const noexcept { return this->mat_->data_.begin() + (this->row_ + 1) * this->mat_->ncols(); }
-
-        reference operator[](size_type col) const
-        {
-            GA_ASSERT(this->mat_->ncols() > col, "Col index out of bounds.");
-            return (*this->mat_)(this->row_, col);
-        }
-
-        Row& operator=(Row rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
+        Row& operator=(const _my_base& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
         {
             GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
-            if (rhs.mat_ == this->mat_ && rhs.row_ == this->row_) return *this;
+            if ((rhs.mat_ == this->mat_) && (rhs.row_ == this->row_))
+            {
+                return *this;
+            }
 
             for (size_t col = 0; col < rhs.size(); col++)
             {
@@ -379,16 +403,9 @@ namespace genetic_algorithm::detail
     {
     public:
         using _my_base = RowBase<ConstRow<T, A>, const Matrix<T, A>>;
-
-        using typename _my_base::value_type;
-        using typename _my_base::size_type;
-        using typename _my_base::difference_type;
-        using reference = typename Matrix<T, A>::storage_type::const_reference;
-        using pointer   = typename Matrix<T, A>::storage_type::const_pointer;
-
         using _my_base::_my_base;
 
-        ConstRow(const Row<T, A>& row) :
+        /* implicit */ ConstRow(const Row<T, A>& row) noexcept :
             _my_base(row.mat_, row.idx_)
         {}
 
@@ -397,18 +414,6 @@ namespace genetic_algorithm::detail
 
         ConstRow& operator=(const ConstRow&) = delete;
         ConstRow& operator=(ConstRow&&)      = delete;
-
-        using iterator         = typename Matrix<T, A>::storage_type::const_iterator;
-        using reverse_iterator = typename Matrix<T, A>::storage_type::reverse_iterator;
-
-        iterator begin() const noexcept { return this->mat_->data_.begin() + this->row_ * this->mat_->ncols(); }
-        iterator end() const noexcept { return this->mat_->data_.begin() + (this->row_ + 1) * this->mat_->ncols(); }
-
-        reference operator[](size_type col) const
-        {
-            GA_ASSERT(this->mat_->ncols() > col, "Col index out of bounds.");
-            return (*this->mat_)(this->row_, col);
-        }
     };
     
 
@@ -422,13 +427,6 @@ namespace genetic_algorithm::detail
     {
     public:
         using _my_base = stable_iterator_base<RowIterator, Matrix, Row, Row, Row, difference_type>;
-
-        using typename _my_base::iterator_category;
-        using typename _my_base::difference_type;
-        using typename _my_base::value_type;
-        using typename _my_base::reference;
-        using typename _my_base::pointer;
-
         using _my_base::_my_base;
 
         PtrHelper<Row> operator->() const { return **this; }
@@ -444,13 +442,6 @@ namespace genetic_algorithm::detail
     {
     public:
         using _my_base = stable_iterator_base<ConstRowIterator, const Matrix, ConstRow, ConstRow, ConstRow, difference_type>;
-
-        using typename _my_base::iterator_category;
-        using typename _my_base::difference_type;
-        using typename _my_base::value_type;
-        using typename _my_base::reference;
-        using typename _my_base::pointer;
-
         using _my_base::_my_base;
 
         /* implicit */ ConstRowIterator(RowIterator it) noexcept :
