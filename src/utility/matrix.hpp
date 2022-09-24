@@ -304,6 +304,7 @@ namespace genetic_algorithm::detail
         size_type row_;
     };
 
+
     template<typename T, typename A>
     class Row : public RowBase<Row<T, A>, Matrix<T, A>>
     {
@@ -398,6 +399,7 @@ namespace genetic_algorithm::detail
         rhs.swap(lhs);
     }
 
+
     template<typename T, typename A>
     class ConstRow : public RowBase<ConstRow<T, A>, const Matrix<T, A>>
     {
@@ -433,6 +435,7 @@ namespace genetic_algorithm::detail
 
         friend class ConstRowIterator;
     };
+
 
     template<typename T, typename A>
     class Matrix<T, A>::ConstRowIterator :
