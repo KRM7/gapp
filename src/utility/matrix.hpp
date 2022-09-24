@@ -168,8 +168,8 @@ namespace genetic_algorithm::detail
 
     private:
         storage_type data_;
-        size_type nrows_;
-        size_type ncols_;
+        size_type nrows_ = 0;
+        size_type ncols_ = 0;
 
         /* Helper struct for the iterators' operator-> */
         template<typename T>
@@ -220,7 +220,7 @@ namespace genetic_algorithm::detail
             return begin() + mat_->ncols();
         }
 
-        reference operator[](size_type col) const
+        reference operator[](size_type col) const noexcept
         {
             GA_ASSERT(mat_->ncols() > col, "Col index out of bounds.");
 
