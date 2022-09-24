@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeneticAlgorithm", "GeneticAlgorithm.vcxproj", "{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release w debug info|x64 = Release w debug info|x64
+		Release w debug info|x86 = Release w debug info|x86
+		Release w static analyzer|x64 = Release w static analyzer|x64
+		Release w static analyzer|x86 = Release w static analyzer|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Debug|x64.ActiveCfg = Debug|x64
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Debug|x64.Build.0 = Debug|x64
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Debug|x86.ActiveCfg = Debug|Win32
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Debug|x86.Build.0 = Debug|Win32
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release w debug info|x64.ActiveCfg = Release w debug info|x64
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release w debug info|x64.Build.0 = Release w debug info|x64
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release w debug info|x86.ActiveCfg = Release w debug info|Win32
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release w debug info|x86.Build.0 = Release w debug info|Win32
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release w static analyzer|x64.ActiveCfg = Release (Static analyzer)|x64
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release w static analyzer|x64.Build.0 = Release (Static analyzer)|x64
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release w static analyzer|x86.ActiveCfg = Release (Static analyzer)|Win32
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release w static analyzer|x86.Build.0 = Release (Static analyzer)|Win32
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release|x64.ActiveCfg = Release|x64
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release|x64.Build.0 = Release|x64
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release|x86.ActiveCfg = Release|Win32
+		{09D1EFE1-E74D-4F0C-97C0-29D7D9EC8401}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F4291FB3-FEA8-4761-BF4A-5462092C9164}
+	EndGlobalSection
+EndGlobal
