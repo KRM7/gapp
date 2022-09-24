@@ -15,8 +15,11 @@ namespace genetic_algorithm::detail
 {
     using iterator = ConeTree::iterator;
     using const_iterator = ConeTree::const_iterator;
-    using FindResult = ConeTree::FindResult;
+
     using Node = ConeTree::Node;
+
+    using FindResult = ConeTree::FindResult;
+    using FindIdxResult = ConeTree::FindIdxResult;
 
 
     /* Find the point in the range [first, last) furthest from a point (using Euclidean distances). */
@@ -217,6 +220,13 @@ namespace genetic_algorithm::detail
         }
 
         return best;
+    }
+
+    FindIdxResult ConeTree::findBestMatchIdx(const Point& query_point) const
+    {
+        auto [best, prod] = findBestMatch(query_point);
+
+        return { size_t(best - points_.begin()), prod };
     }
 
 } // namespace genetic_algorithm::detail
