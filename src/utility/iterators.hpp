@@ -282,13 +282,6 @@ namespace genetic_algorithm::detail
     {
     public:
         using _my_base = stable_iterator_base<stable_iterator, Container, ValueType, Reference, Pointer, Distance>;
-
-        using typename _my_base::iterator_category;
-        using typename _my_base::difference_type;
-        using typename _my_base::value_type;
-        using typename _my_base::reference;
-        using typename _my_base::pointer;
-
         using _my_base::_my_base;
 
         friend class const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>;
@@ -306,13 +299,6 @@ namespace genetic_algorithm::detail
     {
     public:
         using _my_base = stable_iterator_base<const_stable_iterator, const Container, const ValueType, const Reference, const Pointer, Distance>;
-
-        using typename _my_base::iterator_category;
-        using typename _my_base::difference_type;
-        using typename _my_base::value_type;
-        using typename _my_base::reference;
-        using typename _my_base::pointer;
-
         using _my_base::_my_base;
 
         /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) noexcept :
