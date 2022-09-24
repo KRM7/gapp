@@ -8,8 +8,6 @@
 
 namespace genetic_algorithm::algorithm
 {
-    namespace dtl { struct FrontInfo; struct RefLine; }
-
     /**
     * NSGA-III algorithm, used for many-objective optimization. (Doesn't work for single-objective problems.) \n
     * The aim of the algorithm is to find a set of solutions which are well-spread out
@@ -48,7 +46,6 @@ namespace genetic_algorithm::algorithm
         std::unique_ptr<Impl> pimpl_;
 
         void initializeImpl(const GaInfo& ga) override;
-        void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) override {}
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
