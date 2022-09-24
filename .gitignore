@@ -84,7 +84,6 @@ dlldata.c
 *.pidb
 *.svclog
 *.scc
-*.ruleset
 
 # Visual C++ cache files
 ipch/
