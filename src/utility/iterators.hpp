@@ -208,20 +208,25 @@ namespace genetic_algorithm::detail
         bool operator==(Derived rhs) const
         {
             GA_ASSERT(data_ == rhs.data_, "Can't compare iterators of different ranges.");
+            GA_ASSERT(data_ == nullptr || data_->size() >= idx_, "Can't compare invalid iterator.");
+            GA_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
 
-            return (idx_ == rhs.idx_) || (data_ == nullptr && rhs.data_ == nullptr);
+            return idx_ == rhs.idx_;    /* Value-initialized iterators will have the same idx. */
         }
 
         bool operator<(Derived rhs) const
         {
             GA_ASSERT(data_ == rhs.data_, "Can't compare iterators of different ranges.");
+            GA_ASSERT(data_ == nullptr || data_->size() >= idx_, "Can't compare invalid iterator.");
+            GA_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
 
-            return idx_ < rhs.idx_;
+            return idx_ < rhs.idx_;     /* Value-initialized iterators will have the same idx. */
         }
 
         Derived& increment() noexcept
         {
             GA_ASSERT(data_ != nullptr, "Can't increment value initialized iterator.");
+            GA_ASSERT(idx_ != data_->size(), "Can't increment past-the-end iterator.");
 
             ++idx_;
             return static_cast<Derived&>(*this);
@@ -230,6 +235,7 @@ namespace genetic_algorithm::detail
         Derived& decrement() noexcept
         {
             GA_ASSERT(data_ != nullptr, "Can't decrement value initialized iterator.");
+            GA_ASSERT(idx_ != 0, "Can't decremenet the begin iterator.");
 
             --idx_;
             return static_cast<Derived&>(*this);
@@ -247,8 +253,10 @@ namespace genetic_algorithm::detail
 
         difference_type operator-(Derived rhs) const
         {
-            GA_ASSERT(data_ && rhs.data_, "Can't get the difference of value initialized iterators.");
-            GA_ASSERT(data_ == rhs.data_, "Can't get the distance of iterators of different ranges");
+            GA_ASSERT(data_ && rhs.data_, "Can't get the distance of value initialized iterators.");
+            GA_ASSERT(data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
+            GA_ASSERT(data_->size() >= idx_, "Invalid iterator.");
+            GA_ASSERT(rhs.data_->size() >= rhs.idx_, "Invalid iterator.");
 
             return difference_type(idx_) - difference_type(rhs.idx_);
         }
@@ -308,11 +316,8 @@ namespace genetic_algorithm::detail
         using _my_base::_my_base;
 
         /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) noexcept :
-            _my_base()
-        {
-            this->data_ = it.data_;
-            this->idx_ = it.idx_;
-        }
+            _my_base(*it.data_, it.idx_)
+        {}
     };
 
 
