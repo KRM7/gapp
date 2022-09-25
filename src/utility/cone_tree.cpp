@@ -17,9 +17,7 @@ namespace genetic_algorithm::detail
     using const_iterator = ConeTree::const_iterator;
 
     using Node = ConeTree::Node;
-
     using FindResult = ConeTree::FindResult;
-    using FindIdxResult = ConeTree::FindIdxResult;
 
 
     /* Find the point in the range [first, last) furthest from a point (using Euclidean distances). */
@@ -49,9 +47,9 @@ namespace genetic_algorithm::detail
     {
         assert(std::distance(first, last) > 0);
 
-        const_iterator rand = first;
+        const_iterator rand_elem = first;
 
-        const_iterator first_elem = findFurthestElement(first, last, rand);
+        const_iterator first_elem = findFurthestElement(first, last, rand_elem);
         const_iterator second_elem = findFurthestElement(first, last, first_elem);
 
         return { first_elem, second_elem };
@@ -62,7 +60,7 @@ namespace genetic_algorithm::detail
     {
         assert(std::distance(first, last) > 0);
 
-        const ptrdiff_t nrange = std::distance(first, last);
+        const ptrdiff_t range_len = std::distance(first, last);
 
         Point center(*first++);
 
@@ -71,7 +69,7 @@ namespace genetic_algorithm::detail
             std::transform(center.begin(), center.end(), first->begin(), center.begin(), std::plus{});
         }
 
-        std::transform(center.begin(), center.end(), center.begin(), detail::divide_by(nrange));
+        std::transform(center.begin(), center.end(), center.begin(), detail::divide_by(range_len));
 
         return center;
     }
@@ -85,7 +83,8 @@ namespace genetic_algorithm::detail
 
         for (; first != last; ++first)
         {
-            max_distance = std::max(max_distance, math::euclideanDistanceSq(center.begin(), center.end(), first->begin()));
+            const double distance = math::euclideanDistanceSq(center.begin(), center.end(), first->begin());
+            max_distance = std::max(max_distance, distance);
         }
 
         return std::sqrt(max_distance);
@@ -98,7 +97,7 @@ namespace genetic_algorithm::detail
     }
 
     /* Return the max possible inner product between the point and a point inside the node. */
-    static inline double innerProductUpperBound(const Point& point, double point_norm, const Node& node)
+    static inline double innerProductUpperBound(const Node& node, const Point& point, double point_norm)
     {
         const double center_prod = std::inner_product(point.begin(), point.end(), node.center.begin(), 0.0);
 
@@ -135,8 +134,8 @@ namespace genetic_algorithm::detail
         {
             Node& node = nodes_[i];
 
-            node.center = findCenter(points_.begin() + node.first, points_.begin() + node.last);
-            node.radius = findRadius(points_.begin() + node.first, points_.begin() + node.last, node.center);
+            node.center = findCenter(node_cbegin(node), node_cend(node));
+            node.radius = findRadius(node_cbegin(node), node_cend(node), node.center);
 
             /* Leaf node. */
             if (size_t(node.last - node.first) <= MAX_LEAF_ELEMENTS)
@@ -147,12 +146,9 @@ namespace genetic_algorithm::detail
             /* Non-leaf node. */
             else
             {
-                node.left = nodes_.size();
-                node.right = nodes_.size() + 1;
+                const auto [left_point, right_point] = partitionPoints(node_cbegin(node), node_cend(node));
 
-                const auto [left_point, right_point] = partitionPoints(points_.begin() + node.first, points_.begin() + node.last);
-
-                auto middle = std::partition(points_.begin() + node.first, points_.begin() + node.last, [&](auto point)
+                auto middle = std::partition(node_begin(node), node_end(node), [&](auto point)
                 {
                     const double left_dist = math::euclideanDistanceSq(left_point->begin(), left_point->end(), point.begin());
                     const double right_dist = math::euclideanDistanceSq(right_point->begin(), right_point->end(), point.begin());
@@ -161,13 +157,18 @@ namespace genetic_algorithm::detail
                 });
 
                 /* Handle edge case where all of the points in [first, last) are the same (making sure both child ranges will be non-empty). */
-                if (middle == points_.begin() + node.first) ++middle;
+                if (middle == node_begin(node)) ++middle;
 
-                Node left_child{ .first = node.first, .last = size_t(middle - points_.begin()) };
-                Node right_child{ .first = size_t(middle - points_.begin()), .last = node.last };
+                const size_t middle_idx = size_t(middle - points_.begin());
+
+                Node left_child{ .first = node.first, .last = middle_idx };
+                Node right_child{ .first = middle_idx, .last = node.last };
 
                 nodes_.push_back(left_child);
                 nodes_.push_back(right_child);
+
+                node.left = nodes_.size() - 2;
+                node.right = nodes_.size() - 1;
             }
         }
     }
@@ -186,15 +187,15 @@ namespace genetic_algorithm::detail
 
         while (!node_stack.empty())
         {
-            const Node* cur_node = node_stack.back();
+            const Node* node = node_stack.back();
             node_stack.pop_back();
 
             /* Skip node if it can't be better. */
-            if (best.prod >= innerProductUpperBound(query_point, query_norm, *cur_node)) continue;
+            if (best.prod >= innerProductUpperBound(*node, query_point, query_norm)) continue;
 
-            if (isLeafNode(*cur_node))
+            if (isLeafNode(*node))
             {
-                auto [elem, inner_prod] = findBestMatchLinear(query_point, points_.begin() + cur_node->first, points_.begin() + cur_node->last);
+                auto [elem, inner_prod] = findBestMatchLinear(query_point, node_begin(*node), node_end(*node));
                 if (inner_prod > best.prod)
                 {
                     best.elem = elem;
@@ -203,30 +204,23 @@ namespace genetic_algorithm::detail
             }
             else
             {
-                if (innerProductUpperBound(query_point, query_norm, nodes_[cur_node->left]) <
-                    innerProductUpperBound(query_point, query_norm, nodes_[cur_node->right]))
+                if (innerProductUpperBound(left_child(*node), query_point, query_norm) <
+                    innerProductUpperBound(right_child(*node), query_point, query_norm))
                 {
                     /* Visit right child first. */
-                    node_stack.push_back(&nodes_[cur_node->left]);
-                    node_stack.push_back(&nodes_[cur_node->right]);
+                    node_stack.push_back(&left_child(*node));
+                    node_stack.push_back(&right_child(*node));
                 }
                 else
                 {
                     /* Visit left child first. */
-                    node_stack.push_back(&nodes_[cur_node->right]);
-                    node_stack.push_back(&nodes_[cur_node->left]);
+                    node_stack.push_back(&right_child(*node));
+                    node_stack.push_back(&left_child(*node));
                 }
             }
         }
 
         return best;
-    }
-
-    FindIdxResult ConeTree::findBestMatchIdx(const Point& query_point) const
-    {
-        auto [best, prod] = findBestMatch(query_point);
-
-        return { size_t(best - points_.begin()), prod };
     }
 
 } // namespace genetic_algorithm::detail

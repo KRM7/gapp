@@ -14,8 +14,8 @@ namespace genetic_algorithm::detail
     using math::Point;
 
     /* 
-    * This data structure is used to solve the maximum inner product search problem in the NSGA-III algorithm
-    * when looking for the nearest reference point to a candidate solution.
+    * This data structure is used for the maximum inner product search in the NSGA-III algorithm,
+    * when searching for the nearest reference point to a solution.
     *  
     * The implementation is based on:
     *  Ram, Parikshit, and Alexander G. Gray. "Maximum inner-product search using cone trees.", 2012.
@@ -29,12 +29,6 @@ namespace genetic_algorithm::detail
         struct FindResult
         {
             const_iterator elem;
-            double prod;
-        };
-
-        struct FindIdxResult
-        {
-            size_t idx;
             double prod;
         };
 
@@ -55,23 +49,37 @@ namespace genetic_algorithm::detail
         requires std::is_same_v<std::remove_cvref_t<typename std::iterator_traits<Iter>::value_type>, Point>
         ConeTree(Iter first, Iter last);
 
-        size_t size() const noexcept { return points_.size(); }
-
-        const Matrix<double>& data() const noexcept { return points_; }
 
         /* Returns the closest point in the tree to the query point, and its distance. */
         FindResult findBestMatch(const Point& query_point) const;
 
-        /* Returns the index of the closest point in the tree to the query point, and its distance. */
-        FindIdxResult findBestMatchIdx(const Point& query_point) const;
+
+        const_iterator begin() const { return points_.begin(); }
+        const_iterator end() const { return points_.end(); }
+
+        size_t size() const noexcept { return points_.size(); }
+
+        const Matrix<double>& data() const noexcept { return points_; }
 
     private:
         Matrix<double> points_;
         std::vector<Node> nodes_;
 
-        inline static constexpr size_t MAX_LEAF_ELEMENTS = 22;  /* The maximum number of elements in a leaf node. */
+        inline static constexpr size_t MAX_LEAF_ELEMENTS = 22;  /* The maximum number of points in a leaf node. */
 
         void buildTree();
+
+        iterator node_begin(const Node& node) { return points_.begin() + node.first; }
+        iterator node_end(const Node& node) { return points_.begin() + node.last; }
+
+        const_iterator node_begin(const Node& node) const { return points_.begin() + node.first; }
+        const_iterator node_end(const Node& node) const { return points_.begin() + node.last; }
+
+        const_iterator node_cbegin(const Node& node) const { return points_.cbegin() + node.first; }
+        const_iterator node_cend(const Node& node) const { return points_.cbegin() + node.last; }
+
+        const Node& left_child(const Node& node) const { return nodes_[node.left]; }
+        const Node& right_child(const Node& node) const { return nodes_[node.right]; }
     };
 
 } // namespace genetic_algorithm::detail
