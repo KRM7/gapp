@@ -91,8 +91,8 @@ namespace genetic_algorithm::math
                                      [](double lhs, double rhs) noexcept { return std::pow(lhs - rhs, 2); });
     }
 
-    double euclideanDistanceSq(std::vector<double>::const_iterator first1, std::vector<double>::const_iterator last1,
-                               std::vector<double>::const_iterator first2) noexcept
+    double euclideanDistanceSq(const_vector_iterator first1, const_vector_iterator last1,
+                               const_vector_iterator first2) noexcept
     {
         return std::transform_reduce(first1, last1, first2, 0.0,
                                      std::plus{},
@@ -102,14 +102,21 @@ namespace genetic_algorithm::math
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept
     {
         assert(line.size() == point.size());
-        assert(!line.empty());
 
-        double k = std::inner_product(line.begin(), line.end(), point.begin(), 0.0) /
-                   std::inner_product(line.begin(), line.end(), line.begin(),  0.0);
+        return perpendicularDistanceSq(line.begin(), line.end(), point.begin());
+    }
 
-        return std::transform_reduce(point.begin(), point.end(), line.begin(), 0.0,
+    double perpendicularDistanceSq(const_vector_iterator line_first, const_vector_iterator line_last,
+                                   const_vector_iterator point_first) noexcept
+    {
+        assert(std::distance(line_first, line_last) > 0);
+
+        double k = std::inner_product(line_first, line_last, point_first, 0.0) /
+                   std::inner_product(line_first, line_last, line_first, 0.0);
+
+        return std::transform_reduce(line_first, line_last, point_first, 0.0,
                                      std::plus{},
-                                     [k](double p, double l) noexcept { return std::pow(p - k * l, 2); });
+                                     [k](double l, double p) noexcept { return std::pow(p - k * l, 2); });
     }
 
     double mean(const std::vector<double>& vec) noexcept

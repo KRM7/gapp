@@ -12,6 +12,9 @@ namespace genetic_algorithm::math
 {
     using Point = std::vector<double>;
 
+    using vector_iterator       = std::vector<double>::iterator;
+    using const_vector_iterator = std::vector<double>::const_iterator;
+
     /* Comparison function for floating point numbers. Returns -1 if (lhs < rhs), +1 if (lhs > rhs), and 0 if (lhs == rhs). */
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept;
@@ -69,11 +72,13 @@ namespace genetic_algorithm::math
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept;
 
     /* Calculate the square of the Euclidean distance between the vectors [first1, last1), [first2, first2 + last1 - first1). */
-    double euclideanDistanceSq(std::vector<double>::const_iterator first1, std::vector<double>::const_iterator last1,
-                               std::vector<double>::const_iterator first2) noexcept;
+    double euclideanDistanceSq(const_vector_iterator first1, const_vector_iterator last1, const_vector_iterator first2) noexcept;
 
     /* Calculate the square of the perpendicular distance between a line and a point. */
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept;
+
+    /* Calculate the square of the perpendicular distance between a line and a point. */
+    double perpendicularDistanceSq(const_vector_iterator line_first, const_vector_iterator line_last, const_vector_iterator point_first) noexcept;
 
     /* Calculate the arithmetic mean of the values in vec. */
     double mean(const std::vector<double>& vec) noexcept;
