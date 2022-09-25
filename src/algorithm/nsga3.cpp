@@ -219,12 +219,11 @@ namespace genetic_algorithm::algorithm
                                            ParetoFronts::const_iterator pfirst, ParetoFronts::const_iterator plast)
     {
         assert(std::distance(first, last) > 0);
-        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first[0].size(); }));
-        assert(!ref_lines_.size() == 0);
+        assert(std::all_of(first, last, [&](const FitnessVector& sol) { return sol.size() == first->size(); }));
+        assert(ref_lines_.size() != 0);
 
         updateIdealPoint(first, last);
-        updateExtremePoints(first, last);
-        nadir_point_ = findNadirPoint(extreme_points_);
+        updateNadirPoint(first, last);
 
         sol_info_.resize(last - first);
 
@@ -235,9 +234,8 @@ namespace genetic_algorithm::algorithm
 
             const auto best = ref_lines_.findBestMatch(fnorm);
 
-            sol_info_[sol.idx].ref_idx = size_t(best.elem - ref_lines_.data().begin());
-            sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(std::vector<double>(*best.elem), fnorm);
-            //sol_info_[sol.idx].ref_dist = -best.prod;
+            sol_info_[sol.idx].ref_idx = size_t(best.elem - ref_lines_.begin());
+            sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(best.elem->cbegin(), best.elem->cend(), fnorm.cbegin());
         });
     }
 
@@ -360,7 +358,7 @@ namespace genetic_algorithm::algorithm
     }
 
     std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator parents_first,
-                                                                    FitnessMatrix::const_iterator,
+                                                                    FitnessMatrix::const_iterator /* parents_last */,
                                                                     FitnessMatrix::const_iterator children_last)
     {
         assert(ga.num_objectives() > 1);
@@ -375,7 +373,7 @@ namespace genetic_algorithm::algorithm
         pimpl_->sol_info_.resize(children_last - parents_first);
         std::for_each(pfronts.begin(), pfronts.end(), [this](const FrontInfo& sol) { pimpl_->sol_info_[sol.idx].rank = sol.rank; });
 
-        /* The ref lines of the candidates after partial_front_last are irrelevant, as they can never be part of the next population. */
+        /* The ref lines of the candidates after partial_last are irrelevant, as they can never be part of the next population. */
         pimpl_->associatePopWithRefs(parents_first, children_last, pfronts.begin(), partial_last);
         /* The niche counts should be calculated excluding the partial front for now. */
         pimpl_->recalcNicheCounts(pfronts.begin(), partial_first);
