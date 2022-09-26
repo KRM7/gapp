@@ -4,8 +4,9 @@
 #define GA_POPULATION_HPP
 
 #include "candidate.hpp"
-#include "../utility/utility.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/iterators.hpp"
+#include "../utility/utility.hpp"
 #include <vector>
 #include <atomic>
 
@@ -128,9 +129,7 @@ namespace genetic_algorithm::detail
         std::vector<Dominance> lhs_state(lhs.size());
         std::vector<std::atomic<Dominance>> rhs_state(rhs.size());
 
-        const auto lhs_indices = detail::index_vector(lhs.size());
-
-        std::for_each(GA_EXECUTION_UNSEQ, lhs_indices.cbegin(), lhs_indices.cend(), [&](size_t i) noexcept
+        std::for_each(GA_EXECUTION_UNSEQ, iota_iterator(0_sz), iota_iterator(lhs.size()), [&](size_t i) noexcept
         {
             for (size_t j = 0; j < rhs.size(); j++)
             {
@@ -173,11 +172,11 @@ namespace genetic_algorithm::detail
 
         for (size_t i = 0; i < lhs.size(); i++)
         {
-            if (lhs_state[i] != DOMINATED) optimal_solutions.emplace_back(std::move(lhs[i]));
+            if (lhs_state[i] != DOMINATED) optimal_solutions.push_back(std::move(lhs[i]));
         }
         for (size_t i = 0; i < rhs.size(); i++)
         {
-            if (rhs_state[i].load(std::memory_order_relaxed) != DOMINATED) optimal_solutions.emplace_back(std::move(rhs[i]));
+            if (rhs_state[i].load(std::memory_order_relaxed) != DOMINATED) optimal_solutions.push_back(std::move(rhs[i]));
         }
 
         return optimal_solutions;

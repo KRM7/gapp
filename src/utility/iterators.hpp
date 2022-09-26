@@ -6,6 +6,7 @@
 #include "utility.hpp"
 #include <iterator>
 #include <type_traits>
+#include <limits>
 #include <cstddef>
 
 namespace genetic_algorithm::detail
@@ -255,10 +256,14 @@ namespace genetic_algorithm::detail
         {
             GA_ASSERT(data_ && rhs.data_, "Can't get the distance of value initialized iterators.");
             GA_ASSERT(data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
-            GA_ASSERT(data_->size() >= idx_, "Invalid iterator.");
-            GA_ASSERT(rhs.data_->size() >= rhs.idx_, "Invalid iterator.");
+            GA_ASSERT(data_->size() >= idx_, "Invalid lhs iterator.");
+            GA_ASSERT(rhs.data_->size() >= rhs.idx_, "Invalid rhs iterator.");
+            GA_ASSERT((idx_ >= rhs.idx_ ? idx_ - rhs.idx_ : rhs.idx_ - idx_) <= size_t(std::numeric_limits<difference_type>::max()),
+                     "Can't represent the result of the operation as difference_type.");
 
-            return difference_type(idx_) - difference_type(rhs.idx_);
+            return idx_ >= rhs.idx_ ?
+                difference_type(idx_ - rhs.idx_) :
+                difference_type(rhs.idx_ - idx_);
         }
 
     protected:
@@ -342,6 +347,82 @@ namespace genetic_algorithm::detail
     {
         return const_stable_iterator<Container>(container, container.size());
     }
+
+
+    /* iota iterator */
+
+    template<std::integral T = std::size_t, typename Difference = std::ptrdiff_t>
+    class iota_iterator : public random_access_iterator_interface<iota_iterator<T>, Difference>
+    {
+    public:
+        using _my_base = random_access_iterator_interface<iota_iterator, Difference>;
+
+        using typename _my_base::iterator_category;
+        using typename _my_base::difference_type;
+        using value_type = T;
+        using reference  = T;
+        using pointer    = T;
+
+        iota_iterator() noexcept :
+            value_(T{})
+        {}
+
+        iota_iterator(const T& val) noexcept :
+            value_(val)
+        {}
+
+        pointer operator->() const = delete;
+
+        reference operator*() const
+        {
+            return value_;
+        }
+
+        bool operator==(iota_iterator rhs) const
+        {
+            return value_ == rhs.value_;
+        }
+
+        bool operator<(iota_iterator rhs) const
+        {
+            return value_ < rhs.value_;
+        }
+
+        iota_iterator& increment() noexcept
+        {
+            GA_ASSERT(value_ != std::numeric_limits<T>::max(), "Can't increment iterator with max value.");
+
+            ++value_;
+            return *this;
+        }
+
+        iota_iterator& decrement() noexcept
+        {
+            GA_ASSERT(value_ != std::numeric_limits<T>::min(), "Can't decrement iterator with min value.");
+
+            --value_;
+            return *this;
+        }
+
+        iota_iterator& operator+=(difference_type n)
+        {
+            // TODO ar conversions for max/min?
+            GA_ASSERT(n > 0 ? (std::numeric_limits<T>::max() - n) >= value_ : true, "Can't increment iterator past its max value.");
+            GA_ASSERT(n < 0 ? (std::numeric_limits<T>::min() - n) <= value_ : true, "Can't decrement iterator past its min value.");
+
+            value_ += n;
+            return *this;
+        }
+
+        difference_type operator-(iota_iterator rhs) const
+        {
+            // TODO bounds checks
+            return difference_type(value_) - difference_type(rhs.value_);
+        }
+
+    private:
+        T value_;
+    };
 
 } // namespace genetic_algorithm::detail
 

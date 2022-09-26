@@ -87,7 +87,7 @@ namespace genetic_algorithm::algorithm::dtl
 
     static DominanceLists& getDominanceLists(size_t popsize)
     {
-        static DominanceLists dlists;
+        static thread_local DominanceLists dlists;
 
         /* Resize if popsize changes */
         if (dlists.size() != popsize)
@@ -201,9 +201,7 @@ namespace genetic_algorithm::algorithm::dtl
 
         if (popsize == 0) return dmat;
 
-        const auto objectives = detail::index_vector(first->size());
-
-        std::for_each(GA_EXECUTION_UNSEQ, objectives.cbegin(), objectives.cend(), [&](size_t obj)
+        std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
         {
             FitnessVector fvec(popsize);
             std::transform(first, last, fvec.begin(), [obj](const FitnessVector& row) { return row[obj]; });
@@ -225,12 +223,11 @@ namespace genetic_algorithm::algorithm::dtl
             });
         });
 
-        const auto indices = detail::index_vector(popsize);
-
-        std::for_each(GA_EXECUTION_UNSEQ, indices.begin(), indices.end(), [&](size_t row) noexcept
+        std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
         {
-            dmat(row, row) = NONMAXIMAL;
-            std::for_each(indices.begin() + row + 1, indices.end(), [&](size_t col) noexcept
+            dmat(row, row) = NONMAXIMAL; // diagonal is all nonmax
+            // TODO: replace with for loop
+            std::for_each(detail::iota_iterator(row + 1), detail::iota_iterator(popsize), [&](size_t col) noexcept
             {
                 if (dmat(row, col) == MAXIMAL && dmat(col, row) == MAXIMAL)
                 {
