@@ -37,11 +37,11 @@ namespace genetic_algorithm::detail
     {
         assert(std::distance(first, last) >= 0);
 
-        auto indices = detail::index_vector(std::distance(first, last));
+        auto indices = detail::index_vector(last - first);
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
-            const size_t last_idx = indices.back();
+            const size_t last_idx = std::distance(first, last) - 1; // wraparound is ok
             std::sort(indices.begin(), indices.end(), [&](size_t lidx, size_t ridx)
             {
                 return std::invoke(comp, *(first + last_idx - ridx), *(first + last_idx - lidx));
@@ -66,11 +66,11 @@ namespace genetic_algorithm::detail
         assert(std::distance(first, middle) >= 0);
         assert(std::distance(middle, last) >= 0);
 
-        auto indices = detail::index_vector(std::distance(first, last));
+        auto indices = detail::index_vector(last - first);
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
-            const size_t last_idx = indices.back();
+            const size_t last_idx = std::distance(first, last) - 1; // wraparound is ok
             std::partial_sort(indices.begin(), indices.begin() + std::distance(first, middle), indices.end(),
             [&](size_t lidx, size_t ridx)
             {
@@ -234,23 +234,23 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    std::vector<T> elementwise_min(std::vector<T> lhs, const std::vector<T>& rhs)
+    std::vector<T> elementwise_min(std::vector<T> left, const std::vector<T>& right)
     {
-        assert(lhs.size() == rhs.size());
+        assert(left.size() == right.size());
 
-        std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? lhs : rhs; });
+        std::transform(left.begin(), left.end(), right.begin(), left.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? lhs : rhs; });
 
-        return std::move(lhs);
+        return left;
     }
 
     template<typename T>
-    std::vector<T> elementwise_max(std::vector<T> lhs, const std::vector<T>& rhs)
+    std::vector<T> elementwise_max(std::vector<T> left, const std::vector<T>& right)
     {
-        assert(lhs.size() == rhs.size());
+        assert(left.size() == right.size());
 
-        std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? rhs : lhs; });
+        std::transform(left.begin(), left.end(), right.begin(), left.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? rhs : lhs; });
 
-        return std::move(lhs);
+        return left;
     }
 
     template<typename T>
