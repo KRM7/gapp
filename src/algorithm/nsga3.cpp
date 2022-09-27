@@ -157,6 +157,7 @@ namespace genetic_algorithm::algorithm
     NSGA3& NSGA3::operator=(const NSGA3& rhs)
     {
         pimpl_ = std::make_unique<Impl>(*rhs.pimpl_);
+        return *this;
     }
 
     NSGA3::NSGA3(NSGA3&&) noexcept            = default;
