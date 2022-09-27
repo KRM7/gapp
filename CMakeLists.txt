@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.16)
 
 project(GeneticAlgorithm VERSION 0.1 LANGUAGES CXX)
 
@@ -36,13 +36,13 @@ if(MSVC) # MSVC style compiler interface
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -GL -LTCG")
     endif()
 else() # GNU style compiler interface
-    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wlogical-op -Wnull-dereference")
+    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wlogical-op -Wnull-dereference -Wno-unused-function")
     if(GA_ENABLE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
     set(CMAKE_CXX_FLAGS "${GA_DEFINES} -std=c++20 ${GA_WARN_FLAGS}")
     set(CMAKE_CXX_FLAGS_DEBUG "-Og")
-    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -ffast-math -fnofinite-math-only")
+    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -ffast-math -fno-finite-math-only")
     if (GA_ENABLE_LTO)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -Wno-lto-type-mismatch")
     endif()
