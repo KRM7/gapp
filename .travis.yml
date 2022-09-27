@@ -1,0 +1,14 @@
+language: cpp
+sudo: true
+os: linux
+dist: jammy
+
+compiler:
+  - gcc
+  - clang
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - make
