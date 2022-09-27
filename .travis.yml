@@ -10,9 +10,9 @@ matrix:
           sources:
             - sourceline: "ppa:ubuntu-toolchain-r/test"
           packages:
-            - g++-11.2
+            - g++-11
         env:
-          - MATRIX_EVAL="CC=gcc-11.2 && CXX=g++-11.2"
+          - MATRIX_EVAL="CC=gcc-11 && CXX=g++-11"
 
     - os: linux
       dist: jammy
@@ -22,9 +22,9 @@ matrix:
           sources:
             - sourceline: ["ppa:ubuntu-toolchain-r/test", "ppa:llvm-toolchain-jammy-14.0"]
           packages:
-            - clang-14.0
+            - clang-14
       env:
-        - MATRIX_EVAL="CC=clang-14.0 && CXX=clang++-14.0"
+        - MATRIX_EVAL="CC=clang-14 && CXX=clang++-14"
 
 script:
   - mkdir -p build
