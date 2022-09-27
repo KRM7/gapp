@@ -71,11 +71,11 @@ namespace genetic_algorithm::detail
         ~Matrix()                        = default;
 
         Matrix(const A& alloc) :
-            nrows_(0), ncols_(0), data_(alloc)
+            data_(alloc), nrows_(0), ncols_(0)
         {}
 
         Matrix(size_t nrows, size_t ncols, const T& init = T(), const A& alloc = A()) :
-            nrows_(nrows), ncols_(ncols), data_(nrows * ncols, init, alloc)
+            data_(nrows* ncols, init, alloc), nrows_(nrows), ncols_(ncols)
         {}
 
         /* Member access */
@@ -172,12 +172,12 @@ namespace genetic_algorithm::detail
         size_type ncols_ = 0;
 
         /* Helper struct for the iterators' operator-> */
-        template<typename T>
+        template<typename U>
         struct PtrHelper
         {
-            /* implicit */ PtrHelper(const std::remove_cvref_t<T>& row) : row_(row) {}
-            T* operator->() { return &row_; }
-            T row_;
+            /* implicit */ PtrHelper(const std::remove_cvref_t<U>& row) : row_(row) {}
+            U* operator->() { return &row_; }
+            U row_;
         };
     };
 
