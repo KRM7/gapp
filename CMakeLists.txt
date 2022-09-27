@@ -36,7 +36,7 @@ if(MSVC) # MSVC style compiler interface
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -GL -LTCG")
     endif()
 else() # GNU style compiler interface
-    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wlogical-op -Wnull-dereference -Wno-unused-function")
+    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wnull-dereference -Wno-unused-function")
     if(GA_ENABLE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
