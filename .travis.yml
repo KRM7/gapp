@@ -1,11 +1,16 @@
 language: cpp
-sudo: true
-os: linux
-dist: jammy
 
-compiler:
-  - gcc
-  - clang
+matrix:
+  include:
+    - os: linux
+      dist: jammy
+      sudo: true
+      compiler: gcc
+
+    - os: linux
+      dist: jammy
+      sudo: true
+      compiler: clang
 
 script:
   - mkdir -p build
