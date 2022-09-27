@@ -117,12 +117,12 @@ namespace genetic_algorithm::detail
     }
     
     template<Gene T>
-    Candidates<T> mergeParetoSets(Candidates<T> A, Candidates<T> B)
+    Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs)
     {
-        if (A.empty()) return B;
-        if (B.empty()) return A;
+        if (lhs.empty()) return rhs;
+        if (rhs.empty()) return lhs;
 
-        auto [lhs, rhs] = (A.size() > B.size()) ? std::tie(A, B) : std::tie(B, A);
+        if (rhs.size() > lhs.size()) std::swap(lhs, rhs);
 
         enum Dominance : unsigned char { UNKNOWN = 0, OPTIMAL = 1, DOMINATED = 2 };
 
