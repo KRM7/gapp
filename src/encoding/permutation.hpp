@@ -34,7 +34,7 @@ namespace genetic_algorithm
         PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
 
     private:
-        void initialize();
+        void initialize() override;
         Candidate<GeneType> generateCandidate() const override;
     };
 
