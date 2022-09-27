@@ -206,22 +206,22 @@ namespace genetic_algorithm::detail
             return (*data_)[idx_];
         }
 
-        bool operator==(const Derived& rhs) const
+        friend bool operator==(const Derived& lhs, const Derived& rhs)
         {
-            GA_ASSERT(data_ == rhs.data_, "Can't compare iterators of different ranges.");
-            GA_ASSERT(data_ == nullptr || data_->size() >= idx_, "Can't compare invalid iterator.");
+            GA_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
+            GA_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
             GA_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
 
-            return idx_ == rhs.idx_;    /* Value-initialized iterators will have the same idx. */
+            return lhs.idx_ == rhs.idx_;    /* Value-initialized iterators will have the same idx. */
         }
 
-        bool operator<(const Derived& rhs) const
+        friend bool operator<(const Derived& lhs, const Derived& rhs)
         {
-            GA_ASSERT(data_ == rhs.data_, "Can't compare iterators of different ranges.");
-            GA_ASSERT(data_ == nullptr || data_->size() >= idx_, "Can't compare invalid iterator.");
+            GA_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
+            GA_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
             GA_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
 
-            return idx_ < rhs.idx_;     /* Value-initialized iterators will have the same idx. */
+            return lhs.idx_ < rhs.idx_;     /* Value-initialized iterators will have the same idx. */
         }
 
         Derived& increment() noexcept
@@ -252,18 +252,18 @@ namespace genetic_algorithm::detail
             return static_cast<Derived&>(*this);
         }
 
-        difference_type operator-(const Derived& rhs) const
+        friend difference_type operator-(const Derived& lhs, const Derived& rhs)
         {
-            GA_ASSERT(data_ && rhs.data_, "Can't get the distance of value initialized iterators.");
-            GA_ASSERT(data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
-            GA_ASSERT(data_->size() >= idx_, "Invalid lhs iterator.");
+            GA_ASSERT(lhs.data_ && rhs.data_, "Can't get the distance of value initialized iterators.");
+            GA_ASSERT(lhs.data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
+            GA_ASSERT(lhs.data_->size() >= lhs.idx_, "Invalid lhs iterator.");
             GA_ASSERT(rhs.data_->size() >= rhs.idx_, "Invalid rhs iterator.");
-            GA_ASSERT((idx_ >= rhs.idx_ ? idx_ - rhs.idx_ : rhs.idx_ - idx_) <= size_t(std::numeric_limits<difference_type>::max()),
-                     "Can't represent the result of the operation as difference_type.");
+            GA_ASSERT((lhs.idx_ >= rhs.idx_ ? lhs.idx_ - rhs.idx_ : rhs.idx_ - lhs.idx_) <= size_t(std::numeric_limits<difference_type>::max()),
+                      "Can't represent the result of the operation as difference_type.");
 
-            return idx_ >= rhs.idx_ ?
-                difference_type(idx_ - rhs.idx_) :
-                difference_type(rhs.idx_ - idx_);
+            return lhs.idx_ >= rhs.idx_ ?
+                difference_type(lhs.idx_ - rhs.idx_) :
+                difference_type(rhs.idx_ - lhs.idx_);
         }
 
     protected:
