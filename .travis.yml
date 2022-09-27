@@ -4,13 +4,28 @@ matrix:
   include:
     - os: linux
       dist: jammy
-      sudo: true
       compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-11.2
+        env:
+          - MATRIX_EVAL="CC=gcc-11.2 && CXX=g++-11.2"
 
     - os: linux
       dist: jammy
-      sudo: true
       compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-jammy-14.0
+          packages:
+            - clang-14.0
+      env:
+        - MATRIX_EVAL="CC=clang-14.0 && CXX=clang++-14.0"
 
 script:
   - mkdir -p build
