@@ -206,7 +206,7 @@ namespace genetic_algorithm::detail
             return (*data_)[idx_];
         }
 
-        bool operator==(Derived rhs) const
+        bool operator==(const Derived& rhs) const
         {
             GA_ASSERT(data_ == rhs.data_, "Can't compare iterators of different ranges.");
             GA_ASSERT(data_ == nullptr || data_->size() >= idx_, "Can't compare invalid iterator.");
@@ -215,7 +215,7 @@ namespace genetic_algorithm::detail
             return idx_ == rhs.idx_;    /* Value-initialized iterators will have the same idx. */
         }
 
-        bool operator<(Derived rhs) const
+        bool operator<(const Derived& rhs) const
         {
             GA_ASSERT(data_ == rhs.data_, "Can't compare iterators of different ranges.");
             GA_ASSERT(data_ == nullptr || data_->size() >= idx_, "Can't compare invalid iterator.");
@@ -252,7 +252,7 @@ namespace genetic_algorithm::detail
             return static_cast<Derived&>(*this);
         }
 
-        difference_type operator-(Derived rhs) const
+        difference_type operator-(const Derived& rhs) const
         {
             GA_ASSERT(data_ && rhs.data_, "Can't get the distance of value initialized iterators.");
             GA_ASSERT(data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
@@ -378,12 +378,12 @@ namespace genetic_algorithm::detail
             return value_;
         }
 
-        bool operator==(iota_iterator rhs) const
+        bool operator==(const iota_iterator& rhs) const
         {
             return value_ == rhs.value_;
         }
 
-        bool operator<(iota_iterator rhs) const
+        bool operator<(const iota_iterator& rhs) const
         {
             return value_ < rhs.value_;
         }
@@ -414,7 +414,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        difference_type operator-(iota_iterator rhs) const
+        difference_type operator-(const iota_iterator& rhs) const
         {
             // TODO bounds checks
             return difference_type(value_) - difference_type(rhs.value_);
