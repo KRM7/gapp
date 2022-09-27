@@ -20,7 +20,7 @@ namespace genetic_algorithm
     PermutationGA::PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)
         : GA(pop_size, chrom_len, std::move(fitness_function))
     {
-        bounds_ = BoundsVector(chrom_len, GeneBounds(0, chrom_len - 1));
+        bounds_ = BoundsVector(chrom_len, GeneBounds(0_sz, chrom_len - 1));
         setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::perm::Order2>());
         mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
@@ -29,7 +29,7 @@ namespace genetic_algorithm
 
     void PermutationGA::initialize()
     {
-        bounds_.resize(chrom_len(), GeneBounds(0, chrom_len() - 1));
+        bounds_.resize(chrom_len(), GeneBounds(0_sz, chrom_len() - 1));
     }
 
     auto PermutationGA::generateCandidate() const -> Candidate<GeneType>
