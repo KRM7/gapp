@@ -29,9 +29,6 @@ namespace genetic_algorithm::algorithm
 
         std::vector<double> crowding_distances(last - first, 0.0);
 
-        using Iter     = ParetoFronts::iterator;
-        using IterPair = std::pair<Iter, Iter>;
-
         const auto front_bounds = paretoFrontBounds(pfronts);
 
         for (size_t dim = 0; dim < first->size(); dim++)
