@@ -168,7 +168,7 @@ namespace genetic_algorithm::algorithm::dtl
                 {
                     if (--dom_lists[worse_idx].better_count == 0)
                     {
-                        pfronts.emplace_back(worse_idx, next_front_rank);
+                        pfronts.push_back(FrontInfo{ worse_idx, next_front_rank });
                     }
                 }
             }
