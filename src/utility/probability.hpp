@@ -22,7 +22,7 @@ namespace genetic_algorithm
         }
 
         constexpr /* implicit */ operator double() const noexcept { return p_; }
-        constexpr const double operator*() const noexcept { return p_; }
+        constexpr double operator*() const noexcept { return p_; }
 
     private:
         double p_;
