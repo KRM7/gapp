@@ -148,7 +148,7 @@ namespace genetic_algorithm::algorithm::dtl
         /* Find the indices of all non-dominated candidates (the first/best pareto front). */
         for (size_t i = 0; i < popsize; i++)
         {
-            if (dom_lists[i].better_count == 0) pfronts.emplace_back(i, 0);
+            if (dom_lists[i].better_count == 0) pfronts.push_back(FrontInfo{ i, 0 });
         }
 
         /* Find all the other pareto fronts. */
@@ -272,7 +272,7 @@ namespace genetic_algorithm::algorithm::dtl
             {
                 if (col.sum == 0)
                 {
-                    pfronts.emplace_back(col.idx, current_rank);
+                    pfronts.push_back(FrontInfo{ col.idx, current_rank });
                     removed_rows.push_back(col.idx);
                 }
             }
