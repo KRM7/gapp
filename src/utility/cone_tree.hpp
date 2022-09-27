@@ -34,13 +34,13 @@ namespace genetic_algorithm::detail
 
         struct Node
         {
-            Point center;
-            double radius;
-            size_t first;
-            size_t last;
+            Point center  = {};
+            double radius = 0.0;
+            size_t first  = 0;
+            size_t last   = 0;
 
-            size_t left;
-            size_t right;
+            size_t left   = 0;
+            size_t right  = 0;
         };
 
         ConeTree() = default;
