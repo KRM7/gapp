@@ -73,7 +73,7 @@ namespace genetic_algorithm::detail
             return old_value;
         }
 
-        auto operator->() const requires (std::is_lvalue_reference_v<decltype(*this->derived())>)
+        auto operator->() const
         {
             return &*derived();
         }
