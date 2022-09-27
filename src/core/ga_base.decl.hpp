@@ -33,11 +33,6 @@ namespace genetic_algorithm
         
         using GeneType = T;                             /**< The gene type used in the chromosomes. */
         using BoundsVector = std::vector<GeneBounds>;   /**< A vector of GeneBounds. */
-        using Candidate = Candidate<GeneType>;          /**< The type used for the candidates in the algorithm. */
-        using Chromosome = std::vector<GeneType>;       /**< The type of the chromosomes of the Candidates, representing a solution. */
-        using CandidatePair = CandidatePair<GeneType>;  /**< A pair of Candidates. */
-        using Candidates = std::vector<Candidate>;      /**< A vector of Candidates. */
-        using Population = std::vector<Candidate>;      /**< The type of the population of the algorithm. */
 
         /**
         * The type of the fitness function. \n
@@ -48,7 +43,7 @@ namespace genetic_algorithm
         * The fitness function is allowed to return different fitness vectors for the
         * same chromosome if dynamic_fitness is set to true.
         */
-        using FitnessFunction = std::function<std::vector<double>(const Chromosome&)>;
+        using FitnessFunction = std::function<std::vector<double>(const Chromosome<T>&)>;
 
         /**
         * The type of the crossover function. \n
@@ -59,7 +54,7 @@ namespace genetic_algorithm
         * all of the other operators used should be able to handle different chromosome lengths in this case
         * (fitness function, mutation, repair).
         */
-        using CrossoverFunction = std::function<CandidatePair(const GA&, const Candidate&, const Candidate&)>;
+        using CrossoverFunction = std::function<CandidatePair<T>(const GA&, const Candidate<T>&, const Candidate<T>&)>;
 
         /**
         * The type of the mutation function. \n
@@ -69,7 +64,7 @@ namespace genetic_algorithm
         * all of the other operators used should be able to handle different chromosome lengths in this
         * case (fitness function, crossover, repair).
         */
-        using MutationFunction = std::function<void(const GA&, Candidate&)>;
+        using MutationFunction = std::function<void(const GA&, Candidate<T>&)>;
 
         /**
         * The type of the repair function. \n
@@ -79,7 +74,7 @@ namespace genetic_algorithm
         * all of the other operators used should be able to handle different chromosome lengths in this
         * case (fitness function, crossover, mutation).
         */
-        using RepairFunction = std::function<Chromosome(const GA&, const Chromosome&)>;
+        using RepairFunction = std::function<Chromosome<T>(const GA&, const Chromosome<T>&)>;
 
 
         /**
@@ -238,7 +233,7 @@ namespace genetic_algorithm
         * found during the run, updated in every generation.
         */
         [[nodiscard]]
-        const Candidates& solutions() const noexcept { return solutions_; }
+        const Candidates<T>& solutions() const noexcept { return solutions_; }
 
         /**
         * @returns The current population of the algorithm.
@@ -246,14 +241,14 @@ namespace genetic_algorithm
         * and may also contain non pareto-optimal solutions).
         */
         [[nodiscard]]
-        const Population& population() const noexcept { return population_; }
+        const Population<T>& population() const noexcept { return population_; }
 
         /**
         * Run the genetic algorithm. \n
         *
         * @returns The pareto-optimal solutions found. @see solutions
         */
-        Candidates run();
+        Candidates<T> run();
 
         /**
         * Run the genetic algorithm for a set number of generations. \n
@@ -262,7 +257,7 @@ namespace genetic_algorithm
         * @param num_generations The maximum number of generations.
         * @returns The pareto-optimal solutions found. @see solutions
         */
-        Candidates run(size_t num_generations);
+        Candidates<T> run(size_t num_generations);
 
         /**
         * Continue running the genetic algorithm for the set number of generations. \n
@@ -273,7 +268,7 @@ namespace genetic_algorithm
         * @param num_generations The number of generations to run the algorithm for.
         * @returns The optimal solutions.
         */
-        Candidates continueFor(size_t num_generations);
+        Candidates<T> continueFor(size_t num_generations);
 
     protected:
 
@@ -281,38 +276,38 @@ namespace genetic_algorithm
 
     private:
 
-        Population population_;
-        Candidates solutions_;
+        Population<T> population_;
+        Candidates<T> solutions_;
 
         FitnessFunction fitness_function_;
-        std::unique_ptr<crossover::Crossover<GeneType>> crossover_;
-        std::unique_ptr<mutation::Mutation<GeneType>> mutation_;
+        std::unique_ptr<crossover::Crossover<T>> crossover_;
+        std::unique_ptr<mutation::Mutation<T>> mutation_;
         RepairFunction repair_ = nullptr;
 
-        virtual Candidate generateCandidate() const = 0;
+        virtual Candidate<T> generateCandidate() const = 0;
         virtual void initialize() = 0;
 
         void initializeAlgorithm();
         size_t findNumObjectives() const final;
-        Population generatePopulation(size_t pop_size) const;
+        Population<T> generatePopulation(size_t pop_size) const;
         void prepareSelections() const;
-        const Candidate& select() const;
-        CandidatePair crossover(const Candidate& parent1, const Candidate& parent2) const;
-        void mutate(Candidate& sol) const;
-        void repair(Candidate& sol) const;
-        void updatePopulation(Population&& children);
+        const Candidate<T>& select() const;
+        CandidatePair<T> crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const;
+        void mutate(Candidate<T>& sol) const;
+        void repair(Candidate<T>& sol) const;
+        void updatePopulation(Population<T>&& children);
         bool stopCondition() const;
 
-        void evaluateSolution(Candidate& sol);
-        void evaluatePopulation(Population& pop);
-        void updateOptimalSolutions(Candidates& optimal_sols, const Population& pop) const;
+        void evaluateSolution(Candidate<T>& sol);
+        void evaluatePopulation(Population<T>& pop);
+        void updateOptimalSolutions(Candidates<T>& optimal_sols, const Population<T>& pop) const;
 
         void advance();
 
-        bool hasValidFitness(const Candidate& sol) const noexcept;
-        bool hasValidChromosome(const Candidate& sol) const noexcept;
+        bool hasValidFitness(const Candidate<T>& sol) const noexcept;
+        bool hasValidChromosome(const Candidate<T>& sol) const noexcept;
         bool fitnessMatrixIsSynced() const;
-        bool populationIsValid(const Population& pop) const;
+        bool populationIsValid(const Population<T>& pop) const;
 
 
         /* Make the protected members of GaInfo private. */

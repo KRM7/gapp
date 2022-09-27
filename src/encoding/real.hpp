@@ -84,7 +84,7 @@ namespace genetic_algorithm
 
     private:
         void initialize();
-        Candidate generateCandidate() const override;
+        Candidate<GeneType> generateCandidate() const override;
     };
 
 } // namespace genetic_algorithm

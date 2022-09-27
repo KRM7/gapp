@@ -29,9 +29,9 @@ namespace genetic_algorithm
         bounds_.resize(chrom_len(), GeneBounds(false, true));
     }
 
-    BinaryGA::Candidate BinaryGA::generateCandidate() const
+    auto BinaryGA::generateCandidate() const -> Candidate<GeneType>
     {
-        Candidate solution(this->chrom_len());
+        Candidate<GeneType> solution(this->chrom_len());
         std::generate(solution.chromosome.begin(), solution.chromosome.end(), rng::randomBool);
 
         return solution;

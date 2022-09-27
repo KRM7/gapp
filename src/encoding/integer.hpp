@@ -71,7 +71,7 @@ namespace genetic_algorithm
         GeneType offset_ = 0;
 
         void initialize() override;
-        Candidate generateCandidate() const override;
+        Candidate<GeneType> generateCandidate() const override;
     };
 
 } // namespace genetic_algorithm

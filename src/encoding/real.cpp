@@ -61,11 +61,11 @@ namespace genetic_algorithm
         }
     }
 
-    RCGA::Candidate RCGA::generateCandidate() const
+    auto RCGA::generateCandidate() const -> Candidate<GeneType>
     {
         assert(chrom_len() == bounds_.size());
 
-        Candidate solution(chrom_len());
+        Candidate<GeneType> solution(chrom_len());
         for (size_t i = 0; i < solution.chromosome.size(); i++)
         {
             solution.chromosome[i] = rng::randomReal(bounds_[i].lower, bounds_[i].upper);

@@ -47,11 +47,10 @@ namespace genetic_algorithm
         bounds_.resize(chrom_len(), GeneBounds(offset_, offset_ + base_ - 1));
     }
 
-    IntegerGA::Candidate IntegerGA::generateCandidate() const
+    auto IntegerGA::generateCandidate() const -> Candidate<GeneType>
     {
-        Candidate solution(this->chrom_len());
-        std::generate(solution.chromosome.begin(), solution.chromosome.end(),
-        [this]
+        Candidate<GeneType> solution(this->chrom_len());
+        std::generate(solution.chromosome.begin(), solution.chromosome.end(), [this]
         {
             return rng::randomInt<GeneType>(offset_, offset_ + base_ - 1);
         });

@@ -32,9 +32,9 @@ namespace genetic_algorithm
         bounds_.resize(chrom_len(), GeneBounds(0, chrom_len() - 1));
     }
 
-    PermutationGA::Candidate PermutationGA::generateCandidate() const
+    auto PermutationGA::generateCandidate() const -> Candidate<GeneType>
     {
-        Candidate solution(chrom_len());
+        Candidate<GeneType> solution(chrom_len());
         std::iota(solution.chromosome.begin(), solution.chromosome.end(), GeneType{ 0 });
         std::shuffle(solution.chromosome.begin(), solution.chromosome.end(), rng::prng);
 
