@@ -43,9 +43,6 @@ else() # GNU style compiler interface
     set(CMAKE_CXX_FLAGS "${GA_DEFINES} -std=c++20 ${GA_WARN_FLAGS}")
     set(CMAKE_CXX_FLAGS_DEBUG "-Og")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -ffast-math -fno-finite-math-only")
-    if (GA_ENABLE_LTO)
-        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -Wno-lto-type-mismatch")
-    endif()
     if (GA_ENABLE_MARCH_NATIVE)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
     endif()
@@ -54,6 +51,10 @@ else() # GNU style compiler interface
             set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ltbb")
         endif()
     endif()
+endif()
+
+if (GA_ENABLE_LTO)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
 
