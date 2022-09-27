@@ -146,4 +146,19 @@ namespace genetic_algorithm::math
         return std::sqrt(var);
     }
 
+    double intSinPow(size_t exponent, double x)
+    {
+        double integral = exponent % 2 ? -std::cos(x) : x;
+
+        for (size_t n = 2 + exponent % 2; n <= exponent; n += 2)
+        {
+            const double mult = (n - 1.0) / n;
+            const double plus = -std::cos(x) * std::pow(std::sin(x), n - 1) / n;
+
+            integral = std::fma(integral, mult, plus);
+        }
+
+        return integral;
+    }
+
 } // namespace genetic_algorithm::math
