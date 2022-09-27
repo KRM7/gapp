@@ -85,7 +85,7 @@ void printSol(const std::vector<T>& chrom)
 template<genetic_algorithm::GeneticAlgorithmType GA, typename F>
 void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::string& problem_name)
 {
-    using RunFn = GA::Candidates(GA::*)(size_t);
+    using RunFn = genetic_algorithm::Candidates<typename GA::GeneType>(GA::*)(size_t);
 
     auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&GA::run), ga, max_gen);
 
@@ -119,7 +119,7 @@ void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::str
 template<genetic_algorithm::GeneticAlgorithmType GA>
 void benchmarkMoga(GA& ga, size_t max_gen, const std::string& ga_name, const std::string& problem_name)
 {
-    using RunFn = GA::Candidates(GA::*)(size_t);
+    using RunFn = genetic_algorithm::Candidates<typename GA::GeneType>(GA::*)(size_t);
 
     auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&GA::run), ga, max_gen);
 
