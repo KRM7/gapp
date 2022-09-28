@@ -7,6 +7,7 @@
 #include "type_traits.hpp"
 #include <iterator>
 #include <type_traits>
+#include <concepts>
 #include <limits>
 #include <cstddef>
 
@@ -356,7 +357,7 @@ namespace genetic_algorithm::detail
 
     /* iota iterator */
 
-    template<std::integral T = std::size_t, typename Difference = std::ptrdiff_t>
+    template<std::integral T = std::size_t, std::signed_integral Difference = std::ptrdiff_t>
     class iota_iterator : public random_access_iterator_interface<iota_iterator<T>, Difference>
     {
     public:
