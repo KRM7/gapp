@@ -34,6 +34,7 @@ before_install:
   - git checkout tags/v3.1.0
   - cmake -Bbuild -H. -DBUILD_TESTING=OFF
   - sudo env "PATH=$PATH" cmake --build build/ --target install
+  - cd ..
 
 
 script:
