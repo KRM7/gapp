@@ -74,8 +74,9 @@ namespace genetic_algorithm::detail
             return old_value;
         }
 
-        auto operator->() const requires std::is_lvalue_reference_v<dereference_t<Derived>>
+        auto operator->() const //requires std::is_lvalue_reference_v<dereference_t<Derived>>
         {
+            static_assert(std::is_lvalue_reference_v<dereference_t<Derived>>);
             return &*derived();
         }
 
