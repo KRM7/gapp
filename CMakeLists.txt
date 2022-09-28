@@ -4,7 +4,7 @@ project(GeneticAlgorithm VERSION 0.1 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 
-option(GA_ENABLE_TESTING "Enable the tests for the library." OFF) # TODO
+option(GA_ENABLE_TESTING "Enable the tests for the library." ON)
 option(GA_ENABLE_EXAMPLES "Enable building the examples for the library." OFF) # TODO
 option(GA_ENABLE_WERROR "Treat warnings as errors during the build." ON)
 option(GA_ENABLE_LTO "Enable link time optimizations for the library." ON)
@@ -85,10 +85,12 @@ install(EXPORT GeneticAlgorithmConfig
 
 # Benchmarks / tests
 if(GA_ENABLE_TESTING)
-    add_subdirectory("test")
+    enable_testing()
+    add_subdirectory("${CMAKE_SOURCE_DIR}/test/unit")
 endif()
+
 
 # Examples
 if(GA_ENABLE_EXAMPLES)
-    add_subdirectory("examples")
+    add_subdirectory("${CMAKE_SOURCE_DIR}/examples")
 endif()
