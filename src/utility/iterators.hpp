@@ -384,14 +384,14 @@ namespace genetic_algorithm::detail
             return value_;
         }
 
-        bool operator==(const iota_iterator& rhs) const
+        friend bool operator==(const iota_iterator& lhs, const iota_iterator& rhs) noexcept
         {
-            return value_ == rhs.value_;
+            return lhs.value_ == rhs.value_;
         }
 
-        bool operator<(const iota_iterator& rhs) const
+        friend bool operator<(const iota_iterator& lhs, const iota_iterator& rhs) noexcept
         {
-            return value_ < rhs.value_;
+            return lhs.value_ < rhs.value_;
         }
 
         iota_iterator& increment() noexcept
@@ -412,7 +412,6 @@ namespace genetic_algorithm::detail
 
         iota_iterator& operator+=(difference_type n)
         {
-            // TODO ar conversions for max/min?
             GA_ASSERT(n > 0 ? (std::numeric_limits<T>::max() - n) >= value_ : true, "Can't increment iterator past its max value.");
             GA_ASSERT(n < 0 ? (difference_type(std::numeric_limits<T>::min()) - n) <= value_ : true, "Can't decrement iterator past its min value.");
 
