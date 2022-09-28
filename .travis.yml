@@ -42,4 +42,5 @@ script:
   - cmake ..
   - make
   - make help
-  - make unit_tests
+  - ls -la
+  - ./unit_tests
