@@ -40,8 +40,6 @@ before_install:
 script:
   - mkdir -p build
   - cd build
-  - cmake ..
-  - make
-  - make help
-  - ls -la
-  - ./unit_tests
+  - cmake -DGA_ENABLE_LINK_TBB=OFF ..
+  - make -j8
+  - make test
