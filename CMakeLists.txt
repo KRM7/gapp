@@ -47,6 +47,7 @@ else() # GNU style compiler interface
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
     endif()
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU") # gcc specific options
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op")
         if (GA_ENABLE_LINK_TBB)
             set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ltbb")
         endif()
