@@ -260,12 +260,15 @@ namespace genetic_algorithm::detail
             GA_ASSERT(lhs.data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
             GA_ASSERT(lhs.data_->size() >= lhs.idx_, "Invalid lhs iterator.");
             GA_ASSERT(rhs.data_->size() >= rhs.idx_, "Invalid rhs iterator.");
-            GA_ASSERT((lhs.idx_ >= rhs.idx_ ? lhs.idx_ - rhs.idx_ : rhs.idx_ - lhs.idx_) <= size_t(std::numeric_limits<difference_type>::max()),
+
+            const size_t distance = lhs.idx_ >= rhs.idx_ ?
+                lhs.idx_ - rhs.idx_ :
+                rhs.idx_ - lhs.idx_;
+
+            GA_ASSERT(distance <= size_t(std::numeric_limits<difference_type>::max()),
                       "Can't represent the result of the operation as difference_type.");
 
-            return lhs.idx_ >= rhs.idx_ ?
-                difference_type(lhs.idx_ - rhs.idx_) :
-                difference_type(rhs.idx_ - lhs.idx_);
+            return difference_type(distance);
         }
 
     protected:
@@ -410,16 +413,21 @@ namespace genetic_algorithm::detail
         {
             // TODO ar conversions for max/min?
             GA_ASSERT(n > 0 ? (std::numeric_limits<T>::max() - n) >= value_ : true, "Can't increment iterator past its max value.");
-            GA_ASSERT(n < 0 ? (std::numeric_limits<T>::min() - n) <= value_ : true, "Can't decrement iterator past its min value.");
+            GA_ASSERT(n < 0 ? (difference_type(std::numeric_limits<T>::min()) - n) <= value_ : true, "Can't decrement iterator past its min value.");
 
             value_ += n;
             return *this;
         }
 
-        difference_type operator-(const iota_iterator& rhs) const
+        friend difference_type operator-(const iota_iterator& lhs, const iota_iterator& rhs)
         {
-            // TODO bounds checks
-            return difference_type(value_) - difference_type(rhs.value_);
+            const T distance = lhs.value_ >= rhs.value_ ?
+                lhs.value_ - rhs.value_ :
+                rhs.value_ - lhs.value;
+
+            GA_ASSERT(distance <= T(std::numeric_limits<difference_type>::max()), "Can't represent the result of the operation as difference_type.");
+
+            return difference_type(distance);
         }
 
     private:
