@@ -154,7 +154,7 @@ namespace genetic_algorithm::algorithm::dtl
         /* Find all the other pareto fronts. */
         auto current_front_first = detail::stable_begin(pfronts);
         auto current_front_last = detail::stable_end(pfronts);
-
+        
         while (pfronts.size() != popsize)
         {
             /* Remove the current front from the population and find the next one. */
@@ -226,15 +226,15 @@ namespace genetic_algorithm::algorithm::dtl
         std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
         {
             dmat(row, row) = NONMAXIMAL; // diagonal is all nonmax
-            // TODO: replace with for loop
-            std::for_each(detail::iota_iterator(row + 1), detail::iota_iterator(popsize), [&](size_t col) noexcept
+
+            for (size_t col = row + 1; col < popsize; col++)
             {
                 if (dmat(row, col) == MAXIMAL && dmat(col, row) == MAXIMAL)
                 {
                     dmat(row, col) = NONMAXIMAL;
                     dmat(col, row) = NONMAXIMAL;
                 }
-            });
+            }
         });
 
         return dmat;
