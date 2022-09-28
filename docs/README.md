@@ -1,4 +1,6 @@
-﻿# Genetic Algorithms in C++ 
+[![Build Status](https://app.travis-ci.com/KRM7/genetic-algorithms.svg?branch=dev)](https://app.travis-ci.com/KRM7/genetic-algorithms)
+
+# Genetic Algorithms in C++ 
 
 <p> Implementations of genetic algorithms in C++. </p>
 
