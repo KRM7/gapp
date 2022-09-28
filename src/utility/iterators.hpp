@@ -195,7 +195,7 @@ namespace genetic_algorithm::detail
             data_(nullptr), idx_(0)
         {}
 
-        stable_iterator_base(Container& container, size_t idx) noexcept :
+        stable_iterator_base(Container& container, size_t idx) :
             data_(&container), idx_(idx)
         {
             GA_ASSERT(data_->size() >= idx_, "Iterator can't refer to element past the end of the range.");
@@ -312,44 +312,44 @@ namespace genetic_algorithm::detail
         using _my_base = stable_iterator_base<const_stable_iterator, const Container, const ValueType, const Reference, const Pointer, Distance>;
         using _my_base::_my_base;
 
-        /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) noexcept :
+        /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) :
             _my_base(*it.data_, it.idx_)
         {}
     };
 
 
     template<typename Container>
-    inline auto stable_begin(Container& container) noexcept
+    inline auto stable_begin(Container& container)
     {
         return stable_iterator<Container>(container, 0);
     }
 
     template<typename Container>
-    inline auto stable_end(Container& container) noexcept
+    inline auto stable_end(Container& container)
     {
         return stable_iterator<Container>(container, container.size());
     }
 
     template<typename Container>
-    inline auto stable_begin(const Container& container) noexcept
+    inline auto stable_begin(const Container& container)
     {
         return const_stable_iterator<Container>(container, 0);
     }
 
     template<typename Container>
-    inline auto stable_end(const Container& container) noexcept
+    inline auto stable_end(const Container& container)
     {
         return const_stable_iterator<Container>(container, container.size());
     }
 
     template<typename Container>
-    inline auto stable_cbegin(const Container& container) noexcept
+    inline auto stable_cbegin(const Container& container)
     {
         return const_stable_iterator<Container>(container, 0);
     }
 
     template<typename Container>
-    inline auto stable_cend(const Container& container) noexcept
+    inline auto stable_cend(const Container& container)
     {
         return const_stable_iterator<Container>(container, container.size());
     }
@@ -379,7 +379,7 @@ namespace genetic_algorithm::detail
 
         pointer operator->() const = delete;
 
-        reference operator*() const
+        reference operator*() const noexcept
         {
             return value_;
         }
@@ -394,7 +394,7 @@ namespace genetic_algorithm::detail
             return lhs.value_ < rhs.value_;
         }
 
-        iota_iterator& increment() noexcept
+        iota_iterator& increment()
         {
             GA_ASSERT(value_ != std::numeric_limits<T>::max(), "Can't increment iterator with max value.");
 
@@ -402,7 +402,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        iota_iterator& decrement() noexcept
+        iota_iterator& decrement()
         {
             GA_ASSERT(value_ != std::numeric_limits<T>::min(), "Can't decrement iterator with min value.");
 
