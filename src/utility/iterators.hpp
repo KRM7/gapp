@@ -248,8 +248,8 @@ namespace genetic_algorithm::detail
         Derived& operator+=(difference_type n)
         {
             GA_ASSERT(data_ != nullptr, "Can't offset value initialized iterator.");
-            GA_ASSERT(n < 0 ? (difference_type(idx_) >= -n) : true, "Can't move iterator to before the start of the range.");
-            GA_ASSERT(n > 0 ? (idx_ + n) <= data_->size() : true, "Can't move iterator past the end of the range.");
+            GA_ASSERT(n < 0 ? idx_ >= size_t(-n) : true, "Can't move iterator to before the start of the range.");
+            GA_ASSERT(n > 0 ? idx_ <= (data_->size() - n) : true, "Can't move iterator past the end of the range.");
 
             idx_ += n;
             return static_cast<Derived&>(*this);
@@ -413,7 +413,7 @@ namespace genetic_algorithm::detail
         iota_iterator& operator+=(difference_type n)
         {
             GA_ASSERT(n > 0 ? (std::numeric_limits<T>::max() - n) >= value_ : true, "Can't increment iterator past its max value.");
-            GA_ASSERT(n < 0 ? (difference_type(std::numeric_limits<T>::min()) - n) <= value_ : true, "Can't decrement iterator past its min value.");
+            GA_ASSERT(n < 0 ? size_t(-n) <= (value_ - std::numeric_limits<T>::min()) : true, "Can't decrement iterator past its min value.");
 
             value_ += n;
             return *this;
@@ -423,7 +423,7 @@ namespace genetic_algorithm::detail
         {
             const T distance = lhs.value_ >= rhs.value_ ?
                 lhs.value_ - rhs.value_ :
-                rhs.value_ - lhs.value;
+                rhs.value_ - lhs.value_;
 
             GA_ASSERT(distance <= T(std::numeric_limits<difference_type>::max()), "Can't represent the result of the operation as difference_type.");
 
