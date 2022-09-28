@@ -4,6 +4,7 @@
 #define GA_UTILITY_ITERATORS_HPP
 
 #include "utility.hpp"
+#include "type_traits.hpp"
 #include <iterator>
 #include <type_traits>
 #include <limits>
@@ -69,11 +70,11 @@ namespace genetic_algorithm::detail
         Derived operator++(int)
         {
             Derived old_value(derived());
-            ++derived();
+            derived().increment();
             return old_value;
         }
 
-        auto operator->() const
+        auto operator->() const requires std::is_lvalue_reference_v<dereference_t<Derived>>
         {
             return &*derived();
         }
@@ -124,7 +125,7 @@ namespace genetic_algorithm::detail
         Derived operator--(int)
         {
             Derived old_value(derived());
-            --derived();
+            derived().decrement();
             return old_value;
         }
 
@@ -169,7 +170,7 @@ namespace genetic_algorithm::detail
     };
 
 
-    /* Iterators for random-access containers that aren't invalidated on reallocations and insertions. */
+    /* Iterators for random-access containers that aren't invalidated on reallocations and insertions(/deletions). */
 
     template<typename Derived,
              typename Container,
@@ -212,7 +213,7 @@ namespace genetic_algorithm::detail
             GA_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
             GA_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
 
-            return lhs.idx_ == rhs.idx_;    /* Value-initialized iterators will have the same idx. */
+            return lhs.idx_ == rhs.idx_;  /* Value-initialized iterators will have the same idx. */
         }
 
         friend bool operator<(const Derived& lhs, const Derived& rhs)
@@ -221,10 +222,10 @@ namespace genetic_algorithm::detail
             GA_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
             GA_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
 
-            return lhs.idx_ < rhs.idx_;     /* Value-initialized iterators will have the same idx. */
+            return lhs.idx_ < rhs.idx_;   /* Value-initialized iterators will have the same idx. */
         }
 
-        Derived& increment() noexcept
+        Derived& increment()
         {
             GA_ASSERT(data_ != nullptr, "Can't increment value initialized iterator.");
             GA_ASSERT(idx_ != data_->size(), "Can't increment past-the-end iterator.");
@@ -233,7 +234,7 @@ namespace genetic_algorithm::detail
             return static_cast<Derived&>(*this);
         }
 
-        Derived& decrement() noexcept
+        Derived& decrement()
         {
             GA_ASSERT(data_ != nullptr, "Can't decrement value initialized iterator.");
             GA_ASSERT(idx_ != 0, "Can't decremenet the begin iterator.");
@@ -364,7 +365,7 @@ namespace genetic_algorithm::detail
         using pointer    = T;
 
         iota_iterator() noexcept :
-            value_(T{})
+            value_()
         {}
 
         iota_iterator(const T& val) noexcept :
