@@ -19,7 +19,7 @@ namespace genetic_algorithm
     IntegerGA::IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, GeneType base, GeneType offset)
         : GA(pop_size, chrom_len, std::move(fitness_function))
     {
-        bounds_ = BoundsVector(chrom_len, GeneBounds(offset, offset + base - 1));
+        bounds_ = BoundsVector(chrom_len, GeneBounds{ offset, offset + base - 1 });
         this->base(base);
         this->offset(offset);
         setDefaultAlgorithm();
@@ -33,18 +33,18 @@ namespace genetic_algorithm
         if (base < 2) GA_THROW(std::invalid_argument, "The base must be at least 2.");
 
         base_ = base;
-        bounds_ = BoundsVector(chrom_len(), GeneBounds(offset_, offset_ + base - 1));
+        bounds_ = BoundsVector(chrom_len(), GeneBounds{ offset_, offset_ + base - 1 });
     }
 
     void IntegerGA::offset(GeneType offset)
     {
         offset_ = offset;
-        bounds_ = BoundsVector(chrom_len(), GeneBounds(offset, offset + base_ - 1));
+        bounds_ = BoundsVector(chrom_len(), GeneBounds{ offset, offset + base_ - 1 });
     }
 
     void IntegerGA::initialize()
     {
-        bounds_.resize(chrom_len(), GeneBounds(offset_, offset_ + base_ - 1));
+        bounds_.resize(chrom_len(), GeneBounds{ offset_, offset_ + base_ - 1 });
     }
 
     auto IntegerGA::generateCandidate() const -> Candidate<GeneType>
