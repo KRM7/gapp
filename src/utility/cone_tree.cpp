@@ -146,12 +146,12 @@ namespace genetic_algorithm::detail
             /* Non-leaf node. */
             else
             {
-                const auto [left_point, right_point] = partitionPoints(node_cbegin(node), node_cend(node));
+                const auto partition_points = partitionPoints(node_cbegin(node), node_cend(node));
 
                 auto middle = std::partition(node_begin(node), node_end(node), [&](auto point)
                 {
-                    const double left_dist = math::euclideanDistanceSq(left_point->begin(), left_point->end(), point.begin());
-                    const double right_dist = math::euclideanDistanceSq(right_point->begin(), right_point->end(), point.begin());
+                    const double left_dist = math::euclideanDistanceSq(partition_points.first->begin(), partition_points.first->end(), point.begin());
+                    const double right_dist = math::euclideanDistanceSq(partition_points.second->begin(), partition_points.second->end(), point.begin());
 
                     return left_dist < right_dist;
                 });
