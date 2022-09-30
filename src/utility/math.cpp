@@ -146,7 +146,7 @@ namespace genetic_algorithm::math
         return std::sqrt(var);
     }
 
-    double intSinPow(size_t exponent, double x)
+    double integralSinPow(size_t exponent, double x)
     {
         double integral = exponent % 2 ? -std::cos(x) : x;
 
