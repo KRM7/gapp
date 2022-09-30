@@ -103,7 +103,7 @@ namespace genetic_algorithm::algorithm::dtl
 
         while (points.size() < n)
         {
-            size_t idx = detail::argmax(min_distances.begin(), min_distances.begin(), min_distances.end());
+            size_t idx = detail::argmax(min_distances.begin(), min_distances.end());
             points.push_back(std::move(candidate_points[idx]));
 
             /* Remove the added candidate and the corresponding min_distance. */

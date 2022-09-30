@@ -194,7 +194,7 @@ namespace genetic_algorithm::algorithm
             std::transform(first, last, chebysev_distances.begin(), ASFi);
             std::transform(extreme_points_.begin(), extreme_points_.end(), chebysev_distances.begin() + popsize, ASFi);
 
-            size_t idx = detail::argmin(chebysev_distances.begin(), chebysev_distances.begin(), chebysev_distances.end());
+            size_t idx = detail::argmin(chebysev_distances.begin(), chebysev_distances.end());
 
             (idx >= popsize) ?
                 new_extreme_points.push_back(extreme_points_[idx - popsize]) :

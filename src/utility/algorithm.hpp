@@ -92,17 +92,16 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    constexpr size_t argmax(Iter begin, Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    constexpr size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(std::distance(begin, first) >= 0);
         assert(std::distance(first, last) > 0);
 
         const auto it = std::max_element(first, last, std::forward<Comp>(comp));
-        const size_t idx = std::distance(begin, it);
+        const size_t idx = std::distance(first, it);
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
-            const size_t last_idx = std::distance(begin, last) - 1;
+            const size_t last_idx = std::distance(first, last) - 1;
             return last_idx - idx;
         }
         else
@@ -114,17 +113,16 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
     requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
                                           typename std::iterator_traits<Iter>::value_type>
-    constexpr size_t argmin(Iter begin, Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    constexpr size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(std::distance(begin, first) >= 0);
         assert(std::distance(first, last) > 0);
 
         const auto it = std::min_element(first, last, std::forward<Comp>(comp));
-        const size_t idx = std::distance(begin, it);
+        const size_t idx = std::distance(first, it);
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
         {
-            const size_t last_idx = std::distance(begin, last) - 1;
+            const size_t last_idx = std::distance(first, last) - 1;
             return last_idx - idx;
         }
         else
@@ -136,11 +134,13 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename URBG>
     void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)
     {
+        assert(std::distance(first, middle) >= 0);
+        assert(std::distance(middle, last) >= 0);
+
         for (; first != middle; ++first)
         {
             const auto max_offset = std::distance(first, last) - 1;
-            const auto distribution = std::uniform_int_distribution(0_pd, max_offset);
-            const auto offset = distribution(gen);
+            const auto offset = std::uniform_int_distribution{ 0_pd, max_offset }(gen);
             const auto new_pos = std::next(first, offset);
 
             std::iter_swap(first, new_pos);
@@ -150,22 +150,9 @@ namespace genetic_algorithm::detail
     template<std::input_iterator Iter>
     constexpr bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
     {
-        return std::any_of(first, last, [&](const auto& elem) { return elem == val; });
-    }
-
-    template<std::input_iterator Iter, typename Pred>
-    requires std::predicate<Pred, dereference_t<typename std::iterator_traits<Iter>::value_type>>
-    Iter find_if_ptr(Iter first, Iter last, Pred&& pred)
-    {
         assert(std::distance(first, last) >= 0);
 
-        for (; first != last; ++first)
-        {
-            auto* ptr = *first;
-            assert(ptr != nullptr);
-            if (std::invoke(pred, *ptr)) break;
-        }
-        return first;
+        return std::any_of(first, last, [&](const auto& elem) { return elem == val; });
     }
 
     template<std::input_iterator Iter, typename Pred>
@@ -200,6 +187,7 @@ namespace genetic_algorithm::detail
 
         return result;
     }
+
 
     template<typename T, std::predicate<T> Pred>
     std::vector<size_t> find_indices(const std::vector<T>& container, Pred&& pred)
