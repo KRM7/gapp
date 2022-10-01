@@ -144,7 +144,7 @@ TEST_CASE("partial_shuffle", "[algorithm]")
 
     SECTION("bad range")
     {
-        //REQUIRE_THROWS(detail::partial_shuffle(nums.end(), nums.begin(), nums.end(), rng::prng);
+        //REQUIRE_THROWS(detail::partial_shuffle(nums.end(), nums.begin(), nums.end(), rng::prng));
         //REQUIRE_THROWS(detail::partial_shuffle(nums.begin(), nums.end(), nums.begin(), rng::prng));
     }
 }
@@ -207,5 +207,103 @@ TEST_CASE("find_indices", "[algorithm]")
     const auto all = detail::find_indices(nums, [](int) { return true; });
     REQUIRE(all == std::vector<size_t>{ 0, 1, 2, 3, 4 });
 
-    REQUIRE(detail::find_indices(nums, [](int) { return false; }).empty());
+    const auto none = detail::find_indices(nums, [](int) { return false; });
+    REQUIRE(none.empty());
+}
+
+TEST_CASE("index_of", "[algorithm]")
+{
+    const std::vector nums = { 4, 0, 2, 5, 1 };
+
+    REQUIRE(detail::index_of(nums, 4) == 0);
+    REQUIRE(detail::index_of(nums, 2) == 2);
+    REQUIRE(detail::index_of(nums, 1) == 4);
+    REQUIRE(!detail::index_of(nums, 7).has_value());
+}
+
+TEST_CASE("find_index", "[algorithm]")
+{
+    const std::vector nums = { 4, 0, 2, 5, 1 };
+
+    auto first = detail::find_index(nums, [](int) { return true; });
+    REQUIRE(first == 0);
+
+    auto none = detail::find_index(nums, [](int) { return false; });
+    REQUIRE(!none.has_value());
+
+    auto odd = detail::find_index(nums, [](int i) { return i % 2; });
+    REQUIRE(odd == 3);
+
+    auto six = detail::find_index(nums, [](int i) { return i == 6; });
+    REQUIRE(!six.has_value());
+}
+
+TEST_CASE("elementwise_min", "[algorithm]")
+{
+    const std::vector nums1 = { 4, 0, 2, 5, 1 };
+    const std::vector nums2 = { 2, 3, 1, 6, 0 };
+
+    auto min = detail::elementwise_min(nums1, nums2);
+    REQUIRE(min == std::vector{ 2, 0, 1, 5, 0 });
+
+    //REQUIRE_THROWS(detail::elementwise_min(nums1, std::vector{ 1, 2, 3}));
+}
+
+TEST_CASE("elementwise_max", "[algorithm]")
+{
+    const std::vector nums1 = { 4, 0, 2, 5, 1 };
+    const std::vector nums2 = { 2, 3, 1, 6, 0 };
+
+    auto min = detail::elementwise_max(nums1, nums2);
+    REQUIRE(min == std::vector{ 4, 3, 2, 6, 1 });
+
+    //REQUIRE_THROWS(detail::elementwise_max(nums1, std::vector{ 1, 2, 3}));
+}
+
+TEST_CASE("erase_first_stable", "[algorithm]")
+{
+    std::vector nums = { 4, 0, 2, 5, 1, 3, 1 };
+
+    REQUIRE(detail::erase_first_stable(nums, 0));
+    REQUIRE(nums == std::vector{ 4, 2, 5, 1, 3, 1 });
+
+    REQUIRE(detail::erase_first_stable(nums, 1));
+    REQUIRE(nums == std::vector{ 4, 2, 5, 3, 1 });
+
+    REQUIRE(!detail::erase_first_stable(nums, 7));
+    REQUIRE(nums == std::vector{ 4, 2, 5, 3, 1 });
+
+    std::vector<int> empty;
+    REQUIRE(!detail::erase_first_stable(empty, 0));
+}
+
+TEST_CASE("select", "[algorithm]")
+{
+    const std::vector nums = { 4, 0, 2, 5, 1, 3, 1 };
+
+    auto selected = detail::select(nums, { 0, 1, 4 });
+    REQUIRE(selected == std::vector{ 4, 0, 1 });
+
+    selected = detail::select(selected, { 2 });
+    REQUIRE(selected == std::vector{ 1 });
+
+    selected = detail::select(nums, {});
+    REQUIRE(selected.empty());
+
+    selected = detail::select(std::vector{ 1, 3, 5 }, { 0, 1 });
+    REQUIRE(selected == std::vector{ 1, 3 });
+
+    selected = detail::select<int>({}, {});
+    REQUIRE(selected.empty());
+
+    //REQUIRE_THROWS(detail::select({}, { 1 }));
+    //REQUIRE_THROWS(detail::select(nums, { 71 }));
+}
+
+TEST_CASE("erase_duplicates", "[algorithm]")
+{
+    std::vector nums = { 1, 0, 1, 5, 1, 3, 1 };
+
+    detail::erase_duplicates(nums);
+    REQUIRE_THAT(nums, Catch::Matchers::UnorderedEquals(std::vector{ 0, 1, 3, 5 }));
 }
