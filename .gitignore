@@ -30,10 +30,9 @@ x86/
 bld/
 refs/
 docs/html/
-docs/TODO.txt
-build/*.exe
-build/
-!build/a.txt
+docs/*.txt
+build/*
+!build/install_catch.sh
 [Oo]bj/
 [Ll]og/
 *.exe
