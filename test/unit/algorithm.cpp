@@ -314,7 +314,7 @@ TEST_CASE("erase_duplicates", "[algorithm]")
 
 TEST_CASE("transform_reduce", "[algorithm]")
 {
-    const std::tuple vals = { 0, 3.14, 'a', "abcd", size_t{ 2 } };
+    constexpr std::tuple vals = { 0, 3.14, 'a', "abcd", size_t{ 2 } };
     
     constexpr int num_arithmetic = detail::transform_reduce(vals, 0, std::identity{},
     [](int acc, const auto& val)
@@ -329,7 +329,7 @@ TEST_CASE("transform_reduce", "[algorithm]")
         }
     });
 
-    REQUIRE(num_arithmetic == 4);
+    STATIC_REQUIRE(num_arithmetic == 4);
 
     const int sum = detail::transform_reduce(std::tuple{}, 1, std::identity{}, std::plus<>{});
     REQUIRE(sum == 1);
