@@ -29,12 +29,11 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
-  - build/install_catch.sh
+  - sudo env "PATH=$PATH" build/install_catch.sh
 
 
 script:
-  - mkdir -p build
   - cd build
-  - cmake -DGA_ENABLE_LINK_TBB=OFF ..
-  - make -j8
+  - cmake -DGA_LINK_TBB=OFF ..
+  - make -j4
   - make test
