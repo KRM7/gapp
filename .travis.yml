@@ -29,8 +29,7 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
-  - set -x
-  - ls -l build
+  - ls -la ./build
   - sudo env "PATH=$PATH" build/install_catch.sh
 
 
