@@ -292,13 +292,13 @@ namespace genetic_algorithm::detail
     namespace _
     {
         template<typename... Ts, typename R, typename Tr, typename Rd>
-        R transform_reduce_impl(Tr&&, Rd&&, R&& acc, Ts&&...)
+        constexpr R transform_reduce_impl(Tr&&, Rd&&, R&& acc, Ts&&...)
         {
             return acc;
         }
 
         template<typename T, typename... Ts, typename R, typename Tr, typename Rd>
-        R transform_reduce_impl(Tr&& tr, Rd&& rd, R&& acc, T&& arg, Ts&&... args)
+        constexpr R transform_reduce_impl(Tr&& tr, Rd&& rd, R&& acc, T&& arg, Ts&&... args)
         {
             auto transform_result = std::invoke(tr, std::forward<T>(arg));
 
@@ -309,8 +309,8 @@ namespace genetic_algorithm::detail
     }
 
     template<typename Tuple, typename Acc, typename TransformOp, typename ReduceOp>
-    requires is_specialization_of_v<std::remove_reference_t<Tuple>, std::tuple>
-    Acc transform_reduce(Tuple&& tup, Acc&& init, TransformOp&& transform, ReduceOp&& reduce)
+    requires is_specialization_of_v<std::remove_cvref_t<Tuple>, std::tuple>
+    constexpr Acc transform_reduce(Tuple&& tup, Acc&& init, TransformOp&& transform, ReduceOp&& reduce)
     {
         auto transform_reduce_ =
         [&init, &transform, &reduce] (auto&&... args) mutable -> Acc
