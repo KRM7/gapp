@@ -1,5 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_vector.hpp>
+#include <vector>
+#include <tuple>
+#include <cstddef>
 #include "utility/algorithm.hpp"
 #include "utility/rng.hpp"
 
@@ -273,8 +276,9 @@ TEST_CASE("erase_first_stable", "[algorithm]")
     REQUIRE(!detail::erase_first_stable(nums, 7));
     REQUIRE(nums == std::vector{ 4, 2, 5, 3, 1 });
 
-    std::vector<int> empty;
-    REQUIRE(!detail::erase_first_stable(empty, 0));
+    std::vector<int> empty_vec;
+    REQUIRE(!detail::erase_first_stable(empty_vec, 3));
+    REQUIRE(empty_vec.empty());
 }
 
 TEST_CASE("select", "[algorithm]")
@@ -306,4 +310,27 @@ TEST_CASE("erase_duplicates", "[algorithm]")
 
     detail::erase_duplicates(nums);
     REQUIRE_THAT(nums, Catch::Matchers::UnorderedEquals(std::vector{ 0, 1, 3, 5 }));
+}
+
+TEST_CASE("transform_reduce", "[algorithm]")
+{
+    const std::tuple vals = { 0, 3.14, 'a', "abcd", size_t{ 2 } };
+    
+    constexpr int num_arithmetic = detail::transform_reduce(vals, 0, std::identity{},
+    [](int acc, const auto& val)
+    {
+        if constexpr (std::is_arithmetic_v<std::remove_reference_t<decltype(val)>>)
+        {
+            return acc + 1;
+        }
+        else
+        {
+            return acc;
+        }
+    });
+
+    REQUIRE(num_arithmetic == 4);
+
+    const int sum = detail::transform_reduce(std::tuple{}, 1, std::identity{}, std::plus<>{});
+    REQUIRE(sum == 1);
 }
