@@ -257,8 +257,8 @@ TEST_CASE("elementwise_max", "[algorithm]")
     const std::vector nums1 = { 4, 0, 2, 5, 1 };
     const std::vector nums2 = { 2, 3, 1, 6, 0 };
 
-    auto min = detail::elementwise_max(nums1, nums2);
-    REQUIRE(min == std::vector{ 4, 3, 2, 6, 1 });
+    auto max = detail::elementwise_max(nums1, nums2);
+    REQUIRE(max == std::vector{ 4, 3, 2, 6, 1 });
 
     //REQUIRE_THROWS(detail::elementwise_max(nums1, std::vector{ 1, 2, 3}));
 }
