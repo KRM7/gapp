@@ -16,6 +16,7 @@ TEST_CASE("hashable", "[concepts]")
 {
     STATIC_REQUIRE(detail::Hashable<int>);
     STATIC_REQUIRE(detail::Hashable<std::string>);
+    
     STATIC_REQUIRE(!detail::Hashable<A<double>>);
     STATIC_REQUIRE(!detail::Hashable<std::vector<int>>);
 }
