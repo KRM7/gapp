@@ -87,13 +87,17 @@ namespace genetic_algorithm::detail
 
 /* IMPLEMENTATION */
 
+#include <cassert>
+
 namespace genetic_algorithm::detail
 {
     template<std::input_iterator Iter>
     requires std::is_same_v<std::remove_cvref_t<typename std::iterator_traits<Iter>::value_type>, Point>
-    ConeTree::ConeTree(Iter first, Iter last) :
-        points_(0, (*first).size())
+    ConeTree::ConeTree(Iter first, Iter last)
     {
+        assert(std::distance(first, last) > 0);
+
+        points_ = Matrix(0, (*first).size(), 0.0);
         points_.reserve(last - first, points_.ncols());
         while (first != last) points_.push_back(*first++);
 
