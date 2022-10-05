@@ -269,24 +269,24 @@ namespace genetic_algorithm::detail
             return !(lhs == rhs);
         }
 
-        bool operator==(const std::vector<value_type>& rhs) const
+        friend bool operator==(const Derived& lhs, const std::vector<value_type>& rhs)
         {
-            if (this->size() != rhs.size())
+            if (lhs.size() != rhs.size())
             {
                 return false;
             }
 
             for (size_t col = 0; col < rhs.size(); col++)
             {
-                if ((*mat_)(row_, col) != rhs[col]) return false;
+                if ((*lhs.mat_)(lhs.row_, col) != rhs[col]) return false;
             }
 
             return true;
         }
 
-        bool operator!=(const std::vector<value_type>& rhs) const
+        friend bool operator!=(const Derived& lhs, const std::vector<value_type>& rhs)
         {
-            return !(*this == rhs);
+            return !(lhs == rhs);
         }
 
         friend bool operator==(const std::vector<value_type>& lhs, const Derived& rhs)
