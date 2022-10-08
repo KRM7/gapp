@@ -458,7 +458,6 @@ namespace genetic_algorithm
         }
         updateOptimalSolutions(solutions_, population_);
 
-        if (endOfRunCallback) endOfRunCallback(*this);
         can_continue_ = true;
 
         return solutions_;
@@ -476,7 +475,6 @@ namespace genetic_algorithm
         }
         updateOptimalSolutions(solutions_, population_);
 
-        if (endOfRunCallback) endOfRunCallback(*this);
         can_continue_ = true;
 
         return solutions_;

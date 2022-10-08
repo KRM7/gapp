@@ -294,9 +294,6 @@ namespace genetic_algorithm
         /** This function will be called once at the end of each generation. */
         CallbackFunction endOfGenerationCallback = nullptr;
 
-        /** This function will be called exactly once at the end of a run. */
-        CallbackFunction endOfRunCallback = nullptr;
-
 
         /* Move-only. */
         GaInfo(const GaInfo&)            = delete;
