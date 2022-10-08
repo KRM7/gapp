@@ -183,10 +183,10 @@ namespace genetic_algorithm::detail
     class stable_iterator_base : public random_access_iterator_interface<Derived, Distance>
     {
     public:
-        using _my_base = random_access_iterator_interface<Derived>;
+        using my_base_ = random_access_iterator_interface<Derived>;
 
-        using typename _my_base::iterator_category;
-        using typename _my_base::difference_type;
+        using typename my_base_::iterator_category;
+        using typename my_base_::difference_type;
         using value_type = ValueType;
         using reference  = Reference;
         using pointer    = Pointer;
@@ -292,8 +292,8 @@ namespace genetic_algorithm::detail
                                     Container, ValueType, Reference, Pointer, Distance>
     {
     public:
-        using _my_base = stable_iterator_base<stable_iterator, Container, ValueType, Reference, Pointer, Distance>;
-        using _my_base::_my_base;
+        using my_base_ = stable_iterator_base<stable_iterator, Container, ValueType, Reference, Pointer, Distance>;
+        using my_base_::my_base_;
 
         friend class const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>;
     };
@@ -309,11 +309,11 @@ namespace genetic_algorithm::detail
                                     const Container, const ValueType, const Reference, const Pointer, Distance>
     {
     public:
-        using _my_base = stable_iterator_base<const_stable_iterator, const Container, const ValueType, const Reference, const Pointer, Distance>;
-        using _my_base::_my_base;
+        using my_base_ = stable_iterator_base<const_stable_iterator, const Container, const ValueType, const Reference, const Pointer, Distance>;
+        using my_base_::my_base_;
 
         /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) :
-            _my_base(*it.data_, it.idx_)
+            my_base_(*it.data_, it.idx_)
         {}
     };
 
@@ -361,10 +361,10 @@ namespace genetic_algorithm::detail
     class iota_iterator : public random_access_iterator_interface<iota_iterator<T>, Difference>
     {
     public:
-        using _my_base = random_access_iterator_interface<iota_iterator, Difference>;
+        using my_base_ = random_access_iterator_interface<iota_iterator, Difference>;
 
-        using typename _my_base::iterator_category;
-        using typename _my_base::difference_type;
+        using typename my_base_::iterator_category;
+        using typename my_base_::difference_type;
         using value_type = T;
         using reference  = T;
         using pointer    = T;

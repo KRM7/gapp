@@ -311,13 +311,13 @@ namespace genetic_algorithm::detail
     public:
         friend class ConstMatrixRow<T, A>;
 
-        using _my_base = MatrixRowBase<MatrixRow<T, A>, Matrix<T, A>>;
-        using _my_base::_my_base;
+        using my_base_ = MatrixRowBase<MatrixRow<T, A>, Matrix<T, A>>;
+        using my_base_::my_base_;
 
         MatrixRow(const MatrixRow&) = default;
         MatrixRow(MatrixRow&&)      = default;
 
-        MatrixRow& operator=(const _my_base& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
+        MatrixRow& operator=(const my_base_& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
         {
             GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
@@ -404,11 +404,11 @@ namespace genetic_algorithm::detail
     class ConstMatrixRow : public MatrixRowBase<ConstMatrixRow<T, A>, const Matrix<T, A>>
     {
     public:
-        using _my_base = MatrixRowBase<ConstMatrixRow<T, A>, const Matrix<T, A>>;
-        using _my_base::_my_base;
+        using my_base_ = MatrixRowBase<ConstMatrixRow<T, A>, const Matrix<T, A>>;
+        using my_base_::my_base_;
 
         /* implicit */ ConstMatrixRow(const MatrixRow<T, A>& row) noexcept :
-            _my_base(row.mat_, row.idx_)
+            my_base_(row.mat_, row.idx_)
         {}
 
         ConstMatrixRow(const ConstMatrixRow&)            = default;
@@ -428,8 +428,8 @@ namespace genetic_algorithm::detail
                                     typename Matrix<T, A>::difference_type>
     {
     public:
-        using _my_base = stable_iterator_base<RowIterator, Matrix, Row, Row, Row, difference_type>;
-        using _my_base::_my_base;
+        using my_base_ = stable_iterator_base<RowIterator, Matrix, Row, Row, Row, difference_type>;
+        using my_base_::my_base_;
 
         PtrHelper<Row> operator->() const { return **this; }
 
@@ -444,11 +444,11 @@ namespace genetic_algorithm::detail
                                     typename Matrix<T, A>::difference_type>
     {
     public:
-        using _my_base = stable_iterator_base<ConstRowIterator, const Matrix, ConstRow, ConstRow, ConstRow, difference_type>;
-        using _my_base::_my_base;
+        using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, ConstRow, ConstRow, ConstRow, difference_type>;
+        using my_base_::my_base_;
 
         /* implicit */ ConstRowIterator(RowIterator it) noexcept :
-            _my_base(*it.data_, it.idx_)
+            my_base_(*it.data_, it.idx_)
         {}
 
         PtrHelper<ConstRow> operator->() const { return **this; }
