@@ -13,18 +13,13 @@ namespace genetic_algorithm::math
 {
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
     {
-        return paretoCompareLess(lhs, rhs, 0);
-    }
-
-    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept
-    {
         assert(lhs.size() == rhs.size());
 
-        for (size_t i = first; i < lhs.size(); i++)
+        for (size_t i = 0; i < lhs.size(); i++)
         {
             if (floatIsLess(rhs[i], lhs[i])) return false;
         }
-        for (size_t i = first; i < lhs.size(); i++)
+        for (size_t i = 0; i < lhs.size(); i++)
         {
             if (floatIsLessAssumeNotGreater(lhs[i], rhs[i])) return true;
         }
@@ -34,16 +29,12 @@ namespace genetic_algorithm::math
 
     std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
     {
-        return paretoCompare(lhs, rhs, 0);
-    }
-
-    std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept
-    {
         assert(lhs.size() == rhs.size());
 
         std::int8_t lhs_has_lower = 0;
         std::int8_t rhs_has_lower = 0;
-        for (size_t i = first; i < lhs.size(); i++)
+
+        for (size_t i = 0; i < lhs.size(); i++)
         {
             auto comp = floatCompare(lhs[i], rhs[i]);
             if (comp < 0)

@@ -50,14 +50,8 @@ namespace genetic_algorithm::math
     /* Pareto comparison for fp vectors. Returns true if lhs is dominated by rhs (lhs < rhs), assuming maximization. */
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
 
-    /* Pareto comparison starting at idx = first. */
-    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept;
-
     /* Pareto comparison for fp vectors. Returns -1 if (lhs < rhs), 1 if (lhs > rhs), and 0 if (lhs == rhs). */
     std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
-
-    /* Pareto comparison starting at idx = first. Returns -1 if (lhs < rhs), 1 if (lhs > rhs), and 0 if (lhs == rhs). */
-    std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs, size_t first) noexcept;
 
     /* Calculate the length of a vector. */
     double euclideanNorm(const std::vector<double>& vec) noexcept;
