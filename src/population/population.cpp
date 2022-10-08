@@ -184,33 +184,21 @@ namespace genetic_algorithm::detail::_
         return optimal_indices;
     }
 
-    bool kungCompareLess(const FitnessVector& lhs, const FitnessVector& rhs) noexcept
-    {
-        bool is_dominated = math::paretoCompareLess(lhs, rhs, 1);
-
-        bool is_equal = !math::floatIsEqual(lhs[0], rhs[0]) &&
-                        std::equal(lhs.begin() + 1, lhs.end(),
-                                   rhs.begin() + 1,
-                                   math::floatIsEqual<double>);
-
-        return is_dominated || is_equal;
-    }
-
     std::vector<size_t> findParetoFrontKungImpl(const FitnessMatrix& fmat, std::vector<size_t>::const_iterator first, std::vector<size_t>::const_iterator last)
     {
         if (std::distance(first, last) == 1) return { *first };
 
         auto middle = first + std::distance(first, last) / 2;
 
-        auto top_half    = _::findParetoFrontKungImpl(fmat, first, middle);
-        auto bottom_half = _::findParetoFrontKungImpl(fmat, middle, last);
+        auto top_half    = findParetoFrontKungImpl(fmat, first, middle);
+        auto bottom_half = findParetoFrontKungImpl(fmat, middle, last);
 
         for (const auto& bad : bottom_half)
         {
             bool is_dominated = false;
             for (const auto& good : top_half)
             {
-                if (_::kungCompareLess(fmat[bad], fmat[good]))
+                if (math::paretoCompareLess(fmat[bad], fmat[good]))
                 {
                     is_dominated = true;
                     break;
