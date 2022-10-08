@@ -155,7 +155,7 @@ namespace genetic_algorithm::math
             const double mult = (n - 1.0) / n;
             const double plus = -std::cos(x) * std::pow(std::sin(x), n - 1) / n;
 
-            integral = std::fma(integral, mult, plus);
+            integral = mult * integral + plus;
         }
 
         return integral;
