@@ -111,7 +111,7 @@ namespace genetic_algorithm::math
     {
         const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
 
-        return std::abs(lhs - rhs) <= std::max(rel_tol, abs_tol<T>);
+        return std::abs(lhs - rhs) < std::max(rel_tol, abs_tol<T>);
     }
 
     template<std::floating_point T>
@@ -119,7 +119,7 @@ namespace genetic_algorithm::math
     {
         const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
 
-        return (rhs - lhs) > std::max(rel_tol, abs_tol<T>);
+        return (rhs - lhs) >= std::max(rel_tol, abs_tol<T>);
     }
 
     template<std::floating_point T>
@@ -127,7 +127,7 @@ namespace genetic_algorithm::math
     {
         const T rel_tol = std::abs(rhs) * epsilon<T>;
 
-        return (rhs - lhs) > std::max(rel_tol, abs_tol<T>);
+        return (rhs - lhs) >= std::max(rel_tol, abs_tol<T>);
     }
 
     template<std::floating_point T>
@@ -135,7 +135,7 @@ namespace genetic_algorithm::math
     {
         const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
 
-        return (lhs - rhs) > std::max(rel_tol, abs_tol<T>);
+        return (lhs - rhs) >= std::max(rel_tol, abs_tol<T>);
     }
 
     template<std::floating_point T>
