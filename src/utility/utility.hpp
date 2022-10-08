@@ -28,14 +28,21 @@
 #endif
 
 
-#ifndef GA_EPSILON
-#define GA_EPSILON 4
+#ifndef GA_REL_TOL
+#define GA_REL_TOL 100
+#endif
+
+#ifndef GA_ABS_TOL
+#define GA_ABS_TOL 1E-8
 #endif
 
 namespace genetic_algorithm::math
 {
     template<typename T>
-    inline constexpr T epsilon = GA_EPSILON * std::numeric_limits<T>::epsilon();
+    inline constexpr T epsilon = GA_REL_TOL * std::numeric_limits<T>::epsilon();
+
+    template<typename T>
+    inline constexpr T abs_tol = T(GA_ABS_TOL);
 
     template<typename T>
     inline constexpr T inf = std::numeric_limits<T>::infinity();

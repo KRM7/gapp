@@ -103,36 +103,45 @@ namespace genetic_algorithm::math
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
     {
-        const T tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
-        const T dif = lhs - rhs;
+        const T diff = lhs - rhs;
+        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+        const T tol = std::max(rel_tol, abs_tol<T>);
 
-        if (dif > tol)  return  1;  // lhs < rhs
-        if (dif < -tol) return -1;  // lhs > rhs
-        return 0;                   // lhs == rhs
+        if (diff > tol)  return  1;  // lhs < rhs
+        if (diff < -tol) return -1;  // lhs > rhs
+        return 0;                    // lhs == rhs
     }
 
     template<std::floating_point T>
     constexpr bool floatIsEqual(T lhs, T rhs) noexcept
     {
-        return std::abs(lhs - rhs) <= std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+
+        return std::abs(lhs - rhs) <= std::max(rel_tol, abs_tol<T>);
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLess(T lhs, T rhs) noexcept
     {
-        return (rhs - lhs) > std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+
+        return (rhs - lhs) > std::max(rel_tol, abs_tol<T>);
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
     {
-        return (rhs - lhs) > std::abs(rhs) * epsilon<T>;
+        const T rel_tol = std::abs(rhs) * epsilon<T>;
+
+        return (rhs - lhs) > std::max(rel_tol, abs_tol<T>);
     }
 
     template<std::floating_point T>
     constexpr bool floatIsGreater(T lhs, T rhs) noexcept
     {
-        return (lhs - rhs) > std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+
+        return (lhs - rhs) > std::max(rel_tol, abs_tol<T>);
     }
 
     template<std::floating_point T>

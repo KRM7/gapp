@@ -68,18 +68,18 @@ namespace genetic_algorithm::math
 
     std::vector<double> normalizeVector(const std::vector<double>& vec)
     {
-        const double mag = euclideanNorm(vec);
+        const double norm = euclideanNorm(vec);
 
-        return detail::map(vec, detail::divide_by(mag));
+        return detail::map(vec, detail::divide_by(norm));
     }
 
     std::vector<double> normalizeVector(std::vector<double>&& vec) noexcept
     {
-        const double mag = euclideanNorm(vec);
+        const double norm = euclideanNorm(vec);
 
-        std::transform(vec.begin(), vec.end(), vec.begin(), detail::divide_by(mag));
+        std::transform(vec.begin(), vec.end(), vec.begin(), detail::divide_by(norm));
 
-        return std::move(vec);
+        return vec;
     }
 
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept
