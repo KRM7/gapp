@@ -301,15 +301,15 @@ namespace genetic_algorithm::detail
 
     template<typename Container,
              typename ValueType = typename Container::value_type,
-             typename Reference = typename Container::reference,
-             typename Pointer   = typename Container::pointer,
+             typename Reference = typename Container::const_reference,
+             typename Pointer   = typename Container::const_pointer,
              typename Distance  = typename Container::difference_type>
     class const_stable_iterator :
         public stable_iterator_base<const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
-                                    const Container, const ValueType, const Reference, const Pointer, Distance>
+                                    const Container, ValueType, Reference, Pointer, Distance>
     {
     public:
-        using my_base_ = stable_iterator_base<const_stable_iterator, const Container, const ValueType, const Reference, const Pointer, Distance>;
+        using my_base_ = stable_iterator_base<const_stable_iterator, const Container, ValueType, Reference, Pointer, Distance>;
         using my_base_::my_base_;
 
         /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) :
