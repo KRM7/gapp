@@ -6,6 +6,7 @@
 #include "stop_condition_base.fwd.hpp"
 #include "../population/candidate.hpp"
 #include <functional>
+#include <utility>
 
 namespace genetic_algorithm
 {
@@ -41,21 +42,30 @@ namespace genetic_algorithm::stopping
 } // namespace genetic_algorithm::stopping
 
 
-namespace genetic_algorithm::stopping::dtl
+namespace genetic_algorithm::stopping
 {
+    /*
+    * Wraps a callable with the right signature so that it can be used as a
+    * stop condition in the GAs.
+    */
     class Lambda final : public StopCondition
     {
     public:
         using StopConditionFunction = std::function<bool(const GaInfo&)>;
 
-        explicit Lambda(StopConditionFunction f) noexcept;
+        explicit Lambda(StopConditionFunction f)
+            : stop_condition_(std::move(f))
+        {}
 
     private:
-        StopConditionFunction f_;
+        StopConditionFunction stop_condition_;
 
-        bool stop_condition(const GaInfo& ga) override;
+        bool stop_condition(const GaInfo& ga) override
+        {
+            return stop_condition_(ga);
+        }
     };
 
-} // namespace genetic_algorithm::stopping::dtl
+} // namespace genetic_algorithm::stopping
 
 #endif

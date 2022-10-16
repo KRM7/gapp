@@ -6,43 +6,33 @@
 #include "mutation_base.decl.hpp"
 #include "../population/candidate.hpp"
 #include <functional>
+#include <utility>
 
-namespace genetic_algorithm::mutation::dtl
+namespace genetic_algorithm::mutation
 {
+    /*
+    * Wraps a callable with the right signature so that it can be used as a mutation
+    * method in the GAs.
+    */
     template<Gene T>
     class Lambda final : public Mutation<T>
     {
     public:
         using MutationFunction = std::function<void(const GA<T>&, Candidate<T>&)>;
 
-        explicit Lambda(MutationFunction f);
+        explicit Lambda(MutationFunction f)
+            : Mutation<T>(0.01), mutate_(std::move(f))
+        {}
 
     private:
-        void mutate(const GA<T>& ga, Candidate<T>& candidate) const override;
-
         MutationFunction mutate_;
+
+        void mutate(const GA<T>& ga, Candidate<T>& candidate) const override
+        {
+            mutate_(ga, candidate);
+        }
     };
 
-} // namespace genetic_algorithm::mutation::dtl
-
-
-/* IMPLEMENTATION */
-
-#include <utility>
-
-namespace genetic_algorithm::mutation::dtl
-{
-    template<Gene T>
-    Lambda<T>::Lambda(MutationFunction f)
-        : Mutation<T>(0.01), mutate_(std::move(f))
-    {}
-
-    template<Gene T>
-    void Lambda<T>::mutate(const GA<T>& ga, Candidate<T>& candidate) const
-    {
-        mutate_(ga, candidate);
-    }
-
-} // namespace genetic_algorithm::mutation::dtl
+} // namespace genetic_algorithm::mutation
 
 #endif // !GA_MUTATION_LAMBDA_HPP

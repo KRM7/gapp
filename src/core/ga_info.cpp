@@ -50,7 +50,7 @@ namespace genetic_algorithm
     {
         if (!f) GA_THROW(std::invalid_argument, "The stop condition function can't be a nullptr.");
 
-        stop_condition_ = std::make_unique<stopping::dtl::Lambda>(std::move(f));
+        stop_condition_ = std::make_unique<stopping::Lambda>(std::move(f));
     }
 
     void GaInfo::setDefaultAlgorithm()

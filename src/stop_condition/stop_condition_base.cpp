@@ -2,7 +2,6 @@
 
 #include "stop_condition_base.hpp"
 #include "../core/ga_info.hpp"
-#include <utility>
 
 namespace genetic_algorithm::stopping
 {
@@ -12,17 +11,3 @@ namespace genetic_algorithm::stopping
     }
 
 } // namespace genetic_algorithm::stopping
-
-namespace genetic_algorithm::stopping::dtl
-{
-    Lambda::Lambda(StopConditionFunction f) noexcept
-        : f_(std::move(f))
-    {
-    }
-
-    bool Lambda::stop_condition(const GaInfo& ga)
-    {
-        return f_(ga);
-    };
-
-} // namespace genetic_algorithm::stopping::dtl

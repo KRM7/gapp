@@ -89,7 +89,7 @@ namespace genetic_algorithm
     {
         if (!f) GA_THROW(std::invalid_argument, "The crossover function can't be a nullptr.");
 
-        crossover_ = std::make_unique<crossover::dtl::Lambda<T>>(std::move(f));
+        crossover_ = std::make_unique<crossover::Lambda<T>>(std::move(f));
     }
 
     template<Gene T>
@@ -146,7 +146,7 @@ namespace genetic_algorithm
     {
         if (!f) GA_THROW(std::invalid_argument, "The mutation method can't be a nullptr.");
 
-        mutation_ = std::make_unique<mutation::dtl::Lambda<T>>(std::move(f));
+        mutation_ = std::make_unique<mutation::Lambda<T>>(std::move(f));
     }
 
     template<Gene T>

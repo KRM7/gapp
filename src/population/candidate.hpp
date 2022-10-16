@@ -64,7 +64,7 @@ namespace genetic_algorithm
     template<typename T>
     bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
-    /** Two candidates are considered not equal if their chromosomes are different. */
+    /** Two candidates are not equal if their chromosomes are different. */
     template<typename T>
     bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
