@@ -278,10 +278,6 @@ namespace genetic_algorithm::detail
     };
 
 
-    template<typename, typename, typename, typename, typename>
-    class const_stable_iterator;
-
-
     template<typename Container,
              typename ValueType = typename Container::value_type,
              typename Reference = typename Container::reference,
@@ -295,7 +291,8 @@ namespace genetic_algorithm::detail
         using my_base_ = stable_iterator_base<stable_iterator, Container, ValueType, Reference, Pointer, Distance>;
         using my_base_::my_base_;
 
-        friend class const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>;
+        template<typename, typename, typename, typename, typename, typename>
+        friend class const_stable_iterator;
     };
 
 
@@ -303,7 +300,8 @@ namespace genetic_algorithm::detail
              typename ValueType = typename Container::value_type,
              typename Reference = typename Container::const_reference,
              typename Pointer   = typename Container::const_pointer,
-             typename Distance  = typename Container::difference_type>
+             typename Distance  = typename Container::difference_type,
+             typename Iterator  = stable_iterator<Container, ValueType, typename Container::reference, typename Container::pointer, Distance>>
     class const_stable_iterator :
         public stable_iterator_base<const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
                                     const Container, ValueType, Reference, Pointer, Distance>
@@ -312,7 +310,7 @@ namespace genetic_algorithm::detail
         using my_base_ = stable_iterator_base<const_stable_iterator, const Container, ValueType, Reference, Pointer, Distance>;
         using my_base_::my_base_;
 
-        /* implicit */ const_stable_iterator(stable_iterator<Container, ValueType, Reference, Pointer, Distance> it) :
+        /* implicit */ const_stable_iterator(const Iterator& it) :
             my_base_(*it.data_, it.idx_)
         {}
     };
