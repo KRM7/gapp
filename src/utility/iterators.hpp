@@ -371,7 +371,7 @@ namespace genetic_algorithm::detail
             value_()
         {}
 
-        iota_iterator(const T& val) noexcept :
+        explicit iota_iterator(const T& val) noexcept :
             value_(val)
         {}
 
