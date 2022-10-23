@@ -24,7 +24,6 @@ TEST_CASE("probability", "[probability]")
         constexpr Probability p = 0.2;
 
         STATIC_REQUIRE(p == 0.2);
-        STATIC_REQUIRE(*p == 0.2);
     }
 
     SECTION("assignment")
