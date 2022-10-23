@@ -177,9 +177,9 @@ TEST_CASE("euclidean_distance", "[math]")
 {
     REQUIRE(euclideanDistanceSq({}, {}) == Approx(0.0));
 
-    REQUIRE(euclideanDistanceSq({ 3.0 }, { 1.0 }) == Approx(4.0));
-    REQUIRE(euclideanDistanceSq({ 1.0, 0.0 }, { 2.0, 1.0 }) == Approx(2.0));
-    REQUIRE(euclideanDistanceSq({ 1.0, 2.0, 0.0 }, { 3.0, 0.0, 1.0 }) == Approx(9.0));
+    REQUIRE(euclideanDistanceSq({ 3.0 }, { 1.0 }) == Approx(4.0).margin(0.01));
+    REQUIRE(euclideanDistanceSq({ 1.0, 0.0 }, { 2.0, 1.0 }) == Approx(2.0).margin(0.01));
+    REQUIRE(euclideanDistanceSq({ 1.0, 2.0, 0.0 }, { 3.0, 0.0, 1.0 }) == Approx(9.0).margin(0.01));
 }
 
 TEST_CASE("perpendicular_distance", "[math]")

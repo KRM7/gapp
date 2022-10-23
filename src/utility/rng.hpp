@@ -13,6 +13,10 @@
 #include <concepts>
 #include <atomic>
 
+#ifndef GA_SEED
+#define GA_SEED 0x3da99432ab975d26LL
+#endif
+
 /** Contains the PRNG classes and functions for generating random numbers. */
 namespace genetic_algorithm::rng
 {
