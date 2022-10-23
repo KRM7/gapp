@@ -27,28 +27,6 @@
 #define GA_EXECUTION_SEQ std::execution::par
 #endif
 
-
-#ifndef GA_REL_TOL
-#define GA_REL_TOL 100
-#endif
-
-#ifndef GA_ABS_TOL
-#define GA_ABS_TOL 1E-8
-#endif
-
-namespace genetic_algorithm::math
-{
-    template<typename T>
-    inline constexpr T epsilon = GA_REL_TOL * std::numeric_limits<T>::epsilon();
-
-    template<typename T>
-    inline constexpr T abs_tol = T(GA_ABS_TOL);
-
-    template<typename T>
-    inline constexpr T inf = std::numeric_limits<T>::infinity();
-
-} // namespace genetic_algorithm::math
-
 namespace genetic_algorithm
 {
     constexpr std::size_t operator ""_sz(unsigned long long arg)

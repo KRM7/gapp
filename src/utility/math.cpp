@@ -11,6 +11,9 @@
 
 namespace genetic_algorithm::math
 {
+    double Tolerances::absolute_tolerance = 1E-8;
+    unsigned Tolerances::relative_tolerance_epsilons = 100;
+
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
     {
         assert(lhs.size() == rhs.size());
@@ -36,7 +39,7 @@ namespace genetic_algorithm::math
 
         for (size_t i = 0; i < lhs.size(); i++)
         {
-            auto comp = floatCompare(lhs[i], rhs[i]);
+            const auto comp = floatCompare(lhs[i], rhs[i]);
             if (comp < 0)
             {
                 if (rhs_has_lower) return 0;
@@ -137,7 +140,7 @@ namespace genetic_algorithm::math
         return std::sqrt(var);
     }
 
-    double integralSinPow(size_t exponent, double x)
+    double integralSinPow(size_t exponent, double x) noexcept
     {
         double integral = exponent % 2 ? -std::cos(x) : x;
 

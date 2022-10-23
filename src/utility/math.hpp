@@ -10,6 +10,28 @@
 
 namespace genetic_algorithm::math
 {
+    class Tolerances
+    {
+    public:
+        Tolerances() = delete;
+
+        template<std::floating_point T = double>
+        static T abs() noexcept { return T(absolute_tolerance); }
+
+        template<std::floating_point T = double>
+        static T eps() noexcept { return relative_tolerance_epsilons * std::numeric_limits<T>::epsilon(); }
+
+        static void abs(double tolerance) { assert(tolerance >= 0.0); absolute_tolerance = tolerance; }
+        static void eps(unsigned n) { relative_tolerance_epsilons = n; }
+
+    private:
+        static double absolute_tolerance;
+        static unsigned relative_tolerance_epsilons;
+    };
+
+    template<typename T>
+    inline constexpr T inf = std::numeric_limits<T>::infinity();
+
     using Point = std::vector<double>;
 
     using vector_iterator       = std::vector<double>::iterator;
@@ -52,7 +74,7 @@ namespace genetic_algorithm::math
 
     /* Pareto comparison for fp vectors. Returns -1 if (lhs < rhs), 1 if (lhs > rhs), and 0 if (lhs == rhs). */
     std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
-
+    
     /* Calculate the length of a vector. */
     double euclideanNorm(const std::vector<double>& vec) noexcept;
 
@@ -68,10 +90,10 @@ namespace genetic_algorithm::math
     /* Calculate the square of the Euclidean distance between the vectors [first1, last1), [first2, first2 + last1 - first1). */
     double euclideanDistanceSq(const_vector_iterator first1, const_vector_iterator last1, const_vector_iterator first2) noexcept;
 
-    /* Calculate the square of the perpendicular distance between a line and a point. */
+    /* Calculate the square of the perpendicular distance between a line (passing through the origin) and a point. */
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept;
 
-    /* Calculate the square of the perpendicular distance between a line and a point. */
+    /* Calculate the square of the perpendicular distance between a line (passing through the origin) and a point. */
     double perpendicularDistanceSq(const_vector_iterator line_first, const_vector_iterator line_last, const_vector_iterator point_first) noexcept;
 
     /* Calculate the arithmetic mean of the values in vec. */
@@ -82,6 +104,9 @@ namespace genetic_algorithm::math
 
     /* Calculate the standard deviation of the values in vec. */
     double stdDev(const std::vector<double>& vec, double mean) noexcept;
+
+    /*  */
+    double integralSinPow(size_t exponent, double x) noexcept;
 
 } // namespace genetic_algorithm::math
 
@@ -97,45 +122,49 @@ namespace genetic_algorithm::math
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
     {
-        const T diff = lhs - rhs;
-        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
-        const T tol = std::max(rel_tol, abs_tol<T>);
+        if (lhs == rhs) return 0; // for infinities
 
-        if (diff > tol)  return  1;  // lhs < rhs
-        if (diff < -tol) return -1;  // lhs > rhs
-        return 0;                    // lhs == rhs
+        const T diff = lhs - rhs;
+        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * Tolerances::eps<T>();
+        const T tol = std::max(rel_tol, Tolerances::abs<T>());
+
+        if (diff >= tol)  return  1;  // lhs < rhs
+        if (diff <= -tol) return -1;  // lhs > rhs
+        return 0;                     // lhs == rhs
     }
 
     template<std::floating_point T>
     constexpr bool floatIsEqual(T lhs, T rhs) noexcept
     {
-        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+        if (lhs == rhs) return true; // for infinities
 
-        return std::abs(lhs - rhs) < std::max(rel_tol, abs_tol<T>);
+        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * Tolerances::eps<T>();
+
+        return std::abs(lhs - rhs) < std::max(rel_tol, Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLess(T lhs, T rhs) noexcept
     {
-        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * Tolerances::eps<T>();
 
-        return (rhs - lhs) >= std::max(rel_tol, abs_tol<T>);
+        return (rhs - lhs) >= std::max(rel_tol, Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
     {
-        const T rel_tol = std::abs(rhs) * epsilon<T>;
+        const T rel_tol = std::abs(rhs) * Tolerances::eps<T>();
 
-        return (rhs - lhs) >= std::max(rel_tol, abs_tol<T>);
+        return (rhs - lhs) >= std::max(rel_tol, Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
     constexpr bool floatIsGreater(T lhs, T rhs) noexcept
     {
-        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * epsilon<T>;
+        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * Tolerances::eps<T>();
 
-        return (lhs - rhs) >= std::max(rel_tol, abs_tol<T>);
+        return (lhs - rhs) >= std::max(rel_tol, Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
