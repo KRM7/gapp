@@ -46,7 +46,7 @@ TEST_CASE("flatten", "[functional]")
     }
 }
 
-TEST_CASE("arithmetic", "[functional]")
+TEST_CASE("arithmetic_funcs", "[functional]")
 {
     const std::vector nums = { 1, 2, 4, 2, 9 };
     std::vector<int> out;
@@ -82,7 +82,7 @@ TEST_CASE("arithmetic", "[functional]")
     }
 }
 
-TEST_CASE("comparisons", "[functional]")
+TEST_CASE("comparison_funcs", "[functional]")
 {
     const std::vector nums = { 1, 1, 3, 2, 4, 6, 9 };
 
