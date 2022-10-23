@@ -5,9 +5,6 @@
 #include "nsga2.hpp"
 #include "nsga3.hpp"
 
-#include <iostream>
-#include "../src/utility/iterators.hpp"
-
 int main()
 {
     //binary_rastrigin();
