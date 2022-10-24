@@ -22,11 +22,40 @@ namespace genetic_algorithm::math
         static T eps() noexcept { return relative_tolerance_epsilons * std::numeric_limits<T>::epsilon(); }
 
         static void abs(double tolerance) { assert(tolerance >= 0.0); absolute_tolerance = tolerance; }
-        static void eps(unsigned n) { relative_tolerance_epsilons = n; }
+        static void eps(unsigned n) noexcept { relative_tolerance_epsilons = n; }
 
     private:
         static double absolute_tolerance;
         static unsigned relative_tolerance_epsilons;
+
+        friend class LocalTolerances;
+    };
+
+    class LocalTolerances
+    {
+    public:
+        LocalTolerances(unsigned num_epsilons, double abs) :
+            old_abs_tol(Tolerances::absolute_tolerance),
+            old_eps_tol(Tolerances::relative_tolerance_epsilons)
+        {
+            Tolerances::abs(abs);
+            Tolerances::eps(num_epsilons);
+        }
+
+        ~LocalTolerances()
+        {
+            Tolerances::abs(old_abs_tol);
+            Tolerances::eps(old_eps_tol);
+        }
+
+        LocalTolerances(const LocalTolerances&)            = delete;
+        LocalTolerances(LocalTolerances&&)                 = delete;
+        LocalTolerances& operator=(const LocalTolerances&) = delete;
+        LocalTolerances& operator=(LocalTolerances&&)      = delete;
+
+    private:
+        double old_abs_tol;
+        unsigned old_eps_tol;
     };
 
     template<typename T>
