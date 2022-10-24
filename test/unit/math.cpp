@@ -76,6 +76,17 @@ TEST_CASE("fp_compare")
         REQUIRE(!floatIsLess(INF, NaN));
         REQUIRE(!floatIsLess(NaN, INF));
     }
+
+    SECTION("approx equal")
+    {
+        LocalTolerances _(10, 1E-12);
+
+        REQUIRE(floatIsEqual(0.0, 1E-13));
+        REQUIRE(!floatIsEqual(0.0, 1E-11));
+
+        REQUIRE(floatIsEqual(1.28E+32, 1.28E+32 + 1E+15));
+        REQUIRE(!floatIsEqual(1.28E+32, 1.29E+32));
+    }
 }
 
 TEST_CASE("pareto_compare_less", "[math]")
