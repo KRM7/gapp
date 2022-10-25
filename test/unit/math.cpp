@@ -10,7 +10,7 @@
 using namespace genetic_algorithm::math;
 using namespace Catch;
 
-TEST_CASE("fp_compare")
+TEST_CASE("fp_compare", "[math]")
 {
     constexpr double INF   = std::numeric_limits<double>::infinity();
     constexpr double BIG   = std::numeric_limits<double>::max();
