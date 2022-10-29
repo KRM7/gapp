@@ -4,9 +4,11 @@
 #define GA_UTILITY_MATRIX_HPP
 
 #include "iterators.hpp"
+#include "functional.hpp"
 #include "utility.hpp"
 #include <vector>
 #include <memory>
+#include <initializer_list>
 #include <type_traits>
 #include <utility>
 #include <cstddef>
@@ -75,8 +77,31 @@ namespace genetic_algorithm::detail
         {}
 
         Matrix(size_t nrows, size_t ncols, const T& init = T(), const A& alloc = A()) :
-            data_(nrows* ncols, init, alloc), nrows_(nrows), ncols_(ncols)
+            data_(nrows * ncols, init, alloc), nrows_(nrows), ncols_(ncols)
         {}
+
+        Matrix(std::initializer_list<std::initializer_list<T>> mat) :
+            data_(), nrows_(mat.size()), ncols_(0)
+        {
+            if (mat.empty()) return;
+
+            ncols_ = mat[0].size();
+
+            if (!std::all_of(mat.begin(), mat.end(), is_size(ncols_)))
+            {
+                GA_THROW(std::invalid_argument, "Unequal row sizes in the input matrix.");
+            }
+
+            data_.reserve(nrows_ * ncols_);
+            for (auto& row : mat)
+            {
+                for (auto& elem : row)
+                {
+                    data_.push_back(std::move_if_noexcept(elem));
+                }
+            }
+        }
+
 
         /* Member access */
 
