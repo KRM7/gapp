@@ -141,7 +141,10 @@ namespace genetic_algorithm::detail
 
         void append_row(const std::vector<T>& row)
         {
-            GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
+            if (row.size() != ncols_)
+            {
+                GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
+            }
 
             data_.insert(data_.end(), row.begin(), row.end());
             nrows_++;
@@ -149,7 +152,10 @@ namespace genetic_algorithm::detail
 
         void append_row(std::vector<T>&& row)
         {
-            GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
+            if (row.size() != ncols_)
+            {
+                GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
+            }
 
             data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
             nrows_++;
@@ -157,16 +163,29 @@ namespace genetic_algorithm::detail
 
         void append_row(ConstRowRef row)
         {
-            GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
+            if (row.size() != ncols_)
+            {
+                GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
+            }
 
             data_.insert(data_.end(), row.begin(), row.end());
             nrows_++;
         }
 
-        void pop_back()
+        iterator erase(const_iterator row)
         {
-            GA_ASSERT(nrows_ != 0, "Can't call pop_back on an empty container.");
-            data_.resize(--nrows_ * ncols_);
+            const auto last_removed = data_.erase(row->begin(), row->end());
+            --nrows_;
+
+            return begin() + std::distance(data_.begin(), last_removed) / ncols_;
+        }
+
+        iterator erase(const_iterator first, const_iterator last)
+        {
+            const auto last_removed = data_.erase(first->begin(), last->end());
+            nrows_ -= std::distance(first, last);
+
+            return begin() + std::distance(data_.begin(), last_removed) / ncols_;
         }
 
         /* Size / capacity */
