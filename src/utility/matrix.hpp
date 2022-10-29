@@ -17,10 +17,10 @@ namespace genetic_algorithm::detail
     class MatrixRowBase;
 
     template<typename T, typename A>
-    class MatrixRow;
+    class MatrixRowRef;
 
     template<typename T, typename A>
-    class ConstMatrixRow;
+    class ConstMatrixRowRef;
 
 
     template<typename T, typename A = std::allocator<T>>
@@ -39,11 +39,11 @@ namespace genetic_algorithm::detail
         using const_reference   = typename storage_type::const_reference;
         using const_pointer     = typename storage_type::const_pointer;
 
-        using Row = MatrixRow<T, A>;
-        using ConstRow = ConstMatrixRow<T, A>;
+        using RowRef      = MatrixRowRef<T, A>;
+        using ConstRowRef = ConstMatrixRowRef<T, A>;
 
-        friend class MatrixRowBase<Row, Matrix>;
-        friend class MatrixRowBase<ConstRow, const Matrix>;
+        friend class MatrixRowBase<RowRef, Matrix>;
+        friend class MatrixRowBase<ConstRowRef, const Matrix>;
 
         /* Iterators */
 
@@ -80,18 +80,18 @@ namespace genetic_algorithm::detail
 
         /* Member access */
 
-        Row operator[](size_t row) noexcept
+        RowRef operator[](size_t row) noexcept
         {
             GA_ASSERT(row < nrows_, "Row index out of bounds.");
 
-            return Row(*this, row);
+            return RowRef(*this, row);
         }
 
-        ConstRow operator[](size_t row) const noexcept
+        ConstRowRef operator[](size_t row) const noexcept
         {
             GA_ASSERT(row < nrows_, "Row index out of bounds.");
 
-            return ConstRow(*this, row);
+            return ConstRowRef(*this, row);
         }
 
         reference operator()(size_type row, size_type col) noexcept
@@ -131,7 +131,7 @@ namespace genetic_algorithm::detail
             nrows_++;
         }
 
-        void push_back(ConstRow row)
+        void push_back(ConstRowRef row)
         {
             GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
@@ -205,6 +205,9 @@ namespace genetic_algorithm::detail
                                                                          typename MatrixType::storage_type::iterator>;
         using reverse_iterator = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::storage_type::const_reverse_iterator,
                                                                                  typename MatrixType::storage_type::reverse_iterator>;
+
+        using const_iterator         = iterator;
+        using const_reverse_iterator = reverse_iterator;
 
         MatrixRowBase(MatrixType& mat, size_type row) noexcept :
             mat_(&mat), row_(row)
@@ -306,18 +309,18 @@ namespace genetic_algorithm::detail
 
 
     template<typename T, typename A>
-    class MatrixRow : public MatrixRowBase<MatrixRow<T, A>, Matrix<T, A>>
+    class MatrixRowRef : public MatrixRowBase<MatrixRowRef<T, A>, Matrix<T, A>>
     {
     public:
-        friend class ConstMatrixRow<T, A>;
+        friend class ConstMatrixRowRef<T, A>;
 
-        using my_base_ = MatrixRowBase<MatrixRow<T, A>, Matrix<T, A>>;
+        using my_base_ = MatrixRowBase<MatrixRowRef<T, A>, Matrix<T, A>>;
         using my_base_::my_base_;
 
-        MatrixRow(const MatrixRow&) = default;
-        MatrixRow(MatrixRow&&)      = default;
+        MatrixRowRef(const MatrixRowRef&) = default;
+        MatrixRowRef(MatrixRowRef&&)      = default;
 
-        MatrixRow& operator=(const my_base_& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
+        MatrixRowRef& operator=(const my_base_& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
         {
             GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
@@ -334,7 +337,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        MatrixRow& operator=(const std::vector<T>& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
+        MatrixRowRef& operator=(const std::vector<T>& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
         {
             GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
@@ -346,7 +349,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        MatrixRow& operator=(std::vector<T>&& rhs) const
+        MatrixRowRef& operator=(std::vector<T>&& rhs) const
         {
             GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
@@ -358,7 +361,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        void swap(MatrixRow other) const noexcept(std::is_nothrow_swappable_v<T>)
+        void swap(MatrixRowRef other) const noexcept(std::is_nothrow_swappable_v<T>)
         {
             GA_ASSERT(other.size() == this->size(), "Rows must be the same size.");
 
@@ -382,40 +385,40 @@ namespace genetic_algorithm::detail
     };
 
     template<typename T, typename A>
-    inline void swap(MatrixRow<T, A> lhs, MatrixRow<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    inline void swap(MatrixRowRef<T, A> lhs, MatrixRowRef<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
-    inline void swap(MatrixRow<T, A> lhs, std::vector<T, A>& rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    inline void swap(MatrixRowRef<T, A> lhs, std::vector<T, A>& rhs) noexcept(std::is_nothrow_swappable_v<T>)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
-    inline void swap(std::vector<T, A>& lhs, MatrixRow<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    inline void swap(std::vector<T, A>& lhs, MatrixRowRef<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
     {
         rhs.swap(lhs);
     }
 
 
     template<typename T, typename A>
-    class ConstMatrixRow : public MatrixRowBase<ConstMatrixRow<T, A>, const Matrix<T, A>>
+    class ConstMatrixRowRef : public MatrixRowBase<ConstMatrixRowRef<T, A>, const Matrix<T, A>>
     {
     public:
-        using my_base_ = MatrixRowBase<ConstMatrixRow<T, A>, const Matrix<T, A>>;
+        using my_base_ = MatrixRowBase<ConstMatrixRowRef<T, A>, const Matrix<T, A>>;
         using my_base_::my_base_;
 
-        /* implicit */ ConstMatrixRow(const MatrixRow<T, A>& row) noexcept :
+        /* implicit */ ConstMatrixRowRef(const MatrixRowRef<T, A>& row) noexcept :
             my_base_(row.mat_, row.idx_)
         {}
 
-        ConstMatrixRow(const ConstMatrixRow&)            = default;
-        ConstMatrixRow(ConstMatrixRow&&)                 = default;
+        ConstMatrixRowRef(const ConstMatrixRowRef&)            = default;
+        ConstMatrixRowRef(ConstMatrixRowRef&&)                 = default;
 
-        ConstMatrixRow& operator=(const ConstMatrixRow&) = delete;
-        ConstMatrixRow& operator=(ConstMatrixRow&&)      = delete;
+        ConstMatrixRowRef& operator=(const ConstMatrixRowRef&) = delete;
+        ConstMatrixRowRef& operator=(ConstMatrixRowRef&&)      = delete;
     };
     
 
@@ -424,14 +427,14 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     class Matrix<T, A>::RowIterator :
         public stable_iterator_base<typename Matrix<T, A>::RowIterator, Matrix<T, A>,
-                                    typename Matrix<T, A>::Row, typename Matrix<T, A>::Row, typename Matrix<T, A>::Row,
+                                    typename Matrix<T, A>::RowRef, typename Matrix<T, A>::RowRef, typename Matrix<T, A>::RowRef,
                                     typename Matrix<T, A>::difference_type>
     {
     public:
-        using my_base_ = stable_iterator_base<RowIterator, Matrix, Row, Row, Row, difference_type>;
+        using my_base_ = stable_iterator_base<RowIterator, Matrix, RowRef, RowRef, RowRef, difference_type>;
         using my_base_::my_base_;
 
-        PtrHelper<Row> operator->() const { return **this; }
+        PtrHelper<RowRef> operator->() const { return **this; }
 
         friend class ConstRowIterator;
     };
@@ -440,18 +443,18 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     class Matrix<T, A>::ConstRowIterator :
         public stable_iterator_base<typename Matrix<T, A>::ConstRowIterator, const Matrix<T, A>,
-                                    typename Matrix<T, A>::ConstRow, typename Matrix<T, A>::ConstRow, typename Matrix<T, A>::ConstRow,
+                                    typename Matrix<T, A>::ConstRowRef, typename Matrix<T, A>::ConstRowRef, typename Matrix<T, A>::ConstRowRef,
                                     typename Matrix<T, A>::difference_type>
     {
     public:
-        using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, ConstRow, ConstRow, ConstRow, difference_type>;
+        using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, ConstRowRef, ConstRowRef, ConstRowRef, difference_type>;
         using my_base_::my_base_;
 
         /* implicit */ ConstRowIterator(RowIterator it) noexcept :
             my_base_(*it.data_, it.idx_)
         {}
 
-        PtrHelper<ConstRow> operator->() const { return **this; }
+        PtrHelper<ConstRowRef> operator->() const { return **this; }
     };
 
 } // namespace genetic_algorithm::detail
