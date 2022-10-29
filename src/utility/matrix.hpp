@@ -140,7 +140,7 @@ namespace genetic_algorithm::detail
 
         /* Modifiers (for rows) */
 
-        void push_back(const std::vector<T>& row)
+        void append_row(const std::vector<T>& row)
         {
             GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
@@ -148,7 +148,7 @@ namespace genetic_algorithm::detail
             nrows_++;
         }
 
-        void push_back(std::vector<T>&& row)
+        void append_row(std::vector<T>&& row)
         {
             GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
@@ -156,7 +156,7 @@ namespace genetic_algorithm::detail
             nrows_++;
         }
 
-        void push_back(ConstRowRef row)
+        void append_row(ConstRowRef row)
         {
             GA_ASSERT(row.size() == ncols_, "Can't insert row with different column count.");
 
@@ -439,8 +439,8 @@ namespace genetic_algorithm::detail
             my_base_(row.mat_, row.idx_)
         {}
 
-        ConstMatrixRowRef(const ConstMatrixRowRef&)            = default;
-        ConstMatrixRowRef(ConstMatrixRowRef&&)                 = default;
+        ConstMatrixRowRef(const ConstMatrixRowRef&) = default;
+        ConstMatrixRowRef(ConstMatrixRowRef&&)      = default;
 
         ConstMatrixRowRef& operator=(const ConstMatrixRowRef&) = delete;
         ConstMatrixRowRef& operator=(ConstMatrixRowRef&&)      = delete;

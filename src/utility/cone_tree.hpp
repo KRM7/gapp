@@ -99,7 +99,7 @@ namespace genetic_algorithm::detail
 
         points_ = Matrix(0, (*first).size(), 0.0);
         points_.reserve(last - first, points_.ncols());
-        while (first != last) points_.push_back(*first++);
+        while (first != last) points_.append_row(*first++);
 
         nodes_.reserve(4 * points_.size() / MAX_LEAF_ELEMENTS);
         Node root{ .first = 0, .last = points_.size() };
