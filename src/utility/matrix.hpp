@@ -95,13 +95,12 @@ namespace genetic_algorithm::detail
             data_.reserve(nrows_ * ncols_);
             for (auto& row : mat)
             {
-                for (auto& elem : row)
+                for (auto& entry : row)
                 {
-                    data_.push_back(std::move_if_noexcept(elem));
+                    data_.push_back(std::move_if_noexcept(entry));
                 }
             }
         }
-
 
         /* Member access */
 
@@ -263,11 +262,6 @@ namespace genetic_algorithm::detail
         size_type ncols() const noexcept
         {
             return mat_->ncols();
-        }
-
-        explicit operator std::vector<value_type>() const
-        {
-            return std::vector<value_type>(begin(), end());
         }
 
         /* Comparison operators */

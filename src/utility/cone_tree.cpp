@@ -62,9 +62,9 @@ namespace genetic_algorithm::detail
 
         const ptrdiff_t range_len = std::distance(first, last);
 
-        Point center(*first++);
+        Point center(first->begin(), first->end());
 
-        for (; first != last; ++first)
+        for (++first; first != last; ++first)
         {
             std::transform(center.begin(), center.end(), first->begin(), center.begin(), std::plus{});
         }
