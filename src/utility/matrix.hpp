@@ -72,7 +72,7 @@ namespace genetic_algorithm::detail
         Matrix& operator=(Matrix&&)      = default;
         ~Matrix()                        = default;
 
-        Matrix(const A& alloc) :
+        explicit Matrix(const A& alloc) :
             data_(alloc), nrows_(0), ncols_(0)
         {}
 
@@ -83,9 +83,9 @@ namespace genetic_algorithm::detail
         Matrix(std::initializer_list<std::initializer_list<T>> mat) :
             data_(), nrows_(mat.size()), ncols_(0)
         {
-            if (mat.empty()) return;
+            if (mat.size() == 0) return;
 
-            ncols_ = mat[0].size();
+            ncols_ = mat.begin()->size();
 
             if (!std::all_of(mat.begin(), mat.end(), is_size(ncols_)))
             {
@@ -139,36 +139,39 @@ namespace genetic_algorithm::detail
 
         /* Modifiers (for rows) */
 
-        void append_row(const std::vector<T>& row)
+        void append_row(const std::vector<T, A>& row)
         {
-            if (row.size() != ncols_)
+            if (row.size() != ncols_ && nrows_ != 0)
             {
                 GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
             }
 
             data_.insert(data_.end(), row.begin(), row.end());
+            if (nrows_ == 0) ncols_ = row.size();
             nrows_++;
         }
 
-        void append_row(std::vector<T>&& row)
+        void append_row(std::vector<T, A>&& row)
         {
-            if (row.size() != ncols_)
+            if (row.size() != ncols_ && nrows_ != 0)
             {
                 GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
             }
 
             data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
+            if (nrows_ == 0) ncols_ = row.size();
             nrows_++;
         }
 
         void append_row(ConstRowRef row)
         {
-            if (row.size() != ncols_)
+            if (row.size() != ncols_ && nrows_ != 0)
             {
                 GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
             }
 
             data_.insert(data_.end(), row.begin(), row.end());
+            if (nrows_ == 0) ncols_ = row.size();
             nrows_++;
         }
 
@@ -182,7 +185,7 @@ namespace genetic_algorithm::detail
 
         iterator erase(const_iterator first, const_iterator last)
         {
-            const auto last_removed = data_.erase(first->begin(), last->end());
+            const auto last_removed = data_.erase(first->begin(), last->begin());
             nrows_ -= std::distance(first, last);
 
             return begin() + std::distance(data_.begin(), last_removed) / ncols_;
@@ -196,11 +199,22 @@ namespace genetic_algorithm::detail
         size_type empty() const noexcept { return data_.empty(); }
 
         void reserve(size_type nrows, size_type ncols) { data_.reserve(nrows * ncols); }
-        void resize(size_type nrows, size_type ncols) { data_.resize(nrows * ncols); nrows_ = nrows; ncols_ = ncols; }
+        void resize(size_type nrows, size_type ncols, const T& val = {}) { data_.resize(nrows * ncols, val); nrows_ = nrows; ncols_ = ncols; }
 
         /* Other */
 
-        friend bool operator==(const Matrix&, const Matrix&) = default;
+        friend bool operator==(const Matrix& lhs, const Matrix& rhs)
+        {
+            return (lhs.nrows_ == 0 && rhs.nrows_ == 0) ||
+                   (lhs.nrows_ == rhs.nrows_ &&
+                    lhs.ncols_ == rhs.ncols_ &&
+                    lhs.data_ == rhs.data_);
+        }
+
+        friend bool operator!=(const Matrix& lhs, const Matrix& rhs)
+        {
+            return !(lhs == rhs);
+        }
 
         void swap(Matrix& other) noexcept(std::is_nothrow_swappable_v<T>)
         {
@@ -244,13 +258,16 @@ namespace genetic_algorithm::detail
         using reference = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::const_reference, typename MatrixType::reference>;
         using pointer   = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::const_pointer, typename MatrixType::pointer>;
 
+        using const_reference = typename MatrixType::const_reference;
+        using const_pointer   = typename MatrixType::const_pointer;
+
         using iterator = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::storage_type::const_iterator,
                                                                          typename MatrixType::storage_type::iterator>;
         using reverse_iterator = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::storage_type::const_reverse_iterator,
                                                                                  typename MatrixType::storage_type::reverse_iterator>;
 
-        using const_iterator         = iterator;
-        using const_reverse_iterator = reverse_iterator;
+        using const_iterator         = typename MatrixType::storage_type::const_iterator;
+        using const_reverse_iterator = typename MatrixType::storage_type::const_reverse_iterator;
 
         MatrixRowBase(MatrixType& mat, size_type row) noexcept :
             mat_(&mat), row_(row)
@@ -273,26 +290,16 @@ namespace genetic_algorithm::detail
             return (*mat_)(row_, col);
         }
 
-        size_type size() const noexcept
-        {
-            return mat_->ncols();
-        }
-
-        size_type ncols() const noexcept
-        {
-            return mat_->ncols();
-        }
+        size_type size() const noexcept  { return mat_->ncols(); }
+        size_type ncols() const noexcept { return mat_->ncols(); }
 
         /* Comparison operators */
 
-        friend bool operator==(const Derived& lhs, const Derived& rhs)
+        friend bool operator==(const Derived& lhs, const Derived& rhs) noexcept
         {
-            if (lhs.size() != rhs.size())
-            {
-                return false;
-            }
+            if (lhs.size() != rhs.size()) return false;
 
-            if ((lhs.mat_ == rhs.mat_) && (lhs.row_ == rhs.row_))
+            if (lhs.mat_ == rhs.mat_ && lhs.row_ == rhs.row_)
             {
                 return true;
             }
@@ -305,40 +312,22 @@ namespace genetic_algorithm::detail
             return true;
         }
 
-        friend bool operator!=(const Derived& lhs, const Derived& rhs)
+        friend bool operator==(const Derived& lhs, const std::vector<value_type>& rhs) noexcept
         {
-            return !(lhs == rhs);
-        }
+            if (lhs.size() != rhs.size()) return false;
 
-        friend bool operator==(const Derived& lhs, const std::vector<value_type>& rhs)
-        {
-            if (lhs.size() != rhs.size())
+            for (size_t col = 0; col < lhs.size(); col++)
             {
-                return false;
-            }
-
-            for (size_t col = 0; col < rhs.size(); col++)
-            {
-                if ((*lhs.mat_)(lhs.row_, col) != rhs[col]) return false;
+                if (lhs[col] != rhs[col]) return false;
             }
 
             return true;
         }
 
-        friend bool operator!=(const Derived& lhs, const std::vector<value_type>& rhs)
-        {
-            return !(lhs == rhs);
-        }
-
-        friend bool operator==(const std::vector<value_type>& lhs, const Derived& rhs)
-        {
-            return rhs == lhs;
-        }
-
-        friend bool operator!=(const std::vector<value_type>& lhs, const Derived& rhs)
-        {
-            return rhs != lhs;
-        }
+        friend bool operator!=(const Derived& lhs, const Derived& rhs) noexcept                 { return !(lhs == rhs); }
+        friend bool operator!=(const Derived& lhs, const std::vector<value_type>& rhs) noexcept { return !(lhs == rhs); }
+        friend bool operator==(const std::vector<value_type>& lhs, const Derived& rhs) noexcept { return rhs == lhs; }
+        friend bool operator!=(const std::vector<value_type>& lhs, const Derived& rhs) noexcept { return rhs != lhs; }
 
     protected:
         MatrixType* mat_;
@@ -358,11 +347,29 @@ namespace genetic_algorithm::detail
         MatrixRowRef(const MatrixRowRef&) = default;
         MatrixRowRef(MatrixRowRef&&)      = default;
 
-        MatrixRowRef& operator=(const my_base_& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
+        my_base_::const_iterator cbegin() const noexcept
         {
-            GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+            return this->mat_->data_.cbegin() + this->row_ * this->mat_->ncols();
+        }
 
-            if ((rhs.mat_ == this->mat_) && (rhs.row_ == this->row_))
+        my_base_::const_iterator cend() const noexcept
+        {
+            return cbegin() + this->mat_->ncols();
+        }
+
+        const MatrixRowRef& operator=(MatrixRowRef<T, A> rhs) const
+        {
+            return *this = ConstMatrixRowRef(rhs);
+        }
+
+        const MatrixRowRef& operator=(ConstMatrixRowRef<T, A> rhs) const
+        {
+            if (rhs.size() != this->size())
+            {
+                GA_THROW(std::invalid_argument, "Can't assign row with different length.");
+            }
+
+            if (rhs.mat_ == this->mat_ && rhs.row_ == this->row_)
             {
                 return *this;
             }
@@ -375,9 +382,12 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        MatrixRowRef& operator=(const std::vector<T>& rhs) noexcept(std::is_nothrow_assignable_v<T, T>)
+        const MatrixRowRef& operator=(const std::vector<T>& rhs) const
         {
-            GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+            if (rhs.size() != this->size())
+            {
+                GA_THROW(std::invalid_argument, "Can't assign row with different length.");
+            }
 
             for (size_t col = 0; col < rhs.size(); col++)
             {
@@ -387,9 +397,12 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        MatrixRowRef& operator=(std::vector<T>&& rhs) const
+        const MatrixRowRef& operator=(std::vector<T>&& rhs) const
         {
-            GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+            if (rhs.size() != this->size())
+            {
+                GA_THROW(std::invalid_argument, "Can't assign row with different length.");
+            }
 
             for (size_t col = 0; col < rhs.size(); col++)
             {
@@ -399,9 +412,12 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        void swap(MatrixRowRef other) const noexcept(std::is_nothrow_swappable_v<T>)
+        void swap(MatrixRowRef other) const
         {
-            GA_ASSERT(other.size() == this->size(), "Rows must be the same size.");
+            if (other.size() != this->size())
+            {
+                GA_THROW(std::invalid_argument, "Rows must be the same size to swap them.");
+            }
 
             for (size_t col = 0; col < other.size(); col++)
             {
@@ -410,9 +426,12 @@ namespace genetic_algorithm::detail
             }
         }
 
-        void swap(std::vector<T>& other) const noexcept(std::is_nothrow_swappable_v<T>)
+        void swap(std::vector<T>& other) const
         {
-            GA_ASSERT(other.size() == this->size(), "Rows must be the same size.");
+            if (other.size() != this->size())
+            {
+                GA_THROW(std::invalid_argument, "Rows must be the same size to swap them.");
+            }
 
             for (size_t col = 0; col < other.size(); col++)
             {
@@ -423,19 +442,19 @@ namespace genetic_algorithm::detail
     };
 
     template<typename T, typename A>
-    inline void swap(MatrixRowRef<T, A> lhs, MatrixRowRef<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    inline void swap(MatrixRowRef<T, A> lhs, MatrixRowRef<T, A> rhs)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
-    inline void swap(MatrixRowRef<T, A> lhs, std::vector<T, A>& rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    inline void swap(MatrixRowRef<T, A> lhs, std::vector<T, A>& rhs)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
-    inline void swap(std::vector<T, A>& lhs, MatrixRowRef<T, A> rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    inline void swap(std::vector<T, A>& lhs, MatrixRowRef<T, A> rhs)
     {
         rhs.swap(lhs);
     }
@@ -445,11 +464,13 @@ namespace genetic_algorithm::detail
     class ConstMatrixRowRef : public MatrixRowBase<ConstMatrixRowRef<T, A>, const Matrix<T, A>>
     {
     public:
+        friend class MatrixRowRef<T, A>;
+
         using my_base_ = MatrixRowBase<ConstMatrixRowRef<T, A>, const Matrix<T, A>>;
         using my_base_::my_base_;
 
-        /* implicit */ ConstMatrixRowRef(const MatrixRowRef<T, A>& row) noexcept :
-            my_base_(row.mat_, row.idx_)
+        /* implicit */ ConstMatrixRowRef(MatrixRowRef<T, A> row) noexcept :
+            my_base_(*row.mat_, row.row_)
         {}
 
         ConstMatrixRowRef(const ConstMatrixRowRef&) = default;

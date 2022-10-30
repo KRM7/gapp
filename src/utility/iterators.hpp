@@ -40,10 +40,10 @@ namespace genetic_algorithm::detail
     public:
         auto rbegin()        { return std::make_reverse_iterator(derived().end()); }
         auto rbegin() const  { return std::make_reverse_iterator(derived().end()); }
-        auto crbegin() const { return std::make_reverse_iterator(derived().end()); }
+        auto crbegin() const { return std::make_reverse_iterator(derived().cend()); }
         auto rend()          { return std::make_reverse_iterator(derived().begin()); }
         auto rend() const    { return std::make_reverse_iterator(derived().begin()); }
-        auto crend() const   { return std::make_reverse_iterator(derived().begin()); }
+        auto crend() const   { return std::make_reverse_iterator(derived().cbegin()); }
 
     private:
         Derived& derived() noexcept { return static_cast<Derived&>(*this); }
@@ -310,7 +310,7 @@ namespace genetic_algorithm::detail
         using my_base_ = stable_iterator_base<const_stable_iterator, const Container, ValueType, Reference, Pointer, Distance>;
         using my_base_::my_base_;
 
-        /* implicit */ const_stable_iterator(const Iterator& it) :
+        /* implicit */ const_stable_iterator(Iterator it) :
             my_base_(*it.data_, it.idx_)
         {}
     };
