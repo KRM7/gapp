@@ -80,27 +80,7 @@ namespace genetic_algorithm::detail
             data_(nrows * ncols, init, alloc), nrows_(nrows), ncols_(ncols)
         {}
 
-        Matrix(std::initializer_list<std::initializer_list<T>> mat) :
-            data_(), nrows_(mat.size()), ncols_(0)
-        {
-            if (mat.size() == 0) return;
-
-            ncols_ = mat.begin()->size();
-
-            if (!std::all_of(mat.begin(), mat.end(), is_size(ncols_)))
-            {
-                GA_THROW(std::invalid_argument, "Unequal row sizes in the input matrix.");
-            }
-
-            data_.reserve(nrows_ * ncols_);
-            for (auto& row : mat)
-            {
-                for (auto& entry : row)
-                {
-                    data_.push_back(std::move_if_noexcept(entry));
-                }
-            }
-        }
+        Matrix(std::initializer_list<std::initializer_list<T>> mat);
 
         /* Member access */
 
@@ -139,61 +119,16 @@ namespace genetic_algorithm::detail
 
         /* Modifiers (for rows) */
 
-        void append_row(const std::vector<T, A>& row)
-        {
-            if (row.size() != ncols_ && nrows_ != 0)
-            {
-                GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
-            }
+        void append_row(const std::vector<T, A>& row);
+        void append_row(std::vector<T, A>&& row);
+        void append_row(ConstRowRef row);
 
-            data_.insert(data_.end(), row.begin(), row.end());
-            if (nrows_ == 0) ncols_ = row.size();
-            nrows_++;
-        }
-
-        void append_row(std::vector<T, A>&& row)
-        {
-            if (row.size() != ncols_ && nrows_ != 0)
-            {
-                GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
-            }
-
-            data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
-            if (nrows_ == 0) ncols_ = row.size();
-            nrows_++;
-        }
-
-        void append_row(ConstRowRef row)
-        {
-            if (row.size() != ncols_ && nrows_ != 0)
-            {
-                GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
-            }
-
-            data_.insert(data_.end(), row.begin(), row.end());
-            if (nrows_ == 0) ncols_ = row.size();
-            nrows_++;
-        }
-
-        iterator erase(const_iterator row)
-        {
-            const auto last_removed = data_.erase(row->begin(), row->end());
-            --nrows_;
-
-            return begin() + std::distance(data_.begin(), last_removed) / ncols_;
-        }
-
-        iterator erase(const_iterator first, const_iterator last)
-        {
-            const auto last_removed = data_.erase(first->begin(), last->begin());
-            nrows_ -= std::distance(first, last);
-
-            return begin() + std::distance(data_.begin(), last_removed) / ncols_;
-        }
+        iterator erase(const_iterator row);
+        iterator erase(const_iterator first, const_iterator last);
 
         /* Size / capacity */
 
-        size_type size() const noexcept { return nrows_; } /* For the bounds checking in stable_iterator */
+        size_type size() const noexcept  { return nrows_; } /* For the bounds checking in stable_iterator */
         size_type nrows() const noexcept { return nrows_; }
         size_type ncols() const noexcept { return ncols_; }
         size_type empty() const noexcept { return data_.empty(); }
@@ -344,15 +279,17 @@ namespace genetic_algorithm::detail
         using my_base_ = MatrixRowBase<MatrixRowRef<T, A>, Matrix<T, A>>;
         using my_base_::my_base_;
 
+        using typename my_base_::const_iterator;
+
         MatrixRowRef(const MatrixRowRef&) = default;
         MatrixRowRef(MatrixRowRef&&)      = default;
 
-        my_base_::const_iterator cbegin() const noexcept
+        const_iterator cbegin() const noexcept
         {
             return this->mat_->data_.cbegin() + this->row_ * this->mat_->ncols();
         }
 
-        my_base_::const_iterator cend() const noexcept
+        const_iterator cend() const noexcept
         {
             return cbegin() + this->mat_->ncols();
         }
@@ -515,6 +452,89 @@ namespace genetic_algorithm::detail
 
         PtrHelper<ConstRowRef> operator->() const { return **this; }
     };
+
+
+    /* MATRIX IMPLEMENTATION */
+
+    template<typename T, typename A>
+    Matrix<T, A>::Matrix(std::initializer_list<std::initializer_list<T>> mat) :
+        data_(), nrows_(mat.size()), ncols_(0)
+    {
+        if (mat.size() == 0) return;
+
+        ncols_ = mat.begin()->size();
+
+        if (!std::all_of(mat.begin(), mat.end(), is_size(ncols_)))
+        {
+            GA_THROW(std::invalid_argument, "Unequal row sizes in the input matrix.");
+        }
+
+        data_.reserve(nrows_ * ncols_);
+        for (auto& row : mat)
+        {
+            for (auto& entry : row)
+            {
+                data_.push_back(std::move_if_noexcept(entry));
+            }
+        }
+    }
+
+    template<typename T, typename A>
+    void Matrix<T, A>::append_row(const std::vector<T, A>& row)
+    {
+        if (row.size() != ncols_ && nrows_ != 0)
+        {
+            GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
+        }
+
+        data_.insert(data_.end(), row.begin(), row.end());
+        if (nrows_ == 0) ncols_ = row.size();
+        nrows_++;
+    }
+
+    template<typename T, typename A>
+    void Matrix<T, A>::append_row(std::vector<T, A>&& row)
+    {
+        if (row.size() != ncols_ && nrows_ != 0)
+        {
+            GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
+        }
+
+        data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
+        if (nrows_ == 0) ncols_ = row.size();
+        nrows_++;
+    }
+
+    template<typename T, typename A>
+    void Matrix<T, A>::append_row(ConstRowRef row)
+    {
+        if (row.size() != ncols_ && nrows_ != 0)
+        {
+            GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
+        }
+
+        data_.insert(data_.end(), row.begin(), row.end());
+        if (nrows_ == 0) ncols_ = row.size();
+        nrows_++;
+    }
+
+    template<typename T, typename A>
+    auto Matrix<T, A>::erase(const_iterator row) -> iterator
+    {
+        const auto last_removed = data_.erase(row->begin(), row->end());
+        --nrows_;
+
+        return begin() + std::distance(data_.begin(), last_removed) / ncols_;
+    }
+
+    template<typename T, typename A>
+    auto Matrix<T, A>::erase(const_iterator first, const_iterator last) -> iterator
+    {
+        const auto last_removed = data_.erase(first->begin(), last->begin());
+        nrows_ -= std::distance(first, last);
+
+        return begin() + std::distance(data_.begin(), last_removed) / ncols_;
+    }
 
 } // namespace genetic_algorithm::detail
 

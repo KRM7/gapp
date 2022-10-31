@@ -16,7 +16,7 @@ TEST_CASE("probability", "[probability]")
     {
         REQUIRE_THROWS(Probability(-0.3));
         REQUIRE_THROWS(Probability(1.3));
-        REQUIRE_THROWS(Probability(100.0/0.0));
+        REQUIRE_THROWS(Probability(1E+300/1E-200));
     }
 
     SECTION("compile time constant")

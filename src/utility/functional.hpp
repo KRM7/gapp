@@ -154,9 +154,9 @@ namespace genetic_algorithm::detail
     constexpr auto divide_by(const T& divisor)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
-        return [idiv = 1.0 / divisor](const auto& value) noexcept(noexcept(value * value))
+        return [=](const auto& value) noexcept(noexcept(value / divisor))
         {
-            return value * idiv;
+            return value / divisor;
         };
     }
 

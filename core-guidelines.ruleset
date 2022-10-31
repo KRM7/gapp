@@ -17,15 +17,17 @@
   <Include Path="cppcorechecktyperules.ruleset" Action="Default" />
   <Include Path="cppcorecheckuniquepointerrules.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
+    <Rule Id="C26429" Action="None" />
     <Rule Id="C26438" Action="Warning" />
-    <Rule Id="C26440" Action="None" />
+    <Rule Id="C26440" Action="Info" />
     <Rule Id="C26446" Action="None" />
     <Rule Id="C26455" Action="None" />
     <Rule Id="C26472" Action="None" />
     <Rule Id="C26493" Action="None" />
-    <Rule Id="C26496" Action="None" />
+    <Rule Id="C26496" Action="Info" />
+    <Rule Id="C26800" Action="Warning" />
     <Rule Id="C26812" Action="None" />
-    <Rule Id="C26814" Action="None" />
+    <Rule Id="C26814" Action="Info" />
     <Rule Id="C26815" Action="Warning" />
     <Rule Id="C26822" Action="Warning" />
   </Rules>

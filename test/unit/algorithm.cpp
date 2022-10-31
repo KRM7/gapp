@@ -218,9 +218,9 @@ TEST_CASE("index_of", "[algorithm]")
 {
     const std::vector nums = { 4, 0, 2, 5, 1 };
 
-    REQUIRE(detail::index_of(nums, 4) == 0);
-    REQUIRE(detail::index_of(nums, 2) == 2);
-    REQUIRE(detail::index_of(nums, 1) == 4);
+    REQUIRE(detail::index_of(nums, 4) == 0_sz);
+    REQUIRE(detail::index_of(nums, 2) == 2_sz);
+    REQUIRE(detail::index_of(nums, 1) == 4_sz);
     REQUIRE(!detail::index_of(nums, 7).has_value());
 }
 
@@ -229,13 +229,13 @@ TEST_CASE("find_index", "[algorithm]")
     const std::vector nums = { 4, 0, 2, 5, 1 };
 
     auto first = detail::find_index(nums, [](int) { return true; });
-    REQUIRE(first == 0);
+    REQUIRE(first == 0_sz);
 
     auto none = detail::find_index(nums, [](int) { return false; });
     REQUIRE(!none.has_value());
 
     auto odd = detail::find_index(nums, [](int i) { return i % 2; });
-    REQUIRE(odd == 3);
+    REQUIRE(odd == 3_sz);
 
     auto six = detail::find_index(nums, [](int i) { return i == 6; });
     REQUIRE(!six.has_value());
@@ -314,7 +314,7 @@ TEST_CASE("erase_duplicates", "[algorithm]")
 
 TEST_CASE("transform_reduce", "[algorithm]")
 {
-    constexpr std::tuple vals = { 0, 3.14, 'a', "abcd", size_t{ 2 } };
+    constexpr std::tuple vals = { 0, 3.14, 'a', "abcd", 2_sz };
     
     constexpr int num_arithmetic = detail::transform_reduce(vals, 0, std::identity{},
     [](int acc, const auto& val)

@@ -5,14 +5,18 @@ project(GeneticAlgorithm VERSION 0.1 LANGUAGES CXX)
 include(GNUInstallDirs)
 include(CTest)
 
+#option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 option(GA_BUILD_TESTS "Enable the tests for the library." ON)
 option(GA_BUILD_EXAMPLES "Enable building the examples for the library." OFF) # TODO
 option(GA_USE_WERROR "Treat warnings as errors during the build." ON)
 option(GA_USE_LTO "Enable link time optimizations for the library." ON)
 option(GA_USE_MARCH_NATIVE "Add -march=native option to release builds when using gcc or clang." ON)
-option(GA_LINK_TBB "Add -ltbb option when using gcc (needed for parallel stl algorithms when using gcc)." ON)
+option(GA_LINK_TBB "Add -ltbb to the compiler flags (needed for parallel stl algorithms when using gcc/clang)." OFF)
 #option(GA_ENABLE_EXCEPTIONS "Enable exceptions in the library." ON) # TODO
 
+#if(MSVC AND BUILD_SHARED_LIBS)
+#    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+#endif()
 
 # Set the output directory for the build files
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
@@ -30,29 +34,28 @@ if(MSVC) # MSVC style compiler interface
     if(GA_USE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -WX")
     endif()
-    set(CMAKE_CXX_FLAGS "${GA_DEFINES} -std:c++latest -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -EHsc")
+    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++latest -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "-Od -ZI -RTC1")
-    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar -fp:fast")
+    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar") # -fp:fast
 else() # GNU style compiler interface
     set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wnull-dereference -Wno-unused-function")
     if(GA_USE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
-    set(CMAKE_CXX_FLAGS "${GA_DEFINES} -std=c++20 ${GA_WARN_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std=c++20 ${GA_WARN_FLAGS}")
     set(CMAKE_CXX_FLAGS_DEBUG "-Og")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -ffast-math -fno-finite-math-only")
     if (GA_USE_MARCH_NATIVE)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
     endif()
-    if (GA_LINK_TBB)
-        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ltbb")
-    endif()
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU") # gcc specific options
+    # gcc specific options
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op")
     endif()
 endif()
 
-if (GA_USE_LTO)
+if (GA_USE_LTO AND CMAKE_BUILD_TYPE MATCHES "Release")
+    message("Using link time optimizations.")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
@@ -72,7 +75,7 @@ install(TARGETS GeneticAlgorithm EXPORT GeneticAlgorithmConfig
         ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
 install(DIRECTORY "src/" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/GeneticAlgorithm")
-install(DIRECTORY "docs/" DESTINATION "${CMAKE_INSTALL_DOCDIR}/GeneticAlgorithm")
+#install(DIRECTORY "docs/" DESTINATION "${CMAKE_INSTALL_DOCDIR}/GeneticAlgorithm")
 
 export(TARGETS GeneticAlgorithm NAMESPACE GeneticAlgorithm:: FILE "${CMAKE_BINARY_DIR}/GeneticAlgorithmConfig.cmake")
 

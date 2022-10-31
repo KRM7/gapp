@@ -1,0 +1,51 @@
+name: sanitizers
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cxx: g++-11
+            pkgs: gcc-11 libtbb-dev
+            sanitizer: address
+
+          - cxx: g++-11
+            pkgs: gcc-11 libtbb-dev
+            sanitizer: undefined
+
+          - cxx: g++-11
+            pkgs: gcc-11 libtbb-dev
+            sanitizer: thread
+
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/build
+
+    name: gcc-11 -fsanitize=${{ matrix.sanitizer }}
+
+    steps:
+    - name: checkout-repo
+      uses: actions/checkout@v3
+
+    - name: setup-compiler
+      run: sudo apt install -y ${{ matrix.pkgs }}
+
+    - name: setup-catch
+      env:
+        CXX: ${{ matrix.cxx }}
+      run: sudo bash ./install_catch.sh
+
+    - name: setup-build
+      env:
+        CXX: ${{ matrix.cxx }}
+      run: cmake .. -DGA_LINK_TBB=ON -DGA_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }} -g -fno-omit-frame-pointer"
+
+    - name: build
+      run: make -j
+    
+    - name: run-tests
+      run: ctest --output-on-failure --schedule-random

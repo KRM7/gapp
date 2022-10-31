@@ -1,0 +1,36 @@
+name: code analysis
+
+on: [push, pull_request]
+
+jobs:
+  analyze:
+    name: code analysis
+    runs-on: windows-2022
+
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/build
+
+    steps:
+      - name: checkout-repo
+        uses: actions/checkout@v3
+
+      - name: setup-catch
+        run: bash ./install_catch.sh
+
+      - name: setup-cmake
+        run: cmake .. -DCMAKE_BUILD_TYPE=Release
+
+      - name: cpp-core-guidelines-check
+        uses: microsoft/msvc-code-analysis-action@v0.1.1
+        id: run-analysis
+        with:
+          ruleset: ${{ github.workspace }}/core-guidelines.ruleset
+          cmakeBuildDirectory: ${{ github.workspace }}/build
+          buildConfiguration: Release
+          ignoredPaths: ${{ github.workspace }}/test
+
+      - name: upload-sarif
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.run-analysis.outputs.sarif }}
