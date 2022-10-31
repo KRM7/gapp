@@ -15,7 +15,6 @@ namespace genetic_algorithm::detail
     class tl_vector_accumulator
     {
     public:
-
         static decltype(auto) at(size_t i) noexcept
         {
             return tl_instance_.data_[i];
@@ -59,7 +58,6 @@ namespace genetic_algorithm::detail
         }
 
     private:
-
         tl_vector_accumulator() /* on thread init */
         {
             std::scoped_lock _(lock_);
