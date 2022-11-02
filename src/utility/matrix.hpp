@@ -140,7 +140,7 @@ namespace genetic_algorithm::detail
 
         friend bool operator==(const Matrix& lhs, const Matrix& rhs)
         {
-            return (lhs.nrows_ == 0 && rhs.nrows_ == 0) ||
+            return (lhs.empty() && rhs.empty()) ||
                    (lhs.nrows_ == rhs.nrows_ &&
                     lhs.ncols_ == rhs.ncols_ &&
                     lhs.data_ == rhs.data_);

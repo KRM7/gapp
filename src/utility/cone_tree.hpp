@@ -54,8 +54,8 @@ namespace genetic_algorithm::detail
         FindResult findBestMatch(const Point& query_point) const;
 
 
-        const_iterator begin() const { return points_.begin(); }
-        const_iterator end() const { return points_.end(); }
+        const_iterator begin() const noexcept { return points_.begin(); }
+        const_iterator end() const noexcept   { return points_.end(); }
 
         size_t size() const noexcept { return points_.size(); }
 

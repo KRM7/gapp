@@ -21,11 +21,11 @@ template<typename F, typename... Args>
 requires std::invocable<F, Args...>
 auto invoke_timed(F&& f, Args&&... args)
 {
-    auto tbegin = std::chrono::high_resolution_clock::now();
+    const auto tbegin = std::chrono::high_resolution_clock::now();
     std::atomic_signal_fence(std::memory_order::seq_cst);
     auto result = std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
     std::atomic_signal_fence(std::memory_order::seq_cst);
-    auto tend = std::chrono::high_resolution_clock::now();
+    const auto tend = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbegin).count();
     double time_spent = duration / 1000.0;
@@ -48,17 +48,16 @@ void writePopulationToFile(const std::vector<T>& sols, std::ostream& os)
 
 auto convertToReals(const std::vector<char>& binary_chrom, size_t bits_per_var, double interval_len, double lower_bound)
 {
-    size_t var_count = binary_chrom.size() / bits_per_var;
+    const size_t var_count = binary_chrom.size() / bits_per_var;
 
     std::vector<double> vars(var_count);
 
     for (size_t i = 0; i < vars.size(); i++)
     {
-        auto first = binary_chrom.begin() + i * bits_per_var;
-        auto last = binary_chrom.begin() + (i + 1) * bits_per_var;
+        const auto first = binary_chrom.begin() + i * bits_per_var;
+        const auto last = binary_chrom.begin() + (i + 1) * bits_per_var;
 
-        double val = std::accumulate(first, last, 0.0,
-        [](double acc, char bit) noexcept
+        const double val = std::accumulate(first, last, 0.0, [](double acc, char bit) noexcept
         {
             return (acc * 2) + bit;
         });

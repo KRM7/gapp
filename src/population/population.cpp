@@ -108,7 +108,7 @@ namespace genetic_algorithm::detail::_
 
     std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat)
     {
-        auto indices = detail::argsort(fmat.begin(), fmat.end(),
+        const auto indices = detail::argsort(fmat.begin(), fmat.end(),
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
             for (size_t i = 0; i < lhs.size(); i++)
@@ -120,10 +120,10 @@ namespace genetic_algorithm::detail::_
 
         std::vector<size_t> optimal_indices;
 
-        for (const auto& idx : indices)
+        for (size_t idx : indices)
         {
             bool dominated = std::any_of(optimal_indices.begin(), optimal_indices.end(),
-            [&fmat, idx](size_t optimal_idx) noexcept
+            [&](size_t optimal_idx) noexcept
             {
                 return math::paretoCompareLess(fmat[idx], fmat[optimal_idx]);
             });

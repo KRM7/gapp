@@ -21,14 +21,17 @@ namespace genetic_algorithm::math
         template<std::floating_point T = double>
         static T eps() noexcept { return relative_tolerance_epsilons * std::numeric_limits<T>::epsilon(); }
 
+    private:
         static double absolute_tolerance;
         static unsigned relative_tolerance_epsilons;
+
+        friend class LocalTolerances;
     };
 
     class LocalTolerances
     {
     public:
-        LocalTolerances(unsigned num_epsilons, double abs) :
+        LocalTolerances(unsigned num_epsilons, double abs) noexcept :
             old_abs_tol(std::exchange(Tolerances::absolute_tolerance, abs)),
             old_eps_tol(std::exchange(Tolerances::relative_tolerance_epsilons, num_epsilons))
         {}
@@ -48,6 +51,7 @@ namespace genetic_algorithm::math
         double old_abs_tol;
         unsigned old_eps_tol;
     };
+    
 
     template<typename T>
     inline constexpr T inf = std::numeric_limits<T>::infinity();
