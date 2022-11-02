@@ -38,12 +38,6 @@ namespace genetic_algorithm::mutation
         explicit Mutation(Probability pm) noexcept :
             pm_(pm) {}
 
-        Mutation(const Mutation&)               = default;
-        Mutation(Mutation&&)                    = default;
-        Mutation& operator=(const Mutation&)    = default;
-        Mutation& operator=(Mutation&&)         = default;
-        virtual ~Mutation()                     = default;
-
         /**
         * Set the mutation rate used by the operator.
         * 
@@ -62,6 +56,17 @@ namespace genetic_algorithm::mutation
         * @param candidate The candidate to mutate.
         */
         void operator()(const GA<T>& ga, Candidate<T>& candidate) const;
+
+    protected:
+
+        Mutation(const Mutation&)               = default;
+        Mutation(Mutation&&)                    = default;
+        Mutation& operator=(const Mutation&)    = default;
+        Mutation& operator=(Mutation&&)         = default;
+
+    public:
+
+        virtual ~Mutation()                     = default;
 
     private:
 

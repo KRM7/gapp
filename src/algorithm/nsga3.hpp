@@ -41,10 +41,6 @@ namespace genetic_algorithm::algorithm
         ~NSGA3() override;
 
     private:
-        struct Impl;
-
-        std::unique_ptr<Impl> pimpl_;
-
         void initializeImpl(const GaInfo& ga) override;
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
@@ -54,6 +50,9 @@ namespace genetic_algorithm::algorithm
                                                FitnessMatrix::const_iterator last) override;
 
         std::optional<std::vector<size_t>> optimalSolutionsImpl(const GaInfo& ga) const override;
+
+        struct Impl;
+        std::unique_ptr<Impl> pimpl_;
     };
 
 } // namespace genetic_algorithm::algorithm

@@ -42,12 +42,6 @@ namespace genetic_algorithm::crossover
         explicit Crossover(Probability pc) noexcept :
             pc_(pc) {}
 
-        Crossover(const Crossover&)             = default;
-        Crossover(Crossover&&)                  = default;
-        Crossover& operator=(const Crossover&)  = default;
-        Crossover& operator=(Crossover&&)       = default;
-        virtual ~Crossover()                    = default;
-
         /**
         * Set the crossover rate used by the operator.
         *
@@ -68,6 +62,17 @@ namespace genetic_algorithm::crossover
         * @returns The pair of children resulting from the crossover.
         */
         CandidatePair<T> operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
+
+    protected:
+
+        Crossover(const Crossover&)             = default;
+        Crossover(Crossover&&)                  = default;
+        Crossover& operator=(const Crossover&)  = default;
+        Crossover& operator=(Crossover&&)       = default;
+
+    public:
+
+        virtual ~Crossover()                    = default;
 
     private:
 

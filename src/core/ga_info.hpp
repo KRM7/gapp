@@ -290,18 +290,18 @@ namespace genetic_algorithm
         [[nodiscard]]
         bool keep_all_optimal_solutions() const noexcept { return keep_all_optimal_sols_; }
 
-
         /** This function will be called once at the end of each generation. */
         CallbackFunction endOfGenerationCallback = nullptr;
 
-
-        /* Move-only. */
-        GaInfo(const GaInfo&)            = delete;
-        GaInfo& operator=(const GaInfo&) = delete;
+    protected:
 
         GaInfo(GaInfo&&) noexcept;
         GaInfo& operator=(GaInfo&&) noexcept;
 
+    public:
+
+        GaInfo(const GaInfo&)            = delete;
+        GaInfo& operator=(const GaInfo&) = delete;
         virtual ~GaInfo();
 
     protected:

@@ -27,14 +27,20 @@ namespace genetic_algorithm::stopping
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
         bool operator()(const GaInfo& ga);
 
+    protected:
+
         StopCondition()                                 = default;
         StopCondition(const StopCondition&)             = default;
         StopCondition(StopCondition&&)                  = default;
         StopCondition& operator=(const StopCondition&)  = default;
         StopCondition& operator=(StopCondition&&)       = default;
+
+    public:
+
         virtual ~StopCondition()                        = default;
 
     private:
+
         /* Implementation of the stop condition. */
         virtual bool stop_condition(const GaInfo& ga) = 0;
     };

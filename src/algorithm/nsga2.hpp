@@ -32,9 +32,6 @@ namespace genetic_algorithm::algorithm
     class NSGA2 final : public Algorithm
     {
     private:
-        std::vector<size_t> ranks_;
-        std::vector<double> dists_;
-
         void initializeImpl(const GaInfo& ga) override;
         void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) override {}
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& pop) const override;
@@ -45,6 +42,9 @@ namespace genetic_algorithm::algorithm
                                                FitnessMatrix::const_iterator last) override;
 
         std::optional<std::vector<size_t>> optimalSolutionsImpl(const GaInfo& ga) const override;
+
+        std::vector<size_t> ranks_;
+        std::vector<double> dists_;
     };
 
 } // namespace genetic_algorithm::algorithm

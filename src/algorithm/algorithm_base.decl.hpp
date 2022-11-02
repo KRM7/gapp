@@ -117,12 +117,16 @@ namespace genetic_algorithm::algorithm
         template<Gene T>
         Candidates<T> optimalSolutions(const GaInfo& ga, const Population<T>& pop) const;
 
+    protected:
 
         Algorithm()                             = default;
         Algorithm(const Algorithm&)             = default;
         Algorithm(Algorithm&&)                  = default;
         Algorithm& operator=(const Algorithm&)  = default;
         Algorithm& operator=(Algorithm&&)       = default;
+
+    public:
+
         virtual ~Algorithm()                    = default;
 
     private:
