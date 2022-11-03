@@ -79,9 +79,9 @@ namespace genetic_algorithm::rng
     template<std::input_iterator Iter>
     inline auto randomElement(Iter first, Iter last);
 
-    /** Generates k unique integers from the range [l_bound, u_bound). */
+    /** Generates @p count unique integers from the range [l_bound, u_bound). */
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t k);
+    std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t count);
 
     /** Select an index based on a discrete CDF. */
     template<std::floating_point T>
@@ -227,20 +227,20 @@ namespace genetic_algorithm::rng
     }
 
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t n)
+    std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count)
     {
         const size_t range_len = size_t(ubound - lbound);
 
-        assert(range_len >= n);
+        assert(range_len >= count);
 
         std::vector<bool> is_selected(range_len);
-        std::vector<IntType> numbers(n);
+        std::vector<IntType> numbers(count);
 
-        for (IntType i = ubound - IntType(n); i < ubound; i++)
+        for (IntType i = ubound - IntType(count); i < ubound; i++)
         {
             const IntType num = rng::randomInt(lbound, i);
             const size_t ppos = size_t(num - lbound);
-            const size_t npos = size_t(i + IntType(n) - ubound);
+            const size_t npos = size_t(i + IntType(count) - ubound);
 
             numbers[npos] = is_selected[ppos] ? i : num;
             is_selected[ppos] = true;
