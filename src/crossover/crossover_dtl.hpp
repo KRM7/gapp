@@ -186,21 +186,16 @@ namespace genetic_algorithm::crossover::dtl
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
         std::unordered_set<T> direct(last - first);
-        for (size_t i = first; i != last; i++)
-        {
-            direct.insert(parent1.chromosome[i]);
-        }
+        for (size_t idx = first; idx != last; idx++) direct.insert(parent1.chromosome[idx]);
 
-        Candidate<T> child = parent1;
+        Candidate child = parent1;
 
-        size_t child_pos = (first != 0) ? 0 : last;
-        for (size_t parent_pos = 0; parent_pos < parent2.chromosome.size(); parent_pos++)
+        for (size_t child_pos = 0; const T& gene : parent2.chromosome)
         {
-            if (!direct.contains(parent2.chromosome[parent_pos]))
+            if (!direct.contains(gene))
             {
-                child.chromosome[child_pos] = parent2.chromosome[parent_pos];
-
-                if (++child_pos == first) child_pos = last;
+                if (child_pos == first) child_pos = last;
+                child.chromosome[child_pos++] = gene;
             }
         }
 
