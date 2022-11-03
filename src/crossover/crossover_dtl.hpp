@@ -211,23 +211,16 @@ namespace genetic_algorithm::crossover::dtl
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
     {
         std::unordered_set<T> direct(indices.size());
-        std::unordered_set<size_t> direct_indices(indices.size());
-        for (const auto& idx : indices)
-        {
-            direct.insert(parent1.chromosome[idx]);
-            direct_indices.insert(idx);
-        }
+        for (size_t idx : indices) direct.insert(parent1.chromosome[idx]);
 
-        Candidate<T> child = parent1;
+        Candidate child = parent1;
 
-        size_t child_pos = 0;
-        while (direct_indices.contains(child_pos)) child_pos++;
-        for (size_t parent_pos = 0; parent_pos < parent2.chromosome.size(); parent_pos++)
+        for (size_t child_pos = 0; const T& gene : parent2.chromosome)
         {
-            if (!direct.contains(parent2.chromosome[parent_pos]))
+            if (!direct.contains(gene))
             {
-                child.chromosome[child_pos] = parent2.chromosome[parent_pos];
-                while (direct_indices.contains(++child_pos));
+                while (direct.contains(parent1.chromosome[child_pos])) child_pos++;
+                child.chromosome[child_pos] = gene;
             }
         }
 
