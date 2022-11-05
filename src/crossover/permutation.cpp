@@ -85,27 +85,7 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        const auto cycles = dtl::findCycles(parent1.chromosome, parent2.chromosome);
-
-        Candidate child1 = parent1;
-        Candidate child2 = parent2;
-
-        for (size_t i = 0; i < chrom_len; i++)
-        {
-            const auto cycle_idx = detail::find_index(cycles, [&](const auto& cycle)
-            {
-                return detail::contains(cycle.begin(), cycle.end(), parent1.chromosome[i]);
-            });
-
-            if (*cycle_idx % 2)
-            {
-                using std::swap;
-                swap(child1.chromosome[i], child2.chromosome[i]);
-            }
-            /* Even cycle idx genes were already handled when initializing the children. */
-        }
-
-        return { std::move(child1), std::move(child2) };
+        return dtl::cycleCrossoverImpl(parent1, parent2);
     }
 
     auto Edge::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>

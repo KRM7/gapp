@@ -38,6 +38,10 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     std::vector<std::vector<T>> findCycles(Chromosome<T> chrom1, Chromosome<T> chrom2);
 
+    /* Implementation of the cycle crossover for any gene type. */
+    template<Gene T>
+    CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
+
     /* Implementation of the edge crossover for any gene type, only generates a single child. */
     template<Gene T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, std::unordered_map<T, std::vector<T>>&& neighbour_lists);
@@ -249,6 +253,34 @@ namespace genetic_algorithm::crossover::dtl
         }
 
         return cycles;
+    }
+
+    template<Gene T>
+    CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
+    {
+        const size_t chrom_len = parent1.chromosome.size();
+
+        const auto cycles = dtl::findCycles(parent1.chromosome, parent2.chromosome);
+
+        Candidate child1 = parent1;
+        Candidate child2 = parent2;
+
+        for (size_t i = 0; i < chrom_len; i++)
+        {
+            const auto cycle_idx = detail::find_index(cycles, [&](const auto& cycle)
+            {
+                return detail::contains(cycle.begin(), cycle.end(), parent1.chromosome[i]);
+            });
+
+            if (*cycle_idx % 2)
+            {
+                using std::swap;
+                swap(child1.chromosome[i], child2.chromosome[i]);
+            }
+            /* Even cycle idx genes were already handled when initializing the children. */
+        }
+
+        return { std::move(child1), std::move(child2) };
     }
 
     template<Gene T>
