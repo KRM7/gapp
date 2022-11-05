@@ -167,20 +167,14 @@ namespace genetic_algorithm::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         std::unordered_set<T> direct(last - first);
-        while (first != last) direct.insert(parent1.chromosome[first++]);
+        for (size_t idx = first; idx != last; idx++) direct.insert(parent1.chromosome[idx]);
 
-        Candidate<T> child = parent1;
+        Candidate child = parent1;
 
-        size_t parent_pos = last % chrom_len;
-        size_t child_pos = last % chrom_len;
-        for (size_t i = 0; i < chrom_len; i++)
+        for (size_t child_pos = last, parent_pos = last; child_pos % chrom_len != first; child_pos++)
         {
-            if (!direct.contains(parent2.chromosome[parent_pos]))
-            {
-                child.chromosome[child_pos] = parent2.chromosome[parent_pos];
-                child_pos = (child_pos + 1) % chrom_len;
-            }
-            parent_pos = (parent_pos + 1) % chrom_len;
+            while (direct.contains(parent2.chromosome[parent_pos % chrom_len])) parent_pos++;
+            child.chromosome[child_pos % chrom_len] = parent2.chromosome[parent_pos++ % chrom_len];
         }
 
         return child;
@@ -198,7 +192,7 @@ namespace genetic_algorithm::crossover::dtl
         {
             if (!direct.contains(gene))
             {
-                if (child_pos == first) child_pos = last;
+                if (child_pos == first) child_pos = last; // skip [first, last)
                 child.chromosome[child_pos++] = gene;
             }
         }
@@ -214,12 +208,12 @@ namespace genetic_algorithm::crossover::dtl
 
         Candidate child = parent1;
 
-        for (size_t child_pos = 0; const T& gene : parent2.chromosome)
+        for (auto child_pos = child.chromosome.begin(); const T& gene : parent2.chromosome)
         {
             if (!direct.contains(gene))
             {
-                while (direct.contains(parent1.chromosome[child_pos])) child_pos++;
-                child.chromosome[child_pos] = gene;
+                while (direct.contains(*child_pos)) ++child_pos;
+                *child_pos++ = gene;
             }
         }
 
