@@ -446,9 +446,11 @@ namespace genetic_algorithm::detail
         using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, ConstRowRef, ConstRowRef, ConstRowRef, difference_type>;
         using my_base_::my_base_;
 
-        /* implicit */ ConstRowIterator(RowIterator it) noexcept :
-            my_base_(*it.data_, it.idx_)
-        {}
+        /* implicit */ ConstRowIterator(RowIterator it) noexcept
+        {
+            this->data_ = it.data_;
+            this->idx_  = it.idx_;
+        }
 
         PtrHelper<ConstRowRef> operator->() const { return **this; }
     };
@@ -530,7 +532,9 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     auto Matrix<T, A>::erase(const_iterator first, const_iterator last) -> iterator
     {
-        const auto last_removed = data_.erase(first->begin(), last->begin());
+        const auto data_last = last != end() ? last->begin() : data_.end(); // can't dereference last iter
+
+        const auto last_removed = data_.erase(first->begin(), data_last);
         nrows_ -= std::distance(first, last);
 
         return begin() + std::distance(data_.begin(), last_removed) / ncols_;

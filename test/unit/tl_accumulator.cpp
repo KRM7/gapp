@@ -56,6 +56,6 @@ TEST_CASE("tl_vector_accumulator", "[tl_accumulator]")
     const auto colwise_sums = tl_vector_accumulator<int>::collect();
 
     REQUIRE(
-        std::all_of(colwise_sums.begin(), colwise_sums.end(), equal_to(nrows))
+        std::all_of(colwise_sums.begin(), colwise_sums.end(), equal_to(int(nrows)))
     );
 }

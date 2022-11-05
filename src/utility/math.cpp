@@ -103,7 +103,7 @@ namespace genetic_algorithm::math
     double perpendicularDistanceSq(const_vector_iterator line_first, const_vector_iterator line_last,
                                    const_vector_iterator point_first) noexcept
     {
-        assert(std::distance(line_first, line_last) > 0);
+        assert(std::distance(line_first, line_last) >= 0);
 
         double k = std::inner_product(line_first, line_last, point_first, 0.0) /
                    std::inner_product(line_first, line_last, line_first, 0.0);

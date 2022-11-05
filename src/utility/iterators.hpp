@@ -310,9 +310,11 @@ namespace genetic_algorithm::detail
         using my_base_ = stable_iterator_base<const_stable_iterator, const Container, ValueType, Reference, Pointer, Distance>;
         using my_base_::my_base_;
 
-        /* implicit */ const_stable_iterator(Iterator it) :
-            my_base_(*it.data_, it.idx_)
-        {}
+        /* implicit */ const_stable_iterator(Iterator it) noexcept
+        {
+            this->data_ = it.data_;
+            this->idx_  = it.idx_;
+        }
     };
 
 
