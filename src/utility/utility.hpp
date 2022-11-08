@@ -13,6 +13,14 @@
 
 #define GA_UNUSED(...) (void)(sizeof(__VA_ARGS__))
 
+#ifdef __GNUC__
+#   define GA_UNREACHABLE() assert(false); __builtin_unreachable()
+#elif defined(_MSC_VER)
+#   define GA_UNREACHABLE() assert(false); __assume(false)
+#else
+#   define GA_UNREACHABLE() assert(false);
+#endif
+
 
 #ifndef GA_EXCUTION_UNSEQ
 #   define GA_EXECUTION_UNSEQ std::execution::par_unseq

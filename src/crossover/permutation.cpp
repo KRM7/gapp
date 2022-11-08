@@ -20,7 +20,7 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        const size_t length = rng::randomInt(1_sz, chrom_len - 1);
+        const size_t length = rng::randomInt(1_sz, chrom_len - 1_sz);
         const size_t first = rng::randomInt(0_sz, chrom_len - length);
         const size_t last = first + length;
 
@@ -42,7 +42,7 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        const size_t length = rng::randomInt(1_sz, chrom_len - 1);
+        const size_t length = rng::randomInt(1_sz, chrom_len - 1_sz);
         const size_t first = rng::randomInt(0_sz, chrom_len - length);
         const size_t last = first + length;
 
@@ -64,7 +64,7 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        const size_t ns = rng::randomInt(1_sz, chrom_len - 1);
+        const size_t ns = rng::randomInt(1_sz, chrom_len - 1_sz);
         const auto idxs = rng::sampleUnique(0_sz, chrom_len, ns);
 
         auto child1 = dtl::positionCrossoverImpl(parent1, parent2, idxs);
@@ -100,11 +100,10 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        auto nl1 = dtl::getNeighbourLists(parent1.chromosome, parent2.chromosome);
-        auto nl2 = nl1;
+        dtl::NeighbourLists nl(parent1.chromosome, parent2.chromosome);
 
-        auto child1 = dtl::edgeCrossoverImpl(parent1, std::move(nl1));
-        auto child2 = dtl::edgeCrossoverImpl(parent2, std::move(nl2));
+        auto child1 = dtl::edgeCrossoverImpl(parent1, nl);
+        auto child2 = dtl::edgeCrossoverImpl(parent2, std::move(nl));
 
         return { std::move(child1), std::move(child2) };
     }
