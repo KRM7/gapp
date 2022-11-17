@@ -15,10 +15,18 @@
 
 
 #ifndef GA_EXCUTION_UNSEQ
-#define GA_EXECUTION_UNSEQ std::execution::par_unseq
+#   define GA_EXECUTION_UNSEQ std::execution::par_unseq
 #endif
+
 #ifndef GA_EXECUTION_SEQ
-#define GA_EXECUTION_SEQ std::execution::par
+#   define GA_EXECUTION_SEQ std::execution::par
+#endif
+
+
+#ifdef GA_EXPORTS
+#   define GA_API __declspec(dllexport)
+#else
+#   define GA_API __declspec(dllimport)
 #endif
 
 
