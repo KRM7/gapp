@@ -109,8 +109,6 @@ namespace genetic_algorithm::detail
     template<typename T>
     std::vector<T> flatten(const std::vector<std::pair<T, T>>& pairs)
     {
-        assert(pairs.size() <= (std::numeric_limits<size_t>::max() / 2));
-
         std::vector<T> flat;
         flat.reserve(2 * pairs.size());
 
@@ -126,15 +124,13 @@ namespace genetic_algorithm::detail
     template<typename T>
     std::vector<T> flatten(std::vector<std::pair<T, T>>&& pairs)
     {
-        assert(pairs.size() <= (std::numeric_limits<size_t>::max() / 2));
-
         std::vector<T> flat;
         flat.reserve(2 * pairs.size());
 
         for (size_t i = 0; i < pairs.size(); i++)
         {
-            flat.push_back(std::move_if_noexcept(pairs[i].first));
-            flat.push_back(std::move_if_noexcept(pairs[i].second));
+            flat.push_back(std::move(pairs[i].first));
+            flat.push_back(std::move(pairs[i].second));
         }
 
         return flat;
