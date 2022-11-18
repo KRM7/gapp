@@ -14,9 +14,6 @@ option(GA_USE_MARCH_NATIVE "Add -march=native option to release builds when usin
 option(GA_LINK_TBB "Add -ltbb to the compiler flags (needed for parallel stl algorithms when using gcc/clang)." OFF)
 #option(GA_ENABLE_EXCEPTIONS "Enable exceptions in the library." ON) # TODO
 
-#if(MSVC AND BUILD_SHARED_LIBS)
-#    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
-#endif()
 
 # Set the output directory for the build files
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
@@ -26,6 +23,10 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release)$")
     message("Unrecognized build type: ${CMAKE_BUILD_TYPE}. Defaulting to Release.")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
+
+#if(MSVC AND BUILD_SHARED_LIBS)
+#    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+#endif()
 
 
 # Compiler/linker setup
