@@ -11,15 +11,6 @@
 #include <concepts>
 #include <cassert>
 
-namespace genetic_algorithm
-{
-    template<auto F>
-    constexpr auto Fn = [](auto&&... args) noexcept(std::is_nothrow_invocable_v<decltype(F), decltype(args)...>) -> decltype(auto)
-    {
-        return std::invoke(F, std::forward<decltype(args)>(args)...);
-    };
-
-} // namespace genetic_algorithm
 
 namespace genetic_algorithm::detail
 {
