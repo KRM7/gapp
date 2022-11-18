@@ -19,7 +19,7 @@ option(GA_LINK_TBB "Add -ltbb to the compiler flags (needed for parallel stl alg
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
 # Set the default build type to release
-if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release)$")
+if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release|RelWithDebInfo)$")
     message("Unrecognized build type: ${CMAKE_BUILD_TYPE}. Defaulting to Release.")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
@@ -38,6 +38,7 @@ if(MSVC) # MSVC style compiler interface
     set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++20 -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -Z7 -RTC1 -Od")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar") # -fp:fast
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-D_DEBUG -Z7 -O2 -Oi -Gy -Qpar") # -fp:fast
 else() # GNU style compiler interface
     set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wnull-dereference -Wno-unused-function")
     if(GA_USE_WERROR)
@@ -46,6 +47,7 @@ else() # GNU style compiler interface
     set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std=c++20 ${GA_WARN_FLAGS}")
     set(CMAKE_CXX_FLAGS_DEBUG "-Og")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -ffast-math -fno-finite-math-only")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3 -ffast-math -fno-finite-math-only")
     if (GA_USE_MARCH_NATIVE)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
     endif()
