@@ -70,3 +70,11 @@ TEST_CASE("dereference", "[type_traits]")
     STATIC_REQUIRE(std::is_same_v<dereference_t<int*>, int&>);
     STATIC_REQUIRE(std::is_same_v<dereference_t<Iter>, const double&>);
 }
+
+TEST_CASE("remove_rvalue_ref", "[type_traits]")
+{
+    STATIC_REQUIRE(std::is_same_v<remove_rvalue_ref_t<int>,   int>);
+    STATIC_REQUIRE(std::is_same_v<remove_rvalue_ref_t<int&>,  int&>);
+    STATIC_REQUIRE(std::is_same_v<remove_rvalue_ref_t<int&&>, int>);
+    STATIC_REQUIRE(std::is_same_v<remove_rvalue_ref_t<int*>,  int*>);
+}

@@ -128,6 +128,18 @@ namespace genetic_algorithm::detail
     template<typename T>
     using dereference_t = typename dereference<T>::type;
 
+
+
+    template<typename T>
+    struct remove_rvalue_ref : std::type_identity<T> {};
+
+    template<typename T>
+    struct remove_rvalue_ref<T&&> : std::type_identity<T> {};
+
+    template<typename T>
+    using remove_rvalue_ref_t = typename remove_rvalue_ref<T>::type;
+
+
 } // namespace genetic_algorithm::detail
 
 #endif // !GA_UTILITY_TYPE_TRAITS_HPP
