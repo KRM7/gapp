@@ -1,6 +1,7 @@
 #ifndef GA_UTILITY_FUNCTIONAL_HPP
 #define GA_UTILITY_FUNCTIONAL_HPP
 
+#include "type_traits.hpp"
 #include <functional>
 #include <array>
 #include <vector>
@@ -15,9 +16,17 @@
 namespace genetic_algorithm::detail
 {
     template<typename T>
+    requires(std::is_lvalue_reference_v<T>)
     constexpr auto lforward(std::remove_reference_t<T>& t) noexcept
     {
         return std::ref<std::remove_reference_t<T>>(t);
+    }
+
+    template<typename T>
+    requires(!std::is_lvalue_reference_v<T>)
+    constexpr T&& lforward(std::remove_reference_t<T>& t) noexcept
+    {
+        return static_cast<T&&>(t);
     }
 
     template<typename T>
@@ -27,12 +36,18 @@ namespace genetic_algorithm::detail
         return static_cast<T&&>(t);
     }
 
-    template<typename F>
-    constexpr auto compose(F&& f) noexcept
+    template<typename T>
+    constexpr T drop_rvalue_ref(T&& t) noexcept
     {
-        return [f = lforward<F>(f)] <typename... Args> (Args&&... args)
+        return std::forward<T>(t);
+    }
+
+    template<typename F>
+    constexpr auto compose(F&& f) noexcept /* innermost */
+    {
+        return [f = lforward<F>(f)] <typename... Args> (Args&&... args) mutable
         noexcept(std::is_nothrow_invocable_v<F, Args...>) -> decltype(auto)
-        requires std::invocable<F, Args...>
+        requires std::is_invocable_v<F, Args...>
         {
             return std::invoke(f, std::forward<Args>(args)...);
         };
@@ -41,13 +56,13 @@ namespace genetic_algorithm::detail
     template<typename F, typename... Fs>
     constexpr auto compose(F&& f, Fs&&... fs) noexcept
     {
-        return [f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args> (Args&&... args)
+        return [f = lforward<F>(f), ...fs = lforward<Fs>(fs)] <typename... Args> (Args&&... args) mutable
         noexcept(std::is_nothrow_invocable_v<F, Args...> &&
                  std::is_nothrow_invocable_v<decltype(compose(fs...)), std::invoke_result_t<F, Args...>>) -> decltype(auto)
-        requires (std::invocable<F, Args...> &&
-                  std::invocable<decltype(compose(fs...)), std::invoke_result_t<F, Args...>>)
+        requires(std::is_invocable_v<F, Args...> &&
+                 std::is_invocable_v<decltype(compose(fs...)), std::invoke_result_t<F, Args...>>)
         {
-            return compose(fs...)(std::invoke(f, std::forward<Args>(args)...));
+            return drop_rvalue_ref(compose(fs...)(std::invoke(f, std::forward<Args>(args)...)));
         };
     }
 

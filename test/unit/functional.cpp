@@ -4,22 +4,71 @@
 #include <iterator>
 #include <type_traits>
 
-using namespace genetic_algorithm::detail;
 
 template<typename T>
 constexpr T square(const T& n) noexcept { return n * n; }
 
+template<typename T>
+constexpr T increment(const T& n) noexcept { return n + 1; }
+
+using namespace genetic_algorithm::detail;
+
+TEST_CASE("lforward", "[functional]")
+{
+    int n = 2;
+
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(lforward<int>(n))>);
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(lforward<int>(1))>);
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(lforward<int>(std::move(n)))>);
+    STATIC_REQUIRE(std::is_same_v<std::reference_wrapper<int>, decltype(lforward<int&>(n))>);
+}
+
 TEST_CASE("compose", "[functional]")
 {
-    auto plus1 = [](const auto& n) noexcept { return n + 1; };
+    SECTION("functions return by value")
+    {
+        auto f = compose(square<double>, increment<double>, increment<double>);
+        using F = decltype(f);
 
-    auto f = compose(square<double>, plus1);
+        STATIC_REQUIRE(std::is_nothrow_invocable_v<F, double>);
+        STATIC_REQUIRE(!std::is_invocable_v<F, void*>);
+        STATIC_REQUIRE(std::is_same_v<std::invoke_result_t<F, double>, double>);
+        STATIC_REQUIRE(std::is_same_v<std::invoke_result_t<F, double&>, double>);
 
-    STATIC_REQUIRE(noexcept(f(1.0)));
-    STATIC_REQUIRE(std::is_invocable_r_v<double, decltype(f), double>);
+        REQUIRE(f(2.0) == 6.0);
+        REQUIRE(f(5) == 27.0);
+    }
 
-    REQUIRE(f(2.0) == 5.0);
-    REQUIRE(f(5) == 26.0);
+    SECTION("functions return references")
+    {
+        auto f = compose(std::identity{}, std::identity{}, std::identity{});
+        using F = decltype(f);
+
+        STATIC_REQUIRE(std::is_nothrow_invocable_v<F, double>);
+        STATIC_REQUIRE(std::is_invocable_v<F, void*>);
+        STATIC_REQUIRE(std::is_same_v<std::invoke_result_t<F, double>, double>);
+        STATIC_REQUIRE(std::is_same_v<std::invoke_result_t<F, double&>, double&>);
+
+        REQUIRE(f(1.5) == 1.5);
+        REQUIRE(f(nullptr) == nullptr);
+
+        auto in = 1;
+        auto& out = f(in);
+        REQUIRE(&in == &out);
+    }
+
+    SECTION("functions return by value and ref")
+    {
+        auto f = compose(square<double>, std::identity{}, square<double>, std::identity{});
+        using F = decltype(f);
+
+        STATIC_REQUIRE(std::is_nothrow_invocable_v<F, double>);
+        STATIC_REQUIRE(!std::is_invocable_v<F, void*>);
+        STATIC_REQUIRE(std::is_same_v<std::invoke_result_t<F, double>, double>);
+        STATIC_REQUIRE(std::is_same_v<std::invoke_result_t<F, double&>, double>);
+
+        REQUIRE(f(2.0) == 5.0);
+    }
 }
 
 TEST_CASE("map", "[functional]")
