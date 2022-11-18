@@ -11,6 +11,8 @@ endif()
 # Add -fpermissive for gcc as a workaround for: https://github.com/catchorg/Catch2/issues/2529
 if(NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd4388")
 endif()
 
 file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/test/unit/*.cpp")
