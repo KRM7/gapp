@@ -357,11 +357,11 @@ namespace genetic_algorithm::detail
 
     /* iota iterator */
 
-    template<std::integral T = std::size_t, std::signed_integral Difference = std::ptrdiff_t>
-    class iota_iterator : public random_access_iterator_interface<iota_iterator<T>, Difference>
+    template<std::integral T = std::size_t>
+    class iota_iterator : public random_access_iterator_interface<iota_iterator<T>, std::make_signed_t<T>>
     {
     public:
-        using my_base_ = random_access_iterator_interface<iota_iterator, Difference>;
+        using my_base_ = random_access_iterator_interface<iota_iterator, std::make_signed_t<T>>;
 
         using typename my_base_::iterator_category;
         using typename my_base_::difference_type;
