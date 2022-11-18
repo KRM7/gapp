@@ -34,8 +34,8 @@ if(MSVC) # MSVC style compiler interface
     if(GA_USE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -WX")
     endif()
-    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++latest -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -EHsc")
-    set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -Od -Z7 -RTC1")
+    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++20 -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -EHsc")
+    set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -Z7 -RTC1 -Od")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar") # -fp:fast
 else() # GNU style compiler interface
     set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wnull-dereference -Wno-unused-function")
@@ -43,7 +43,7 @@ else() # GNU style compiler interface
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
     set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std=c++20 ${GA_WARN_FLAGS}")
-    set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -Og")
+    set(CMAKE_CXX_FLAGS_DEBUG "-Og")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -ffast-math -fno-finite-math-only")
     if (GA_USE_MARCH_NATIVE)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
