@@ -6,6 +6,14 @@
 #include "utility/algorithm.hpp"
 #include "utility/rng.hpp"
 
+
+static constexpr auto is_odd = [](int n) { return n % 2; };
+static constexpr auto is_big = [](int n) { return n > 10; };
+
+static constexpr auto always_true = [](auto) { return true; };
+static constexpr auto always_false = [](auto) { return false; };
+
+
 using namespace genetic_algorithm;
 
 TEST_CASE("index_vector", "[algorithm]")
@@ -169,14 +177,14 @@ TEST_CASE("find_all", "[algorithm]")
 {
     const std::vector nums = { 4, 0, 2, 5, 1 };
 
-    const auto odd = detail::find_all(nums.begin(), nums.end(), [](int n) { return n % 2; });
-    REQUIRE(odd == std::vector{ nums.end() - 2, nums.end() - 1 });
+    const auto odd_nums = detail::find_all(nums.begin(), nums.end(), is_odd);
+    REQUIRE(odd_nums == std::vector{ nums.end() - 2, nums.end() - 1 });
 
-    const auto big = detail::find_all(nums.begin(), nums.end(), [](int n) { return n > 10; });
-    REQUIRE(big.empty());
+    const auto big_nums = detail::find_all(nums.begin(), nums.end(), is_big);
+    REQUIRE(big_nums.empty());
 
-    REQUIRE(detail::find_all(nums.begin(), nums.begin(), [](int) { return true; }).empty());
-    REQUIRE(detail::find_all(nums.begin(), nums.end(), [](int) { return false; }).empty());
+    REQUIRE(detail::find_all(nums.begin(), nums.end(), always_true).size()  == nums.size());
+    REQUIRE(detail::find_all(nums.begin(), nums.end(), always_false).size() == 0);
 
     //REQUIRE_THROWS(detail::find_all(nums.end(), nums.begin(), std::logical_not<>{}));
 }
@@ -185,14 +193,14 @@ TEST_CASE("find_all_v", "[algorithm]")
 {
     const std::vector nums = { 4, 0, 2, 5, 1 };
 
-    const auto odd = detail::find_all_v(nums.begin(), nums.end(), [](int n) { return n % 2; });
-    REQUIRE(odd == std::vector{ 5, 1 });
+    const auto odd_nums = detail::find_all_v(nums.begin(), nums.end(), is_odd);
+    REQUIRE(odd_nums == std::vector{ 5, 1 });
 
-    const auto big = detail::find_all_v(nums.begin(), nums.end(), [](int n) { return n > 10; });
-    REQUIRE(big.empty());
+    const auto big_nums = detail::find_all_v(nums.begin(), nums.end(), is_big);
+    REQUIRE(big_nums.empty());
 
-    REQUIRE(detail::find_all_v(nums.begin(), nums.begin(), [](int) { return true; }).empty());
-    REQUIRE(detail::find_all_v(nums.begin(), nums.end(), [](int) { return false; }).empty());
+    REQUIRE(detail::find_all_v(nums.begin(), nums.end(), always_true).size()  == nums.size());
+    REQUIRE(detail::find_all_v(nums.begin(), nums.end(), always_false).size() == 0);
 
     //REQUIRE_THROWS(detail::find_all_v(nums.end(), nums.begin(), std::logical_not<>{}));
 }
@@ -201,16 +209,16 @@ TEST_CASE("find_indices", "[algorithm]")
 {
     const std::vector nums = { 4, 0, 2, 5, 1 };
 
-    const auto odd = detail::find_indices(nums, [](int n) { return n % 2; });
-    REQUIRE(odd == std::vector<size_t>{ 3, 4 });
+    const auto odd_num_idxs = detail::find_indices(nums, is_odd);
+    REQUIRE(odd_num_idxs == std::vector{ 3_sz, 4_sz });
 
-    const auto big = detail::find_indices(nums, [](int n) { return n > 10; });
-    REQUIRE(big.empty());
+    const auto big_num_idxs = detail::find_indices(nums, is_big);
+    REQUIRE(big_num_idxs.empty());
 
-    const auto all = detail::find_indices(nums, [](int) { return true; });
-    REQUIRE(all == std::vector<size_t>{ 0, 1, 2, 3, 4 });
+    const auto all = detail::find_indices(nums, always_true);
+    REQUIRE(all == std::vector{ 0_sz, 1_sz, 2_sz, 3_sz, 4_sz });
 
-    const auto none = detail::find_indices(nums, [](int) { return false; });
+    const auto none = detail::find_indices(nums, always_false);
     REQUIRE(none.empty());
 }
 
@@ -228,16 +236,16 @@ TEST_CASE("find_index", "[algorithm]")
 {
     const std::vector nums = { 4, 0, 2, 5, 1 };
 
-    auto first = detail::find_index(nums, [](int) { return true; });
-    REQUIRE(first == 0_sz);
+    const auto first_idx = detail::find_index(nums, always_true);
+    REQUIRE(first_idx == 0_sz);
 
-    auto none = detail::find_index(nums, [](int) { return false; });
+    const auto none = detail::find_index(nums, always_false);
     REQUIRE(!none.has_value());
 
-    auto odd = detail::find_index(nums, [](int i) { return i % 2; });
-    REQUIRE(odd == 3_sz);
+    const auto first_odd_idx = detail::find_index(nums, is_odd);
+    REQUIRE(first_odd_idx == 3_sz);
 
-    auto six = detail::find_index(nums, [](int i) { return i == 6; });
+    const auto six = detail::find_index(nums, [](int i) { return i == 6; });
     REQUIRE(!six.has_value());
 }
 
@@ -246,7 +254,7 @@ TEST_CASE("elementwise_min", "[algorithm]")
     const std::vector nums1 = { 4, 0, 2, 5, 1 };
     const std::vector nums2 = { 2, 3, 1, 6, 0 };
 
-    auto min = detail::elementwise_min(nums1, nums2);
+    const auto min = detail::elementwise_min(nums1, nums2);
     REQUIRE(min == std::vector{ 2, 0, 1, 5, 0 });
 
     //REQUIRE_THROWS(detail::elementwise_min(nums1, std::vector{ 1, 2, 3}));
@@ -257,7 +265,7 @@ TEST_CASE("elementwise_max", "[algorithm]")
     const std::vector nums1 = { 4, 0, 2, 5, 1 };
     const std::vector nums2 = { 2, 3, 1, 6, 0 };
 
-    auto max = detail::elementwise_max(nums1, nums2);
+    const auto max = detail::elementwise_max(nums1, nums2);
     REQUIRE(max == std::vector{ 4, 3, 2, 6, 1 });
 
     //REQUIRE_THROWS(detail::elementwise_max(nums1, std::vector{ 1, 2, 3}));
@@ -291,13 +299,13 @@ TEST_CASE("select", "[algorithm]")
     selected = detail::select(selected, { 2 });
     REQUIRE(selected == std::vector{ 1 });
 
-    selected = detail::select(nums, {});
+    selected = detail::select(nums, { });
     REQUIRE(selected.empty());
 
     selected = detail::select(std::vector{ 1, 3, 5 }, { 0, 1 });
     REQUIRE(selected == std::vector{ 1, 3 });
 
-    selected = detail::select<int>({}, {});
+    selected = detail::select<int>({ }, { });
     REQUIRE(selected.empty());
 
     //REQUIRE_THROWS(detail::select({}, { 1 }));
@@ -317,16 +325,9 @@ TEST_CASE("transform_reduce", "[algorithm]")
     constexpr std::tuple vals = { 0, 3.14, 'a', "abcd", 2_sz };
     
     constexpr int num_arithmetic = detail::transform_reduce(vals, 0, std::identity{},
-    [](int acc, const auto& val)
+    []<typename T> (int acc, const T&) noexcept
     {
-        if constexpr (std::is_arithmetic_v<std::remove_reference_t<decltype(val)>>)
-        {
-            return acc + 1;
-        }
-        else
-        {
-            return acc;
-        }
+        return acc + std::is_arithmetic_v<std::decay_t<T>>;
     });
 
     STATIC_REQUIRE(num_arithmetic == 4);
