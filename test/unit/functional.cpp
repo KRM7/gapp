@@ -67,7 +67,7 @@ TEST_CASE("compose", "[functional]")
         STATIC_REQUIRE(std::is_same_v<std::invoke_result_t<F, double>, double>);
         STATIC_REQUIRE(std::is_same_v<std::invoke_result_t<F, double&>, double>);
 
-        REQUIRE(f(2.0) == 5.0);
+        REQUIRE(f(2.0) == 16.0);
     }
 }
 
