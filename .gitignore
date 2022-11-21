@@ -36,6 +36,9 @@ build/*
 [Ll]og/
 *.exe
 
+# Test results
+test/mo_results/*.txt
+
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 
