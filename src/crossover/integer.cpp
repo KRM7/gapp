@@ -14,12 +14,17 @@ namespace genetic_algorithm::crossover::integer
 {
     auto SinglePoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        return dtl::singlePointCrossoverImpl(parent1, parent2);
+        const size_t chrom_len = parent1.chromosome.size();
+        const size_t crossover_point = rng::randomInt(0_sz, chrom_len);
+
+        return dtl::singlePointCrossoverImpl(parent1, parent2, crossover_point);
     }
 
     auto TwoPoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        return dtl::twoPointCrossoverImpl(parent1, parent2);
+        const size_t chrom_len = parent1.chromosome.size();
+
+        return dtl::twoPointCrossoverImpl(parent1, parent2, { rng::randomInt(0_sz, chrom_len), rng::randomInt(0_sz, chrom_len) });
     }
 
     NPoint::NPoint(size_t n) :
