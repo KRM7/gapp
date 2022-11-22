@@ -16,7 +16,7 @@ namespace genetic_algorithm::crossover::dtl
 {
     /* General n-point crossover implementation for any gene type. */
     template<Gene T>
-    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t n);
+    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::vector<size_t> crossover_points);
 
     /* Simpler single-point crossover function for any gene type. */
     template<Gene T>
@@ -70,34 +70,24 @@ namespace genetic_algorithm::crossover::dtl
 namespace genetic_algorithm::crossover::dtl
 {
     template<Gene T>
-    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t n)
+    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::vector<size_t> crossover_points)
     {
-        if (parent1.chromosome.size() == parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the n-point crossover.");
-        }
-
         const size_t chrom_len = parent1.chromosome.size();
-        const size_t num_crossover_points = std::min(n, chrom_len);
-        const auto crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
 
-        /* Create crossover mask */
-        std::vector<size_t> crossover_mask(chrom_len, 0);
-        for (size_t i = 0, remaining = num_crossover_points; i < chrom_len; i++)
-        {
-            if (detail::contains(crossover_points.begin(), crossover_points.end(), i))
-            {
-                if (--remaining == 0) break;
-            }
-            crossover_mask[i] = remaining;
-        }
+        std::sort(crossover_points.begin(), crossover_points.end());
+        crossover_points.push_back(chrom_len);
 
         Candidate child1 = parent1;
         Candidate child2 = parent2;
 
-        for (size_t i = 0; i < chrom_len; i++)
+        for (size_t j = 0, i = 0; j < crossover_points.size(); j++)
         {
-            if (crossover_mask[i] % 2)
+            if (j % 2)
+            {
+                i = crossover_points[j];
+                continue;
+            }
+            for (; i < crossover_points[j]; i++)
             {
                 using std::swap;
                 swap(child1.chromosome[i], child2.chromosome[i]);

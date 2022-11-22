@@ -2,9 +2,13 @@
 
 #include "integer.hpp"
 #include "crossover_dtl.hpp"
+#include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
+#include <algorithm>
 #include <utility>
 #include <stdexcept>
+#include <cstddef>
 
 namespace genetic_algorithm::crossover::integer
 {
@@ -39,12 +43,17 @@ namespace genetic_algorithm::crossover::integer
 
     auto NPoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        if (n_ == 1)
-            return dtl::singlePointCrossoverImpl(parent1, parent2);
-        else if (n_ == 2)
-            return dtl::twoPointCrossoverImpl(parent1, parent2);
-        else
-            return dtl::nPointCrossoverImpl(parent1, parent2, n_);
+        if (parent1.chromosome.size() != parent2.chromosome.size())
+        {
+            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the n-point crossover.");
+        }
+
+        const size_t chrom_len = parent1.chromosome.size();
+        const size_t num_cx_points = std::min(n_, chrom_len);
+
+        auto cx_points = rng::sampleUnique(0_sz, chrom_len, num_cx_points);
+
+        return dtl::nPointCrossoverImpl(parent1, parent2, std::move(cx_points));
     }
 
     Uniform::Uniform(Probability pc, Probability swap_prob) noexcept :
