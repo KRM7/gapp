@@ -28,6 +28,9 @@ endif()
 #    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 #endif()
 
+# Always generate compile_commands.json
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 
 # Compiler/linker setup
 if(MSVC) # MSVC style compiler interface
