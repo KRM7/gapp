@@ -60,7 +60,7 @@ else() # GNU style compiler interface
     endif()
 endif()
 
-if (GA_USE_LTO AND CMAKE_BUILD_TYPE MATCHES "Release")
+if (GA_USE_LTO AND CMAKE_BUILD_TYPE MATCHES "(Release|RelWithDebInfo)")
     message("Using link time optimizations.")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
