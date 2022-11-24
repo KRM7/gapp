@@ -24,8 +24,12 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release|RelWithDebInfo)$")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-#if(MSVC AND BUILD_SHARED_LIBS)
-#    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+# Shared library specific settings
+#if(BUILD_SHARED_LIBS)
+#    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+#    if (WIN32)
+#        set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+#    endif()
 #endif()
 
 # Always generate compile_commands.json
