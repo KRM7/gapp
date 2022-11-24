@@ -8,6 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        build-type: [Debug, Release, RelWithDebInfo]
+        # build-shared: ["OFF", "ON"]
         include:
           - cxx: g++-11
             pkgs: gcc-11 libtbb-dev
@@ -33,20 +35,12 @@ jobs:
         CXX: ${{ matrix.cxx }}
       run: sudo bash ./install_catch.sh
 
-    - name: setup-debug-build
+    - name: setup-build
       env:
         CXX: ${{ matrix.cxx }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=Debug -DGA_LINK_TBB=ON
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGA_LINK_TBB=ON -DBUILD_SHARED_LIBS=OFF
 
-    - name: build-debug
-      run: make -j
-
-    - name: setup-release-build
-      env:
-        CXX: ${{ matrix.cxx }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=Release -DGA_LINK_TBB=ON
-
-    - name: build-release
+    - name: build
       run: make -j
     
     - name: run-tests
