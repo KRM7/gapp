@@ -7,52 +7,50 @@ jobs:
     runs-on: windows-2022
     strategy:
       fail-fast: false
-      build-type: [Debug, Release, RelWithDebInfo]
-      #build-shared: ["OFF", "ON"]
       matrix:
-        include:
-          #- cxx: g++
-          #  pkgs: mingw --version=11.2.0
-          #  gen: "Unix Makefiles"
+        build-type: [Debug, Release, RelWithDebInfo]
+        compiler: [ { cxx: cl, pkgs: visualstudio2022buildtools, gen: "Visual Studio 17 2022" } ]
+        build-shared: ["OFF"]
 
-          #- cxx: g++
-          #  pkgs: mingw --version=12.2.0
-          #  gen: "Unix Makefiles"
+        #- cxx: g++
+        #  pkgs: mingw --version=11.2.0
+        #  gen: "Unix Makefiles"
 
-          - cxx: cl
-            pkgs: visualstudio2022buildtools
-            gen: "Visual Studio 17 2022"
+        #- cxx: g++
+        #  pkgs: mingw --version=12.2.0
+        #  gen: "Unix Makefiles"
 
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.cxx }}
+    name: ${{ matrix.compiler.cxx }} ${{ matrix.build-type }}
+
 
     steps:
     - name: checkout-repo
       uses: actions/checkout@v3
 
     - name: setup-compiler
-      run: choco install -y --allow-downgrade ${{ matrix.pkgs }}
+      run: choco install -y --allow-downgrade ${{ matrix.compiler.pkgs }}
 
     - name: setup-catch
       env:
-        CXX: ${{ matrix.cxx }}
-        CMAKE_GENERATOR: ${{ matrix.gen }}
+        CXX: ${{ matrix.compiler.cxx }}
+        CMAKE_GENERATOR: ${{ matrix.compiler.gen }}
       run: bash ./install_catch.sh
 
     - name: setup-build
       env:
-        CXX: ${{ matrix.cxx }}
-        CMAKE_GENERATOR: ${{ matrix.gen }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=OFF
+        CXX: ${{ matrix.compiler.cxx }}
+        CMAKE_GENERATOR: ${{ matrix.compiler.gen }}
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.build-shared }}
 
     - name: build
-      run: cmake --build . -j --config ${{ matrix.build-type }}
+      run: cmake --build . --parallel --verbose --config ${{ matrix.build-type }}
     
     - name: run-tests
       run: ctest --output-on-failure --schedule-random
 
     - name: install
-      run: cmake --build . --target install --config ${{ matrix.build-type }}
+      run: cmake --install . --config ${{ matrix.build-type }}

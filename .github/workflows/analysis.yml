@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   core-guidelines:
-    name: core guidelines check
+    name: core-guidelines-check
     runs-on: windows-2022
 
     defaults:
@@ -37,13 +37,14 @@ jobs:
 
 
   clang-analyzer:
-    name: clang analyzer checks
+    name: clang-analyzer-checks
     runs-on: ubuntu-22.04
 
     strategy:
       matrix:
-        pkgs: clang-14 llvm-14-dev libclang-14-dev iwyu clang-tidy-14 clang-tools-14
-        cxx: clang++-14
+        include:
+          - pkgs: clang-14 llvm-14-dev libclang-14-dev iwyu clang-tidy-14 clang-tools-14
+            cxx: clang++-14
 
     defaults:
       run:
@@ -59,20 +60,17 @@ jobs:
       - name: setup-catch
         env:
           CXX: ${{ matrix.cxx }}
-        run: bash ./install_catch.sh
+        run: sudo bash ./install_catch.sh
 
       - name: setup-cmake
         env:
           CXX: ${{ matrix.cxx }}
-        run: cmake .. -DCMAKE_BUILD_TYPE=Release
+        run: cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu"
       
-      - name: run-iwyu
-        run: |
-          wget https://raw.githubusercontent.com/include-what-you-use/include-what-you-use/clang_14/iwyu_tool.py
-          chmod +x iwyu_tool.py
-          ./iwyu_tool.py -p . > iwyu.out 2>&1
+      - name: include-what-you-use
+        run: cmake --build . > iwyu.out 2>&1
       
       - uses: actions/upload-artifact@v3
         with:
           name: iwyu-analysis-results
-          path: iwyu.out
+          path: ${{ github.workspace }}/build/iwyu.out

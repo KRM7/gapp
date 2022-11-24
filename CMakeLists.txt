@@ -45,7 +45,7 @@ if(MSVC) # MSVC style compiler interface
     set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++20 -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -Z7 -RTC1 -Od")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar") # -fp:fast
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-D_DEBUG -Z7 -O2 -Oi -Gy -Qpar") # -fp:fast
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Z7 -O2 -Oi -Gy -Qpar") # -fp:fast
 else() # GNU style compiler interface
     set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wnull-dereference -Wno-unused-function")
     if(GA_USE_WERROR)

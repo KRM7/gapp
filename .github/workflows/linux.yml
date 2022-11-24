@@ -9,42 +9,37 @@ jobs:
       fail-fast: false
       matrix:
         build-type: [Debug, Release, RelWithDebInfo]
-        # build-shared: ["OFF", "ON"]
-        include:
-          - cxx: g++-11
-            pkgs: gcc-11 libtbb-dev
-
-          - cxx: clang++-14
-            pkgs: clang-14 libtbb-dev
-
+        compiler: [ { cxx: g++-11, pkgs: gcc-11 libtbb-dev }, { cxx: clang++-14, pkgs: clang-14 libtbb-dev } ]
+        build-shared: ["OFF"]
+        
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.pkgs }}
+    name: ${{ matrix.compiler.cxx }} ${{ matrix.build-type }}
 
     steps:
     - name: checkout-repo
       uses: actions/checkout@v3
 
     - name: setup-compiler
-      run: sudo apt install -y ${{ matrix.pkgs }}
+      run: sudo apt install -y ${{ matrix.compiler.pkgs }}
 
     - name: setup-catch
       env:
-        CXX: ${{ matrix.cxx }}
+        CXX: ${{ matrix.compiler.cxx }}
       run: sudo bash ./install_catch.sh
 
     - name: setup-build
       env:
-        CXX: ${{ matrix.cxx }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGA_LINK_TBB=ON -DBUILD_SHARED_LIBS=OFF
+        CXX: ${{ matrix.compiler.cxx }}
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGA_LINK_TBB=ON -DBUILD_SHARED_LIBS=${{ matrix.build-shared }}
 
     - name: build
-      run: make -j
+      run: cmake --build . --parallel --verbose
     
     - name: run-tests
       run: ctest --output-on-failure --schedule-random
 
     - name: install
-      run: sudo make install
+      run: sudo cmake --install .

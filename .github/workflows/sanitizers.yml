@@ -8,24 +8,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        sanitizer: [address, undefined, thread]
         include:
           - cxx: g++-11
             pkgs: gcc-11 libtbb-dev
-            sanitizer: address
-
-          - cxx: g++-11
-            pkgs: gcc-11 libtbb-dev
-            sanitizer: undefined
-
-          - cxx: g++-11
-            pkgs: gcc-11 libtbb-dev
-            sanitizer: thread
 
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: gcc-11 -fsanitize=${{ matrix.sanitizer }}
+    name: ${{ matrix.cxx }} -fsanitize=${{ matrix.sanitizer }}
 
     steps:
     - name: checkout-repo
@@ -45,7 +37,7 @@ jobs:
       run: cmake .. -DGA_LINK_TBB=ON -DGA_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }} -g -fno-omit-frame-pointer"
 
     - name: build
-      run: make -j
+      run: cmake --build . --parallel
     
     - name: run-tests
       run: ctest --output-on-failure --schedule-random
