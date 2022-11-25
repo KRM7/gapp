@@ -19,7 +19,7 @@ jobs:
         run: bash ./install_catch.sh
 
       - name: setup-cmake
-        run: cmake .. -DCMAKE_BUILD_TYPE=Release
+        run: cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
 
       - name: cpp-core-guidelines-check
         uses: microsoft/msvc-code-analysis-action@v0.1.1
@@ -36,19 +36,22 @@ jobs:
           sarif_file: ${{ steps.run-analysis.outputs.sarif }}
 
 
-  clang-analyzer:
-    name: clang-analyzer-checks
+  clang-analyzers:
     runs-on: ubuntu-22.04
 
     strategy:
       matrix:
+        tool: [ { name: iwyu, cmake-flag: CMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu" },
+                { name: clang-tidy, cmake-flag: CMAKE_CXX_CLANG_TIDY="clang-tidy" } ]
         include:
-          - pkgs: clang-14 llvm-14-dev libclang-14-dev iwyu clang-tidy-14 clang-tools-14
+          - pkgs: clang-14 llvm-14-dev libclang-14-dev iwyu clang-tools-14 clang-tidy-14
             cxx: clang++-14
 
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
+
+    name: ${{ matrix.tool.name }}
 
     steps:
       - name: checkout-repo
@@ -62,15 +65,15 @@ jobs:
           CXX: ${{ matrix.cxx }}
         run: sudo bash ./install_catch.sh
 
-      - name: setup-cmake
+      - name: setup-analysis
         env:
           CXX: ${{ matrix.cxx }}
-        run: cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu"
+        run: cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -D${{ matrix.tool.cmake-flag }}
       
-      - name: include-what-you-use
-        run: cmake --build . > iwyu.out 2>&1
+      - name: run-analysis
+        run: cmake --build . 2>&1 | tee ${{ matrix.tool.name }}-out.txt
       
       - uses: actions/upload-artifact@v3
         with:
-          name: iwyu-analysis-results
-          path: ${{ github.workspace }}/build/iwyu.out
+          name: ${{ matrix.tool.name }}-analysis-results
+          path: ${{ github.workspace }}/build/${{ matrix.tool.name }}-out.txt

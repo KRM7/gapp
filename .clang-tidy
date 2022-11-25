@@ -1,0 +1,78 @@
+Checks: >
+  -*,
+  clang-analyzer-*,
+  modernize-*,
+  performance-*,
+  bugprone-*,
+  portability-*,
+  misc-*,
+
+  readability-convert-member-functions-to-static,
+  readability-container-contains,
+  readability-const-return-type,
+  readability-container-size-empty,
+  readability-deleted-default,
+  readability-else-after-return,
+  readability-identifier-naming,
+  readability-inconsistent-declaration-parameter-name,
+  readability-misleading-indentation,
+  readability-redundant-access-specifiers,
+  readability-redundant-control-flow,
+  readability-redundant-declaration,
+  readability-redundant-function-ptr-dereference,
+  readability-redundant-preprocessor,
+  readability-redundant-smartptr-get,
+  readability-static-definition-in-anonymous-namespace,
+  readability-static-accessed-through-instance,
+  readability-qualified-auto,
+  google-default-arguments,
+  google-build-namespaces,
+  hicpp-multiway-paths-covered,
+  hicpp-signed-bitwise,
+  llvm-namespace-comment,
+
+  -modernize-use-nodiscard,
+  -modernize-use-trailing-return-type,
+  -modernize-use-bool-literals,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-narrowing-conversions,
+  -performance-noexcept-move-constructor,
+  -misc-non-private-member-variables-in-classes,
+  -misc-unconventional-assign-operator,
+  -misc-no-recursion,
+
+
+# Also check the header files
+HeaderFilterRegex: ".*"
+
+
+# List of warnings to treat as errors during the build
+WarningsAsErrors: >
+  clang-analyzer-*,
+  portability-*,
+  bugprone-assignment-in-if-condition,
+  bugprone-copy-constructor-init,
+  bugprone-dangling-handle,
+  bugprone-forwarding-reference-overload,
+  bugprone-incorrect-roundings,
+  bugprone-move-forwarding-reference,
+  bugprone-reserved-identifier,
+  bugprone-undefined-memory-manipulation,
+  bugprone-use-after-move,
+  google-default-arguments,
+  google-build-namespaces,
+  performance-move-const-arg,
+  performance-no-automatic-move,
+  performance-move-constructor-init,
+  readability-container-contains,
+  readability-deleted-default,
+  readability-misleading-indentation,
+  readability-static-definition-in-anonymous-namespace,
+  misc-definitions-in-headers,
+  misc-throw-by-value-catch-by-reference
+
+
+# Specify options for the checks where the default isnt good
+CheckOptions:
+  - { key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals, value: true }
+  - { key: readability-implicit-bool-conversion.AllowIntegerConditions, value: 1 }
