@@ -52,7 +52,7 @@ namespace genetic_algorithm::math
             }
         }
 
-        return rhs_has_lower - lhs_has_lower;
+        return std::int8_t(rhs_has_lower - lhs_has_lower);
     }
 
     double euclideanNorm(const std::vector<double>& vec) noexcept
@@ -132,7 +132,7 @@ namespace genetic_algorithm::math
         if (vec.size() == 1) return 0.0;
 
         auto var = std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{},
-        [mean, n = 1.0 / (vec.size() - 1)](double val) noexcept
+        [mean, n = 1.0 / (vec.size() - 1.0)](double val) noexcept
         {
             return std::pow(val - mean, 2) * n;
         });

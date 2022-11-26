@@ -16,10 +16,11 @@
 
 namespace genetic_algorithm::algorithm::dtl
 {
-    std::vector<size_t> paretoRanks(const ParetoFronts& pfronts)
+    std::vector<size_t> paretoRanks(const ParetoFronts& pareto_fronts)
     {
-        std::vector<size_t> ranks(pfronts.size());     
-        for (const auto& [idx, rank] : pfronts)
+        std::vector<size_t> ranks(pareto_fronts.size());
+
+        for (const auto& [idx, rank] : pareto_fronts)
         {
             ranks[idx] = rank;
         }

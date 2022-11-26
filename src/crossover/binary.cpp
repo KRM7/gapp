@@ -61,12 +61,12 @@ namespace genetic_algorithm::crossover::binary
         return dtl::nPointCrossoverImpl(parent1, parent2, std::move(cx_points));
     }
 
-    Uniform::Uniform(Probability pc, Probability ps) noexcept :
-        Crossover(pc), ps_(ps)
+    Uniform::Uniform(Probability pc, Probability swap_prob) noexcept :
+        Crossover(pc), ps_(swap_prob)
     {
     }
 
-    void Uniform::swap_probability(Probability ps)
+    void Uniform::swap_probability(Probability ps) noexcept
     {
         ps_ = ps;
     }

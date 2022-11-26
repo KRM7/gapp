@@ -70,7 +70,7 @@ namespace genetic_algorithm::algorithm
             GA_THROW(std::logic_error, "The number of objectives must be greater than 1 for the NSGA-II algorithm.");
         }
 
-        auto& fmat = ga.fitness_matrix();
+        const auto& fmat = ga.fitness_matrix();
         auto pfronts = nonDominatedSort(fmat.begin(), fmat.end());
 
         ranks_ = paretoRanks(pfronts);

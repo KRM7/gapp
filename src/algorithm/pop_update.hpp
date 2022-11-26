@@ -10,7 +10,8 @@
 namespace genetic_algorithm
 {
     class GaInfo;
-}
+
+} // namespace genetic_algorithm
 
 /** Methods used to update the populations in each generation of the algorithms. */
 namespace genetic_algorithm::update

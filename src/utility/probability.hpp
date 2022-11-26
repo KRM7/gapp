@@ -27,6 +27,11 @@ namespace genetic_algorithm
         double p_;
     };
 
+    consteval Probability operator ""_p(long double arg) noexcept
+    {
+        return { double(arg) };
+    }
+
 } // namespace genetic_algorithm
 
 #endif // !GA_UTILITY_PROBABILITY_HPP

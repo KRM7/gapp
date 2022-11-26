@@ -13,7 +13,6 @@ Checks: >
   readability-container-size-empty,
   readability-deleted-default,
   readability-else-after-return,
-  readability-identifier-naming,
   readability-inconsistent-declaration-parameter-name,
   readability-misleading-indentation,
   readability-redundant-access-specifiers,
@@ -32,14 +31,15 @@ Checks: >
   llvm-namespace-comment,
 
   -modernize-use-nodiscard,
+  -modernize-use-auto,
   -modernize-use-trailing-return-type,
   -modernize-use-bool-literals,
   -bugprone-easily-swappable-parameters,
-  -bugprone-narrowing-conversions,
+  -bugprone-exception-escape,
   -performance-noexcept-move-constructor,
-  -misc-non-private-member-variables-in-classes,
   -misc-unconventional-assign-operator,
-  -misc-no-recursion,
+  -misc-non-private-member-variables-in-classes,
+  -misc-no-recursion
 
 
 # Also check the header files
@@ -74,5 +74,6 @@ WarningsAsErrors: >
 
 # Specify options for the checks where the default isnt good
 CheckOptions:
-  - { key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals, value: true }
+  - { key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals,          value: true }
   - { key: readability-implicit-bool-conversion.AllowIntegerConditions, value: 1 }
+  - { key: bugprone-narrowing-conversions.IgnoreConversionFromTypes,    value: difference_type;ptrdiff_t;size_type;size_t;bool }

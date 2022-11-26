@@ -12,7 +12,8 @@
 namespace genetic_algorithm
 {
     class GaInfo;
-}
+
+} // namespace genetic_algorithm
 
 namespace genetic_algorithm::selection
 {

@@ -137,7 +137,7 @@ namespace genetic_algorithm::algorithm
         std::vector<size_t> referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
 
         /* Return the closest solution associated with ref in [first, last). */
-        ParetoFronts::iterator findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t ref_idx) const;
+        ParetoFronts::iterator findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t ref_idx) const noexcept;
 
         /* Increment the niche count of ref, while keeping refs sorted based on niche counts. */
         void incrementNicheCount(std::vector<size_t>& refs, size_t ref);
@@ -176,7 +176,7 @@ namespace genetic_algorithm::algorithm
         assert(std::distance(first, last) > 0);
         assert(first->size() == ideal_point_.size());
 
-        const size_t popsize = size_t(last - first);
+        const auto popsize = size_t(last - first);
 
         std::vector<Point> new_extreme_points;
         new_extreme_points.reserve(extreme_points_.size());
@@ -249,10 +249,8 @@ namespace genetic_algorithm::algorithm
             {
                 return sol_info_[lhs].rank < sol_info_[rhs].rank;
             }
-            else
-            {
-                return sol_info_[lhs].ref_dist < sol_info_[rhs].ref_dist;
-            }
+
+            return sol_info_[lhs].ref_dist < sol_info_[rhs].ref_dist;
         }
 
         return rng::randomBool();
@@ -282,10 +280,10 @@ namespace genetic_algorithm::algorithm
         return refs;
     }
 
-    inline ParetoFronts::iterator NSGA3::Impl::findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t ref) const
+    inline ParetoFronts::iterator NSGA3::Impl::findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t ref) const noexcept
     {
         auto closest = first;
-        double min_dist = math::inf<double>;
+        auto min_dist = math::inf<double>;
 
         for (; first != last; ++first)
         {
@@ -339,7 +337,7 @@ namespace genetic_algorithm::algorithm
             GA_THROW(std::logic_error, "The number of objectives must be greater than 1 for the NSGA-III algorithm.");
         }
 
-        auto& fitness_matrix = ga.fitness_matrix();
+        const auto& fitness_matrix = ga.fitness_matrix();
 
         pimpl_->ideal_point_ = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
         pimpl_->extreme_points_ = {};
@@ -405,12 +403,12 @@ namespace genetic_algorithm::algorithm
         return pimpl_->createPopulation(pfronts.begin(), pfronts.begin() + popsize);
     }
 
-    size_t NSGA3::selectImpl(const GaInfo&, const FitnessMatrix& pop) const
+    size_t NSGA3::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
     {
-        assert(!pop.empty());
+        assert(!fmat.empty());
 
-        const size_t idx1 = rng::randomIdx(pop);
-        const size_t idx2 = rng::randomIdx(pop);
+        const size_t idx1 = rng::randomIdx(fmat);
+        const size_t idx2 = rng::randomIdx(fmat);
 
         return pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
     }

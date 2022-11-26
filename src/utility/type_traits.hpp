@@ -44,7 +44,8 @@ namespace genetic_algorithm::detail
         struct number_of_types_impl<N, T, Ts...>
             : std::integral_constant<size_t, number_of_types_impl<N + 1, Ts...>::value>
         {};
-    }
+
+    } // namespace _
 
     template<typename... Ts>
     struct number_of_types : std::integral_constant<size_t, 0> {};
@@ -90,7 +91,8 @@ namespace genetic_algorithm::detail
         public:
             using type = decltype(f(static_cast<Derived*>(nullptr)));
         };
-    }
+
+    } // namespace _
 
     template<typename Derived, template<typename...> class BaseTempl>
     using is_derived_from_spec_of = typename _::is_derived_from_spec_impl<Derived, BaseTempl>::type;

@@ -306,7 +306,8 @@ namespace genetic_algorithm::detail
 
             return transform_reduce_impl(std::forward<Tr>(tr), std::forward<Rd>(rd), std::forward<R>(acc), std::forward<Ts>(args)...);
         }
-    }
+
+    } // namespace _
 
     template<typename Tuple, typename Acc, typename TransformOp, typename ReduceOp>
     requires is_specialization_of_v<std::remove_cvref_t<Tuple>, std::tuple>
@@ -324,6 +325,6 @@ namespace genetic_algorithm::detail
         return std::apply(std::move(transform_reduce_), std::forward<Tuple>(tup));
     }
 
-}
+} // namespace genetic_algorithm::detail
 
 #endif // !GA_UTILITY_ALGORITHM_HPP

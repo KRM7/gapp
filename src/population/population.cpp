@@ -70,7 +70,7 @@ namespace genetic_algorithm::detail
 
         if (std::distance(first, last) == 1) return variance;
 
-        std::for_each(first, last, [&, ninv = 1.0 / (last - first - 1)](const FitnessVector& fvec) noexcept
+        std::for_each(first, last, [&, ninv = 1.0 / (last - first - 1.0)](const FitnessVector& fvec) noexcept
         {
             for (size_t dim = 0; dim < fvec.size(); dim++)
             {

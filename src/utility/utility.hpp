@@ -8,10 +8,10 @@
 #include <cstddef>
 
 
-#define GA_ASSERT(condition, msg) assert((condition) && msg)
+#define GA_ASSERT(condition, msg) assert((condition) && (msg))
 #define GA_THROW(exception_type, msg) throw exception_type(msg)
 
-#define GA_UNUSED(...) (void)(sizeof(__VA_ARGS__))
+#define GA_UNUSED(...) (void)(sizeof(__VA_ARGS__))  // NOLINT
 
 #ifdef __GNUC__
 #   define GA_UNREACHABLE() assert(false); __builtin_unreachable()
@@ -31,7 +31,7 @@
 #endif
 
 
-#ifdef GA_EXPORTS
+#ifdef GA_INTERFACE
 #   define GA_API __declspec(dllexport)
 #else
 #   define GA_API __declspec(dllimport)
@@ -40,12 +40,12 @@
 
 namespace genetic_algorithm
 {
-    constexpr std::size_t operator ""_sz(unsigned long long arg)
+    constexpr std::size_t operator ""_sz(unsigned long long arg) noexcept
     {
         return static_cast<std::size_t>(arg);
     }
 
-    constexpr std::ptrdiff_t operator ""_pd(unsigned long long arg)
+    constexpr std::ptrdiff_t operator ""_pd(unsigned long long arg) noexcept
     {
         return static_cast<std::ptrdiff_t>(arg);
     }

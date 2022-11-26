@@ -12,7 +12,8 @@
 namespace genetic_algorithm
 {
     class GaInfo;
-}
+
+} // namespace genetic_algorithm
 
 /** Algorithm types that can be used in the genetic algorithms (contains both single- and multi-objective algorithms). */
 namespace genetic_algorithm::algorithm

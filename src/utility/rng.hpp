@@ -47,17 +47,17 @@ namespace genetic_algorithm::rng
     /** Generates a random boolean value from a uniform distribution. */
     inline bool randomBool() noexcept;
 
-    /** Generates a random integer of type IntType from a uniform distribution on the closed interval [l_bound, u_bound]. */
+    /** Generates a random integer of type IntType from a uniform distribution on the closed interval [lbound, ubound]. */
     template<std::integral IntType = int>
-    inline IntType randomInt(IntType l_bound, IntType u_bound);
+    inline IntType randomInt(IntType lbound, IntType ubound);
 
     /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
     template<std::floating_point RealType = double>
     inline RealType randomReal();
 
-    /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [l_bound, u_bound). */
+    /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [lbound, ubound). */
     template<std::floating_point RealType = double>
-    inline RealType randomReal(RealType l_bound, RealType u_bound);
+    inline RealType randomReal(RealType lbound, RealType ubound);
 
     /** Generates a random floating-point value of type RealType from a standard normal distribution. */
     template<std::floating_point RealType = double>
@@ -79,9 +79,9 @@ namespace genetic_algorithm::rng
     template<std::input_iterator Iter>
     inline auto randomElement(Iter first, Iter last);
 
-    /** Generates @p count unique integers from the range [l_bound, u_bound). */
+    /** Generates @p count unique integers from the range [lbound, ubound). */
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType l_bound, IntType u_bound, size_t count);
+    std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
 
     /** Select an index based on a discrete CDF. */
     template<std::floating_point T>
@@ -134,11 +134,11 @@ namespace genetic_algorithm::rng
     }
 
     template<std::integral IntType>
-    IntType randomInt(IntType l_bound, IntType u_bound)
+    IntType randomInt(IntType lbound, IntType ubound)
     {
-        assert(l_bound <= u_bound);
+        assert(lbound <= ubound);
 
-        return std::uniform_int_distribution{ l_bound, u_bound }(rng::prng);
+        return std::uniform_int_distribution{ lbound, ubound }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -148,11 +148,11 @@ namespace genetic_algorithm::rng
     }
 
     template<std::floating_point RealType>
-    RealType randomReal(RealType l_bound, RealType u_bound)
+    RealType randomReal(RealType lbound, RealType ubound)
     {
-        assert(l_bound <= u_bound);
+        assert(lbound <= ubound);
 
-        return std::uniform_real_distribution{ l_bound, u_bound }(rng::prng);
+        return std::uniform_real_distribution{ lbound, ubound }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -229,21 +229,22 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count)
     {
-        const size_t range_len = size_t(ubound - lbound);
+        const auto range_len = size_t(ubound - lbound);
 
+        assert(ubound >= lbound);
         assert(range_len >= count);
 
-        std::vector<bool> is_selected(range_len);
-        std::vector<IntType> numbers(count);
+        std::vector is_selected(range_len, false);
+        std::vector numbers(count, ubound);
 
         for (IntType i = ubound - IntType(count); i < ubound; i++)
         {
-            const IntType num = rng::randomInt(lbound, i);
-            const size_t ppos = size_t(num - lbound);
-            const size_t npos = size_t(i + IntType(count) - ubound);
+            const auto num = rng::randomInt(lbound, i);
+            const auto spos = size_t(num - lbound);
+            const auto npos = size_t(i + IntType(count) - ubound);
 
-            numbers[npos] = is_selected[ppos] ? i : num;
-            is_selected[ppos] = true;
+            numbers[npos] = is_selected[spos] ? i : num;
+            is_selected[spos] = true;
         }
 
         return numbers;
@@ -260,6 +261,6 @@ namespace genetic_algorithm::rng
         return size_t(selected - cdf.begin());
     }
 
-}
+} // namespace genetic_algorithm::rng
 
 #endif // !GA_UTILITY_RNG_HPP

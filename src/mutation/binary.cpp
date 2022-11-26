@@ -14,7 +14,7 @@ namespace genetic_algorithm::mutation::binary
 
         for (const auto& idx : flipped_indices)
         {
-            candidate.chromosome[idx] = !static_cast<bool>(candidate.chromosome[idx]);
+            candidate.chromosome[idx] = GeneType(!bool(candidate.chromosome[idx]));
         }
     }
 

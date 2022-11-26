@@ -11,7 +11,8 @@
 namespace genetic_algorithm
 {
     class GaInfo;
-}
+
+} // namespace genetic_algorithm
 
 /** Stop conditions that can be used in the algorithms. */
 namespace genetic_algorithm::stopping

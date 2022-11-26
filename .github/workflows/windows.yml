@@ -47,7 +47,7 @@ jobs:
       run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.build-shared }}
 
     - name: build
-      run: cmake --build . --parallel --verbose --config ${{ matrix.build-type }}
+      run: cmake --build . --parallel --config ${{ matrix.build-type }}
     
     - name: run-tests
       run: ctest --output-on-failure --schedule-random

@@ -12,7 +12,8 @@ namespace genetic_algorithm
 {
     template<Gene T>
     class GA;
-}
+
+} // namespace genetic_algorithm
 
 /** Crossover operators used in the algorithms. */
 namespace genetic_algorithm::crossover
@@ -32,7 +33,7 @@ namespace genetic_algorithm::crossover
 
         /** Create a crossover operator with a crossover probability of 0.8. */
         explicit Crossover() noexcept :
-            pc_(0.8) {}
+            pc_(0.8_p) {}
 
         /**
         * Create a crossover operator.

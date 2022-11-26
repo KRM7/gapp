@@ -107,6 +107,7 @@ namespace genetic_algorithm::detail
 
         buildTree();
     }
-}
+
+} // namespace genetic_algorithm::detail
 
 #endif // !GA_UTILITY_CONE_TREE_HPP
