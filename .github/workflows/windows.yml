@@ -8,9 +8,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: [Debug, Release, RelWithDebInfo]
+        build-type: [Debug, Release]
         compiler: [ { cxx: cl, pkgs: visualstudio2022buildtools, gen: "Visual Studio 17 2022" } ]
-        build-shared: ["OFF"]
+        lib-type: [ { name: Static, cmake-flag: "OFF" }, { name: Shared, cmake-flag: "ON" } ]
 
         #- cxx: g++
         #  pkgs: mingw --version=11.2.0
@@ -24,7 +24,7 @@ jobs:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.compiler.cxx }} ${{ matrix.build-type }}
+    name: ${{ matrix.compiler.cxx }}, ${{ matrix.build-type }}, ${{ matrix.lib-type.name }}
 
 
     steps:

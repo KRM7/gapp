@@ -5,7 +5,6 @@ project(GeneticAlgorithm VERSION 0.1 LANGUAGES CXX)
 include(GNUInstallDirs)
 include(CTest)
 
-#option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 option(GA_BUILD_TESTS "Enable the tests for the library." ON)
 option(GA_BUILD_EXAMPLES "Enable building the examples for the library." OFF) # TODO
 option(GA_USE_WERROR "Treat warnings as errors during the build." ON)
@@ -25,12 +24,9 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release|RelWithDebInfo)$")
 endif()
 
 # Shared library specific settings
-#if(BUILD_SHARED_LIBS)
-#    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-#    if (WIN32)
-#        set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
-#    endif()
-#endif()
+if(BUILD_SHARED_LIBS)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
 
 # Always generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -44,8 +40,8 @@ if(MSVC) # MSVC style compiler interface
     endif()
     set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++20 -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -Z7 -RTC1 -Od")
-    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar") # -fp:fast
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Z7 -O2 -Oi -Gy -Qpar") # -fp:fast
+    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Z7 -O2 -Oi -Gy -Qpar")
 else() # GNU style compiler interface
     set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wnull-dereference -Wno-unused-function")
     if(GA_USE_WERROR)
@@ -74,7 +70,7 @@ endif()
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.hpp")
 
-add_library(GeneticAlgorithm STATIC ${SOURCES} ${HEADERS})
+add_library(GeneticAlgorithm ${SOURCES} ${HEADERS})
 
 target_include_directories(GeneticAlgorithm SYSTEM INTERFACE "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>"
                                                              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/GeneticAlgorithm>"

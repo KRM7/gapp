@@ -42,7 +42,7 @@ namespace genetic_algorithm::rng
     using PRNG = AtomicSplitmix64;
 
     /** PRNG instance used in the genetic algorithms. */
-    extern PRNG prng;
+    inline PRNG prng{ GA_SEED };
 
     /** Generates a random boolean value from a uniform distribution. */
     inline bool randomBool() noexcept;

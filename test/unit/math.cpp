@@ -79,7 +79,7 @@ TEST_CASE("fp_compare", "[math]")
 
     SECTION("approx equal")
     {
-        LocalTolerances _(10, 1E-12);
+        ScopedTolerances _(10, 1E-12);
 
         REQUIRE(floatIsEqual(0.0, 1E-13));
         REQUIRE(!floatIsEqual(0.0, 1E-11));

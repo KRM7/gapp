@@ -22,30 +22,30 @@ namespace genetic_algorithm::math
         static T eps() noexcept { return relative_tolerance_epsilons * std::numeric_limits<T>::epsilon(); }
 
     private:
-        static double absolute_tolerance;
-        static unsigned relative_tolerance_epsilons;
+        inline static double absolute_tolerance = 1E-8;
+        inline static unsigned relative_tolerance_epsilons = 100;
 
-        friend class LocalTolerances;
+        friend class ScopedTolerances;
     };
 
-    class LocalTolerances
+    class ScopedTolerances
     {
     public:
-        LocalTolerances(unsigned num_epsilons, double abs) noexcept :
+        ScopedTolerances(unsigned num_epsilons, double abs) noexcept :
             old_abs_tol(std::exchange(Tolerances::absolute_tolerance, abs)),
             old_eps_tol(std::exchange(Tolerances::relative_tolerance_epsilons, num_epsilons))
         {}
 
-        ~LocalTolerances()
+        ~ScopedTolerances() noexcept
         {
             Tolerances::absolute_tolerance = old_abs_tol;
             Tolerances::relative_tolerance_epsilons = old_eps_tol;
         }
 
-        LocalTolerances(const LocalTolerances&)            = delete;
-        LocalTolerances(LocalTolerances&&)                 = delete;
-        LocalTolerances& operator=(const LocalTolerances&) = delete;
-        LocalTolerances& operator=(LocalTolerances&&)      = delete;
+        ScopedTolerances(const ScopedTolerances&)            = delete;
+        ScopedTolerances(ScopedTolerances&&)                 = delete;
+        ScopedTolerances& operator=(const ScopedTolerances&) = delete;
+        ScopedTolerances& operator=(ScopedTolerances&&)      = delete;
 
     private:
         double old_abs_tol;

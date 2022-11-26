@@ -339,8 +339,8 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
-#include "../algorithm/algorithm_base.decl.hpp"
-#include "../algorithm/single_objective.decl.hpp"
+#include "../algorithm/algorithm_base.hpp"
+#include "../algorithm/single_objective.hpp"
 #include "../utility/utility.hpp"
 #include <type_traits>
 #include <utility>

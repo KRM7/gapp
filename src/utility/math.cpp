@@ -11,9 +11,6 @@
 
 namespace genetic_algorithm::math
 {
-    double Tolerances::absolute_tolerance = 1E-8;
-    unsigned Tolerances::relative_tolerance_epsilons = 100;
-
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
     {
         assert(lhs.size() == rhs.size());
