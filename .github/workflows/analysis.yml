@@ -15,9 +15,6 @@ jobs:
       - name: checkout-repo
         uses: actions/checkout@v3
 
-      - name: setup-catch
-        run: bash ./install_catch.sh
-
       - name: setup-cmake
         run: cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
 
@@ -35,6 +32,7 @@ jobs:
         with:
           sarif_file: ${{ steps.run-analysis.outputs.sarif }}
 
+#############################################################################################################
 
   clang-analyzers:
     runs-on: ubuntu-22.04
@@ -60,20 +58,56 @@ jobs:
       - name: setup-tools
         run: sudo apt install -y ${{ matrix.pkgs }}
 
-      - name: setup-catch
-        env:
-          CXX: ${{ matrix.cxx }}
-        run: sudo bash ./install_catch.sh
-
       - name: setup-analysis
         env:
           CXX: ${{ matrix.cxx }}
         run: cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -D${{ matrix.tool.cmake-flag }}
       
       - name: run-analysis
-        run: cmake --build . 2>&1 | tee ${{ matrix.tool.name }}-out.txt
+        run: cmake --build . --target GeneticAlgorithm 2>&1 | tee ${{ matrix.tool.name }}-out.txt
       
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.tool.name }}-analysis-results
           path: ${{ github.workspace }}/build/${{ matrix.tool.name }}-out.txt
+
+#############################################################################################################
+
+  codeql:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        include:
+          - pkgs: gcc-11 libtbb-dev
+            cxx: g++-11
+
+    name: codeql
+
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/build
+
+    steps:
+      - name: checkout-repo
+        uses: actions/checkout@v3
+      
+      - name: setup-tools
+        run: sudo apt install -y ${{ matrix.pkgs }}
+
+      - name: setup-codeql
+        uses: github/codeql-action/init@v2
+        with:
+          languages: cpp
+          queries: security-and-quality
+
+      - name: setup-build
+        env:
+          CXX: ${{ matrix.cxx }}
+        run: cmake .. -DCMAKE_BUILD_TYPE=Release -DGA_LINK_TBB=ON -DBUILD_TESTING=OFF
+      
+      - name: build
+        run: cmake --build . --target GeneticAlgorithm
+
+      - name: run-analysis
+        uses: github/codeql-action/analyze@v2

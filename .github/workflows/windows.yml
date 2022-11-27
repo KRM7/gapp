@@ -44,7 +44,7 @@ jobs:
       env:
         CXX: ${{ matrix.compiler.cxx }}
         CMAKE_GENERATOR: ${{ matrix.compiler.gen }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.build-shared }}
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.lib-type.cmake-flag }}
 
     - name: build
       run: cmake --build . --parallel --config ${{ matrix.build-type }}
