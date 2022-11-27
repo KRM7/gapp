@@ -1,15 +1,17 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "permutation.hpp"
-#include "../utility/rng.hpp"
+#include "../core/ga_base.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
 #include "../stop_condition/stop_condition.hpp"
+#include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <numeric>
+#include <vector>
 #include <memory>
-#include <stdexcept>
+#include <utility>
 
 namespace genetic_algorithm
 {

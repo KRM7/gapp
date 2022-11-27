@@ -1,11 +1,14 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "../utility/rng.hpp"
-#include "../utility/utility.hpp"
+#include "../core/ga_base.hpp"
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"
 #include "../stop_condition/stop_condition.hpp"
+#include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
+#include <algorithm>
+#include <vector>
 #include <utility>
 #include <memory>
 #include <stdexcept>

@@ -3,10 +3,9 @@
 #ifndef GA_ALGORITHM_REFERENCE_LINES_HPP
 #define GA_ALGORITHM_REFERENCE_LINES_HPP
 
-#include <vector>
-#include <utility>
-#include <cstddef>
 #include "../utility/math.hpp"
+#include <vector>
+#include <cstddef>
 
 namespace genetic_algorithm::algorithm::dtl
 {

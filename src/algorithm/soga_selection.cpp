@@ -3,16 +3,18 @@
 #include "soga_selection.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
-#include "../utility/rng.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
+#include "../utility/math.hpp"
+#include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <functional>
 #include <numeric>
 #include <vector>
-#include <cmath>
+#include <limits>
 #include <stdexcept>
+#include <cmath>
 #include <cassert>
 
 namespace genetic_algorithm::selection

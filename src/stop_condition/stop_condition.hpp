@@ -4,9 +4,7 @@
 #define GA_STOP_CONDITION_DECL_HPP
 
 #include "stop_condition_base.hpp"
-#include "../population/candidate.hpp"
 #include "../population/population.hpp"
-#include <vector>
 #include <cstddef>
 
 /* Early stop conditions for the genetic algorithms. */

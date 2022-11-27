@@ -6,6 +6,8 @@
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
 #include "../encoding/gene_types.hpp"
+#include "../utility/probability.hpp"
+#include <cstddef>
 
 /** Predefined crossover operators for the binary encoded genetic algorithms (BinaryGA). */
 namespace genetic_algorithm::crossover::binary

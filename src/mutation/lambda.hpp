@@ -3,7 +3,7 @@
 #ifndef GA_MUTATION_LAMBDA_HPP
 #define GA_MUTATION_LAMBDA_HPP
 
-#include "mutation_base.decl.hpp"
+#include "mutation_base.hpp"
 #include "../population/candidate.hpp"
 #include <functional>
 #include <utility>

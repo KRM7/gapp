@@ -12,11 +12,10 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-#include <limits>
 #include <utility>
+#include <stdexcept>
 #include <cstddef>
 #include <cassert>
-#include <stdexcept>
 
 namespace genetic_algorithm::algorithm
 {
@@ -49,7 +48,7 @@ namespace genetic_algorithm::algorithm
                 const double finterval = std::max(fvec[last_idx] - fvec[first_idx], 1E-6);
 
                 crowding_distances[first_idx] = math::inf<double>;
-                crowding_distances[last_idx] = math::inf<double>;
+                crowding_distances[last_idx]  = math::inf<double>;
 
                 for (auto it = front_first + 1; it < front_last - 1; ++it)
                 {

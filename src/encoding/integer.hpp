@@ -3,7 +3,8 @@
 #ifndef GA_ENCODING_INTEGER_HPP
 #define GA_ENCODING_INTEGER_HPP
 
-#include "../core/ga_base.hpp"
+#include "../core/ga_base.decl.hpp"
+#include "../population/candidate.hpp"
 #include "gene_types.hpp"
 #include <cstddef>
 

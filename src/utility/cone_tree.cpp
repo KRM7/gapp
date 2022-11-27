@@ -3,11 +3,12 @@
 #include "cone_tree.hpp"
 #include "functional.hpp"
 #include "math.hpp"
-#include "utility.hpp"
+#include "matrix.hpp"
 #include <algorithm>
 #include <numeric>
 #include <functional>
 #include <iterator>
+#include <utility>
 #include <cmath>
 #include <cassert>
 

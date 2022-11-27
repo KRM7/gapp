@@ -1,14 +1,19 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
-#include "../encoding/real.hpp"
+#include "crossover_base.hpp"
+#include "../population/candidate.hpp"
+#include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
+#include <vector>
 #include <limits>
-#include <cmath>
 #include <stdexcept>
-#include <cassert>
+#include <utility>
+#include <cmath>
+#include <cstddef>
 
 namespace genetic_algorithm::crossover::real
 {

@@ -1,11 +1,13 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "../encoding/integer.hpp"
+#include "../population/candidate.hpp"
+#include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/probability.hpp"
 #include "../utility/utility.hpp"
-#include <algorithm>
 #include <vector>
+#include <cstddef>
 
 namespace genetic_algorithm::mutation::integer
 {

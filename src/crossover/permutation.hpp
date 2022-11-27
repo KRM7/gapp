@@ -6,7 +6,6 @@
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
 #include "../encoding/gene_types.hpp"
-#include <cstddef>
 
 /** Predefined crossover operators for the permutation encoded GAs (PermutationGA), designed specifically for combinatorial problems. */
 namespace genetic_algorithm::crossover::perm

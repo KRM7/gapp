@@ -6,7 +6,10 @@
 #include "utility.hpp"
 #include <vector>
 #include <concepts>
+#include <limits>
+#include <utility>
 #include <cstdint>
+#include <cstddef>
 
 namespace genetic_algorithm::math
 {
@@ -139,7 +142,6 @@ namespace genetic_algorithm::math
 
 #include <algorithm>
 #include <cmath>
-#include <cassert>
 
 namespace genetic_algorithm::math
 {

@@ -1,11 +1,13 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "ga_info.hpp"
-#include "../algorithm/algorithm_base.decl.hpp"
-#include "../algorithm/single_objective.decl.hpp"
+#include "../algorithm/algorithm_base.hpp"
+#include "../algorithm/single_objective.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
 #include "../algorithm/nsga3.hpp"
 #include "../utility/utility.hpp"
+#include <vector>
+#include <memory>
 #include <utility>
 #include <stdexcept>
 

@@ -3,7 +3,7 @@
 #ifndef GA_CROSSOVER_LAMBDA_HPP
 #define GA_CROSSOVER_LAMBDA_HPP
 
-#include "crossover_base.decl.hpp"
+#include "crossover_base.hpp"
 #include "../population/candidate.hpp"
 #include <functional>
 #include <utility>

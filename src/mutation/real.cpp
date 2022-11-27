@@ -1,14 +1,16 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
-#include "../core/ga_info.hpp"
-#include "../encoding/real.hpp"
+#include "../population/candidate.hpp"
+#include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
-#include <cmath>
+#include <vector>
 #include <limits>
 #include <stdexcept>
+#include <cmath>
+#include <cstddef>
 
 namespace genetic_algorithm::mutation::real
 {

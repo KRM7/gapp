@@ -1,8 +1,11 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "binary.hpp"
+#include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/probability.hpp"
 #include "../utility/utility.hpp"
+#include <vector>
 #include <cstddef>
 
 namespace genetic_algorithm::mutation::binary

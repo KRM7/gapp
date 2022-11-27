@@ -5,7 +5,6 @@
 
 #include "mutation_base.hpp"
 #include "../encoding/gene_types.hpp"
-#include <cstddef>
 
 /** Predefined mutation operators for the integer encoded genetic algorithm. */
 namespace genetic_algorithm::mutation::integer

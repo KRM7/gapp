@@ -1,13 +1,17 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
-#include "../utility/rng.hpp"
+#include "../core/ga_base.hpp"
 #include "../crossover/real.hpp"
 #include "../mutation/real.hpp"
 #include "../stop_condition/stop_condition.hpp"
+#include "../utility/rng.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
+#include <vector>
 #include <memory>
 #include <stdexcept>
+#include <utility>
 #include <cassert>
 
 namespace genetic_algorithm

@@ -1,10 +1,13 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "permutation.hpp"
+#include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
+#include <iterator>
 #include <vector>
+#include <utility>
 #include <stdexcept>
 #include <cstddef>
 

@@ -8,7 +8,7 @@
 #include "../algorithm/single_objective.fwd.hpp"
 #include "../stop_condition/stop_condition_base.fwd.hpp"
 #include "../utility/probability.hpp"
-#include <vector>
+#include <functional>
 #include <type_traits>
 #include <memory>
 #include <cstddef>
@@ -341,8 +341,8 @@ namespace genetic_algorithm
 
 #include "../algorithm/algorithm_base.hpp"
 #include "../algorithm/single_objective.hpp"
+#include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/utility.hpp"
-#include <type_traits>
 #include <utility>
 #include <stdexcept>
 

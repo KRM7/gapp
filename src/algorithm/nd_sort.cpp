@@ -1,18 +1,21 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "nd_sort.hpp"
+#include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/iterators.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/matrix.hpp"
 #include <algorithm>
+#include <functional>
+#include <execution>
 #include <iterator>
-#include <numeric>
 #include <atomic>
 #include <vector>
 #include <utility>
 #include <cstddef>
+#include <cassert>
 
 namespace genetic_algorithm::algorithm::dtl
 {

@@ -4,6 +4,8 @@
 #define GA_ALGORITHM_NSGA2_HPP
 
 #include "algorithm_base.hpp"
+#include <vector>
+#include <cstddef>
 
 namespace genetic_algorithm::algorithm
 {

@@ -3,8 +3,8 @@
 #ifndef GA_ALGORITHM_NSGA3_HPP
 #define GA_ALGORITHM_NSGA3_HPP
 
-#include <memory>
 #include "algorithm_base.hpp"
+#include <memory>
 
 namespace genetic_algorithm::algorithm
 {

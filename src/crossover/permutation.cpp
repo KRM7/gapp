@@ -1,10 +1,15 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "permutation.hpp"
+#include "crossover_base.hpp"
 #include "crossover_dtl.hpp"
+#include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
+#include <vector>
 #include <utility>
+#include <stdexcept>
+#include <cstddef>
 
 namespace genetic_algorithm::crossover::perm
 {
@@ -119,8 +124,8 @@ namespace genetic_algorithm::crossover::perm
         
         if (chrom_len < 2) return { parent1, parent2 };
 
-        auto child1 = dtl::pmxCrossoverImpl<GeneType>(parent1, parent2);
-        auto child2 = dtl::pmxCrossoverImpl<GeneType>(parent2, parent1);
+        auto child1 = dtl::pmxCrossoverImpl(parent1, parent2);
+        auto child2 = dtl::pmxCrossoverImpl(parent2, parent1);
 
         return { std::move(child1), std::move(child2) };
     }

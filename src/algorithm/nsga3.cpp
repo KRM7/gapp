@@ -11,15 +11,15 @@
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/cone_tree.hpp"
-#include <vector>
-#include <utility>
 #include <algorithm>
+#include <execution>
 #include <functional>
 #include <iterator>
-#include <limits>
+#include <vector>
+#include <stdexcept>
+#include <utility>
 #include <cstddef>
 #include <cassert>
-#include <stdexcept>
 
 namespace genetic_algorithm::algorithm
 {

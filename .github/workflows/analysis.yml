@@ -61,7 +61,7 @@ jobs:
       - name: setup-analysis
         env:
           CXX: ${{ matrix.cxx }}
-        run: cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -D${{ matrix.tool.cmake-flag }}
+        run: cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=OFF -D${{ matrix.tool.cmake-flag }}
       
       - name: run-analysis
         run: cmake --build . --target GeneticAlgorithm 2>&1 | tee ${{ matrix.tool.name }}-out.txt
@@ -74,6 +74,7 @@ jobs:
 #############################################################################################################
 
   codeql:
+    name: codeql
     runs-on: ubuntu-22.04
 
     strategy:
@@ -81,8 +82,6 @@ jobs:
         include:
           - pkgs: gcc-11 libtbb-dev
             cxx: g++-11
-
-    name: codeql
 
     defaults:
       run:

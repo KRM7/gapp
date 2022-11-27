@@ -6,6 +6,7 @@
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 

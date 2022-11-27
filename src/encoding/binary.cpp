@@ -1,10 +1,13 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "binary.hpp"
-#include "../utility/rng.hpp"
+#include "../core/ga_base.hpp"
 #include "../crossover/binary.hpp"
 #include "../mutation/binary.hpp"
 #include "../stop_condition/stop_condition.hpp"
+#include "../utility/rng.hpp"
+#include <algorithm>
+#include <vector>
 #include <utility>
 #include <memory>
 

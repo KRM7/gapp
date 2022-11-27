@@ -5,6 +5,7 @@
 
 #include "mutation_base.hpp"
 #include "../encoding/gene_types.hpp"
+#include "../utility/probability.hpp"
 
 /** Predefined mutation operators for the permutation encoded genetic algorithm. */
 namespace genetic_algorithm::mutation::perm

@@ -4,11 +4,8 @@
 #define GA_POPULATION_HPP
 
 #include "candidate.hpp"
-#include "../utility/algorithm.hpp"
-#include "../utility/iterators.hpp"
-#include "../utility/utility.hpp"
 #include <vector>
-#include <atomic>
+#include <cstddef>
 
 namespace genetic_algorithm
 {
@@ -80,7 +77,12 @@ namespace genetic_algorithm::detail::_
 
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
+#include "../utility/iterators.hpp"
+#include "../utility/utility.hpp"
+#include "../utility/math.hpp"
 #include <algorithm>
+#include <functional>
+#include <atomic>
 #include <cassert>
 
 namespace genetic_algorithm::detail

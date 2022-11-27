@@ -15,12 +15,12 @@
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/utility.hpp"
-#include <type_traits>
-#include <execution>
-#include <atomic>
 #include <algorithm>
 #include <functional>
 #include <numeric>
+#include <execution>
+#include <type_traits>
+#include <atomic>
 #include <utility>
 #include <stdexcept>
 #include <cassert>

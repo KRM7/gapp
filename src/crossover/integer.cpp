@@ -1,11 +1,13 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
+#include "crossover_base.hpp"
 #include "crossover_dtl.hpp"
 #include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
+#include <vector>
 #include <utility>
 #include <stdexcept>
 #include <cstddef>

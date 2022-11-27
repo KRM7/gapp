@@ -4,6 +4,7 @@
 #include "../utility/math.hpp"
 #include "../utility/algorithm.hpp"
 #include <algorithm>
+#include <numeric>
 #include <iterator>
 #include <vector>
 #include <cmath>
