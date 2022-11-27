@@ -1,6 +1,8 @@
 [![linux](https://github.com/KRM7/genetic-algorithms/actions/workflows/linux.yml/badge.svg?branch=dev)](https://github.com/KRM7/genetic-algorithms/actions/workflows/linux.yml)
 [![windows](https://github.com/KRM7/genetic-algorithms/actions/workflows/windows.yml/badge.svg?branch=dev)](https://github.com/KRM7/genetic-algorithms/actions/workflows/windows.yml)
+[![macos](https://github.com/KRM7/genetic-algorithms/actions/workflows/macos.yml/badge.svg?branch=dev)](https://github.com/KRM7/genetic-algorithms/actions/workflows/macos.yml)
 [![sanitizers](https://github.com/KRM7/genetic-algorithms/actions/workflows/sanitizers.yml/badge.svg?branch=dev)](https://github.com/KRM7/genetic-algorithms/actions/workflows/sanitizers.yml)
+
 
 # Genetic Algorithms in C++ 
 
