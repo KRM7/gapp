@@ -14,9 +14,9 @@
 #define GA_UNUSED(...) (void)(sizeof(__VA_ARGS__))  // NOLINT
 
 #ifdef __GNUC__
-#   define GA_UNREACHABLE() assert(false); __builtin_unreachable()
+#   define GA_UNREACHABLE() __builtin_unreachable()
 #elif defined(_MSC_VER)
-#   define GA_UNREACHABLE() assert(false); __assume(false)
+#   define GA_UNREACHABLE() __assume(false)
 #else
 #   define GA_UNREACHABLE() assert(false);
 #endif
