@@ -4,6 +4,7 @@ project(GeneticAlgorithm VERSION 0.1 LANGUAGES CXX)
 
 include(GNUInstallDirs)
 include(CTest)
+include(CheckIPOSupported)
 
 option(GA_BUILD_TESTS "Enable the tests for the library." ON)
 option(GA_BUILD_EXAMPLES "Enable building the examples for the library." OFF) # TODO
@@ -60,9 +61,15 @@ else() # GNU style compiler interface
     endif()
 endif()
 
-if (GA_USE_LTO AND CMAKE_BUILD_TYPE MATCHES "(Release|RelWithDebInfo)")
-    message("Using link time optimizations.")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+# LTO setup
+check_ipo_supported(RESULT LTO_SUPPORTED)
+if(GA_USE_LTO AND LTO_SUPPORTED AND CMAKE_BUILD_TYPE MATCHES "(Release|RelWithDebInfo)")
+    if (BUILD_SHARED_LIBS AND MSVC)
+        message("LTO is not available.")
+    else()
+        message("Using link time optimizations.")
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    endif()
 endif()
 
 
