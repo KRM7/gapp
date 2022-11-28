@@ -9,13 +9,13 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <format>
 #include <chrono>
 #include <utility>
 #include <functional>
 #include <algorithm>
 #include <atomic>
 #include <type_traits>
+
 
 template<typename F, typename... Args>
 requires std::invocable<F, Args...>
@@ -88,8 +88,7 @@ void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::str
 
     auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&GA::run), ga, max_gen);
 
-    std::cout 
-    << std::format("\n\nOptimum found for the {} is (actual best is {}):\n", problem_name, fitness_func.optimal_x());
+    std::cout << "\n\nOptimum found for the " << problem_name << " is (actual best is " << fitness_func.optimal_x() << "):\n";
 
     for (const auto& sol : sols)
     {
@@ -104,15 +103,11 @@ void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::str
         }
     }
 
-    std::cout
-    << std::format("The number of optimal solutions found: {}\n"
-                   "Best fitness found: {:.4g} (best possible is {:.4g})\n"
-                   "Number of objective function evals performed: {}\n"
-                   "Time taken: {:.4f} s\n\n",
-                   sols.size(),
-                   sols[0].fitness[0], fitness_func.optimal_value(),
-                   ga.num_fitness_evals(),
-                   time_spent);
+    std::cout << "The number of optimal solutions found: " << sols.size()
+              << "\nBest fitness found: " << std::defaultfloat << std::setprecision(4) << sols[0].fitness[0]
+              << " (best possible is " << std::defaultfloat << fitness_func.optimal_value()
+              << "\nNumber of objective function evals performed: " << ga.num_fitness_evals()
+              << "\nTime taken: " << std::fixed << std::setprecision(4) << time_spent << "s\n\n";
 }
 
 template<genetic_algorithm::GeneticAlgorithmType GA>
@@ -122,16 +117,15 @@ void benchmarkMoga(GA& ga, size_t max_gen, const std::string& ga_name, const std
 
     auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&GA::run), ga, max_gen);
 
-    std::string msg = "\n\nOptimal solutions found for the {} problem with the {}: {}\n"
-                      "Number of fitness function evaluations: {}\n"
-                      "Time taken: {:.4f} s\n\n";
+    std::cout << "\n\nOptimal solutions found for the " << problem_name << " problem with the " << ga_name << ": " << sols.size() << "\n"
+              << "\nNumber of fitness function evaluations: " << ga.num_fitness_evals()
+              << "\nTime taken: " << std::fixed << std::setprecision(4) << time_spent << " s\n\n";
 
-    std::cout << std::format(msg, problem_name, ga_name, sols.size(), ga.num_fitness_evals(), time_spent);
+    std::string pop_path = "test/mo_results/" + ga_name + "_" + problem_name + "_last.txt";
+    std::string sol_path = "test/mo_results/" + ga_name + "_" + problem_name + "_sols.txt";
 
-    std::string sols_path = std::format("test/mo_results/{}_{}_{}.txt", ga_name, problem_name, "{}");
-
-    std::ofstream flast(std::format(sols_path, "last"));
-    std::ofstream fsols(std::format(sols_path, "sols"));
+    std::ofstream flast(pop_path);
+    std::ofstream fsols(sol_path);
 
     writePopulationToFile(ga.population(), flast);
     writePopulationToFile(sols, fsols);

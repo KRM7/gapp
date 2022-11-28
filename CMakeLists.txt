@@ -101,6 +101,7 @@ install(EXPORT GeneticAlgorithmConfig
 if(GA_BUILD_TESTS AND BUILD_TESTING)
     enable_testing()
     add_subdirectory("${CMAKE_SOURCE_DIR}/test/unit")
+    add_subdirectory("${CMAKE_SOURCE_DIR}/test/benchmark")
 endif()
 
 

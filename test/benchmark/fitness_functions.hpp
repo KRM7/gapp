@@ -14,6 +14,7 @@
 #include <sstream>
 #include <cmath>
 #include <vector>
+#include <array>
 #include <string>
 #include <numeric>
 #include <algorithm>
@@ -644,48 +645,25 @@ private:
 
 /* Permutation fitness functions. */
 
-/*
-* Traveling salesman problem. The node coordinates are read from files.
-*/
+/* Traveling salesman problem. */
+template<size_t N>
 class TSP
 {
 private:
-
-    size_t num_vars_ = 0;
-    std::vector<std::pair<double, double>> coords;
-    std::vector<std::vector<double>> dmat;
+    std::array<std::array<double, N>, N> dmat;
 public:
+    using Coords = std::array<double, 2>;
 
-    TSP(std::string fname)
+    TSP(const std::array<Coords, N>& cities) noexcept
     {
-        std::ifstream file(fname);
-
-        std::string line;
-        while (std::getline(file, line))
-        {
-            std::stringstream linestream(line);
-            int idx;
-            double c1, c2;
-
-            linestream >> idx >> c1 >> c2;
-            coords.emplace_back(c1, c2);
-        }
-        file.close();
-
-        num_vars_ = coords.size();
-
-        std::vector<std::vector<double>> mat(coords.size(), std::vector<double>(coords.size()));
-        for (size_t i = 0; i < mat.size(); i++)
-        for (size_t j = 0; j < mat[i].size(); j++)
-        {
-            mat[i][j] = std::sqrt(std::pow(coords[i].first - coords[j].first, 2) + std::pow(coords[i].second - coords[j].second, 2));
-        }
-        dmat = mat;
+        for (size_t i = 0; i < dmat.size(); i++)
+            for (size_t j = 0; j < dmat.size(); j++)
+                dmat[i][j] = std::sqrt(std::pow(cities[i][0] - cities[j][0], 2) + std::pow(cities[i][1] - cities[j][1], 2));
     }
 
     std::vector<double> operator()(const std::vector<size_t>& x) const
     {
-        assert(x.size() == num_vars());
+        assert(x.size() == N);
 
         double distance = 0.0;
         for (size_t i = 0; i < x.size() - 1; i++)
@@ -697,12 +675,12 @@ public:
         return { -distance };
     }
 
-    size_t num_vars() const noexcept { return num_vars_; }
+    constexpr static size_t num_vars() noexcept { return N; }
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double optimal_x() noexcept { return std::numeric_limits<double>::quiet_NaN(); }
-    double optimal_value() const noexcept
+    constexpr static double optimal_value() noexcept
     {
-        switch (num_vars_)
+        switch (N)
         {
             case 52:
                 return -7542.0;

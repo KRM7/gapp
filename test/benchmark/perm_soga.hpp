@@ -9,12 +9,13 @@
 #include "../src/mutation/permutation.hpp"
 #include "fitness_functions.hpp"
 #include "benchmark_utils.hpp"
+#include "tsp_data/tsp_data.hpp"
 
 using namespace genetic_algorithm;
 
 void perm_tsp52()
 {
-    TSP tsp52("test/tsp_data/tsp52.txt");
+    TSP tsp52(tsp52_coords);
 
     PermutationGA GA(tsp52.num_vars(), tsp52);
 
@@ -28,7 +29,7 @@ void perm_tsp52()
 
 void perm_tsp76()
 {
-    TSP tsp76("test/tsp_data/tsp76.txt");
+    TSP tsp76(tsp76_coords);
 
     PermutationGA GA(tsp76.num_vars(), tsp76);
 
@@ -42,7 +43,7 @@ void perm_tsp76()
 
 void perm_tsp124()
 {
-    TSP tsp124("test/tsp_data/tsp124.txt");
+    TSP tsp124(tsp124_coords);
 
     PermutationGA GA(tsp124.num_vars(), tsp124);
 
@@ -56,7 +57,7 @@ void perm_tsp124()
 
 void perm_tsp152()
 {
-    TSP tsp152("test/tsp_data/tsp152.txt");
+    TSP tsp152(tsp152_coords);
 
     PermutationGA GA(tsp152.num_vars(), tsp152);
 
@@ -70,7 +71,7 @@ void perm_tsp152()
 
 void perm_tsp226()
 {
-    TSP tsp226("test/tsp_data/tsp226.txt");
+    TSP tsp226(tsp226_coords);
 
     PermutationGA GA(tsp226.num_vars(), tsp226);
 
@@ -84,7 +85,7 @@ void perm_tsp226()
 
 void perm_tsp299()
 {
-    TSP tsp299("test/tsp_data/tsp299.txt");
+    TSP tsp299(tsp299_coords);
 
     PermutationGA GA(tsp299.num_vars(), tsp299);
 
@@ -98,7 +99,7 @@ void perm_tsp299()
 
 void perm_tsp439()
 {
-    TSP tsp439("test/tsp_data/tsp439.txt");
+    TSP tsp439(tsp439_coords);
 
     PermutationGA GA(tsp439.num_vars(), tsp439);
 

@@ -19,7 +19,7 @@ void binary_rastrigin()
     BinaryGA GA(400, fitness_func.num_vars * fitness_func.var_bits, fitness_func);
 
     GA.algorithm(selection::Roulette{ });
-    GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
+    GA.crossover_method(crossover::binary::NPoint{ 0.75, 2 });
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
     GA.stop_condition(stopping::AND(stopping::FitnessMeanStall{ 50, 0.005 },
                                     stopping::FitnessBestStall{ 50, 0.005 }));
