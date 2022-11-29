@@ -37,8 +37,8 @@ class Rastrigin
 {
 public:
 
-    explicit Rastrigin(size_t num_vars = 10) noexcept :
-        num_vars(num_vars) {}
+    explicit Rastrigin(size_t nvars = 10) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -67,6 +67,7 @@ public:
 
     size_t num_vars = 10;
     size_t var_bits = 32;
+
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -5.12; }
     constexpr static double ubound() noexcept { return 5.12; }
@@ -85,8 +86,8 @@ class Rosenbrock
 {
 public:
 
-    explicit Rosenbrock(size_t num_vars = 3) noexcept :
-        num_vars(num_vars) {}
+    explicit Rosenbrock(size_t nvars = 3) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -133,8 +134,8 @@ class Schwefel
 {
 public:
 
-    explicit Schwefel(size_t num_vars = 10) noexcept :
-        num_vars(num_vars) {}
+    explicit Schwefel(size_t nvars = 10) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -181,8 +182,8 @@ class Griewank
 {
 public:
 
-    explicit Griewank(size_t num_vars = 10) noexcept :
-        num_vars(num_vars) {}
+    explicit Griewank(size_t nvars = 10) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -232,8 +233,8 @@ class Ackley
 {
 public:
 
-    explicit Ackley(size_t num_vars = 10) noexcept :
-        num_vars(num_vars) {}
+    explicit Ackley(size_t nvars = 10) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -289,8 +290,8 @@ class KUR
 {
 public:
 
-    explicit KUR(size_t num_vars = 3) noexcept :
-        num_vars(num_vars) {}
+    explicit KUR(size_t nvars = 3) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -341,8 +342,8 @@ class ZDT2
 {
 public:
 
-    explicit ZDT2(size_t num_vars = 30) noexcept :
-        num_vars(num_vars) {}
+    explicit ZDT2(size_t nvars = 30) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -387,8 +388,8 @@ class ZDT3
 {
 public:
 
-    explicit ZDT3(size_t num_vars = 30) noexcept :
-        num_vars(num_vars) {}
+    explicit ZDT3(size_t nvars = 30) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -433,8 +434,8 @@ class ZDT6
 {
 public:
 
-    explicit ZDT6(size_t num_vars = 10) noexcept :
-        num_vars(num_vars) {}
+    explicit ZDT6(size_t nvars = 10) noexcept :
+        num_vars(nvars) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -483,9 +484,9 @@ class DTLZ1
 {
 public:
 
-    explicit DTLZ1(size_t num_vars = 7, size_t num_obj = 3) noexcept :
-        num_vars(num_vars),
-        num_obj(num_obj) {}
+    explicit DTLZ1(size_t nvars = 7, size_t nobj = 3) noexcept :
+        num_vars(nvars),
+        num_obj(nobj) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
@@ -568,9 +569,9 @@ class DTLZ2
 {
 public:
 
-    explicit DTLZ2(size_t num_vars = 12, size_t num_obj = 3) noexcept :
-        num_vars(num_vars),
-        num_obj(num_obj) {}
+    explicit DTLZ2(size_t nvars = 12, size_t nobj = 3) noexcept :
+        num_vars(nvars),
+        num_obj(nobj) {}
 
     /* For real chromosomes. */
     std::vector<double> operator()(const std::vector<double>& x) const
