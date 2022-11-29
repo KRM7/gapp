@@ -24,7 +24,7 @@
 
 using GeneBounds = genetic_algorithm::GA<double>::GeneBounds;
 
-constexpr double PI = 3.14159265358979323846;
+constexpr double PI = 3.14159265358979323846; // TODO include numbers
 
 /* Single-objective fitness functions. */
 
@@ -37,11 +37,11 @@ class Rastrigin
 {
 public:
 
-    explicit Rastrigin(size_t nvars = 10) noexcept :
+    explicit Rastrigin(size_t nvars = 10) noexcept : // TODO base ctors that take all params
         num_vars(nvars) {}
 
     /* For real chromosomes. */
-    std::vector<double> operator()(const std::vector<double>& x) const
+    std::vector<double> operator()(const std::vector<double>& x) const // TODO asserts in base
     {
         assert(x.size() == num_vars);
         assert(std::all_of(x.begin(), x.end(), [](double val) { return lbound() <= val && val <= ubound(); }));
@@ -56,7 +56,7 @@ public:
     }
 
     /* For binary chromosomes. */
-    std::vector<double> operator()(const std::vector<char>& x) const
+    std::vector<double> operator()(const std::vector<char>& x) const // TODO base
     {
         assert(x.size() == num_vars * var_bits);
 
@@ -65,16 +65,16 @@ public:
         return operator()(vars);
     }
 
-    size_t num_vars = 10;
-    size_t var_bits = 32;
+    size_t num_vars = 10; // TODO base
+    size_t var_bits = 32; // TODO base + nobj
 
-    constexpr static size_t num_obj() noexcept { return 1; }
+    constexpr static size_t num_obj() noexcept { return 1; } // TODO base with var
     constexpr static double lbound() noexcept { return -5.12; }
     constexpr static double ubound() noexcept { return 5.12; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
-    constexpr static double optimal_value() noexcept { return 0.0; }
-    constexpr static double optimal_x() noexcept { return 0.0; }
-    constexpr static double intval() noexcept { return ubound() - lbound(); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); } // TODO in base class
+    constexpr static double optimal_value() noexcept { return 0.0; } // TODO return vector
+    constexpr static double optimal_x() noexcept { return 0.0; } // TODO return vector
+    constexpr static double intval() noexcept { return ubound() - lbound(); }  // TODO in base class
 };
 
 /*
@@ -119,7 +119,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -2.048; }
     constexpr static double ubound() noexcept { return 2.048; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 1.0; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -167,7 +167,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -500.0; }
     constexpr static double ubound() noexcept { return 500.0; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 420.9687; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -218,7 +218,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -600.0; }
     constexpr static double ubound() noexcept { return 600.0; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 0.0; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -272,7 +272,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 1; }
     constexpr static double lbound() noexcept { return -32.768; }
     constexpr static double ubound() noexcept { return 32.768; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double optimal_value() noexcept { return 0.0; }
     constexpr static double optimal_x() noexcept { return 0.0; }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
@@ -329,7 +329,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 2; }
     constexpr static double lbound() noexcept { return -5.0; }
     constexpr static double ubound() noexcept { return 5.0; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 };
 
@@ -375,7 +375,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 2; }
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 };
 
@@ -421,7 +421,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 2; }
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 };
 
@@ -467,7 +467,7 @@ public:
     constexpr static size_t num_obj() noexcept { return 2; }
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 };
 
@@ -542,7 +542,7 @@ public:
     size_t var_bits = 32;
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 
 private:
@@ -627,7 +627,7 @@ public:
     size_t var_bits = 32;
     constexpr static double lbound() noexcept { return 0.0; }
     constexpr static double ubound() noexcept { return 1.0; }
-    auto bounds() { return std::vector(num_vars, GeneBounds(lbound(), ubound())); }
+    auto bounds() { return std::vector(num_vars, GeneBounds{ lbound(), ubound() }); }
     constexpr static double intval() noexcept { return ubound() - lbound(); }
 
 private:
