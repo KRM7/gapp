@@ -101,6 +101,7 @@ void benchmarkSoga(GA& ga, size_t max_gen, const F& fitness_func, const std::str
         {
             printSol(sol.chromosome);
         }
+        else GA_UNUSED(sol);
     }
 
     std::cout << "The number of optimal solutions found: " << sols.size()
