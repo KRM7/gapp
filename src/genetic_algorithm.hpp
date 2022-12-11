@@ -14,6 +14,7 @@
 #include "encoding/real.hpp"
 #include "encoding/permutation.hpp"
 #include "encoding/integer.hpp"
+#include "benchmark/benchmark.hpp"
 
 namespace ga = genetic_algorithm;
 

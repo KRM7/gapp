@@ -1,100 +1,66 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef NSGA2_BENCHMARK_HPP
-#define NSGA2_BENCHMARK_HPP
+#ifndef GA_TEST_BENCHMARK_NSGA2_HPP
+#define GA_TEST_BENCHMARK_NSGA2_HPP
 
-#include "../src/encoding/real.hpp"
-#include "../src/algorithm/algorithm.hpp"
-#include "../src/crossover/real.hpp"
-#include "../src/mutation/real.hpp"
-#include "fitness_functions.hpp"
+#include "encoding/real.hpp"
+#include "encoding/binary.hpp"
+#include "algorithm/algorithm.hpp"
+#include "crossover/real.hpp"
+#include "crossover/binary.hpp"
+#include "mutation/real.hpp"
+#include "mutation/binary.hpp"
+#include "stop_condition/stop_condition.hpp"
+#include "benchmark/multi_objective.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace genetic_algorithm;
+using namespace genetic_algorithm::benchmark;
 
-void nsga2_kur()
+template<typename Problem>
+void benchmark_real_nsga2(const Problem& problem, size_t generations, size_t population_size = 100)
 {
-    KUR fitness_func(3);
+    RCGA GA(population_size, problem.num_vars(), problem, problem.bounds());
 
-    RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
-
-    GA.population_size(100);
     GA.algorithm(algorithm::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
-    GA.mutation_method(mutation::real::Gauss{ 1.0 / fitness_func.bounds().size() });
+    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9 });
+    GA.mutation_method(mutation::real::Uniform{ 1.0 / problem.num_vars() });
 
-    benchmarkMoga(GA, 250, "NSGA2", "KUR");
+    benchmarkMoga(GA, generations, "NSGA2", problem);
 }
 
-void nsga2_zdt2()
+template<typename Problem>
+void benchmark_binary_nsga2(const Problem& problem, size_t generations, size_t population_size = 100)
 {
-    ZDT2 fitness_func(30);
-    
-    RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
+    BinaryGA GA(population_size, problem.num_vars(), problem);
 
-    GA.population_size(100);
     GA.algorithm(algorithm::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
-    GA.mutation_method(mutation::real::Gauss{ 1.0 / fitness_func.bounds().size() });
+    GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
+    GA.mutation_method(mutation::binary::Flip{ 1.0 / problem.num_vars() });
 
-    benchmarkMoga(GA, 250, "NSGA2", "ZDT2");
+    benchmarkMoga(GA, generations, "NSGA2", problem);
 }
 
-void nsga2_zdt3()
+inline void benchmark_nsga2_zdt(size_t generations = 250, size_t population_size = 100)
 {
-    ZDT3 fitness_func(30);
-
-    RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
-
-    GA.population_size(100);
-    GA.algorithm(algorithm::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
-    GA.mutation_method(mutation::real::Gauss{ 1.0 / fitness_func.bounds().size() });
-
-    benchmarkMoga(GA, 250, "NSGA2", "ZDT3");
+    benchmark_real_nsga2(Kursawe{}, generations, population_size);
+    benchmark_real_nsga2(ZDT1{}, generations, population_size);
+    benchmark_real_nsga2(ZDT2{}, generations, population_size);
+    benchmark_real_nsga2(ZDT3{}, generations, population_size);
+    benchmark_real_nsga2(ZDT4{}, generations, population_size);
+    benchmark_binary_nsga2(ZDT5{}, generations, population_size);
+    benchmark_real_nsga2(ZDT6{}, generations, population_size);
 }
 
-void nsga2_zdt6()
+inline void benchmark_nsga2_dtlz(size_t generations = 1000, size_t population_size = 100, size_t dim = 3)
 {
-    ZDT6 fitness_func(10);
-    
-    RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
-
-    GA.population_size(100);
-    GA.algorithm(algorithm::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.8 });
-    GA.mutation_method(mutation::real::Gauss{ 1.0 / fitness_func.bounds().size() });
-
-    benchmarkMoga(GA, 250, "NSGA2", "ZDT6");
+    benchmark_real_nsga2(DTLZ1{ dim }, generations, population_size);
+    benchmark_real_nsga2(DTLZ2{ dim }, generations, population_size);
+    benchmark_real_nsga2(DTLZ3{ dim }, generations, population_size);
+    benchmark_real_nsga2(DTLZ4{ dim }, generations, population_size);
+    benchmark_real_nsga2(DTLZ5{ dim }, generations, population_size);
+    benchmark_real_nsga2(DTLZ6{ dim }, generations, population_size);
+    benchmark_real_nsga2(DTLZ7{ dim }, generations, population_size);
 }
 
-void nsga2_dtlz1()
-{
-    DTLZ1 fitness_func(7, 3);
-
-    RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
-
-    GA.population_size(100);
-    GA.algorithm(algorithm::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, 15.0 });
-    GA.mutation_method(mutation::real::Uniform{ 1.0 / fitness_func.bounds().size() });
-
-    benchmarkMoga(GA, 1000, "NSGA2", "DTLZ1");
-}
-
-void nsga2_dtlz2()
-{
-    DTLZ2 fitness_func(12, 3);
-
-    RCGA GA(fitness_func.num_vars, fitness_func, fitness_func.bounds());
-
-    GA.population_size(100);
-    GA.algorithm(algorithm::NSGA2{});
-    GA.crossover_method(crossover::real::SimulatedBinary{ 0.9, 15.0 });
-    GA.mutation_method(mutation::real::Uniform{ 1.0 / fitness_func.bounds().size() });
-
-    benchmarkMoga(GA, 1000, "NSGA2", "DTLZ2");
-}
-
-
-#endif // !NSGA2_BENCHMARK_HPP
+#endif // !GA_TEST_BENCHMARK_NSGA2_HPP

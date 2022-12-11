@@ -10,43 +10,37 @@
 int main()
 {
     //begin:
-    binary_rastrigin();
-    binary_rosenbrock();
-    binary_schwefel();
-    binary_griewank();
-    binary_ackley();
+    //binary_sphere();
+    //binary_rastrigin();
+    //binary_rosenbrock();
+    //binary_schwefel();
+    //binary_griewank();
+    //binary_ackley();
+    //binary_levy();
 
-    real_rastrigin();
-    real_rosenbrock();
-    real_schwefel();
-    real_griewank();
-    real_ackley();
+    //real_sphere();
+    //real_rastrigin();
+    //real_rosenbrock();
+    //real_schwefel();
+    //real_griewank();
+    //real_ackley();
+    //real_levy();
 
-    perm_tsp52();
-    perm_tsp76();
-    perm_tsp124();
-        perm_tsp152();
-    perm_tsp226();
-    perm_tsp299();
-    perm_tsp439();
+    //perm_tsp52();
+    //perm_tsp76();
+    //perm_tsp124();
+    //    perm_tsp152();
+    //perm_tsp226();
+    //perm_tsp299();
+    //perm_tsp439();
 
-    integer_hello();
-    integer_sentence();
+    //integer_hello();
+    //integer_sentence();
 
-    nsga2_kur();
-    nsga2_zdt2();
-    nsga2_zdt3();
-    nsga2_zdt6();
+    benchmark_nsga2_zdt();
+    benchmark_nsga2_dtlz();
 
-    nsga3_kur();
-    nsga3_zdt2();
-    nsga3_zdt3();
-    nsga3_zdt6();
-    
-    nsga2_dtlz1();
-    nsga2_dtlz2();
-
-    nsga3_dtlz1();
-    nsga3_dtlz2();
+    //benchmark_nsga3_zdt();
+    //benchmark_nsga3_dtlz();
     //goto begin;
 }

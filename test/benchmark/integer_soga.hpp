@@ -1,20 +1,22 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef INTEGER_SOGA_BENCHMARK_HPP
-#define INTEGER_SOGA_BENCHMARK_HPP
+#ifndef GA_TEST_BENCHMARK_INTEGER_HPP
+#define GA_TEST_BENCHMARK_INTEGER_HPP
 
-#include "../src/encoding/integer.hpp"
-#include "../src/algorithm/algorithm.hpp"
-#include "../src/crossover/integer.hpp"
-#include "../src/mutation/integer.hpp"
-#include "fitness_functions.hpp"
+#include "encoding/integer.hpp"
+#include "algorithm/algorithm.hpp"
+#include "crossover/integer.hpp"
+#include "mutation/integer.hpp"
+#include "stop_condition/stop_condition.hpp"
+#include "benchmark/integer.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace genetic_algorithm;
+using namespace genetic_algorithm::benchmark;
 
 void integer_hello()
 {
-    MatchString fitness_func("HELLO WORLD!");
+    StringFinder fitness_func("HELLO WORLD!");
 
     IntegerGA GA(100, fitness_func.num_vars(), fitness_func, 96);
 
@@ -22,12 +24,12 @@ void integer_hello()
     GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
     GA.mutation_method(mutation::integer::Uniform{ 0.01 });
     //+32
-    benchmarkSoga(GA, 500, fitness_func, "Hello");
+    benchmarkInt(GA, 500, fitness_func);
 }
 
 void integer_sentence()
 {
-    MatchString fitness_func("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque gravida ut ipsum at tincidunt.");
+    StringFinder fitness_func("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque gravida ut ipsum at tincidunt.");
 
     IntegerGA GA(250, fitness_func.num_vars(), fitness_func, 96);
 
@@ -35,7 +37,7 @@ void integer_sentence()
     GA.crossover_method(crossover::integer::Uniform{ 0.8 });
     GA.mutation_method(mutation::integer::Uniform{ 5.0 / 250 });
     // +32
-    benchmarkSoga(GA, 1000, fitness_func, "Lorem");
+    benchmarkInt(GA, 1000, fitness_func);
 }
 
-#endif // !INTEGER_SOGA_BENCHMARK_HPP
+#endif // !GA_TEST_BENCHMARK_INTEGER_HPP

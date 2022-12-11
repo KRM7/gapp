@@ -1,114 +1,109 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef PERM_SOGA_BENCHMARK_HPP
-#define PERM_SOGA_BENCHMARK_HPP
+#ifndef GA_TEST_BENCHMARK_PERM_HPP
+#define GA_TEST_BENCHMARK_PERM_HPP
 
-#include "../src/encoding/permutation.hpp"
-#include "../src/algorithm/algorithm.hpp"
-#include "../src/crossover/permutation.hpp"
-#include "../src/mutation/permutation.hpp"
-#include "fitness_functions.hpp"
+#include "encoding/permutation.hpp"
+#include "algorithm/algorithm.hpp"
+#include "crossover/permutation.hpp"
+#include "mutation/permutation.hpp"
+#include "stop_condition/stop_condition.hpp"
+#include "benchmark/travelling_salesman.hpp"
 #include "benchmark_utils.hpp"
-#include "tsp_data/tsp_data.hpp"
 
 using namespace genetic_algorithm;
+using namespace genetic_algorithm::benchmark;
 
 void perm_tsp52()
 {
-    TSP tsp52(tsp52_coords);
+    TSP52 tsp52;
 
-    PermutationGA GA(tsp52.num_vars(), tsp52);
+    PermutationGA GA(500, tsp52.num_vars(), tsp52);
 
-    GA.population_size(500);
     GA.algorithm(selection::Sigma{});
     GA.crossover_method(crossover::perm::Edge{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.05 });
 
-    benchmarkSoga(GA, 1250, tsp52, "TSP52");
+    benchmarkTSP(GA, 1250, tsp52);
 }
 
 void perm_tsp76()
 {
-    TSP tsp76(tsp76_coords);
+    TSP76 tsp76;
 
-    PermutationGA GA(tsp76.num_vars(), tsp76);
+    PermutationGA GA(400, tsp76.num_vars(), tsp76);
 
-    GA.population_size(400);
     GA.algorithm(selection::Tournament{});
     GA.crossover_method(crossover::perm::Order1{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.1 });
 
-    benchmarkSoga(GA, 1000, tsp76, "TSP76");
+    benchmarkTSP(GA, 1000, tsp76);
 }
 
 void perm_tsp124()
 {
-    TSP tsp124(tsp124_coords);
+    TSP124 tsp124;
 
-    PermutationGA GA(tsp124.num_vars(), tsp124);
+    PermutationGA GA(500, tsp124.num_vars(), tsp124);
 
     GA.population_size(500);
     GA.algorithm(selection::Boltzmann{});
     GA.crossover_method(crossover::perm::Position{ 0.9 });
     GA.mutation_method(mutation::perm::Swap3{ 0.4 });
 
-    benchmarkSoga(GA, 1500, tsp124, "TSP124");
+    benchmarkTSP(GA, 1500, tsp124);
 }
 
 void perm_tsp152()
 {
-    TSP tsp152(tsp152_coords);
+    TSP152 tsp152;
 
-    PermutationGA GA(tsp152.num_vars(), tsp152);
+    PermutationGA GA(500, tsp152.num_vars(), tsp152);
 
-    GA.population_size(500);
     GA.algorithm(selection::Tournament{});
     GA.crossover_method(crossover::perm::PMX{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.6 });
 
-    benchmarkSoga(GA, 1250, tsp152, "TSP152");
+    benchmarkTSP(GA, 1250, tsp152);
 }
 
 void perm_tsp226()
 {
-    TSP tsp226(tsp226_coords);
+    TSP226 tsp226;
 
-    PermutationGA GA(tsp226.num_vars(), tsp226);
+    PermutationGA GA(500, tsp226.num_vars(), tsp226);
 
-    GA.population_size(500);
     GA.algorithm(selection::Roulette{});
     GA.crossover_method(crossover::perm::Cycle{ 0.9 });
     GA.mutation_method(mutation::perm::Shuffle{ 0.2 });
 
-    benchmarkSoga(GA, 1250, tsp226, "TSP226");
+    benchmarkTSP(GA, 1250, tsp226);
 }
 
 void perm_tsp299()
 {
-    TSP tsp299(tsp299_coords);
+    TSP299 tsp299;
 
-    PermutationGA GA(tsp299.num_vars(), tsp299);
+    PermutationGA GA(500, tsp299.num_vars(), tsp299);
 
-    GA.population_size(500);
     GA.algorithm(selection::Boltzmann{});
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
 
-    benchmarkSoga(GA, 1000, tsp299, "TSP299");
+    benchmarkTSP(GA, 1000, tsp299);
 }
 
 void perm_tsp439()
 {
-    TSP tsp439(tsp439_coords);
+    TSP439 tsp439;
 
-    PermutationGA GA(tsp439.num_vars(), tsp439);
+    PermutationGA GA(500, tsp439.num_vars(), tsp439);
 
-    GA.population_size(500);
     GA.algorithm(selection::Boltzmann{});
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
 
-    benchmarkSoga(GA, 1000, tsp439, "TSP439");
+    benchmarkTSP(GA, 1000, tsp439);
 }
 
-#endif // !PERM_SOGA_BENCHMARK_HPP
+#endif // !GA_TEST_BENCHMARK_PERM_HPP
