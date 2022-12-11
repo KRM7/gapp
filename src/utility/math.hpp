@@ -25,8 +25,8 @@ namespace genetic_algorithm::math
         static T eps() noexcept { return relative_tolerance_epsilons * std::numeric_limits<T>::epsilon(); }
 
     private:
-        inline static double absolute_tolerance = 1E-8;
-        inline static unsigned relative_tolerance_epsilons = 100;
+        inline static double absolute_tolerance = 1E-12;
+        inline static unsigned relative_tolerance_epsilons = 10;
 
         friend class ScopedTolerances;
     };
