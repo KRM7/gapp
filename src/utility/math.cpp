@@ -140,7 +140,7 @@ namespace genetic_algorithm::math
 
     double integralSinPow(size_t exponent, double x) noexcept
     {
-        double integral = exponent % 2 ? -std::cos(x) : x;
+        double integral = (exponent % 2) ? -std::cos(x) : x;
 
         for (size_t n = 2 + exponent % 2; n <= exponent; n += 2)
         {
