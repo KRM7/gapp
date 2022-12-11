@@ -17,10 +17,10 @@ namespace genetic_algorithm::benchmark
     class BenchmarkFunction
     {
     public:
-        using Bounds = GA<T>::GeneBounds;
+        using Bounds = typename GA<T>::GeneBounds;
 
         BenchmarkFunction(std::string name, size_t num_objs, size_t num_vars, const std::vector<Bounds>& bounds) :
-            name_(std::move(name)), bounds_(bounds), num_objs_(num_objs), num_vars_(num_vars)
+            bounds_(bounds), name_(std::move(name)), num_objs_(num_objs), num_vars_(num_vars)
         {
             if (num_objs == 0) GA_THROW(std::invalid_argument, "Number of objectives must be at least 1.");
             if (num_vars == 0) GA_THROW(std::invalid_argument, "Number of variables must be at least 1.");

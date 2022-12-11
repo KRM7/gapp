@@ -105,7 +105,7 @@ namespace genetic_algorithm::benchmark
 
         double f1 = vars[0];
 
-        constexpr auto transform = [](double val) { return std::pow(val, 2) - 10.0 * std::cos(4.0 * pi * val); };
+        constexpr auto transform = [](double val) noexcept { return std::pow(val, 2) - 10.0 * std::cos(4.0 * pi * val); };
 
         double g = std::transform_reduce(vars.begin() + 1, vars.end(), 0.0, std::plus{}, transform);
         g = 1.0 + 10.0 * (vars.size() - 1.0) + g;

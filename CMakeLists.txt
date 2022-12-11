@@ -44,7 +44,7 @@ if(MSVC) # MSVC style compiler interface
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2 -Oi -Gy -Qpar")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Z7 -O2 -Oi -Gy -Qpar")
 else() # GNU style compiler interface
-    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wnull-dereference -Wno-unused-function")
+    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wno-unused-function")
     if(GA_USE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Werror -pedantic-errors")
     endif()

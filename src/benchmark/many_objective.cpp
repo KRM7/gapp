@@ -63,7 +63,7 @@ namespace genetic_algorithm::benchmark
         return g;
     }
 
-    static inline double dtlz7_g(const_iterator first, const_iterator last) noexcept
+    static constexpr double dtlz7_g(const_iterator first, const_iterator last) noexcept
     {
         assert(std::distance(first, last) > 0);
 
