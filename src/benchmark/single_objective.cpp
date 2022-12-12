@@ -15,10 +15,9 @@ namespace genetic_algorithm::benchmark
 
     std::vector<RealGene> BenchmarkFunctionReal1::convert(const std::vector<BinaryGene>& binary_chrom) const
     {
-        const size_t var_count = binary_chrom.size() / var_bits_;
-        assert(var_count == num_vars());
+        assert((binary_chrom.size() / var_bits_) == num_vars());
 
-        std::vector<RealGene> vars(var_count);
+        std::vector<RealGene> vars(num_vars());
 
         for (size_t i = 0; i < vars.size(); i++)
         {
@@ -30,7 +29,7 @@ namespace genetic_algorithm::benchmark
                 return (acc * 2) + bit;
             });
 
-            vars[i] = val / (std::pow(2.0, var_bits_) - 1);
+            vars[i] = val / (std::pow(2.0, var_bits_) - 1); // use double to avoid integer overflow
             vars[i] *= bounds_[i].upper - bounds_[i].lower;
             vars[i] += bounds_[i].lower;
         }
@@ -83,7 +82,7 @@ namespace genetic_algorithm::benchmark
         double fm = 1.0;
         for (size_t i = 0; i < vars.size(); i++)
         {
-            fx += vars[i] * vars[i];
+            fx += std::pow(vars[i], 2);
             fm *= std::cos(vars[i] / std::sqrt(i + 1.0));
         }
 
@@ -96,7 +95,7 @@ namespace genetic_algorithm::benchmark
         double f2 = 0.0;
         for (double var : vars)
         {
-            f1 += var * var;
+            f1 += std::pow(var, 2);
             f2 += std::cos(2.0 * pi * var);
         }
         f1 = std::exp(-0.2 * std::sqrt(f1 / vars.size()));

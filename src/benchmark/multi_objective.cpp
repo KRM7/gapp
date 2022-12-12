@@ -16,10 +16,9 @@ namespace genetic_algorithm::benchmark
 
     std::vector<RealGene> BenchmarkFunctionRealN::convert(const std::vector<BinaryGene>& binary_chrom) const
     {
-        const size_t var_count = binary_chrom.size() / var_bits_;
-        assert(var_count == num_vars());
+        assert((binary_chrom.size() / var_bits_) == num_vars());
 
-        std::vector<RealGene> vars(var_count);
+        std::vector<RealGene> vars(num_vars());
 
         for (size_t i = 0; i < vars.size(); i++)
         {
@@ -31,7 +30,7 @@ namespace genetic_algorithm::benchmark
                 return (acc * 2) + bit;
             });
 
-            vars[i] = val / (std::pow(2.0, var_bits_) - 1);
+            vars[i] = val / (std::pow(2.0, var_bits_) - 1); // use double to avoid integer overflow
             vars[i] *= bounds_[i].upper - bounds_[i].lower;
             vars[i] += bounds_[i].lower;
         }
