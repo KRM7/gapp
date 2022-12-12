@@ -77,8 +77,8 @@ void real_griewank()
     RCGA GA(200, fitness_func.num_vars(), fitness_func, fitness_func.bounds());
 
     GA.algorithm(selection::Boltzmann{});
-    GA.crossover_method(crossover::real::Wright{ 0.85 });
-    GA.mutation_method(mutation::real::Gauss{ 0.05 });
+    GA.crossover_method(crossover::real::Wright{ 0.8 });
+    GA.mutation_method(mutation::real::Gauss{ 0.5 / fitness_func.num_vars() });
 
     benchmarkSoga(GA, 1500, fitness_func);
 }

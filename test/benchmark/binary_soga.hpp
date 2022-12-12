@@ -69,14 +69,14 @@ void binary_schwefel()
 void binary_griewank()
 {
     Griewank fitness_func(10);
-    BinaryGA GA(250, fitness_func.num_bits(), fitness_func);
+    BinaryGA GA(200, fitness_func.num_bits(), fitness_func);
 
     GA.algorithm(selection::Sigma{ }, update::KeepBest{ });
-    GA.crossover_method(crossover::binary::TwoPoint{ 0.75 });
-    GA.mutation_method(mutation::binary::Flip{ 0.04 });
-    GA.stop_condition(stopping::FitnessValue{ { -0.1 } });
+    GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
+    GA.mutation_method(mutation::binary::Flip{ 0.2 / fitness_func.num_vars() });
+    GA.stop_condition(stopping::FitnessValue{ { -0.01 } });
 
-    benchmarkSoga(GA, 2500, fitness_func);
+    benchmarkSoga(GA, 1500, fitness_func);
 }
 
 void binary_ackley()
