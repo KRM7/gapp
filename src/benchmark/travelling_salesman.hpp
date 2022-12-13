@@ -1,5 +1,12 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
+/**
+* Implementations of travelling salesman problems that can be used to test the
+* single-objective permutational algorithms. \n
+* All of the problems are implemented for maximization, so they return negative
+* distances.
+*/
+
 #ifndef GA_BENCHMARK_TSP_HPP
 #define GA_BENCHMARK_TSP_HPP
 
@@ -11,9 +18,9 @@
 #include <cmath>
 #include <cstddef>
 
-/* Traveling salesman problems to benchmark the PermutationGA. */
 namespace genetic_algorithm::benchmark
 {
+    /** ... */
     class TSP : public BenchmarkFunction<PermutationGene>
     {
     public:
@@ -38,52 +45,81 @@ namespace genetic_algorithm::benchmark
         double optimal_value_;
     };
 
-
+    /**
+    * Travelling salesman problem with 52 nodes (Berlin52) for testing the PermutationGA. \n
+    * Implemented for maximization (returns negative distances).
+    */
     class TSP52 : public TSP
     {
     public:
+        /** Default constructor. */
         TSP52() : TSP(tsp52_coords, -7542.0) {}
     };
 
 
+    /**
+    * Travelling salesman problem with 76 nodes (Padberg/Rinaldi's 76 city problem) for testing the PermutationGA. \n
+    * Implemented for maximization (returns negative distances).
+    */
     class TSP76 : public TSP
     {
     public:
+        /** Default constructor. */
         TSP76() : TSP(tsp76_coords, -108159.0) {}
     };
 
-
+    /**
+    * Travelling salesman problem with 124 nodes (Padberg/Rinaldi's 124 city problem) for testing the PermutationGA. \n
+    * Implemented for maximization (returns negative distances).
+    */
     class TSP124 : public TSP
     {
     public:
+        /** Default constructor. */
         TSP124() : TSP(tsp124_coords, -59030.0) {}
     };
-
-
+    
+    /**
+    * Travelling salesman problem with 152 nodes (Padberg/Rinaldi's 152 city problem) for testing the PermutationGA. \n
+    * Implemented for maximization (returns negative distances).
+    */
     class TSP152 : public TSP
     {
     public:
+        /** Default constructor. */
         TSP152() : TSP(tsp152_coords, -73682.0) {}
     };
 
-
+    /**
+    * Travelling salesman problem with 226 nodes (Padberg/Rinaldi's 226 city problem) for testing the PermutationGA. \n
+    * Implemented for maximization (returns negative distances).
+    */
     class TSP226 : public TSP
     {
     public:
+        /** Default constructor. */
         TSP226() : TSP(tsp226_coords, -80369.0) {}
     };
 
-
+    /**
+    * Travelling salesman problem with 299 nodes (Padberg/Rinaldi's 299 city problem) for testing the PermutationGA. \n
+    * Implemented for maximization (returns negative distances).
+    */
     class TSP299 : public TSP
     {
     public:
+        /** Default constructor. */
         TSP299() : TSP(tsp299_coords, -48191.0) {}
     };
 
-
+    /**
+    * Travelling salesman problem with 439 nodes (Padberg/Rinaldi's 439 city problem) for testing the PermutationGA. \n
+    * Implemented for maximization (returns negative distances).
+    */
     class TSP439 : public TSP
     {
     public:
+        /** Default constructor. */
         TSP439() : TSP(tsp439_coords, -107217.0) {}
     };
 
