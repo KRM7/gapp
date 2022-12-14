@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+
 #include <catch2/catch_test_macros.hpp>
 #include "utility/tl_accumulator.hpp"
 #include "utility/iterators.hpp"
@@ -5,7 +7,6 @@
 #include <vector>
 #include <algorithm>
 #include <execution>
-
 #include <thread>
 
 using namespace genetic_algorithm::detail;

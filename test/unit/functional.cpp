@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+
 #include <catch2/catch_test_macros.hpp>
 #include "utility/functional.hpp"
 #include <algorithm>
@@ -12,6 +14,7 @@ template<typename T>
 constexpr T increment(const T& n) noexcept { return n + 1; }
 
 using namespace genetic_algorithm::detail;
+
 
 TEST_CASE("lforward", "[functional]")
 {
