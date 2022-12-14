@@ -11,11 +11,11 @@
 #include "mutation/real.hpp"
 #include "mutation/binary.hpp"
 #include "stop_condition/stop_condition.hpp"
-#include "benchmark/many_objective.hpp"
+#include "problems/many_objective.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace genetic_algorithm;
-using namespace genetic_algorithm::benchmark;
+using namespace genetic_algorithm::problems;
 
 template<typename Problem>
 void benchmark_real_nsga3(const Problem& problem, size_t generations, size_t population_size = 100)

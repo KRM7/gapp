@@ -4,10 +4,10 @@
 #define GA_TEST_BENCHMARK_UTILS_HPP
 
 #include "genetic_algorithm.hpp"
-#include "benchmark/single_objective.hpp"
-#include "benchmark/multi_objective.hpp"
-#include "benchmark/travelling_salesman.hpp"
-#include "benchmark/integer.hpp"
+#include "problems/single_objective.hpp"
+#include "problems/multi_objective.hpp"
+#include "problems/travelling_salesman.hpp"
+#include "problems/integer.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -19,7 +19,7 @@
 #include <type_traits>
 
 using namespace genetic_algorithm;
-using namespace genetic_algorithm::benchmark;
+using namespace genetic_algorithm::problems;
 
 template<typename F, typename... Args>
 auto invoke_timed(F&& f, Args&&... args)

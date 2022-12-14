@@ -8,11 +8,11 @@
 #include "crossover/permutation.hpp"
 #include "mutation/permutation.hpp"
 #include "stop_condition/stop_condition.hpp"
-#include "benchmark/travelling_salesman.hpp"
+#include "problems/travelling_salesman.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace genetic_algorithm;
-using namespace genetic_algorithm::benchmark;
+using namespace genetic_algorithm::problems;
 
 void perm_tsp52()
 {

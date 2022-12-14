@@ -8,11 +8,11 @@
 #include "crossover/binary.hpp"
 #include "mutation/binary.hpp"
 #include "stop_condition/stop_condition.hpp"
-#include "benchmark/single_objective.hpp"
+#include "problems/single_objective.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace genetic_algorithm;
-using namespace genetic_algorithm::benchmark;
+using namespace genetic_algorithm::problems;
 
 void binary_sphere()
 {

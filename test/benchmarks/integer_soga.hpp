@@ -8,11 +8,11 @@
 #include "crossover/integer.hpp"
 #include "mutation/integer.hpp"
 #include "stop_condition/stop_condition.hpp"
-#include "benchmark/integer.hpp"
+#include "problems/integer.hpp"
 #include "benchmark_utils.hpp"
 
 using namespace genetic_algorithm;
-using namespace genetic_algorithm::benchmark;
+using namespace genetic_algorithm::problems;
 
 void integer_hello()
 {
