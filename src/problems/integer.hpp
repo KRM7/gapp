@@ -2,8 +2,8 @@
 
 /** Test problems for the integer-encoded algorithms. */
 
-#ifndef GA_BENCHMARK_INTEGER_HPP
-#define GA_BENCHMARK_INTEGER_HPP
+#ifndef GA_PROBLEMS_INTEGER_HPP
+#define GA_PROBLEMS_INTEGER_HPP
 
 #include "benchmark_function.hpp"
 #include <vector>
@@ -12,7 +12,7 @@
 #include <cstddef>
 #include <cassert>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     /**
     * Implementation of a simple test problem for the integer-encoded algorithm. \n
@@ -54,6 +54,6 @@ namespace genetic_algorithm::benchmark
         std::string target_;
     };
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems
 
-#endif // !GA_BENCHMARK_INTEGER_HPP
+#endif // !GA_PROBLEMS_INTEGER_HPP

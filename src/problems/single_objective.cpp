@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <cassert>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     using std::numbers::pi;
     using std::numbers::e;
@@ -122,4 +122,4 @@ namespace genetic_algorithm::benchmark
         return { -fx };
     }
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems

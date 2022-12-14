@@ -9,8 +9,8 @@
 * Most of them can be used for both the binary- and real-encoded algorithms.
 */
 
-#ifndef GA_BENCHMARK_MULTI_OBJECTIVE_HPP
-#define GA_BENCHMARK_MULTI_OBJECTIVE_HPP
+#ifndef GA_PROBLEMS_MULTI_OBJECTIVE_HPP
+#define GA_PROBLEMS_MULTI_OBJECTIVE_HPP
 
 #include "benchmark_function.hpp"
 #include "../utility/utility.hpp"
@@ -19,7 +19,7 @@
 #include <string>
 #include <cstddef>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     /** ... */
     class BenchmarkFunctionRealN : public BenchmarkFunction<RealGene>
@@ -70,7 +70,7 @@ namespace genetic_algorithm::benchmark
     *   ideal-point: [20.0, 12.0] \n
     *   nadir-point: [14.5,  0.0] \n
     *
-    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms.
+    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     * 
     * See:
     *   Kursawe, F. "A variant of evolution strategies for vector optimization."
@@ -104,7 +104,7 @@ namespace genetic_algorithm::benchmark
     *   ideal-point: [ 0.0,  0.0] \n
     *   nadir-point: [-1.0, -1.0] \n
     *
-    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms.
+    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
     * See:
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
@@ -138,7 +138,7 @@ namespace genetic_algorithm::benchmark
     *   ideal-point: [ 0.0,  0.0] \n
     *   nadir-point: [-1.0, -1.0] \n
     *
-    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms.
+    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
     * See:
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
@@ -174,7 +174,7 @@ namespace genetic_algorithm::benchmark
     *   ideal-point: [ 0.00,  0.8] \n
     *   nadir-point: [-0.85, -1.0] \n
     *
-    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms.
+    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
     * See:
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
@@ -209,7 +209,7 @@ namespace genetic_algorithm::benchmark
     *   ideal-point: [ 0.0,  0.0] \n
     *   nadir-point: [-1.0, -1.0] \n
     *
-    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms.
+    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
     * See:
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
@@ -246,7 +246,7 @@ namespace genetic_algorithm::benchmark
     *   nadir-point: [-31.0,    -nvars+1  ] \n
     *
     * This benchmark function can only be used with the binary-encoded multi-objective algorithms,
-    * unlike the rest of the benchmark functions in the ZDT suite.
+    * unlike the rest of the benchmark functions in the ZDT suite. \n
     *
     * See:
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
@@ -283,7 +283,7 @@ namespace genetic_algorithm::benchmark
     *   ideal-point: [ 0.0,  0.0] \n
     *   nadir-point: [-1.0, -1.0] \n
     *
-    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms.
+    * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
     * See:
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
@@ -306,6 +306,6 @@ namespace genetic_algorithm::benchmark
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
     };
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems
 
-#endif // !GA_BENCHMARK_MULTI_OBJECTIVE_HPP
+#endif // !GA_PROBLEMS_MULTI_OBJECTIVE_HPP

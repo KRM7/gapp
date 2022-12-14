@@ -10,7 +10,7 @@
 #include <cstddef>
 #include <cassert>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     using std::numbers::pi;
 
@@ -147,4 +147,4 @@ namespace genetic_algorithm::benchmark
         return { -f1, -f2 };
     }
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems

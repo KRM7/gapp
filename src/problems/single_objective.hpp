@@ -9,8 +9,8 @@
 * They can be used for both the binary- and real-encoded algorithms.
 */
 
-#ifndef GA_BENCHMARK_SINGLE_OBJECTIVE_HPP
-#define GA_BENCHMARK_SINGLE_OBJECTIVE_HPP
+#ifndef GA_PROBLEMS_SINGLE_OBJECTIVE_HPP
+#define GA_PROBLEMS_SINGLE_OBJECTIVE_HPP
 
 #include "benchmark_function.hpp"
 #include "../utility/utility.hpp"
@@ -19,7 +19,7 @@
 #include <string>
 #include <cstddef>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     /** ... */
     class BenchmarkFunctionReal1 : public BenchmarkFunction<RealGene>
@@ -263,6 +263,6 @@ namespace genetic_algorithm::benchmark
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
     };
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems
 
-#endif // !GA_BENCHMARK_SINGLE_OBJECTIVE_HPP
+#endif // !GA_PROBLEMS_SINGLE_OBJECTIVE_HPP

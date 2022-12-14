@@ -10,7 +10,7 @@
 #include <cstddef>
 #include <cassert>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     using std::numbers::pi;
     using const_iterator = std::vector<double>::const_iterator;
@@ -220,4 +220,4 @@ namespace genetic_algorithm::benchmark
         return dtlz7(vars, num_obj());
     }
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems

@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     std::vector<double> TSP::invoke(const std::vector<PermutationGene>& x) const
     {
@@ -18,4 +18,4 @@ namespace genetic_algorithm::benchmark
         return { -distance }; /* For maximization. */
     }
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems

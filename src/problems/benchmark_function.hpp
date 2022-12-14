@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_BENCHMARK_BENCHMARK_FUNCTION_HPP
-#define GA_BENCHMARK_BENCHMARK_FUNCTION_HPP
+#ifndef GA_PROBLEMS_BENCHMARK_FUNCTION_HPP
+#define GA_PROBLEMS_BENCHMARK_FUNCTION_HPP
 
 #include "../core/ga_base.decl.hpp"
 #include "../encoding/gene_types.hpp"
@@ -11,7 +11,7 @@
 #include <cstddef>
 #include <cassert>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     template<typename T>
     class BenchmarkFunction
@@ -57,6 +57,6 @@ namespace genetic_algorithm::benchmark
         size_t num_vars_;
     };
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems
 
-#endif // !GA_BENCHMARK_BENCHMARK_FUNCTION_HPP
+#endif // !GA_PROBLEMS_BENCHMARK_FUNCTION_HPP

@@ -1,11 +1,11 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_BENCHMARK_TSP_DATA_HPP
-#define GA_BENCHMARK_TSP_DATA_HPP
+#ifndef GA_PROBLEMS_TSP_DATA_HPP
+#define GA_PROBLEMS_TSP_DATA_HPP
 
 #include <array>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     using Coords = std::array<double, 2>;
 
@@ -44,6 +44,6 @@ namespace genetic_algorithm::benchmark
         #include "tsp439.txt"
     }};
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems
 
-#endif // !GA_BENCHMARK_TSP_DATA_HPP
+#endif // !GA_PROBLEMS_TSP_DATA_HPP

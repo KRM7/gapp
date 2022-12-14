@@ -7,8 +7,8 @@
 * distances.
 */
 
-#ifndef GA_BENCHMARK_TSP_HPP
-#define GA_BENCHMARK_TSP_HPP
+#ifndef GA_PROBLEMS_TSP_HPP
+#define GA_PROBLEMS_TSP_HPP
 
 #include "tsp_data/tsp_data.hpp"
 #include "benchmark_function.hpp"
@@ -18,7 +18,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace genetic_algorithm::benchmark
+namespace genetic_algorithm::problems
 {
     /** ... */
     class TSP : public BenchmarkFunction<PermutationGene>
@@ -123,6 +123,6 @@ namespace genetic_algorithm::benchmark
         TSP439() : TSP(tsp439_coords, -107217.0) {}
     };
 
-} // namespace genetic_algorithm::benchmark
+} // namespace genetic_algorithm::problems
 
-#endif // !GA_BENCHMARK_TSP_HPP
+#endif // !GA_PROBLEMS_TSP_HPP
