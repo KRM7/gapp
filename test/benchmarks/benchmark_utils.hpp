@@ -58,7 +58,7 @@ void benchmarkSoga(GA<T>& ga, size_t max_gen, const BenchmarkFunctionReal1& fitn
     std::cout << "Function: " << fitness_func.name() << ", " << algo
               << "\nNumber of optimal sols: " << sols.size()
               << "\nBest fitness found: " << std::defaultfloat << std::setprecision(4) << sols[0].fitness[0]
-              << " (best possible is " << fitness_func.optimal_value() << ")"
+              << " (best possible is " << fitness_func.optimal_value()[0] << ")"
               << "\nNumber of objective function evals: " << ga.num_fitness_evals()
               << " (instead of: " << max_gen * ga.population_size() << ")"
               << "\nTime taken: " << std::fixed << std::setprecision(4) << time_spent << "s\n\n";

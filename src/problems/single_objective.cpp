@@ -67,7 +67,7 @@ namespace genetic_algorithm::problems
 
     std::vector<double> Schwefel::invoke(const std::vector<double>& vars) const
     {
-        double fx = 418.9829 * vars.size();
+        double fx = 418.98288727215591 * vars.size();
         for (double var : vars)
         {
             fx -= var * std::sin(std::sqrt(std::abs(var)));

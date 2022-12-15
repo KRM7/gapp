@@ -17,6 +17,7 @@ namespace genetic_algorithm::problems
     class BenchmarkFunction
     {
     public:
+        using Gene = T;
         using Bounds = typename GA<T>::GeneBounds;
 
         BenchmarkFunction(std::string name, size_t num_objs, size_t num_vars, const std::vector<Bounds>& bounds) :

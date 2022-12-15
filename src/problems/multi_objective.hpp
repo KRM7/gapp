@@ -41,6 +41,8 @@ namespace genetic_algorithm::problems
         size_t var_bits() const noexcept { return var_bits_; }
 
         // ideal point, nadir point
+        // optimum: returns a single point in the front (domain) (unspecified which)
+        // optimal value: return a single point in the front (objective space) (unspecified whhich)
 
         using BenchmarkFunction<double>::operator();
         std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const { return invoke(convert(binary_chrom)); }
