@@ -22,10 +22,10 @@ namespace genetic_algorithm::problems
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
         optimum_ = std::vector(num_vars, 0.0);
-        optimal_value_ = { 10.0 * (num_vars - 1), 0.0 };
+        optimal_value_ = { 10.0 * double(num_vars - 1), 0.0 };
 
-        ideal_point_ = { 10.0 * (num_vars - 1), 3.85 * (num_vars - 1) + 4.0 };
-        nadir_point_ = { 7.25 * (num_vars - 1), 0.0};
+        ideal_point_ = { 10.0 * double(num_vars - 1), 3.85 * double(num_vars - 1) + 4.0 };
+        nadir_point_ = { 7.25 * double(num_vars - 1), 0.0};
     }
 
     std::vector<double> Kursawe::invoke(const std::vector<double>& vars) const
