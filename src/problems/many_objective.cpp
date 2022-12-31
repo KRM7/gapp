@@ -126,10 +126,11 @@ namespace genetic_algorithm::problems
 
         std::vector fx(last - first + 1, 1.0);
 
-        const auto theta = [&](double x) { return (1.0 + 2.0 * g * x) / (2.0 * (1.0 + g)); };
+        // g = std::min(0.2, g);
+        const auto theta = [g](double x) { return (g * x + 0.5) / (1.0 + g); };
 
-        *std::next(fx.rbegin()) = *fx.rbegin() * std::cos(*first * pi / 2.0);
-        *fx.rbegin() *= std::sin(*first * pi / 2.0);
+        *fx.rbegin()   = std::sin(*first * pi / 2.0);
+        *++fx.rbegin() = std::cos(*first * pi / 2.0);
         ++first;
 
         for (auto fxi = fx.rbegin() + 1; fxi != fx.rend() - 1; ++first, ++fxi)
@@ -149,12 +150,13 @@ namespace genetic_algorithm::problems
 
         std::vector fx(last - first + 1, 0.0);
 
-        fx.back() = double(fx.size());
+        fx.back() = (1.0 + g) * fx.size();
         for (auto fxi = fx.begin(); fxi != fx.end() - 1; ++first, ++fxi)
         {
-            fx.back() -= *first / (1.0 + g) * (1.0 + std::sin(3.0 * pi * *first));
+            fx.back() -= *first * (1.0 + std::sin(3.0 * pi * *first));
             *fxi = *first / (1.0 + g);
         }
+        fx.back() /= (1.0 + g);
 
         return fx;
     }
@@ -185,9 +187,34 @@ namespace genetic_algorithm::problems
     static constexpr auto dtlz7 = dtlz<dtlz7_f, dtlz7_g>;
 
 
+    DTLZ1::DTLZ1(size_t num_obj, size_t bits_per_var) :
+        BenchmarkFunctionRealN("DTLZ1", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+    {
+        ideal_point_ = Point(num_obj, 0.0);
+        nadir_point_ = Point(num_obj, -0.5);
+
+        optimum_ = std::vector(num_vars(), 0.5);
+        std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
+        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_.back() = -0.5;
+    }
+
     std::vector<double> DTLZ1::invoke(const std::vector<double>& vars) const
     {
         return dtlz1(vars, num_obj());
+    }
+
+
+    DTLZ2::DTLZ2(size_t num_obj, size_t bits_per_var) :
+        BenchmarkFunctionRealN("DTLZ2", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+    {
+        ideal_point_ = Point(num_obj, 0.0);
+        nadir_point_ = Point(num_obj, -1.0);
+
+        optimum_ = std::vector(num_vars(), 0.5);
+        std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
+        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_[0] = -1.0;
     }
 
     std::vector<double> DTLZ2::invoke(const std::vector<double>& vars) const
@@ -195,9 +222,34 @@ namespace genetic_algorithm::problems
         return dtlz2(vars, num_obj());
     }
 
+
+    DTLZ3::DTLZ3(size_t num_obj, size_t bits_per_var) :
+        BenchmarkFunctionRealN("DTLZ3", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+    {
+        ideal_point_ = Point(num_obj, 0.0);
+        nadir_point_ = Point(num_obj, -1.0);
+
+        optimum_ = std::vector(num_vars(), 0.5);
+        std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
+        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_[0] = -1.0;
+    }
+
     std::vector<double> DTLZ3::invoke(const std::vector<double>& vars) const
     {
         return dtlz3(vars, num_obj());
+    }
+
+
+    DTLZ4::DTLZ4(size_t num_obj, size_t bits_per_var) :
+        BenchmarkFunctionRealN("DTLZ4", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+    {
+        ideal_point_ = Point(num_obj, 0.0);
+        nadir_point_ = Point(num_obj, -1.0);
+
+        optimum_ = std::vector(num_vars(), 0.5);
+        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_[0] = -1.0;
     }
 
     std::vector<double> DTLZ4::invoke(const std::vector<double>& vars) const
@@ -205,14 +257,63 @@ namespace genetic_algorithm::problems
         return dtlz4(vars, num_obj());
     }
 
+
+    DTLZ5::DTLZ5(size_t num_obj, size_t bits_per_var) :
+        BenchmarkFunctionRealN("DTLZ5", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+    {
+        ideal_point_ = Point(num_obj, 0.0);
+        nadir_point_ = Point(num_obj, 0.0);
+        for (size_t i = 0; i < num_obj; i++)
+        {
+            nadir_point_[i] = -1.0 / std::pow(std::sqrt(2), num_obj - 1 - i);
+        }
+        nadir_point_[0] = nadir_point_[1];
+
+        optimum_ = std::vector(num_vars(), 0.5);
+        std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
+        optimal_value_ = nadir_point_;
+        optimal_value_.back() = 0.0;
+    }
+
     std::vector<double> DTLZ5::invoke(const std::vector<double>& vars) const
     {
         return dtlz5(vars, num_obj());
     }
 
+
+    DTLZ6::DTLZ6(size_t num_obj, size_t bits_per_var) :
+        BenchmarkFunctionRealN("DTLZ6", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+    {
+        ideal_point_ = Point(num_obj, 0.0);
+        nadir_point_ = Point(num_obj, 0.0);
+        for (size_t i = 0; i < num_obj; i++)
+        {
+            nadir_point_[i] = -1.0 / std::pow(std::sqrt(2), num_obj - 1 - i);
+        }
+        nadir_point_[0] = nadir_point_[1];
+
+        optimum_ = std::vector(num_vars(), 0.0);
+        optimal_value_ = nadir_point_;
+        optimal_value_.back() = 0.0;
+    }
+
     std::vector<double> DTLZ6::invoke(const std::vector<double>& vars) const
     {
         return dtlz6(vars, num_obj());
+    }
+
+
+    DTLZ7::DTLZ7(size_t num_obj, size_t bits_per_var) :
+        BenchmarkFunctionRealN("DTLZ7", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+    {
+        optimum_ = std::vector(num_vars(), 0.0);
+        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_.back() = -2.0 * num_obj;
+
+        ideal_point_ = Point(num_obj, 0.0);
+        ideal_point_.back() = -0.307004 * num_obj - 1.692996;
+        nadir_point_ = Point(num_obj, -1.0);
+        nadir_point_.back() = -2.0 * num_obj;
     }
 
     std::vector<double> DTLZ7::invoke(const std::vector<double>& vars) const

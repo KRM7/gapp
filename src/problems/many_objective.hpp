@@ -27,7 +27,7 @@ namespace genetic_algorithm::problems
     *
     * Evaluated on the hypercube x_i = [0.0, 1.0]. \n
     * The function is implemented for maximization, the optimal solutions are:
-    * x_i = [0.0, 1.0] for 0 <= i <= nobj-1, and x_i = 0.5 for i >= nobj,
+    * x_i = [0.0, 1.0] for 0 <= i < nobj-1, and x_i = 0.5 for i >= nobj-1,
     * and the pareto optimal front in the objective space is the linear hyperplane where sum(f_m) = 0.5. \n
     * The extreme points in the objective-space are: \n
     *   ideal-point: ( 0.0,  0.0, ...,  0.0) \n
@@ -51,9 +51,7 @@ namespace genetic_algorithm::problems
         * @param num_obj The number of objectives. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit DTLZ1(size_t num_obj, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("DTLZ1", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit DTLZ1(size_t num_obj, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -68,7 +66,7 @@ namespace genetic_algorithm::problems
     *
     * Evaluated on the hypercube x_i = [0.0, 1.0]. \n
     * The function is implemented for maximization, the optimal solutions are:
-    * x_i = [0.0, 1.0] for 0 <= i <= nobj-1, and x_i = 0.5 for i >= nobj,
+    * x_i = [0.0, 1.0] for 0 <= i < nobj-1, and x_i = 0.5 for i >= nobj-1,
     * and the pareto optimal front in the objective space is the surface of the unit hypersphere: sum(f_m^2) = 1.0. \n
     * The extreme points in the objective-space are: \n
     *   ideal-point: ( 0.0,  0.0, ...,  0.0) \n
@@ -92,9 +90,7 @@ namespace genetic_algorithm::problems
         * @param num_obj The number of objectives. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit DTLZ2(size_t num_obj, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("DTLZ2", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit DTLZ2(size_t num_obj, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -110,7 +106,7 @@ namespace genetic_algorithm::problems
     *
     * Evaluated on the hypercube x_i = [0.0, 1.0]. \n
     * The function is implemented for maximization, the optimal solutions are:
-    * x_i = [0.0, 1.0] for 0 <= i <= nobj-1, and x_i = 0.5 for i >= nobj,
+    * x_i = [0.0, 1.0] for 0 <= i < nobj-1, and x_i = 0.5 for i >= nobj-1,
     * and the pareto optimal front in the objective space is the surface of the unit hypersphere: sum(f_m^2) = 1.0. \n
     * The extreme points in the objective-space are: \n
     *   ideal-point: ( 0.0,  0.0, ...,  0.0) \n
@@ -134,9 +130,7 @@ namespace genetic_algorithm::problems
         * @param num_obj The number of objectives. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit DTLZ3(size_t num_obj, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("DTLZ3", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit DTLZ3(size_t num_obj, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -152,7 +146,7 @@ namespace genetic_algorithm::problems
     *
     * Evaluated on the hypercube x_i = [0.0, 1.0]. \n
     * The function is implemented for maximization, the optimal solutions are:
-    * x_i = [0.0, 1.0] for 0 <= i <= nobj-1, and x_i = 0.5 for i >= nobj,
+    * x_i = [0.0, 1.0] for 0 <= i < nobj-1, and x_i = 0.5 for i >= nobj-1,
     * and the pareto optimal front in the objective space is the surface of the unit hypersphere: sum(f_m^2) = 1.0. \n
     * The extreme points in the objective-space are: \n
     *   ideal-point: ( 0.0,  0.0, ...,  0.0) \n
@@ -176,9 +170,7 @@ namespace genetic_algorithm::problems
         * @param num_obj The number of objectives. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit DTLZ4(size_t num_obj, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("DTLZ4", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit DTLZ4(size_t num_obj, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -194,11 +186,11 @@ namespace genetic_algorithm::problems
     *
     * Evaluated on the hypercube x_i = [0.0, 1.0]. \n
     * The function is implemented for maximization, the optimal solutions are:
-    * x_i = [0.0, 1.0] for 0 <= i <= nobj-1, and x_i = 0.5 for i >= nobj,
+    * x_i = [0.0, 1.0] for 0 <= i < nobj-1, and x_i = 0.5 for i >= nobj-1,
     * and the pareto optimal solutions satisfy: sum(f_m^2) = 1.0. \n
     * The extreme points in the objective-space are: \n
     *   ideal-point: ( 0.0,  0.0, ...,  0.0) \n
-    *   nadir-point: (-1.0, -1.0/sqrt(nobj-1), ..., -1.0/sqrt(nobj-1)) \n
+    *   nadir-point: ( (-1.0/sqrt(2))^(nobj-2), (-1.0/sqrt(2))^(nobj-2), (-1.0/sqrt(2))^(nobj-3), ..., -1.0) \n
     *
     * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
@@ -218,9 +210,7 @@ namespace genetic_algorithm::problems
         * @param num_obj The number of objectives. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit DTLZ5(size_t num_obj, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("DTLZ5", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit DTLZ5(size_t num_obj, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -237,11 +227,11 @@ namespace genetic_algorithm::problems
     *
     * Evaluated on the hypercube x_i = [0.0, 1.0]. \n
     * The function is implemented for maximization, the optimal solutions are:
-    * x_i = [0.0, 1.0] for 0 <= i <= nobj-1, and x_i = 0.5 for i >= nobj,
+    * x_i = [0.0, 1.0] for 0 <= i < nobj-1, and x_i = 0.0 for i >= nobj-1,
     * and the pareto optimal solutions satisfy: sum(f_m^2) = 1.0. \n
     * The extreme points in the objective-space are: \n
     *   ideal-point: ( 0.0,  0.0, ...,  0.0) \n
-    *   nadir-point: (-1.0, -1.0/sqrt(nobj-1), ..., -1.0/sqrt(nobj-1)) \n
+    *   nadir-point: ( (-1.0/sqrt(2))^(nobj-2), (-1.0/sqrt(2))^(nobj-2), (-1.0/sqrt(2))^(nobj-3), ..., -1.0) \n
     *
     * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
@@ -261,9 +251,7 @@ namespace genetic_algorithm::problems
         * @param num_obj The number of objectives. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit DTLZ6(size_t num_obj, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("DTLZ6", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit DTLZ6(size_t num_obj, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -279,7 +267,10 @@ namespace genetic_algorithm::problems
     *
     * Evaluated on the hypercube x_i = [0.0, 1.0]. \n
     * The function is implemented for maximization, the optimal solutions are:
-    * x_i = [0.0, 1.0] for 0 <= i <= nobj-1, and x_i = 0.0 for i >= nobj \n
+    * x_i = [0.0, 1.0] for 0 <= i < nobj-1, and x_i = 0.0 for i >= nobj-1 \n
+    * The extreme points in the objective-space are: \n
+    *   ideal-point: ( 0.0,  0.0, ..., -0.307*nobj-1.693) \n
+    *   nadir-point: (-1.0, -1.0, ..., -2*nobj) \n
     *
     * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
@@ -299,9 +290,7 @@ namespace genetic_algorithm::problems
         * @param num_obj The number of objectives. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit DTLZ7(size_t num_obj, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("DTLZ7", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit DTLZ7(size_t num_obj, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;

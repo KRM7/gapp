@@ -13,9 +13,7 @@
 #define GA_PROBLEMS_MULTI_OBJECTIVE_HPP
 
 #include "benchmark_function.hpp"
-#include "../utility/utility.hpp"
 #include <vector>
-#include <utility>
 #include <string>
 #include <cstddef>
 
@@ -27,8 +25,8 @@ namespace genetic_algorithm::problems
     * Evaluated on the hypercube x_i = [-5.0, 5.0]. \n
     * The function is implemented for maximization. It has multiple disconnected pareto fronts. \n
     * The approximate extreme points in the objective-space are: \n
-    *   ideal-point: [20.0, 12.0] \n
-    *   nadir-point: [14.5,  0.0] \n
+    *   ideal-point: [10*(nvars-1), 3.85(nvars-1) + 4] \n
+    *   nadir-point: [7.25*(nvars-1), 0.0] \n
     *
     * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     * 
@@ -42,12 +40,10 @@ namespace genetic_algorithm::problems
         /**
         * Construct a Kursawe function.
         *
-        * @param num_vars The number of variables. Must be at least 1.
+        * @param num_vars The number of variables. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit Kursawe(size_t num_vars = 3, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("Kursawe", 2, num_vars, Bounds{ -5.0, 5.0 }, bits_per_var)
-        {}
+        explicit Kursawe(size_t num_vars = 3, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -76,12 +72,10 @@ namespace genetic_algorithm::problems
         /**
         * Construct a ZDT1 objective function.
         *
-        * @param num_vars The number of variables. Must be at least 1.
+        * @param num_vars The number of variables. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit ZDT1(size_t num_vars = 30, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("ZDT1", 2, num_vars, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit ZDT1(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -110,12 +104,10 @@ namespace genetic_algorithm::problems
         /**
         * Construct a ZDT2 objective function.
         *
-        * @param num_vars The number of variables. Must be at least 1.
+        * @param num_vars The number of variables. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit ZDT2(size_t num_vars = 30, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("ZDT2", 2, num_vars, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit ZDT2(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -146,12 +138,10 @@ namespace genetic_algorithm::problems
         /**
         * Construct a ZDT3 objective function.
         *
-        * @param num_vars The number of variables. Must be at least 1.
+        * @param num_vars The number of variables. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit ZDT3(size_t num_vars = 30, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("ZDT3", 2, num_vars, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit ZDT3(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -160,7 +150,8 @@ namespace genetic_algorithm::problems
 
     /**
     * Implementation of the ZDT4 function for any number of variables (and 2 objectives). \n
-    * The function has a large number of local pareto fronts in the objective space,
+    * This is the most difficult problem of the ZDT suite,
+    * the function has a large number of local pareto fronts in the objective space,
     * which makes it easy for the algorithms to get stuck along one of these local fronts. \n
     *
     * Evaluated on x_1 = [0.0, 1.0] and x_rest = [-5.0, 5.0]. \n
@@ -181,14 +172,10 @@ namespace genetic_algorithm::problems
         /**
         * Construct a ZDT4 objective function.
         *
-        * @param num_vars The number of variables. Must be at least 1.
+        * @param num_vars The number of variables. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit ZDT4(size_t num_vars = 10, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("ZDT4", 2, num_vars, Bounds{ -5.0, 5.0 }, bits_per_var)
-        {
-            bounds_[0] = { 0.0, 1.0 };
-        }
+        explicit ZDT4(size_t num_vars = 10, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
@@ -202,7 +189,7 @@ namespace genetic_algorithm::problems
     *
     * The function is implemented for maximization, the optimal solutions are x_1 = anything, and x_rest = all_ones (binary chromosomes). \n
     * The extreme points in the objective-space are: \n
-    *   ideal-point: [ -1.0, -(nvars+1)/31] \n
+    *   ideal-point: [ -1.0, -(nvars-1)/31] \n
     *   nadir-point: [-31.0,    -nvars+1  ] \n
     *
     * This benchmark function can only be used with the binary-encoded multi-objective algorithms,
@@ -218,11 +205,9 @@ namespace genetic_algorithm::problems
         /**
         * Construct a ZDT5 objective function.
         *
-        * @param num_vars The number of variables. Must be at least 1.
+        * @param num_vars The number of variables. Must be at least 2.
         */
-        explicit ZDT5(size_t num_vars = 11) :
-            BenchmarkFunctionBinaryN("ZDT5", 2, FIRST_BITS + (num_vars - 1) * REST_BITS)
-        {}
+        explicit ZDT5(size_t num_vars = 11);
 
     private:
         std::vector<double> invoke(const std::vector<BinaryGene>& vars) const override;
@@ -241,7 +226,7 @@ namespace genetic_algorithm::problems
     * The function is implemented for maximization, the optimal solutions are x_1 = [0.0, 1.0] and x_rest = 0.0. \n
     * The extreme points in the objective-space are: \n
     *   ideal-point: [ 0.0,  0.0] \n
-    *   nadir-point: [-1.0, -1.0] \n
+    *   nadir-point: [-1.0, -0.92] \n
     *
     * This benchmark function can be used for both the real- and binary-encoded multi-objective algorithms. \n
     *
@@ -255,12 +240,10 @@ namespace genetic_algorithm::problems
         /**
         * Construct a ZDT6 objective function.
         *
-        * @param num_vars The number of variables. Must be at least 1.
+        * @param num_vars The number of variables. Must be at least 2.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
-        explicit ZDT6(size_t num_vars = 10, size_t bits_per_var = 32) :
-            BenchmarkFunctionRealN("ZDT6", 2, num_vars, Bounds{ 0.0, 1.0 }, bits_per_var)
-        {}
+        explicit ZDT6(size_t num_vars = 10, size_t bits_per_var = 32);
 
     private:
         std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
