@@ -21,48 +21,6 @@
 
 namespace genetic_algorithm::problems
 {
-    /** ... */
-    class BenchmarkFunctionRealN : public BenchmarkFunction<RealGene>
-    {
-    public:
-        explicit BenchmarkFunctionRealN(std::string name, size_t num_obj, size_t num_vars, Bounds bounds, size_t bits_per_var) :
-            BenchmarkFunction<RealGene>(std::move(name), num_obj, num_vars, bounds), var_bits_(bits_per_var)
-        {
-            if (num_obj < 2) GA_THROW(std::invalid_argument, "Not enough objectives for a multi-objective benchmark functions.");
-        }
-
-        explicit BenchmarkFunctionRealN(std::string name, size_t num_obj, size_t num_vars, const std::vector<Bounds>& bounds, size_t bits_per_var) :
-            BenchmarkFunction<RealGene>(std::move(name), num_obj, num_vars, bounds), var_bits_(bits_per_var)
-        {
-            if (num_obj < 2) GA_THROW(std::invalid_argument, "Not enough objectives for a multi-objective benchmark functions.");
-        }
-
-        size_t num_bits() const noexcept { return num_vars() * var_bits_; }
-        size_t var_bits() const noexcept { return var_bits_; }
-
-        // ideal point, nadir point
-        // optimum: returns a single point in the front (domain) (unspecified which)
-        // optimal value: return a single point in the front (objective space) (unspecified whhich)
-
-        using BenchmarkFunction<double>::operator();
-        std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const { return invoke(convert(binary_chrom)); }
-
-    private:
-        std::vector<RealGene> convert(const std::vector<BinaryGene>& binary_chrom) const;
-
-        size_t var_bits_;
-    };
-
-    /** ... */
-    class BenchmarkFunctionBinaryN : public BenchmarkFunction<BinaryGene>
-    {
-    public:
-        explicit BenchmarkFunctionBinaryN(std::string name, size_t num_obj, size_t num_vars) :
-            BenchmarkFunction<BinaryGene>(std::move(name), num_obj, num_vars, Bounds{ 0, 1 })
-        {}
-    };
-
-
     /**
     * Implementation of the Kursawe function for any number of variables (and 2 objectives). \n
     *

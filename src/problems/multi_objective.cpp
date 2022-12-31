@@ -14,28 +14,9 @@ namespace genetic_algorithm::problems
 {
     using std::numbers::pi;
 
-    std::vector<RealGene> BenchmarkFunctionRealN::convert(const std::vector<BinaryGene>& binary_chrom) const
     {
-        assert((binary_chrom.size() / var_bits_) == num_vars());
 
-        std::vector<RealGene> vars(num_vars());
 
-        for (size_t i = 0; i < vars.size(); i++)
-        {
-            const auto first = binary_chrom.begin() + i * var_bits_;
-            const auto last = binary_chrom.begin() + (i + 1) * var_bits_;
-
-            const RealGene val = std::accumulate(first, last, 0.0, [](RealGene acc, BinaryGene bit) noexcept
-            {
-                return (acc * 2) + bit;
-            });
-
-            vars[i] = val / (std::pow(2.0, var_bits_) - 1); // use double to avoid integer overflow
-            vars[i] *= bounds_[i].upper - bounds_[i].lower;
-            vars[i] += bounds_[i].lower;
-        }
-
-        return vars;
     }
 
 

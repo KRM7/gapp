@@ -21,40 +21,6 @@
 
 namespace genetic_algorithm::problems
 {
-    /** ... */
-    class BenchmarkFunctionReal1 : public BenchmarkFunction<RealGene>
-    {
-    public:
-        explicit BenchmarkFunctionReal1(std::string name, size_t num_vars, Bounds bounds, size_t bits_per_var, double optimal_value, const std::vector<RealGene>& optimum) :
-            BenchmarkFunction<RealGene>(std::move(name), 1, num_vars, bounds), optimum_(optimum), optimal_value_(1, optimal_value), var_bits_(bits_per_var)
-        {
-            if (optimum.size() != num_vars) GA_THROW(std::invalid_argument, "Mismatching number of variables and optimum vector sizes.");
-        }
-
-        explicit BenchmarkFunctionReal1(std::string name, size_t num_vars, const std::vector<Bounds>& bounds, size_t bits_per_var, double optimal_value, const std::vector<RealGene>& optimum) :
-            BenchmarkFunction<RealGene>(std::move(name), 1, num_vars, bounds), optimum_(optimum), optimal_value_(1, optimal_value), var_bits_(bits_per_var)
-        {
-            if (optimum.size() != num_vars) GA_THROW(std::invalid_argument, "Mismatching number of variables and optimum vector sizes.");
-        }
-
-        const std::vector<RealGene>& optimal_value() const noexcept { return optimal_value_; }
-        const std::vector<RealGene>& optimum() const noexcept { return optimum_; }
-
-        size_t num_bits() const noexcept { return num_vars() * var_bits_; }
-        size_t var_bits() const noexcept { return var_bits_; }
-
-        using BenchmarkFunction<double>::operator();
-        std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const { return invoke(convert(binary_chrom)); }
-
-    private:
-        std::vector<double> convert(const std::vector<BinaryGene>& binary_chrom) const;
-
-        std::vector<RealGene> optimum_;
-        std::vector<RealGene> optimal_value_;
-        size_t var_bits_;
-    };
-
-
     /**
     * Implementation of a simple sphere function (x^2) for any number of variables. \n
     * This is a simple benchmark function with a single global optimum that is easy to find, and
