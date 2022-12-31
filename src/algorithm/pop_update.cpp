@@ -13,22 +13,19 @@
 namespace genetic_algorithm::update
 {
     std::vector<size_t> KeepChildren::operator()(const GaInfo& ga,
-                                                 FitnessMatrix::const_iterator first,
-                                                 FitnessMatrix::const_iterator children_first,
-                                                 FitnessMatrix::const_iterator last)
+                                                 FitnessMatrix::const_iterator,
+                                                 FitnessMatrix::const_iterator,
+                                                 FitnessMatrix::const_iterator)
     {
-        GA_UNUSED(first, children_first, last);
-
         return detail::index_vector(ga.population_size(), ga.population_size());
     }
 
     std::vector<size_t> Elitism::operator()(const GaInfo& ga,
                                             FitnessMatrix::const_iterator first,
                                             FitnessMatrix::const_iterator children_first,
-                                            FitnessMatrix::const_iterator last)
+                                            [[maybe_unused]] FitnessMatrix::const_iterator last)
     {
         assert(ga.population_size() >= n_);
-        GA_UNUSED(last);
 
         const auto sorted_parent_indices = detail::partial_argsort(first, first + n_, children_first,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
@@ -48,9 +45,9 @@ namespace genetic_algorithm::update
                                              FitnessMatrix::const_iterator children_first,
                                              FitnessMatrix::const_iterator last)
     {
-        GA_UNUSED(children_first);
+        assert(size_t(children_first - first) == ga.population_size());
 
-        auto sorted_indices = detail::partial_argsort(first, first + ga.population_size(), last,
+        auto sorted_indices = detail::partial_argsort(first, children_first, last,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
             return math::paretoCompareLess(rhs, lhs); // descending

@@ -93,7 +93,7 @@ namespace genetic_algorithm::algorithm
 
     std::vector<size_t> NSGA2::nextPopulationImpl(const GaInfo& ga,
                                               FitnessMatrix::const_iterator parents_first,
-                                              FitnessMatrix::const_iterator children_first,
+                                              [[maybe_unused]] FitnessMatrix::const_iterator children_first,
                                               FitnessMatrix::const_iterator children_last)
     {
         const size_t popsize = ga.population_size();
@@ -101,8 +101,6 @@ namespace genetic_algorithm::algorithm
         assert(ga.num_objectives() > 1);
         assert(size_t(children_first - parents_first) == popsize);
         assert(std::all_of(parents_first, children_last, [&ga](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
-
-        GA_UNUSED(children_first);
 
         auto pfronts = nonDominatedSort(parents_first, children_last);
         auto [partial_front_first, partial_front_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);

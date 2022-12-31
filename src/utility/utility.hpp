@@ -11,7 +11,6 @@
 #define GA_ASSERT(condition, msg) assert((condition) && (msg))
 #define GA_THROW(exception_type, msg) throw exception_type(msg)
 
-#define GA_UNUSED(...) (void)(sizeof(__VA_ARGS__))  // NOLINT
 
 #ifdef __GNUC__
 #   define GA_UNREACHABLE() __builtin_unreachable()
