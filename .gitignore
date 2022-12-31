@@ -16,7 +16,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-CMakeSettings.json
 
 # Build results
 [Dd]ebug/
