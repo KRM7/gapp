@@ -59,6 +59,10 @@ else() # GNU style compiler interface
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op")
     endif()
+    # clang specific options
+    if(CMAKE_CXX_COMPILER_ID MATCHER "Clang")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
+    endif()
 endif()
 
 # LTO setup
