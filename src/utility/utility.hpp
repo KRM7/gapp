@@ -30,13 +30,6 @@
 #endif
 
 
-#ifdef GA_INTERFACE
-#   define GA_API __declspec(dllexport)
-#else
-#   define GA_API __declspec(dllimport)
-#endif
-
-
 namespace genetic_algorithm
 {
     constexpr std::size_t operator ""_sz(unsigned long long arg) noexcept
