@@ -124,8 +124,13 @@ namespace genetic_algorithm::crossover::perm
         
         if (chrom_len < 2) return { parent1, parent2 };
 
-        auto child1 = dtl::pmxCrossoverImpl(parent1, parent2);
-        auto child2 = dtl::pmxCrossoverImpl(parent2, parent1);
+        const size_t range_len = rng::randomInt(1_sz, chrom_len - 1);
+
+        const size_t first = rng::randomInt(0_sz, chrom_len - range_len);
+        const size_t last = first + range_len;
+
+        auto child1 = dtl::pmxCrossoverImpl(parent1, parent2, first, last);
+        auto child2 = dtl::pmxCrossoverImpl(parent2, parent1, first, last);
 
         return { std::move(child1), std::move(child2) };
     }

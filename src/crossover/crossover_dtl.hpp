@@ -4,12 +4,14 @@
 #define GA_CROSSOVER_DTL_HPP
 
 #include "../population/candidate.hpp"
+#include "../encoding/gene_types.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <concepts>
 #include <cstddef>
 
 namespace genetic_algorithm::crossover::dtl
@@ -27,15 +29,27 @@ namespace genetic_algorithm::crossover::dtl
     CandidatePair<T> twoPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::pair<size_t, size_t> crossover_points);
 
     /* Implementation of the order-1 crossover for any gene type, only generates a single child. */
-    template<Gene T>
+    template<typename T>
+    Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
+
+    /* Implementation of the order-1 crossover for unsigned integers, only generates a single child. */
+    template<std::unsigned_integral T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
 
     /* Implementation of the order-2 crossover for any gene type, only generates a single child. */
-    template<Gene T>
+    template<typename T>
+    Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
+
+    /* Implementation of the order-2 crossover for unsigned integer genes, only generates a single child. */
+    template<std::unsigned_integral T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
 
     /* Implementation of the position crossover for any gene type, only generates a single child. */
-    template<Gene T>
+    template<typename T>
+    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices);
+
+    /* Implementation of the position crossover for unsigned integer genes, only generates a single child. */
+    template<std::unsigned_integral T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices);
 
     /* Find the indices of genes in the chromosomes chrom1 and chrom2 which belong to odd cycles. Used in the cycle crossover operator. */
@@ -51,8 +65,12 @@ namespace genetic_algorithm::crossover::dtl
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, std::unordered_map<T, std::vector<T>>&& neighbour_lists);
 
     /* Implementation of the PMX crossover for any gene type, only generates a single child. */
-    template<Gene T>
-    Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
+    template<typename T>
+    Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
+
+    /* Implementation of the PMX crossover for unsigned integer genes, only generates a single child. */
+    template<std::unsigned_integral T>
+    Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
 
 } // namespace genetic_algorithm::crossover::dtl
 
@@ -142,26 +160,64 @@ namespace genetic_algorithm::crossover::dtl
         return { std::move(child1), std::move(child2) };
     }
 
-    template<Gene T>
+    template<typename T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
         const size_t chrom_len = parent1.chromosome.size();
+        const size_t range_len = last - first;
 
         std::unordered_set<T> direct(last - first);
         for (size_t idx = first; idx != last; idx++) direct.insert(parent1.chromosome[idx]);
 
         Candidate child = parent1;
 
-        for (size_t child_pos = last, parent_pos = last; child_pos % chrom_len != first; child_pos++)
+        size_t parent_pos = (last == chrom_len) ? 0 : last;
+        size_t child_pos = (last == chrom_len) ? 0 : last;
+
+        for (size_t i = 0; i < chrom_len - range_len; i++)
         {
-            while (direct.contains(parent2.chromosome[parent_pos % chrom_len])) parent_pos++;
-            child.chromosome[child_pos % chrom_len] = parent2.chromosome[parent_pos++ % chrom_len];
+            while (direct.contains(parent2.chromosome[parent_pos])) detail::increment_mod(parent_pos, chrom_len);
+
+            child.chromosome[child_pos] = parent2.chromosome[parent_pos];
+
+            detail::increment_mod(parent_pos, chrom_len);
+            detail::increment_mod(child_pos, chrom_len);
         }
 
         return child;
     }
 
-    template<Gene T>
+    template<std::unsigned_integral T>
+    Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
+    {
+        const size_t chrom_len = parent1.chromosome.size();
+        const size_t range_len = last - first;
+
+        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+
+        std::vector is_direct(chrom_len, false);
+        for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
+
+        Candidate child = parent1;
+
+        size_t parent_pos = (last == chrom_len) ? 0 : last;
+        size_t child_pos = (last == chrom_len) ? 0 : last;
+
+        for (size_t i = 0; i < chrom_len - range_len; i++)
+        {
+            while (is_direct[parent2.chromosome[parent_pos]]) detail::increment_mod(parent_pos, chrom_len);
+
+            child.chromosome[child_pos] = parent2.chromosome[parent_pos];
+
+            detail::increment_mod(parent_pos, chrom_len);
+            detail::increment_mod(child_pos, chrom_len);
+        }
+
+        return child;
+    }
+
+    template<typename T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
         std::unordered_set<T> direct(last - first);
@@ -181,7 +237,32 @@ namespace genetic_algorithm::crossover::dtl
         return child;
     }
 
-    template<Gene T>
+    template<std::unsigned_integral T>
+    Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
+    {
+        const size_t chrom_len = parent1.chromosome.size();
+
+        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+
+        std::vector is_direct(chrom_len, false);
+        for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
+
+        Candidate child = parent1;
+
+        for (size_t child_pos = 0; const T& gene : parent2.chromosome)
+        {
+            if (!is_direct[gene])
+            {
+                if (child_pos == first) child_pos = last; // skip [first, last)
+                child.chromosome[child_pos++] = gene;
+            }
+        }
+
+        return child;
+    }
+
+    template<typename T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
     {
         std::unordered_set<T> direct(indices.size());
@@ -194,6 +275,31 @@ namespace genetic_algorithm::crossover::dtl
             if (!direct.contains(gene))
             {
                 while (direct.contains(*child_pos)) ++child_pos;
+                *child_pos++ = gene;
+            }
+        }
+
+        return child;
+    }
+
+    template<std::unsigned_integral T>
+    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
+    {
+        const size_t chrom_len = parent1.chromosome.size();
+
+        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+
+        std::vector is_direct(chrom_len, false);
+        for (size_t idx : indices) is_direct[parent1.chromosome[idx]] = true;
+
+        Candidate child = parent1;
+
+        for (auto child_pos = child.chromosome.begin(); const T& gene : parent2.chromosome)
+        {
+            if (!is_direct[gene])
+            {
+                while (is_direct[*child_pos]) ++child_pos;
                 *child_pos++ = gene;
             }
         }
@@ -403,16 +509,10 @@ namespace genetic_algorithm::crossover::dtl
         return child;
     }
 
-    template<Gene T>
-    Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
+    template<typename T>
+    Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
         Candidate child = parent2;
-
-        const size_t chrom_len = parent1.chromosome.size();
-        const size_t range_len = rng::randomInt(1_sz, chrom_len - 1);
-
-        const size_t first = rng::randomInt(0_sz, chrom_len - range_len);
-        const size_t last = first + range_len;
 
         std::unordered_set<T> direct(last - first);
         for (size_t i = first; i < last; i++)
@@ -429,6 +529,45 @@ namespace genetic_algorithm::crossover::dtl
                 while (first <= pos && pos < last)
                 {
                     pos = *detail::index_of(parent2.chromosome, parent1.chromosome[pos]);
+                }
+                child.chromosome[pos] = parent2.chromosome[i];
+            }
+        }
+
+        return child;
+    }
+
+    template<std::unsigned_integral T>
+    Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
+    {
+        const size_t chrom_len = parent1.chromosome.size();
+
+        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+
+        Candidate child = parent2;
+
+        std::vector is_direct(chrom_len, false);
+        for (size_t i = first; i < last; i++)
+        {
+            child.chromosome[i] = parent1.chromosome[i];
+            is_direct[parent1.chromosome[i]] = true;
+        }
+
+        std::vector index_lookup(chrom_len, 0_sz); // for parent2
+        for (size_t i = 0; i < chrom_len; i++)
+        {
+            index_lookup[parent2.chromosome[i]] = i;
+        }
+
+        for (size_t i = first; i < last; i++)
+        {
+            if (!is_direct[parent2.chromosome[i]])
+            {
+                size_t pos = i;
+                while (first <= pos && pos < last)
+                {
+                    pos = index_lookup[parent1.chromosome[pos]];
                 }
                 child.chromosome[pos] = parent2.chromosome[i];
             }
