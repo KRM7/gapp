@@ -46,7 +46,6 @@ void perm_tsp124()
 
     PermutationGA GA(500, tsp124.num_vars(), tsp124);
 
-    GA.population_size(500);
     GA.algorithm(selection::Boltzmann{});
     GA.crossover_method(crossover::perm::Position{ 0.9 });
     GA.mutation_method(mutation::perm::Swap3{ 0.4 });
