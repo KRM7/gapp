@@ -11,8 +11,9 @@
 ## Overview
 
 <p>
-This library implements several types of genetic algorithms in C++ for solving both single-
-and multi-objective optimization problems. Genetic algorithms with several commonly used
+This is a library of genetic algorithm implementations in C++ for solving single-
+and multi-objective optimization problems.
+Genetic algorithms with several commonly used
 encoding methods are implemented, along with commonly used selection, crossover, and mutation
 methods for each encoding method. The user can either choose one of these already implemented 
 methods to use, or they can define their own genetic operators.
@@ -32,10 +33,28 @@ The genetic algorithms are parallelized through the use of C++17 parallel algori
 
 #### Requirements
 
+- C++20 compiler (gcc 11.0, clang 14.0, msvc 14.30 or later)
+- CMake 3.16 or later
+- Intel TBB (depending on your standard library implementation)
+- Catch2 3.1
+
 <p>
-The library consists of header files only, and does not depend on any other libraries.
-The only requirement is a compiler that supports the C++20 standard.
+To build the library, you will need a compiler that supports C++20 and CMake.  
+If you also want to build and run the unit tests for the library, you will need to have
+Catch2 installed.
 </p>
+
+<p>
+The library uses the parallel algorithms introduced in C++17, so you might also need
+Intel's TBB library depending on your standard library implementation:
+</p>
+
+- libstdc++ needs TBB
+- libc++ doesn't support C++17's parallel algorithms
+- Microsoft's STL doesn't need TBB
+
+Since libc++ doesn't support C\++17's parallel algorithms, you should use libstdc++ with clang.
+
 
 ## Usage examples
 
