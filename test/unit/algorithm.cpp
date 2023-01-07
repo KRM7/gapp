@@ -18,6 +18,17 @@ static constexpr auto always_false = [](auto) { return false; };
 
 using namespace genetic_algorithm;
 
+TEST_CASE("increment_mod", "[algorithm]")
+{
+    int n = 0;
+
+    detail::increment_mod(n, 2);
+    REQUIRE(n == 1);
+
+    detail::increment_mod(n, 2);
+    REQUIRE(n == 0);
+}
+
 TEST_CASE("index_vector", "[algorithm]")
 {
     REQUIRE(detail::index_vector(3) == std::vector<size_t>{ 0, 1, 2 });

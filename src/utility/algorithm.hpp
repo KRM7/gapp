@@ -22,6 +22,15 @@
 
 namespace genetic_algorithm::detail
 {
+    template<std::integral T>
+    constexpr void increment_mod(T& value, T mod)
+    {
+        assert(mod >= 0);
+        assert(value < mod);
+
+        value = (value + 1 == mod) ? T(0) : value + 1;
+    }
+
     inline std::vector<size_t> index_vector(size_t n, size_t first = 0)
     {
         std::vector<size_t> indices(n);
