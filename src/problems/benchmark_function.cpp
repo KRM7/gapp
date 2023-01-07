@@ -12,7 +12,7 @@ namespace genetic_algorithm::problems
 {
     using RealBoundsVec = std::vector<typename GA<RealGene>::GeneBounds>;
 
-    static std::vector<RealGene> convertImpl(const std::vector<BinaryGene>& binary_chrom, const RealBoundsVec& bounds, size_t var_bits)
+    static std::vector<RealGene> convert(const std::vector<BinaryGene>& binary_chrom, const RealBoundsVec& bounds, size_t var_bits)
     {
         std::vector<RealGene> vars(bounds.size());
 
@@ -34,18 +34,18 @@ namespace genetic_algorithm::problems
         return vars;
     }
 
-    std::vector<RealGene> BenchmarkFunctionReal1::convert(const std::vector<BinaryGene>& binary_chrom) const
+    std::vector<double> BenchmarkFunctionReal1::operator()(const std::vector<BinaryGene>& binary_chrom) const
     {
         assert((binary_chrom.size() / var_bits_) == num_vars());
 
-        return convertImpl(binary_chrom, bounds_, var_bits_);
+        return convert(binary_chrom, bounds_, var_bits_);
     }
 
-    std::vector<RealGene> BenchmarkFunctionRealN::convert(const std::vector<BinaryGene>& binary_chrom) const
+    std::vector<double> BenchmarkFunctionRealN::operator()(const std::vector<BinaryGene>& binary_chrom) const
     {
         assert((binary_chrom.size() / var_bits_) == num_vars());
 
-        return convertImpl(binary_chrom, bounds_, var_bits_);
+        return convert(binary_chrom, bounds_, var_bits_);
     }
 
 } // namespace genetic_algorithm::problems

@@ -88,11 +88,9 @@ namespace genetic_algorithm::problems
         size_t var_bits() const noexcept { return var_bits_; }
 
         using BenchmarkFunction<Gene>::operator();
-        std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const { return invoke(convert(binary_chrom)); }
+        std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const;
 
     private:
-        std::vector<RealGene> convert(const std::vector<BinaryGene>& binary_chrom) const;
-
         size_t var_bits_;
     };
 
@@ -118,11 +116,9 @@ namespace genetic_algorithm::problems
         const Point& nadir_point() const noexcept { return nadir_point_; }
 
         using BenchmarkFunction<Gene>::operator();
-        std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const { return invoke(convert(binary_chrom)); }
+        std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const;
 
     protected:
-        std::vector<RealGene> convert(const std::vector<BinaryGene>& binary_chrom) const;
-
         Point ideal_point_;
         Point nadir_point_;
         size_t var_bits_;
