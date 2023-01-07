@@ -298,8 +298,7 @@ namespace genetic_algorithm
         void updatePopulation(Population<T>&& children);
         bool stopCondition() const;
 
-        void evaluateSolution(Candidate<T>& sol);
-        void evaluatePopulation(Population<T>& pop);
+        void evaluate(Candidate<T>& sol);
         void updateOptimalSolutions(Candidates<T>& optimal_sols, const Population<T>& pop) const;
 
         void advance();

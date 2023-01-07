@@ -256,7 +256,7 @@ namespace genetic_algorithm
 
         /* Create and evaluate the initial population of the algorithm. */
         population_ = generatePopulation(population_size_);
-        evaluatePopulation(population_);
+        std::for_each(GA_EXECUTION_UNSEQ, population_.begin(), population_.end(), [this](Candidate<T>& sol) { evaluate(sol); });
         fitness_matrix_ = detail::toFitnessMatrix(population_);
 
         assert(populationIsValid(population_));
@@ -347,9 +347,6 @@ namespace genetic_algorithm
         assert(populationIsValid(population_));
         assert(std::all_of(population_.begin(), population_.end(), std::mem_fn(&Candidate<T>::is_evaluated)));
 
-        /* The current pop has already been evaluted in the previous generation. */
-        evaluatePopulation(children);
-
         population_ = algorithm_->nextPopulation(*this, std::move(population_), std::move(children));
         fitness_matrix_ = detail::toFitnessMatrix(population_);
     }
@@ -361,8 +358,11 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline void GA<T>::evaluateSolution(Candidate<T>& sol)
+    inline void GA<T>::evaluate(Candidate<T>& sol)
     {
+        assert(fitness_function_);
+        assert(hasValidChromosome(sol));
+
         /* If the fitness function is static, and the solution has already
          * been evaluted sometime earlier (in an earlier generation), there
          * is no point doing it again. */
@@ -374,23 +374,8 @@ namespace genetic_algorithm
             std::atomic_ref fitness_evals{ num_fitness_evals_ };
             fitness_evals.fetch_add(1, std::memory_order::relaxed);
         }
-    }
 
-    template<Gene T>
-    void GA<T>::evaluatePopulation(Population<T>& pop)
-    {
-        assert(fitness_function_);
-        assert(std::all_of(pop.begin(), pop.end(), [this](const Candidate<T>& sol) { return hasValidChromosome(sol); }));
-
-        std::for_each(GA_EXECUTION_UNSEQ, pop.begin(), pop.end(), [this](Candidate<T>& sol)
-        {
-            evaluateSolution(sol);
-        });
-
-        if (!std::all_of(pop.begin(), pop.end(), [this](const Candidate<T>& sol) { return hasValidFitness(sol); }))
-        {
-            GA_THROW(std::logic_error, "A fitness vector with incorrect size was returned by the fitness function.");
-        }
+        assert(hasValidFitness(sol));
     }
 
     template<Gene T>
@@ -432,6 +417,7 @@ namespace genetic_algorithm
         {
             mutate(child);
             repair(child);
+            evaluate(child);
         });
 
         updatePopulation(std::move(children));
