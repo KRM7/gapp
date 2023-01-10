@@ -105,10 +105,8 @@ namespace genetic_algorithm::crossover::perm
 
         if (chrom_len < 2) return { parent1, parent2 };
 
-        dtl::NeighbourLists nl(parent1.chromosome, parent2.chromosome);
-
-        auto child1 = dtl::edgeCrossoverImpl(parent1, nl);
-        auto child2 = dtl::edgeCrossoverImpl(parent2, std::move(nl));
+        auto child1 = dtl::edgeCrossoverImpl(parent1, parent2);
+        auto child2 = dtl::edgeCrossoverImpl(parent2, parent1);
 
         return { std::move(child1), std::move(child2) };
     }

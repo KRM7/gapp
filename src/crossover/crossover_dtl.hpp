@@ -7,8 +7,10 @@
 #include "../encoding/gene_types.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
+#include "../utility/iterators.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
+#include <array>
 #include <unordered_map>
 #include <unordered_set>
 #include <concepts>
@@ -61,7 +63,7 @@ namespace genetic_algorithm::crossover::dtl
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
     /* Implementation of the edge crossover for unsigned integer gene types, only generates a single child. */
-    template<std::unsigned_integral T>
+    template<typename T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, std::unordered_map<T, std::vector<T>>&& neighbour_lists);
 
     /* Implementation of the PMX crossover for any gene type, only generates a single child. */
@@ -193,6 +195,7 @@ namespace genetic_algorithm::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
         const size_t range_len = last - first;
 
+        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
         assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
         assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
@@ -242,6 +245,7 @@ namespace genetic_algorithm::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
+        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
         assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
         assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
@@ -287,6 +291,7 @@ namespace genetic_algorithm::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
+        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
         assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
         assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
@@ -360,150 +365,117 @@ namespace genetic_algorithm::crossover::dtl
     }
 
     template<std::unsigned_integral T>
-    class NeighbourLists
+    class NeighbourList : public detail::reverse_iterator_interface<NeighbourList<T>>
     {
     public:
-        struct NeighbourRange
+        // cant use the sentinel based deletion for the general case
+
+        void add(T value) // overload with 2 values?
         {
-            typename std::vector<T>::iterator first;
-            typename std::vector<T>::iterator last;
-        };
-
-        NeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2) :
-            neighbour_lists_(chrom1.size() * MAX_NEIGHBOURS, EMPTY_VAL)
-        {
-            assert(chrom1.size() == chrom2.size());
-
-            const size_t len = chrom1.size();
-
-            add(chrom1[0], chrom1[1]);
-            add(chrom1[0], chrom1[len - 1]);
-
-            for (size_t i = 1; i < len - 1; i++)
+            for (T& neighbour : neighbours_)
             {
-                add(chrom1[i], chrom1[i + 1]);
-                add(chrom1[i], chrom1[i - 1]);
-
-                add(chrom2[i], chrom2[i + 1]);
-                add(chrom2[i], chrom2[i - 1]);
-            }
-
-            add(chrom1[len - 1], chrom1[0]);
-            add(chrom1[len - 1], chrom1[len - 2]);
-        }
-
-        size_t sizeOf(T n)
-        {
-            const auto neighbours = rangeOf(n);
-
-            return std::count_if(neighbours.first, neighbours.last, detail::not_equal_to(EMPTY_VAL));
-        }
-
-        void add(T to, T neighbour)
-        {
-            const auto neighbours = rangeOf(to);
-
-            for (auto it = neighbours.first; it != neighbours.last; ++it)
-            {
-                if (*it == EMPTY_VAL) *it = neighbour;
-                if (*it == neighbour) return;
+                if (neighbour == value) return;
+                if (neighbour == EMPTY)
+                {
+                    neighbour = value;
+                    return;
+                }
             }
             GA_UNREACHABLE();
         }
 
-        void remove(T neighbour)
+        void remove(T value)
         {
-            //const auto neighbours = rangeOf(neighbour);
+            assert(value != EMPTY);
 
-            //for (auto it = neighbours.first; it != neighbours.last; ++it)
-            //{
-            //    if (*it != EMPTY_VAL)
-            //    {
-            //        const auto range = rangeOf(*it);
-
-            //        for (auto it2 = range.first; it2 != range.last; ++it2)
-            //        {
-            //            if (*it2 == neighbour) *it2 = EMPTY_VAL;
-            //        }
-            //    }
-            //}
-
-            for (T& gene : neighbour_lists_)
+            for (T& neighbour : neighbours_)
             {
-                if (gene == neighbour) gene = EMPTY_VAL;
+                neighbour = (neighbour == value) ? EMPTY : neighbour;
             }
         }
 
-        std::vector<T> findBestNeighbours(T n)
+        constexpr size_t size() const noexcept
         {
-            const auto neighbours = rangeOf(n);
-
-            size_t min_count = MAX_NEIGHBOURS;
-
-            for (auto neighbour = neighbours.first; neighbour != neighbours.last; ++neighbour)
-            {
-                if (*neighbour != EMPTY_VAL)
-                {
-                    min_count = std::min(min_count, sizeOf(*neighbour));
-                }
-            }
-
-            std::vector<T> best_neighbours;
-
-            for (auto neighbour = neighbours.first; neighbour != neighbours.last; ++neighbour)
-            {
-                if (*neighbour != EMPTY_VAL && sizeOf(*neighbour) == min_count)
-                {
-                    best_neighbours.push_back(*neighbour);
-                }
-            }
-
-            return best_neighbours;
+            return std::count_if(neighbours_.begin(), neighbours_.end(), detail::not_equal_to(EMPTY));
         }
+
+        constexpr bool empty() const noexcept
+        {
+            return size() == 0;
+        }
+
+        constexpr auto begin() noexcept       { return neighbours_.begin(); }
+        constexpr auto end() noexcept         { return neighbours_.end(); }
+        constexpr auto begin() const noexcept { return neighbours_.begin(); }
+        constexpr auto end() const noexcept   { return neighbours_.end(); }
+
+        static constexpr T EMPTY = T(-1);
 
     private:
-        std::vector<T> neighbour_lists_;
-        // TODO also keep a vector of the last elements (keep sizes, not iterators to avoid copying issues)? -> no need to call find every time for add, remove, count
-
-        static constexpr T EMPTY_VAL = T(-1);
-        static constexpr T MAX_NEIGHBOURS = 4;
-
-        NeighbourRange rangeOf(T n)
-        {
-            assert(n < (neighbour_lists_.size() / MAX_NEIGHBOURS));
-
-            auto first = neighbour_lists_.begin() + n * MAX_NEIGHBOURS;
-            auto last  = neighbour_lists_.begin() + (n + 1) * MAX_NEIGHBOURS;
-
-            return { first, last };
-        }
+        std::array<T, 4> neighbours_{ EMPTY, EMPTY, EMPTY, EMPTY };
+        // try storing the size as the first element
     };
 
-    template<Gene T>
-    Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, NeighbourLists<T> neighbour_lists)
+    template<std::unsigned_integral T>
+    std::vector<NeighbourList<T>> makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
+    {
+        assert(chrom1.size() == chrom2.size());
+
+        std::vector<NeighbourList<T>> nb_lists(chrom1.size());
+
+        nb_lists[chrom1.front()].add(chrom1[1]);
+        nb_lists[chrom1.front()].add(chrom1.back());
+
+        for (size_t i = 1; i < chrom1.size() - 1; i++)
+        {
+            nb_lists[chrom1[i]].add(chrom1[i - 1]);
+            nb_lists[chrom1[i]].add(chrom1[i + 1]);
+
+            nb_lists[chrom2[i]].add(chrom2[i - 1]);
+            nb_lists[chrom2[i]].add(chrom2[i + 1]);
+        }
+
+        nb_lists[chrom2.front()].add(chrom2[1]);
+        nb_lists[chrom2.front()].add(chrom2.back());
+
+        return nb_lists;
+    }
+
+    template<typename T>
+    Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
         const size_t chrom_len = parent1.chromosome.size();
+
+        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
+        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+
+        auto nb_lists = makeNeighbourLists(parent1.chromosome, parent2.chromosome);
 
         Candidate<T> child;
         child.chromosome.reserve(chrom_len);
 
-        auto remaining_genes = parent1.chromosome;
-        auto gene = parent1.chromosome[0];
+        std::vector<T> remaining_genes = parent1.chromosome;
+        T gene = parent1.chromosome[0];
 
         while (child.chromosome.size() != chrom_len)
         {
-            /* Add current gene */
             child.chromosome.push_back(gene);
             std::erase(remaining_genes, gene);
-            neighbour_lists.remove(gene);
+            for (T val : remaining_genes) nb_lists[val].remove(gene);
 
-            if (child.chromosome.size() == chrom_len) break;
+            size_t min = 5;
+            for (T neighbour : nb_lists[gene])
+            {
+                if (neighbour == NeighbourList<T>::EMPTY) continue;
 
-            auto candidate_genes = neighbour_lists.findBestNeighbours(gene);
-
-            gene = candidate_genes.empty() ?
-                rng::randomElement(remaining_genes.begin(), remaining_genes.end()) :
-                rng::randomElement(candidate_genes.begin(), candidate_genes.end());
+                if (nb_lists[neighbour].size() < min)
+                {
+                    min = nb_lists[neighbour].size();
+                    gene = neighbour;
+                }
+            }
+            gene = (min == 5) ? remaining_genes.front() : gene;
         }
 
         return child;
@@ -542,6 +514,7 @@ namespace genetic_algorithm::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
+        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
         assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
         assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
