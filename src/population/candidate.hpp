@@ -35,10 +35,6 @@ namespace genetic_algorithm
     {
         using GeneType = T;
 
-        Chromosome<T> chromosome;       /**< The chromosome encoding the solution. */
-        std::vector<double> fitness;    /**< The fitness values (for each objective) of the solution. */
-        bool is_evaluated = false;      /**< False if the candidate's fitness value needs to be computed. */
-
         explicit Candidate(size_t chrom_len)
             : chromosome(chrom_len) {}
 
@@ -54,6 +50,10 @@ namespace genetic_algorithm
         Candidate& operator=(const Candidate&)  = default;
         Candidate& operator=(Candidate&&)       = default;
         ~Candidate()                            = default;
+
+        Chromosome<T> chromosome;       /**< The chromosome encoding the solution. */
+        std::vector<double> fitness;    /**< The fitness values (for each objective) of the solution. */
+        bool is_evaluated = false;      /**< False if the candidate's fitness value needs to be computed. */
     };
 
     /** A pair of candidates. */
