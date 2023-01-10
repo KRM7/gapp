@@ -251,9 +251,9 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    bool erase_first_stable(std::vector<T>& container, const T& val)
+    bool erase_first_stable(std::vector<T>& container, const T& value)
     {
-        const auto found = std::find(container.cbegin(), container.cend(), val);
+        const auto found = std::find(container.cbegin(), container.cend(), value);
         if (found != container.cend())
         {
             container.erase(found);
@@ -323,7 +323,7 @@ namespace genetic_algorithm::detail
     constexpr Acc transform_reduce(Tuple&& tup, Acc&& init, TransformOp&& transform, ReduceOp&& reduce)
     {
         auto transform_reduce_ =
-        [&init, &transform, &reduce] (auto&&... args) mutable -> Acc
+        [&] (auto&&... args) mutable -> Acc
         {
             return _::transform_reduce_impl(std::forward<TransformOp>(transform),
                                             std::forward<ReduceOp>(reduce), 
