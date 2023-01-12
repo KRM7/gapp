@@ -423,8 +423,10 @@ namespace genetic_algorithm::crossover::dtl
 
         std::vector<NeighbourList<T>> nb_lists(chrom1.size());
 
-        nb_lists[chrom1.front()].add(chrom1[1]);
         nb_lists[chrom1.front()].add(chrom1.back());
+        nb_lists[chrom1.front()].add(chrom1[1]);
+        nb_lists[chrom2.front()].add(chrom2.back());
+        nb_lists[chrom2.front()].add(chrom2[1]);
 
         for (size_t i = 1; i < chrom1.size() - 1; i++)
         {
@@ -435,8 +437,10 @@ namespace genetic_algorithm::crossover::dtl
             nb_lists[chrom2[i]].add(chrom2[i + 1]);
         }
 
-        nb_lists[chrom2.front()].add(chrom2[1]);
-        nb_lists[chrom2.front()].add(chrom2.back());
+        nb_lists[chrom1.back()].add(*(chrom1.end() - 2));
+        nb_lists[chrom1.back()].add(chrom1.front());
+        nb_lists[chrom2.back()].add(*(chrom2.end() - 2));
+        nb_lists[chrom2.back()].add(chrom2.front());
 
         return nb_lists;
     }
