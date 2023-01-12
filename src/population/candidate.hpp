@@ -35,14 +35,21 @@ namespace genetic_algorithm
     {
         using GeneType = T;
 
-        explicit Candidate(size_t chrom_len)
-            : chromosome(chrom_len) {}
+        explicit Candidate(size_t chrom_len) :
+            chromosome(chrom_len)
+        {}
 
-        explicit Candidate(const Chromosome<T>& chrom)
-            : chromosome(chrom) {}
+        explicit Candidate(const Chromosome<T>& chrom) :
+            chromosome(chrom)
+        {}
 
-        explicit Candidate(Chromosome<T>&& chrom) noexcept
-            : chromosome(std::move(chrom)) {}
+        explicit Candidate(Chromosome<T>&& chrom) noexcept :
+            chromosome(std::move(chrom))
+        {}
+
+        Candidate(std::initializer_list<T> chrom) :
+            chromosome(std::move(chrom))
+        {}
 
         Candidate()                             = default;
         Candidate(const Candidate&)             = default;
