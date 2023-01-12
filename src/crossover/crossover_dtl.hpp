@@ -64,7 +64,7 @@ namespace genetic_algorithm::crossover::dtl
 
     /* Implementation of the edge crossover for unsigned integer gene types, only generates a single child. */
     template<typename T>
-    Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, std::unordered_map<T, std::vector<T>>&& neighbour_lists);
+    Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
     /* Implementation of the PMX crossover for any gene type, only generates a single child. */
     template<typename T>
@@ -368,9 +368,7 @@ namespace genetic_algorithm::crossover::dtl
     class NeighbourList : public detail::reverse_iterator_interface<NeighbourList<T>>
     {
     public:
-        // cant use the sentinel based deletion for the general case
-
-        void add(T value) // overload with 2 values?
+        void add(T value)
         {
             for (T& neighbour : neighbours_)
             {
@@ -399,10 +397,7 @@ namespace genetic_algorithm::crossover::dtl
             return std::count_if(neighbours_.begin(), neighbours_.end(), detail::not_equal_to(EMPTY));
         }
 
-        constexpr bool empty() const noexcept
-        {
-            return size() == 0;
-        }
+        constexpr bool empty() const noexcept { return size() == 0; }
 
         constexpr auto begin() noexcept       { return neighbours_.begin(); }
         constexpr auto end() noexcept         { return neighbours_.end(); }
@@ -413,7 +408,6 @@ namespace genetic_algorithm::crossover::dtl
 
     private:
         std::array<T, 4> neighbours_{ EMPTY, EMPTY, EMPTY, EMPTY };
-        // try storing the size as the first element
     };
 
     template<std::unsigned_integral T>
@@ -456,30 +450,30 @@ namespace genetic_algorithm::crossover::dtl
 
         auto nb_lists = makeNeighbourLists(parent1.chromosome, parent2.chromosome);
 
-        Candidate<T> child;
+        Candidate<T> child{ parent1.chromosome[0] };
         child.chromosome.reserve(chrom_len);
 
-        std::vector<T> remaining_genes = parent1.chromosome;
-        T gene = parent1.chromosome[0];
+        std::vector<T> remaining_genes(parent1.chromosome.begin() + 1, parent1.chromosome.end());
 
         while (child.chromosome.size() != chrom_len)
         {
-            child.chromosome.push_back(gene);
-            std::erase(remaining_genes, gene);
-            for (T val : remaining_genes) nb_lists[val].remove(gene);
+            T last_gene = child.chromosome.back();
+            T next_gene = remaining_genes.back();
 
-            size_t min = 5;
-            for (T neighbour : nb_lists[gene])
+            for (T neighbour : nb_lists[last_gene])
             {
                 if (neighbour == NeighbourList<T>::EMPTY) continue;
 
-                if (nb_lists[neighbour].size() < min)
+                nb_lists[neighbour].remove(last_gene);
+
+                if (nb_lists[neighbour].size() <= nb_lists[next_gene].size())
                 {
-                    min = nb_lists[neighbour].size();
-                    gene = neighbour;
+                    next_gene = neighbour;
                 }
             }
-            gene = (min == 5) ? remaining_genes.front() : gene;
+
+            child.chromosome.push_back(next_gene);
+            std::erase(remaining_genes, next_gene);
         }
 
         return child;
