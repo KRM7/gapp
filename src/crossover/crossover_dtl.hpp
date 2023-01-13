@@ -62,8 +62,8 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
-    /* Implementation of the edge crossover for unsigned integer gene types, only generates a single child. */
-    template<typename T>
+    /* Implementation of the edge crossover for unsigned integer genes, only generates a single child. */
+    template<std::unsigned_integral T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
     /* Implementation of the PMX crossover for any gene type, only generates a single child. */
@@ -439,7 +439,7 @@ namespace genetic_algorithm::crossover::dtl
         return nb_lists;
     }
 
-    template<typename T>
+    template<std::unsigned_integral T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
         const size_t chrom_len = parent1.chromosome.size();
@@ -453,12 +453,13 @@ namespace genetic_algorithm::crossover::dtl
         Candidate<T> child{ parent1.chromosome[0] };
         child.chromosome.reserve(chrom_len);
 
-        std::vector<T> remaining_genes(parent1.chromosome.begin() + 1, parent1.chromosome.end());
+        std::vector is_used(chrom_len, false);
+        is_used[parent1.chromosome[0]] = true;
 
         while (child.chromosome.size() != chrom_len)
         {
             T last_gene = child.chromosome.back();
-            T next_gene = remaining_genes.back();
+            T next_gene = T(*detail::index_of(is_used, false));
 
             for (T neighbour : nb_lists[last_gene])
             {
@@ -473,7 +474,7 @@ namespace genetic_algorithm::crossover::dtl
             }
 
             child.chromosome.push_back(next_gene);
-            std::erase(remaining_genes, next_gene);
+            is_used[next_gene] = true;
         }
 
         return child;
