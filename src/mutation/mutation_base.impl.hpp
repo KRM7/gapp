@@ -28,17 +28,11 @@ namespace genetic_algorithm::mutation
             /* If the candidate is already evaluated (happens when the crossover didn't change the candidate),
                its current fitness vector is valid, and we can save a fitness function call when the mutation
                doesn't change the chromosome. */
-            const auto old_chromosome = candidate.chromosome;
-            auto old_fitness = candidate.fitness;
+            thread_local Chromosome<T> old_chromosome; old_chromosome = candidate.chromosome;
 
+            /* Assume that the call to mutate() doesn't change the fitness vector. */
             mutate(ga, candidate);
-            candidate.is_evaluated = false;
-
-            if (candidate.chromosome == old_chromosome)
-            {
-                candidate.fitness = std::move(old_fitness);
-                candidate.is_evaluated = true;
-            }
+            candidate.is_evaluated = (candidate.chromosome == old_chromosome);
         }
 
         if (!ga.variable_chrom_len() && candidate.chromosome.size() != ga.chrom_len())
