@@ -20,7 +20,7 @@
 /** Contains the PRNG classes and functions for generating random numbers. */
 namespace genetic_algorithm::rng
 {
-    /**  Splitmix64 PRNG adapted from https://prng.di.unimi.it/splitmix64.c */
+    /** Splitmix64 PRNG adapted from https://prng.di.unimi.it/splitmix64.c */
     class AtomicSplitmix64
     {
     public:
@@ -126,8 +126,7 @@ namespace genetic_algorithm::rng
 
     bool randomBool() noexcept
     {
-        constexpr size_t nbytes = sizeof(PRNG::result_type);
-        constexpr size_t nbits = CHAR_BIT * nbytes;
+        constexpr size_t nbits = CHAR_BIT * sizeof(PRNG::result_type);
         constexpr auto msb_mask = PRNG::result_type{ 1 } << (nbits - 1);
 
         return rng::prng() & msb_mask;
@@ -158,7 +157,9 @@ namespace genetic_algorithm::rng
     template<std::floating_point RealType>
     RealType randomNormal()
     {
-        return std::normal_distribution<RealType>{ 0.0, 1.0 }(rng::prng);
+        thread_local std::normal_distribution<RealType> dist{ 0.0, 1.0 }; // keep the distribution for the state
+
+        return dist(rng::prng);
     }
 
     template<std::floating_point RealType>

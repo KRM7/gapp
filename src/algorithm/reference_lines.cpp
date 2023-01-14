@@ -50,7 +50,7 @@ namespace genetic_algorithm::algorithm::dtl
     {
         assert(dim > 0);
 
-        detail::QuasiRandom qrng(dim - 1);
+        rng::QuasiRandom qrng(dim - 1);
 
         std::vector<Point> points;
 

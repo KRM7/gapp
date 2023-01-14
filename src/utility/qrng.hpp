@@ -7,7 +7,7 @@
 #include <concepts>
 #include <cstddef>
 
-namespace genetic_algorithm::detail
+namespace genetic_algorithm::rng
 {
     /*
     * Quasi-random number generator based on: http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/
@@ -52,7 +52,7 @@ namespace genetic_algorithm::detail
         static constexpr RealType phi(size_t dim, size_t n = 30) noexcept;
     };
 
-} // namespace genetic_algorithm::detail
+} // namespace genetic_algorithm::tng
 
 
 /* IMPLEMENTATION */
@@ -61,7 +61,7 @@ namespace genetic_algorithm::detail
 #include <algorithm>
 #include "utility.hpp"
 
-namespace genetic_algorithm::detail
+namespace genetic_algorithm::rng
 {
     template<std::floating_point T>
     QuasiRandom<T>::QuasiRandom(size_type dim, T seed) :
@@ -137,6 +137,6 @@ namespace genetic_algorithm::detail
         return phid;
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace genetic_algorithm::rng
 
 #endif // !GA_UTILITY_QRNG_HPP
