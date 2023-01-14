@@ -266,8 +266,7 @@ namespace genetic_algorithm::detail
                 lhs.idx_ - rhs.idx_ :
                 rhs.idx_ - lhs.idx_;
 
-            GA_ASSERT(distance <= size_t(std::numeric_limits<difference_type>::max()),
-                      "Can't represent the result of the operation as difference_type.");
+            GA_ASSERT(distance <= size_t(std::numeric_limits<difference_type>::max()), "Can't represent the result of the operation as difference_type.");
 
             return difference_type(distance);
         }
