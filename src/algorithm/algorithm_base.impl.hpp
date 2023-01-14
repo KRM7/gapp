@@ -4,6 +4,7 @@
 #define GA_ALGORITHM_ALGORITHM_BASE_IMPL_HPP
 
 #include "algorithm_base.decl.hpp"
+#include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"

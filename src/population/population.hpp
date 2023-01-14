@@ -35,6 +35,7 @@ namespace genetic_algorithm::detail
     /* Return the fitness vector of a fitness matrix along the first objective axis. */
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
+
     /* Return the minimum fitness values of a fitness matrix along each objective axis. */
     FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
@@ -50,18 +51,11 @@ namespace genetic_algorithm::detail
     /* Return the standard deviation of the fitness values of a fitness matrix along each objective axis. */
     FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean);
 
+
     /* Find the pareto-optimal solutions in a population. */
     template<Gene T>
     Candidates<T> findParetoFront(const Population<T>& pop);
 
-    /* Find the pareto-optimal solutions in the set (lhs U rhs), assuming both lhs and rhs are pareto sets. */
-    template<Gene T>
-    Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs);
-
-} // namespace genetic_algorithm::detail
-
-namespace genetic_algorithm::detail::_
-{
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat);
 
     std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat);
@@ -70,7 +64,12 @@ namespace genetic_algorithm::detail::_
 
     std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat);
 
-} // namespace genetic_algorithm::detail::_
+
+    /* Find the pareto-optimal solutions in the set (lhs U rhs), assuming both lhs and rhs are pareto sets. */
+    template<Gene T>
+    Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs);
+
+} // namespace genetic_algorithm::detail
 
 
 /* IMPLEMENTATION */
@@ -112,8 +111,8 @@ namespace genetic_algorithm::detail
         auto fitness_matrix = detail::toFitnessMatrix(pop);
 
         auto optimal_indices = fitness_matrix[0].size() == 1 ?
-            _::findParetoFront1D(fitness_matrix) :
-            _::findParetoFrontSort(fitness_matrix);
+            findParetoFront1D(fitness_matrix) :
+            findParetoFrontSort(fitness_matrix);
 
         return detail::select(pop, optimal_indices);
     }

@@ -126,7 +126,6 @@ namespace genetic_algorithm::problems
 
         std::vector fx(last - first + 1, 1.0);
 
-        // g = std::min(0.2, g);
         const auto theta = [g](double x) { return (g * x + 0.5) / (1.0 + g); };
 
         *fx.rbegin()   = std::sin(*first * pi / 2.0);

@@ -20,7 +20,7 @@ namespace genetic_algorithm::crossover
     public:
         using CrossoverFunction = std::function<CandidatePair<T>(const GA<T>&, const Candidate<T>&, const Candidate<T>&)>;
 
-        explicit Lambda(CrossoverFunction f)
+        explicit Lambda(CrossoverFunction f) noexcept
             : Crossover<T>(), crossover_(std::move(f))
         {}
 

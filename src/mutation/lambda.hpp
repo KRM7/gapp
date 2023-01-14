@@ -20,7 +20,7 @@ namespace genetic_algorithm::mutation
     public:
         using MutationFunction = std::function<void(const GA<T>&, Candidate<T>&)>;
 
-        explicit Lambda(MutationFunction f)
+        explicit Lambda(MutationFunction f) noexcept
             : Mutation<T>(0.01), mutate_(std::move(f))
         {}
 

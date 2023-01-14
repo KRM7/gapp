@@ -87,10 +87,6 @@ namespace genetic_algorithm::detail
         return variance;
     }
 
-} // namespace genetic_algorithm::detail
-
-namespace genetic_algorithm::detail::_
-{
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
     {
         const auto best = std::max_element(fmat.begin(), fmat.end(),
@@ -226,7 +222,7 @@ namespace genetic_algorithm::detail::_
             return false;
         });
 
-        return _::findParetoFrontKungImpl(fmat, indices.cbegin(), indices.cend());
+        return findParetoFrontKungImpl(fmat, indices.cbegin(), indices.cend());
     }
 
-} // namespace genetic_algorithm::detail::_
+} // namespace genetic_algorithm::detail

@@ -52,7 +52,7 @@ namespace genetic_algorithm::rng
         static constexpr RealType phi(size_t dim, size_t n = 30) noexcept;
     };
 
-} // namespace genetic_algorithm::tng
+} // namespace genetic_algorithm::rng
 
 
 /* IMPLEMENTATION */

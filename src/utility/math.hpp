@@ -132,7 +132,7 @@ namespace genetic_algorithm::math
     /* Calculate the standard deviation of the values in vec. */
     double stdDev(const std::vector<double>& vec, double mean) noexcept;
 
-    /*  */
+    /* Computes the value of the function [ f(x) = integral sin(x)^n dx ] at x. */
     double integralSinPow(size_t exponent, double x) noexcept;
 
 } // namespace genetic_algorithm::math
