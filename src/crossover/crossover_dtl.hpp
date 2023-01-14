@@ -4,15 +4,9 @@
 #define GA_CROSSOVER_DTL_HPP
 
 #include "../population/candidate.hpp"
-#include "../encoding/gene_types.hpp"
-#include "../utility/algorithm.hpp"
-#include "../utility/functional.hpp"
-#include "../utility/iterators.hpp"
-#include "../utility/utility.hpp"
 #include <vector>
-#include <array>
 #include <unordered_map>
-#include <unordered_set>
+#include <type_traits>
 #include <concepts>
 #include <cstddef>
 
@@ -30,6 +24,7 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> twoPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::pair<size_t, size_t> crossover_points);
 
+
     /* Implementation of the order-1 crossover for any gene type, only generates a single child. */
     template<typename T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
@@ -37,6 +32,7 @@ namespace genetic_algorithm::crossover::dtl
     /* Implementation of the order-1 crossover for unsigned integers, only generates a single child. */
     template<std::unsigned_integral T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
+
 
     /* Implementation of the order-2 crossover for any gene type, only generates a single child. */
     template<typename T>
@@ -46,6 +42,7 @@ namespace genetic_algorithm::crossover::dtl
     template<std::unsigned_integral T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
 
+
     /* Implementation of the position crossover for any gene type, only generates a single child. */
     template<typename T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices);
@@ -53,6 +50,7 @@ namespace genetic_algorithm::crossover::dtl
     /* Implementation of the position crossover for unsigned integer genes, only generates a single child. */
     template<std::unsigned_integral T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices);
+
 
     /* Find the indices of genes in the chromosomes chrom1 and chrom2 which belong to odd cycles. Used in the cycle crossover operator. */
     template<typename T>
@@ -62,9 +60,27 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
+
+    /* A list of neighbours for a gene. */
+    template<typename T>
+    class NeighbourList;
+
+    /* A list of neighbours for an unsigned integer gene. */
+    template<std::unsigned_integral T>
+    class NeighbourList<T>;
+
+    /* Conctruct the neighbour lists of each gene based on 2 chromosomes. The first and last elements are considered neighbours. */
+    template<typename T, typename Ret = std::conditional_t<std::is_unsigned_v<T>, std::vector<NeighbourList<T>>, std::unordered_map<T, NeighbourList<T>>>>
+    Ret makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
+
+    /* Implementation of the edge crossover for any gene type, only generates a single child. */
+    template<typename T>
+    Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
+
     /* Implementation of the edge crossover for unsigned integer genes, only generates a single child. */
     template<std::unsigned_integral T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
+
 
     /* Implementation of the PMX crossover for any gene type, only generates a single child. */
     template<typename T>
@@ -81,7 +97,10 @@ namespace genetic_algorithm::crossover::dtl
 
 #include "../utility/rng.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/functional.hpp"
+#include "../utility/iterators.hpp"
 #include "../utility/utility.hpp"
+#include <array>
 #include <unordered_set>
 #include <algorithm>
 #include <stdexcept>
@@ -162,6 +181,7 @@ namespace genetic_algorithm::crossover::dtl
         return { std::move(child1), std::move(child2) };
     }
 
+
     template<typename T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
@@ -220,6 +240,7 @@ namespace genetic_algorithm::crossover::dtl
         return child;
     }
 
+
     template<typename T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
@@ -266,6 +287,7 @@ namespace genetic_algorithm::crossover::dtl
         return child;
     }
 
+
     template<typename T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
     {
@@ -311,6 +333,7 @@ namespace genetic_algorithm::crossover::dtl
 
         return child;
     }
+
 
     template<typename T>
     std::vector<size_t> findOddCycleIndices(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
@@ -364,12 +387,44 @@ namespace genetic_algorithm::crossover::dtl
         return { std::move(child1), std::move(child2) };
     }
 
-    template<std::unsigned_integral T>
+
+    template<typename T>
     class NeighbourList : public detail::reverse_iterator_interface<NeighbourList<T>>
+    {
+    public:
+        NeighbourList() { neighbours_.reserve(4); }
+
+        void add(const T& value)
+        {
+            if (!detail::contains(neighbours_.cbegin(), neighbours_.cend(), value))
+            {
+                neighbours_.push_back(value);
+            }
+        }
+
+        void remove(const T& value) { detail::erase_first_stable(neighbours_, value); }
+
+        constexpr size_t size() const noexcept { return neighbours_.size(); }
+        constexpr bool empty() const noexcept  { return neighbours_.empty(); }
+
+        constexpr auto begin() noexcept       { return neighbours_.begin(); }
+        constexpr auto end() noexcept         { return neighbours_.end(); }
+        constexpr auto begin() const noexcept { return neighbours_.begin(); }
+        constexpr auto end() const noexcept   { return neighbours_.end(); }
+
+    private:
+        std::vector<T> neighbours_;
+    };
+
+    template<std::unsigned_integral T>
+    class NeighbourList<T> : public detail::reverse_iterator_interface<NeighbourList<T>>
     {
     public:
         void add(T value)
         {
+            assert(value != EMPTY);
+
+            /* Assume that EMPTY values are at the back. */
             for (T& neighbour : neighbours_)
             {
                 if (neighbour == value) return;
@@ -410,12 +465,12 @@ namespace genetic_algorithm::crossover::dtl
         std::array<T, 4> neighbours_{ EMPTY, EMPTY, EMPTY, EMPTY };
     };
 
-    template<std::unsigned_integral T>
-    std::vector<NeighbourList<T>> makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
+    template<typename T, typename Ret>
+    Ret makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
     {
         assert(chrom1.size() == chrom2.size());
 
-        std::vector<NeighbourList<T>> nb_lists(chrom1.size());
+        Ret nb_lists(chrom1.size());
 
         nb_lists[chrom1.front()].add(chrom1.back());
         nb_lists[chrom1.front()].add(chrom1[1]);
@@ -437,6 +492,40 @@ namespace genetic_algorithm::crossover::dtl
         nb_lists[chrom2.back()].add(chrom2.front());
 
         return nb_lists;
+    }
+
+    template<typename T>
+    Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
+    {
+        const size_t chrom_len = parent1.chromosome.size();
+
+        auto nb_lists = makeNeighbourLists(parent1.chromosome, parent2.chromosome);
+
+        Candidate<T> child{ parent1.chromosome[0] };
+        child.chromosome.reserve(chrom_len);
+
+        std::vector<T> remaining_genes(parent1.chromosome.begin() + 1, parent1.chromosome.end());
+
+        while (child.chromosome.size() != chrom_len)
+        {
+            const T& last_gene = child.chromosome.back();
+            T next_gene = remaining_genes.front();
+
+            for (T neighbour : nb_lists[last_gene])
+            {
+                nb_lists[neighbour].remove(last_gene);
+
+                if (nb_lists[neighbour].size() <= nb_lists[next_gene].size())
+                {
+                    next_gene = neighbour;
+                }
+            }
+
+            child.chromosome.push_back(next_gene);
+            std::erase(remaining_genes, next_gene);
+        }
+
+        return child;
     }
 
     template<std::unsigned_integral T>
@@ -547,7 +636,7 @@ namespace genetic_algorithm::crossover::dtl
 
         return child;
     }
-
+    
 } // namespace genetic_algorithm::crossover::dtl
 
 #endif // !GA_CROSSOVER_DTL_HPP

@@ -97,16 +97,16 @@ TEST_CASE("cycle_crossover", "[crossover]")
     REQUIRE(child2.chromosome == Chromosome<int>{ { 4, 5, 0, 3, 1, 2, 6, 7, 8, 9 } });
 }
 
-TEST_CASE("edge_crossover", "[crossover]")
+TEMPLATE_TEST_CASE("edge_crossover", "[crossover]", int, unsigned)
 {
-    Candidate<unsigned> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
-    Candidate<unsigned> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
+    Candidate<TestType> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+    Candidate<TestType> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
 
     auto child1 = edgeCrossoverImpl(parent1, parent2);
     auto child2 = edgeCrossoverImpl(parent2, parent1);
 
-    REQUIRE(child1.chromosome == Chromosome<unsigned>{ { 0, 5, 6, 1, 2, 8, 9, 7, 4, 3 } });
-    REQUIRE(child2.chromosome == Chromosome<unsigned>{ { 4, 5, 6, 7, 0, 1, 2, 8, 9, 3 } });
+    REQUIRE(child1.chromosome == Chromosome<TestType>{ { 0, 5, 6, 1, 2, 8, 9, 7, 4, 3 } });
+    REQUIRE(child2.chromosome == Chromosome<TestType>{ { 4, 5, 6, 7, 0, 1, 2, 8, 9, 3 } });
 }
 
 TEMPLATE_TEST_CASE("pmx_crossover", "[crossover]", int, unsigned)
