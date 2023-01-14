@@ -252,6 +252,16 @@ namespace genetic_algorithm::detail
         };
     }
 
+    template<typename T>
+    constexpr auto between(const T& low, const T& high)
+    noexcept(std::is_nothrow_copy_constructible_v<T>)
+    {
+        return [=](const auto& val) noexcept(noexcept(val < high))
+        {
+            return (low <= val && val <= high);
+        };
+    }
+
     constexpr auto is_size(size_t size) noexcept
     {
         return [=](const auto& container) noexcept

@@ -173,4 +173,10 @@ TEST_CASE("comparison_funcs", "[functional]")
         auto it = std::find_if(nums.begin(), nums.end(), less_eq_than(-1.0));
         REQUIRE(it == nums.end());
     }
+
+    SECTION("between")
+    {
+        size_t n = std::count_if(nums.begin(), nums.end(), between(3, 6));
+        REQUIRE(n == 3);
+    }
 }
