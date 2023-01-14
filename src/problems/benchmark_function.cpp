@@ -38,14 +38,14 @@ namespace genetic_algorithm::problems
     {
         assert((binary_chrom.size() / var_bits_) == num_vars());
 
-        return convert(binary_chrom, bounds_, var_bits_);
+        return (*this)(convert(binary_chrom, bounds_, var_bits_));
     }
 
     std::vector<double> BenchmarkFunctionRealN::operator()(const std::vector<BinaryGene>& binary_chrom) const
     {
         assert((binary_chrom.size() / var_bits_) == num_vars());
 
-        return convert(binary_chrom, bounds_, var_bits_);
+        return (*this)(convert(binary_chrom, bounds_, var_bits_));
     }
 
 } // namespace genetic_algorithm::problems
