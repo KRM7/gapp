@@ -57,7 +57,7 @@ namespace genetic_algorithm
         if (old_objectives != num_objectives())
         {
             /* The fitness vectors of the old solutions couldn't be compared to the new ones. */
-            can_continue_ = false;
+            is_initialized_ = false;
         }
     }
 
@@ -243,12 +243,11 @@ namespace genetic_algorithm
         *
         *  This also needs generateCandidate() to create a dummy solution to pass to the fitness
         *  function, which might only return valid values after the derived class contructor set
-        *  up some stuff for the candidate generation (eg. bounds), so this can't be called earlier,
-        *  eg. in the ctor. */
+        *  up some stuff for the candidate generation (eg. bounds), so this can't be called earlier in the ctor.
+        */
         num_objectives_ = findNumObjectives();
 
-        /* Reset state variables just in case run() has already been called before. */
-        can_continue_ = false;
+        /* Reset state variables in case run() has already been called before. */
         generation_cntr_ = 0;
         num_fitness_evals_ = 0;
         solutions_.clear();
@@ -266,6 +265,8 @@ namespace genetic_algorithm
          * This must be done after the initial population has been created and evaluted,
          * as it might want to use the population's fitness values (fitness_matrix_). */
         algorithm_->initialize(*this);
+
+        is_initialized_ = true;
     }
 
     template<Gene T>
@@ -444,8 +445,6 @@ namespace genetic_algorithm
         }
         updateOptimalSolutions(solutions_, population_);
 
-        can_continue_ = true;
-
         return solutions_;
     }
 
@@ -454,14 +453,12 @@ namespace genetic_algorithm
     {
         max_gen(max_gen_ + num_generations);
 
-        if (!can_continue_) initializeAlgorithm();
+        if (!is_initialized_) initializeAlgorithm(); // fallback to run() if called on uninitialized GA
         while (!stopCondition())
         {
             advance();
         }
         updateOptimalSolutions(solutions_, population_);
-
-        can_continue_ = true;
 
         return solutions_;
     }

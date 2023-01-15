@@ -322,7 +322,7 @@ namespace genetic_algorithm
         bool dynamic_fitness_ = false;
         bool variable_chrom_len_ = false;
         bool keep_all_optimal_sols_ = false;
-        bool can_continue_ = false;
+        bool is_initialized_ = false;
 
         inline static constexpr size_t DEFAULT_POPSIZE = 100;
 
@@ -353,7 +353,7 @@ namespace genetic_algorithm
     inline void GaInfo::algorithm(F f)
     {
         algorithm_ = std::make_unique<F>(std::move(f));
-        can_continue_ = false;
+        is_initialized_ = false;
     }
 
     template<typename S>
@@ -361,7 +361,7 @@ namespace genetic_algorithm
     inline void GaInfo::algorithm(S selection)
     {
         algorithm_ = std::make_unique<algorithm::SingleObjective<S>>(std::move(selection));
-        can_continue_ = false;
+        is_initialized_ = false;
     }
 
     template<typename S, typename U>
@@ -370,7 +370,7 @@ namespace genetic_algorithm
     inline void GaInfo::algorithm(S selection, U updater)
     {
         algorithm_ = std::make_unique<algorithm::SingleObjective<S, U>>(std::move(selection), std::move(updater));
-        can_continue_ = false;
+        is_initialized_ = false;
     }
 
     template<algorithm::AlgorithmType F>
@@ -379,7 +379,7 @@ namespace genetic_algorithm
         if (!f) GA_THROW(std::invalid_argument, "The algorithm can't be a nullptr.");
 
         algorithm_ = std::move(f);
-        can_continue_ = false;
+        is_initialized_ = false;
     }
 
     template<typename F>
