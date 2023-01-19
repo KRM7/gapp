@@ -1,6 +1,6 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include "pop_update.hpp"
+#include "soga_update.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
@@ -12,18 +12,12 @@
 
 namespace genetic_algorithm::update
 {
-    std::vector<size_t> KeepChildren::operator()(const GaInfo& ga,
-                                                 FitnessMatrix::const_iterator,
-                                                 FitnessMatrix::const_iterator,
-                                                 FitnessMatrix::const_iterator)
+    std::vector<size_t> KeepChildren::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)
     {
         return detail::index_vector(ga.population_size(), ga.population_size());
     }
 
-    std::vector<size_t> Elitism::operator()(const GaInfo& ga,
-                                            FitnessMatrix::const_iterator first,
-                                            FitnessMatrix::const_iterator children_first,
-                                            [[maybe_unused]] FitnessMatrix::const_iterator last)
+    std::vector<size_t> Elitism::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, [[maybe_unused]] FitnessMatrix::const_iterator last)
     {
         assert(ga.population_size() >= n_);
 
@@ -40,10 +34,7 @@ namespace genetic_algorithm::update
         return indices;
     }
 
-    std::vector<size_t> KeepBest::operator()(const GaInfo& ga,
-                                             FitnessMatrix::const_iterator first,
-                                             FitnessMatrix::const_iterator children_first,
-                                             FitnessMatrix::const_iterator last)
+    std::vector<size_t> KeepBest::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
         assert(size_t(children_first - first) == ga.population_size());
 
@@ -55,6 +46,16 @@ namespace genetic_algorithm::update
         sorted_indices.resize(ga.population_size());
 
         return sorted_indices;
+    }
+
+
+    Lambda::Lambda(UpdateFunction f) noexcept :
+        Updater(), updater_(std::move(f))
+    {}
+
+    std::vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
+    {
+        return updater_(ga, first, children_first, last);
     }
 
 } // namespace genetic_algorithm::update

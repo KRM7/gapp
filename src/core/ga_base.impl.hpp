@@ -182,10 +182,10 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline void GA<T>::repair_function(const RepairFunction& f)
+    inline void GA<T>::repair_function(RepairFunction f)
     {
         /* Nullptr is fine here, it just won't be called */
-        repair_ = f;
+        repair_ = std::move(f);
     }
 
     template<Gene T>

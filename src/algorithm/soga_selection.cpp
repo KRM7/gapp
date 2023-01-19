@@ -30,7 +30,8 @@ namespace genetic_algorithm::selection
         return cdf;
     }
 
-    void Roulette::prepareSelections(const GaInfo&, const FitnessMatrix& fmat)
+
+    void Roulette::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
         auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
 
@@ -44,10 +45,11 @@ namespace genetic_algorithm::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Roulette::select(const GaInfo&, const FitnessMatrix&) const
+    size_t Roulette::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
+
 
     Tournament::Tournament(size_t size)
     {
@@ -61,7 +63,7 @@ namespace genetic_algorithm::selection
         tourney_size_ = size;
     }
 
-    void Tournament::prepareSelections(const GaInfo&, const FitnessMatrix& fmat)
+    void Tournament::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
         assert(fmat.size() >= tourney_size_);
         assert(std::none_of(fmat.begin(), fmat.end(), std::mem_fn(&FitnessVector::empty)));
@@ -69,7 +71,7 @@ namespace genetic_algorithm::selection
         fvec_ = detail::map(fmat, [](const FitnessVector& fvec) noexcept { return fvec[0]; });
     }
 
-    size_t Tournament::select(const GaInfo&, const FitnessMatrix&) const
+    size_t Tournament::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
         const auto candidates = rng::sampleUnique(0_sz, fvec_.size(), tourney_size_);
 
@@ -79,6 +81,7 @@ namespace genetic_algorithm::selection
             return fvec_[lhs] < fvec_[rhs];
         });
     }
+
 
     Rank::Rank(double min_weight, double max_weight)
     {
@@ -110,7 +113,7 @@ namespace genetic_algorithm::selection
         max_weight_ = max_weight;
     }
 
-    void Rank::prepareSelections(const GaInfo&, const FitnessMatrix& fmat)
+    void Rank::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
         assert(0.0 <= min_weight_ && min_weight_ <= max_weight_);
 
@@ -127,10 +130,11 @@ namespace genetic_algorithm::selection
         cdf_ = weightsToCdf(weights);
     }
 
-    size_t Rank::select(const GaInfo&, const FitnessMatrix&) const
+    size_t Rank::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
+
 
     Sigma::Sigma(double scale)
     {
@@ -147,7 +151,7 @@ namespace genetic_algorithm::selection
         scale_ = scale;
     }
 
-    void Sigma::prepareSelections(const GaInfo&, const FitnessMatrix& fmat)
+    void Sigma::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
         assert(scale_ > 1.0);
 
@@ -165,15 +169,15 @@ namespace genetic_algorithm::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Sigma::select(const GaInfo&, const FitnessMatrix&) const
+    size_t Sigma::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
 
+
     Boltzmann::Boltzmann(TemperatureFunction f)
         : temperature_(std::move(f))
-    {
-    }
+    {}
 
     void Boltzmann::temperature_function(TemperatureFunction f)
     {
@@ -182,7 +186,7 @@ namespace genetic_algorithm::selection
         temperature_ = std::move(f);
     }
 
-    void Boltzmann::prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat)
+    void Boltzmann::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
@@ -190,9 +194,8 @@ namespace genetic_algorithm::selection
 
         const auto temperature = temperature_(ga.generation_cntr(), ga.max_gen());
 
-        std::transform(fvec.begin(), fvec.end(), fvec.begin(),
-        // dont try to capture the iterators by ref or value here
-        [fmin = *fmin, df, temperature](double f) noexcept
+        // can't capture the iterators by ref or value here
+        std::transform(fvec.begin(), fvec.end(), fvec.begin(), [fmin = *fmin, df, temperature](double f) noexcept
         {
             const double fnorm = (f - fmin) / df;
 
@@ -202,7 +205,7 @@ namespace genetic_algorithm::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Boltzmann::select(const GaInfo&, const FitnessMatrix&) const
+    size_t Boltzmann::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
         return rng::sampleCdf(cdf_);
     }
@@ -210,6 +213,16 @@ namespace genetic_algorithm::selection
     double Boltzmann::boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept
     {
         return -4.0 / (1.0 + std::exp(-10.0 * (double(gen) / max_gen) + 3.0)) + 4.0 + 0.25;
+    }
+
+
+    Lambda::Lambda(SelectionFunction f) noexcept :
+        Selection(), selection_(std::move(f))
+    {}
+
+    size_t Lambda::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
+    {
+        return selection_(ga, fmat);
     }
 
 } // namespace genetic_algorithm::selection

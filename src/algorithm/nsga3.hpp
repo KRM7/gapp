@@ -49,7 +49,7 @@ namespace genetic_algorithm::algorithm
                                                FitnessMatrix::const_iterator children_first,
                                                FitnessMatrix::const_iterator last) override;
 
-        std::optional<std::vector<size_t>> optimalSolutionsImpl(const GaInfo& ga) const override;
+        std::vector<size_t> optimalSolutionsImpl(const GaInfo& ga) const override;
 
         struct Impl;
         std::unique_ptr<Impl> pimpl_;

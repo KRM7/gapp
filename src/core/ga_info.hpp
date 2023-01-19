@@ -5,7 +5,7 @@
 
 #include "../population/population.hpp"
 #include "../algorithm/algorithm_base.fwd.hpp"
-#include "../algorithm/single_objective.fwd.hpp"
+#include "../algorithm/single_objective.hpp"
 #include "../stop_condition/stop_condition_base.fwd.hpp"
 #include "../utility/probability.hpp"
 #include <functional>
@@ -158,36 +158,11 @@ namespace genetic_algorithm
         void algorithm(F f);
 
         /**
-        * Set the algorithm used by the GA to a single-objective algorithm that uses the
-        * @p selection as its selection method and the default population update method. \n
-        * The algorithm type should be consistent with the size of the fitness vectors returned by
-        * the fitness function (single- or multi-objective).
-        *
-        * @param selection The selection method used by the algorithm of the GA.
-        */
-        template<typename S>
-        requires (selection::SelectionType<S> && std::is_final_v<S> && !std::derived_from<S, algorithm::Algorithm>)
-        void algorithm(S selection);
-
-        /**
-        * Set the algorithm used by the GA to a single-objective algorithm that uses the
-        * @p selection as its selection method and @p updater as the population update method. \n
-        * The algorithm type should be consistent with the size of the fitness vectors returned by
-        * the fitness function (single- or multi-objective).
-        *
-        * @param selection The selection method used by the algorithm of the GA.
-        */
-        template<typename S, typename U>
-        requires (selection::SelectionType<S> && std::is_final_v<S> && !std::derived_from<S, algorithm::Algorithm> &&
-                  update::UpdaterType<U> && std::is_final_v<U> && !std::derived_from<U, algorithm::Algorithm>)
-        void algorithm(S selection, U updater);
-
-        /**
         * Set the algorithm used by the GA. \n
         * The algorithm type should be consistent with the size of the fitness vectors returned by
         * the fitness function (single- or multi-objective).
         *
-        * @param f The algorithm used by the GA.
+        * @param f The algorithm used by the GA. Can't be a nullptr.
         */
         template<algorithm::AlgorithmType F>
         void algorithm(std::unique_ptr<F>&& f);
@@ -203,8 +178,9 @@ namespace genetic_algorithm
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
-        * condition set here.
+        * The algorithm will always stop when reaching the maximum generations set,
+        * regardless of the stop condition set here.
+        * 
         * @see StopCondition
         *
         * @param f The StopCondition the algorithm should use.
@@ -217,17 +193,19 @@ namespace genetic_algorithm
         * Set an early-stop condition for the genetic algorithm. \n
         * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
         * condition set here.
+        * 
         * @see StopCondition
         *
-        * @param f The StopCondition the algorithm should use.
+        * @param f The StopCondition the algorithm should use. Can't be a nullptr.
         */
         template<stopping::StopConditionType F>
         void stop_condition(std::unique_ptr<F>&& f);
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
-        * condition set here.
+        * The algorithm will always stop when reaching the maximum generations set,
+        * regardless of the stop condition set here.
+        * 
         * @see StopCondition
         * @see StopConditionFunction
         *
@@ -353,23 +331,6 @@ namespace genetic_algorithm
     inline void GaInfo::algorithm(F f)
     {
         algorithm_ = std::make_unique<F>(std::move(f));
-        is_initialized_ = false;
-    }
-
-    template<typename S>
-    requires (selection::SelectionType<S> && std::is_final_v<S> && !std::derived_from<S, algorithm::Algorithm>)
-    inline void GaInfo::algorithm(S selection)
-    {
-        algorithm_ = std::make_unique<algorithm::SingleObjective<S>>(std::move(selection));
-        is_initialized_ = false;
-    }
-
-    template<typename S, typename U>
-    requires (selection::SelectionType<S> && std::is_final_v<S> && !std::derived_from<S, algorithm::Algorithm> &&
-              update::UpdaterType<U> && std::is_final_v<U> && !std::derived_from<U, algorithm::Algorithm>)
-    inline void GaInfo::algorithm(S selection, U updater)
-    {
-        algorithm_ = std::make_unique<algorithm::SingleObjective<S, U>>(std::move(selection), std::move(updater));
         is_initialized_ = false;
     }
 

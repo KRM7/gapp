@@ -413,7 +413,7 @@ namespace genetic_algorithm::algorithm
         return pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
     }
 
-    std::optional<std::vector<size_t>> NSGA3::optimalSolutionsImpl(const GaInfo&) const
+    std::vector<size_t> NSGA3::optimalSolutionsImpl(const GaInfo&) const
     {
         return detail::find_indices(pimpl_->sol_info_,
                                     detail::compose(&Impl::CandidateInfo::rank,

@@ -20,7 +20,7 @@ void perm_tsp52()
 
     PermutationGA GA(500, tsp52.num_vars(), tsp52);
 
-    GA.algorithm(selection::Sigma{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Sigma{} });
     GA.crossover_method(crossover::perm::Edge{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.05 });
 
@@ -33,7 +33,7 @@ void perm_tsp76()
 
     PermutationGA GA(400, tsp76.num_vars(), tsp76);
 
-    GA.algorithm(selection::Tournament{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::perm::Order1{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.1 });
 
@@ -46,7 +46,7 @@ void perm_tsp124()
 
     PermutationGA GA(500, tsp124.num_vars(), tsp124);
 
-    GA.algorithm(selection::Boltzmann{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::perm::Position{ 0.9 });
     GA.mutation_method(mutation::perm::Swap3{ 0.4 });
 
@@ -59,7 +59,7 @@ void perm_tsp152()
 
     PermutationGA GA(500, tsp152.num_vars(), tsp152);
 
-    GA.algorithm(selection::Tournament{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::perm::PMX{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.6 });
 
@@ -72,7 +72,7 @@ void perm_tsp226()
 
     PermutationGA GA(500, tsp226.num_vars(), tsp226);
 
-    GA.algorithm(selection::Roulette{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Roulette{} });
     GA.crossover_method(crossover::perm::Cycle{ 0.9 });
     GA.mutation_method(mutation::perm::Shuffle{ 0.2 });
 
@@ -85,7 +85,7 @@ void perm_tsp299()
 
     PermutationGA GA(500, tsp299.num_vars(), tsp299);
 
-    GA.algorithm(selection::Boltzmann{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
 
@@ -98,7 +98,7 @@ void perm_tsp439()
 
     PermutationGA GA(500, tsp439.num_vars(), tsp439);
 
-    GA.algorithm(selection::Boltzmann{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
 

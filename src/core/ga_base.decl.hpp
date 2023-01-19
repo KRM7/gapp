@@ -20,8 +20,8 @@ namespace genetic_algorithm
 {
     /**
     * Base GA class. \n
-    * Contains everything of the genetic algorithm, except for the
-    * generateCandidate() function, which should be implemented in the derived classes.
+    * Contains everything of the genetic algorithm, except for the initialize() and
+    * generateCandidate() functions, which should be implemented in the derived classes.
     *
     * @tparam Gene The type of the genes in the candidates' chromosomes.
     */
@@ -99,6 +99,7 @@ namespace genetic_algorithm
         * Set the fitness function used by the algorithm. \n
         * The fitness function should return a vector with a size equal to the number of objectives. \n
         * The fitness function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * 
         * @see FitnessFunction
         *
         * @param f The function the algorithm should find the maximum of.
@@ -111,8 +112,8 @@ namespace genetic_algorithm
 
         /**
         * Set the crossover method the algorithm will use. \n
-        * The crossover function should be thread-safe if parallel execution is enabled (it is enabled by default).
-        * @see CrossoverFunction
+        * The crossover function should be thread-safe if parallel execution is enabled (enabled by default).
+        * 
         * @see Crossover
         * 
         * @param f The crossover method used by the algorithm.
@@ -123,18 +124,19 @@ namespace genetic_algorithm
 
         /**
         * Set the crossover method the algorithm will use. \n
-        * The crossover function should be thread-safe if parallel execution is enabled (it is enabled by default).
-        * @see CrossoverFunction
+        * The crossover function should be thread-safe if parallel execution is enabled (enabled by default).
+        * 
         * @see Crossover
         *
-        * @param f The crossover method used by the algorithm.
+        * @param f The crossover method used by the algorithm. Can't be a nullptr.
         */
         template<crossover::CrossoverType<T> F>
         void crossover_method(std::unique_ptr<F>&& f);
 
         /**
         * Set the crossover method the algorithm will use. \n
-        * The crossover function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The crossover function should be thread-safe if parallel execution is enabled (enabled by default).
+        * 
         * @see CrossoverFunction
         * @see Crossover
         *
@@ -163,8 +165,8 @@ namespace genetic_algorithm
 
         /**
         * Set the mutation method the algorithm will use. \n
-        * The mutation function should be thread-safe if parallel execution is enabled (it is enabled by default).
-        * @see MutationFunction
+        * The mutation function should be thread-safe if parallel execution is enabled (enabled by default).
+        * 
         * @see Mutation
         *
         * @param f The crossover function that will be used by the algorithm.
@@ -175,18 +177,19 @@ namespace genetic_algorithm
 
         /**
         * Set the mutation method the algorithm will use. \n
-        * The mutation function should be thread-safe if parallel execution is enabled (it is enabled by default).
-        * @see MutationFunction
+        * The mutation function should be thread-safe if parallel execution is enabled (enabled by default).
+        * 
         * @see Mutation
         *
-        * @param f The crossover function that will be used by the algorithm.
+        * @param f The crossover function that will be used by the algorithm. Can't be a nullptr.
         */
         template<mutation::MutationType<T> F>
         void mutation_method(std::unique_ptr<F>&& f);
 
         /**
         * Set the mutation method the algorithm will use. \n
-        * The mutation function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The mutation function should be thread-safe if parallel execution is enabled (enabled by default).
+        * 
         * @see MutationFunction
         * @see Mutation
         *
@@ -220,11 +223,11 @@ namespace genetic_algorithm
         * 
         * No repair function is used in the algorithm by default, set to nullptr if no repair function should be used.
         * 
-        * The repair function should be thread-safe if parallel execution is enabled (it is enabled by default).
+        * The repair function should be thread-safe if parallel execution is enabled (enabled by default).
         * 
         * @param f The repair function the algorithm will use.
         */
-        void repair_function(const RepairFunction& f);
+        void repair_function(RepairFunction f);
 
         /** 
         * @returns The pareto optimal solutions found by the algorithm.
@@ -237,8 +240,8 @@ namespace genetic_algorithm
 
         /**
         * @returns The current population of the algorithm.
-        * This is not the same as the solutions (this will always the same size as the population_size set,
-        * and may also contain non pareto-optimal solutions).
+        * This is not the same as the solutions, this will always be the same size as the population_size set,
+        * and may also contain non pareto-optimal solutions.
         */
         [[nodiscard]]
         const Population<T>& population() const noexcept { return population_; }

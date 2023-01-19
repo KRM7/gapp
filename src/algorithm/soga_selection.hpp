@@ -3,6 +3,7 @@
 #ifndef GA_ALGORITHM_SOGA_SELECTION_HPP
 #define GA_ALGORITHM_SOGA_SELECTION_HPP
 
+#include "selection_base.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <utility>
@@ -24,17 +25,15 @@ namespace genetic_algorithm::selection
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.
     * The probability of selecting an individual from the population is proportional to it's fitness value. \n
     *
-    * The selection algorithm is slightly modified so that it also works with negative fitness values. \n
+    * The algorithm is modified so that it also works with negative fitness values. \n
     * Has no parameters.
     */
-    class Roulette final
+    class Roulette final : public Selection
     {
-    public:
-        void initialize(const GaInfo&) noexcept {}
-        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
-
     private:
+        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+
         std::vector<double> cdf_;
     };
 
@@ -45,18 +44,18 @@ namespace genetic_algorithm::selection
     *
     * The number of candidates in the tournaments is determined by the size parameter of the operator.
     */
-    class Tournament final
+    class Tournament final : public Selection
     {
     public:
         /**
-        * Create a tournament selection operator for a single-objective ga.
+        * Create a tournament selection operator for the single-objective GA.
         *
         * @param size The size of the tournaments.
         */
         explicit Tournament(size_t size = 2);
 
         /**
-        * Sets the number of individuals that participate in a tournament.
+        * Set the number of individuals that participate in a tournament. \n
         * Must be at least 2.
         *
         * @param size The size of the tournaments during tournament selection.
@@ -67,11 +66,10 @@ namespace genetic_algorithm::selection
         [[nodiscard]]
         size_t size() const noexcept { return tourney_size_; }
 
-        void initialize(const GaInfo&) noexcept {}
-        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
-
     private:
+        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+
         size_t tourney_size_;
         std::vector<double> fvec_;
     };
@@ -82,7 +80,7 @@ namespace genetic_algorithm::selection
     * minimum and maximum value based on their rank in the population relative to
     * other individuals (assuming fitness maximization).
     */
-    class Rank final
+    class Rank final : public Selection
     {
     public:
         /**
@@ -133,11 +131,10 @@ namespace genetic_algorithm::selection
         [[nodiscard]]
         std::pair<double, double> weights() const noexcept { return { min_weight_, max_weight_ }; }
 
-        void initialize(const GaInfo&) noexcept {}
-        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
-
     private:
+        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+
         double min_weight_;
         double max_weight_;
         std::vector<double> cdf_;
@@ -148,7 +145,7 @@ namespace genetic_algorithm::selection
     * The probability of selecting an individual from the population is proportional to
     * its scaled fitness value, which is: f' = (f - f_mean) / (scale * f_sd)
     */
-    class Sigma final
+    class Sigma final : public Selection
     {
     public:
         /**
@@ -171,11 +168,10 @@ namespace genetic_algorithm::selection
         [[nodiscard]]
         double scale() const noexcept { return scale_; }
 
-        void initialize(const GaInfo&) noexcept {}
-        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
-
     private:
+        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+
         double scale_;
         std::vector<double> cdf_;
     };
@@ -187,7 +183,7 @@ namespace genetic_algorithm::selection
     * in the later generations the temperature decreases, resulting in higher selection
     * pressure.
     */
-    class Boltzmann final
+    class Boltzmann final : public Selection
     {
     public:
         using TemperatureFunction = std::function<double(size_t, size_t)>;  /**< The type of the temperature function. */
@@ -209,14 +205,31 @@ namespace genetic_algorithm::selection
         */
         void temperature_function(TemperatureFunction f);
         
-        void initialize(const GaInfo&) noexcept {}
-        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat);
-        size_t select(const GaInfo& ga, const FitnessMatrix& fmat) const;
     private:
-        TemperatureFunction temperature_;
-        std::vector<double> cdf_;
+        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
         static double boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept;
+
+        TemperatureFunction temperature_;
+        std::vector<double> cdf_;
+    };
+
+    /*
+    * Wraps a callable with the right signature so that it can be used as a selection
+    * method in the single-objective GAs.
+    */
+    class Lambda final : public Selection
+    {
+    public:
+        using SelectionFunction = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
+
+        explicit Lambda(SelectionFunction f) noexcept;
+
+    private:
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+
+        SelectionFunction selection_;
     };
 
 } // namespace genetic_algorithm::selection

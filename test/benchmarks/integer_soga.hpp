@@ -20,7 +20,7 @@ void integer_hello()
 
     IntegerGA GA(100, fitness_func.num_vars(), fitness_func, 96);
 
-    GA.algorithm(selection::Tournament{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
     GA.mutation_method(mutation::integer::Uniform{ 0.01 });
     //+32
@@ -33,7 +33,7 @@ void integer_sentence()
 
     IntegerGA GA(250, fitness_func.num_vars(), fitness_func, 96);
 
-    GA.algorithm(selection::Boltzmann{});
+    GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::integer::Uniform{ 0.8 });
     GA.mutation_method(mutation::integer::Uniform{ 5.0 / 250 });
     // +32

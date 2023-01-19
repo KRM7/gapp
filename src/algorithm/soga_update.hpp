@@ -1,8 +1,9 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_POP_UPDATE_HPP
-#define GA_ALGORITHM_POP_UPDATE_HPP
+#ifndef GA_ALGORITHM_SOGA_UPDATE_HPP
+#define GA_ALGORITHM_SOGA_UPDATE_HPP
 
+#include "updater_base.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <cstddef>
@@ -26,13 +27,10 @@ namespace genetic_algorithm::update
     * If the number of children is greater than the population size used in the algorithm,
     * only the first pop_size children will be selected.
     */
-    class KeepChildren final
+    class KeepChildren final : public Updater
     {
-    public:
-        std::vector<size_t> operator()(const GaInfo& ga,
-                                       FitnessMatrix::const_iterator first,
-                                       FitnessMatrix::const_iterator children_first,
-                                       FitnessMatrix::const_iterator last);
+    private:
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
     };
 
     /**
@@ -44,7 +42,7 @@ namespace genetic_algorithm::update
     * 
     * If N = 0, this is equivalent to only keeping the children for the next generation (KeepChildren).
     */
-    class Elitism final
+    class Elitism final : public Updater
     {
     public:
         /**
@@ -52,7 +50,8 @@ namespace genetic_algorithm::update
         * 
         * @param n The number of solutions from the parent population that will be carried over to the next generation of the algorithm.
         */
-        Elitism(size_t n = 1) noexcept : n_(n)
+        Elitism(size_t n = 1) noexcept :
+            n_(n)
         {}
 
         /**
@@ -66,12 +65,9 @@ namespace genetic_algorithm::update
         [[nodiscard]]
         size_t elite_num() noexcept { return n_; }
 
-        std::vector<size_t> operator()(const GaInfo& ga,
-                                       FitnessMatrix::const_iterator parents_first,
-                                       FitnessMatrix::const_iterator children_first,
-                                       FitnessMatrix::const_iterator children_last);
-
     private:
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
+
         size_t n_;
     };
 
@@ -79,16 +75,30 @@ namespace genetic_algorithm::update
     * A population update method that selects the best (pop_size) candidates of the combined
     * parent and child populations, and uses these as the candidates of the next generation of the algorithm. \n
     */
-    class KeepBest final
+    class KeepBest final : public Updater
+    {
+    private:
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
+    };
+
+    /*
+    * Wraps a callable with the right signature so that it can be used as a population update
+    * method in the single-objective GAs.
+    */
+    class Lambda final : public Updater
     {
     public:
-        std::vector<size_t> operator()(const GaInfo& ga,
-                                       FitnessMatrix::const_iterator parents_first,
-                                       FitnessMatrix::const_iterator children_first,
-                                       FitnessMatrix::const_iterator children_last);
+        using UpdateFunction = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
+
+        explicit Lambda(UpdateFunction f) noexcept;
+
+    private:
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
+
+        UpdateFunction updater_;
     };
 
 } // namespace genetic_algorithm::update
 
 
-#endif // !GA_ALGORITHM_POP_UPDATE_HPP
+#endif // !GA_ALGORITHM_SOGA_UPDATE_HPP

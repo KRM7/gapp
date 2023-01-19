@@ -52,15 +52,14 @@ namespace genetic_algorithm::algorithm
     {
         const auto optimal_indices = optimalSolutionsImpl(ga);
 
-        if (optimal_indices.has_value() &&
-            std::any_of(optimal_indices->begin(), optimal_indices->end(), detail::greater_eq_than(pop.size())))
+        if (std::any_of(optimal_indices.begin(), optimal_indices.end(), detail::greater_eq_than(pop.size())))
         {
             GA_THROW(std::logic_error, "An invalid optimal solution index was returned by optimalSolutionsImpl.");
         }
 
-        auto optimal_sols = optimal_indices.has_value() ?
-            detail::select(pop, *optimal_indices) :
-            detail::findParetoFront(pop);
+        auto optimal_sols = optimal_indices.empty() ?
+            detail::findParetoFront(pop) :
+            detail::select(pop, optimal_indices);
 
         return optimal_sols;
     }

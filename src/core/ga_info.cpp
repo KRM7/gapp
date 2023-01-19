@@ -60,7 +60,7 @@ namespace genetic_algorithm
         num_objectives_ = findNumObjectives();
 
         (num_objectives_ == 1) ?
-            algorithm(std::make_unique<algorithm::SingleObjective<>>()) :
+            algorithm(std::make_unique<algorithm::SingleObjective>()) :
             algorithm(std::make_unique<algorithm::NSGA3>());
     }
 

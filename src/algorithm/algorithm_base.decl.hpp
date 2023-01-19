@@ -4,6 +4,8 @@
 #define GA_ALGORITHM_ALGORITHM_BASE_DECL_HPP
 
 #include "algorithm_base.fwd.hpp"
+#include "selection_base.hpp"
+#include "updater_base.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <cstddef>
@@ -25,13 +27,13 @@ namespace genetic_algorithm::algorithm
     * population update methods used). They may be single- or multi-objective (or both), and have 5
     * methods that can be implemented in the derived classes: \n
     * 
-    *  - initialize        (optional) : Initializes the algorithm (at the start of a run). \n
-    *  - prepareSelections (optional) : Prepares the algorithm for the selections if needed. \n
-    *  - select                       : Selects a candidate from the population for crossover (this should be thread-safe). \n
-    *  - nextPopulation               : Selects the candidates of the next population from the parent and the child populations. \n 
-    *  - optimalSolutions  (optional) : Selects the optimal solutions of the population. \n
+    *  - initializeImpl        (optional) : Initializes the algorithm (at the start of a run). \n
+    *  - prepareSelectionsImpl (optional) : Prepares the algorithm for the selections if needed. \n
+    *  - selectImpl                       : Selects a candidate from the population for crossover (this should be thread-safe). \n
+    *  - nextPopulationImpl               : Selects the candidates of the next population from the parent and the child populations. \n 
+    *  - optimalSolutionsImpl  (optional) : Selects the optimal solutions of the population. \n
     */
-    class Algorithm
+    class Algorithm : protected selection::Selection, protected update::Updater
     {
     public:
         using FitnessVector = detail::FitnessVector;
@@ -40,7 +42,7 @@ namespace genetic_algorithm::algorithm
         /**
         * Initialize the algorithm if needed. \n
         * 
-        * This method will be called exactly once at start of the genetic algorithm,
+        * This method will be called exactly once at start of the run,
         * after the initial population has already been created. \n
         * 
         * Implemented by initializeImpl. \n
@@ -71,8 +73,7 @@ namespace genetic_algorithm::algorithm
         * The population will be the population that was returned by nextPopulation in the previous generation (unchanged). \n
         * 
         * Implemented by selectImpl. \n
-        * The implementation should be thread-safe if parallel execution is enabled for the GAs
-        * (enabled by default).
+        * The implementation should be thread-safe if parallel execution is enabled for the GAs (enabled by default).
         *
         * @param ga The GA that uses the algorithm.
         * @param pop The current population.
@@ -86,8 +87,7 @@ namespace genetic_algorithm::algorithm
         * Select the candidates of the next generation from the candidates of the
         * current and the child populations. \n
         * 
-        * This method will be called exactly once at the end of each generation
-        * (before the call to optimalSolutions). \n
+        * This method will be called exactly once at the end of each generation (before the call to optimalSolutions). \n
         * 
         * Implemented by nextPopulationImpl. \n
         *
@@ -95,11 +95,7 @@ namespace genetic_algorithm::algorithm
         * @param parents The parent population (current population of the GA).
         * @param children The child population (created from the parent population).
         * 
-        * @param first The first element of the fitness matrix (first parent).
-        * @param children_first The first element of the fitness matrix that belongs to a child.
-        * @param last The end of the fitness matrix.
-        * 
-        * @returns The selected candidates' indices in the fitness matrix, assuming that the index of @p first is 0.
+        * @returns The candidates of the next population.
         */
         template<Gene T>
         Population<T> nextPopulation(const GaInfo& ga, Population<T>&& parents, Population<T>&& children);
@@ -118,6 +114,9 @@ namespace genetic_algorithm::algorithm
         template<Gene T>
         Candidates<T> optimalSolutions(const GaInfo& ga, const Population<T>& pop) const;
 
+
+        virtual ~Algorithm()                    = default;
+
     protected:
 
         Algorithm()                             = default;
@@ -126,40 +125,16 @@ namespace genetic_algorithm::algorithm
         Algorithm& operator=(const Algorithm&)  = default;
         Algorithm& operator=(Algorithm&&)       = default;
 
-    public:
-
-        virtual ~Algorithm()                    = default;
-
     private:
-
-        /** Implementation of the initialize function. */
-        virtual void initializeImpl(const GaInfo&) {}
-
-        /** Implementation of the prepareSelections function. */
-        virtual void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) {}
-
-        /** Implementation of the select function. Selects a solution index based on the fitness matrix. */
-        virtual size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const = 0;
-
-        /**
-        * Implementation of the nextPopulation function. \n
-        * Returns the indices of the fitness vectors that were picked for the next generation
-        * (from the fitness matrix). \n
-        * 
-        * The fitness matrix is given as the range [first, last), where
-        * the subrange [first, children_first) belongs to the parents, and
-        * the subrange [children_first, last) belongs to the children.
-        */
-        virtual std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
-                                                       FitnessMatrix::const_iterator first,
-                                                       FitnessMatrix::const_iterator children_first,
-                                                       FitnessMatrix::const_iterator last) = 0;
 
         /**
         * Implementation of the optimalSolutions function. \n
-        * Returns the indices of the optimal solutions in the current population.
+        * Returns the indices of the optimal solutions in the current population. \n
+        * 
+        * If the optimal solutions can't be found trivially, it should just return an empty
+        * vector. (This is the default behaviour.)
         */
-        virtual std::optional<std::vector<size_t>> optimalSolutionsImpl(const GaInfo&) const { return {}; }
+        virtual std::vector<size_t> optimalSolutionsImpl(const GaInfo&) const { return {}; }
     };
 
 } // namespace genetic_algorithm::algorithm

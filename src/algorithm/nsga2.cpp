@@ -130,7 +130,7 @@ namespace genetic_algorithm::algorithm
         return new_pop;
     }
 
-    std::optional<std::vector<size_t>> NSGA2::optimalSolutionsImpl(const GaInfo&) const
+    std::vector<size_t> NSGA2::optimalSolutionsImpl(const GaInfo&) const
     {
         return detail::find_indices(ranks_, detail::equal_to(0_sz));
     }
