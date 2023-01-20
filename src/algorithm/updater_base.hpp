@@ -13,6 +13,7 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
+/** Population update methods for the single-objective algorithms. */
 namespace genetic_algorithm::update
 {
     using detail::FitnessVector;
@@ -25,7 +26,7 @@ namespace genetic_algorithm::update
     * of the current population and the children created from this population. The class only has
     * a single method that has to be implemented: \n
     * 
-    *   - nextPopulationImpl    : Selects the candidates of the next population.
+    *   - nextPopulationImpl :  Selects the candidates of the next population.
     */
     class Updater
     {

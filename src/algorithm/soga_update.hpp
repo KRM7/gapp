@@ -14,7 +14,6 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-/** Methods used to update the populations in each generation of the algorithms. */
 namespace genetic_algorithm::update
 {
     using detail::FitnessVector;

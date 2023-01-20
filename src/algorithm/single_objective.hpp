@@ -19,8 +19,7 @@ namespace genetic_algorithm::algorithm
     * The algorithm combines a selection method and a population update
     * method. The selection method is used to select candidates from the populations
     * for crossover, while the population update method is used to create the population
-    * for the next generation of the algorithm from the combined parent and child populations
-    * of the current generation.
+    * for the next generation of the algorithm from the combined parent and child populations.
     * 
     * Move-only.
     */
@@ -210,7 +209,7 @@ namespace genetic_algorithm::algorithm
     template<typename S, typename U>
     requires selection::SelectionType<S> && std::is_final_v<S> && update::UpdaterType<U> && std::is_final_v<U>
     inline SingleObjective::SingleObjective(S selection, U updater) :
-        selection_(std::make_unique<S>(std::move(selection))), updater_(std::make_unique<U>(std::move(updater)))
+        Algorithm(), selection_(std::make_unique<S>(std::move(selection))), updater_(std::make_unique<U>(std::move(updater)))
     {}
 
     template<selection::SelectionType S>
@@ -222,8 +221,8 @@ namespace genetic_algorithm::algorithm
     inline SingleObjective::SingleObjective(std::unique_ptr<S>&& selection, std::unique_ptr<U>&& updater) :
         Algorithm(), selection_(std::move(selection)), updater_(std::move(updater))
     {
-        if (selection_ == nullptr) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
-        if (updater_   == nullptr) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+        if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
+        if (!updater_) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
     }
 
     template<typename S>
@@ -236,7 +235,7 @@ namespace genetic_algorithm::algorithm
     template<selection::SelectionType S>
     inline void SingleObjective::selection_method(std::unique_ptr<S>&& selection)
     {
-        if (selection_ == nullptr) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
+        if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
 
         selection_ = std::move(selection);
     }
@@ -251,7 +250,7 @@ namespace genetic_algorithm::algorithm
     template<update::UpdaterType U>
     inline void SingleObjective::update_method(std::unique_ptr<U>&& updater)
     {
-        if (updater_ == nullptr) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+        if (!updater_) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
 
         updater_ = std::move(updater);
     }

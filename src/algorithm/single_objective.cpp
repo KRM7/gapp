@@ -20,14 +20,14 @@ namespace genetic_algorithm::algorithm
 
     void SingleObjective::selection_method(SelectionFunction f)
     {
-        if (f == nullptr) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
+        if (!f) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
 
         selection_ = std::make_unique<selection::Lambda>(std::move(f));
     }
 
     void SingleObjective::update_method(UpdateFunction f)
     {
-        if (f == nullptr) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+        if (!f) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
 
         updater_ = std::make_unique<update::Lambda>(std::move(f));
     }

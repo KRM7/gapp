@@ -17,19 +17,19 @@ namespace genetic_algorithm::update
         return detail::index_vector(ga.population_size(), ga.population_size());
     }
 
-    std::vector<size_t> Elitism::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, [[maybe_unused]] FitnessMatrix::const_iterator last)
+    std::vector<size_t> Elitism::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator)
     {
-        assert(ga.population_size() >= n_);
+        const size_t n = std::min(n_, ga.population_size());
 
-        const auto sorted_parent_indices = detail::partial_argsort(first, first + n_, children_first,
+        const auto sorted_parent_indices = detail::partial_argsort(first, first + n, children_first,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
             return math::paretoCompareLess(rhs, lhs); // descending
         });
 
         std::vector<size_t> indices(ga.population_size());
-        std::copy(sorted_parent_indices.begin(), sorted_parent_indices.begin() + n_, indices.begin());
-        std::iota(indices.begin() + n_, indices.end(), ga.population_size());
+        std::copy(sorted_parent_indices.begin(), sorted_parent_indices.begin() + n, indices.begin());
+        std::iota(indices.begin() + n, indices.end(), ga.population_size());
 
         return indices;
     }

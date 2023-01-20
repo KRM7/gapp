@@ -17,14 +17,14 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-/** Algorithm types that can be used in the genetic algorithms (contains both single- and multi-objective algorithms). */
+/** Algorithm types that can be used in the genetic algorithms (both single- and multi-objective algorithms). */
 namespace genetic_algorithm::algorithm
 {
     /**
     * Base class used for all of the algorithms. \n
     * 
-    * The algorithms define the way the population is evolved over the generations (the selection and
-    * population update methods used). They may be single- or multi-objective (or both), and have 5
+    * The algorithms define the way the population is evolved over the generations (i.e. the selection and
+    * population update methods used). They may be single-, multi-objective, or both, and have 5
     * methods that can be implemented in the derived classes: \n
     * 
     *  - initializeImpl        (optional) : Initializes the algorithm (at the start of a run). \n
@@ -53,7 +53,7 @@ namespace genetic_algorithm::algorithm
         void initialize(const GaInfo& ga) { initializeImpl(ga); };
 
         /**
-        * Prepare the algorithm for the selections beforehand if neccesary. \n
+        * Prepare the algorithm for the selections if neccesary. \n
         * 
         * This method will be called exactly once every generation right before the selections are performed. \n
         * 
@@ -70,7 +70,7 @@ namespace genetic_algorithm::algorithm
         * 
         * This method will be called exactly (population_size) or (population_size + 1)
         * times in every generation (depending on which number is even). \n
-        * The population will be the population that was returned by nextPopulation in the previous generation (unchanged). \n
+        * The population will be the unchanged population that was returned by nextPopulation in the previous generation. \n
         * 
         * Implemented by selectImpl. \n
         * The implementation should be thread-safe if parallel execution is enabled for the GAs (enabled by default).
@@ -87,15 +87,15 @@ namespace genetic_algorithm::algorithm
         * Select the candidates of the next generation from the candidates of the
         * current and the child populations. \n
         * 
-        * This method will be called exactly once at the end of each generation (before the call to optimalSolutions). \n
+        * This method will be called exactly once at the end of each generation before the call to optimalSolutions. \n
         * 
         * Implemented by nextPopulationImpl. \n
         *
         * @param ga The GA that uses the algorithm.
         * @param parents The parent population (current population of the GA).
-        * @param children The child population (created from the parent population).
+        * @param children The child population, created from the parent population.
         * 
-        * @returns The candidates of the next population.
+        * @returns The candidates of the next generation of the algorithm.
         */
         template<Gene T>
         Population<T> nextPopulation(const GaInfo& ga, Population<T>&& parents, Population<T>&& children);
@@ -114,9 +114,6 @@ namespace genetic_algorithm::algorithm
         template<Gene T>
         Candidates<T> optimalSolutions(const GaInfo& ga, const Population<T>& pop) const;
 
-
-        virtual ~Algorithm()                    = default;
-
     protected:
 
         Algorithm()                             = default;
@@ -132,7 +129,7 @@ namespace genetic_algorithm::algorithm
         * Returns the indices of the optimal solutions in the current population. \n
         * 
         * If the optimal solutions can't be found trivially, it should just return an empty
-        * vector. (This is the default behaviour.)
+        * vector (this is the default behaviour).
         */
         virtual std::vector<size_t> optimalSolutionsImpl(const GaInfo&) const { return {}; }
     };

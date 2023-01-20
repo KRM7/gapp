@@ -13,6 +13,7 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
+/** Selection operators for the single-objective algorithms. */
 namespace genetic_algorithm::selection
 {
     using detail::FitnessVector;
@@ -25,9 +26,9 @@ namespace genetic_algorithm::selection
     * the crossovers. The class has 3 methods that can be implemented in the derived
     * classes: \n
     * 
-    *  - initializeImpl        (optional) : Initializes the selection method (at the start of a run). \n
-    *  - prepareSelectionsImpl (optional) : Prepares the operator for the selections if needed. \n
-    *  - selectImpl                       : Selects a candidate from the population for crossover (this should be thread-safe). \n
+    *  - initializeImpl        (optional) : Initializes the selection method at the start of a run. \n
+    *  - prepareSelectionsImpl (optional) : Prepare the operator for the selections if needed. \n
+    *  - selectImpl                       : Select a candidate from the population for crossover (this should be thread-safe). \n
     */
     class Selection
     {
@@ -36,7 +37,7 @@ namespace genetic_algorithm::selection
         * Initialize the selection operator if needed. \n
         *
         * This method will be called exactly once at start of the run,
-        * after the initial population has already been created. \n
+        * after the initial population has been created. \n
         *
         * The default implementation does nothing.
         *
@@ -45,7 +46,7 @@ namespace genetic_algorithm::selection
         virtual void initializeImpl(const GaInfo&) {}
 
         /**
-        * Prepare the operator for the selections if needed. \n
+        * Prepare the operator for the selections. \n
         *
         * This method will be called exactly once every generation right before the selections are performed. \n
         *
@@ -59,7 +60,7 @@ namespace genetic_algorithm::selection
         /**
         * Select a single candidate for crossover from the population. \n
         * The method should return the index of the selected candidate based on the fitness matrix
-        * of the current population. (An index from the fitness matrix.) \n
+        * of the current population (i.e. an index from the fitness matrix). \n
         *
         * This method will be called exactly (population_size) or (population_size + 1)
         * times in every generation (depending on which number is even). \n
