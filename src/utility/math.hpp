@@ -148,49 +148,56 @@ namespace genetic_algorithm::math
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
     {
-        if (lhs == rhs) return 0; // for infinities
+        // if lhs or rhs == NaN return unordered
 
         const T diff = lhs - rhs;
-        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * Tolerances::eps<T>();
+        const T scale = std::max(std::abs(lhs), std::abs(rhs));
+        const T rel_tol = std::min(scale, std::numeric_limits<T>::max()) * Tolerances::eps<T>();
         const T tol = std::max(rel_tol, Tolerances::abs<T>());
 
-        if (diff >= tol)  return  1;  // lhs < rhs
-        if (diff <= -tol) return -1;  // lhs > rhs
-        return 0;                     // lhs == rhs
+        if (diff >  tol) return  1;  // lhs < rhs
+        if (diff < -tol) return -1;  // lhs > rhs
+        return 0;                    // lhs == rhs
     }
 
     template<std::floating_point T>
     constexpr bool floatIsEqual(T lhs, T rhs) noexcept
     {
-        if (lhs == rhs) return true; // for infinities
+        const T scale = std::max(std::abs(lhs), std::abs(rhs));
 
-        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * Tolerances::eps<T>();
+        if (scale == inf<T>) return lhs == rhs; // for infinities
 
-        return std::abs(lhs - rhs) < std::max(rel_tol, Tolerances::abs<T>());
+        return std::abs(lhs - rhs) <= std::max(scale * Tolerances::eps<T>(), Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLess(T lhs, T rhs) noexcept
     {
-        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * Tolerances::eps<T>();
+        const T scale = std::max(std::abs(lhs), std::abs(rhs));
 
-        return (rhs - lhs) >= std::max(rel_tol, Tolerances::abs<T>());
+        if (scale == inf<T>) return lhs < rhs; // for infinities
+
+        return (rhs - lhs) > std::max(scale * Tolerances::eps<T>(), Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
     constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
     {
-        const T rel_tol = std::abs(rhs) * Tolerances::eps<T>();
+        const T scale = std::abs(rhs);
 
-        return (rhs - lhs) >= std::max(rel_tol, Tolerances::abs<T>());
+        if (scale == inf<T>) return lhs < rhs; // for infinities
+
+        return (rhs - lhs) > std::max(scale * Tolerances::eps<T>(), Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
     constexpr bool floatIsGreater(T lhs, T rhs) noexcept
     {
-        const T rel_tol = std::max(std::abs(lhs), std::abs(rhs)) * Tolerances::eps<T>();
+        const T scale = std::max(std::abs(lhs), std::abs(rhs));
 
-        return (lhs - rhs) >= std::max(rel_tol, Tolerances::abs<T>());
+        if (scale == inf<T>) return lhs > rhs; // for infinities
+
+        return (lhs - rhs) > std::max(scale * Tolerances::eps<T>(), Tolerances::abs<T>());
     }
 
     template<std::floating_point T>

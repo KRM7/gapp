@@ -8,6 +8,7 @@
 #include <vector>
 #include <limits>
 #include <numbers>
+#include <utility>
 
 using namespace genetic_algorithm::math;
 using namespace Catch;
@@ -19,37 +20,89 @@ TEST_CASE("fp_compare", "[math]")
     constexpr double SMALL = std::numeric_limits<double>::denorm_min();
     constexpr double NaN   = std::numeric_limits<double>::quiet_NaN();
 
-    SECTION("equality")
+    SECTION("is_equal")
     {
+        auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+
+        ScopedTolerances _(rel, abs);
+        INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+
         REQUIRE(floatIsEqual(0.0, 0.0));
+        REQUIRE(floatIsEqual(0.0, -0.0));
+        REQUIRE(floatIsEqual(-0.0, 0.0));
+        REQUIRE(floatIsEqual(-0.0, -0.0));
+
         REQUIRE(floatIsEqual(1702.17, 1702.17));
+
         REQUIRE(floatIsEqual(SMALL, SMALL));
         REQUIRE(floatIsEqual(BIG, BIG));
+
         REQUIRE(floatIsEqual(INF, INF));
+        REQUIRE(floatIsEqual(-INF, -INF));
         REQUIRE(!floatIsEqual(INF, -INF));
+        REQUIRE(!floatIsEqual(-INF, INF));
+
         REQUIRE(!floatIsEqual(NaN, NaN));
 
         REQUIRE(!floatIsEqual(0.0, INF));
         REQUIRE(!floatIsEqual(0.0, BIG));
         REQUIRE(!floatIsEqual(0.0, NaN));
+        REQUIRE(!floatIsEqual(INF, 0.0));
+        REQUIRE(!floatIsEqual(BIG, 0.0));
+        REQUIRE(!floatIsEqual(NaN, 0.0));
 
         REQUIRE(!floatIsEqual(SMALL, BIG));
         REQUIRE(!floatIsEqual(SMALL, INF));
         REQUIRE(!floatIsEqual(SMALL, NaN));
+        REQUIRE(!floatIsEqual(BIG, SMALL));
+        REQUIRE(!floatIsEqual(INF, BIG));
+        REQUIRE(!floatIsEqual(NaN, SMALL));
 
         REQUIRE(!floatIsEqual(BIG, INF));
         REQUIRE(!floatIsEqual(BIG, NaN));
+        REQUIRE(!floatIsEqual(INF, BIG));
+        REQUIRE(!floatIsEqual(NaN, BIG));
 
         REQUIRE(!floatIsEqual(INF, NaN));
+        REQUIRE(!floatIsEqual(NaN, INF));
     }
 
-    SECTION("less")
+    SECTION("approx is_equal")
     {
+        ScopedTolerances _(10, 1E-12);
+
+        REQUIRE(floatIsEqual(0.0, 1E-13));
+        REQUIRE(!floatIsEqual(0.0, 1E-11));
+
+        REQUIRE(floatIsEqual(1.28E+32, 1.28E+32 + 1E+15));
+        REQUIRE(!floatIsEqual(1.28E+32, 1.29E+32));
+    }
+
+    SECTION("is_less")
+    {
+        auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+
+        ScopedTolerances _(rel, abs);
+        INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+
         REQUIRE(!floatIsLess(0.0, 0.0));
+        REQUIRE(!floatIsLess(0.0, -0.0));
+        REQUIRE(!floatIsLess(-0.0, 0.0));
+        REQUIRE(!floatIsLess(-0.0, -0.0));
+
+        REQUIRE(!floatIsLess(4.0, 4.0));
+        REQUIRE(floatIsLess(0.0, 4.0));
+        REQUIRE(!floatIsLess(4.0, 0.0));
+
         REQUIRE(!floatIsLess(SMALL, SMALL));
         REQUIRE(!floatIsLess(BIG, BIG));
         REQUIRE(!floatIsLess(INF, INF));
         REQUIRE(!floatIsLess(NaN, NaN));
+
+        REQUIRE(floatIsLess(-INF, INF));
+        REQUIRE(!floatIsLess(INF, -INF));
+        REQUIRE(!floatIsLess(INF, INF));
+        REQUIRE(!floatIsLess(-INF, -INF));
 
         REQUIRE(floatIsLess(0.0, INF));
         REQUIRE(!floatIsLess(INF, 0.0));
@@ -79,20 +132,122 @@ TEST_CASE("fp_compare", "[math]")
         REQUIRE(!floatIsLess(NaN, INF));
     }
 
-    SECTION("approx equal")
+    SECTION("approx is_less")
     {
         ScopedTolerances _(10, 1E-12);
 
-        REQUIRE(floatIsEqual(0.0, 1E-13));
-        REQUIRE(!floatIsEqual(0.0, 1E-11));
+        REQUIRE(!floatIsLess(0.0, 1E-13));
+        REQUIRE(floatIsLess(0.0, 1E-11));
 
-        REQUIRE(floatIsEqual(1.28E+32, 1.28E+32 + 1E+15));
-        REQUIRE(!floatIsEqual(1.28E+32, 1.29E+32));
+        REQUIRE(!floatIsLess(1.28E+32, 1.28E+32 + 1E+15));
+        REQUIRE(floatIsLess(1.28E+32, 1.29E+32));
+    }
+
+    SECTION("three-way comparison")
+    {
+        auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+
+        ScopedTolerances _(rel, abs);
+        INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+
+        REQUIRE(floatCompare(0.0, 0.0) == 0);
+        REQUIRE(floatCompare(0.0, -0.0) == 0);
+        REQUIRE(floatCompare(-0.0, 0.0) == 0);
+        REQUIRE(floatCompare(-0.0, -0.0) == 0);
+
+        REQUIRE(floatCompare(4.0, 4.0) == 0);
+        REQUIRE(floatCompare(0.0, 4.0) < 0);
+        REQUIRE(floatCompare(4.0, 0.0) > 0);
+
+        REQUIRE(floatCompare(SMALL, SMALL) == 0);
+        REQUIRE(floatCompare(BIG, BIG) == 0);
+        REQUIRE(floatCompare(INF, INF) == 0);
+        //REQUIRE(floatCompare(NaN, NaN) == 0);
+
+        REQUIRE(floatCompare(-INF, INF) < 0);
+        REQUIRE(floatCompare(INF, -INF) > 0);
+        REQUIRE(floatCompare(INF, INF) == 0);
+        REQUIRE(floatCompare(-INF, -INF) == 0);
+
+        REQUIRE(floatCompare(0.0, INF) < 0);
+        REQUIRE(floatCompare(INF, 0.0) > 0);
+
+        REQUIRE(floatCompare(0.0, BIG) < 0);
+        REQUIRE(floatCompare(BIG, 0.0) > 0);
+
+        //REQUIRE(floatCompare(0.0, NaN));
+        //REQUIRE(floatCompare(NaN, 0.0));
+
+        REQUIRE(floatCompare(SMALL, BIG) < 0);
+        REQUIRE(floatCompare(BIG, SMALL) > 0);
+
+        REQUIRE(floatCompare(SMALL, INF) < 0);
+        REQUIRE(floatCompare(INF, SMALL) > 0);
+
+        //REQUIRE(floatCompare(SMALL, NaN));
+        //REQUIRE(floatCompare(NaN, SMALL));
+
+        REQUIRE(floatCompare(BIG, INF) < 0);
+        REQUIRE(floatCompare(INF, BIG) > 0);
+
+        //REQUIRE(floatCompare(BIG, NaN));
+        //REQUIRE(floatCompare(NaN, BIG));
+
+        //REQUIRE(floatCompare(INF, NaN));
+        //REQUIRE(floatCompare(NaN, INF));
+    }
+
+    SECTION("is_less_not_greater")
+    {
+        auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+
+        ScopedTolerances _(rel, abs);
+        INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+
+        REQUIRE(!floatIsLessAssumeNotGreater(0.0, 0.0));
+        REQUIRE(!floatIsLessAssumeNotGreater(0.0, -0.0));
+        REQUIRE(!floatIsLessAssumeNotGreater(-0.0, 0.0));
+        REQUIRE(!floatIsLessAssumeNotGreater(-0.0, -0.0));
+
+        REQUIRE(!floatIsLessAssumeNotGreater(4.0, 4.0));
+        REQUIRE(floatIsLessAssumeNotGreater(0.0, 4.0));
+
+        REQUIRE(!floatIsLessAssumeNotGreater(SMALL, SMALL));
+        REQUIRE(!floatIsLessAssumeNotGreater(BIG, BIG));
+        REQUIRE(!floatIsLessAssumeNotGreater(INF, INF));
+        REQUIRE(!floatIsLessAssumeNotGreater(NaN, NaN));
+
+        REQUIRE(floatIsLessAssumeNotGreater(-INF, INF));
+        REQUIRE(!floatIsLessAssumeNotGreater(INF, INF));
+        REQUIRE(!floatIsLessAssumeNotGreater(-INF, -INF));
+
+        REQUIRE(!floatIsLessAssumeNotGreater(0.0, NaN));
+        REQUIRE(!floatIsLessAssumeNotGreater(NaN, 0.0));
+
+        REQUIRE(floatIsLessAssumeNotGreater(0.0, BIG));
+        REQUIRE(floatIsLessAssumeNotGreater(0.0, INF));
+        REQUIRE(floatIsLessAssumeNotGreater(SMALL, BIG));
+        REQUIRE(floatIsLessAssumeNotGreater(SMALL, INF));
+        REQUIRE(floatIsLessAssumeNotGreater(BIG, INF));
+
+        REQUIRE(!floatIsLessAssumeNotGreater(SMALL, NaN));
+        REQUIRE(!floatIsLessAssumeNotGreater(NaN, SMALL));
+
+        REQUIRE(!floatIsLessAssumeNotGreater(BIG, NaN));
+        REQUIRE(!floatIsLessAssumeNotGreater(NaN, BIG));
+
+        REQUIRE(!floatIsLessAssumeNotGreater(INF, NaN));
+        REQUIRE(!floatIsLessAssumeNotGreater(NaN, INF));
     }
 }
 
 TEST_CASE("pareto_compare_less", "[math]")
 {
+    auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+
+    ScopedTolerances _(rel, abs);
+    INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+
     const std::vector vec = { 3.0, 2.0, 1.0 };
 
     SECTION("self")
@@ -132,6 +287,11 @@ TEST_CASE("pareto_compare_less", "[math]")
 
 TEST_CASE("pareto_compare_three_way", "[math]")
 {
+    auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+
+    ScopedTolerances _(rel, abs);
+    INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+
     const std::vector vec = { 3.0, 2.0, 1.0 };
 
     SECTION("self")
