@@ -87,6 +87,8 @@ target_include_directories(GeneticAlgorithm SYSTEM INTERFACE "$<BUILD_INTERFACE:
                                                              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/GeneticAlgorithm>"
                                             PRIVATE "${CMAKE_SOURCE_DIR}/src")
 
+target_compile_definitions(GeneticAlgorithm PUBLIC "$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:GA_BUILD_STATIC>")
+
 # Install library
 install(TARGETS GeneticAlgorithm EXPORT GeneticAlgorithmConfig
         ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")

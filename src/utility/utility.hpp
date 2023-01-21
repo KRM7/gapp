@@ -44,6 +44,17 @@
 #endif
 
 
+#if defined(_WIN32) && !defined(GA_BUILD_STATIC)
+#   if defined(GeneticAlgorithm_EXPORTS)
+#       define GA_API __declspec(dllexport)
+#   else
+#       define GA_API __declspec(dllimport)
+#   endif
+#else
+#   define GA_API
+#endif
+
+
 #ifndef GA_EXCUTION_UNSEQ
 #   define GA_EXECUTION_UNSEQ std::execution::par_unseq
 #endif
