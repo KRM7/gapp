@@ -4,11 +4,11 @@
       "name": "x64-Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "-DGA_CXX_FLAGS=/analyze:WX-",
-      "ctestCommandArgs": "--output-on-failure --schedule-random"
+      "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
       "name": "x64-Release",
@@ -16,21 +16,9 @@
       "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DGA_CXX_FLAGS=\"/analyze:WX-\"",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
-      "variables": [
-        {
-          "name": "BUILD_SHARED_LIBS",
-          "value": "OFF",
-          "type": "STRING"
-        },
-        {
-          "name": "GA_USE_LTO",
-          "value": "False",
-          "type": "BOOL"
-        }
-      ],
-      "cmakeCommandArgs": "-DGA_CXX_FLAGS=\"/analyze:WX-\""
+      "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
       "name": "x64-RelWithDebInfo",
