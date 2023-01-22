@@ -3,9 +3,11 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_all.hpp>
 #include "population/population.hpp"
+#include "utility/math.hpp"
 #include <algorithm>
 
 using namespace genetic_algorithm;
+using namespace genetic_algorithm::math;
 using namespace genetic_algorithm::detail;
 using namespace Catch;
 
@@ -25,6 +27,8 @@ static constexpr bool fcomp(const Candidate<T>& lhs, const Candidate<T>& rhs) { 
 
 TEST_CASE("merge_pareto_sets", "[pareto_front]")
 {
+    //ScopedTolerances _(0, 0.0);
+
     FitnessMatrix front1 = {
         { 10.0, -1.0 }, //
         {  8.0, 1.0  }, //

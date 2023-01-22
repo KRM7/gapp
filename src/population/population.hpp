@@ -135,17 +135,17 @@ namespace genetic_algorithm::detail
             for (size_t j = 0; j < rhs.size(); j++)
             {
                 if (lhs_state[i] == DOMINATED) continue;
-                if (rhs_state[j].load(std::memory_order_relaxed) == DOMINATED) continue;
+                if (rhs_state[j] == DOMINATED) continue;
 
                 if (lhs_state[i] == OPTIMAL)
                 {
                     if (math::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
                     {
-                        rhs_state[j].store(DOMINATED, std::memory_order_relaxed);
+                        rhs_state[j] = DOMINATED;
                     }
                     continue;
                 }
-                if (rhs_state[j].load(std::memory_order_relaxed) == OPTIMAL)
+                if (rhs_state[j] == OPTIMAL)
                 {
                     if (math::paretoCompareLess(lhs[i].fitness, rhs[j].fitness))
                     {
@@ -158,12 +158,12 @@ namespace genetic_algorithm::detail
                 if (comp < 0)
                 {
                     lhs_state[i] = DOMINATED;
-                    rhs_state[j].store(OPTIMAL, std::memory_order_relaxed);
+                    rhs_state[j] = OPTIMAL;
                 }
                 else if (comp > 0)
                 {
                     lhs_state[i] = OPTIMAL;
-                    rhs_state[j].store(DOMINATED, std::memory_order_relaxed);
+                    rhs_state[j] = DOMINATED;
                 }
             }
         });
@@ -171,13 +171,13 @@ namespace genetic_algorithm::detail
         Candidates<T> optimal_solutions;
         optimal_solutions.reserve(lhs.size() + rhs.size());
 
+        for (size_t i = 0; i < rhs.size(); i++)
+        {
+            if (rhs_state[i] != DOMINATED) optimal_solutions.push_back(std::move(rhs[i]));
+        }
         for (size_t i = 0; i < lhs.size(); i++)
         {
             if (lhs_state[i] != DOMINATED) optimal_solutions.push_back(std::move(lhs[i]));
-        }
-        for (size_t i = 0; i < rhs.size(); i++)
-        {
-            if (rhs_state[i].load(std::memory_order_relaxed) != DOMINATED) optimal_solutions.push_back(std::move(rhs[i]));
         }
 
         return optimal_solutions;

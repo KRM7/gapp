@@ -84,40 +84,28 @@ namespace genetic_algorithm::algorithm::dtl
 
     struct DominanceList
     {
-        size_t better_count = 0;            /* Number of solutions dominating this one. */
         std::vector<size_t> worse_indices;  /* Indices of the solutions dominated by this one. */
+        size_t better_count = 0;            /* Number of solutions dominating this one. */
     };
     using DominanceLists = std::vector<DominanceList>;
-
-    static DominanceLists& getDominanceLists(size_t popsize)
-    {
-        static thread_local DominanceLists dlists;
-
-        /* Resize if popsize changes */
-        if (dlists.size() != popsize)
-        {
-            dlists.resize(popsize);
-            for (auto& dlist : dlists)
-            {
-                dlist.worse_indices.shrink_to_fit();
-                dlist.worse_indices.reserve(popsize);
-            }
-        }
-
-        /* Clear */
-        for (auto& dlist : dlists)
-        {
-            dlist.worse_indices.clear();
-            dlist.better_count = 0;
-        }
-
-        return dlists;
-    }
 
     static DominanceLists& constructDominanceLists(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         const size_t popsize = std::distance(first, last);
-        auto& dom_lists = getDominanceLists(popsize);
+
+        thread_local DominanceLists dom_lists;
+
+        if (dom_lists.size() != popsize)
+        {
+            dom_lists.resize(popsize);
+            for (auto& list : dom_lists) detail::clear_reserve(list.worse_indices, popsize);
+        }
+
+        for (auto& list : dom_lists)
+        {
+            list.worse_indices.clear();
+            list.better_count = 0;
+        }
 
         /* Find the number of candidates which dominate each candidate, and the indices of the candidates it dominates. */
         for (size_t lhs = 0; lhs < popsize; lhs++)
@@ -193,17 +181,15 @@ namespace genetic_algorithm::algorithm::dtl
      *  Proceedings of the 2020 Genetic and Evolutionary Computation Conference Companion, pp. 169-170. 2020.
      */
 
-    using DominanceMatrix = detail::Matrix<unsigned char>;
-    enum : unsigned char { MAXIMAL = true, NONMAXIMAL = false };
+    using DominanceMatrix = detail::Matrix<std::atomic_bool>;
+    enum : bool { MAXIMAL = false, NONMAXIMAL = true };
 
     struct Col { size_t idx; size_t sum; }; /* Index and colwise sum of a column in the dominance matrix. */
 
     static DominanceMatrix constructDominanceMatrix(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         const size_t popsize = std::distance(first, last);
-        DominanceMatrix dmat(popsize, popsize, MAXIMAL);
-
-        if (popsize == 0) return dmat;
+        DominanceMatrix dmat(popsize, popsize /*, MAXIMAL */);
 
         std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
         {
@@ -214,29 +200,28 @@ namespace genetic_algorithm::algorithm::dtl
 
             std::for_each(indices.rbegin(), indices.rend(), [&, current = indices.rbegin()](size_t row) mutable
             {
-                auto last_col = std::find_if(++current, indices.rend(), [&](size_t prev_row) noexcept
+                const auto last_idx = std::find_if(++current, indices.rend(), [&](size_t prev_row) noexcept
                 {
                     return !math::floatIsEqual(fvec[prev_row], fvec[row]);
                 });
 
-                std::for_each(last_col, indices.rend(), [&](size_t col) noexcept
+                std::for_each(last_idx, indices.rend(), [&](size_t col) noexcept
                 {
-                    std::atomic_ref dmat_entry{ dmat(row, col) };
-                    dmat_entry.store(NONMAXIMAL, std::memory_order_relaxed);
+                    if (dmat(row, col).load(std::memory_order_relaxed) == MAXIMAL) dmat(row, col).store(NONMAXIMAL, std::memory_order_relaxed);
                 });
             });
         });
 
         std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
         {
-            dmat(row, row) = NONMAXIMAL; // diagonal is all nonmax
+            dmat(row, row).store(NONMAXIMAL, std::memory_order_relaxed); // diagonal is all nonmax
 
             for (size_t col = row + 1; col < popsize; col++)
             {
-                if (dmat(row, col) == MAXIMAL && dmat(col, row) == MAXIMAL)
+                if (dmat(row, col).load(std::memory_order_relaxed) == MAXIMAL && dmat(col, row).load(std::memory_order_relaxed) == MAXIMAL)
                 {
-                    dmat(row, col) = NONMAXIMAL;
-                    dmat(col, row) = NONMAXIMAL;
+                    dmat(row, col).store(NONMAXIMAL, std::memory_order_relaxed);
+                    dmat(col, row).store(NONMAXIMAL, std::memory_order_relaxed);
                 }
             }
         });
@@ -247,11 +232,15 @@ namespace genetic_algorithm::algorithm::dtl
     static std::vector<Col> colwiseSums(const DominanceMatrix& dmat)
     {
         std::vector<Col> cols(dmat.ncols());
-        for (size_t i = 0; i < cols.size(); i++) cols[i].idx = i;
+        for (size_t i = 0; i < cols.size(); i++)
+        {
+            cols[i].idx = i;
+            cols[i].sum = dmat.nrows();
+        }
 
         for (size_t row = 0; row < dmat.nrows(); row++)
             for (size_t col = 0; col < dmat.ncols(); col++)
-                cols[col].sum += dmat(row, col);
+                cols[col].sum -= dmat(row, col).load(std::memory_order_relaxed);
 
         return cols;
     }
@@ -267,9 +256,11 @@ namespace genetic_algorithm::algorithm::dtl
         pfronts.reserve(popsize);
 
         size_t current_rank = 0;
+        std::vector<size_t> removed_rows;
+
         while (pfronts.size() != popsize)
         {
-            std::vector<size_t> removed_rows;
+            removed_rows.clear();
 
             /* Remove cols */
             for (auto& col : cols)
@@ -283,17 +274,17 @@ namespace genetic_algorithm::algorithm::dtl
             std::erase_if(cols, [](const Col& col) { return col.sum == 0; });
 
             /* Remove rows */
-            std::for_each(removed_rows.begin(), removed_rows.end(), [&](size_t row)
+            for (size_t row : removed_rows)
             {
-                for (auto& col : cols)
+                for (auto& [col, sum] : cols)
                 {
-                    if (dmat(row, col.idx) == MAXIMAL)
+                    if (dmat(row, col).load(std::memory_order_relaxed) == MAXIMAL)
                     {
-                        dmat(row, col.idx) = NONMAXIMAL;
-                        col.sum--;
+                        dmat(row, col).store(NONMAXIMAL, std::memory_order_relaxed);
+                        sum--;
                     }
                 }
-            });
+            }
 
             current_rank++;
         }

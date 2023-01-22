@@ -4,6 +4,7 @@
 #define GA_UTILITY_UTILITY_HPP
 
 #include <execution>
+#include <vector>
 #include <cassert>
 #include <cstddef>
 
@@ -44,6 +45,24 @@
 #endif
 
 
+#if defined(__GNUC__) || defined(__clang__)
+#   define GA_NOINLINE __attribute((noinline))
+#elif defined(_MSC_VER)
+#   define GA_NOINLINE __declspec(noinline)
+#else
+#   define GA_NOINLINE
+#endif
+
+
+#if defined(__GNUC__) || defined(__clang__)
+#   define GA_PAUSE() __builtin_ia32_pause()
+#elif defined(_MSC_VER)
+#   define GA_PAUSE() _mm_pause()
+#else
+#   define GA_PAUSE()
+#endif
+
+
 #if defined(_WIN32) && !defined(GA_BUILD_STATIC)
 #   if defined(GeneticAlgorithm_EXPORTS)
 #       define GA_API __declspec(dllexport)
@@ -77,5 +96,18 @@ namespace genetic_algorithm
     }
 
 } // namespace genetic_algorithm
+
+
+namespace genetic_algorithm::detail
+{
+    template<typename T>
+    inline void clear_reserve(std::vector<T>& vec, size_t n = 0)
+    {
+        std::vector<T> temp;
+        temp.reserve(n);
+        temp.swap(vec);
+    }
+
+} // namespace genetic_algorithm::detail
 
 #endif // !GA_UTILITY_UTILITY_HPP

@@ -1,0 +1,21 @@
+# Suppress warnings from Intel TBB
+# (libstdc++ uses TBB to implement the parallel std algorithms)
+
+# clang
+race:^tbb::detail::d1::node::node
+race:^tbb::detail::d1::tree_node::tree_node
+
+race:^tbb::detail::d1::blocked_range<*>::size
+race:^tbb::detail::d1::blocked_range<*>::is_divisible
+race:^tbb::detail::d1::auto_partition_type::is_divisible
+
+race:tbb::detail::d1::small_object_allocator::new_object
+race:tbb::detail::d1::small_object_allocator::delete_object
+
+race:tbb::detail::d1::dynamic_grainsize_mode<*>::check_being_stolen
+
+race:^tbb::detail::d1::start_for<*>::finalize
+
+# This supression is just supposed to be the first one, but the function name isnt always displayed properly in the stack trace
+race:^tbb::detail::d1::start_for<*>::offer_work
+race:tbb::detail::d1::auto_partitioner const>::offer_work(tbb::detail::d0::split&, tbb::detail::d1::execution_data&)

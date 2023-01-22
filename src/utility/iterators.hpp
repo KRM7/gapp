@@ -372,7 +372,7 @@ namespace genetic_algorithm::detail
             value_()
         {}
 
-        explicit iota_iterator(const T& val) noexcept :
+        explicit iota_iterator(T val) noexcept :
             value_(val)
         {}
 
@@ -418,7 +418,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        friend difference_type operator-(const iota_iterator& lhs, const iota_iterator& rhs)
+        friend difference_type operator-(iota_iterator lhs, iota_iterator rhs)
         {
             const T distance = lhs.value_ >= rhs.value_ ?
                 lhs.value_ - rhs.value_ :

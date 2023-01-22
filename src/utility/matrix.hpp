@@ -76,7 +76,11 @@ namespace genetic_algorithm::detail
             data_(alloc), nrows_(0), ncols_(0)
         {}
 
-        Matrix(size_t nrows, size_t ncols, const T& init = T(), const A& alloc = A()) :
+        Matrix(size_t nrows, size_t ncols) :
+            data_(nrows * ncols), nrows_(nrows), ncols_(ncols)
+        {}
+
+        Matrix(size_t nrows, size_t ncols, const T& init, const A& alloc = A()) :
             data_(nrows * ncols, init, alloc), nrows_(nrows), ncols_(ncols)
         {}
 

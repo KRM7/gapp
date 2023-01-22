@@ -5,9 +5,9 @@
 
 #include "utility.hpp"
 #include <vector>
+#include <atomic>
 #include <concepts>
 #include <limits>
-#include <utility>
 #include <cstdint>
 #include <cstddef>
 
@@ -19,14 +19,14 @@ namespace genetic_algorithm::math
         Tolerances() = delete;
 
         template<std::floating_point T = double>
-        static T abs() noexcept { return T(absolute_tolerance); }
+        static T abs() noexcept { return T(absolute_tolerance.load(std::memory_order_acquire)); }
 
         template<std::floating_point T = double>
-        static T eps() noexcept { return relative_tolerance_epsilons * std::numeric_limits<T>::epsilon(); }
+        static T eps() noexcept { return relative_tolerance_epsilons.load(std::memory_order_acquire) * std::numeric_limits<T>::epsilon(); }
 
     private:
-        GA_API static double absolute_tolerance;
-        GA_API static unsigned relative_tolerance_epsilons;
+        GA_API static std::atomic<double> absolute_tolerance;
+        GA_API static std::atomic<unsigned> relative_tolerance_epsilons;
 
         friend class ScopedTolerances;
     };
@@ -35,14 +35,14 @@ namespace genetic_algorithm::math
     {
     public:
         ScopedTolerances(unsigned num_epsilons, double abs) noexcept :
-            old_abs_tol(std::exchange(Tolerances::absolute_tolerance, abs)),
-            old_eps_tol(std::exchange(Tolerances::relative_tolerance_epsilons, num_epsilons))
+            old_abs_tol(Tolerances::absolute_tolerance.exchange(abs, std::memory_order_acq_rel)),
+            old_eps_tol(Tolerances::relative_tolerance_epsilons.exchange(num_epsilons, std::memory_order_acq_rel))
         {}
 
         ~ScopedTolerances() noexcept
         {
-            Tolerances::absolute_tolerance = old_abs_tol;
-            Tolerances::relative_tolerance_epsilons = old_eps_tol;
+            Tolerances::absolute_tolerance.store(old_abs_tol, std::memory_order_release);
+            Tolerances::relative_tolerance_epsilons.store(old_eps_tol, std::memory_order_release);
         }
 
         ScopedTolerances(const ScopedTolerances&)            = delete;

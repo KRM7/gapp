@@ -373,7 +373,7 @@ namespace genetic_algorithm
             sol.is_evaluated = true;
 
             std::atomic_ref fitness_evals{ num_fitness_evals_ };
-            fitness_evals.fetch_add(1, std::memory_order::relaxed);
+            ++fitness_evals;
         }
 
         assert(hasValidFitness(sol));

@@ -18,7 +18,7 @@ using namespace Catch;
 
 static constexpr double inf = std::numeric_limits<double>::infinity();
 
-TEMPLATE_TEST_CASE_SIG("nd_sort", "[pareto_front]", ((auto F), F), fastNonDominatedSort, dominanceDegreeSort, nonDominatedSort)
+TEMPLATE_TEST_CASE_SIG("nd_sort", "[pareto_front]", ((auto F), F), fastNonDominatedSort, dominanceDegreeSort)
 {
     const FitnessMatrix fmat = {
         {  3.0, 3.0  },  // p2 - 0
