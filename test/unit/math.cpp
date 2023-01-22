@@ -25,7 +25,7 @@ TEST_CASE("fp_compare", "[math]")
         auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
 
         ScopedTolerances _(rel, abs);
-        INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+        INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
         REQUIRE(floatIsEqual(0.0, 0.0));
         REQUIRE(floatIsEqual(0.0, -0.0));
@@ -83,7 +83,7 @@ TEST_CASE("fp_compare", "[math]")
         auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
 
         ScopedTolerances _(rel, abs);
-        INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+        INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
         REQUIRE(!floatIsLess(0.0, 0.0));
         REQUIRE(!floatIsLess(0.0, -0.0));
@@ -148,7 +148,7 @@ TEST_CASE("fp_compare", "[math]")
         auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
 
         ScopedTolerances _(rel, abs);
-        INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+        INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
         REQUIRE(floatCompare(0.0, 0.0) == 0);
         REQUIRE(floatCompare(0.0, -0.0) == 0);
@@ -202,7 +202,7 @@ TEST_CASE("fp_compare", "[math]")
         auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
 
         ScopedTolerances _(rel, abs);
-        INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+        INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
         REQUIRE(!floatIsLessAssumeNotGreater(0.0, 0.0));
         REQUIRE(!floatIsLessAssumeNotGreater(0.0, -0.0));
@@ -246,7 +246,7 @@ TEST_CASE("pareto_compare_less", "[math]")
     auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
 
     ScopedTolerances _(rel, abs);
-    INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+    INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
     const std::vector vec = { 3.0, 2.0, 1.0 };
 
@@ -290,7 +290,7 @@ TEST_CASE("pareto_compare_three_way", "[math]")
     auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
 
     ScopedTolerances _(rel, abs);
-    INFO("Relative tolerance eps: " + std::to_string(rel) + ", absolute tolerance: " + std::to_string(abs));
+    INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
     const std::vector vec = { 3.0, 2.0, 1.0 };
 

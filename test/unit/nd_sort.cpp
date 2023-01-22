@@ -9,15 +9,16 @@
 #include <vector>
 #include <algorithm>
 #include <cstddef>
+#include <limits>
 
 using namespace genetic_algorithm;
 using namespace genetic_algorithm::algorithm::dtl;
 using namespace genetic_algorithm::detail;
 using namespace Catch;
 
-static constexpr double inf = 1E+300 / 1E-300;
+static constexpr double inf = std::numeric_limits<double>::infinity();
 
-TEMPLATE_TEST_CASE_SIG("nd_sort", "[nd_sort]", ((auto F), F), fastNonDominatedSort, dominanceDegreeSort, nonDominatedSort)
+TEMPLATE_TEST_CASE_SIG("nd_sort", "[pareto_front]", ((auto F), F), fastNonDominatedSort, dominanceDegreeSort, nonDominatedSort)
 {
     const FitnessMatrix fmat = {
         {  3.0, 3.0  },  // p2 - 0
