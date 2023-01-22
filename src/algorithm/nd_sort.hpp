@@ -24,6 +24,10 @@ namespace genetic_algorithm::algorithm::dtl
     using ParetoFronts      = std::vector<FrontInfo>;
     using ParetoFrontsRange = std::pair<ParetoFronts::iterator, ParetoFronts::iterator>;
 
+    ParetoFronts fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
+
+    ParetoFronts dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
+
     /* Non-dominated sorting for the multi-objective algorithms.
        Returns the pareto fronts (in the form of [idx, rank] pairs) of the population, in non-descending order based on the ranks. */
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
@@ -40,7 +44,7 @@ namespace genetic_algorithm::algorithm::dtl
     /* Find the first and last elements of each front in the pareto fronts. */
     std::vector<ParetoFrontsRange> paretoFrontBounds(ParetoFronts& pareto_fronts);
     
-    /* Find the pareto front with the lowest rank that can't be added to the next population in its entirity. */
+    /* Find the pareto front with the lowest rank that can't be added to the next population in its entirety. */
     ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize);
 
 } // namespace genetic_algorithm::algorithm::dtl

@@ -141,7 +141,7 @@ namespace genetic_algorithm::algorithm::dtl
         return dom_lists;
     }
 
-    static ParetoFronts fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    ParetoFronts fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         const size_t popsize = std::distance(first, last);
         auto& dom_lists = constructDominanceLists(first, last);
@@ -156,17 +156,17 @@ namespace genetic_algorithm::algorithm::dtl
         }
 
         /* Find all the other pareto fronts. */
-        auto current_front_first = detail::stable_begin(pfronts);
-        auto current_front_last = detail::stable_end(pfronts);
+        auto front_first = detail::stable_begin(pfronts);
+        auto front_last  = detail::stable_end(pfronts);
         
         while (pfronts.size() != popsize)
         {
             /* Remove the current front from the population and find the next one. */
-            const size_t next_front_rank = current_front_first->rank + 1;
+            const size_t next_front_rank = front_first->rank + 1;
 
-            for (; current_front_first != current_front_last; ++current_front_first)
+            for (; front_first != front_last; ++front_first)
             {
-                const size_t sol_idx = current_front_first->idx;
+                const size_t sol_idx = front_first->idx;
 
                 for (size_t worse_idx : dom_lists[sol_idx].worse_indices)
                 {
@@ -176,7 +176,7 @@ namespace genetic_algorithm::algorithm::dtl
                     }
                 }
             }
-            current_front_last = detail::stable_end(pfronts);
+            front_last = detail::stable_end(pfronts);
         }
 
         return pfronts;
@@ -256,7 +256,7 @@ namespace genetic_algorithm::algorithm::dtl
         return cols;
     }
 
-    static ParetoFronts dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    ParetoFronts dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         const size_t popsize = std::distance(first, last);
         DominanceMatrix dmat = constructDominanceMatrix(first, last);
