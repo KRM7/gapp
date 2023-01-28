@@ -14,6 +14,13 @@ namespace genetic_algorithm::algorithm::dtl
     /* Generate n reference points in dim dimensions. */
     std::vector<Point> generateReferencePoints(size_t dim, size_t n);
 
+
+    /* Generate n random points on a unit simplex in dim dimensions. */
+    std::vector<Point> randomSimplexPoints(size_t dim, size_t n);
+
+    /* Generate n quasirandom points on a unit simplex in dim dimensions. */
+    std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t n);
+
 } // namespace genetic_algorithm::algorithm::dtl
 
 #endif // !GA_ALGORITHM_REFERENCE_LINES_HPP

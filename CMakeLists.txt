@@ -35,16 +35,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Compiler/linker setup
 if(MSVC) # MSVC style compiler interface
-    set(GA_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471 -wd4505")
+    set(GA_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471")
     if(GA_USE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -WX")
     endif()
-    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++20 -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -MD -EHsc")
+    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++20 -Zc:preprocessor -Zc:rvalueCast ${GA_WARN_FLAGS} -TP -MP -EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -Z7 -RTC1 -Od")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -Zi -O2 -Oi -Gy -Qpar")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Zi -O2 -Oi -Gy -Qpar")
 else() # GNU style compiler interface
-    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow -Wno-unused-function")
+    set(GA_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
     if(GA_USE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
