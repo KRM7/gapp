@@ -298,7 +298,7 @@ namespace genetic_algorithm::detail
         container.erase(last, container.end());
     }
 
-    namespace _
+    namespace tr
     {
         template<typename... Ts, typename R, typename Tr, typename Rd>
         constexpr R transform_reduce_impl(Tr&&, Rd&&, R&& acc, Ts&&...)
@@ -316,7 +316,7 @@ namespace genetic_algorithm::detail
             return transform_reduce_impl(std::forward<Tr>(tr), std::forward<Rd>(rd), std::forward<R>(acc), std::forward<Ts>(args)...);
         }
 
-    } // namespace _
+    } // namespace tr
 
     template<typename Tuple, typename Acc, typename TransformOp, typename ReduceOp>
     requires is_specialization_of_v<std::remove_cvref_t<Tuple>, std::tuple>
@@ -325,10 +325,10 @@ namespace genetic_algorithm::detail
         auto transform_reduce_ =
         [&] (auto&&... args) mutable -> Acc
         {
-            return _::transform_reduce_impl(std::forward<TransformOp>(transform),
-                                            std::forward<ReduceOp>(reduce), 
-                                            std::forward<Acc>(init),
-                                            std::forward<decltype(args)>(args)...);
+            return tr::transform_reduce_impl(std::forward<TransformOp>(transform),
+                                             std::forward<ReduceOp>(reduce), 
+                                             std::forward<Acc>(init),
+                                             std::forward<decltype(args)>(args)...);
         };
 
         return std::apply(std::move(transform_reduce_), std::forward<Tuple>(tup));
