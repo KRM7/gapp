@@ -7,20 +7,71 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm::dtl
+/** Methods for generating reference lines for the NSGA-III algorithm. */
+namespace genetic_algorithm::algorithm::reflines
 {
     using math::Point;
 
-    /* Generate n reference points in dim dimensions. */
-    std::vector<Point> generateReferencePoints(size_t dim, size_t n);
+    using RefLineGenerator = std::vector<Point>(*)(size_t, size_t);
+
+    /**
+    * Generates a set of points on the unit simplex by mapping a set of quasirandom
+    * points generated in a unit hypercube onto the unit simplex.
+    *
+    * @param dim The dimension of the generated points.
+    * @param num_points The number of points to generate.
+    *
+    * @returns The generated simplex points.
+    */
+    std::vector<Point> quasirandomSimplexPointsMirror(size_t dim, size_t num_points);
+
+    /**
+    * Generates a set of points on the unit simplex by mapping a set of quasirandom
+    * points generated in a unit hypercube onto the unit simplex.
+    *
+    * @param dim The dimension of the generated points.
+    * @param num_points The number of points to generate.
+    *
+    * @returns The generated simplex points.
+    */
+    std::vector<Point> quasirandomSimplexPointsSort(size_t dim, size_t num_points);
+
+    /**
+    * Generates a set of points on the unit simplex by mapping a set of quasirandom
+    * points generated in a unit hypercube onto the unit simplex.
+    * 
+    * @param dim The dimension of the generated points.
+    * @param num_points The number of points to generate.
+    * 
+    * @returns The generated simplex points.
+    */
+    std::vector<Point> quasirandomSimplexPointsRoot(size_t dim, size_t num_points);
+
+    /**
+    * Generates a set of points on the unit simplex by mapping a set of quasirandom
+    * points generated in a unit hypercube onto the unit simplex.
+    *
+    * @param dim The dimension of the generated points.
+    * @param num_points The number of points to generate.
+    *
+    * @returns The generated simplex points.
+    */
+    std::vector<Point> quasirandomSimplexPointsLog(size_t dim, size_t num_points);
 
 
-    /* Generate n random points on a unit simplex in dim dimensions. */
-    std::vector<Point> randomSimplexPoints(size_t dim, size_t n);
+    /**
+    * Generate a set of reference points by picking a subset of the points generated
+    * by another simplex point generator function.
+    * 
+    * @param dim The dimension of the generated points.
+    * @param num_points The number of points to generate.
+    * @param generator The simplex point generator function used for creating the initial set of points.
+    * @param k The multiple of num_points to use for the size of the initial point set generated using the given generator function.
+    * 
+    * @returns The generated simplex points.
+    */
+    std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, size_t k = 10);
 
-    /* Generate n quasirandom points on a unit simplex in dim dimensions. */
-    std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t n);
-
-} // namespace genetic_algorithm::algorithm::dtl
+} // namespace genetic_algorithm::algorithm::reflines
 
 #endif // !GA_ALGORITHM_REFERENCE_LINES_HPP

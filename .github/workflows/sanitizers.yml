@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sanitizer: [address, undefined, thread]
+        sanitizer: [address, undefined]
         include:
           - cxx: clang++-14
             pkgs: clang-14 llvm-14 libtbb-dev

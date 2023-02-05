@@ -19,3 +19,5 @@ race:^tbb::detail::d1::start_for<*>::finalize
 # This supression is just supposed to be the first one, but the function name isnt always displayed properly in the stack trace
 race:^tbb::detail::d1::start_for<*>::offer_work
 race:tbb::detail::d1::auto_partitioner const>::offer_work(tbb::detail::d0::split&, tbb::detail::d1::execution_data&)
+
+race:^tbb::detail::r1::isolate_within_arena

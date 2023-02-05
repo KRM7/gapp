@@ -28,10 +28,6 @@ namespace genetic_algorithm::rng
         [[nodiscard]]
         result_type operator()();
 
-        /* Generate the n-th point in the sequence. */
-        [[nodiscard]]
-        result_type operator()(size_type n) const;
-
         /* Discard the next n points of the sequence. */
         void discard(size_type n = 1);
 
@@ -88,20 +84,6 @@ namespace genetic_algorithm::rng
         }
 
         return point_;
-    }
-
-    template<std::floating_point RealType>
-    inline auto QuasiRandom<RealType>::operator()(size_type n) const -> result_type
-    {
-        result_type nth_point(dim_);
-
-        for (size_type i = 0; i < dim_; i++)
-        {
-            nth_point[i] = seed_ + alpha_[i] * n;
-            nth_point[i] -= size_type(nth_point[i]);
-        }
-
-        return nth_point;
     }
 
     template<std::floating_point RealType>

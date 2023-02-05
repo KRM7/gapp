@@ -59,6 +59,13 @@ namespace genetic_algorithm::math
     template<typename T>
     inline constexpr T inf = std::numeric_limits<T>::infinity();
 
+    template<typename T>
+    inline constexpr T small = std::numeric_limits<T>::min();
+
+    template<typename T>
+    inline constexpr T large = std::numeric_limits<T>::max();
+
+
     using Point = std::vector<double>;
 
     using vector_iterator       = std::vector<double>::iterator;

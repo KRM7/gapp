@@ -3,103 +3,170 @@
 #include "reference_lines.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
-#include "../utility/rng.hpp"
 #include "../utility/qrng.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <execution>
+#include <atomic>
 #include <numeric>
 #include <functional>
+#include <iterator>
 #include <utility>
-#include <limits>
 #include <cmath>
 #include <cassert>
 
-namespace genetic_algorithm::algorithm::dtl
+namespace genetic_algorithm::algorithm::reflines
 {
-    /* Sample a point from a uniform distribution on a unit simplex in dim dimensions. */
-    static Point randomSimplexPoint(size_t dim)
+    /*
+    * The unit-hypercube -> unit-simplex transformations used for the quasirandom points are based on:
+    * 
+    *   Pillards, Tim, and Ronald Cools. "Transforming low-discrepancy sequences from a cube to a simplex."
+    *   Journal of computational and applied mathematics 174, no. 1 (2005): 29-42.
+    */
+
+    /* Transform a point from the n-dimensional unit hypercube to the n-dimensional unit simplex. */
+    static inline Point simplexMappingLog(Point&& point)
     {
-        assert(dim > 0);
+        assert(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
-        Point point(dim);
-        std::generate(point.begin(), point.end(), []{ return -std::log(rng::randomReal()); });
-
+        std::transform(point.begin(), point.end(), point.begin(), [](double p) { return -std::log(std::max(p, math::small<double>)); });
         const double sum = std::reduce(point.begin(), point.end(), 0.0);
         std::transform(point.begin(), point.end(), point.begin(), detail::divide_by(sum));
 
         return point;
     }
 
-    std::vector<Point> randomSimplexPoints(size_t dim, size_t n)
+    /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
+    static inline Point simplexMappingSort(Point&& point)
     {
-        assert(dim > 0);
+        assert(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
-        std::vector<Point> reference_points;
-        reference_points.reserve(n);
+        point.push_back(1.0);
+        std::sort(point.begin(), point.end());
+        std::adjacent_difference(point.begin(), point.end(), point.begin());
 
-        while (n--) reference_points.push_back(randomSimplexPoint(dim));
-
-        return reference_points;
+        return point;
     }
 
-    std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t n)
+    /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
+    static inline Point simplexMappingRoot(Point&& point)
     {
-        assert(dim > 0);
+        assert(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
-        rng::QuasiRandom qrng(dim - 1);
+        point.back() = std::pow(point.back(), 1.0 / point.size());
 
-        std::vector<Point> points;
-
-        for (size_t p = 0; p < n; p++)
+        for (auto it = std::next(point.rbegin()); it != point.rend(); ++it)
         {
-            Point point = qrng();
-            point.push_back(1.0); // not needed
+            *it = *std::prev(it) * std::pow(*it, 1.0 / std::distance(it, point.rend()));
+        }
+        point.push_back(1.0);
 
-            for (size_t i = dim - 1; i > 1; i--)
+        std::adjacent_difference(point.begin(), point.end(), point.begin());
+
+        return point;
+    }
+
+    /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
+    static inline Point simplexMappingMirror(Point&& point)
+    {
+        assert(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+
+        point.push_back(1.0);
+
+        for (auto last = std::prev(point.end(), 2); ; )
+        {
+            bool has_lower = false;
+
+            for (auto first = point.begin(); first != last; ++first)
             {
-                for (size_t j = 1; j < i; j++)
+                if (*first > *last)
                 {
-                    if (point[i] < point[j])
-                    {
-                        for (size_t k = j; k < i + 1; k++)
-                        {
-                            point[k] = point[j - 1] + point[i + 1] - point[k];
-                        }
-                    }
+                    has_lower = true;
+                    const double high = *std::next(last);
+                    const double low  = (first != point.begin()) ? *std::prev(first) : 0.0;
+
+                    *first = low + high - *first;
+                    *last  = low + high - *last;
                 }
             }
+            if (!has_lower && last == point.begin()) break;
+            if (!has_lower) --last;
+        }
+        std::adjacent_difference(point.begin(), point.end(), point.begin());
 
-            for (size_t i = 0; i < dim; i++)
-            {
-                point[i] = point[i + 1] - point[i];
-            }
-            point.pop_back(); // not needed
+        return point;
+    }
 
-            points.push_back(point);
+
+    template<auto Mapping>
+    struct SimplexMappingTraits
+    {
+        static constexpr size_t required_input_dim(size_t desired_output_dim) { return desired_output_dim - 1; }
+    };
+
+    template<>
+    struct SimplexMappingTraits<simplexMappingLog>
+    {
+        static constexpr size_t required_input_dim(size_t desired_output_dim) { return desired_output_dim; }
+    };
+
+
+    template<auto Transform>
+    static inline std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t num_points)
+    {
+        rng::QuasiRandom qrng{ SimplexMappingTraits<Transform>::required_input_dim(dim) };
+
+        std::vector<Point> points;
+        points.reserve(num_points);
+
+        while (num_points--)
+        {
+            Point hypercubePoint = qrng();
+            Point simplexPoint = Transform(std::move(hypercubePoint));
+
+            points.push_back(std::move(simplexPoint));
         }
 
         return points;
     }
 
-    /* Generate reference points by picking n points from a set of points generated by point_gen. */
-    template<auto Generator>
-    static std::vector<Point> pickSparseSubset(size_t dim, size_t n, size_t k = 10)
+
+    std::vector<Point> quasirandomSimplexPointsSort(size_t dim, size_t num_points)
     {
-        assert(dim > 0);
+        return quasirandomSimplexPoints<simplexMappingSort>(dim, num_points);
+    }
+
+    std::vector<Point> quasirandomSimplexPointsRoot(size_t dim, size_t num_points)
+    {
+        return quasirandomSimplexPoints<simplexMappingRoot>(dim, num_points);
+    }
+
+    std::vector<Point> quasirandomSimplexPointsMirror(size_t dim, size_t num_points)
+    {
+        return quasirandomSimplexPoints<simplexMappingMirror>(dim, num_points);
+    }
+
+    std::vector<Point> quasirandomSimplexPointsLog(size_t dim, size_t num_points)
+    {
+        return quasirandomSimplexPoints<simplexMappingLog>(dim, num_points);
+    }
+
+
+    std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, size_t k)
+    {
         assert(k > 0);
 
-        std::vector<Point> candidate_points = Generator(dim, k * n);
+        std::vector<Point> candidate_points = generator(dim, k * num_points);
 
         std::vector<Point> points;
-        points.reserve(n);
+        points.reserve(num_points);
         points.push_back(candidate_points.back());
         candidate_points.pop_back();
 
         auto min_distances = detail::map(candidate_points, [&](const Point& p) { return math::euclideanDistanceSq(p, points.back()); });
 
-        while (points.size() < n)
+        while (points.size() < num_points)
         {
             const size_t idx = detail::argmax(min_distances.begin(), min_distances.end());
             points.push_back(std::move(candidate_points[idx]));
@@ -112,9 +179,9 @@ namespace genetic_algorithm::algorithm::dtl
 
             /* Calc the distance of each candidate to the closest ref point. */
             std::transform(GA_EXECUTION_UNSEQ, candidate_points.begin(), candidate_points.end(), min_distances.begin(), min_distances.begin(),
-            [&last_point = points.back()](const Point& candidate, double current_min) noexcept
+            [&](const Point& candidate, double current_min) noexcept
             {
-                const double dist = math::euclideanDistanceSq(candidate, last_point);
+                const double dist = math::euclideanDistanceSq(candidate, points.back());
                 return std::min(current_min, dist);
             });
         }
@@ -122,16 +189,4 @@ namespace genetic_algorithm::algorithm::dtl
         return points;
     }
 
-
-    std::vector<Point> generateReferencePoints(size_t dim, size_t n)
-    {
-        std::vector<Point> points = pickSparseSubset<quasirandomSimplexPoints>(dim, n);
-        for (auto& point : points)
-        {
-            point = math::normalizeVector(std::move(point));
-        }
-
-        return points;
-    }
-
-} // namespace genetic_algorithm::algorithm::dtl
+} // namespace genetic_algorithm::algorithm::reflines

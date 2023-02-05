@@ -100,13 +100,18 @@ namespace genetic_algorithm::algorithm
             double ref_dist;
         };
 
-        std::vector<CandidateInfo> sol_info_;
+        RefLineGenerator ref_generator_;
         detail::ConeTree ref_lines_;
+
+        std::vector<CandidateInfo> sol_info_;
         std::vector<size_t> niche_counts_;
 
         Point ideal_point_;
         Point nadir_point_;
         std::vector<Point> extreme_points_;
+
+        /* Generate n reference points in dim dimensions. */
+        std::vector<Point> generateReferencePoints(size_t dim, size_t num_points);
 
         /* Update the ideal point approximation using the new points in fmat, assuming maximization. */
         void updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
@@ -146,23 +151,37 @@ namespace genetic_algorithm::algorithm
         std::vector<size_t> createPopulation(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last);
     };
 
-    NSGA3::NSGA3() :
+
+    NSGA3::NSGA3(RefLineGenerator gen) :
         pimpl_(std::make_unique<Impl>())
-    {}
+    {
+        pimpl_->ref_generator_ = std::move(gen);
+    }
 
     NSGA3::NSGA3(const NSGA3& rhs) :
         pimpl_(std::make_unique<Impl>(*rhs.pimpl_))
     {}
 
-    NSGA3& NSGA3::operator=(const NSGA3& rhs)
+    NSGA3& NSGA3::operator=(NSGA3 rhs) noexcept
     {
-        pimpl_ = std::make_unique<Impl>(*rhs.pimpl_);
+        this->pimpl_.swap(rhs.pimpl_);
         return *this;
     }
 
     NSGA3::NSGA3(NSGA3&&) noexcept            = default;
-    NSGA3& NSGA3::operator=(NSGA3&&) noexcept = default;
     NSGA3::~NSGA3()                           = default;
+
+
+    inline std::vector<Point> NSGA3::Impl::generateReferencePoints(size_t dim, size_t num_points)
+    {
+        auto ref_lines = ref_generator_(dim, num_points);
+        for (auto& ref_line : ref_lines)
+        {
+            ref_line = math::normalizeVector(std::move(ref_line));
+        }
+
+        return ref_lines;
+    }
 
     inline void NSGA3::Impl::updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
@@ -342,9 +361,8 @@ namespace genetic_algorithm::algorithm
         pimpl_->ideal_point_ = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
         pimpl_->extreme_points_ = {};
 
-        auto ref_lines = dtl::generateReferencePoints(ga.num_objectives(), ga.population_size());
-
-        pimpl_->ref_lines_ = detail::ConeTree(ref_lines.begin(), ref_lines.end());
+        auto ref_lines = pimpl_->generateReferencePoints(ga.num_objectives(), ga.population_size());
+        pimpl_->ref_lines_ = detail::ConeTree{ ref_lines.begin(), ref_lines.end() };
         pimpl_->niche_counts_.resize(pimpl_->ref_lines_.size());
 
         auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());
@@ -362,7 +380,7 @@ namespace genetic_algorithm::algorithm
     {
         assert(ga.num_objectives() > 1);
         assert(size_t(children_last - parents_first) >= ga.population_size());
-        assert(std::all_of(parents_first, children_last, [&](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
+        assert(std::all_of(parents_first, children_last, detail::is_size(ga.num_objectives())));
 
         const size_t popsize = ga.population_size();
 
@@ -416,8 +434,7 @@ namespace genetic_algorithm::algorithm
     std::vector<size_t> NSGA3::optimalSolutionsImpl(const GaInfo&) const
     {
         return detail::find_indices(pimpl_->sol_info_,
-                                    detail::compose(&Impl::CandidateInfo::rank,
-                                                    detail::equal_to(0_sz)));
+                                    detail::compose(&Impl::CandidateInfo::rank, detail::equal_to(0_sz)));
     }
 
 } // namespace genetic_algorithm::algorithm

@@ -4,6 +4,9 @@
 #define GA_ALGORITHM_NSGA3_HPP
 
 #include "algorithm_base.hpp"
+#include "reference_lines.hpp"
+#include "../utility/math.hpp"
+#include <functional>
 #include <memory>
 
 namespace genetic_algorithm::algorithm
@@ -33,14 +36,23 @@ namespace genetic_algorithm::algorithm
     class NSGA3 final : public Algorithm
     {
     public:
-        NSGA3();
+        /** The type of the reference line generator function. */
+        using RefLineGenerator = std::function<std::vector<math::Point>(size_t, size_t)>;
+
+        /**
+        * Create an NSGA-III algorithm.
+        * 
+        * @param gen The method to use for generating the reference lines for the algorithm.
+        */
+        NSGA3(RefLineGenerator gen = reflines::quasirandomSimplexPointsMirror);
+
         NSGA3(const NSGA3&);
-        NSGA3& operator=(const NSGA3&);
         NSGA3(NSGA3&&) noexcept;
-        NSGA3& operator=(NSGA3&&) noexcept;
+        NSGA3& operator=(NSGA3) noexcept;
         ~NSGA3() override;
 
     private:
+
         void initializeImpl(const GaInfo& ga) override;
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
