@@ -4,7 +4,6 @@
 #include "../core/ga_base.hpp"
 #include "../crossover/binary.hpp"
 #include "../mutation/binary.hpp"
-#include "../stop_condition/stop_condition.hpp"
 #include "../utility/rng.hpp"
 #include <algorithm>
 #include <vector>
@@ -13,23 +12,17 @@
 
 namespace genetic_algorithm
 {
-    BinaryGA::BinaryGA(size_t chrom_len, FitnessFunction fitness_function)
-        : BinaryGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function))
-    {}
-
-    BinaryGA::BinaryGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)
-        : GA(pop_size, chrom_len, std::move(fitness_function))
+    BinaryGA::BinaryGA(std::unique_ptr<FitnessFunction<BinaryGene>> fitness_function, size_t population_size)
+        : GA(std::move(fitness_function), population_size)
     {
-        bounds_ = BoundsVector(chrom_len, GeneBounds{ false, true });
-        setDefaultAlgorithm();
+        bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ false, true });
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());
         mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / this->chrom_len()));
-        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     void BinaryGA::initialize()
     {
-        bounds_.resize(chrom_len(), GeneBounds{ false, true });
+        bounds_.resize(this->chrom_len(), GeneBounds{ false, true });
     }
 
     auto BinaryGA::generateCandidate() const -> Candidate<GeneType>

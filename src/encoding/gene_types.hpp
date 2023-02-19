@@ -7,10 +7,10 @@
 
 namespace genetic_algorithm
 {
-    using BinaryGene        = char;
-    using RealGene          = double;
-    using PermutationGene   = size_t;
-    using IntegerGene       = size_t;
+    using BinaryGene      = int8_t;
+    using RealGene        = double;
+    using PermutationGene = size_t;
+    using IntegerGene     = int64_t;
 
 } // namespace genetic_algorithm
 

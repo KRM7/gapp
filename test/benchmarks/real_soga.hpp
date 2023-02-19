@@ -18,7 +18,7 @@ void real_sphere()
 {
     Sphere fitness_func(10);
 
-    RCGA GA(200, fitness_func.num_vars(), fitness_func, fitness_func.bounds());
+    RCGA GA(fitness_func, fitness_func.bounds(), 200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::real::Arithmetic{ 0.8 });
@@ -32,7 +32,7 @@ void real_rastrigin()
 {
     Rastrigin fitness_func(10);
 
-    RCGA GA(100, fitness_func.num_vars(), fitness_func, fitness_func.bounds());
+    RCGA GA(fitness_func, fitness_func.bounds(), 100);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Roulette{} });
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.6, 2.0 });
@@ -46,7 +46,7 @@ void real_rosenbrock()
 {
     Rosenbrock fitness_func(10);
 
-    RCGA GA(500, fitness_func.num_vars(), fitness_func, fitness_func.bounds());
+    RCGA GA(fitness_func, fitness_func.bounds(), 500);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::real::BLXa{ 0.9 });
@@ -60,7 +60,7 @@ void real_schwefel()
 {
     Schwefel fitness_func(10);
 
-    RCGA GA(500, fitness_func.num_vars(), fitness_func, fitness_func.bounds());
+    RCGA GA(fitness_func, fitness_func.bounds(), 500);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Sigma{} });
     GA.crossover_method(crossover::real::BLXa{ 0.7 });
@@ -74,7 +74,7 @@ void real_griewank()
 {
     Griewank fitness_func(10);
 
-    RCGA GA(200, fitness_func.num_vars(), fitness_func, fitness_func.bounds());
+    RCGA GA(fitness_func, fitness_func.bounds(), 200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::real::Wright{ 0.8 });
@@ -87,7 +87,7 @@ void real_ackley()
 {
     Ackley fitness_func(10);
 
-    RCGA GA(200, fitness_func.num_vars(), fitness_func, fitness_func.bounds());
+    RCGA GA(fitness_func, fitness_func.bounds(), 200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::real::Arithmetic{ 0.85 });
@@ -101,7 +101,7 @@ void real_levy()
 {
     Levy fitness_func(10);
 
-    RCGA GA(200, fitness_func.num_vars(), fitness_func, fitness_func.bounds());
+    RCGA GA(fitness_func, fitness_func.bounds(), 200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::real::Wright{ 0.85 });

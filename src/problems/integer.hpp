@@ -8,9 +8,7 @@
 #include "benchmark_function.hpp"
 #include <vector>
 #include <string>
-#include <utility>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::problems
 {
@@ -22,34 +20,18 @@ namespace genetic_algorithm::problems
     * integer-encoded algorithm. \n
     * The number of variables will be equal to the length of the target string.
     */
-    class StringFinder : public BenchmarkFunction<IntegerGene>
+    class StringFinder final : public BenchmarkFunction<IntegerGene>
     {
     public:
         /**
-        * Construct an instance of the string matching problem.
+        * Create an instance of the string matching problem.
         * 
         * @param target The string to look for.
         */
-        explicit StringFinder(std::string target) :
-            BenchmarkFunction<IntegerGene>("StringFinder", 1, target.size(), Bounds{ 0, 95 }), target_(std::move(target))
-        {}
-
-        /** @returns The fitness value of the optimal solution. */
-        double optimal_value() const noexcept { return double(num_vars()); }
+        explicit StringFinder(std::string target);
 
     private:
-        std::vector<double> invoke(const std::vector<IntegerGene>& x) const override
-        {
-            assert(x.size() == num_vars());
-
-            double fitness = 0.0;
-            for (size_t i = 0; i < x.size(); i++)
-            {
-                fitness += double(char(x[i] + 32) == target_[i]);
-            }
-
-            return { fitness };
-        }
+        FitnessVector invoke(const std::vector<IntegerGene>& chrom) const override;
 
         std::string target_;
     };

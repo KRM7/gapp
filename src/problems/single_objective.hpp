@@ -31,7 +31,7 @@ namespace genetic_algorithm::problems
     *
     * This benchmark function can be used for both the real- and binary-encoded single-objective algorithms.
     */
-    class Sphere : public BenchmarkFunctionReal1
+    class Sphere final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -41,11 +41,11 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Sphere(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunctionReal1("Sphere", num_vars, Bounds{ -5.12, 5.12 }, bits_per_var, 0.0, std::vector(num_vars, 0.0))
+            BenchmarkFunction<RealGene>("Sphere", Bounds{ -5.12, 5.12 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -61,7 +61,7 @@ namespace genetic_algorithm::problems
     * See:
     *   Rastrigin, L. A. "Systems of extremal control." Nauka, Moscow (1974).
     */
-    class Rastrigin : public BenchmarkFunctionReal1
+    class Rastrigin final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -71,11 +71,11 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Rastrigin(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunctionReal1("Rastrigin", num_vars, Bounds{ -5.12, 5.12 }, bits_per_var, 0.0, std::vector(num_vars, 0.0))
+            BenchmarkFunction<RealGene>("Rastrigin", Bounds{ -5.12, 5.12 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -93,7 +93,7 @@ namespace genetic_algorithm::problems
     *   Rosenbrock, H. H. "An automatic method for finding the greatest or least value of a function."
     *   The computer journal 3, no. 3 (1960): 175-184.
     */
-    class Rosenbrock : public BenchmarkFunctionReal1
+    class Rosenbrock final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -103,11 +103,11 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Rosenbrock(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunctionReal1("Rosenbrock", num_vars, Bounds{ -2.048, 2.048 }, bits_per_var, 0.0, std::vector(num_vars, 1.0))
+            BenchmarkFunction<RealGene>("Rosenbrock", Bounds{ -2.048, 2.048 }, std::vector(num_vars, 1.0), 0.0, bits_per_var)
         {}
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -120,7 +120,7 @@ namespace genetic_algorithm::problems
     *
     * This benchmark function can be used for both the real- and binary-encoded single-objective algorithms.
     */
-    class Schwefel : public BenchmarkFunctionReal1
+    class Schwefel final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -130,11 +130,11 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Schwefel(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunctionReal1("Schwefel", num_vars, Bounds{ -500.0, 500.0 }, bits_per_var, 0.0, std::vector(num_vars, 420.9687))
+            BenchmarkFunction<RealGene>("Schwefel", Bounds{ -500.0, 500.0 }, std::vector(num_vars, 420.9687), 0.0, bits_per_var)
         {}
 
     private:
-        std::vector<double> invoke(const std::vector<double>& vars) const override;
+        FitnessVector invoke(const std::vector<double>& vars) const override;
     };
 
 
@@ -155,7 +155,7 @@ namespace genetic_algorithm::problems
     *   Huang, Y., et al. "Unusual phenomenon of optimizing the Griewank function with the increase of dimension."
     *   Frontiers of Information Technology & Electronic Engineering 20, no. 10 (2019): 1344-1360.
     */
-    class Griewank : public BenchmarkFunctionReal1
+    class Griewank final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -165,11 +165,11 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Griewank(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunctionReal1("Griewank", num_vars, Bounds{ -600.0, 600.0 }, bits_per_var, 0.0, std::vector(num_vars, 0.0))
+            BenchmarkFunction<RealGene>("Griewank", Bounds{ -600.0, 600.0 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -186,7 +186,7 @@ namespace genetic_algorithm::problems
     * See:
     *   Ackley, D H. "A connectionist machine for genetic hillclimbing." (1987).
     */
-    class Ackley : public BenchmarkFunctionReal1
+    class Ackley final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -196,11 +196,11 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Ackley(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunctionReal1("Ackley", num_vars, Bounds{ -32.768, 32.768 }, bits_per_var, 0.0, std::vector(num_vars, 0.0))
+            BenchmarkFunction<RealGene>("Ackley", Bounds{ -32.768, 32.768 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -212,7 +212,7 @@ namespace genetic_algorithm::problems
     *
     * This benchmark function can be used for both the real- and binary-encoded single-objective algorithms.
     */
-    class Levy : public BenchmarkFunctionReal1
+    class Levy final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -222,11 +222,11 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Levy(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunctionReal1("Levy", num_vars, Bounds{ -10.0, 10.0 }, bits_per_var, 0.0, std::vector(num_vars, 1.0))
+            BenchmarkFunction<RealGene>("Levy", Bounds{ -10.0, 10.0 }, std::vector(num_vars, 1.0), 0.0, bits_per_var)
         {}
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 } // namespace genetic_algorithm::problems

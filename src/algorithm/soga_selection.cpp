@@ -216,9 +216,13 @@ namespace genetic_algorithm::selection
     }
 
 
-    Lambda::Lambda(SelectionFunction f) noexcept :
-        Selection(), selection_(std::move(f))
-    {}
+    Lambda::Lambda(SelectionCallable f) :
+        Selection()
+    {
+        if (!f) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
+
+        selection_ = std::move(f);
+    }
 
     size_t Lambda::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
     {

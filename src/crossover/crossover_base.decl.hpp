@@ -64,16 +64,16 @@ namespace genetic_algorithm::crossover
         */
         CandidatePair<T> operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
 
+
+        /** Destructor. */
+        virtual ~Crossover()                    = default;
+
     protected:
 
         Crossover(const Crossover&)             = default;
         Crossover(Crossover&&)                  = default;
         Crossover& operator=(const Crossover&)  = default;
         Crossover& operator=(Crossover&&)       = default;
-
-    public:
-
-        virtual ~Crossover()                    = default;
 
     private:
 

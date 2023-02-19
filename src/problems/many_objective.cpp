@@ -187,81 +187,91 @@ namespace genetic_algorithm::problems
 
 
     DTLZ1::DTLZ1(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunctionRealN("DTLZ1", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("DTLZ1", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        ideal_point_ = Point(num_obj, 0.0);
-        nadir_point_ = Point(num_obj, -0.5);
+        if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
+
+        ideal_point_ = math::Point(num_obj, 0.0);
+        nadir_point_ = math::Point(num_obj, -0.5);
 
         optimum_ = std::vector(num_vars(), 0.5);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
-        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_ = math::Point(num_obj, 0.0);
         optimal_value_.back() = -0.5;
     }
 
-    std::vector<double> DTLZ1::invoke(const std::vector<double>& vars) const
+    auto DTLZ1::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        return dtlz1(vars, num_obj());
+        return dtlz1(vars, num_objectives());
     }
 
 
     DTLZ2::DTLZ2(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunctionRealN("DTLZ2", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("DTLZ2", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        ideal_point_ = Point(num_obj, 0.0);
-        nadir_point_ = Point(num_obj, -1.0);
+        if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
+
+        ideal_point_ = math::Point(num_obj, 0.0);
+        nadir_point_ = math::Point(num_obj, -1.0);
 
         optimum_ = std::vector(num_vars(), 0.5);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
-        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_ = math::Point(num_obj, 0.0);
         optimal_value_[0] = -1.0;
     }
 
-    std::vector<double> DTLZ2::invoke(const std::vector<double>& vars) const
+    auto DTLZ2::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        return dtlz2(vars, num_obj());
+        return dtlz2(vars, num_objectives());
     }
 
 
     DTLZ3::DTLZ3(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunctionRealN("DTLZ3", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("DTLZ3", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        ideal_point_ = Point(num_obj, 0.0);
-        nadir_point_ = Point(num_obj, -1.0);
+        if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
+
+        ideal_point_ = math::Point(num_obj, 0.0);
+        nadir_point_ = math::Point(num_obj, -1.0);
 
         optimum_ = std::vector(num_vars(), 0.5);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
-        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_ = math::Point(num_obj, 0.0);
         optimal_value_[0] = -1.0;
     }
 
-    std::vector<double> DTLZ3::invoke(const std::vector<double>& vars) const
+    auto DTLZ3::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        return dtlz3(vars, num_obj());
+        return dtlz3(vars, num_objectives());
     }
 
 
     DTLZ4::DTLZ4(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunctionRealN("DTLZ4", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("DTLZ4", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        ideal_point_ = Point(num_obj, 0.0);
-        nadir_point_ = Point(num_obj, -1.0);
+        if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
+
+        ideal_point_ = math::Point(num_obj, 0.0);
+        nadir_point_ = math::Point(num_obj, -1.0);
 
         optimum_ = std::vector(num_vars(), 0.5);
-        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_ = math::Point(num_obj, 0.0);
         optimal_value_[0] = -1.0;
     }
 
-    std::vector<double> DTLZ4::invoke(const std::vector<double>& vars) const
+    auto DTLZ4::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        return dtlz4(vars, num_obj());
+        return dtlz4(vars, num_objectives());
     }
 
 
     DTLZ5::DTLZ5(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunctionRealN("DTLZ5", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("DTLZ5", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        ideal_point_ = Point(num_obj, 0.0);
-        nadir_point_ = Point(num_obj, 0.0);
+        if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
+
+        ideal_point_ = math::Point(num_obj, 0.0);
+        nadir_point_ = math::Point(num_obj, 0.0);
         for (size_t i = 0; i < num_obj; i++)
         {
             nadir_point_[i] = -1.0 / std::pow(std::sqrt(2), num_obj - 1 - i);
@@ -274,17 +284,19 @@ namespace genetic_algorithm::problems
         optimal_value_.back() = 0.0;
     }
 
-    std::vector<double> DTLZ5::invoke(const std::vector<double>& vars) const
+    auto DTLZ5::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        return dtlz5(vars, num_obj());
+        return dtlz5(vars, num_objectives());
     }
 
 
     DTLZ6::DTLZ6(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunctionRealN("DTLZ6", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("DTLZ6", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        ideal_point_ = Point(num_obj, 0.0);
-        nadir_point_ = Point(num_obj, 0.0);
+        if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
+
+        ideal_point_ = math::Point(num_obj, 0.0);
+        nadir_point_ = math::Point(num_obj, 0.0);
         for (size_t i = 0; i < num_obj; i++)
         {
             nadir_point_[i] = -1.0 / std::pow(std::sqrt(2), num_obj - 1 - i);
@@ -296,28 +308,30 @@ namespace genetic_algorithm::problems
         optimal_value_.back() = 0.0;
     }
 
-    std::vector<double> DTLZ6::invoke(const std::vector<double>& vars) const
+    auto DTLZ6::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        return dtlz6(vars, num_obj());
+        return dtlz6(vars, num_objectives());
     }
 
 
     DTLZ7::DTLZ7(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunctionRealN("DTLZ7", num_obj, num_obj + K - 1, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("DTLZ7", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
+        if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
+
         optimum_ = std::vector(num_vars(), 0.0);
-        optimal_value_ = Point(num_obj, 0.0);
+        optimal_value_ = math::Point(num_obj, 0.0);
         optimal_value_.back() = -2.0 * num_obj;
 
-        ideal_point_ = Point(num_obj, 0.0);
+        ideal_point_ = math::Point(num_obj, 0.0);
         ideal_point_.back() = -0.307004 * num_obj - 1.692996;
-        nadir_point_ = Point(num_obj, -1.0);
+        nadir_point_ = math::Point(num_obj, -1.0);
         nadir_point_.back() = -2.0 * num_obj;
     }
 
-    std::vector<double> DTLZ7::invoke(const std::vector<double>& vars) const
+    auto DTLZ7::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        return dtlz7(vars, num_obj());
+        return dtlz7(vars, num_objectives());
     }
 
 } // namespace genetic_algorithm::problems

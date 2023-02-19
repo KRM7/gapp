@@ -4,6 +4,7 @@
 #define GA_CORE_GA_BASE_IMPL_HPP
 
 #include "ga_base.decl.hpp"
+#include "fitness_function.hpp"
 #include "../population/population.hpp"
 #include "../algorithm/algorithm_base.hpp"
 #include "../algorithm/single_objective.hpp"
@@ -28,44 +29,87 @@
 namespace genetic_algorithm
 {
     template<Gene T>
-    GA<T>::GA(size_t chrom_len, FitnessFunction f)
-        : GA<T>(DEFAULT_POPSIZE, chrom_len, std::move(f))
-    {}
-
-    template<Gene T>
-    GA<T>::GA(size_t population_size, size_t chrom_len, FitnessFunction f)
-        : GaInfo(population_size, chrom_len)
+    GA<T>::GA(std::unique_ptr<FitnessFunction<T>> f, size_t population_size) :
+        GaInfo(population_size, f->num_objectives())
     {
         if (!f) GA_THROW(std::invalid_argument, "The fitness function can't be a nullptr.");
 
         fitness_function_ = std::move(f);
-        /* Can't call findNumObjectives() or setDefaultAlgorithm() here yet, because they both rely on
-         * derived::generateCandidate(), which might not return a valid candidate yet if it depends on the state of derived.
-         * (The number of objecives should be determined initially by calling setDefaultAlgorithm() in the derived ctors,
-         * and after that it's updated automatically every time the fitness function is changed.) */
     }
 
     template<Gene T>
-    void GA<T>::fitness_function(FitnessFunction f)
+    template<typename F>
+    requires FitnessFunctionType<F, T> && std::is_final_v<F>
+    void GA<T>::fitness_function(F f)
+    {
+        fitness_function_ = std::make_unique<F>(std::move(f));
+        is_initialized_ = false;
+    }
+
+    template<Gene T>
+    void GA<T>::fitness_function(std::unique_ptr<FitnessFunction<T>> f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The fitness function can't be a nullptr.");
 
-        size_t old_objectives = num_objectives();
         fitness_function_ = std::move(f);
-        num_objectives(findNumObjectives());
-
-        if (old_objectives != num_objectives())
-        {
-            /* The fitness vectors of the old solutions couldn't be compared to the new ones. */
-            is_initialized_ = false;
-        }
+        is_initialized_ = false;
     }
+
+    template<Gene T>
+    inline FitnessFunction<T>& GA<T>::fitness_function() &
+    {
+        assert(fitness_function_ != nullptr);
+
+        return *fitness_function_;
+    }
+
+    template<Gene T>
+    inline const FitnessFunction<T>& GA<T>::fitness_function() const&
+    {
+        assert(fitness_function_ != nullptr);
+
+        return *fitness_function_;
+    }
+
+    template<Gene T>
+    inline size_t GA<T>::chrom_len() const noexcept
+    {
+        assert(fitness_function_ != nullptr);
+
+        return fitness_function_->chrom_len();
+    }
+
+    template<Gene T>
+    inline bool GA<T>::variable_chrom_len() const noexcept
+    {
+        assert(fitness_function_ != nullptr);
+
+        return fitness_function_->variable_chrom_len();
+    }
+
+    template<Gene T>
+    inline size_t GA<T>::num_objectives() const noexcept
+    {
+        assert(fitness_function_ != nullptr);
+
+        return fitness_function_->num_objectives();
+    }
+
+    template<Gene T>
+    inline bool GA<T>::dynamic_fitness() const noexcept
+    {
+        assert(fitness_function_ != nullptr);
+
+        return fitness_function_->dynamic_fitness();
+    }
+
 
     template<Gene T>
     inline auto GA<T>::gene_bounds() const noexcept -> const BoundsVector&
     {
         return bounds_;
     }
+
 
     template<Gene T>
     template<typename F>
@@ -77,7 +121,7 @@ namespace genetic_algorithm
 
     template<Gene T>
     template<crossover::CrossoverType<T> F>
-    inline void GA<T>::crossover_method(std::unique_ptr<F>&& f)
+    inline void GA<T>::crossover_method(std::unique_ptr<F> f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The crossover method can't be a nullptr.");
 
@@ -85,10 +129,8 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline void GA<T>::crossover_method(CrossoverFunction f)
+    inline void GA<T>::crossover_method(CrossoverCallable f)
     {
-        if (!f) GA_THROW(std::invalid_argument, "The crossover function can't be a nullptr.");
-
         crossover_ = std::make_unique<crossover::Lambda<T>>(std::move(f));
     }
 
@@ -134,7 +176,7 @@ namespace genetic_algorithm
 
     template<Gene T>
     template<mutation::MutationType<T> F>
-    inline void GA<T>::mutation_method(std::unique_ptr<F>&& f)
+    inline void GA<T>::mutation_method(std::unique_ptr<F> f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The mutation method can't be a nullptr.");
 
@@ -142,10 +184,8 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline void GA<T>::mutation_method(MutationFunction f)
+    inline void GA<T>::mutation_method(MutationCallable f)
     {
-        if (!f) GA_THROW(std::invalid_argument, "The mutation method can't be a nullptr.");
-
         mutation_ = std::make_unique<mutation::Lambda<T>>(std::move(f));
     }
 
@@ -182,7 +222,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline void GA<T>::repair_function(RepairFunction f)
+    inline void GA<T>::repair_function(RepairCallable f)
     {
         /* Nullptr is fine here, it just won't be called */
         repair_ = std::move(f);
@@ -191,13 +231,13 @@ namespace genetic_algorithm
     template<Gene T>
     inline bool GA<T>::hasValidFitness(const Candidate<T>& sol) const noexcept
     {
-        return sol.fitness.size() == num_objectives_;
+        return sol.fitness.size() == fitness_function_->num_objectives();
     }
 
     template<Gene T>
     inline bool GA<T>::hasValidChromosome(const Candidate<T>& sol) const noexcept
     {
-        return variable_chrom_len_ || (sol.chromosome.size() == chrom_len_);
+        return variable_chrom_len() || (sol.chromosome.size() == chrom_len());
     }
 
     template<Gene T>
@@ -220,16 +260,6 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline size_t GA<T>::findNumObjectives() const
-    {
-        size_t n = fitness_function_(generateCandidate().chromosome).size();
-
-        if (n == 0) GA_THROW(std::logic_error, "The size of the fitness vector returned by the fitness function must be at least 1.");
-
-        return n;
-    }
-
-    template<Gene T>
     void GA<T>::initializeAlgorithm()
     {
         assert(fitness_function_);
@@ -237,15 +267,6 @@ namespace genetic_algorithm
 
         /* Derived GA. */
         initialize();
-
-        /* The number of objectives is determined from the return value of the fitness function.
-        *  This assumes that the returned vector will always be the same size during a run.
-        *
-        *  This also needs generateCandidate() to create a dummy solution to pass to the fitness
-        *  function, which might only return valid values after the derived class contructor set
-        *  up some stuff for the candidate generation (eg. bounds), so this can't be called earlier in the ctor.
-        */
-        num_objectives_ = findNumObjectives();
 
         /* Reset state variables in case run() has already been called before. */
         generation_cntr_ = 0;
@@ -272,7 +293,7 @@ namespace genetic_algorithm
     template<Gene T>
     Population<T> GA<T>::generatePopulation(size_t pop_size) const
     {
-        assert(chrom_len_ > 0);
+        assert(chrom_len() > 0);
         assert(pop_size > 0);
 
         Population<T> population;
@@ -322,13 +343,14 @@ namespace genetic_algorithm
     template<Gene T>
     void GA<T>::repair(Candidate<T>& sol) const
     {
+        assert(hasValidChromosome(sol));
+
         /* Don't try to do anything unless a repair function is set. */
         if (!repair_) return;
 
-        assert(hasValidChromosome(sol));
         auto improved_chrom = repair_(*this, sol.chromosome);
 
-        if (!variable_chrom_len_ && improved_chrom.size() != chrom_len_)
+        if (!variable_chrom_len() && improved_chrom.size() != chrom_len())
         {
             GA_THROW(std::logic_error, "The repair function returned a chromosome with incorrect length.");
         }
@@ -367,13 +389,13 @@ namespace genetic_algorithm
         /* If the fitness function is static, and the solution has already
          * been evaluted sometime earlier (in an earlier generation), there
          * is no point doing it again. */
-        if (!sol.is_evaluated || dynamic_fitness_)
+        if (!sol.is_evaluated || fitness_function_->dynamic_fitness())
         {
-            sol.fitness = fitness_function_(sol.chromosome);
+            sol.fitness = (*fitness_function_)(sol.chromosome);
             sol.is_evaluated = true;
 
-            std::atomic_ref fitness_evals{ num_fitness_evals_ };
-            ++fitness_evals;
+            std::atomic_ref num_evals{ num_fitness_evals_ };
+            num_evals.fetch_add(1, std::memory_order_acq_rel);
         }
 
         assert(hasValidFitness(sol));

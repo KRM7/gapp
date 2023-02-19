@@ -6,71 +6,56 @@
 #include "../core/ga_base.decl.hpp"
 #include "../population/candidate.hpp"
 #include "gene_types.hpp"
+#include <memory>
+#include <utility>
 #include <cstddef>
 
 namespace genetic_algorithm
 {
     /**
     * Integer encoded genetic algorithm. \n
-    * Similar to the @ref BinaryGA, but the values of the genes can be any integer in the interval [offset, offset + base), not just 0 or 1. \n
-    * It also uses a slightly different mutation function with swaps and inversions.
+    * Similar to the @ref BinaryGA, but the values of the genes can be any integer in a closed interval, not just 0 or 1.
+    * The interval is specified by the gene bounds. \n
+    * The algorithm also uses a modified mutation function with swaps and inversions.
     */
     class IntegerGA : public GA<IntegerGene>
     {
     public:
         /**
-        * Construct an integer encoded genetic algorithm. \n
+        * Construct an integer encoded genetic algorithm.
         *
-        * @param chrom_len The number of genes in each chromosome.
         * @param fitness_function The fitness function used in the algorithm.
-        * @param base The number of different values a gene can take. Must be > 1.
-        * @param offset The lower bound of the genes.
+        * @param bounds The boundaries of the genes (their min and max values).
+        * @param population_size The number of candidates in the population.
         */
-        IntegerGA(size_t chrom_len, FitnessFunction fitness_function, GeneType base, GeneType offset = GeneType{ 0 });
+        IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, const GeneBounds& bounds, size_t population_size = DEFAULT_POPSIZE);
 
         /**
-        * Construct an integer encoded genetic algorithm. \n
+        * Construct an integer encoded genetic algorithm.
         *
-        * @param pop_size The number of candidates in a population.
-        * @param chrom_len The number of genes in each chromosome.
         * @param fitness_function The fitness function used in the algorithm.
-        * @param base The number of different values a gene can take. Must be > 1.
-        * @param offset The lower bound of the genes.
+        * @param bounds The boundaries of the genes (their min and max values).
+        * @param population_size The number of candidates in the population.
         */
-        IntegerGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, GeneType base, GeneType offset = GeneType{ 0 });
+        template<typename F>
+        requires FitnessFunctionType<F, IntegerGene> && std::is_final_v<F>
+        IntegerGA(F fitness_function, const GeneBounds& bounds, size_t population_size = DEFAULT_POPSIZE) :
+            IntegerGA(std::make_unique<F>(std::move(fitness_function)), bounds, population_size)
+        {}
 
         /**
-        * Sets the number of different values a gene can take. Must be at least 2. \n
-        * The values of the genes will be integers in the range [offset, offset + base). \n
+        * Set the lower and upper bounds of the integer genes used. \n
+        * The lower bound can't be higher than the upper bound. \n
         * 
-        * With base = 2 and offset = 0, the IntegerGA is effectively the same as the BinaryGA.
+        * With bounds = { 0, 1 }, the IntegerGA is effectively the same as the BinaryGA.
         *
-        * @param base The number of different values allowed for a gene.
+        * @param limits The lower and upper boundaries of the genes.
         */
-        void base(GeneType base);
+        void gene_bounds(const GeneBounds& limits);
 
-        /** @returns The current base set for the algorithm. */
-        [[nodiscard]]
-        GeneType base() const noexcept { return base_; }
-
-        /**
-        * Set an offset for the genes (the smallest integer a gene may be). \n
-        * The values of the genes will be integers in the range [offset, offset + base). \n
-        *
-        * With base = 2 and offset = 0, the IntegerGA is effectively the same as the BinaryGA.
-        * 
-        * @param offset The lower bound of the genes.
-        */
-        void offset(GeneType offset);
-        
-        /** @returns The current offset set for the algorithm. */
-        [[nodiscard]]
-        GeneType offset() const noexcept { return offset_; }
+        using GA::gene_bounds;
 
     private:
-        GeneType base_ = 4;
-        GeneType offset_ = 0;
-
         void initialize() override;
         Candidate<GeneType> generateCandidate() const override;
     };

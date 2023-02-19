@@ -4,6 +4,7 @@
 #define GA_TEST_BENCHMARK_UTILS_HPP
 
 #include "genetic_algorithm.hpp"
+#include "problems/benchmark_function.hpp"
 #include "problems/single_objective.hpp"
 #include "problems/multi_objective.hpp"
 #include "problems/travelling_salesman.hpp"
@@ -47,7 +48,7 @@ void writePopulationToFile(const std::vector<T>& sols, std::ostream& os)
 }
 
 template<typename T>
-void benchmarkSoga(GA<T>& ga, size_t max_gen, const BenchmarkFunctionReal1& fitness_func)
+void benchmarkSoga(GA<T>& ga, size_t max_gen, const BenchmarkFunction<RealGene>& fitness_func)
 {
     using RunFn = Candidates<T>(GA<T>::*)(size_t);
 
@@ -100,7 +101,7 @@ inline void benchmarkTSP(PermutationGA& ga, size_t max_gen, const TSP& fitness_f
     std::cout << "Function: " << fitness_func.name()
               << "\nNumber of optimal sols: " << sols.size()
               << "\nBest fitness found: " << std::defaultfloat << std::setprecision(4) << sols[0].fitness[0]
-              << " (best possible is " << fitness_func.optimal_value() << ")"
+              << " (best possible is " << fitness_func.optimal_value()[0] << ")"
               << "\nNumber of objective function evals: " << ga.num_fitness_evals()
               << " (instead of: " << max_gen * ga.population_size() << ")"
               << "\nTime taken: " << std::fixed << std::setprecision(4) << time_spent << "s\n\n";
@@ -115,7 +116,7 @@ inline void benchmarkInt(IntegerGA& ga, size_t max_gen, const StringFinder& fitn
     std::cout << "Function: " << fitness_func.name()
               << "\nNumber of optimal sols: " << sols.size()
               << "\nBest fitness found: " << std::defaultfloat << std::setprecision(4) << sols[0].fitness[0]
-              << " (best possible is " << fitness_func.optimal_value() << ")"
+              << " (best possible is " << fitness_func.optimal_value()[0] << ")"
               << "\nNumber of objective function evals: " << ga.num_fitness_evals()
               << " (instead of: " << max_gen * ga.population_size() << ")"
               << "\nTime taken: " << std::fixed << std::setprecision(4) << time_spent << "s\n\n";

@@ -20,7 +20,7 @@ using namespace genetic_algorithm::problems;
 template<typename Problem>
 void benchmark_real_nsga2(const Problem& problem, size_t generations, size_t population_size = 100)
 {
-    RCGA GA(population_size, problem.num_vars(), problem, problem.bounds());
+    RCGA GA(problem, problem.bounds(), population_size);
 
     GA.algorithm(algorithm::NSGA2{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.9 });
@@ -32,7 +32,7 @@ void benchmark_real_nsga2(const Problem& problem, size_t generations, size_t pop
 template<typename Problem>
 void benchmark_binary_nsga2(const Problem& problem, size_t generations, size_t population_size = 100)
 {
-    BinaryGA GA(population_size, problem.num_vars(), problem);
+    BinaryGA GA(problem, population_size);
 
     GA.algorithm(algorithm::NSGA2{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });

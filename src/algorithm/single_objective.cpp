@@ -10,25 +10,21 @@
 
 namespace genetic_algorithm::algorithm
 {
-    SingleObjective::SingleObjective(SelectionFunction selection) :
+    SingleObjective::SingleObjective(SelectionCallable selection) :
         SingleObjective(std::make_unique<selection::Lambda>(std::move(selection)))
     {}
 
-    SingleObjective::SingleObjective(SelectionFunction selection, UpdateFunction updater) :
+    SingleObjective::SingleObjective(SelectionCallable selection, UpdateCallable updater) :
         SingleObjective(std::make_unique<selection::Lambda>(std::move(selection)), std::make_unique<update::Lambda>(std::move(updater)))
     {}
 
-    void SingleObjective::selection_method(SelectionFunction f)
+    void SingleObjective::selection_method(SelectionCallable f)
     {
-        if (!f) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
-
         selection_ = std::make_unique<selection::Lambda>(std::move(f));
     }
 
-    void SingleObjective::update_method(UpdateFunction f)
+    void SingleObjective::update_method(UpdateCallable f)
     {
-        if (!f) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
-
         updater_ = std::make_unique<update::Lambda>(std::move(f));
     }
 

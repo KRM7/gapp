@@ -74,6 +74,7 @@ namespace genetic_algorithm::selection
         virtual size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const = 0;
 
 
+        /** Destructor. */
         virtual ~Selection()                    = default;
 
     protected:

@@ -7,6 +7,7 @@
 #include "../population/candidate.hpp"
 #include "gene_types.hpp"
 #include <vector>
+#include <memory>
 #include <utility>
 #include <cstddef>
 
@@ -23,43 +24,50 @@ namespace genetic_algorithm
         * Construct a real encoded genetic algorithm. \n
         * The gene bounds are specified for each gene separately.
         *
-        * @param chrom_len The number of genes in the chromosomes of the candidates.
-        * @param fitness_function The fitness function to find the maximum of with the algorithm.
+        * @param fitness_function The fitness function used in the algorithm.
         * @param bounds The boundaries of the genes (their min and max values), specified for each gene.
+        * @param population_size The number of candidates in the population.
         */
-        RCGA(size_t chrom_len, FitnessFunction fitness_function, const BoundsVector& bounds);
+        RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, const BoundsVector& bounds, size_t population_size = DEFAULT_POPSIZE);
+
+        /**
+        * Construct a real encoded genetic algorithm. \n
+        * The gene bounds will be the same for every gene.
+        *
+        * @param fitness_function The fitness function used in the algorithm.
+        * @param bounds The boundaries of the genes (their min and max values).
+        * @param population_size The number of candidates in the population.
+        */
+        RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, const GeneBounds& bounds, size_t population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct a real encoded genetic algorithm. \n
         * The gene bounds are specified for each gene separately.
         *
-        * @param pop_size The number of candidates in the population.
-        * @param chrom_len The number of genes in the chromosomes of the candidates.
-        * @param fitness_function The fitness function to find the maximum of with the algorithm.
+        * @param fitness_function The fitness function used in the algorithm.
         * @param bounds The boundaries of the genes (their min and max values), specified for each gene.
+        * @param population_size The number of candidates in the population.
         */
-        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const BoundsVector& bounds);
+        template<typename F>
+        requires FitnessFunctionType<F, RealGene> && std::is_final_v<F>
+        RCGA(F fitness_function, const BoundsVector& bounds, size_t population_size = DEFAULT_POPSIZE) :
+            RCGA(std::make_unique<F>(std::move(fitness_function)), bounds, population_size)
+        {}
 
         /**
         * Construct a real encoded genetic algorithm. \n
         * The gene bounds will be the same for every gene.
         *
-        * @param chrom_len The number of genes in the chromosomes of the candidates.
-        * @param fitness_function The fitness function to find the maximum of with the algorithm.
-        * @param bounds The boundaries used for every gene (min, and max values).
+        * @param fitness_function The fitness function used in the algorithm.
+        * @param bounds The boundaries of the genes (their min and max values).
+        * @param population_size The number of candidates in the population.
         */
-        RCGA(size_t chrom_len, FitnessFunction fitness_function, const GeneBounds& bounds);
+        template<typename F>
+        requires FitnessFunctionType<F, RealGene> && std::is_final_v<F>
+        RCGA(F fitness_function, const GeneBounds& bounds, size_t population_size = DEFAULT_POPSIZE) :
+            RCGA(std::make_unique<F>(std::move(fitness_function)), bounds, population_size)
+        {}
 
-        /**
-        * Construct a real encoded genetic algorithm. \n
-        * The gene bounds will be the same for every gene.
-        *
-        * @param pop_size The number of candidates in the population.
-        * @param chrom_len The number of genes in the chromosomes of the candidates.
-        * @param fitness_function The fitness function to find the maximum of with the algorithm.
-        * @param bounds The boundaries of every gene (min, and max values)
-        */
-        RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const GeneBounds& bounds);
 
         /**
         * Sets the boundaries of the genes. \n

@@ -4,7 +4,6 @@
 #include "../core/ga_base.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
-#include "../stop_condition/stop_condition.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
@@ -15,28 +14,22 @@
 
 namespace genetic_algorithm
 {
-    PermutationGA::PermutationGA(size_t chrom_len, FitnessFunction fitness_function)
-        : PermutationGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function))
-    {}
-
-    PermutationGA::PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function)
-        : GA(pop_size, chrom_len, std::move(fitness_function))
+    PermutationGA::PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, size_t population_size)
+        : GA(std::move(fitness_function), population_size)
     {
-        bounds_ = BoundsVector(chrom_len, GeneBounds{ 0_sz, chrom_len - 1 });
-        setDefaultAlgorithm();
+        bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ 0_sz, this->chrom_len() - 1 });
         crossover_method(std::make_unique<crossover::perm::Order2>());
         mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
-        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
     void PermutationGA::initialize()
     {
-        bounds_.resize(chrom_len(), GeneBounds{ 0_sz, chrom_len() - 1 });
+        bounds_.resize(this->chrom_len(), GeneBounds{ 0_sz, this->chrom_len() - 1 });
     }
 
     auto PermutationGA::generateCandidate() const -> Candidate<GeneType>
     {
-        Candidate<GeneType> solution(chrom_len());
+        Candidate<GeneType> solution(this->chrom_len());
         std::iota(solution.chromosome.begin(), solution.chromosome.end(), GeneType{ 0 });
         std::shuffle(solution.chromosome.begin(), solution.chromosome.end(), rng::prng);
 

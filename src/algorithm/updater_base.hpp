@@ -51,7 +51,8 @@ namespace genetic_algorithm::update
         */
         virtual std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) = 0;
         
-        
+
+        /** Destructor. */
         virtual ~Updater()                  = default;
 
     protected:

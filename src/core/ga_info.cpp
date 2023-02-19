@@ -3,10 +3,11 @@
 #include "ga_info.hpp"
 #include "../algorithm/algorithm_base.hpp"
 #include "../algorithm/single_objective.hpp"
-#include "../stop_condition/stop_condition_base.hpp"
+#include "../stop_condition/stop_condition.hpp"
 #include "../algorithm/nsga3.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
+#include <atomic>
 #include <memory>
 #include <utility>
 #include <stdexcept>
@@ -17,21 +18,17 @@ namespace genetic_algorithm
     GaInfo& GaInfo::operator=(GaInfo&&) noexcept = default;
     GaInfo::~GaInfo()                            = default;
 
-    GaInfo::GaInfo(size_t chrom_len)
-        : GaInfo(DEFAULT_POPSIZE, chrom_len)
-    {}
-
-    GaInfo::GaInfo(size_t population_size, size_t chrom_len)
+    GaInfo::GaInfo(size_t population_size, size_t nobj)
     {
+        if (nobj == 0) GA_THROW(std::invalid_argument, "The number of objectives must be at least 1.");
+
         this->population_size(population_size);
-        this->chrom_len(chrom_len);
-    }
 
-    void GaInfo::chrom_len(size_t len)
-    {
-        if (len == 0) GA_THROW(std::invalid_argument, "The chromosome length must be at least 1.");
+        (nobj == 1) ?
+            algorithm(std::make_unique<algorithm::SingleObjective>()) :
+            algorithm(std::make_unique<algorithm::NSGA3>());
 
-        chrom_len_ = len;
+        stop_condition_ = std::make_unique<stopping::NoEarlyStop>();
     }
 
     void GaInfo::population_size(size_t size)
@@ -48,20 +45,15 @@ namespace genetic_algorithm
         max_gen_ = max_gen;
     }
 
-    void GaInfo::stop_condition(StopConditionFunction f)
+    size_t GaInfo::num_fitness_evals() const noexcept
     {
-        if (!f) GA_THROW(std::invalid_argument, "The stop condition function can't be a nullptr.");
-
-        stop_condition_ = std::make_unique<stopping::Lambda>(std::move(f));
+        std::atomic_ref num_fitness_evals{ num_fitness_evals_ };
+        return num_fitness_evals.load(std::memory_order_acquire);
     }
 
-    void GaInfo::setDefaultAlgorithm()
+    void GaInfo::stop_condition(StopConditionCallable f)
     {
-        num_objectives_ = findNumObjectives();
-
-        (num_objectives_ == 1) ?
-            algorithm(std::make_unique<algorithm::SingleObjective>()) :
-            algorithm(std::make_unique<algorithm::NSGA3>());
+        stop_condition_ = std::make_unique<stopping::Lambda>(std::move(f));
     }
 
 } // namespace genetic_algorithm

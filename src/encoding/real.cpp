@@ -4,7 +4,6 @@
 #include "../core/ga_base.hpp"
 #include "../crossover/real.hpp"
 #include "../mutation/real.hpp"
-#include "../stop_condition/stop_condition.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
@@ -16,27 +15,22 @@
 
 namespace genetic_algorithm
 {
-    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const BoundsVector& bounds)
-        : GA(pop_size, chrom_len, std::move(fitness_function))
+    RCGA::RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, const BoundsVector& bounds, size_t population_size)
+        : GA(std::move(fitness_function), population_size)
     {
         this->gene_bounds(bounds);
-        setDefaultAlgorithm();
         crossover_method(std::make_unique<crossover::real::Wright>());
         mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
-        stop_condition(std::make_unique<stopping::NoEarlyStop>());
     }
 
-    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const BoundsVector& bounds)
-        : RCGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), bounds)
-    {}
+    RCGA::RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, const GeneBounds& bounds, size_t population_size)
+        : GA(std::move(fitness_function), population_size)
+    {
+        this->gene_bounds(bounds);
+        crossover_method(std::make_unique<crossover::real::Wright>());
+        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
+    }
 
-    RCGA::RCGA(size_t chrom_len, FitnessFunction fitness_function, const GeneBounds& bounds)
-         : RCGA(DEFAULT_POPSIZE, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
-    {}
-
-    RCGA::RCGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function, const GeneBounds& bounds)
-        : RCGA(pop_size, chrom_len, std::move(fitness_function), std::vector(chrom_len, bounds))
-    {}
 
     void RCGA::gene_bounds(const BoundsVector& limits)
     {

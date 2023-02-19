@@ -13,12 +13,12 @@ namespace genetic_algorithm::problems
     using std::numbers::pi;
     using std::numbers::e;
 
-    std::vector<double> Sphere::invoke(const std::vector<double>& vars) const
+    auto Sphere::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
         return { -std::inner_product(vars.begin(), vars.end(), vars.begin(), 0.0) };
     }
 
-    std::vector<double> Rastrigin::invoke(const std::vector<double>& vars) const
+    auto Rastrigin::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
         double fx = 10.0 * vars.size();
         for (double var : vars)
@@ -29,7 +29,7 @@ namespace genetic_algorithm::problems
         return { -fx };
     }
 
-    std::vector<double> Rosenbrock::invoke(const std::vector<double>& vars) const
+    auto Rosenbrock::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
         double fx = 0.0;
         for (size_t i = 0; i < vars.size() - 1; i++)
@@ -40,7 +40,7 @@ namespace genetic_algorithm::problems
         return { -fx };
     }
 
-    std::vector<double> Schwefel::invoke(const std::vector<double>& vars) const
+    auto Schwefel::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
         double fx = 418.98288727215591 * vars.size();
         for (double var : vars)
@@ -51,7 +51,7 @@ namespace genetic_algorithm::problems
         return { -fx };
     }
 
-    std::vector<double> Griewank::invoke(const std::vector<double>& vars) const
+    auto Griewank::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
         double fx = 4000.0;
         double fm = 1.0;
@@ -64,7 +64,7 @@ namespace genetic_algorithm::problems
         return { -fx / 4000.0 + fm };
     }
 
-    std::vector<double> Ackley::invoke(const std::vector<double>& vars) const
+    auto Ackley::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
         double f1 = 0.0;
         double f2 = 0.0;
@@ -81,7 +81,7 @@ namespace genetic_algorithm::problems
         return { -fx };
     }
 
-    std::vector<double> Levy::invoke(const std::vector<double>& vars) const
+    auto Levy::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
         assert(!vars.empty());
 

@@ -6,6 +6,8 @@
 #include "../core/ga_base.decl.hpp"
 #include "../population/candidate.hpp"
 #include "gene_types.hpp"
+#include <memory>
+#include <utility>
 #include <cstddef>
 
 namespace genetic_algorithm
@@ -20,19 +22,22 @@ namespace genetic_algorithm
         /**
         * Construct a permutation encoded genetic algorithm.
         *
-        * @param chrom_len The number of genes in the chromosomes.
-        * @param fitness_function The fitness function used in the algorithm to find the maximum of.
+        * @param fitness_function The fitness function used in the algorithm.
+        * @param population_size The number of candidates in the population.
         */
-        PermutationGA(size_t chrom_len, FitnessFunction fitness_function);
+        explicit PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, size_t population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct a permutation encoded genetic algorithm.
         *
-        * @param pop_size The number of candidates in the population.
-        * @param chrom_len The number of genes in the chromosomes.
-        * @param fitness_function The fitness function used in the algorithm to find the maximum of.
+        * @param fitness_function The fitness function used in the algorithm.
+        * @param population_size The number of candidates in the population.
         */
-        PermutationGA(size_t pop_size, size_t chrom_len, FitnessFunction fitness_function);
+        template<typename F>
+        requires FitnessFunctionType<F, PermutationGene> && std::is_final_v<F>
+        explicit PermutationGA(F fitness_function, size_t population_size = DEFAULT_POPSIZE) :
+            GA(std::make_unique<F>(std::move(fitness_function)), population_size)
+        {}
 
     private:
         void initialize() override;

@@ -24,22 +24,6 @@ namespace genetic_algorithm
     {
     public:
         /**
-        * Construct a genetic algorithm.
-        * 
-        * @param chrom_len The size of the Chromosomes in the Population (each solution has a single Chromosome).
-        */
-        GaInfo(size_t chrom_len);
-
-        /**
-        * Construct a genetic algorithm.
-        * 
-        * @param population_size The number of solutions in the Population.
-        * @param chrom_len The size of the Chromosomes in the Population (each solution has a single Chromosome).
-        */
-        GaInfo(size_t population_size, size_t chrom_len);
-
-
-        /**
         * Type returned by fitness_matrix(), used to represent the fitness matrix of the population. \n
         * Each element of the matrix is the fitness vector of the corresponding solution of the population. \n
         * Eg. fmat[0] is the fitness vector of the first member of the population.
@@ -53,29 +37,21 @@ namespace genetic_algorithm
         using FitnessVector = detail::FitnessVector;
 
         /**
-        * The type of the stop condition function if a function or lambda is used instead of a functor
-        * derived from StopCondition. \n
-        * The function should return true if the algorithm should stop.
+        * The general callable type that can be used as a stop condition in the algorithm. \n
+        * It should return true if the algorithm should stop.
         */
-        using StopConditionFunction = std::function<bool(const GaInfo&)>;
+        using StopConditionCallable = std::function<bool(const GaInfo&)>;
 
-        /** The type of the callback functions used in the algorithm. */
-        using CallbackFunction = std::function<void(const GaInfo&)>;
+        /** The type of the callback functions that can be used in the algorithm. */
+        using GaCallback = std::function<void(const GaInfo&)>;
 
-
-        /**
-        * Set the size of the chromosomes (number of genes) of the Candidate solutions used in the algorithm. \n
-        * The chromosome length must be at least 1. \n
-        * 
-        * With variable chromosome lengths, the chromosome lengths may differ from this value.
+        /** 
+        * Create a genetic algorithm.
         *
-        * @param len The length of the Chromosomes.
+        * @param population_size The size of the population.
+        * @param nobj The number of objectives.
         */
-        void chrom_len(size_t len);
-
-        /** @returns The chromosome length used for the candidates of the population. */
-        [[nodiscard]]
-        size_t chrom_len() const noexcept { return chrom_len_; }
+        GaInfo(size_t population_size, size_t nobj);
 
         /**
         * Set the number of candidates used in the population. \n
@@ -85,7 +61,7 @@ namespace genetic_algorithm
         */
         void population_size(size_t size);
 
-        /** @returns The number of Candidates in the Population. */
+        /** @returns The number of candidates in the population. */
         [[nodiscard]]
         size_t population_size() const noexcept { return population_size_; }
 
@@ -102,9 +78,21 @@ namespace genetic_algorithm
         [[nodiscard]]
         size_t max_gen() const noexcept { return max_gen_; }
 
-        /** @returns The number of objectives as determined by the algorithm based on the fitness function. */
+        /** @returns The chromosome length used for the candidates of the population. */
         [[nodiscard]]
-        size_t num_objectives() const noexcept { return num_objectives_; }
+        virtual size_t chrom_len() const noexcept = 0;
+
+        /** @returns True if variable chromosome lengths are allowed and used. */
+        [[nodiscard]]
+        virtual bool variable_chrom_len() const noexcept = 0;
+
+        /** @returns The number of objectives of the fitness function. */
+        [[nodiscard]]
+        virtual size_t num_objectives() const noexcept = 0;
+
+        /** @returns True if a dynamic fitness function is used. */
+        [[nodiscard]]
+        virtual bool dynamic_fitness() const noexcept = 0;
 
         /**
         * @returns The fitness matrix of the population.
@@ -114,9 +102,9 @@ namespace genetic_algorithm
         [[nodiscard]]
         const FitnessMatrix& fitness_matrix() const noexcept { return fitness_matrix_; }
 
-        /** @returns The number of fitness evaluations performed by the algorithm. This value is updated after every objective function evaluation. */
+        /** @returns The number of fitness evaluations performed during the run. Updated after every objective function evaluation. */
         [[nodiscard]]
-        size_t num_fitness_evals() const noexcept { return num_fitness_evals_; }
+        size_t num_fitness_evals() const noexcept;
 
         /** @returns The current generation's number. */
         [[nodiscard]]
@@ -165,7 +153,7 @@ namespace genetic_algorithm
         * @param f The algorithm used by the GA. Can't be a nullptr.
         */
         template<algorithm::AlgorithmType F>
-        void algorithm(std::unique_ptr<F>&& f);
+        void algorithm(std::unique_ptr<F> f);
 
         /** @returns The algorithm used by the GA. */
         [[nodiscard]]
@@ -199,7 +187,7 @@ namespace genetic_algorithm
         * @param f The StopCondition the algorithm should use. Can't be a nullptr.
         */
         template<stopping::StopConditionType F>
-        void stop_condition(std::unique_ptr<F>&& f);
+        void stop_condition(std::unique_ptr<F> f);
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
@@ -207,11 +195,11 @@ namespace genetic_algorithm
         * regardless of the stop condition set here.
         * 
         * @see StopCondition
-        * @see StopConditionFunction
+        * @see StopConditionCallable
         *
         * @param f The function used to check for the early-stop condition.
         */
-        void stop_condition(StopConditionFunction f);
+        void stop_condition(StopConditionCallable f);
 
         /** @returns The stop condition used by the algorithm. */
         [[nodiscard]]
@@ -221,35 +209,6 @@ namespace genetic_algorithm
         [[nodiscard]]
         const stopping::StopCondition& stop_condition() const& { return *stop_condition_; }
 
-
-        /**
-        * Enable/disable support for dynamic fitness functions (disabled by default). \n
-        *
-        * Should be set to false if the fitness function does not change while running the algorithm. \n
-        * (The fitness function will always return the same fitness values for a given Chromosome.) \n
-        *
-        * When set to false, this is used to eliminate unnecessary objective function evaluations.
-        *
-        * @param enable Whether dynamic fitness functions should be allowed.
-        */
-        void dynamic_fitness(bool enable) noexcept { dynamic_fitness_ = enable; }
-
-        /** @returns true if dynamic fitness function support is enabled. */
-        [[nodiscard]]
-        bool dynamic_fitness() const noexcept { return dynamic_fitness_; }
-
-        /**
-        * Enable/disable support for variable chromosome lengths (disabled by default). \n
-        * (The crossover, mutation, repair, and fitness functions used also need to be able to handle
-        * variable chromosome lengths if enabled.)
-        *
-        * @param enable Whether variable chromosome lengths should be allowed.
-        */
-        void variable_chrom_len(bool enable) noexcept { variable_chrom_len_ = enable; }
-
-        /** @returns true if variable chromosome lengths are allowed. */
-        [[nodiscard]]
-        bool variable_chrom_len() const noexcept { return variable_chrom_len_; }
 
         /**
         * When set to true, all pareto optimal Candidates found by the algorithm during a run
@@ -269,47 +228,34 @@ namespace genetic_algorithm
         bool keep_all_optimal_solutions() const noexcept { return keep_all_optimal_sols_; }
 
         /** This function will be called once at the end of each generation. */
-        CallbackFunction endOfGenerationCallback = nullptr;
+        GaCallback endOfGenerationCallback = nullptr;
+
+
+        GaInfo(const GaInfo&)            = delete;
+        GaInfo& operator=(const GaInfo&) = delete;
+
+        /** Destructor. */
+        virtual ~GaInfo();
 
     protected:
 
         GaInfo(GaInfo&&) noexcept;
         GaInfo& operator=(GaInfo&&) noexcept;
 
-    public:
-
-        GaInfo(const GaInfo&)            = delete;
-        GaInfo& operator=(const GaInfo&) = delete;
-        virtual ~GaInfo();
-
-    protected:
-
         FitnessMatrix fitness_matrix_;
 
         std::unique_ptr<algorithm::Algorithm> algorithm_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
 
-        size_t num_fitness_evals_ = 0;
-        size_t generation_cntr_ = 0;
-        size_t num_objectives_ = 0;
-
-        size_t chrom_len_;
         size_t population_size_ = 100;
         size_t max_gen_ = 500;
+        size_t generation_cntr_ = 0;
+        size_t num_fitness_evals_ = 0;
 
-        bool dynamic_fitness_ = false;
-        bool variable_chrom_len_ = false;
         bool keep_all_optimal_sols_ = false;
         bool is_initialized_ = false;
 
         inline static constexpr size_t DEFAULT_POPSIZE = 100;
-
-        void setDefaultAlgorithm();
-
-    private:
-
-        virtual size_t findNumObjectives() const = 0;
-
     };
 
 } // namespace genetic_algorithm
@@ -335,7 +281,7 @@ namespace genetic_algorithm
     }
 
     template<algorithm::AlgorithmType F>
-    inline void GaInfo::algorithm(std::unique_ptr<F>&& f)
+    inline void GaInfo::algorithm(std::unique_ptr<F> f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The algorithm can't be a nullptr.");
 
@@ -351,7 +297,7 @@ namespace genetic_algorithm
     }
 
     template<stopping::StopConditionType F>
-    inline void GaInfo::stop_condition(std::unique_ptr<F>&& f)
+    inline void GaInfo::stop_condition(std::unique_ptr<F> f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
 

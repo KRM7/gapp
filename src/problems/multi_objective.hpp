@@ -34,7 +34,7 @@ namespace genetic_algorithm::problems
     *   Kursawe, F. "A variant of evolution strategies for vector optimization."
     *   International conference on parallel problem solving from nature (1991): 193-197
     */
-    class Kursawe : public BenchmarkFunctionRealN
+    class Kursawe final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -46,7 +46,7 @@ namespace genetic_algorithm::problems
         explicit Kursawe(size_t num_vars = 3, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -66,7 +66,7 @@ namespace genetic_algorithm::problems
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
     *   Evolutionary computation 8, no. 2 (2000): 173-195.
     */
-    class ZDT1 : public BenchmarkFunctionRealN
+    class ZDT1 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -78,7 +78,7 @@ namespace genetic_algorithm::problems
         explicit ZDT1(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -98,7 +98,7 @@ namespace genetic_algorithm::problems
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
     *   Evolutionary computation 8, no. 2 (2000): 173-195.
     */
-    class ZDT2 : public BenchmarkFunctionRealN
+    class ZDT2 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -110,7 +110,7 @@ namespace genetic_algorithm::problems
         explicit ZDT2(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -132,7 +132,7 @@ namespace genetic_algorithm::problems
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
     *   Evolutionary computation 8, no. 2 (2000): 173-195.
     */
-    class ZDT3 : public BenchmarkFunctionRealN
+    class ZDT3 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -144,7 +144,7 @@ namespace genetic_algorithm::problems
         explicit ZDT3(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -166,7 +166,7 @@ namespace genetic_algorithm::problems
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
     *   Evolutionary computation 8, no. 2 (2000): 173-195.
     */
-    class ZDT4 : public BenchmarkFunctionRealN
+    class ZDT4 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -178,7 +178,7 @@ namespace genetic_algorithm::problems
         explicit ZDT4(size_t num_vars = 10, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 
@@ -199,7 +199,7 @@ namespace genetic_algorithm::problems
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
     *   Evolutionary computation 8, no. 2 (2000): 173-195.
     */
-    class ZDT5 : public BenchmarkFunctionBinaryN
+    class ZDT5 final : public BenchmarkFunction<BinaryGene>
     {
     public:
         /**
@@ -210,7 +210,7 @@ namespace genetic_algorithm::problems
         explicit ZDT5(size_t num_vars = 11);
 
     private:
-        std::vector<double> invoke(const std::vector<BinaryGene>& vars) const override;
+        FitnessVector invoke(const std::vector<BinaryGene>& vars) const override;
 
         static constexpr size_t FIRST_BITS = 30;
         static constexpr size_t REST_BITS = 5;
@@ -234,7 +234,7 @@ namespace genetic_algorithm::problems
     *   Zitzler, E., Deb, K., and Thiele, L. "Comparison of multiobjective evolutionary algorithms: Empirical results."
     *   Evolutionary computation 8, no. 2 (2000): 173-195.
     */
-    class ZDT6 : public BenchmarkFunctionRealN
+    class ZDT6 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -246,7 +246,7 @@ namespace genetic_algorithm::problems
         explicit ZDT6(size_t num_vars = 10, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
 } // namespace genetic_algorithm::problems

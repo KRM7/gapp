@@ -5,6 +5,7 @@
 
 #include "crossover_base.hpp"
 #include "../population/candidate.hpp"
+#include "../utility/utility.hpp"
 #include <functional>
 #include <utility>
 
@@ -18,14 +19,18 @@ namespace genetic_algorithm::crossover
     class Lambda final : public Crossover<T>
     {
     public:
-        using CrossoverFunction = std::function<CandidatePair<T>(const GA<T>&, const Candidate<T>&, const Candidate<T>&)>;
+        using CrossoverCallable = std::function<CandidatePair<T>(const GA<T>&, const Candidate<T>&, const Candidate<T>&)>;
 
-        explicit Lambda(CrossoverFunction f) noexcept
-            : Crossover<T>(), crossover_(std::move(f))
-        {}
+        explicit Lambda(CrossoverCallable f) :
+            Crossover<T>()
+        {
+            if (!f) GA_THROW(std::invalid_argument, "The crossover method can't be a nullptr.");
+
+            crossover_ = std::move(f);
+        }
 
     private:
-        CrossoverFunction crossover_;
+        CrossoverCallable crossover_;
 
         CandidatePair<T> crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const override
         {

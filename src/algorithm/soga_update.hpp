@@ -87,14 +87,14 @@ namespace genetic_algorithm::update
     class Lambda final : public Updater
     {
     public:
-        using UpdateFunction = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
+        using UpdateCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
 
-        explicit Lambda(UpdateFunction f) noexcept;
+        explicit Lambda(UpdateCallable f);
 
     private:
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
 
-        UpdateFunction updater_;
+        UpdateCallable updater_;
     };
 
 } // namespace genetic_algorithm::update

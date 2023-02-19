@@ -4,6 +4,7 @@
 #define GA_STOP_CONDITION_BASE_HPP
 
 #include "stop_condition_base.fwd.hpp"
+#include "../utility/utility.hpp"
 #include <functional>
 #include <utility>
 
@@ -27,6 +28,9 @@ namespace genetic_algorithm::stopping
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
         bool operator()(const GaInfo& ga);
 
+        /** Destructor. */
+        virtual ~StopCondition()                        = default;
+
     protected:
 
         StopCondition()                                 = default;
@@ -35,21 +39,13 @@ namespace genetic_algorithm::stopping
         StopCondition& operator=(const StopCondition&)  = default;
         StopCondition& operator=(StopCondition&&)       = default;
 
-    public:
-
-        virtual ~StopCondition()                        = default;
-
     private:
 
         /* Implementation of the stop condition. */
         virtual bool stop_condition(const GaInfo& ga) = 0;
     };
 
-} // namespace genetic_algorithm::stopping
 
-
-namespace genetic_algorithm::stopping
-{
     /*
     * Wraps a callable with the right signature so that it can be used as a
     * stop condition in the GAs.
@@ -57,14 +53,17 @@ namespace genetic_algorithm::stopping
     class Lambda final : public StopCondition
     {
     public:
-        using StopConditionFunction = std::function<bool(const GaInfo&)>;
+        using StopConditionCallable = std::function<bool(const GaInfo&)>;
 
-        explicit Lambda(StopConditionFunction f)
-            : stop_condition_(std::move(f))
-        {}
+        explicit Lambda(StopConditionCallable f)
+        {
+            if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
+
+            stop_condition_ = std::move(f);
+        }
 
     private:
-        StopConditionFunction stop_condition_;
+        StopConditionCallable stop_condition_;
 
         bool stop_condition(const GaInfo& ga) override
         {

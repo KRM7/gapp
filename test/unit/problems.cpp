@@ -15,9 +15,9 @@ using namespace genetic_algorithm::rng;
 using namespace genetic_algorithm::math;
 using namespace Catch::Matchers;
 
-std::vector<double> randomPoint(const typename BenchmarkFunction<RealGene>::BoundsVec& bounds)
+std::vector<RealGene> randomPoint(const BenchmarkFunction<RealGene>::BoundsVector& bounds)
 {
-    std::vector<double> point;
+    std::vector<RealGene> point;
     point.reserve(bounds.size());
 
     for (const auto& [lbound, ubound] : bounds) { point.push_back(randomReal(lbound, ubound)); }
@@ -25,9 +25,9 @@ std::vector<double> randomPoint(const typename BenchmarkFunction<RealGene>::Boun
     return point;
 }
 
-std::vector<char> randomPoint(const typename BenchmarkFunction<BinaryGene>::BoundsVec& bounds)
+std::vector<BinaryGene> randomPoint(const BenchmarkFunction<BinaryGene>::BoundsVector& bounds)
 {
-    std::vector<char> point(bounds.size());
+    std::vector<BinaryGene> point(bounds.size());
     std::generate(point.begin(), point.end(), randomBool);
 
     return point;

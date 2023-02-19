@@ -49,9 +49,13 @@ namespace genetic_algorithm::update
     }
 
 
-    Lambda::Lambda(UpdateFunction f) noexcept :
-        Updater(), updater_(std::move(f))
-    {}
+    Lambda::Lambda(UpdateCallable f) :
+        Updater()
+    {
+        if (!f) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+
+        updater_ = std::move(f);
+    }
 
     std::vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {

@@ -42,7 +42,7 @@ namespace genetic_algorithm::problems
     *   Deb, K., et al. "Scalable multi-objective optimization test problems."
     *   Proceedings of the 2002 Congress on Evolutionary Computation. vol. 1, pp. 825-830.
     */
-    class DTLZ1 : public BenchmarkFunctionRealN
+    class DTLZ1 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -54,7 +54,7 @@ namespace genetic_algorithm::problems
         explicit DTLZ1(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
 
         static constexpr size_t K = 5;
     };
@@ -81,7 +81,7 @@ namespace genetic_algorithm::problems
     *   Deb, K., et al. "Scalable multi-objective optimization test problems."
     *   Proceedings of the 2002 Congress on Evolutionary Computation. vol. 1, pp. 825-830.
     */
-    class DTLZ2 : public BenchmarkFunctionRealN
+    class DTLZ2 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -93,7 +93,7 @@ namespace genetic_algorithm::problems
         explicit DTLZ2(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -121,7 +121,7 @@ namespace genetic_algorithm::problems
     *   Deb, K., et al. "Scalable multi-objective optimization test problems."
     *   Proceedings of the 2002 Congress on Evolutionary Computation. vol. 1, pp. 825-830.
     */
-    class DTLZ3 : public BenchmarkFunctionRealN
+    class DTLZ3 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -133,7 +133,7 @@ namespace genetic_algorithm::problems
         explicit DTLZ3(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -161,7 +161,7 @@ namespace genetic_algorithm::problems
     *   Deb, K., et al. "Scalable multi-objective optimization test problems."
     *   Proceedings of the 2002 Congress on Evolutionary Computation. vol. 1, pp. 825-830.
     */
-    class DTLZ4 : public BenchmarkFunctionRealN
+    class DTLZ4 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -173,7 +173,7 @@ namespace genetic_algorithm::problems
         explicit DTLZ4(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -201,7 +201,7 @@ namespace genetic_algorithm::problems
     *   Deb, K., et al. "Scalable multi-objective optimization test problems."
     *   Proceedings of the 2002 Congress on Evolutionary Computation. vol. 1, pp. 825-830.
     */
-    class DTLZ5 : public BenchmarkFunctionRealN
+    class DTLZ5 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -213,7 +213,7 @@ namespace genetic_algorithm::problems
         explicit DTLZ5(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -242,7 +242,7 @@ namespace genetic_algorithm::problems
     *   Deb, K., et al. "Scalable multi-objective optimization test problems."
     *   Proceedings of the 2002 Congress on Evolutionary Computation. vol. 1, pp. 825-830.
     */
-    class DTLZ6 : public BenchmarkFunctionRealN
+    class DTLZ6 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -254,7 +254,7 @@ namespace genetic_algorithm::problems
         explicit DTLZ6(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -281,7 +281,7 @@ namespace genetic_algorithm::problems
     *   Deb, K., et al. "Scalable multi-objective optimization test problems."
     *   Proceedings of the 2002 Congress on Evolutionary Computation. vol. 1, pp. 825-830.
     */
-    class DTLZ7 : public BenchmarkFunctionRealN
+    class DTLZ7 final : public BenchmarkFunction<RealGene>
     {
     public:
         /**
@@ -293,7 +293,7 @@ namespace genetic_algorithm::problems
         explicit DTLZ7(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        std::vector<double> invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
 
         static constexpr size_t K = 20;
     };

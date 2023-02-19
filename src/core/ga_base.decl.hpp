@@ -4,6 +4,7 @@
 #define GA_CORE_GA_BASE_DECL_HPP
 
 #include "ga_info.hpp"
+#include "fitness_function.hpp"
 #include "../population/candidate.hpp"
 #include "../mutation/mutation_base.fwd.hpp"
 #include "../crossover/crossover_base.fwd.hpp"
@@ -32,21 +33,10 @@ namespace genetic_algorithm
         struct GeneBounds { T lower; T upper; };        /**< The type used to represent the lower and upper bounds of a gene. */
         
         using GeneType = T;                             /**< The gene type used in the chromosomes. */
-        using BoundsVector = std::vector<GeneBounds>;   /**< A vector of GeneBounds. */
+        using BoundsVector = std::vector<GeneBounds>;   /**< A vector of gene bounds. */
 
         /**
-        * The type of the fitness function. \n
-        * Takes a vector of genes (chromosome) and returns the fitness vector of the chromosome. \n
-        * The returned fitness vector should only contain finite values, and always be the same length
-        * during a run. \n
-        * 
-        * The fitness function is allowed to return different fitness vectors for the
-        * same chromosome if dynamic_fitness is set to true.
-        */
-        using FitnessFunction = std::function<std::vector<double>(const Chromosome<T>&)>;
-
-        /**
-        * The type of the crossover function. \n
+        * The general callable type that can be used as a crossover method in the algorithms. \n
         * Takes two candidate solutions (parents), and returns two candidates generated from these
         * parent solutions (children). \n
         * 
@@ -54,57 +44,79 @@ namespace genetic_algorithm
         * all of the other operators used should be able to handle different chromosome lengths in this case
         * (fitness function, mutation, repair).
         */
-        using CrossoverFunction = std::function<CandidatePair<T>(const GA&, const Candidate<T>&, const Candidate<T>&)>;
+        using CrossoverCallable = std::function<CandidatePair<T>(const GA&, const Candidate<T>&, const Candidate<T>&)>;
 
         /**
-        * The type of the mutation function. \n
+        * The general callable type that can be used as a mutation operator in the algorithm. \n
         * Takes a candidate solution, and mutates this solution. \n
         * 
         * The function is allowed to change the candidate's chromosome's length, but
         * all of the other operators used should be able to handle different chromosome lengths in this
         * case (fitness function, crossover, repair).
         */
-        using MutationFunction = std::function<void(const GA&, Candidate<T>&)>;
+        using MutationCallable = std::function<void(const GA&, Candidate<T>&)>;
 
         /**
-        * The type of the repair function. \n
+        * The general callable type that can be used as a repair function in the algorithm. \n
         * Takes a candidate solution, and performs some operation on it. \n
         * 
         * This function is allowed the change the candidate's chromosome's length, but
         * all of the other operators used should be able to handle different chromosome lengths in this
         * case (fitness function, crossover, mutation).
         */
-        using RepairFunction = std::function<Chromosome<T>(const GA&, const Chromosome<T>&)>;
+        using RepairCallable = std::function<Chromosome<T>(const GA&, const Chromosome<T>&)>;
 
 
         /**
         * Create a genetic algorithm.
         *
-        * @param chrom_len The length of the chromosomes (number of genes).
-        * @param fitness_function The function to find the maximum of. @see FitnessFunction
-        */
-        GA(size_t chrom_len, FitnessFunction fitness_function);
-
-        /**
-        * Create a genetic algorithm.
-        *
+        * @param fitness_function The fitness function used. @see FitnessFunction
         * @param population_size The number of candidates in the population.
-        * @param chrom_len The length of the chromosomes (number of genes).
-        * @param fitness_function The function to find the maximum of. @see FitnessFunction
         */
-        GA(size_t population_size, size_t chrom_len, FitnessFunction fitness_function);
-
+        GA(std::unique_ptr<FitnessFunction<T>> fitness_function, size_t population_size);
 
         /**
-        * Set the fitness function used by the algorithm. \n
-        * The fitness function should return a vector with a size equal to the number of objectives. \n
-        * The fitness function should be thread-safe if parallel execution is enabled (it is enabled by default).
-        * 
+        * Set the fitness function used by the algorithm.
         * @see FitnessFunction
         *
-        * @param f The function the algorithm should find the maximum of.
+        * @param f The fitness function to use in the algorithm.
         */
-        void fitness_function(FitnessFunction f);
+        template<typename F>
+        requires FitnessFunctionType<F, T> && std::is_final_v<F>
+        void fitness_function(F f);
+
+        /**
+        * Set the fitness function used by the algorithm.
+        * @see FitnessFunction
+        *
+        * @param f The fitness function to use in the algorithm.
+        */
+        void fitness_function(std::unique_ptr<FitnessFunction<T>> f);
+
+        /** @returns The fitness function used in the algorithm. */
+        [[nodiscard]]
+        FitnessFunction<T>& fitness_function() &;
+
+        /** @returns The fitness function used in the algorithm. */
+        [[nodiscard]]
+        const FitnessFunction<T>& fitness_function() const&;
+
+        /** @returns The chromosome length used for the candidates of the population. */
+        [[nodiscard]]
+        size_t chrom_len() const noexcept final;
+
+        /** @returns True if variable chromosome lengths are allowed and used. */
+        [[nodiscard]]
+        bool variable_chrom_len() const noexcept final;
+
+        /** @returns The number of objectives of the fitness function. */
+        [[nodiscard]]
+        size_t num_objectives() const noexcept final;
+
+        /** @returns True if a dynamic fitness function is used. */
+        [[nodiscard]]
+        bool dynamic_fitness() const noexcept final;
+
 
         /** @returns The lower and upper bounds of each of the chromosomes' genes (the ranges are inclusive). */
         [[nodiscard]]
@@ -131,18 +143,18 @@ namespace genetic_algorithm
         * @param f The crossover method used by the algorithm. Can't be a nullptr.
         */
         template<crossover::CrossoverType<T> F>
-        void crossover_method(std::unique_ptr<F>&& f);
+        void crossover_method(std::unique_ptr<F> f);
 
         /**
         * Set the crossover method the algorithm will use. \n
         * The crossover function should be thread-safe if parallel execution is enabled (enabled by default).
         * 
-        * @see CrossoverFunction
+        * @see CrossoverCallable
         * @see Crossover
         *
         * @param f The crossover method used by the algorithm.
         */
-        void crossover_method(CrossoverFunction f);
+        void crossover_method(CrossoverCallable f);
 
         /** @returns The crossover operator used by the algorithm. */
         [[nodiscard]]
@@ -184,18 +196,18 @@ namespace genetic_algorithm
         * @param f The crossover function that will be used by the algorithm. Can't be a nullptr.
         */
         template<mutation::MutationType<T> F>
-        void mutation_method(std::unique_ptr<F>&& f);
+        void mutation_method(std::unique_ptr<F> f);
 
         /**
         * Set the mutation method the algorithm will use. \n
         * The mutation function should be thread-safe if parallel execution is enabled (enabled by default).
         * 
-        * @see MutationFunction
+        * @see MutationCallable
         * @see Mutation
         *
         * @param f The crossover function that will be used by the algorithm.
         */
-        void mutation_method(MutationFunction f);
+        void mutation_method(MutationCallable f);
 
         /** @returns The mutation operator used by the algorithm. */
         [[nodiscard]]
@@ -227,7 +239,7 @@ namespace genetic_algorithm
         * 
         * @param f The repair function the algorithm will use.
         */
-        void repair_function(RepairFunction f);
+        void repair_function(RepairCallable f);
 
         /** 
         * @returns The pareto optimal solutions found by the algorithm.
@@ -282,16 +294,15 @@ namespace genetic_algorithm
         Population<T> population_;
         Candidates<T> solutions_;
 
-        FitnessFunction fitness_function_;
+        std::unique_ptr<FitnessFunction<T>> fitness_function_;
         std::unique_ptr<crossover::Crossover<T>> crossover_;
         std::unique_ptr<mutation::Mutation<T>> mutation_;
-        RepairFunction repair_ = nullptr;
+        RepairCallable repair_ = nullptr;
 
-        virtual Candidate<T> generateCandidate() const = 0;
         virtual void initialize() = 0;
+        virtual Candidate<T> generateCandidate() const = 0;
 
         void initializeAlgorithm();
-        size_t findNumObjectives() const final;
         Population<T> generatePopulation(size_t pop_size) const;
         void prepareSelections() const;
         const Candidate<T>& select() const;
@@ -316,12 +327,12 @@ namespace genetic_algorithm
         using GaInfo::fitness_matrix_;
         using GaInfo::algorithm_;
         using GaInfo::stop_condition_;
-        using GaInfo::num_fitness_evals_;
-        using GaInfo::generation_cntr_;
-        using GaInfo::num_objectives_;
-        using GaInfo::chrom_len_;
         using GaInfo::population_size_;
         using GaInfo::max_gen_;
+        using GaInfo::generation_cntr_;
+        using GaInfo::num_fitness_evals_;
+        using GaInfo::keep_all_optimal_sols_;
+        using GaInfo::is_initialized_;
     };
 
     /** Genetic algorithm types. */

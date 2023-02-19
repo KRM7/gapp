@@ -5,6 +5,7 @@
 
 #include "mutation_base.hpp"
 #include "../population/candidate.hpp"
+#include "../utility/utility.hpp"
 #include <functional>
 #include <utility>
 
@@ -18,14 +19,18 @@ namespace genetic_algorithm::mutation
     class Lambda final : public Mutation<T>
     {
     public:
-        using MutationFunction = std::function<void(const GA<T>&, Candidate<T>&)>;
+        using MutationCallable = std::function<void(const GA<T>&, Candidate<T>&)>;
 
-        explicit Lambda(MutationFunction f) noexcept
-            : Mutation<T>(0.01), mutate_(std::move(f))
-        {}
+        explicit Lambda(MutationCallable f) :
+            Mutation<T>(0.01)
+        {
+            if (!f) GA_THROW(std::invalid_argument, "The mutation method can't be a nullptr.");
+
+            mutate_ = std::move(f);
+        }
 
     private:
-        MutationFunction mutate_;
+        MutationCallable mutate_;
 
         void mutate(const GA<T>& ga, Candidate<T>& candidate) const override
         {

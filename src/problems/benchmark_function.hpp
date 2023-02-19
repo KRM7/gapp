@@ -4,141 +4,188 @@
 #define GA_PROBLEMS_BENCHMARK_FUNCTION_HPP
 
 #include "../core/ga_base.decl.hpp"
+#include "../core/fitness_function.hpp"
 #include "../encoding/gene_types.hpp"
-#include "../utility/math.hpp"
-#include "../utility/utility.hpp"
 #include <vector>
 #include <string>
+#include <optional>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::problems
 {
-
+    /**
+    * Base class for the benchmark function that contains
+    * the properties of a benchmark function (eg. name, optimum, optimal value etc.).
+    */
     template<typename T>
-    class BenchmarkFunction
+    class BenchmarkFunctionTraits
     {
     public:
-        using Gene      = T;
-        using Bounds    = typename GA<T>::GeneBounds;
-        using BoundsVec = std::vector<Bounds>;
-        using Point     = math::Point;
+        using Bounds       = typename GA<T>::GeneBounds;
+        using BoundsVector = typename GA<T>::BoundsVector;
 
-        BenchmarkFunction(std::string name, size_t num_objs, const BoundsVec& bounds) :
-            bounds_(bounds), name_(std::move(name)), num_objs_(num_objs), num_vars_(bounds.size())
-        {
-            if (num_objs_ == 0) GA_THROW(std::invalid_argument, "Number of objectives must be at least 1.");
-            if (num_vars_ == 0) GA_THROW(std::invalid_argument, "Number of variables must be at least 1.");
-        }
-
-        BenchmarkFunction(std::string name, size_t num_objs, size_t num_vars, Bounds bounds) :
-            BenchmarkFunction(std::move(name), num_objs, std::vector(num_vars, bounds))
-        {}
-
-        virtual ~BenchmarkFunction() = default;
-
-        const BoundsVec& bounds() const noexcept { return bounds_; }
-
-        size_t num_obj() const noexcept  { return num_objs_; }
-        size_t num_vars() const noexcept { return num_vars_; }
-
+        /** @returns The name of the benchmark function. */
+        [[nodiscard]]
         const std::string& name() const { return name_; }
 
-        const Point& optimal_value() const noexcept { return optimal_value_; }
-        const std::vector<Gene>& optimum() const noexcept { return optimum_; }
+        /** @returns The lower and upper bounds for each variable of the benchmark function. */
+        [[nodiscard]]
+        const std::vector<Bounds>& bounds() const noexcept { return bounds_; }
 
-        std::vector<double> operator()(const std::vector<T>& x) const
-        {
-            assert(x.size() == num_vars_);
-            return invoke(x);
-        }
+        /** @returns The optimal value of the benchmark function. */
+        [[nodiscard]]
+        const math::Point& optimal_value() const noexcept { return optimal_value_; }
+
+        /** @returns The optimum (max) of the benchmark function. */
+        [[nodiscard]]
+        const std::vector<T>& optimum() const noexcept { return optimum_; }
+
+        /** @returns The ideal point of the pareto front. Same as the optimal value for single objective benchmarks. */
+        [[nodiscard]]
+        const math::Point& ideal_point() const noexcept { return ideal_point_; }
+
+        /** @returns The nadir point of the pareto front. Same as the optimal value for single objective benchmarks. */
+        [[nodiscard]]
+        const math::Point& nadir_point() const noexcept { return nadir_point_; }
+
+        /** Destructor. */
+        virtual ~BenchmarkFunctionTraits() = default;
 
     protected:
-        virtual std::vector<double> invoke(const std::vector<T>& x) const = 0;
 
-        std::vector<Bounds> bounds_;
-        std::vector<Gene> optimum_;
-        Point optimal_value_;
+        /* Single-objective, uniform bounds. */
+        BenchmarkFunctionTraits(std::string name, Bounds bounds, const std::vector<T>& optimum, double optimal_value) :
+            name_(std::move(name)), bounds_(std::vector(optimum.size(), bounds)), optimum_(optimum),
+            optimal_value_(math::Point(1, optimal_value)), ideal_point_(optimal_value_), nadir_point_(optimal_value_)
+        {}
 
-    private:
+        /* Multi-objective, uniform bounds. */
+        BenchmarkFunctionTraits(std::string name, Bounds bounds, const std::vector<T>& optimum, const math::Point& optimal_value) :
+            name_(std::move(name)), bounds_(std::vector(optimum.size(), bounds)), optimum_(optimum), optimal_value_(optimal_value)
+        {}
+
+        /* General ctor, uniform bounds. */
+        BenchmarkFunctionTraits(std::string name, size_t num_vars, Bounds bounds) :
+            name_(std::move(name)), bounds_(std::vector(num_vars, bounds))
+        {}
+
+        BenchmarkFunctionTraits(const BenchmarkFunctionTraits&)             = default;
+        BenchmarkFunctionTraits(BenchmarkFunctionTraits&&)                  = default;
+        BenchmarkFunctionTraits& operator=(const BenchmarkFunctionTraits&)  = default;
+        BenchmarkFunctionTraits& operator=(BenchmarkFunctionTraits&&)       = default;
+
         std::string name_;
-        size_t num_objs_;
-        size_t num_vars_;
+        std::vector<Bounds> bounds_;
+        std::vector<T> optimum_;
+        math::Point optimal_value_;
+        math::Point ideal_point_;
+        math::Point nadir_point_;
+    };
+
+    /**
+    * Base class used for all of the benchmark functions.
+    * Includes some additional properties for each benchmark in addition to what
+    * is in a fitness function (eg. known optimum, optimal values).
+    */
+    template<Gene T>
+    class BenchmarkFunction : public FitnessFunction<T>, public BenchmarkFunctionTraits<T>
+    {
+    public:
+        using typename FitnessFunction<T>::GeneType;
+        using typename BenchmarkFunctionTraits<T>::Bounds;
+        using typename BenchmarkFunctionTraits<T>::BoundsVector;
+
+        /** @returns The number of variables of the benchmark function. */
+        [[nodiscard]]
+        size_t num_vars() const noexcept { return FitnessFunction<T>::chrom_len(); }
+
+    protected:
+
+        /* Single-objective, uniform bounds. */
+        BenchmarkFunction(std::string name, Bounds bounds, const std::vector<T>& optimum, double optimal_value) :
+            FitnessFunction<T>(optimum.size(), 1),
+            BenchmarkFunctionTraits<T>(std::move(name), bounds, optimum, optimal_value)
+        {}
+
+        /* Multi-objective, uniform bounds. */
+        BenchmarkFunction(std::string name, Bounds bounds, const std::vector<T>& optimum, const math::Point& optimal_value) :
+            FitnessFunction<T>(optimum.size(), optimal_value.size()),
+            BenchmarkFunctionTraits<T>(std::move(name), bounds, optimum, optimal_value)
+        {}
+
+        /* General ctor, uniform bounds. */
+        BenchmarkFunction(std::string name, size_t nvars, size_t nobj, Bounds bounds) :
+            FitnessFunction<T>(nvars, nobj),
+            BenchmarkFunctionTraits<T>(std::move(name), nvars, bounds)
+        {}
+
+        BenchmarkFunction(const BenchmarkFunction&)             = default;
+        BenchmarkFunction(BenchmarkFunction&&)                  = default;
+        BenchmarkFunction& operator=(const BenchmarkFunction&)  = default;
+        BenchmarkFunction& operator=(BenchmarkFunction&&)       = default;
     };
 
 
-    /** ... */
-    class BenchmarkFunctionReal1 : public BenchmarkFunction<RealGene>
+    /**
+    * Specialization of the benchmark function for the real encoded problems.
+    * These are also usable as binary benchmark functions, not just real encoded ones.
+    */
+    template<>
+    class BenchmarkFunction<RealGene> : public FitnessFunction<RealGene>, public FitnessFunction<BinaryGene>, public BenchmarkFunctionTraits<RealGene>
     {
     public:
-        BenchmarkFunctionReal1(std::string name, const std::vector<Bounds>& bounds, size_t bits_per_var, double optimal_value, const std::vector<Gene>& optimum) :
-            BenchmarkFunction<Gene>(std::move(name), 1, bounds), var_bits_(bits_per_var)
-        {
-            if (optimum.size() != num_vars()) GA_THROW(std::invalid_argument, "Mismatching number of variables and optimum vector sizes.");
+        using FitnessFunction<RealGene>::GeneType;
+        using FitnessFunction<RealGene>::FitnessVector;
+        using BenchmarkFunctionTraits<RealGene>::Bounds;
+        using BenchmarkFunctionTraits<RealGene>::BoundsVector;
 
-            optimum_ = optimum;
-            optimal_value_ = Point(1, optimal_value);
-        }
+        using FitnessFunction<RealGene>::operator();
+        using FitnessFunction<BinaryGene>::operator();
 
-        BenchmarkFunctionReal1(std::string name, size_t num_vars, Bounds bounds, size_t bits_per_var, double optimal_value, const std::vector<Gene>& optimum) :
-            BenchmarkFunctionReal1(std::move(name), std::vector(num_vars, bounds), bits_per_var, optimal_value, optimum)
+        /** @returns The number of variables of the benchmark function. */
+        [[nodiscard]]
+        size_t num_vars() const noexcept { return FitnessFunction<RealGene>::chrom_len(); }
+
+        using FitnessFunction<RealGene>::num_objectives;
+
+    protected:
+
+        /* Single-objective, uniform bounds. */
+        BenchmarkFunction(std::string name, Bounds bounds, const std::vector<RealGene>& optimum, double optimal_value, size_t var_bits) :
+            FitnessFunction<RealGene>(optimum.size(), 1),
+            FitnessFunction<BinaryGene>(optimum.size() * var_bits, 1),
+            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, optimum, optimal_value)
         {}
 
-        size_t num_bits() const noexcept { return num_vars() * var_bits_; }
-        size_t var_bits() const noexcept { return var_bits_; }
+       /* Multi-objective, uniform bounds. */
+        BenchmarkFunction(std::string name, Bounds bounds, const std::vector<RealGene>& optimum, const math::Point& optimal_value, size_t var_bits) :
+            FitnessFunction<RealGene>(optimum.size(), optimal_value.size()),
+            FitnessFunction<BinaryGene>(optimum.size() * var_bits, optimal_value.size()),
+            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, optimum, optimal_value)
+        {}
 
-        using BenchmarkFunction<Gene>::operator();
-        std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const;
+       /* General ctor, uniform bounds. */
+        BenchmarkFunction(std::string name, size_t nvars, size_t nobj, Bounds bounds, size_t var_bits) :
+            FitnessFunction<RealGene>(nvars, nobj),
+            FitnessFunction<BinaryGene>(nvars * var_bits, nobj),
+            BenchmarkFunctionTraits<RealGene>(std::move(name), nvars, bounds)
+        {}
+
+        BenchmarkFunction(const BenchmarkFunction&)             = default;
+        BenchmarkFunction(BenchmarkFunction&&)                  = default;
+        BenchmarkFunction& operator=(const BenchmarkFunction&)  = default;
+        BenchmarkFunction& operator=(BenchmarkFunction&&)       = default;
 
     private:
-        size_t var_bits_;
-    };
+        FitnessVector invoke(const Chromosome<RealGene>& chrom) const override = 0;
 
-
-    /** ... */
-    class BenchmarkFunctionRealN : public BenchmarkFunction<RealGene>
-    {
-    public:
-        BenchmarkFunctionRealN(std::string name, size_t num_obj, const std::vector<Bounds>& bounds, size_t bits_per_var) :
-            BenchmarkFunction<RealGene>(std::move(name), num_obj, bounds), var_bits_(bits_per_var)
+        FitnessVector invoke(const Chromosome<BinaryGene>& chrom) const final
         {
-            if (num_obj < 2) GA_THROW(std::invalid_argument, "Not enough objectives for a multi-objective benchmark functions.");
+            size_t var_bits = FitnessFunction<BinaryGene>::chrom_len() / FitnessFunction<RealGene>::chrom_len();
+            return this->invoke(convert(chrom, bounds(), var_bits));
         }
 
-        BenchmarkFunctionRealN(std::string name, size_t num_obj, size_t num_vars, Bounds bounds, size_t bits_per_var) :
-            BenchmarkFunctionRealN(std::move(name), num_obj, std::vector(num_vars, bounds), bits_per_var)
-        {}
-
-        size_t num_bits() const noexcept { return num_vars() * var_bits_; }
-        size_t var_bits() const noexcept { return var_bits_; }
-
-        const Point& ideal_point() const noexcept { return ideal_point_; }
-        const Point& nadir_point() const noexcept { return nadir_point_; }
-
-        using BenchmarkFunction<Gene>::operator();
-        std::vector<double> operator()(const std::vector<BinaryGene>& binary_chrom) const;
-
-    protected:
-        Point ideal_point_;
-        Point nadir_point_;
-        size_t var_bits_;
-    };
-
-
-    /** ... */
-    class BenchmarkFunctionBinaryN : public BenchmarkFunction<BinaryGene>
-    {
-    public:
-        BenchmarkFunctionBinaryN(std::string name, size_t num_obj, size_t num_bits) :
-            BenchmarkFunction<BinaryGene>(std::move(name), num_obj, num_bits, Bounds{ 0, 1 })
-        {}
-
-        const Point& ideal_point() const noexcept { return ideal_point_; }
-        const Point& nadir_point() const noexcept { return nadir_point_; }
-
-    protected:
-        Point ideal_point_;
-        Point nadir_point_;
+        static Chromosome<RealGene> convert(const Chromosome<BinaryGene>& bchrom, const std::vector<Bounds>& bounds, size_t var_bits);
     };
 
 } // namespace genetic_algorithm::problems

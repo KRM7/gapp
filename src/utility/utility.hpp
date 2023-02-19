@@ -101,10 +101,10 @@ namespace genetic_algorithm
 namespace genetic_algorithm::detail
 {
     template<typename T>
-    inline void clear_reserve(std::vector<T>& vec, size_t n = 0)
+    inline void clear_reserve(std::vector<T>& vec, size_t new_capacity = 0)
     {
         std::vector<T> temp;
-        temp.reserve(n);
+        temp.reserve(new_capacity);
         temp.swap(vec);
     }
 

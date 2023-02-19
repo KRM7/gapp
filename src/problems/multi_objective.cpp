@@ -17,7 +17,7 @@ namespace genetic_algorithm::problems
     using std::numbers::pi;
 
     Kursawe::Kursawe(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunctionRealN("Kursawe", 2, num_vars, Bounds{ -5.0, 5.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("Kursawe", num_vars, 2, Bounds{ -5.0, 5.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -28,7 +28,7 @@ namespace genetic_algorithm::problems
         nadir_point_ = { 7.25 * double(num_vars - 1), 0.0};
     }
 
-    std::vector<double> Kursawe::invoke(const std::vector<double>& vars) const
+    auto Kursawe::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
         assert(!vars.empty());
 
@@ -47,7 +47,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT1::ZDT1(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunctionRealN("ZDT1", 2, num_vars, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("ZDT1", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -58,7 +58,7 @@ namespace genetic_algorithm::problems
         nadir_point_ = { -1.0, -1.0 };
     }
 
-    std::vector<double> ZDT1::invoke(const std::vector<double>& vars) const
+    auto ZDT1::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
         assert(vars.size() > 1);
 
@@ -74,7 +74,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT2::ZDT2(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunctionRealN("ZDT2", 2, num_vars, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("ZDT2", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -85,7 +85,7 @@ namespace genetic_algorithm::problems
         nadir_point_ = { -1.0, -1.0 };
     }
 
-    std::vector<double> ZDT2::invoke(const std::vector<double>& vars) const
+    auto ZDT2::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
         assert(vars.size() > 1);
 
@@ -101,7 +101,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT3::ZDT3(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunctionRealN("ZDT3", 2, num_vars, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("ZDT3", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -112,7 +112,7 @@ namespace genetic_algorithm::problems
         nadir_point_ = { -0.85, -1.0 };
     }
 
-    std::vector<double> ZDT3::invoke(const std::vector<double>& vars) const
+    auto ZDT3::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
         assert(vars.size() > 1);
 
@@ -128,7 +128,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT4::ZDT4(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunctionRealN("ZDT4", 2, num_vars, Bounds{ -5.0, 5.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("ZDT4", num_vars, 2, Bounds{ -5.0, 5.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -141,7 +141,7 @@ namespace genetic_algorithm::problems
         nadir_point_ = { -1.0, -1.0 };
     }
 
-    std::vector<double> ZDT4::invoke(const std::vector<double>& vars) const
+    auto ZDT4::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
         assert(!vars.empty());
 
@@ -159,28 +159,28 @@ namespace genetic_algorithm::problems
 
 
     ZDT5::ZDT5(size_t num_vars) :
-        BenchmarkFunctionBinaryN("ZDT5", 2, FIRST_BITS + (num_vars - 1) * REST_BITS)
+        BenchmarkFunction<BinaryGene>("ZDT5", FIRST_BITS + (num_vars - 1) * REST_BITS, 2, Bounds{ 0, 1 })
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
-        optimum_ = std::vector(this->num_vars(), Gene{ 1 });
+        optimum_ = std::vector(this->num_vars(), GeneType{ 1 });
         optimal_value_ = { -(FIRST_BITS + 1.0), -(num_vars - 1.0) / (FIRST_BITS + 1.0) };
 
         ideal_point_ = { -1.0, -(num_vars - 1.0) / (FIRST_BITS + 1.0) };
         nadir_point_ = { -(FIRST_BITS + 1.0), -(num_vars - 1.0) };
     }
 
-    std::vector<double> ZDT5::invoke(const std::vector<char>& vars) const
+    auto ZDT5::invoke(const std::vector<BinaryGene>& vars) const -> FitnessVector
     {
         assert(vars.size() >= FIRST_BITS);
         assert(vars.size() % REST_BITS == 0);
 
-        double f1 = 1.0 + std::count(vars.begin(), vars.begin() + FIRST_BITS, Gene{ 1 });
+        double f1 = 1.0 + std::count(vars.begin(), vars.begin() + FIRST_BITS, GeneType{ 1 });
 
         double g = 0.0;
         for (auto first = vars.begin() + FIRST_BITS; first <= vars.end() - REST_BITS; first += REST_BITS)
         {
-            size_t ones = std::count(first, first + REST_BITS, Gene{ 1 });
+            size_t ones = std::count(first, first + REST_BITS, GeneType{ 1 });
             g += (ones == REST_BITS) ? 1.0 : 2.0 + ones;
         }
 
@@ -191,7 +191,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT6::ZDT6(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunctionRealN("ZDT6", 2, num_vars, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction<RealGene>("ZDT6", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -202,7 +202,7 @@ namespace genetic_algorithm::problems
         nadir_point_ = { -1.0, -0.92 };
     }
 
-    std::vector<double> ZDT6::invoke(const std::vector<double>& vars) const
+    auto ZDT6::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
         assert(vars.size() > 1);
 

@@ -222,14 +222,14 @@ namespace genetic_algorithm::selection
     class Lambda final : public Selection
     {
     public:
-        using SelectionFunction = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
+        using SelectionCallable = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
 
-        explicit Lambda(SelectionFunction f) noexcept;
+        explicit Lambda(SelectionCallable f);
 
     private:
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        SelectionFunction selection_;
+        SelectionCallable selection_;
     };
 
 } // namespace genetic_algorithm::selection

@@ -17,7 +17,7 @@ using namespace genetic_algorithm::problems;
 void binary_sphere()
 {
     Sphere fitness_func(100);
-    BinaryGA GA(200, fitness_func.num_bits(), fitness_func);
+    BinaryGA GA(fitness_func, 200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Sigma{} });
     GA.crossover_method(crossover::binary::SinglePoint{ 0.9 });
@@ -30,7 +30,7 @@ void binary_sphere()
 void binary_rastrigin()
 {
     Rastrigin fitness_func(10);
-    BinaryGA GA(400, fitness_func.num_bits(), fitness_func);
+    BinaryGA GA(fitness_func, 400);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Roulette{} });
     GA.crossover_method(crossover::binary::NPoint{ 0.75, 2 });
@@ -44,7 +44,7 @@ void binary_rastrigin()
 void binary_rosenbrock()
 {
     Rosenbrock fitness_func(10);
-    BinaryGA GA(300, fitness_func.num_bits(), fitness_func);
+    BinaryGA GA(fitness_func, 300);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{}, update::KeepChildren{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
@@ -56,7 +56,7 @@ void binary_rosenbrock()
 void binary_schwefel()
 {
     Schwefel fitness_func(10);
-    BinaryGA GA(200, fitness_func.num_bits(), fitness_func);
+    BinaryGA GA(fitness_func, 200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Rank{}, update::Elitism{ 10 } });
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
@@ -69,7 +69,7 @@ void binary_schwefel()
 void binary_griewank()
 {
     Griewank fitness_func(10);
-    BinaryGA GA(200, fitness_func.num_bits(), fitness_func);
+    BinaryGA GA(fitness_func, 200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Sigma{}, update::KeepBest{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
@@ -82,7 +82,7 @@ void binary_griewank()
 void binary_ackley()
 {
     Ackley fitness_func(10);
-    BinaryGA GA(250, fitness_func.num_bits(), fitness_func);
+    BinaryGA GA(fitness_func, 250);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{}, update::KeepBest{} });
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
@@ -95,7 +95,7 @@ void binary_ackley()
 void binary_levy()
 {
     Levy fitness_func(10);
-    BinaryGA GA(250, fitness_func.num_bits(), fitness_func);
+    BinaryGA GA(fitness_func, 250);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{}, update::KeepBest{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });

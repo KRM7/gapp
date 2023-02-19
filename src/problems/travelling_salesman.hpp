@@ -20,7 +20,9 @@
 
 namespace genetic_algorithm::problems
 {
-    /** ... */
+    /**
+    * Base class used for the travelling salesman benchmark functions.
+    */
     class TSP : public BenchmarkFunction<PermutationGene>
     {
     public:
@@ -29,27 +31,37 @@ namespace genetic_algorithm::problems
 
         template<size_t N>
         TSP(const std::array<Coords, N>& cities, double optimal_value) :
-            BenchmarkFunction<PermutationGene>("TSP" + std::to_string(N), 1, N, Bounds{ 0, N - 1 }), distance_matrix_(N, std::vector(N, 0.0)), optimal_value_(optimal_value)
+            BenchmarkFunction<PermutationGene>("TSP" + std::to_string(N), N, 1, Bounds{ 0, N - 1 }),
+            distance_matrix_(N, std::vector(N, 0.0))
         {
+            optimal_value_ = { optimal_value };
+            ideal_point_ = optimal_value_;
+            nadir_point_ = optimal_value_;
+
             for (size_t i = 0; i < distance_matrix_.size(); i++)
+            {
                 for (size_t j = 0; j < distance_matrix_.size(); j++)
-                    distance_matrix_[i][j] = std::sqrt(std::pow(cities[i][0] - cities[j][0], 2) + std::pow(cities[i][1] - cities[j][1], 2));
+                {
+                    const double dx = cities[i][0] - cities[j][0];
+                    const double dy = cities[i][1] - cities[j][1];
+
+                    distance_matrix_[i][j] = std::hypot(dx, dy);
+                }
+            }
         }
 
-        double optimal_value() const noexcept { return optimal_value_; }
-
     private:
-        std::vector<double> invoke(const std::vector<PermutationGene>& x) const override;
+        FitnessVector invoke(const std::vector<PermutationGene>& chrom) const override;
 
         DistanceMatrix distance_matrix_;
-        double optimal_value_;
     };
+
 
     /**
     * Travelling salesman problem with 52 nodes (Berlin52) for testing the PermutationGA. \n
     * Implemented for maximization (returns negative distances).
     */
-    class TSP52 : public TSP
+    class TSP52 final : public TSP
     {
     public:
         /** Default constructor. */
@@ -61,7 +73,7 @@ namespace genetic_algorithm::problems
     * Travelling salesman problem with 76 nodes (Padberg/Rinaldi's 76 city problem) for testing the PermutationGA. \n
     * Implemented for maximization (returns negative distances).
     */
-    class TSP76 : public TSP
+    class TSP76 final : public TSP
     {
     public:
         /** Default constructor. */
@@ -72,7 +84,7 @@ namespace genetic_algorithm::problems
     * Travelling salesman problem with 124 nodes (Padberg/Rinaldi's 124 city problem) for testing the PermutationGA. \n
     * Implemented for maximization (returns negative distances).
     */
-    class TSP124 : public TSP
+    class TSP124 final : public TSP
     {
     public:
         /** Default constructor. */
@@ -83,7 +95,7 @@ namespace genetic_algorithm::problems
     * Travelling salesman problem with 152 nodes (Padberg/Rinaldi's 152 city problem) for testing the PermutationGA. \n
     * Implemented for maximization (returns negative distances).
     */
-    class TSP152 : public TSP
+    class TSP152 final : public TSP
     {
     public:
         /** Default constructor. */
@@ -94,7 +106,7 @@ namespace genetic_algorithm::problems
     * Travelling salesman problem with 226 nodes (Padberg/Rinaldi's 226 city problem) for testing the PermutationGA. \n
     * Implemented for maximization (returns negative distances).
     */
-    class TSP226 : public TSP
+    class TSP226 final : public TSP
     {
     public:
         /** Default constructor. */
@@ -105,7 +117,7 @@ namespace genetic_algorithm::problems
     * Travelling salesman problem with 299 nodes (Padberg/Rinaldi's 299 city problem) for testing the PermutationGA. \n
     * Implemented for maximization (returns negative distances).
     */
-    class TSP299 : public TSP
+    class TSP299 final : public TSP
     {
     public:
         /** Default constructor. */
@@ -116,7 +128,7 @@ namespace genetic_algorithm::problems
     * Travelling salesman problem with 439 nodes (Padberg/Rinaldi's 439 city problem) for testing the PermutationGA. \n
     * Implemented for maximization (returns negative distances).
     */
-    class TSP439 : public TSP
+    class TSP439 final : public TSP
     {
     public:
         /** Default constructor. */
