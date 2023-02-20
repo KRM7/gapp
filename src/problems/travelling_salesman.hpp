@@ -13,9 +13,7 @@
 #include "tsp_data/tsp_data.hpp"
 #include "benchmark_function.hpp"
 #include <vector>
-#include <string>
-#include <array>
-#include <cmath>
+#include <span>
 #include <cstddef>
 
 namespace genetic_algorithm::problems
@@ -29,26 +27,7 @@ namespace genetic_algorithm::problems
         using Coords = std::array<double, 2>;
         using DistanceMatrix = std::vector<std::vector<double>>;
 
-        template<size_t N>
-        TSP(const std::array<Coords, N>& cities, double optimal_value) :
-            BenchmarkFunction<PermutationGene>("TSP" + std::to_string(N), N, 1, Bounds{ 0, N - 1 }),
-            distance_matrix_(N, std::vector(N, 0.0))
-        {
-            optimal_value_ = { optimal_value };
-            ideal_point_ = optimal_value_;
-            nadir_point_ = optimal_value_;
-
-            for (size_t i = 0; i < distance_matrix_.size(); i++)
-            {
-                for (size_t j = 0; j < distance_matrix_.size(); j++)
-                {
-                    const double dx = cities[i][0] - cities[j][0];
-                    const double dy = cities[i][1] - cities[j][1];
-
-                    distance_matrix_[i][j] = std::hypot(dx, dy);
-                }
-            }
-        }
+        TSP(std::span<const Coords> cities, double optimal_value);
 
     private:
         FitnessVector invoke(const std::vector<PermutationGene>& chrom) const override;
