@@ -74,7 +74,7 @@ namespace genetic_algorithm::stopping
         return std::any_of(fitness_matrix.begin(), fitness_matrix.end(),
         [this](const auto& fvec) noexcept
         {
-            return math::paretoCompareLess(fitness_threshold_, fvec);
+            return !math::paretoCompareLess(fvec, fitness_threshold_);
         });
     }
 
