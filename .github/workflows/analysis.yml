@@ -39,10 +39,11 @@ jobs:
 
     strategy:
       matrix:
-        tool: [ { name: iwyu, cmake-flag: CMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu" },
-                { name: clang-tidy, cmake-flag: CMAKE_CXX_CLANG_TIDY="clang-tidy" } ]
+        tool: [ { name: iwyu,       cmake-flag: CMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu" },
+                { name: clang-tidy, cmake-flag: CMAKE_CXX_CLANG_TIDY="clang-tidy" },
+                { name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck" } ]
         include:
-          - pkgs: clang-14 llvm-14-dev libclang-14-dev iwyu clang-tools-14 clang-tidy-14
+          - pkgs: clang-14 llvm-14-dev libclang-14-dev clang-tools-14 clang-tidy-14 iwyu cppcheck
             cxx: clang++-14
 
     defaults:
@@ -74,7 +75,6 @@ jobs:
 #############################################################################################################
 
   codeql:
-    name: codeql
     runs-on: ubuntu-22.04
 
     strategy:
@@ -82,6 +82,8 @@ jobs:
         include:
           - pkgs: gcc-11 libtbb-dev
             cxx: g++-11
+
+    name: codeql
 
     defaults:
       run:
