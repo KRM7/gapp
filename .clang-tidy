@@ -5,25 +5,9 @@ Checks: >
   performance-*,
   bugprone-*,
   portability-*,
+  readability-*,
   misc-*,
 
-  readability-convert-member-functions-to-static,
-  readability-container-contains,
-  readability-const-return-type,
-  readability-container-size-empty,
-  readability-deleted-default,
-  readability-else-after-return,
-  readability-inconsistent-declaration-parameter-name,
-  readability-misleading-indentation,
-  readability-redundant-access-specifiers,
-  readability-redundant-control-flow,
-  readability-redundant-declaration,
-  readability-redundant-function-ptr-dereference,
-  readability-redundant-preprocessor,
-  readability-redundant-smartptr-get,
-  readability-static-definition-in-anonymous-namespace,
-  readability-static-accessed-through-instance,
-  readability-qualified-auto,
   google-default-arguments,
   google-build-namespaces,
   hicpp-multiway-paths-covered,
@@ -33,10 +17,15 @@ Checks: >
   -modernize-use-nodiscard,
   -modernize-use-auto,
   -modernize-use-trailing-return-type,
-  -modernize-use-bool-literals,
-  -bugprone-easily-swappable-parameters,
-  -bugprone-exception-escape,
   -performance-noexcept-move-constructor,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -readability-named-parameter,
+  -readability-function-cognitive-complexity,
+  -readability-isolate-declaration,
+  -readability-container-data-pointer,
+  -readability-suspicious-call-argument,
+  -bugprone-easily-swappable-parameters,
   -misc-unconventional-assign-operator,
   -misc-non-private-member-variables-in-classes,
   -misc-no-recursion
@@ -74,6 +63,8 @@ WarningsAsErrors: >
 
 # Specify options for the checks where the default isnt good
 CheckOptions:
-  - { key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals,          value: true }
-  - { key: readability-implicit-bool-conversion.AllowIntegerConditions, value: 1 }
-  - { key: bugprone-narrowing-conversions.IgnoreConversionFromTypes,    value: difference_type;ptrdiff_t;size_type;size_t;bool }
+  - { key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals,				value: true }
+  - { key: readability-implicit-bool-conversion.AllowIntegerConditions,		value: true }
+  - { key: bugprone-narrowing-conversions.IgnoreConversionFromTypes,		value: difference_type;ptrdiff_t;size_type;size_t;bool }
+  - { key: readability-braces-around-statements.ShortStatementLines,		value: 2 }
+  - { key: bugprone-easily-swappable-parameters.ModelImplicitConversions,	value: false }

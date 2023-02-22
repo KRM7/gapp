@@ -39,9 +39,9 @@ jobs:
 
     strategy:
       matrix:
-        tool: [ { name: iwyu,       cmake-flag: CMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu" },
+        tool: [ { name: iwyu,       cmake-flag: CMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu;-Xiwyu;--mapping_file=../.iwyu-mappings" },
                 { name: clang-tidy, cmake-flag: CMAKE_CXX_CLANG_TIDY="clang-tidy" },
-                { name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck" } ]
+                { name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck;--enable=all;--std=c++20;--suppressions-list=../.cppcheck-supressions" } ]
         include:
           - pkgs: clang-14 llvm-14-dev libclang-14-dev clang-tools-14 clang-tidy-14 iwyu cppcheck
             cxx: clang++-14
@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v3
       
       - name: setup-tools
-        run: sudo apt install -y ${{ matrix.pkgs }}
+        run: sudo apt update && sudo apt install -y ${{ matrix.pkgs }}
 
       - name: setup-analysis
         env:
@@ -65,7 +65,7 @@ jobs:
         run: cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=OFF -D${{ matrix.tool.cmake-flag }}
       
       - name: run-analysis
-        run: cmake --build . --target GeneticAlgorithm 2>&1 | tee ${{ matrix.tool.name }}-out.txt
+        run: cmake --build . --parallel --target GeneticAlgorithm 2>&1 | tee ${{ matrix.tool.name }}-out.txt
       
       - uses: actions/upload-artifact@v3
         with:
@@ -94,7 +94,7 @@ jobs:
         uses: actions/checkout@v3
       
       - name: setup-tools
-        run: sudo apt install -y ${{ matrix.pkgs }}
+        run: sudo apt update && sudo apt install -y ${{ matrix.pkgs }}
 
       - name: setup-codeql
         uses: github/codeql-action/init@v2
