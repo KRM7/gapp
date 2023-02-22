@@ -105,8 +105,8 @@ TEMPLATE_TEST_CASE("edge_crossover", "[crossover]", int, unsigned)
     auto child1 = edgeCrossoverImpl(parent1, parent2);
     auto child2 = edgeCrossoverImpl(parent2, parent1);
 
-    REQUIRE(child1.chromosome == Chromosome<TestType>{ { 0, 5, 6, 1, 2, 8, 9, 7, 4, 3 } });
-    REQUIRE(child2.chromosome == Chromosome<TestType>{ { 4, 5, 6, 7, 0, 1, 2, 8, 9, 3 } });
+    REQUIRE(child1.chromosome == Chromosome<TestType>{ { 0, 5, 4, 1, 6, 7, 9, 8, 3, 2 } });
+    REQUIRE(child2.chromosome == Chromosome<TestType>{ { 4, 5, 0, 6, 1, 2, 3, 9, 8, 7 } });
 }
 
 TEMPLATE_TEST_CASE("pmx_crossover", "[crossover]", int, unsigned)

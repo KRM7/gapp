@@ -13,8 +13,11 @@
 namespace genetic_algorithm
 {
     /**
-    * Genetic algorithm where the chromosomes encode permutations. \n
-    * The genes of the chromosomes are all unique unsigned integers on thhe closed interval [0, chrom_len - 1].
+    * Genetic algorithm in which the chromosomes encode permutations. \n
+    * The genes of the chromosomes are unique unsigned integers on the closed interval [0, chrom_len - 1].
+    * 
+    * The first and last elements of the permutations are assumed to be unrelated, eg. the permutation
+    * A-B-C-D will not be considered equal to the permutation B-C-D-A by the algorithm.
     */
     class PermutationGA : public GA<PermutationGene>
     {

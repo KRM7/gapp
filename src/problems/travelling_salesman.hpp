@@ -12,6 +12,7 @@
 
 #include "tsp_data/tsp_data.hpp"
 #include "benchmark_function.hpp"
+#include "../utility/matrix.hpp"
 #include <vector>
 #include <span>
 #include <cstddef>
@@ -20,12 +21,13 @@ namespace genetic_algorithm::problems
 {
     /**
     * Base class used for the travelling salesman benchmark functions.
+    * The last node is fixed to be the last node of the city list supplied in the ctor.
     */
     class TSP : public BenchmarkFunction<PermutationGene>
     {
     public:
         using Coords = std::array<double, 2>;
-        using DistanceMatrix = std::vector<std::vector<double>>;
+        using DistanceMatrix = detail::Matrix<double>;
 
         TSP(std::span<const Coords> cities, double optimal_value);
 
