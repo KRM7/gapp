@@ -1,6 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "single_objective.hpp"
+#include "soga_selection.hpp"
+#include "soga_update.hpp"
 #include "../core/ga_info.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/utility.hpp"

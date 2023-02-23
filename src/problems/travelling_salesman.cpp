@@ -10,7 +10,7 @@
 namespace genetic_algorithm::problems
 {
     TSP::TSP(std::span<const Coords> cities, double optimal_value) :
-        BenchmarkFunction<PermutationGene>("TSP" + std::to_string(cities.size()), cities.size() - 1, 1, Bounds{ 0, cities.size() - 2 }),
+        BenchmarkFunction("TSP" + std::to_string(cities.size()), cities.size() - 1, 1, Bounds{ 0, cities.size() - 2 }),
         distance_matrix_(cities.size(), cities.size(), 0.0)
     {
         optimal_value_ = { optimal_value };

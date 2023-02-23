@@ -6,7 +6,6 @@
 #include "../core/ga_base.decl.hpp"
 #include "../population/candidate.hpp"
 #include "gene_types.hpp"
-#include <vector>
 #include <memory>
 #include <utility>
 #include <cstddef>

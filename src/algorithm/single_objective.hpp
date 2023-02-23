@@ -4,11 +4,13 @@
 #define GA_ALGORITHM_SINGLE_OBJECTIVE_HPP
 
 #include "algorithm_base.decl.hpp"
+#include "selection_base.hpp"
+#include "updater_base.hpp"
 #include "soga_selection.hpp"
 #include "soga_update.hpp"
+#include <vector>
 #include <functional>
 #include <memory>
-#include <type_traits>
 #include <cstddef>
 
 namespace genetic_algorithm::algorithm

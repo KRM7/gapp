@@ -7,6 +7,7 @@
 #include "../utility/utility.hpp"
 #include <functional>
 #include <utility>
+#include <stdexcept>
 
 namespace genetic_algorithm
 {

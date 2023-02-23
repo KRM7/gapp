@@ -17,7 +17,7 @@ namespace genetic_algorithm::problems
     using std::numbers::pi;
 
     Kursawe::Kursawe(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("Kursawe", num_vars, 2, Bounds{ -5.0, 5.0 }, bits_per_var)
+        BenchmarkFunction("Kursawe", num_vars, 2, Bounds{ -5.0, 5.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -47,7 +47,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT1::ZDT1(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("ZDT1", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("ZDT1", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -74,7 +74,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT2::ZDT2(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("ZDT2", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("ZDT2", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -101,7 +101,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT3::ZDT3(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("ZDT3", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("ZDT3", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -128,7 +128,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT4::ZDT4(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("ZDT4", num_vars, 2, Bounds{ -5.0, 5.0 }, bits_per_var)
+        BenchmarkFunction("ZDT4", num_vars, 2, Bounds{ -5.0, 5.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -159,7 +159,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT5::ZDT5(size_t num_vars) :
-        BenchmarkFunction<BinaryGene>("ZDT5", FIRST_BITS + (num_vars - 1) * REST_BITS, 2, Bounds{ 0, 1 })
+        BenchmarkFunction("ZDT5", FIRST_BITS + (num_vars - 1) * REST_BITS, 2, Bounds{ 0, 1 })
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 
@@ -191,7 +191,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT6::ZDT6(size_t num_vars, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("ZDT6", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("ZDT6", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_vars < 2) GA_THROW(std::invalid_argument, "Number of variables must be at least 2.");
 

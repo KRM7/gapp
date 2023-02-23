@@ -1,8 +1,10 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "permutation.hpp"
+#include "../core/ga_base.hpp"
 #include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/probability.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <iterator>

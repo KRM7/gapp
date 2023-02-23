@@ -1,6 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "binary.hpp"
+#include "../core/ga_base.hpp"
 #include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/probability.hpp"

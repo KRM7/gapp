@@ -10,12 +10,13 @@
 #ifndef GA_PROBLEMS_TSP_HPP
 #define GA_PROBLEMS_TSP_HPP
 
-#include "tsp_data/tsp_data.hpp"
 #include "benchmark_function.hpp"
+#include "tsp_data/tsp_data.hpp"
+#include "../encoding/gene_types.hpp"
 #include "../utility/matrix.hpp"
 #include <vector>
+#include <array>
 #include <span>
-#include <cstddef>
 
 namespace genetic_algorithm::problems
 {

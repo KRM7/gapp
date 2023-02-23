@@ -8,7 +8,6 @@
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <execution>
-#include <atomic>
 #include <numeric>
 #include <functional>
 #include <iterator>

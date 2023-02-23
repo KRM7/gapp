@@ -1,7 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "binary.hpp"
-#include "../core/ga_base.hpp"
+#include "../core/fitness_function.hpp"
+#include "../population/candidate.hpp"
 #include "../crossover/binary.hpp"
 #include "../mutation/binary.hpp"
 #include "../utility/rng.hpp"
@@ -12,8 +13,8 @@
 
 namespace genetic_algorithm
 {
-    BinaryGA::BinaryGA(std::unique_ptr<FitnessFunction<BinaryGene>> fitness_function, size_t population_size)
-        : GA(std::move(fitness_function), population_size)
+    BinaryGA::BinaryGA(std::unique_ptr<FitnessFunction<BinaryGene>> fitness_function, size_t population_size) :
+        GA(std::move(fitness_function), population_size)
     {
         bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ 0, 1 });
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());

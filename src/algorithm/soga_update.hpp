@@ -6,6 +6,7 @@
 #include "updater_base.hpp"
 #include "../population/population.hpp"
 #include <vector>
+#include <functional>
 #include <cstddef>
 
 namespace genetic_algorithm

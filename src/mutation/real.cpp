@@ -4,6 +4,7 @@
 #include "../population/candidate.hpp"
 #include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/probability.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <vector>

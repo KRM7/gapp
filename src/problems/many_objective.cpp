@@ -1,11 +1,13 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "many_objective.hpp"
+#include "../utility/math.hpp"
 #include <vector>
+#include <algorithm>
 #include <numeric>
-#include <functional>
 #include <iterator>
 #include <numbers>
+#include <stdexcept>
 #include <cmath>
 #include <cstddef>
 #include <cassert>
@@ -187,7 +189,7 @@ namespace genetic_algorithm::problems
 
 
     DTLZ1::DTLZ1(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("DTLZ1", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("DTLZ1", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
 
@@ -207,7 +209,7 @@ namespace genetic_algorithm::problems
 
 
     DTLZ2::DTLZ2(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("DTLZ2", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("DTLZ2", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
 
@@ -227,7 +229,7 @@ namespace genetic_algorithm::problems
 
 
     DTLZ3::DTLZ3(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("DTLZ3", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("DTLZ3", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
 
@@ -247,7 +249,7 @@ namespace genetic_algorithm::problems
 
 
     DTLZ4::DTLZ4(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("DTLZ4", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("DTLZ4", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
 
@@ -266,7 +268,7 @@ namespace genetic_algorithm::problems
 
 
     DTLZ5::DTLZ5(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("DTLZ5", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("DTLZ5", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
 
@@ -291,7 +293,7 @@ namespace genetic_algorithm::problems
 
 
     DTLZ6::DTLZ6(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("DTLZ6", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("DTLZ6", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
 
@@ -315,7 +317,7 @@ namespace genetic_algorithm::problems
 
 
     DTLZ7::DTLZ7(size_t num_obj, size_t bits_per_var) :
-        BenchmarkFunction<RealGene>("DTLZ7", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
+        BenchmarkFunction("DTLZ7", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
         if (num_obj < 2) GA_THROW(std::invalid_argument, "The number of objectives must be at least 2.");
 

@@ -1,7 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
-#include "../core/ga_base.hpp"
+#include "../core/fitness_function.hpp"
+#include "../population/candidate.hpp"
 #include "../crossover/real.hpp"
 #include "../mutation/real.hpp"
 #include "../utility/rng.hpp"

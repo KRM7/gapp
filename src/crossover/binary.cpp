@@ -1,10 +1,10 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "binary.hpp"
-#include "crossover_base.hpp"
 #include "crossover_dtl.hpp"
 #include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
+#include "../utility/probability.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <vector>
@@ -64,8 +64,7 @@ namespace genetic_algorithm::crossover::binary
 
     Uniform::Uniform(Probability pc, Probability swap_prob) noexcept :
         Crossover(pc), ps_(swap_prob)
-    {
-    }
+    {}
 
     void Uniform::swap_probability(Probability ps) noexcept
     {

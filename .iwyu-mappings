@@ -3,18 +3,24 @@
 
 [
   # Map C headers to their C++ counterparts
-  { include: [ "<assert.h>", public, "<cassert>", public ] },
-  { include: [ "<math.h>",   public, "<cmath>",   public ] },
-  { include: [ "<stddef.h>", public, "<cstddef>", public ] },
-  { include: [ "<stdlib.h>", public, "<cstdlib>", public ] },
+  { include: [ "<assert.h>", private, "<cassert>", public ] },
+  { include: [ "<math.h>",   private, "<cmath>",   public ] },
+  { include: [ "<stddef.h>", private, "<cstddef>", public ] },
+  { include: [ "<stdlib.h>", private, "<cstdlib>", public ] },
 
   # iwyu wants to include <new> whenever something allocates memory
   { symbol: ["std::bad_alloc", "private", "<vector>", "public" ] },
 
   # Fix incorrectly suggested private header includes
-  { include: ["<ext/type_traits.h>",          "private", "<type_traits>", "public" ] },
-  { symbol:  ["std::tuple_element<>::type",   "private", "<tuple>",       "public" ] },
-  { symbol:  ["__alloc_traits<>::value_type", "private", "<vector>",      "public" ] },
-  { symbol:  ["abs",                          "private", "<cmath>",       "public" ] },
+  { include: ["<ext/type_traits.h>",            "private", "<type_traits>", "public" ] },
+  { include: ["<bits/std_abs.h>",               "private", "<cmath>",       "public" ] },
+  { include: ["<ext/alloc_traits.h>",           "private", "<vector>",      "public" ] },
+  { symbol:  ["std::tuple_element::type",       "private", "<tuple>",       "public" ] },
+  { symbol:  ["__alloc_traits::value_type",     "private", "<vector>",      "public" ] },
+  { symbol:  ["abs",                            "private", "<cmath>",       "public" ] },
+  { symbol:  ["allocator_traits::value_type",   "private", "<vector>",      "public" ] },
 
+  # Fix unrecognized symbols
+  { symbol: [ "std::floating_point", "public", "<concepts>",    "public" ] },
+  { symbol: [ "std::is_final",       "public", "<type_traits>", "public" ] },
 ]

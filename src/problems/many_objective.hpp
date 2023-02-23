@@ -13,9 +13,8 @@
 #define GA_PROBLEMS_MANY_OBJECTIVE_HPP
 
 #include "benchmark_function.hpp"
-#include "multi_objective.hpp"
+#include "../encoding/gene_types.hpp"
 #include <vector>
-#include <string>
 #include <cstddef>
 
 namespace genetic_algorithm::problems

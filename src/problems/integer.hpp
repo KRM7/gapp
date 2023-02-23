@@ -6,9 +6,9 @@
 #define GA_PROBLEMS_INTEGER_HPP
 
 #include "benchmark_function.hpp"
+#include "../encoding/gene_types.hpp"
 #include <vector>
 #include <string>
-#include <cstddef>
 
 namespace genetic_algorithm::problems
 {

@@ -13,9 +13,8 @@
 #define GA_PROBLEMS_SINGLE_OBJECTIVE_HPP
 
 #include "benchmark_function.hpp"
-#include "../utility/utility.hpp"
+#include "../encoding/gene_types.hpp"
 #include <vector>
-#include <utility>
 #include <string>
 #include <cstddef>
 
@@ -41,7 +40,7 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Sphere(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction<RealGene>("Sphere", Bounds{ -5.12, 5.12 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
+            BenchmarkFunction("Sphere", Bounds{ -5.12, 5.12 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
@@ -71,7 +70,7 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Rastrigin(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction<RealGene>("Rastrigin", Bounds{ -5.12, 5.12 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
+            BenchmarkFunction("Rastrigin", Bounds{ -5.12, 5.12 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
@@ -103,7 +102,7 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Rosenbrock(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction<RealGene>("Rosenbrock", Bounds{ -2.048, 2.048 }, std::vector(num_vars, 1.0), 0.0, bits_per_var)
+            BenchmarkFunction("Rosenbrock", Bounds{ -2.048, 2.048 }, std::vector(num_vars, 1.0), 0.0, bits_per_var)
         {}
 
     private:
@@ -130,7 +129,7 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Schwefel(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction<RealGene>("Schwefel", Bounds{ -500.0, 500.0 }, std::vector(num_vars, 420.9687), 0.0, bits_per_var)
+            BenchmarkFunction("Schwefel", Bounds{ -500.0, 500.0 }, std::vector(num_vars, 420.9687), 0.0, bits_per_var)
         {}
 
     private:
@@ -165,7 +164,7 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Griewank(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction<RealGene>("Griewank", Bounds{ -600.0, 600.0 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
+            BenchmarkFunction("Griewank", Bounds{ -600.0, 600.0 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
@@ -196,7 +195,7 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Ackley(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction<RealGene>("Ackley", Bounds{ -32.768, 32.768 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
+            BenchmarkFunction("Ackley", Bounds{ -32.768, 32.768 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
@@ -222,7 +221,7 @@ namespace genetic_algorithm::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.
         */
         explicit Levy(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction<RealGene>("Levy", Bounds{ -10.0, 10.0 }, std::vector(num_vars, 1.0), 0.0, bits_per_var)
+            BenchmarkFunction("Levy", Bounds{ -10.0, 10.0 }, std::vector(num_vars, 1.0), 0.0, bits_per_var)
         {}
 
     private:

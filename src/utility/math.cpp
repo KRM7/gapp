@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <numeric>
 #include <functional>
+#include <iterator>
 #include <type_traits>
 #include <cmath>
 #include <cstddef>

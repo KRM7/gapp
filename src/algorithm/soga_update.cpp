@@ -8,6 +8,8 @@
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <numeric>
+#include <utility>
+#include <stdexcept>
 #include <cassert>
 
 namespace genetic_algorithm::update

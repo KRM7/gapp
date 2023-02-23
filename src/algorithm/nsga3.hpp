@@ -6,8 +6,10 @@
 #include "algorithm_base.hpp"
 #include "reference_lines.hpp"
 #include "../utility/math.hpp"
+#include <vector>
 #include <functional>
 #include <memory>
+#include <cstddef>
 
 namespace genetic_algorithm::algorithm
 {

@@ -1,7 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "permutation.hpp"
-#include "../core/ga_base.hpp"
+#include "../core/fitness_function.hpp"
+#include "../population/candidate.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
 #include "../utility/rng.hpp"
@@ -14,8 +15,8 @@
 
 namespace genetic_algorithm
 {
-    PermutationGA::PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, size_t population_size)
-        : GA(std::move(fitness_function), population_size)
+    PermutationGA::PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, size_t population_size) :
+        GA(std::move(fitness_function), population_size)
     {
         bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ 0_sz, this->chrom_len() - 1 });
         crossover_method(std::make_unique<crossover::perm::Order2>());

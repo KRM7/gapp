@@ -6,9 +6,11 @@
 #include "../core/ga_base.decl.hpp"
 #include "../core/fitness_function.hpp"
 #include "../encoding/gene_types.hpp"
+#include "../population/candidate.hpp"
+#include "../utility/math.hpp"
 #include <vector>
 #include <string>
-#include <optional>
+#include <utility>
 #include <cstddef>
 
 namespace genetic_algorithm::problems

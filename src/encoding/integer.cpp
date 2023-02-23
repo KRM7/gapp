@@ -1,7 +1,8 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "../core/ga_base.hpp"
+#include "../core/fitness_function.hpp"
+#include "../population/candidate.hpp"
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"
 #include "../utility/rng.hpp"
@@ -14,8 +15,8 @@
 
 namespace genetic_algorithm
 {
-    IntegerGA::IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, const GeneBounds& bounds, size_t population_size)
-        : GA(std::move(fitness_function), population_size)
+    IntegerGA::IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, const GeneBounds& bounds, size_t population_size) :
+        GA(std::move(fitness_function), population_size)
     {
         this->gene_bounds(bounds);
         crossover_method(std::make_unique<crossover::integer::TwoPoint>());
