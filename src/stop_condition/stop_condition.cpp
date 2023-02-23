@@ -31,7 +31,6 @@ namespace genetic_algorithm::stopping
     }
 
     FitnessEvals::FitnessEvals(size_t max_fitness_evals) noexcept
-        : StopCondition()
     {
         this->max_fitness_evals(max_fitness_evals);
     }
@@ -47,7 +46,6 @@ namespace genetic_algorithm::stopping
     }
 
     FitnessValue::FitnessValue(const FitnessVector& fitness_threshold)
-        : StopCondition()
     {
         this->fitness_threshold(fitness_threshold);
     }
@@ -79,7 +77,6 @@ namespace genetic_algorithm::stopping
     }
 
     FitnessMeanStall::FitnessMeanStall(size_t patience, double delta)
-        : StopCondition()
     {
         this->patience(patience);
         this->delta(delta);
@@ -123,7 +120,7 @@ namespace genetic_algorithm::stopping
     }
 
     FitnessBestStall::FitnessBestStall(size_t patience, double delta) :
-        StopCondition(), cntr_(0)
+        cntr_(0)
     {
         this->patience(patience);
         this->delta(delta);

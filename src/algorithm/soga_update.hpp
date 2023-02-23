@@ -62,7 +62,7 @@ namespace genetic_algorithm::update
 
         /** @returns The number of elite solutions used. */
         [[nodiscard]]
-        size_t elite_num() noexcept { return n_; }
+        size_t elite_num() const noexcept { return n_; }
 
     private:
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;

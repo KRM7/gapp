@@ -29,8 +29,7 @@ namespace genetic_algorithm::crossover::binary
         return dtl::twoPointCrossoverImpl(parent1, parent2, { rng::randomInt(0_sz, chrom_len), rng::randomInt(0_sz, chrom_len) });
     }
 
-    NPoint::NPoint(size_t n) :
-        Crossover()
+    NPoint::NPoint(size_t n)
     {
         num_crossover_points(n);
     }

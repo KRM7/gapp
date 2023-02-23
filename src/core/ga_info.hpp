@@ -264,7 +264,6 @@ namespace genetic_algorithm
 /* IMPLEMENTATION */
 
 #include "../algorithm/algorithm_base.hpp"
-#include "../algorithm/single_objective.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/utility.hpp"
 #include <utility>

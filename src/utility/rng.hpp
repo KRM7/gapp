@@ -129,7 +129,7 @@ namespace genetic_algorithm::rng
         constexpr size_t nbits = CHAR_BIT * sizeof(PRNG::result_type);
         constexpr auto msb_mask = PRNG::result_type{ 1 } << (nbits - 1);
 
-        return rng::prng() & msb_mask;
+        return static_cast<bool>(rng::prng() & msb_mask);
     }
 
     template<std::integral IntType>

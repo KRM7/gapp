@@ -111,7 +111,7 @@ namespace genetic_algorithm::algorithm
         std::vector<Point> extreme_points_;
 
         /* Generate n reference points in dim dimensions. */
-        std::vector<Point> generateReferencePoints(size_t dim, size_t num_points);
+        std::vector<Point> generateReferencePoints(size_t dim, size_t num_points) const;
 
         /* Update the ideal point approximation using the new points in fmat, assuming maximization. */
         void updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
@@ -172,7 +172,7 @@ namespace genetic_algorithm::algorithm
     NSGA3::~NSGA3()                           = default;
 
 
-    inline std::vector<Point> NSGA3::Impl::generateReferencePoints(size_t dim, size_t num_points)
+    inline std::vector<Point> NSGA3::Impl::generateReferencePoints(size_t dim, size_t num_points) const
     {
         auto ref_lines = ref_generator_(dim, num_points);
         for (auto& ref_line : ref_lines)

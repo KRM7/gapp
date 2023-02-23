@@ -93,7 +93,7 @@ namespace genetic_algorithm::stopping
     public:
         /** Create a stop condition based on the mean fitness values of the population. */
         FitnessMeanStall() noexcept :
-            StopCondition(), patience_(0), delta_(1E-6), cntr_(0)
+            patience_(0), delta_(1E-6), cntr_(0)
         {}
 
         /**
@@ -149,7 +149,7 @@ namespace genetic_algorithm::stopping
     public:
         /** Create a stop condition based on the best fitness values of the population. */
         FitnessBestStall() noexcept :
-            StopCondition(), patience_(0), delta_(1E-6), cntr_(0)
+            patience_(0), delta_(1E-6), cntr_(0)
         {}
 
         /**

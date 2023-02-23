@@ -44,7 +44,7 @@ namespace genetic_algorithm::crossover::real
     public:
         /** Create a BLX-alpha crossover operator using the default parameter values. */
         BLXa() noexcept :
-            Crossover(), alpha_(GeneType{ 0.5 })
+            alpha_(GeneType{ 0.5 })
         {}
 
         /**
@@ -86,7 +86,7 @@ namespace genetic_algorithm::crossover::real
     public:
         /** Create a simulated binary crossover operator using the default parameter values. */
         SimulatedBinary() noexcept :
-            Crossover(), eta_(GeneType{ 4.0 })
+            eta_(GeneType{ 4.0 })
         {}
 
         /**

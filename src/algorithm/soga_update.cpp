@@ -49,8 +49,7 @@ namespace genetic_algorithm::update
     }
 
 
-    Lambda::Lambda(UpdateCallable f) :
-        Updater()
+    Lambda::Lambda(UpdateCallable f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
 

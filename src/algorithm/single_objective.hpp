@@ -8,7 +8,6 @@
 #include "soga_update.hpp"
 #include <functional>
 #include <memory>
-#include <functional>
 #include <type_traits>
 #include <cstddef>
 
@@ -197,7 +196,7 @@ namespace genetic_algorithm::algorithm
 namespace genetic_algorithm::algorithm
 {
     inline SingleObjective::SingleObjective() :
-        Algorithm(), selection_(std::make_unique<DefaultSelection>()), updater_(std::make_unique<DefaultUpdater>())
+        selection_(std::make_unique<DefaultSelection>()), updater_(std::make_unique<DefaultUpdater>())
     {}
 
     template<typename S>
@@ -209,7 +208,7 @@ namespace genetic_algorithm::algorithm
     template<typename S, typename U>
     requires selection::SelectionType<S> && std::is_final_v<S> && update::UpdaterType<U> && std::is_final_v<U>
     inline SingleObjective::SingleObjective(S selection, U updater) :
-        Algorithm(), selection_(std::make_unique<S>(std::move(selection))), updater_(std::make_unique<U>(std::move(updater)))
+        selection_(std::make_unique<S>(std::move(selection))), updater_(std::make_unique<U>(std::move(updater)))
     {}
 
     template<selection::SelectionType S>
@@ -219,7 +218,7 @@ namespace genetic_algorithm::algorithm
 
     template<selection::SelectionType S, update::UpdaterType U>
     inline SingleObjective::SingleObjective(std::unique_ptr<S> selection, std::unique_ptr<U> updater) :
-        Algorithm(), selection_(std::move(selection)), updater_(std::move(updater))
+        selection_(std::move(selection)), updater_(std::move(updater))
     {
         if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
         if (!updater_)   GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");

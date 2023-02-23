@@ -175,8 +175,8 @@ namespace genetic_algorithm::selection
     }
 
 
-    Boltzmann::Boltzmann(TemperatureFunction f)
-        : temperature_(std::move(f))
+    Boltzmann::Boltzmann(TemperatureFunction f) :
+        temperature_(std::move(f))
     {}
 
     void Boltzmann::temperature_function(TemperatureFunction f)
@@ -216,8 +216,7 @@ namespace genetic_algorithm::selection
     }
 
 
-    Lambda::Lambda(SelectionCallable f) :
-        Selection()
+    Lambda::Lambda(SelectionCallable f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
 

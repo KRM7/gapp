@@ -239,8 +239,12 @@ namespace genetic_algorithm::algorithm::dtl
         }
 
         for (size_t row = 0; row < dmat.nrows(); row++)
+        {
             for (size_t col = 0; col < dmat.ncols(); col++)
+            {
                 cols[col].sum -= dmat(row, col).load(std::memory_order_relaxed);
+            }
+        }
 
         return cols;
     }

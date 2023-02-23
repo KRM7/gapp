@@ -370,7 +370,7 @@ namespace genetic_algorithm::crossover::dtl
         std::vector<bool> deleted(chrom_len, false);
         size_t num_deleted = 0;
 
-        for (bool odd_cycle = 0; num_deleted < chrom_len; odd_cycle ^= 1)
+        for (bool odd_cycle = false; num_deleted < chrom_len; odd_cycle ^= 1)
         {
             size_t pos = *detail::index_of(deleted, false);
             const T cycle_start = chrom1[pos];

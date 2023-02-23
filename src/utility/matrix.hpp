@@ -422,7 +422,7 @@ namespace genetic_algorithm::detail
     };
     
 
-    /* MATRIX ROW ITERATORS IMPLEMENTATIONS */
+    /* MATRIX ROW ITERATOR IMPLEMENTATIONS */
 
     template<typename T, typename A>
     class Matrix<T, A>::RowIterator :

@@ -94,7 +94,7 @@ namespace genetic_algorithm::detail
     /* Returns true if the node is a leaf node. */
     static inline bool isLeafNode(const Node& node) noexcept
     {
-        return !(node.left & node.right);
+        return !static_cast<bool>(node.left & node.right);
     }
 
     /* Return the max possible inner product between the point and a point inside the node. */
