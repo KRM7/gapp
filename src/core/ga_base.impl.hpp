@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2022 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 #ifndef GA_CORE_GA_BASE_IMPL_HPP
 #define GA_CORE_GA_BASE_IMPL_HPP

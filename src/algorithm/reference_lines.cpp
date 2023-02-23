@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2022 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 #include "reference_lines.hpp"
 #include "../utility/algorithm.hpp"

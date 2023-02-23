@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2022 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 #ifndef GA_CROSSOVER_LAMBDA_HPP
 #define GA_CROSSOVER_LAMBDA_HPP
@@ -21,8 +21,7 @@ namespace genetic_algorithm::crossover
     public:
         using CrossoverCallable = std::function<CandidatePair<T>(const GA<T>&, const Candidate<T>&, const Candidate<T>&)>;
 
-        explicit Lambda(CrossoverCallable f) :
-            Crossover<T>()
+        explicit Lambda(CrossoverCallable f)
         {
             if (!f) GA_THROW(std::invalid_argument, "The crossover method can't be a nullptr.");
 

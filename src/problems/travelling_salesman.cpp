@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2022 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 #include "travelling_salesman.hpp"
 #include <vector>

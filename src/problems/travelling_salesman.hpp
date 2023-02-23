@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2022 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 /**
 * Implementations of travelling salesman problems that can be used to test the

@@ -1,4 +1,4 @@
-#!/bin/sh
+﻿#!/bin/sh
 
 git clone https://github.com/fmtlib/fmt.git
 cd fmt

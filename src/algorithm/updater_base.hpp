@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2023 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 #ifndef GA_ALGORITHM_SOGA_UPDATER_BASE_HPP
 #define GA_ALGORITHM_SOGA_UPDATER_BASE_HPP

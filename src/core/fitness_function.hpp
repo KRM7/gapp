@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2023 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 #ifndef GA_CORE_FITNESS_FUNCTION_HPP
 #define GA_CORE_FITNESS_FUNCTION_HPP

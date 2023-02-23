@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_GENETIC_ALGORITHM_HPP
 #define GA_GENETIC_ALGORITHM_HPP

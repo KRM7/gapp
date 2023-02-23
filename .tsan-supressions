@@ -1,4 +1,4 @@
-# Suppress warnings from Intel TBB
+﻿# Suppress warnings from Intel TBB
 # (libstdc++ uses TBB to implement the parallel std algorithms)
 
 # clang

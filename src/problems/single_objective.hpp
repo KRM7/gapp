@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2022 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 /**
 * Implementations of some commonly used single-objective benchmark functions
@@ -204,7 +204,7 @@ namespace genetic_algorithm::problems
 
 
     /**
-    * Implementation of the LÈvy function for any number of variables. \n
+    * Implementation of the L√©vy function for any number of variables. \n
     *
     * Evaluated on the hypercube x_i = [-10.0, 10.0]. \n
     * The function is implemented for maximization, the global optimum is f(x) = 0, at x = (1, 1, ... , 1). \n
@@ -215,7 +215,7 @@ namespace genetic_algorithm::problems
     {
     public:
         /**
-        * Construct a LÈvy function.
+        * Construct a L√©vy function.
         *
         * @param num_vars The number of variables. Must be at least 1.
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded algorithms.

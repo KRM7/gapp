@@ -1,4 +1,4 @@
-name: sanitizers
+﻿name: sanitizers
 
 on: [push, pull_request]
 

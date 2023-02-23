@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2022 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 #ifndef GA_STOP_CONDITION_COMPOSITE
 #define GA_STOP_CONDITION_COMPOSITE
