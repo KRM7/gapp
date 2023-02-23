@@ -9,7 +9,10 @@ jobs:
       fail-fast: false
       matrix:
         build-type: [ Debug, Release ]
-        compiler: [ { cxx: g++-12, pkgs: gcc@12 }, { cxx: clang++, pkgs: llvm@15 } ]
+        compiler: [
+            #{ cxx: g++-12, pkgs: gcc@12 },
+            { cxx: clang++, pkgs: llvm@15 }
+        ]
         lib-type: [ { name: Static, cmake-flag: "OFF" }, { name: Shared, cmake-flag: "ON" } ]
         
     defaults:
