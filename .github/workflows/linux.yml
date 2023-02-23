@@ -11,7 +11,7 @@ jobs:
         build-type: [ Debug, Release ]
         compiler: [
             { cxx: g++-11, pkgs: gcc-11 libtbb-dev },
-            { cxx: g++-12, pkgs: gcc-12 libtbb-dev },
+            #{ cxx: g++-12, pkgs: gcc-12 libtbb-dev }, # disabled because of warnings in the std library
             { cxx: clang++-14, pkgs: clang-14 libtbb-dev },
             { cxx: clang++-15, pkgs: clang-15 libtbb-dev },
         ]
