@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: [Debug, Release]
+        build-type: [ Debug, Release ]
         compiler: [ { cxx: g++-11, pkgs: gcc@11 }, { cxx: clang++, pkgs: llvm@14 } ]
         lib-type: [ { name: Static, cmake-flag: "OFF" }, { name: Shared, cmake-flag: "ON" } ]
         

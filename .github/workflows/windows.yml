@@ -8,8 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: [Debug, Release]
-        compiler: [ { cxx: cl, pkgs: visualstudio2022buildtools, gen: "Visual Studio 17 2022" } ]
+        build-type: [ Debug, Release ]
+        compiler: [ { cxx: cl, gen: "Visual Studio 17 2022" } ]
         lib-type: [ { name: Static, cmake-flag: "OFF" }, { name: Shared, cmake-flag: "ON" } ]
 
         #- cxx: g++
@@ -31,8 +31,8 @@ jobs:
     - name: checkout-repo
       uses: actions/checkout@v3
 
-    - name: setup-compiler
-      run: choco install -y --allow-downgrade ${{ matrix.compiler.pkgs }}
+    #- name: setup-compiler
+    #  run: choco install -y --allow-downgrade ${{ matrix.compiler.pkgs }}
 
     - name: setup-catch
       env:
