@@ -2,6 +2,7 @@
 
 #include "binary.hpp"
 #include "../core/fitness_function.hpp"
+#include "../core/ga_base.hpp"
 #include "../population/candidate.hpp"
 #include "../crossover/binary.hpp"
 #include "../mutation/binary.hpp"

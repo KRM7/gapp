@@ -2,6 +2,7 @@
 
 #include "integer.hpp"
 #include "../core/fitness_function.hpp"
+#include "../core/ga_base.hpp"
 #include "../population/candidate.hpp"
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"

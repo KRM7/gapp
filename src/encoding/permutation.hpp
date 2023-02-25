@@ -3,9 +3,11 @@
 #ifndef GA_ENCODING_PERMUTATION_HPP
 #define GA_ENCODING_PERMUTATION_HPP
 
-#include "../core/ga_base.decl.hpp"
-#include "../population/candidate.hpp"
 #include "gene_types.hpp"
+#include "../core/ga_base.hpp"
+#include "../population/candidate.hpp"
+#include "../crossover/permutation.hpp"
+#include "../mutation/permutation.hpp"
 #include <memory>
 #include <utility>
 #include <cstddef>
@@ -40,7 +42,11 @@ namespace genetic_algorithm
         requires FitnessFunctionType<F, PermutationGene> && std::is_final_v<F>
         explicit PermutationGA(F fitness_function, size_t population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
-        {}
+        {
+            bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ 0_sz, this->chrom_len() - 1 });
+            crossover_method(std::make_unique<crossover::perm::Order2>());
+            mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
+        }
 
     private:
         void initialize() override;

@@ -3,9 +3,12 @@
 #ifndef GA_ENCODING_INTEGER_HPP
 #define GA_ENCODING_INTEGER_HPP
 
-#include "../core/ga_base.decl.hpp"
-#include "../population/candidate.hpp"
 #include "gene_types.hpp"
+#include "../core/ga_base.hpp"
+#include "../core/fitness_function.hpp"
+#include "../population/candidate.hpp"
+#include "../crossover/integer.hpp"
+#include "../mutation/integer.hpp"
 #include <memory>
 #include <utility>
 #include <cstddef>
@@ -40,8 +43,12 @@ namespace genetic_algorithm
         template<typename F>
         requires FitnessFunctionType<F, IntegerGene> && std::is_final_v<F>
         IntegerGA(F fitness_function, const GeneBounds& bounds, size_t population_size = DEFAULT_POPSIZE) :
-            IntegerGA(std::make_unique<F>(std::move(fitness_function)), bounds, population_size)
-        {}
+            GA(std::make_unique<F>(std::move(fitness_function)), population_size)
+        {
+            this->gene_bounds(bounds);
+            crossover_method(std::make_unique<crossover::integer::TwoPoint>());
+            mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / this->chrom_len()));
+        }
 
         /**
         * Set the lower and upper bounds of the integer genes used. \n

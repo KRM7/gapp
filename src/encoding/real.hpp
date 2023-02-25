@@ -3,9 +3,12 @@
 #ifndef GA_ENCODING_REAL_HPP
 #define GA_ENCODING_REAL_HPP
 
-#include "../core/ga_base.decl.hpp"
-#include "../population/candidate.hpp"
 #include "gene_types.hpp"
+#include "../core/ga_base.hpp"
+#include "../core/fitness_function.hpp"
+#include "../population/candidate.hpp"
+#include "../crossover/real.hpp"
+#include "../mutation/real.hpp"
 #include <memory>
 #include <utility>
 #include <cstddef>
@@ -50,8 +53,12 @@ namespace genetic_algorithm
         template<typename F>
         requires FitnessFunctionType<F, RealGene> && std::is_final_v<F>
         RCGA(F fitness_function, const BoundsVector& bounds, size_t population_size = DEFAULT_POPSIZE) :
-            RCGA(std::make_unique<F>(std::move(fitness_function)), bounds, population_size)
-        {}
+            GA(std::make_unique<F>(std::move(fitness_function)), population_size)
+        {
+            this->gene_bounds(bounds);
+            crossover_method(std::make_unique<crossover::real::Wright>());
+            mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
+        }
 
         /**
         * Construct a real encoded genetic algorithm. \n
@@ -64,8 +71,12 @@ namespace genetic_algorithm
         template<typename F>
         requires FitnessFunctionType<F, RealGene> && std::is_final_v<F>
         RCGA(F fitness_function, const GeneBounds& bounds, size_t population_size = DEFAULT_POPSIZE) :
-            RCGA(std::make_unique<F>(std::move(fitness_function)), bounds, population_size)
-        {}
+            GA(std::make_unique<F>(std::move(fitness_function)), population_size)
+        {
+            this->gene_bounds(bounds);
+            crossover_method(std::make_unique<crossover::real::Wright>());
+            mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
+        }
 
 
         /**

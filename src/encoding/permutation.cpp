@@ -2,6 +2,7 @@
 
 #include "permutation.hpp"
 #include "../core/fitness_function.hpp"
+#include "../core/ga_base.hpp"
 #include "../population/candidate.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
