@@ -21,7 +21,7 @@ namespace genetic_algorithm
     * The interval is specified by the gene bounds. \n
     * The algorithm also uses a modified mutation function with swaps and inversions.
     */
-    class IntegerGA : public GA<IntegerGene>
+    class IntegerGA final : public GA<IntegerGene>
     {
     public:
         /**

@@ -19,7 +19,7 @@ namespace genetic_algorithm
     * Real coded genetic algorithm. \n
     * Each gene of the chromosomes is a floating point value.
     */
-    class RCGA : public GA<RealGene>
+    class RCGA final : public GA<RealGene>
     {
     public:
         /**

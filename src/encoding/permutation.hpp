@@ -21,7 +21,7 @@ namespace genetic_algorithm
     * The first and last elements of the permutations are assumed to be unrelated, eg. the permutation
     * A-B-C-D will not be considered equal to the permutation B-C-D-A by the algorithm.
     */
-    class PermutationGA : public GA<PermutationGene>
+    class PermutationGA final : public GA<PermutationGene>
     {
     public:
         /**
