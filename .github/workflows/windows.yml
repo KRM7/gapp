@@ -18,14 +18,6 @@ jobs:
             { name: Shared, cmake-flag: "ON" },
         ]
 
-        #- cxx: g++
-        #  pkgs: mingw --version=11.2.0
-        #  gen: "Unix Makefiles"
-
-        #- cxx: g++
-        #  pkgs: mingw --version=12.2.0
-        #  gen: "Unix Makefiles"
-
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
