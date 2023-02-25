@@ -8,7 +8,6 @@
   <Include Path="cppcorecheckdeclrules.ruleset" Action="Default" />
   <Include Path="cppcorecheckenumrules.ruleset" Action="Default" />
   <Include Path="cppcorecheckfuncrules.ruleset" Action="Default" />
-  <Include Path="cppcorecheckgslrules.ruleset" Action="Default" />
   <Include Path="cppcorecheckownerpointerrules.ruleset" Action="Default" />
   <Include Path="cppcorecheckrawpointerrules.ruleset" Action="Default" />
   <Include Path="cppcorechecksharedpointerrules.ruleset" Action="Default" />
@@ -19,7 +18,7 @@
   <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
     <Rule Id="C26429" Action="None" />
     <Rule Id="C26438" Action="Warning" />
-    <Rule Id="C26440" Action="Info" />
+    <Rule Id="C26440" Action="Warning" />
     <Rule Id="C26446" Action="None" />
     <Rule Id="C26455" Action="None" />
     <Rule Id="C26472" Action="None" />
