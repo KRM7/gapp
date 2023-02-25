@@ -255,7 +255,7 @@ namespace genetic_algorithm
         bool keep_all_optimal_sols_ = false;
         bool is_initialized_ = false;
 
-        inline static constexpr size_t DEFAULT_POPSIZE = 100;
+        static constexpr size_t DEFAULT_POPSIZE = 100;
     };
 
 } // namespace genetic_algorithm
