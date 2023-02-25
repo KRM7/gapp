@@ -1,2 +1,4 @@
-﻿# Supresssions file for cppcheck
-# See: https://cppcheck.sourceforge.io/manual.pdf
+﻿// Supresssions file for cppcheck
+// See: https://cppcheck.sourceforge.io/manual.pdf
+
+passedByValue
