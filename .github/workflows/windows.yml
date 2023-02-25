@@ -9,8 +9,14 @@ jobs:
       fail-fast: false
       matrix:
         build-type: [ Debug, Release ]
-        compiler: [ { cxx: cl, gen: "Visual Studio 17 2022" } ]
-        lib-type: [ { name: Static, cmake-flag: "OFF" }, { name: Shared, cmake-flag: "ON" } ]
+        compiler: [
+            { cxx: cl, gen: "Visual Studio 17 2022", toolset: "v143" },
+            { cxx: clang++, gen: "Visual Studio 17 2022", toolset: "ClangCL" },
+        ]
+        lib-type: [
+            { name: Static, cmake-flag: "OFF" },
+            { name: Shared, cmake-flag: "ON" },
+        ]
 
         #- cxx: g++
         #  pkgs: mingw --version=11.2.0
@@ -38,12 +44,14 @@ jobs:
       env:
         CXX: ${{ matrix.compiler.cxx }}
         CMAKE_GENERATOR: ${{ matrix.compiler.gen }}
+        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler.toolset }}
       run: bash ./install_catch.sh
 
     - name: setup-build
       env:
         CXX: ${{ matrix.compiler.cxx }}
         CMAKE_GENERATOR: ${{ matrix.compiler.gen }}
+        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler.toolset }}
       run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.lib-type.cmake-flag }}
 
     - name: build
