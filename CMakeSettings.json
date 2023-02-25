@@ -1,7 +1,7 @@
 ﻿{
   "configurations": [
     {
-      "name": "x64-Debug",
+      "name": "x64-Debug-msvc",
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -11,17 +11,17 @@
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
-      "name": "x64-Release",
+      "name": "x64-Release-msvc",
       "generator": "Ninja",
       "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "-DGA_CXX_FLAGS=\"/analyze:WX-\"",
+      "cmakeCommandArgs": "-DGA_CXX_FLAGS=-analyze:WX-",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
-      "name": "x64-RelWithDebInfo",
+      "name": "x64-RelWithDebInfo-msvc",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -29,6 +29,36 @@
       "cmakeCommandArgs": "-DGA_CXX_FLAGS=-analyze:WX-",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "inheritEnvironments": [ "msvc_x64_x64" ]
+    },
+    {
+      "name": "x64-Debug-clang",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "inheritEnvironments": [ "clang_cl_x64_x64" ]
+    },
+    {
+      "name": "x64-Release-clang",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "inheritEnvironments": [ "clang_cl_x64_x64" ]
+    },
+    {
+      "name": "x64-RelWithDebInfo-clang",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "inheritEnvironments": [ "clang_cl_x64_x64" ]
     }
   ]
 }
