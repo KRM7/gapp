@@ -100,7 +100,7 @@ namespace genetic_algorithm
     {
         assert(fitness_function_ != nullptr);
 
-        return fitness_function_->dynamic_fitness();
+        return fitness_function_->dynamic();
     }
 
 
@@ -410,7 +410,7 @@ namespace genetic_algorithm
         /* If the fitness function is static, and the solution has already
          * been evaluted sometime earlier (in an earlier generation), there
          * is no point doing it again. */
-        if (!sol.is_evaluated || fitness_function_->dynamic_fitness())
+        if (!sol.is_evaluated || fitness_function_->dynamic())
         {
             sol.fitness = (*fitness_function_)(sol.chromosome);
             sol.is_evaluated = true;

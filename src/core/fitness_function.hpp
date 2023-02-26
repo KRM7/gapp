@@ -65,7 +65,7 @@ namespace genetic_algorithm
 
         /** @returns True if dynamic fitness function support is enabled. */
         [[nodiscard]]
-        constexpr bool dynamic_fitness() const noexcept { return dynamic_fitness_; }
+        constexpr bool dynamic() const noexcept { return dynamic_; }
 
         /**
         * Compute the fitness value of a chromosome.
@@ -94,7 +94,7 @@ namespace genetic_algorithm
 
         size_t chrom_len_;
         size_t num_objectives_;
-        bool dynamic_fitness_    = false;
+        bool dynamic_            = false;
         bool variable_chrom_len_ = false;
     };
 
@@ -177,7 +177,7 @@ namespace genetic_algorithm
 {
     template<Gene T>
     constexpr FitnessFunction<T>::FitnessFunction(size_t chrom_len, size_t num_objectives, bool variable_len, bool dynamic) :
-        chrom_len_(chrom_len), num_objectives_(num_objectives), dynamic_fitness_(dynamic), variable_chrom_len_(variable_len)
+        chrom_len_(chrom_len), num_objectives_(num_objectives), dynamic_(dynamic), variable_chrom_len_(variable_len)
     {
         if (chrom_len == 0)      GA_THROW(std::invalid_argument, "The chromosome length must be at least 1.");
         if (num_objectives == 0) GA_THROW(std::invalid_argument, "The number of objectives must be at least 1.");
