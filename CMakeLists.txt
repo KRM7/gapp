@@ -43,10 +43,10 @@ if(MSVC) # MSVC style compiler interface
     set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -Z7 -RTC1 -Od")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -Zi -O2 -Oi -Gy")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Zi -O2 -Oi -Gy")
-    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS} -DEBUG:FULL -OPT:REF -OPT:ICF")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DEBUG:FULL -OPT:REF -OPT:ICF")
     # msvc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -MP -fp:contract")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -MP -fp:contract -Zc:preprocessor -Zc:throwingNew")
     endif()
     # clang-cl specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
