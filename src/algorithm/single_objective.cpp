@@ -9,9 +9,21 @@
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
+#include <utility>
 
 namespace genetic_algorithm::algorithm
 {
+    SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection) :
+        SingleObjective(std::move(selection), std::make_unique<DefaultUpdater>())
+    {}
+
+    SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<update::Updater> updater) :
+        selection_(std::move(selection)), updater_(std::move(updater))
+    {
+        if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
+        if (!updater_)   GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+    }
+
     SingleObjective::SingleObjective(SelectionCallable selection) :
         SingleObjective(std::make_unique<selection::Lambda>(std::move(selection)))
     {}
@@ -20,9 +32,23 @@ namespace genetic_algorithm::algorithm
         SingleObjective(std::make_unique<selection::Lambda>(std::move(selection)), std::make_unique<update::Lambda>(std::move(updater)))
     {}
 
+    void SingleObjective::selection_method(std::unique_ptr<selection::Selection> selection)
+    {
+        if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
+
+        selection_ = std::move(selection);
+    }
+
     void SingleObjective::selection_method(SelectionCallable f)
     {
         selection_ = std::make_unique<selection::Lambda>(std::move(f));
+    }
+
+    void SingleObjective::update_method(std::unique_ptr<update::Updater> updater)
+    {
+        if (!updater_) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+
+        updater_ = std::move(updater);
     }
 
     void SingleObjective::update_method(UpdateCallable f)

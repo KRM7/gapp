@@ -142,8 +142,7 @@ namespace genetic_algorithm
         *
         * @param f The crossover method used by the algorithm. Can't be a nullptr.
         */
-        template<crossover::CrossoverType<T> F>
-        void crossover_method(std::unique_ptr<F> f);
+        void crossover_method(std::unique_ptr<crossover::Crossover<T>> f);
 
         /**
         * Set the crossover method the algorithm will use. \n
@@ -195,8 +194,7 @@ namespace genetic_algorithm
         *
         * @param f The crossover function that will be used by the algorithm. Can't be a nullptr.
         */
-        template<mutation::MutationType<T> F>
-        void mutation_method(std::unique_ptr<F> f);
+        void mutation_method(std::unique_ptr<mutation::Mutation<T>> f);
 
         /**
         * Set the mutation method the algorithm will use. \n

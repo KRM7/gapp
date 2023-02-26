@@ -120,8 +120,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    template<crossover::CrossoverType<T> F>
-    inline void GA<T>::crossover_method(std::unique_ptr<F> f)
+    inline void GA<T>::crossover_method(std::unique_ptr<typename crossover::Crossover<T>> f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The crossover method can't be a nullptr.");
 
@@ -175,8 +174,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    template<mutation::MutationType<T> F>
-    inline void GA<T>::mutation_method(std::unique_ptr<F> f)
+    inline void GA<T>::mutation_method(std::unique_ptr<typename mutation::Mutation<T>> f)
     {
         if (!f) GA_THROW(std::invalid_argument, "The mutation method can't be a nullptr.");
 

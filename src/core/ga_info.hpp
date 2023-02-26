@@ -152,8 +152,7 @@ namespace genetic_algorithm
         *
         * @param f The algorithm used by the GA. Can't be a nullptr.
         */
-        template<algorithm::AlgorithmType F>
-        void algorithm(std::unique_ptr<F> f);
+        void algorithm(std::unique_ptr<algorithm::Algorithm> f);
 
         /** @returns The algorithm used by the GA. */
         [[nodiscard]]
@@ -186,8 +185,7 @@ namespace genetic_algorithm
         *
         * @param f The StopCondition the algorithm should use. Can't be a nullptr.
         */
-        template<stopping::StopConditionType F>
-        void stop_condition(std::unique_ptr<F> f);
+        void stop_condition(std::unique_ptr<stopping::StopCondition> f);
 
         /**
         * Set an early-stop condition for the genetic algorithm. \n
@@ -265,9 +263,7 @@ namespace genetic_algorithm
 
 #include "../algorithm/algorithm_base.hpp"
 #include "../stop_condition/stop_condition_base.hpp"
-#include "../utility/utility.hpp"
 #include <utility>
-#include <stdexcept>
 
 namespace genetic_algorithm
 {
@@ -279,28 +275,11 @@ namespace genetic_algorithm
         is_initialized_ = false;
     }
 
-    template<algorithm::AlgorithmType F>
-    inline void GaInfo::algorithm(std::unique_ptr<F> f)
-    {
-        if (!f) GA_THROW(std::invalid_argument, "The algorithm can't be a nullptr.");
-
-        algorithm_ = std::move(f);
-        is_initialized_ = false;
-    }
-
     template<typename F>
     requires stopping::StopConditionType<F> && std::is_final_v<F>
     inline void GaInfo::stop_condition(F f)
     {
         stop_condition_ = std::make_unique<F>(std::move(f));
-    }
-
-    template<stopping::StopConditionType F>
-    inline void GaInfo::stop_condition(std::unique_ptr<F> f)
-    {
-        if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
-
-        stop_condition_ = std::move(f);
     }
 
 } // namespace genetic_algorithm

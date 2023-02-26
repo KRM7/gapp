@@ -4,7 +4,7 @@
 #define GA_CROSSOVER_BASE_IMPL_HPP
 
 #include "crossover_base.decl.hpp"
-#include "../core/ga_base.hpp"
+#include "../core/ga_base.decl.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <utility>

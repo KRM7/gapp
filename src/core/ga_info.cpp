@@ -3,8 +3,8 @@
 #include "ga_info.hpp"
 #include "../algorithm/algorithm_base.hpp"
 #include "../algorithm/single_objective.hpp"
-#include "../stop_condition/stop_condition.hpp"
 #include "../algorithm/nsga3.hpp"
+#include "../stop_condition/stop_condition.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
 #include <atomic>
@@ -17,6 +17,7 @@ namespace genetic_algorithm
     GaInfo::GaInfo(GaInfo&&) noexcept            = default;
     GaInfo& GaInfo::operator=(GaInfo&&) noexcept = default;
     GaInfo::~GaInfo()                            = default;
+
 
     GaInfo::GaInfo(size_t population_size, size_t nobj)
     {
@@ -49,6 +50,21 @@ namespace genetic_algorithm
     {
         std::atomic_ref num_fitness_evals{ num_fitness_evals_ };
         return num_fitness_evals.load(std::memory_order_acquire);
+    }
+
+    void GaInfo::algorithm(std::unique_ptr<algorithm::Algorithm> f)
+    {
+        if (!f) GA_THROW(std::invalid_argument, "The algorithm can't be a nullptr.");
+
+        algorithm_ = std::move(f);
+        is_initialized_ = false;
+    }
+
+    void GaInfo::stop_condition(std::unique_ptr<stopping::StopCondition> f)
+    {
+        if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
+
+        stop_condition_ = std::move(f);
     }
 
     void GaInfo::stop_condition(StopConditionCallable f)

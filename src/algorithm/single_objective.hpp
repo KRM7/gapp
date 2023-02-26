@@ -28,7 +28,7 @@ namespace genetic_algorithm::algorithm
     {
     public:
         using DefaultSelection = selection::Tournament; /**< The selection method used when not specified explicitly. */
-        using DefaultUpdater   = update::KeepBest;      /**< The population method used when not specified explicitly. */
+        using DefaultUpdater   = update::KeepBest;      /**< The population update method used when not specified explicitly. */
 
         /** The general callable type that can be used as a selection method. */
         using SelectionCallable = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
@@ -66,8 +66,7 @@ namespace genetic_algorithm::algorithm
         *
         * @param selection The selection method to use in the algorithm. Can't be a nullptr.
         */
-        template<selection::SelectionType S>
-        explicit SingleObjective(std::unique_ptr<S> selection);
+        explicit SingleObjective(std::unique_ptr<selection::Selection> selection);
 
         /**
         * Create a single objective algorithm.
@@ -75,8 +74,7 @@ namespace genetic_algorithm::algorithm
         * @param selection The selection method to use in the algorithm. Can't be a nullptr.
         * @param updater The method used to update the population between generations of the algorithm. Can't be a nullptr.
         */
-        template<selection::SelectionType S, update::UpdaterType U>
-        SingleObjective(std::unique_ptr<S> selection, std::unique_ptr<U> updater);
+        SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<update::Updater> updater);
 
         /**
         * Create a single objective algorithm using the default population update method.
@@ -112,8 +110,7 @@ namespace genetic_algorithm::algorithm
         *
         * @param selection The selection method used by the algorithm. Can't be a nullptr.
         */
-        template<selection::SelectionType S>
-        void selection_method(std::unique_ptr<S> selection);
+        void selection_method(std::unique_ptr<selection::Selection> selection);
 
         /**
         * Set the selection method used by the algorithm. \n
@@ -153,8 +150,7 @@ namespace genetic_algorithm::algorithm
         *
         * @param updater The population update method used by the algorithm. Can't be a nullptr.
         */
-        template<update::UpdaterType U>
-        void update_method(std::unique_ptr<U> updater);
+        void update_method(std::unique_ptr<update::Updater> updater);
 
         /**
         * Set the population update method used by the algorithm.
@@ -191,8 +187,6 @@ namespace genetic_algorithm::algorithm
 
 /* IMPLEMENTATION */
 
-#include "../utility/utility.hpp"
-#include <stdexcept>
 #include <utility>
 
 namespace genetic_algorithm::algorithm
@@ -213,19 +207,6 @@ namespace genetic_algorithm::algorithm
         selection_(std::make_unique<S>(std::move(selection))), updater_(std::make_unique<U>(std::move(updater)))
     {}
 
-    template<selection::SelectionType S>
-    inline SingleObjective::SingleObjective(std::unique_ptr<S> selection) :
-        SingleObjective(std::move(selection), std::make_unique<DefaultUpdater>())
-    {}
-
-    template<selection::SelectionType S, update::UpdaterType U>
-    inline SingleObjective::SingleObjective(std::unique_ptr<S> selection, std::unique_ptr<U> updater) :
-        selection_(std::move(selection)), updater_(std::move(updater))
-    {
-        if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
-        if (!updater_)   GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
-    }
-
     template<typename S>
     requires selection::SelectionType<S> && std::is_final_v<S>
     inline void SingleObjective::selection_method(S selection)
@@ -233,27 +214,11 @@ namespace genetic_algorithm::algorithm
         selection_ = std::make_unique<S>(std::move(selection));
     }
 
-    template<selection::SelectionType S>
-    inline void SingleObjective::selection_method(std::unique_ptr<S> selection)
-    {
-        if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
-
-        selection_ = std::move(selection);
-    }
-
     template<typename U>
     requires update::UpdaterType<U> && std::is_final_v<U>
     inline void SingleObjective::update_method(U updater)
     {
         updater_ = std::make_unique<U>(std::move(updater));
-    }
-
-    template<update::UpdaterType U>
-    inline void SingleObjective::update_method(std::unique_ptr<U> updater)
-    {
-        if (!updater_) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
-
-        updater_ = std::move(updater);
     }
 
     inline void SingleObjective::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
