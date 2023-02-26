@@ -228,16 +228,37 @@ namespace genetic_algorithm
         repair_ = std::move(f);
     }
 
+
     template<Gene T>
     inline bool GA<T>::hasValidFitness(const Candidate<T>& sol) const noexcept
     {
-        return sol.fitness.size() == fitness_function_->num_objectives();
+        assert(fitness_function_);
+
+        return sol.is_evaluated && (sol.fitness.size() == fitness_function_->num_objectives());
     }
 
     template<Gene T>
     inline bool GA<T>::hasValidChromosome(const Candidate<T>& sol) const noexcept
     {
         return variable_chrom_len() || (sol.chromosome.size() == chrom_len());
+    }
+
+    template<Gene T>
+    inline bool GA<T>::isValidEvaluatedPopulation(const Population<T>& pop) const
+    {
+        return std::all_of(pop.begin(), pop.end(), [this](const Candidate<T>& sol)
+        {
+            return hasValidChromosome(sol) && hasValidFitness(sol);
+        });
+    }
+
+    template<Gene T>
+    inline bool GA<T>::isValidUnevaluatedPopulation(const Population<T>& pop) const
+    {
+        return std::all_of(pop.begin(), pop.end(), [this](const Candidate<T>& sol)
+        {
+            return hasValidChromosome(sol) && (!sol.is_evaluated || hasValidFitness(sol));
+        });
     }
 
     template<Gene T>
@@ -250,17 +271,9 @@ namespace genetic_algorithm
         });
     }
 
-    template<Gene T>
-    inline bool GA<T>::populationIsValid(const Population<T>& pop) const
-    {
-        return std::all_of(pop.begin(), pop.end(), [this](const Candidate<T>& sol)
-        {
-            return hasValidChromosome(sol) && hasValidFitness(sol);
-        });
-    }
 
     template<Gene T>
-    void GA<T>::initializeAlgorithm()
+    void GA<T>::initializeAlgorithm(const Population<T>& initial_population)
     {
         assert(fitness_function_);
         assert(algorithm_ && crossover_ && mutation_ && stop_condition_);
@@ -279,7 +292,7 @@ namespace genetic_algorithm
         std::for_each(GA_EXECUTION_UNSEQ, population_.begin(), population_.end(), [this](Candidate<T>& sol) { evaluate(sol); });
         fitness_matrix_ = detail::toFitnessMatrix(population_);
 
-        assert(populationIsValid(population_));
+        assert(isValidEvaluatedPopulation(population_));
         assert(fitnessMatrixIsSynced());
 
         /* Initialize the algorithm used.
@@ -316,7 +329,8 @@ namespace genetic_algorithm
     template<Gene T>
     inline void GA<T>::prepareSelections() const
     {
-        assert(std::all_of(population_.begin(), population_.end(), [this](const Candidate<T>& sol) { return sol.is_evaluated && hasValidFitness(sol); }));
+        assert(algorithm_);
+        assert(isValidEvaluatedPopulation(population_));
         assert(fitnessMatrixIsSynced());
 
         algorithm_->prepareSelections(*this, fitness_matrix());
@@ -325,18 +339,24 @@ namespace genetic_algorithm
     template<Gene T>
     inline const Candidate<T>& GA<T>::select() const
     {
+        assert(algorithm_);
+
         return algorithm_->select(*this, population(), fitness_matrix());
     }
 
     template<Gene T>
     inline CandidatePair<T> GA<T>::crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
+        assert(crossover_);
+
         return (*crossover_)(*this, parent1, parent2);
     }
 
     template<Gene T>
     inline void GA<T>::mutate(Candidate<T>& sol) const
     {
+        assert(mutation_);
+
         (*mutation_)(*this, sol);
     }
 
@@ -350,25 +370,21 @@ namespace genetic_algorithm
 
         auto improved_chrom = repair_(*this, sol.chromosome);
 
-        if (!variable_chrom_len() && improved_chrom.size() != chrom_len())
-        {
-            GA_THROW(std::logic_error, "The repair function returned a chromosome with incorrect length.");
-        }
-
-        /* If the repair function did something. */
         if (improved_chrom != sol.chromosome)
         {
             sol.is_evaluated = false;
             sol.chromosome = std::move(improved_chrom);
         }
+
+        if (!hasValidChromosome(sol)) GA_THROW(std::logic_error, "Invalid chromosome returned by the repair function.");
     }
 
     template<Gene T>
     void GA<T>::updatePopulation(Population<T>&& children)
     {
+        assert(algorithm_);
+        assert(isValidEvaluatedPopulation(population_));
         assert(fitnessMatrixIsSynced());
-        assert(populationIsValid(population_));
-        assert(std::all_of(population_.begin(), population_.end(), std::mem_fn(&Candidate<T>::is_evaluated)));
 
         population_ = algorithm_->nextPopulation(*this, std::move(population_), std::move(children));
         fitness_matrix_ = detail::toFitnessMatrix(population_);
@@ -377,6 +393,8 @@ namespace genetic_algorithm
     template<Gene T>
     inline bool GA<T>::stopCondition() const
     {
+        assert(stop_condition_);
+
         return (*stop_condition_)(*this);
     }
 
@@ -404,6 +422,8 @@ namespace genetic_algorithm
     template<Gene T>
     void GA<T>::updateOptimalSolutions(Candidates<T>& optimal_sols, const Population<T>& pop) const
     {
+        assert(algorithm_);
+
         auto optimal_pop = algorithm_->optimalSolutions(*this, pop);
 
         optimal_sols = detail::mergeParetoSets(std::move(optimal_sols), std::move(optimal_pop));

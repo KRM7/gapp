@@ -317,10 +317,12 @@ namespace genetic_algorithm
 
         void advance();
 
+
         bool hasValidFitness(const Candidate<T>& sol) const noexcept;
         bool hasValidChromosome(const Candidate<T>& sol) const noexcept;
+        bool isValidEvaluatedPopulation(const Population<T>& pop) const;
+        bool isValidUnevaluatedPopulation(const Population<T>& pop) const;
         bool fitnessMatrixIsSynced() const;
-        bool populationIsValid(const Population<T>& pop) const;
 
 
         /* Make the protected members of GaInfo private. */
