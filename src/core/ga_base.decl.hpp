@@ -261,9 +261,10 @@ namespace genetic_algorithm
         /**
         * Run the genetic algorithm. \n
         *
+        * @param initial_population The population to use as the first generation of the algorithm.
         * @returns The pareto-optimal solutions found. @see solutions
         */
-        Candidates<T> run();
+        Candidates<T> run(const Population<T>& initial_population = {});
 
         /**
         * Run the genetic algorithm for a set number of generations. \n
@@ -273,6 +274,20 @@ namespace genetic_algorithm
         * @returns The pareto-optimal solutions found. @see solutions
         */
         Candidates<T> run(size_t num_generations);
+
+        /**
+        * Run the genetic algorithm for a set number of generations, using the specified initial population. \n
+        * The algorithm will always stop when reaching this set number of generations. \n
+        * Te initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @param num_generations The maximum number of generations.
+        * @returns The pareto-optimal solutions found. @see solutions
+        */
+        Candidates<T> run(const Population<T>& initial_population, size_t num_generations);
 
         /**
         * Continue running the genetic algorithm for the set number of generations. \n
@@ -302,8 +317,8 @@ namespace genetic_algorithm
         virtual void initialize() = 0;
         virtual Candidate<T> generateCandidate() const = 0;
 
-        void initializeAlgorithm();
-        Population<T> generatePopulation(size_t pop_size) const;
+        void initializeAlgorithm(const Population<T>& initial_population);
+        Population<T> generatePopulation(size_t pop_size, const Population<T>& initial_population) const;
         void prepareSelections() const;
         const Candidate<T>& select() const;
         CandidatePair<T> crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const;
