@@ -15,6 +15,9 @@ namespace genetic_algorithm
 {
     class GaInfo;
 
+    template<Gene T>
+    class GA;
+
 } // namespace genetic_algorithm
 
 /** Algorithm types that can be used in the genetic algorithms (both single- and multi-objective algorithms). */
@@ -81,7 +84,7 @@ namespace genetic_algorithm::algorithm
         * @returns The candidate selected from the population.
         */
         template<Gene T>
-        const Candidate<T>& select(const GaInfo& ga, const Population<T>& pop, const FitnessMatrix& fmat) const;
+        const Candidate<T>& select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const;
 
         /**
         * Select the candidates of the next generation from the candidates of the
@@ -98,7 +101,7 @@ namespace genetic_algorithm::algorithm
         * @returns The candidates of the next generation of the algorithm.
         */
         template<Gene T>
-        Population<T> nextPopulation(const GaInfo& ga, Population<T>&& parents, Population<T>&& children);
+        Population<T> nextPopulation(const GA<T>& ga, Population<T>&& parents, Population<T>&& children);
 
         /**
         * Find the optimal solutions in the unchanged population that was created by nextPopulation. \n
@@ -112,7 +115,7 @@ namespace genetic_algorithm::algorithm
         * @returns The pareto optimal solutions of the population pop.
         */
         template<Gene T>
-        Candidates<T> optimalSolutions(const GaInfo& ga, const Population<T>& pop) const;
+        Candidates<T> optimalSolutions(const GA<T>& ga, const Population<T>& pop) const;
 
     protected:
 

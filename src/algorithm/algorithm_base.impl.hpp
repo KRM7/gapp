@@ -5,6 +5,7 @@
 
 #include "algorithm_base.decl.hpp"
 #include "../core/ga_info.hpp"
+#include "../core/ga_base.decl.hpp"
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
@@ -18,7 +19,7 @@
 namespace genetic_algorithm::algorithm
 {
     template<Gene T>
-    auto Algorithm::select(const GaInfo& ga, const Population<T>& pop, const FitnessMatrix& fmat) const -> const Candidate<T>&
+    auto Algorithm::select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const -> const Candidate<T>&
     {
         assert(ga.population_size() == pop.size());
         assert(pop.size() == fmat.size());
@@ -34,7 +35,7 @@ namespace genetic_algorithm::algorithm
     }
 
     template<Gene T>
-    auto Algorithm::nextPopulation(const GaInfo& ga, Population<T>&& parents, Population<T>&& children) -> Population<T>
+    auto Algorithm::nextPopulation(const GA<T>& ga, Population<T>&& parents, Population<T>&& children) -> Population<T>
     {
         assert(ga.population_size() == parents.size());
         assert(ga.population_size() <= children.size());
@@ -54,7 +55,7 @@ namespace genetic_algorithm::algorithm
     }
 
     template<Gene T>
-    auto Algorithm::optimalSolutions(const GaInfo& ga, const Population<T>& pop) const -> Candidates<T>
+    auto Algorithm::optimalSolutions(const GA<T>& ga, const Population<T>& pop) const -> Candidates<T>
     {
         assert(ga.population_size() == pop.size());
 
