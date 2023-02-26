@@ -31,6 +31,7 @@
   -readability-implicit-bool-conversion,
   -bugprone-easily-swappable-parameters,
   -bugprone-exception-escape,
+  -cppcoreguidelines-special-member-functions,
   -misc-unconventional-assign-operator,
   -misc-non-private-member-variables-in-classes,
   -misc-no-recursion
