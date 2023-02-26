@@ -15,7 +15,7 @@ TEST_CASE("cone_tree constructors", "[cone_tree]")
     STATIC_REQUIRE(std::is_nothrow_move_assignable_v<ConeTree>);
 
     std::vector<Point> points = { { 0.0, 1.0 }, { 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0 } };
-    ConeTree tree(points.begin(), points.end());
+    ConeTree tree(points);
 
     REQUIRE(tree.size() == points.size());
 
@@ -52,7 +52,7 @@ TEST_CASE("cone_tree lookup", "[cone_tree]")
         { 0.8, 0.6, 0.6 }, { 0.8, 0.6, 0.8 }, { 0.8, 0.8, 0.2 }, { 0.8, 0.8, 0.6 },
     };
 
-    ConeTree tree(points.begin(), points.end());
+    ConeTree tree(points);
 
     auto best = tree.findBestMatch({ 1.0, 1.0, 0.1 });
     REQUIRE(*best.elem == Point{ 0.8, 0.8, 0.6 });

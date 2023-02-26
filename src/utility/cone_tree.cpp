@@ -21,6 +21,21 @@ namespace genetic_algorithm::detail
     using FindResult = ConeTree::FindResult;
 
 
+    ConeTree::ConeTree(std::span<const Point> points)
+    {
+        if (points.empty()) return;
+
+        points_ = Matrix(0, points[0].size(), 0.0);
+        points_.reserve(points.size(), points[0].size());
+        for (const Point& point : points) points_.append_row(point);
+
+        nodes_.reserve(4 * points_.size() / MAX_LEAF_ELEMENTS);
+        Node root{ .first = 0, .last = points_.size() };
+        nodes_.push_back(root);
+
+        buildTree();
+    }
+
     /* Find the point in the range [first, last) furthest from a point (using Euclidean distances). */
     static inline const_iterator findFurthestElement(const_iterator first, const_iterator last, const_iterator from)
     {

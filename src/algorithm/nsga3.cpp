@@ -362,7 +362,7 @@ namespace genetic_algorithm::algorithm
         pimpl_->extreme_points_ = {};
 
         auto ref_lines = pimpl_->generateReferencePoints(ga.num_objectives(), ga.population_size());
-        pimpl_->ref_lines_ = detail::ConeTree{ ref_lines.begin(), ref_lines.end() };
+        pimpl_->ref_lines_ = detail::ConeTree{ ref_lines };
         pimpl_->niche_counts_.resize(pimpl_->ref_lines_.size());
 
         auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());

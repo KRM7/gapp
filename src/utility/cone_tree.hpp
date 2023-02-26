@@ -6,7 +6,7 @@
 #include "math.hpp"
 #include "matrix.hpp"
 #include <vector>
-#include <iterator>
+#include <span>
 #include <type_traits>
 #include <cstddef>
 
@@ -46,14 +46,10 @@ namespace genetic_algorithm::detail
 
         ConeTree() = default;
 
-        template<std::input_iterator Iter>
-        requires std::is_same_v<std::remove_cvref_t<typename std::iterator_traits<Iter>::value_type>, Point>
-        ConeTree(Iter first, Iter last);
-
+        explicit ConeTree(std::span<const Point> points);
 
         /* Returns the closest point in the tree to the query point, and its distance. */
         FindResult findBestMatch(const Point& query_point) const;
-
 
         const_iterator begin() const noexcept { return points_.begin(); }
         const_iterator end() const noexcept   { return points_.end(); }
@@ -79,35 +75,9 @@ namespace genetic_algorithm::detail
         const_iterator node_cbegin(const Node& node) const { return points_.cbegin() + node.first; }
         const_iterator node_cend(const Node& node) const { return points_.cbegin() + node.last; }
 
-        const Node& left_child(const Node& node) const { return nodes_[node.left]; }
-        const Node& right_child(const Node& node) const { return nodes_[node.right]; }
+        const Node& left_child(const Node& node) const noexcept { return nodes_[node.left]; }
+        const Node& right_child(const Node& node) const noexcept { return nodes_[node.right]; }
     };
-
-} // namespace genetic_algorithm::detail
-
-
-/* IMPLEMENTATION */
-
-#include <cassert>
-
-namespace genetic_algorithm::detail
-{
-    template<std::input_iterator Iter>
-    requires std::is_same_v<std::remove_cvref_t<typename std::iterator_traits<Iter>::value_type>, Point>
-    ConeTree::ConeTree(Iter first, Iter last)
-    {
-        assert(std::distance(first, last) > 0);
-
-        points_ = Matrix(0, (*first).size(), 0.0);
-        points_.reserve(last - first, points_.ncols());
-        while (first != last) points_.append_row(*first++);
-
-        nodes_.reserve(4 * points_.size() / MAX_LEAF_ELEMENTS);
-        Node root{ .first = 0, .last = points_.size() };
-        nodes_.push_back(root);
-
-        buildTree();
-    }
 
 } // namespace genetic_algorithm::detail
 
