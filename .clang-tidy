@@ -73,4 +73,4 @@ CheckOptions:
   - { key: bugprone-narrowing-conversions.IgnoreConversionFromTypes,		value: difference_type;ptrdiff_t;size_type;size_t;bool }
   - { key: readability-braces-around-statements.ShortStatementLines,		value: 2 }
   - { key: bugprone-easily-swappable-parameters.ModelImplicitConversions,	value: false }
-  - { key: modernize-pass-by-value.ValuesOnly,}								value: true }
+  - { key: modernize-pass-by-value.ValuesOnly,								value: true }
