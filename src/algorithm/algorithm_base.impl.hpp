@@ -14,15 +14,14 @@
 #include <iterator>
 #include <stdexcept>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::algorithm
 {
     template<Gene T>
     auto Algorithm::select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const -> const Candidate<T>&
     {
-        assert(ga.population_size() == pop.size());
-        assert(pop.size() == fmat.size());
+        GA_ASSERT(ga.population_size() == pop.size());
+        GA_ASSERT(pop.size() == fmat.size());
 
         const size_t selected_idx = selectImpl(ga, fmat);
 
@@ -37,8 +36,8 @@ namespace genetic_algorithm::algorithm
     template<Gene T>
     auto Algorithm::nextPopulation(const GA<T>& ga, Population<T>&& parents, Population<T>&& children) -> Population<T>
     {
-        assert(ga.population_size() == parents.size());
-        assert(ga.population_size() <= children.size());
+        GA_ASSERT(ga.population_size() == parents.size());
+        GA_ASSERT(ga.population_size() <= children.size());
 
         parents.reserve(parents.size() + children.size());
         std::move(children.begin(), children.end(), std::back_inserter(parents));
@@ -57,7 +56,7 @@ namespace genetic_algorithm::algorithm
     template<Gene T>
     auto Algorithm::optimalSolutions(const GA<T>& ga, const Population<T>& pop) const -> Candidates<T>
     {
-        assert(ga.population_size() == pop.size());
+        GA_ASSERT(ga.population_size() == pop.size());
 
         const auto optimal_indices = optimalSolutionsImpl(ga);
 

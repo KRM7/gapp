@@ -33,6 +33,8 @@ namespace genetic_algorithm::crossover
 
         CandidatePair<T> crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const override
         {
+            GA_ASSERT(crossover_);
+
             return crossover_(ga, parent1, parent2);
         }
     };

@@ -63,7 +63,7 @@ namespace genetic_algorithm::rng
     QuasiRandom<T>::QuasiRandom(size_type dim, T seed) :
         dim_(dim), seed_(seed), alpha_(dim, 0.0), point_(dim, 0.0)
     {
-        if (dim == 0) GA_THROW(std::invalid_argument, "The dimension of the generator must be at least 1.");
+        if (dim == 0)   GA_THROW(std::invalid_argument, "The dimension of the generator must be at least 1.");
         if (seed < 0.0) GA_THROW(std::invalid_argument, "The seed value can't be negative.");
 
         const T phid = phi(dim);

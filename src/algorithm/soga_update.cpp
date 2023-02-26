@@ -10,7 +10,6 @@
 #include <numeric>
 #include <utility>
 #include <stdexcept>
-#include <cassert>
 
 namespace genetic_algorithm::update
 {
@@ -38,7 +37,7 @@ namespace genetic_algorithm::update
 
     std::vector<size_t> KeepBest::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
-        assert(size_t(children_first - first) == ga.population_size());
+        GA_ASSERT(size_t(children_first - first) == ga.population_size());
 
         auto sorted_indices = detail::partial_argsort(first, children_first, last,
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
@@ -60,6 +59,8 @@ namespace genetic_algorithm::update
 
     std::vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
+        GA_ASSERT(updater_);
+
         return updater_(ga, first, children_first, last);
     }
 

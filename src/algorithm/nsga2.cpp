@@ -15,7 +15,6 @@
 #include <utility>
 #include <stdexcept>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::algorithm
 {
@@ -24,7 +23,7 @@ namespace genetic_algorithm::algorithm
     /* Calculate the crowding distances of the solutions in pfronts. */
     static std::vector<double> crowdingDistances(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, ParetoFronts pfronts)
     {
-        assert(std::distance(first, last) >= 0);
+        GA_ASSERT(std::distance(first, last) >= 0);
 
         std::vector<double> crowding_distances(last - first, 0.0);
 
@@ -78,7 +77,7 @@ namespace genetic_algorithm::algorithm
 
     size_t NSGA2::selectImpl(const GaInfo&, const FitnessMatrix& pop) const
     {
-        assert(!pop.empty() && pop.size() == ranks_.size());
+        GA_ASSERT(!pop.empty() && pop.size() == ranks_.size());
 
         const size_t idx1 = rng::randomIdx(pop);
         const size_t idx2 = rng::randomIdx(pop);
@@ -98,9 +97,9 @@ namespace genetic_algorithm::algorithm
     {
         const size_t popsize = ga.population_size();
 
-        assert(ga.num_objectives() > 1);
-        assert(size_t(children_first - parents_first) == popsize);
-        assert(std::all_of(parents_first, children_last, [&ga](const FitnessVector& f) { return f.size() == ga.num_objectives(); }));
+        GA_ASSERT(ga.num_objectives() > 1);
+        GA_ASSERT(size_t(children_first - parents_first) == popsize);
+        GA_ASSERT(std::all_of(parents_first, children_last, detail::is_size(ga.num_objectives())));
 
         auto pfronts = nonDominatedSort(parents_first, children_last);
         auto [partial_front_first, partial_front_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);

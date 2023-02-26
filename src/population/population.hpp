@@ -82,14 +82,13 @@ namespace genetic_algorithm::detail
 #include <algorithm>
 #include <functional>
 #include <atomic>
-#include <cassert>
 
 namespace genetic_algorithm::detail
 {
     template<Gene T>
     FitnessVector toFitnessVector(const Population<T>& pop)
     {
-        assert(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() >= 1; }));
+        GA_ASSERT(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
 
         return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness[0]; });
     }
@@ -105,8 +104,8 @@ namespace genetic_algorithm::detail
     {
         if (pop.empty()) return {};
 
-        assert(pop[0].fitness.size() > 0);
-        assert(std::all_of(pop.begin(), pop.end(), [&pop](const auto& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
+        GA_ASSERT(pop[0].fitness.size() > 0);
+        GA_ASSERT(std::all_of(pop.begin(), pop.end(), [&](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
         auto fitness_matrix = detail::toFitnessMatrix(pop);
 

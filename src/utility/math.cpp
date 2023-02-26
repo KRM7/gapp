@@ -2,6 +2,7 @@
 
 #include "math.hpp"
 #include "functional.hpp"
+#include "utility.hpp"
 #include <algorithm>
 #include <numeric>
 #include <functional>
@@ -9,7 +10,6 @@
 #include <type_traits>
 #include <cmath>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::math
 {
@@ -19,7 +19,7 @@ namespace genetic_algorithm::math
 
     bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
     {
-        assert(lhs.size() == rhs.size());
+        GA_ASSERT(lhs.size() == rhs.size());
 
         for (size_t i = 0; i < lhs.size(); i++)
         {
@@ -35,7 +35,7 @@ namespace genetic_algorithm::math
 
     std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
     {
-        assert(lhs.size() == rhs.size());
+        GA_ASSERT(lhs.size() == rhs.size());
 
         std::int8_t lhs_has_lower = 0;
         std::int8_t rhs_has_lower = 0;
@@ -81,7 +81,7 @@ namespace genetic_algorithm::math
 
     double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept
     {
-        assert(v1.size() == v2.size());
+        GA_ASSERT(v1.size() == v2.size());
 
         return std::transform_reduce(v1.begin(), v1.end(), v2.begin(), 0.0,
                                      std::plus{},
@@ -98,7 +98,7 @@ namespace genetic_algorithm::math
 
     double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept
     {
-        assert(line.size() == point.size());
+        GA_ASSERT(line.size() == point.size());
 
         return perpendicularDistanceSq(line.begin(), line.end(), point.begin());
     }
@@ -106,7 +106,7 @@ namespace genetic_algorithm::math
     double perpendicularDistanceSq(const_vector_iterator line_first, const_vector_iterator line_last,
                                    const_vector_iterator point_first) noexcept
     {
-        assert(std::distance(line_first, line_last) >= 0);
+        GA_ASSERT(std::distance(line_first, line_last) >= 0);
 
         double k = std::inner_product(line_first, line_last, point_first, 0.0) /
                    std::inner_product(line_first, line_last, line_first, 0.0);
@@ -118,7 +118,7 @@ namespace genetic_algorithm::math
 
     double mean(const std::vector<double>& vec) noexcept
     {
-        assert(!vec.empty());
+        GA_ASSERT(!vec.empty());
 
         return std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{}, detail::divide_by(vec.size()));
     }
@@ -130,7 +130,7 @@ namespace genetic_algorithm::math
 
     double stdDev(const std::vector<double>& vec, double mean) noexcept
     {
-        assert(!vec.empty());
+        GA_ASSERT(!vec.empty());
 
         if (vec.size() == 1) return 0.0;
 

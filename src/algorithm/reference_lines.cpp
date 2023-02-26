@@ -13,7 +13,6 @@
 #include <iterator>
 #include <utility>
 #include <cmath>
-#include <cassert>
 
 namespace genetic_algorithm::algorithm::reflines
 {
@@ -27,7 +26,7 @@ namespace genetic_algorithm::algorithm::reflines
     /* Transform a point from the n-dimensional unit hypercube to the n-dimensional unit simplex. */
     static inline Point simplexMappingLog(Point&& point)
     {
-        assert(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+        GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         std::transform(point.begin(), point.end(), point.begin(), [](double p) { return -std::log(std::max(p, math::small<double>)); });
         const double sum = std::reduce(point.begin(), point.end(), 0.0);
@@ -39,7 +38,7 @@ namespace genetic_algorithm::algorithm::reflines
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
     static inline Point simplexMappingSort(Point&& point)
     {
-        assert(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+        GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         point.push_back(1.0);
         std::sort(point.begin(), point.end());
@@ -51,7 +50,7 @@ namespace genetic_algorithm::algorithm::reflines
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
     static inline Point simplexMappingRoot(Point&& point)
     {
-        assert(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+        GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         point.back() = std::pow(point.back(), 1.0 / point.size());
 
@@ -69,7 +68,7 @@ namespace genetic_algorithm::algorithm::reflines
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
     static inline Point simplexMappingMirror(Point&& point)
     {
-        assert(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+        GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         point.push_back(1.0);
 
@@ -154,7 +153,7 @@ namespace genetic_algorithm::algorithm::reflines
 
     std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, size_t k)
     {
-        assert(k > 0);
+        GA_ASSERT(k > 0);
 
         std::vector<Point> candidate_points = generator(dim, k * num_points);
 

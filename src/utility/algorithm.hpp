@@ -25,8 +25,8 @@ namespace genetic_algorithm::detail
     template<std::integral T>
     constexpr void increment_mod(T& value, T mod)
     {
-        assert(mod >= 0);
-        assert(value < mod);
+        GA_ASSERT(mod > 0);
+        GA_ASSERT(0 <= value && value < mod);
 
         value = (value + 1 == mod) ? T(0) : value + 1;
     }
@@ -44,7 +44,7 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     std::vector<size_t> argsort(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(std::distance(first, last) >= 0);
+        GA_ASSERT(std::distance(first, last) >= 0);
 
         auto indices = detail::index_vector(last - first);
 
@@ -72,8 +72,8 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     std::vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(std::distance(first, middle) >= 0);
-        assert(std::distance(middle, last) >= 0);
+        GA_ASSERT(std::distance(first, middle) >= 0);
+        GA_ASSERT(std::distance(middle, last) >= 0);
 
         auto indices = detail::index_vector(last - first);
 
@@ -103,7 +103,7 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     constexpr size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         const auto it = std::max_element(first, last, std::forward<Comp>(comp));
         const size_t idx = std::distance(first, it);
@@ -124,7 +124,7 @@ namespace genetic_algorithm::detail
                                           typename std::iterator_traits<Iter>::value_type>
     constexpr size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         const auto it = std::min_element(first, last, std::forward<Comp>(comp));
         const size_t idx = std::distance(first, it);
@@ -143,8 +143,8 @@ namespace genetic_algorithm::detail
     template<std::random_access_iterator Iter, typename URBG>
     void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)
     {
-        assert(std::distance(first, middle) >= 0);
-        assert(std::distance(middle, last) >= 0);
+        GA_ASSERT(std::distance(first, middle) >= 0);
+        GA_ASSERT(std::distance(middle, last) >= 0);
 
         for (; first != middle; ++first)
         {
@@ -159,7 +159,7 @@ namespace genetic_algorithm::detail
     template<std::input_iterator Iter>
     constexpr bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
     {
-        assert(std::distance(first, last) >= 0);
+        GA_ASSERT(std::distance(first, last) >= 0);
 
         return std::any_of(first, last, [&](const auto& elem) { return elem == val; });
     }
@@ -168,7 +168,7 @@ namespace genetic_algorithm::detail
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
     std::vector<Iter> find_all(Iter first, Iter last, Pred&& pred)
     {
-        assert(std::distance(first, last) >= 0);
+        GA_ASSERT(std::distance(first, last) >= 0);
 
         std::vector<Iter> result;
         result.reserve(last - first);
@@ -185,7 +185,7 @@ namespace genetic_algorithm::detail
     requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
     auto find_all_v(Iter first, Iter last, Pred&& pred)
     {
-        assert(std::distance(first, last) >= 0);
+        GA_ASSERT(std::distance(first, last) >= 0);
 
         using ValueType = typename std::iterator_traits<Iter>::value_type;
 
@@ -218,7 +218,7 @@ namespace genetic_algorithm::detail
         const auto found = std::find(container.begin(), container.end(), val);
         const size_t idx = std::distance(container.begin(), found);
         
-        return idx == container.size() ? std::optional<size_t>{} : idx;
+        return (idx == container.size()) ? std::optional<size_t>{} : idx;
     }
 
     template<typename T, std::predicate<T> Pred>
@@ -227,13 +227,13 @@ namespace genetic_algorithm::detail
         const auto found = std::find_if(container.begin(), container.end(), std::forward<Pred>(pred));
         const size_t idx = std::distance(container.begin(), found);
 
-        return idx == container.size() ? std::optional<size_t>{} : idx;
+        return (idx == container.size()) ? std::optional<size_t>{} : idx;
     }
 
     template<typename T>
     std::vector<T> elementwise_min(std::vector<T> left, const std::vector<T>& right)
     {
-        assert(left.size() == right.size());
+        GA_ASSERT(left.size() == right.size());
 
         std::transform(left.begin(), left.end(), right.begin(), left.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? lhs : rhs; });
 
@@ -243,7 +243,7 @@ namespace genetic_algorithm::detail
     template<typename T>
     std::vector<T> elementwise_max(std::vector<T> left, const std::vector<T>& right)
     {
-        assert(left.size() == right.size());
+        GA_ASSERT(left.size() == right.size());
 
         std::transform(left.begin(), left.end(), right.begin(), left.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? rhs : lhs; });
 
@@ -265,7 +265,7 @@ namespace genetic_algorithm::detail
     template<typename ValueType>
     std::vector<ValueType> select(const std::vector<ValueType>& cont, const std::vector<size_t>& indices)
     {
-        assert(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < cont.size(); }));
+        GA_ASSERT(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < cont.size(); }));
 
         std::vector<ValueType> selected;
         selected.reserve(indices.size());
@@ -278,7 +278,7 @@ namespace genetic_algorithm::detail
     template<typename ValueType>
     std::vector<ValueType> select(std::vector<ValueType>&& cont, const std::vector<size_t>& indices)
     {
-        assert(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < cont.size(); }));
+        GA_ASSERT(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < cont.size(); }));
 
         std::vector<ValueType> selected;
         selected.reserve(indices.size());

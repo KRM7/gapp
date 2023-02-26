@@ -104,7 +104,6 @@ namespace genetic_algorithm::crossover::dtl
 #include <unordered_set>
 #include <algorithm>
 #include <stdexcept>
-#include <cassert>
 
 namespace genetic_algorithm::crossover::dtl
 {
@@ -113,7 +112,7 @@ namespace genetic_algorithm::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
-        assert(std::all_of(crossover_points.begin(), crossover_points.end(), detail::between(0_sz, chrom_len)));
+        GA_ASSERT(std::all_of(crossover_points.begin(), crossover_points.end(), detail::between(0_sz, chrom_len)));
 
         std::sort(crossover_points.begin(), crossover_points.end());
         crossover_points.push_back(chrom_len);
@@ -141,7 +140,7 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> singlePointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t crossover_point)
     {
-        assert(crossover_point <= parent1.chromosome.size());
+        GA_ASSERT(crossover_point <= parent1.chromosome.size());
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -163,8 +162,8 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> twoPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::pair<size_t, size_t> crossover_points)
     {
-        assert(crossover_points.first <= parent1.chromosome.size());
-        assert(crossover_points.second <= parent1.chromosome.size());
+        GA_ASSERT(crossover_points.first <= parent1.chromosome.size());
+        GA_ASSERT(crossover_points.second <= parent1.chromosome.size());
 
         if (parent1.chromosome.size() != parent2.chromosome.size())
         {
@@ -195,8 +194,8 @@ namespace genetic_algorithm::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
         const size_t range_len = last - first;
 
-        assert(first <= last && last <= chrom_len);
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(first <= last && last <= chrom_len);
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         std::unordered_set<T> direct(last - first);
         for (size_t idx = first; idx != last; idx++) direct.insert(parent1.chromosome[idx]);
@@ -226,10 +225,10 @@ namespace genetic_algorithm::crossover::dtl
         const size_t range_len = last - first;
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        assert(first <= last && last <= chrom_len);
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GA_ASSERT(first <= last && last <= chrom_len);
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         std::vector is_direct(chrom_len, false);
         for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
@@ -256,8 +255,8 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
-        assert(first <= last && last <= parent1.chromosome.size());
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(first <= last && last <= parent1.chromosome.size());
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         std::unordered_set<T> direct(last - first);
         for (size_t idx = first; idx != last; idx++) direct.insert(parent1.chromosome[idx]);
@@ -282,10 +281,10 @@ namespace genetic_algorithm::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        assert(first <= last && last <= chrom_len);
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GA_ASSERT(first <= last && last <= chrom_len);
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         std::vector is_direct(chrom_len, false);
         for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
@@ -308,8 +307,8 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
     {
-        assert(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         std::unordered_set<T> direct(indices.size());
         for (size_t idx : indices) direct.insert(parent1.chromosome[idx]);
@@ -334,10 +333,10 @@ namespace genetic_algorithm::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        assert(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GA_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         std::vector is_direct(chrom_len, false);
         for (size_t idx : indices) is_direct[parent1.chromosome[idx]] = true;
@@ -360,7 +359,7 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     std::vector<size_t> findOddCycleIndices(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
     {
-        assert(chrom1.size() == chrom2.size());
+        GA_ASSERT(chrom1.size() == chrom2.size());
 
         const size_t chrom_len = chrom1.size();
 
@@ -397,7 +396,7 @@ namespace genetic_algorithm::crossover::dtl
     template<Gene T>
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         const auto odd_cycle_idxs = dtl::findOddCycleIndices(parent1.chromosome, parent2.chromosome);
 
@@ -448,7 +447,7 @@ namespace genetic_algorithm::crossover::dtl
     public:
         void add(T value)
         {
-            assert(value != EMPTY);
+            GA_ASSERT(value != EMPTY);
 
             /* Assume that EMPTY values are at the back. */
             for (T& neighbour : neighbours_)
@@ -465,7 +464,7 @@ namespace genetic_algorithm::crossover::dtl
 
         void remove(T value)
         {
-            assert(value != EMPTY);
+            GA_ASSERT(value != EMPTY);
 
             for (T& neighbour : neighbours_)
             {
@@ -494,7 +493,7 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T, typename Ret>
     Ret makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
     {
-        assert(chrom1.size() == chrom2.size());
+        GA_ASSERT(chrom1.size() == chrom2.size());
 
         Ret nb_lists(chrom1.size());
 
@@ -519,7 +518,7 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         const size_t chrom_len = parent1.chromosome.size();
 
@@ -558,9 +557,9 @@ namespace genetic_algorithm::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         auto nb_lists = makeNeighbourLists(parent1.chromosome, parent2.chromosome);
 
@@ -597,8 +596,8 @@ namespace genetic_algorithm::crossover::dtl
     template<typename T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(first <= last && last <= parent1.chromosome.size());
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(first <= last && last <= parent1.chromosome.size());
 
         Candidate child = parent2;
 
@@ -631,10 +630,10 @@ namespace genetic_algorithm::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        assert(parent1.chromosome.size() == parent2.chromosome.size());
-        assert(first <= last && last <= parent1.chromosome.size());
-        assert(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        assert(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GA_ASSERT(first <= last && last <= parent1.chromosome.size());
+        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         Candidate child = parent2;
 

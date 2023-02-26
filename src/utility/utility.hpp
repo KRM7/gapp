@@ -9,7 +9,7 @@
 #include <cstddef>
 
 
-#define GA_ASSERT(condition, msg) assert((condition) && (msg))
+#define GA_ASSERT(condition, ...) assert( (condition) __VA_OPT__(&& (__VA_ARGS__)) )
 #define GA_THROW(exception_type, msg) throw exception_type(msg)
 
 

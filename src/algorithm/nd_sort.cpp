@@ -15,7 +15,6 @@
 #include <vector>
 #include <utility>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::algorithm::dtl
 {
@@ -33,6 +32,8 @@ namespace genetic_algorithm::algorithm::dtl
 
     ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept
     {
+        GA_ASSERT(std::distance(current, last) >= 0);
+
         return std::find_if(current, last, [&](const FrontInfo& sol) noexcept
         {
             return sol.rank != current->rank;
@@ -61,7 +62,7 @@ namespace genetic_algorithm::algorithm::dtl
 
     ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize)
     {
-        assert(size_t(last - first) >= popsize);
+        GA_ASSERT(size_t(last - first) >= popsize);
 
         if (size_t(last - first) == popsize) return { last, last };
 
@@ -298,8 +299,8 @@ namespace genetic_algorithm::algorithm::dtl
 
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::distance(first, last) >= 0);
-        assert(std::all_of(first, last, [first](const FitnessVector& f) { return f.size() == first->size(); }));
+        GA_ASSERT(std::distance(first, last) >= 0);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
         return dominanceDegreeSort(first, last);
     }

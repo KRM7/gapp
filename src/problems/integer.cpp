@@ -1,11 +1,11 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
+#include "../utility/utility.hpp"
 #include <vector>
 #include <string>
 #include <utility>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::problems
 {
@@ -20,7 +20,7 @@ namespace genetic_algorithm::problems
 
     auto StringFinder::invoke(const std::vector<IntegerGene>& chrom) const -> FitnessVector
     {
-        assert(chrom.size() == num_vars());
+        GA_ASSERT(chrom.size() == num_vars());
 
         double fitness = 0.0;
         for (size_t i = 0; i < chrom.size(); i++)

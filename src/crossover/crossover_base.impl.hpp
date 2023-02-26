@@ -9,18 +9,16 @@
 #include "../utility/utility.hpp"
 #include <utility>
 #include <stdexcept>
-#include <cassert>
 
 namespace genetic_algorithm::crossover
 {
     template<Gene T>
     CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
-        assert(0.0 <= pc_ && pc_ <= 1.0);
-        assert(parent1.is_evaluated && parent2.is_evaluated);
-        assert(parent1.fitness.size() == ga.num_objectives() && parent2.fitness.size() == ga.num_objectives());
-        assert(ga.variable_chrom_len() || (parent1.chromosome.size() == ga.chrom_len() &&
-                                           parent2.chromosome.size() == ga.chrom_len()));
+        GA_ASSERT(parent1.is_evaluated && parent2.is_evaluated);
+        GA_ASSERT(parent1.fitness.size() == ga.num_objectives() && parent2.fitness.size() == ga.num_objectives());
+        GA_ASSERT(ga.variable_chrom_len() || (parent1.chromosome.size() == ga.chrom_len() &&
+                                              parent2.chromosome.size() == ga.chrom_len()));
 
         /* Only need to perform the crossover with the set pc probability. Return early with (1 - pc) probability. */
         if (rng::randomReal() >= pc_)

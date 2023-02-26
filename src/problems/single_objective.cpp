@@ -1,12 +1,12 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "single_objective.hpp"
+#include "../utility/utility.hpp"
 #include <vector>
 #include <numeric>
 #include <numbers>
 #include <cmath>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::problems
 {
@@ -31,6 +31,8 @@ namespace genetic_algorithm::problems
 
     auto Rosenbrock::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
+        GA_ASSERT(!vars.empty());
+
         double fx = 0.0;
         for (size_t i = 0; i < vars.size() - 1; i++)
         {
@@ -66,6 +68,8 @@ namespace genetic_algorithm::problems
 
     auto Ackley::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
+        GA_ASSERT(!vars.empty());
+
         double f1 = 0.0;
         double f2 = 0.0;
         for (double var : vars)
@@ -83,7 +87,7 @@ namespace genetic_algorithm::problems
 
     auto Levy::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
-        assert(!vars.empty());
+        GA_ASSERT(!vars.empty());
 
         constexpr auto fw = [](double val) noexcept { return 0.75 + val / 4.0; };
 

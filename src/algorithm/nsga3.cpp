@@ -19,7 +19,6 @@
 #include <stdexcept>
 #include <utility>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::algorithm
 {
@@ -32,9 +31,9 @@ namespace genetic_algorithm::algorithm
     /* Achievement scalarization function. */
     static inline double ASF(const std::vector<double>& ideal_point, const std::vector<double>& weights, const std::vector<double>& fitness) noexcept
     {
-        assert(!ideal_point.empty());
-        assert(weights.size() == ideal_point.size());
-        assert(fitness.size() == weights.size());
+        GA_ASSERT(!ideal_point.empty());
+        GA_ASSERT(weights.size() == ideal_point.size());
+        GA_ASSERT(fitness.size() == weights.size());
 
         double dmax = -math::inf<double>;
 
@@ -49,7 +48,7 @@ namespace genetic_algorithm::algorithm
     /* Create a weight vector for the given axis (used in the ASF). */
     static inline std::vector<double> weightVector(size_t dimensions, size_t axis)
     {
-        assert(dimensions > axis);
+        GA_ASSERT(dimensions > axis);
 
         std::vector weights(dimensions, 1E-6);
         weights[axis] = 1.0;
@@ -60,7 +59,7 @@ namespace genetic_algorithm::algorithm
     /* Find an approximation of the pareto front's nadir point using the minimum of the extreme points. */
     static inline Point findNadirPoint(const std::vector<Point>& extreme_points)
     {
-        assert(!extreme_points.empty());
+        GA_ASSERT(!extreme_points.empty());
 
         /* Nadir point estimate = minimum of extreme points along each objective axis. */
         Point nadir = extreme_points[0];
@@ -75,8 +74,8 @@ namespace genetic_algorithm::algorithm
     /* Normalize a fitness vector using the ideal and nadir points. */
     static inline FitnessVector normalizeFitnessVec(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point)
     {
-        assert(fvec.size() == ideal_point.size());
-        assert(ideal_point.size() == nadir_point.size());
+        GA_ASSERT(fvec.size() == ideal_point.size());
+        GA_ASSERT(ideal_point.size() == nadir_point.size());
 
         FitnessVector fnorm(fvec.size());
 
@@ -185,15 +184,15 @@ namespace genetic_algorithm::algorithm
 
     inline void NSGA3::Impl::updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         ideal_point_ = detail::elementwise_max(std::move(ideal_point_), detail::maxFitness(first, last));
     }
 
     void NSGA3::Impl::updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::distance(first, last) > 0);
-        assert(first->size() == ideal_point_.size());
+        GA_ASSERT(std::distance(first, last) > 0);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(ideal_point_.size())));
 
         const auto popsize = size_t(last - first);
 
@@ -238,9 +237,9 @@ namespace genetic_algorithm::algorithm
     void NSGA3::Impl::associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last,
                                            ParetoFronts::const_iterator pfirst, ParetoFronts::const_iterator plast)
     {
-        assert(std::distance(first, last) > 0);
-        assert(std::all_of(first, last, [&](const FitnessVector& sol) { return sol.size() == first->size(); }));
-        assert(ref_lines_.size() != 0);
+        GA_ASSERT(std::distance(first, last) > 0);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
+        GA_ASSERT(ref_lines_.size() != 0);
 
         updateIdealPoint(first, last);
         updateNadirPoint(first, last);
@@ -349,7 +348,7 @@ namespace genetic_algorithm::algorithm
 
     void NSGA3::initializeImpl(const GaInfo& ga)
     {
-        assert(ga.population_size() != 0);
+        GA_ASSERT(ga.population_size() != 0);
 
         if (ga.num_objectives() <= 1)
         {
@@ -378,9 +377,9 @@ namespace genetic_algorithm::algorithm
                                                                     FitnessMatrix::const_iterator /* parents_last */,
                                                                     FitnessMatrix::const_iterator children_last)
     {
-        assert(ga.num_objectives() > 1);
-        assert(size_t(children_last - parents_first) >= ga.population_size());
-        assert(std::all_of(parents_first, children_last, detail::is_size(ga.num_objectives())));
+        GA_ASSERT(ga.num_objectives() > 1);
+        GA_ASSERT(size_t(children_last - parents_first) >= ga.population_size());
+        GA_ASSERT(std::all_of(parents_first, children_last, detail::is_size(ga.num_objectives())));
 
         const size_t popsize = ga.population_size();
 
@@ -423,7 +422,7 @@ namespace genetic_algorithm::algorithm
 
     size_t NSGA3::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
     {
-        assert(!fmat.empty());
+        GA_ASSERT(!fmat.empty());
 
         const size_t idx1 = rng::randomIdx(fmat);
         const size_t idx2 = rng::randomIdx(fmat);

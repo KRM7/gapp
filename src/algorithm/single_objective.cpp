@@ -58,6 +58,8 @@ namespace genetic_algorithm::algorithm
 
     void SingleObjective::initializeImpl(const GaInfo& ga)
     {
+        GA_ASSERT(selection_);
+
         if (ga.num_objectives() != 1)
         {
             GA_THROW(std::logic_error, "The number of objectives must be 1 for the single-objective algorithms.");
@@ -68,7 +70,8 @@ namespace genetic_algorithm::algorithm
 
     std::vector<size_t> SingleObjective::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
-        assert(std::all_of(first, last, detail::is_size(1)));
+        GA_ASSERT(updater_);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(1)));
 
         if (ga.num_objectives() != 1)
         {

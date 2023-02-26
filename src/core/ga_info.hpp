@@ -8,11 +8,11 @@
 #include "../algorithm/single_objective.hpp"
 #include "../stop_condition/stop_condition_base.fwd.hpp"
 #include "../utility/probability.hpp"
+#include "../utility/utility.hpp"
 #include <functional>
 #include <type_traits>
 #include <memory>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm
 {
@@ -157,11 +157,11 @@ namespace genetic_algorithm
 
         /** @returns The algorithm used by the GA. */
         [[nodiscard]]
-        algorithm::Algorithm& algorithm() & noexcept { assert(algorithm_); return *algorithm_; }
+        algorithm::Algorithm& algorithm() & noexcept { GA_ASSERT(algorithm_); return *algorithm_; }
 
         /** @returns The algorithm used by the GA. */
         [[nodiscard]]
-        const algorithm::Algorithm& algorithm() const& noexcept { assert(algorithm_); return *algorithm_; }
+        const algorithm::Algorithm& algorithm() const& noexcept { GA_ASSERT(algorithm_); return *algorithm_; }
 
 
         /**
@@ -202,11 +202,11 @@ namespace genetic_algorithm
 
         /** @returns The stop condition used by the algorithm. */
         [[nodiscard]]
-        stopping::StopCondition& stop_condition() & noexcept { assert(stop_condition_); return *stop_condition_; }
+        stopping::StopCondition& stop_condition() & noexcept { GA_ASSERT(stop_condition_); return *stop_condition_; }
 
         /** @returns The stop condition used by the algorithm. */
         [[nodiscard]]
-        const stopping::StopCondition& stop_condition() const& noexcept { assert(stop_condition_); return *stop_condition_; }
+        const stopping::StopCondition& stop_condition() const& noexcept { GA_ASSERT(stop_condition_); return *stop_condition_; }
 
 
         /**

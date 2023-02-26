@@ -34,6 +34,8 @@ namespace genetic_algorithm::mutation
 
         void mutate(const GA<T>& ga, Candidate<T>& candidate) const override
         {
+            GA_ASSERT(mutate_);
+
             mutate_(ga, candidate);
         }
     };

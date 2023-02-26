@@ -68,6 +68,8 @@ namespace genetic_algorithm::stopping
 
         bool stop_condition(const GaInfo& ga) override
         {
+            GA_ASSERT(stop_condition_);
+
             return stop_condition_(ga);
         }
     };

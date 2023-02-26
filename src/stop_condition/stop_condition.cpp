@@ -8,13 +8,12 @@
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
-#include <cassert>
 
 namespace genetic_algorithm::stopping
 {
     static bool metricImproved(FitnessVector& best_so_far, const FitnessVector& new_val, double delta) noexcept
     {
-        assert(best_so_far.size() == new_val.size());
+        GA_ASSERT(best_so_far.size() == new_val.size());
 
         bool improved = false;
         for (size_t i = 0; i < new_val.size(); i++)

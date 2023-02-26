@@ -12,8 +12,6 @@
 
 namespace genetic_algorithm::detail
 {
-    using math::Point;
-
     /* 
     * This data structure is used for the maximum inner product search in the NSGA-III algorithm,
     * when searching for the nearest reference point to a solution.
@@ -27,6 +25,8 @@ namespace genetic_algorithm::detail
         using iterator       = Matrix<double>::iterator;
         using const_iterator = Matrix<double>::const_iterator;
 
+        using Point = math::Point;
+
         struct FindResult
         {
             const_iterator elem;
@@ -37,11 +37,11 @@ namespace genetic_algorithm::detail
         {
             Point center  = {};
             double radius = 0.0;
-            size_t first  = 0;
-            size_t last   = 0;
+            size_t first  = 0;  /* Index of the first point which belongs to the node. */
+            size_t last   = 0;  /* Index of the first point which does not belong to the node. */
 
-            size_t left   = 0;
-            size_t right  = 0;
+            size_t left   = 0;  /* Index of the left child node. */
+            size_t right  = 0;  /* Index of the right child node. */
         };
 
         ConeTree() = default;

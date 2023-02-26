@@ -10,7 +10,6 @@
 #include <stdexcept>
 #include <cmath>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::problems
 {
@@ -30,7 +29,7 @@ namespace genetic_algorithm::problems
 
     auto Kursawe::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        assert(!vars.empty());
+        GA_ASSERT(!vars.empty());
 
         double f1 = 0.0;
         double f2 = 0.0;
@@ -60,7 +59,7 @@ namespace genetic_algorithm::problems
 
     auto ZDT1::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        assert(vars.size() > 1);
+        GA_ASSERT(vars.size() > 1);
 
         double f1 = vars[0];
 
@@ -87,7 +86,7 @@ namespace genetic_algorithm::problems
 
     auto ZDT2::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        assert(vars.size() > 1);
+        GA_ASSERT(vars.size() > 1);
 
         double f1 = vars[0];
 
@@ -114,7 +113,7 @@ namespace genetic_algorithm::problems
 
     auto ZDT3::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        assert(vars.size() > 1);
+        GA_ASSERT(vars.size() > 1);
 
         double f1 = vars[0];
 
@@ -143,7 +142,7 @@ namespace genetic_algorithm::problems
 
     auto ZDT4::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        assert(!vars.empty());
+        GA_ASSERT(!vars.empty());
 
         double f1 = vars[0];
 
@@ -172,8 +171,8 @@ namespace genetic_algorithm::problems
 
     auto ZDT5::invoke(const std::vector<BinaryGene>& vars) const -> FitnessVector
     {
-        assert(vars.size() >= FIRST_BITS);
-        assert(vars.size() % REST_BITS == 0);
+        GA_ASSERT(vars.size() >= FIRST_BITS);
+        GA_ASSERT(vars.size() % REST_BITS == 0);
 
         double f1 = 1.0 + std::count(vars.begin(), vars.begin() + FIRST_BITS, GeneType{ 1 });
 
@@ -204,7 +203,7 @@ namespace genetic_algorithm::problems
 
     auto ZDT6::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        assert(vars.size() > 1);
+        GA_ASSERT(vars.size() > 1);
 
         double f1 = 1.0 - std::exp(-4.0 * vars[0]) * std::pow(std::sin(6.0 * pi * vars[0]), 6);
 

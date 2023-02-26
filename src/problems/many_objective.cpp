@@ -2,6 +2,7 @@
 
 #include "many_objective.hpp"
 #include "../utility/math.hpp"
+#include "../utility/utility.hpp"
 #include <vector>
 #include <algorithm>
 #include <numeric>
@@ -10,7 +11,6 @@
 #include <stdexcept>
 #include <cmath>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::problems
 {
@@ -22,7 +22,7 @@ namespace genetic_algorithm::problems
 
     static inline double dtlz1_g(const_iterator first, const_iterator last) noexcept
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         double g = double(last - first);
         for (; first != last; ++first)
@@ -35,7 +35,7 @@ namespace genetic_algorithm::problems
 
     static inline double dtlz2_g(const_iterator first, const_iterator last) noexcept
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         double g = 0.0;
         for (; first != last; ++first)
@@ -54,7 +54,7 @@ namespace genetic_algorithm::problems
 
     static inline double dtlz6_g(const_iterator first, const_iterator last) noexcept
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         double g = 0.0;
         for (; first != last; ++first)
@@ -67,7 +67,7 @@ namespace genetic_algorithm::problems
 
     static constexpr double dtlz7_g(const_iterator first, const_iterator last) noexcept
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         return 1.0 + 9.0 / double(last - first) * std::reduce(first, last, 0.0);
     }
@@ -77,7 +77,7 @@ namespace genetic_algorithm::problems
 
     static inline std::vector<double> dtlz1_f(const_iterator first, const_iterator last, double)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 0.5);
 
@@ -92,7 +92,7 @@ namespace genetic_algorithm::problems
 
     static inline std::vector<double> dtlz2_f(const_iterator first, const_iterator last, double)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 1.0);
 
@@ -109,7 +109,7 @@ namespace genetic_algorithm::problems
 
     static inline std::vector<double> dtlz4_f(const_iterator first, const_iterator last, double)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 1.0);
 
@@ -124,7 +124,7 @@ namespace genetic_algorithm::problems
 
     static inline std::vector<double> dtlz5_f(const_iterator first, const_iterator last, double g)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 1.0);
 
@@ -147,7 +147,7 @@ namespace genetic_algorithm::problems
 
     static inline std::vector<double> dtlz7_f(const_iterator first, const_iterator last, double g)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 0.0);
 

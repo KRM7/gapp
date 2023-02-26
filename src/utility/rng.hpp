@@ -97,7 +97,6 @@ namespace genetic_algorithm::rng
 #include <iterator>
 #include <cmath>
 #include <climits>
-#include <cassert>
 
 namespace genetic_algorithm::rng
 {
@@ -135,7 +134,7 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     IntType randomInt(IntType lbound, IntType ubound)
     {
-        assert(lbound <= ubound);
+        GA_ASSERT(lbound <= ubound);
 
         return std::uniform_int_distribution{ lbound, ubound }(rng::prng);
     }
@@ -149,7 +148,7 @@ namespace genetic_algorithm::rng
     template<std::floating_point RealType>
     RealType randomReal(RealType lbound, RealType ubound)
     {
-        assert(lbound <= ubound);
+        GA_ASSERT(lbound <= ubound);
 
         return std::uniform_real_distribution{ lbound, ubound }(rng::prng);
     }
@@ -165,7 +164,7 @@ namespace genetic_algorithm::rng
     template<std::floating_point RealType>
     RealType randomNormal(RealType mean, RealType SD)
     {
-        assert(SD > 0.0);
+        GA_ASSERT(SD > 0.0);
 
         return std::normal_distribution{ mean, SD }(rng::prng);
     }
@@ -173,7 +172,7 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     IntType randomBinomialApprox(IntType n, double p)
     {
-        assert(0.0 <= p && p <= 1.0);
+        GA_ASSERT(0.0 <= p && p <= 1.0);
 
         const double mean = n * p;
         const double SD = std::sqrt(mean * (1.0 - p));
@@ -199,7 +198,7 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     IntType randomBinomial(IntType n, double p)
     {
-        assert(0.0 <= p && p <= 1.0);
+        GA_ASSERT(0.0 <= p && p <= 1.0);
 
         const double mean = n * p;
 
@@ -211,7 +210,7 @@ namespace genetic_algorithm::rng
     template<detail::IndexableContainer T>
     size_t randomIdx(const T& container)
     {
-        assert(!container.empty());
+        GA_ASSERT(!container.empty());
 
         return std::uniform_int_distribution{ 0_sz, container.size() - 1 }(rng::prng);
     }
@@ -219,7 +218,7 @@ namespace genetic_algorithm::rng
     template<std::input_iterator Iter>
     auto randomElement(Iter first, Iter last)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         const auto max_offset = std::distance(first, last) - 1;
         const auto offset = rng::randomInt(0_pd, max_offset);
@@ -232,8 +231,8 @@ namespace genetic_algorithm::rng
     {
         const auto range_len = size_t(ubound - lbound);
 
-        assert(ubound >= lbound);
-        assert(range_len >= count);
+        GA_ASSERT(ubound >= lbound);
+        GA_ASSERT(range_len >= count);
 
         std::vector is_selected(range_len, false);
         std::vector numbers(count, ubound);
@@ -254,7 +253,7 @@ namespace genetic_algorithm::rng
     template<std::floating_point T>
     size_t sampleCdf(const std::vector<T>& cdf)
     {
-        assert(!cdf.empty());
+        GA_ASSERT(!cdf.empty());
 
         const auto limit = rng::randomReal<T>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
         const auto selected = std::lower_bound(cdf.begin(), cdf.end(), limit);

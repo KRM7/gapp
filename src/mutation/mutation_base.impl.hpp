@@ -5,9 +5,9 @@
 
 #include "mutation_base.decl.hpp"
 #include "../core/ga_base.decl.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <utility>
-#include <cassert>
 #include <stdexcept>
 
 namespace genetic_algorithm::mutation
@@ -15,8 +15,8 @@ namespace genetic_algorithm::mutation
     template<Gene T>
     void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
     {
-        assert(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives());
-        assert(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len());
+        GA_ASSERT(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives());
+        GA_ASSERT(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len());
 
         if (!candidate.is_evaluated)
         {

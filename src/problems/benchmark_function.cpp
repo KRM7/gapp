@@ -2,6 +2,7 @@
 
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
+#include "../utility/utility.hpp"
 #include <vector>
 #include <numeric>
 #include <cmath>
@@ -11,6 +12,8 @@ namespace genetic_algorithm::problems
 {
     Chromosome<RealGene> BenchmarkFunction<RealGene>::convert(const Chromosome<BinaryGene>& bchrom, const std::vector<Bounds>& bounds, size_t var_bits)
     {
+        GA_ASSERT(bchrom.size() == var_bits * bounds.size());
+
         std::vector<RealGene> vars(bounds.size());
 
         for (size_t i = 0; i < vars.size(); i++)

@@ -15,7 +15,6 @@
 #include <limits>
 #include <stdexcept>
 #include <cmath>
-#include <cassert>
 
 namespace genetic_algorithm::selection
 {
@@ -65,8 +64,8 @@ namespace genetic_algorithm::selection
 
     void Tournament::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
-        assert(fmat.size() >= tourney_size_);
-        assert(std::none_of(fmat.begin(), fmat.end(), std::mem_fn(&FitnessVector::empty)));
+        GA_ASSERT(fmat.size() >= tourney_size_);
+        GA_ASSERT(std::all_of(fmat.begin(), fmat.end(), detail::is_size(1)));
         
         fvec_ = detail::map(fmat, [](const FitnessVector& fvec) noexcept { return fvec[0]; });
     }
@@ -115,7 +114,7 @@ namespace genetic_algorithm::selection
 
     void Rank::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
-        assert(0.0 <= min_weight_ && min_weight_ <= max_weight_);
+        GA_ASSERT(0.0 <= min_weight_ && min_weight_ <= max_weight_);
 
         const auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const auto indices = detail::argsort(fvec.begin(), fvec.end());
@@ -153,7 +152,7 @@ namespace genetic_algorithm::selection
 
     void Sigma::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
-        assert(scale_ > 1.0);
+        GA_ASSERT(scale_ > 1.0);
 
         auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const double fmean = math::mean(fvec);
@@ -175,9 +174,10 @@ namespace genetic_algorithm::selection
     }
 
 
-    Boltzmann::Boltzmann(TemperatureFunction f) :
-        temperature_(std::move(f))
-    {}
+    Boltzmann::Boltzmann(TemperatureFunction f)
+    {
+        temperature_function(std::move(f));
+    }
 
     void Boltzmann::temperature_function(TemperatureFunction f)
     {
@@ -188,6 +188,8 @@ namespace genetic_algorithm::selection
 
     void Boltzmann::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
+        GA_ASSERT(temperature_);
+
         auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
         const double df = std::max(*fmax - *fmin, 1E-6);
@@ -225,6 +227,8 @@ namespace genetic_algorithm::selection
 
     size_t Lambda::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
     {
+        GA_ASSERT(selection_);
+
         return selection_(ga, fmat);
     }
 

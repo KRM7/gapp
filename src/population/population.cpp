@@ -3,19 +3,20 @@
 #include "population.hpp"
 #include "../utility/math.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/functional.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <numeric>
 #include <iterator>
 #include <vector>
 #include <cmath>
-#include <cassert>
 #include <cstddef>
 
 namespace genetic_algorithm::detail
 {
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::all_of(first, last, [](const FitnessVector& f) { return f.size() == 1; }));
+        GA_ASSERT(std::all_of(first, last, detail::is_size(1)));
 
         std::vector<double> fvec(last - first);
         std::transform(first, last, fvec.begin(), [](const FitnessVector& f) { return f[0]; });
@@ -25,26 +26,27 @@ namespace genetic_algorithm::detail
 
     FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::distance(first, last) > 0);
-        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
+        GA_ASSERT(std::distance(first, last) > 0);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
         return std::reduce(std::next(first), last, *first, detail::elementwise_min<double>);
     }
 
     FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::distance(first, last) > 0);
-        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
+        GA_ASSERT(std::distance(first, last) > 0);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
         return std::reduce(std::next(first), last, *first, detail::elementwise_max<double>);
     }
 
     FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        assert(std::distance(first, last) > 0);
-        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
+        GA_ASSERT(std::distance(first, last) > 0);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
         FitnessVector fitness_mean(first->size());
+
         std::for_each(first, last, [&](const FitnessVector& fvec)
         {
             std::transform(fvec.begin(), fvec.end(), fitness_mean.begin(), fitness_mean.begin(),
@@ -64,8 +66,8 @@ namespace genetic_algorithm::detail
 
     FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean)
     {
-        assert(std::distance(first, last) > 0);
-        assert(std::all_of(first, last, [first](const FitnessVector& sol) { return sol.size() == first->size(); }));
+        GA_ASSERT(std::distance(first, last) > 0);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
         FitnessVector variance(first->size());
 

@@ -4,19 +4,20 @@
 #include "functional.hpp"
 #include "math.hpp"
 #include "matrix.hpp"
+#include "utility.hpp"
 #include <algorithm>
 #include <numeric>
 #include <functional>
 #include <iterator>
 #include <utility>
 #include <cmath>
-#include <cassert>
 
 namespace genetic_algorithm::detail
 {
     using iterator = ConeTree::iterator;
     using const_iterator = ConeTree::const_iterator;
 
+    using Point = ConeTree::Point;
     using Node = ConeTree::Node;
     using FindResult = ConeTree::FindResult;
 
@@ -39,7 +40,7 @@ namespace genetic_algorithm::detail
     /* Find the point in the range [first, last) furthest from a point (using Euclidean distances). */
     static inline const_iterator findFurthestElement(const_iterator first, const_iterator last, const_iterator from)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         const_iterator furthest;
         double max_distance = -math::inf<double>;
@@ -61,7 +62,7 @@ namespace genetic_algorithm::detail
     /* Find the 2 partition points that will be used to split the range [first, last) into 2 parts. */
     static inline std::pair<const_iterator, const_iterator> partitionPoints(const_iterator first, const_iterator last)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         const_iterator rand_elem = first;
 
@@ -74,7 +75,7 @@ namespace genetic_algorithm::detail
     /* The center of the range of points [first, last) is the mean of the coords along each axis. */
     static inline Point findCenter(const_iterator first, const_iterator last)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         const ptrdiff_t range_len = std::distance(first, last);
 
@@ -93,7 +94,7 @@ namespace genetic_algorithm::detail
     /* Find the Euclidean distance between the center point and the point in the range [first, last) furthest from it. */
     static inline double findRadius(const_iterator first, const_iterator last, const Point& center)
     {
-        assert(std::distance(first, last) > 0);
+        GA_ASSERT(std::distance(first, last) > 0);
 
         double max_distance = -math::inf<double>;
 
@@ -123,8 +124,8 @@ namespace genetic_algorithm::detail
     /* Find the best match in the range [first, last) using linear search. */
     static FindResult findBestMatchLinear(const Point& query_point, const_iterator first, const_iterator last)
     {
-        assert(std::distance(first, last) > 0);
-        assert(query_point.size() == first->size());
+        GA_ASSERT(std::distance(first, last) > 0);
+        GA_ASSERT(query_point.size() == first->size());
 
         FindResult best = { {}, -math::inf<double> };
 
@@ -144,7 +145,7 @@ namespace genetic_algorithm::detail
 
     void ConeTree::buildTree()
     {
-        assert(nodes_.size() == 1);
+        GA_ASSERT(nodes_.size() == 1);
 
         for (size_t i = 0; i < nodes_.size(); i++)
         {
@@ -191,11 +192,12 @@ namespace genetic_algorithm::detail
 
     FindResult ConeTree::findBestMatch(const Point& query_point) const
     {
-        assert(query_point.size() == points_.ncols());
+        GA_ASSERT(!nodes_.empty());
+        GA_ASSERT(query_point.size() == points_.ncols());
 
         const double query_norm = math::euclideanNorm(query_point);
 
-        static thread_local std::vector<const Node*> node_stack(nodes_.size() / 2);
+        thread_local std::vector<const Node*> node_stack(nodes_.size() / 2);
         node_stack.clear();
         node_stack.push_back(&nodes_[0]);
 
