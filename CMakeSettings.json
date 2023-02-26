@@ -59,6 +59,16 @@
       "cmakeCommandArgs": "",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "inheritEnvironments": [ "clang_cl_x64_x64" ]
+    },
+    {
+      "name": "x64-msvc-dll",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DGA_CXX_FLAGS=-analyze:WX- -DBUILD_SHARED_LIBS=ON",
+      "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "inheritEnvironments": [ "msvc_x64_x64" ]
     }
   ]
 }
