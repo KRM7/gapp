@@ -56,7 +56,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline FitnessFunction<T>& GA<T>::fitness_function() &
+    inline FitnessFunction<T>& GA<T>::fitness_function() & noexcept
     {
         assert(fitness_function_ != nullptr);
 
@@ -64,7 +64,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline const FitnessFunction<T>& GA<T>::fitness_function() const&
+    inline const FitnessFunction<T>& GA<T>::fitness_function() const& noexcept
     {
         assert(fitness_function_ != nullptr);
 
@@ -134,7 +134,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline crossover::Crossover<T>& GA<T>::crossover_method() &
+    inline crossover::Crossover<T>& GA<T>::crossover_method() & noexcept
     {
         assert(crossover_ != nullptr);
 
@@ -142,7 +142,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline const crossover::Crossover<T>& GA<T>::crossover_method() const&
+    inline const crossover::Crossover<T>& GA<T>::crossover_method() const& noexcept
     {
         assert(crossover_ != nullptr);
 
@@ -150,7 +150,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline void GA<T>::crossover_rate(Probability pc)
+    inline void GA<T>::crossover_rate(Probability pc) noexcept
     {
         assert(crossover_ != nullptr);
 
@@ -188,7 +188,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline mutation::Mutation<T>& GA<T>::mutation_method() &
+    inline mutation::Mutation<T>& GA<T>::mutation_method() & noexcept
     {
         assert(mutation_ != nullptr);
 
@@ -196,7 +196,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline const mutation::Mutation<T>& GA<T>::mutation_method() const&
+    inline const mutation::Mutation<T>& GA<T>::mutation_method() const& noexcept
     {
         assert(mutation_ != nullptr);
 
@@ -204,7 +204,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline void GA<T>::mutation_rate(Probability pm)
+    inline void GA<T>::mutation_rate(Probability pm) noexcept
     {
         assert(mutation_ != nullptr);
 

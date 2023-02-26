@@ -12,6 +12,7 @@
 #include <functional>
 #include <memory>
 #include <cstddef>
+#include <cassert>
 
 namespace genetic_algorithm::algorithm
 {
@@ -125,11 +126,11 @@ namespace genetic_algorithm::algorithm
 
         /** @returns The selection operator used by the algorithm. */
         [[nodiscard]]
-        selection::Selection& selection_method() & noexcept { return *selection_; }
+        selection::Selection& selection_method() & noexcept { assert(selection_); return *selection_; }
 
         /** @returns The selection operator used by the algorithm. */
         [[nodiscard]]
-        const selection::Selection& selection_method() const& noexcept { return *selection_; }
+        const selection::Selection& selection_method() const& noexcept { assert(selection_); return *selection_; }
 
 
         /**
@@ -164,11 +165,11 @@ namespace genetic_algorithm::algorithm
 
         /** @returns The population update operator used by the algorithm. */
         [[nodiscard]]
-        update::Updater& update_method() & noexcept { return *updater_; }
+        update::Updater& update_method() & noexcept { assert(updater_); return *updater_; }
 
         /** @returns The population update operator used by the algorithm. */
         [[nodiscard]]
-        const update::Updater& update_method() const& noexcept { return *updater_; }
+        const update::Updater& update_method() const& noexcept { assert(updater_); return *updater_; }
 
     private:
 

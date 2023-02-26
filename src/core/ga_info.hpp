@@ -12,6 +12,7 @@
 #include <type_traits>
 #include <memory>
 #include <cstddef>
+#include <cassert>
 
 namespace genetic_algorithm
 {
@@ -116,7 +117,7 @@ namespace genetic_algorithm
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        virtual void crossover_rate(Probability pc) = 0;
+        virtual void crossover_rate(Probability pc) noexcept = 0;
 
         /** @returns The crossover rate set for the crossover operator. */
         [[nodiscard]]
@@ -127,7 +128,7 @@ namespace genetic_algorithm
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        virtual void mutation_rate(Probability pm) = 0;
+        virtual void mutation_rate(Probability pm) noexcept = 0;
 
         /** @returns The mutation rate set for the mutation operator. */
         [[nodiscard]]
@@ -156,11 +157,11 @@ namespace genetic_algorithm
 
         /** @returns The algorithm used by the GA. */
         [[nodiscard]]
-        algorithm::Algorithm& algorithm() & { return *algorithm_; }
+        algorithm::Algorithm& algorithm() & noexcept { assert(algorithm_); return *algorithm_; }
 
         /** @returns The algorithm used by the GA. */
         [[nodiscard]]
-        const algorithm::Algorithm& algorithm() const& { return *algorithm_; }
+        const algorithm::Algorithm& algorithm() const& noexcept { assert(algorithm_); return *algorithm_; }
 
 
         /**
@@ -201,11 +202,11 @@ namespace genetic_algorithm
 
         /** @returns The stop condition used by the algorithm. */
         [[nodiscard]]
-        stopping::StopCondition& stop_condition() & { return *stop_condition_; }
+        stopping::StopCondition& stop_condition() & noexcept { assert(stop_condition_); return *stop_condition_; }
 
         /** @returns The stop condition used by the algorithm. */
         [[nodiscard]]
-        const stopping::StopCondition& stop_condition() const& { return *stop_condition_; }
+        const stopping::StopCondition& stop_condition() const& noexcept { assert(stop_condition_); return *stop_condition_; }
 
 
         /**

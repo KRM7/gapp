@@ -95,11 +95,11 @@ namespace genetic_algorithm
 
         /** @returns The fitness function used in the algorithm. */
         [[nodiscard]]
-        FitnessFunction<T>& fitness_function() &;
+        FitnessFunction<T>& fitness_function() & noexcept;
 
         /** @returns The fitness function used in the algorithm. */
         [[nodiscard]]
-        const FitnessFunction<T>& fitness_function() const&;
+        const FitnessFunction<T>& fitness_function() const& noexcept;
 
         /** @returns The chromosome length used for the candidates of the population. */
         [[nodiscard]]
@@ -157,18 +157,18 @@ namespace genetic_algorithm
 
         /** @returns The crossover operator used by the algorithm. */
         [[nodiscard]]
-        crossover::Crossover<T>& crossover_method() &;
+        crossover::Crossover<T>& crossover_method() & noexcept;
 
         /** @returns The crossover operator used by the algorithm. */
         [[nodiscard]]
-        const crossover::Crossover<T>& crossover_method() const&;
+        const crossover::Crossover<T>& crossover_method() const& noexcept;
 
         /**
         * Set the crossover rate of the crossover operator used by the algorithm.
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        void crossover_rate(Probability pc) final;
+        void crossover_rate(Probability pc) noexcept final;
 
         /** @returns The crossover rate set for the crossover operator. */
         [[nodiscard]]
@@ -209,18 +209,18 @@ namespace genetic_algorithm
 
         /** @returns The mutation operator used by the algorithm. */
         [[nodiscard]]
-        mutation::Mutation<T>& mutation_method() &;
+        mutation::Mutation<T>& mutation_method() & noexcept;
 
         /** @returns The mutation operator used by the algorithm. */
         [[nodiscard]]
-        const mutation::Mutation<T>& mutation_method() const&;
+        const mutation::Mutation<T>& mutation_method() const& noexcept;
 
         /**
         * Set the mutation rate of the mutation operator.
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        void mutation_rate(Probability pm) final;
+        void mutation_rate(Probability pm) noexcept final;
 
         /** @returns The mutation rate of the mutation operator. */
         [[nodiscard]]
