@@ -9,6 +9,7 @@
       "cmakeCommandArgs": "-DGA_CXX_FLAGS=/analyze:WX-",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
+      "enableMicrosoftCodeAnalysis": false,
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
@@ -20,6 +21,7 @@
       "cmakeCommandArgs": "-DGA_CXX_FLAGS=-analyze:WX-",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
+      "enableMicrosoftCodeAnalysis": false,
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
@@ -31,6 +33,7 @@
       "cmakeCommandArgs": "-DGA_CXX_FLAGS=-analyze:WX-",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
+      "enableMicrosoftCodeAnalysis": false,
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
@@ -72,6 +75,7 @@
       "cmakeCommandArgs": "-DGA_CXX_FLAGS=-analyze:WX- -DBUILD_SHARED_LIBS=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
+      "enableMicrosoftCodeAnalysis": false,
       "inheritEnvironments": [ "msvc_x64_x64" ]
     }
   ]
