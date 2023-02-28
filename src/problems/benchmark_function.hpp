@@ -23,8 +23,7 @@ namespace genetic_algorithm::problems
     class BenchmarkFunctionTraits
     {
     public:
-        using Bounds       = typename GA<T>::GeneBounds;
-        using BoundsVector = typename GA<T>::BoundsVector;
+        using Bounds = GeneBounds<T>;
 
         /** @returns The name of the benchmark function. */
         [[nodiscard]]
@@ -95,7 +94,6 @@ namespace genetic_algorithm::problems
     public:
         using typename FitnessFunction<T>::GeneType;
         using typename BenchmarkFunctionTraits<T>::Bounds;
-        using typename BenchmarkFunctionTraits<T>::BoundsVector;
 
         /** @returns The number of variables of the benchmark function. */
         [[nodiscard]]
@@ -139,7 +137,6 @@ namespace genetic_algorithm::problems
         using FitnessFunction<RealGene>::GeneType;
         using FitnessFunction<RealGene>::FitnessVector;
         using BenchmarkFunctionTraits<RealGene>::Bounds;
-        using BenchmarkFunctionTraits<RealGene>::BoundsVector;
 
         using FitnessFunction<RealGene>::operator();
         using FitnessFunction<BinaryGene>::operator();

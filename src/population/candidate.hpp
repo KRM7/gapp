@@ -22,6 +22,31 @@ namespace genetic_algorithm
         requires std::three_way_comparable<T>;
     };
 
+     /** The type used to represent the lower and upper bounds of a gene. */
+    template<Gene T>
+    class GeneBounds
+    {
+    public:
+        /** Constructor for the range [lower, upper]. */
+        constexpr GeneBounds(const T& lower, const T& upper);
+
+        /** @returns The lower gene bound. */
+        [[nodiscard]]
+        constexpr const T& lower() const noexcept { return lower_; }
+
+        /** @returns The upper gene bound. */
+        [[nodiscard]]
+        constexpr const T& upper() const noexcept { return upper_; }
+
+    private:
+        T lower_;
+        T upper_;
+    };
+
+    /** A vector of gene lower and upper bounds. */
+    template<Gene T>
+    using BoundsVector = std::vector<GeneBounds<T>>;
+
     /** The chromosome type of the Candidates. */
     template<Gene T>
     using Chromosome = std::vector<T>;
@@ -103,12 +128,21 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
+#include "utility/utility.hpp"
 #include <algorithm>
 #include <functional>
 #include <type_traits>
+#include <stdexcept>
 
 namespace genetic_algorithm
 {
+    template<Gene T>
+    constexpr GeneBounds<T>::GeneBounds(const T& lower, const T& upper) :
+        lower_(lower), upper_(upper)
+    {
+        if (lower > upper) GA_THROW(std::invalid_argument, "The lower bound can't be greater than the upper bound.");
+    }
+
     template<typename T>
     bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
     {

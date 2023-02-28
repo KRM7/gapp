@@ -7,16 +7,14 @@
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"
 #include "../utility/rng.hpp"
-#include "../utility/utility.hpp"
 #include <algorithm>
 #include <vector>
 #include <utility>
 #include <memory>
-#include <stdexcept>
 
 namespace genetic_algorithm
 {
-    IntegerGA::IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, const GeneBounds& bounds, size_t population_size) :
+    IntegerGA::IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, GeneBounds<GeneType> bounds, size_t population_size) :
         GA(std::move(fitness_function), population_size)
     {
         this->gene_bounds(bounds);
@@ -24,14 +22,9 @@ namespace genetic_algorithm
         mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / this->chrom_len()));
     }
 
-    void IntegerGA::gene_bounds(const GeneBounds& limits)
+    void IntegerGA::gene_bounds(GeneBounds<GeneType> bounds) noexcept
     {
-        if (limits.lower > limits.upper)
-        {
-            GA_THROW(std::invalid_argument, "The lower bound of the genes can't be higher than the upper bound.");
-        }
-
-        bounds_ = BoundsVector(this->chrom_len(), limits);
+        bounds_ = BoundsVector<GeneType>(this->chrom_len(), bounds);
     }
 
     void IntegerGA::initialize()
@@ -44,7 +37,7 @@ namespace genetic_algorithm
         Candidate<GeneType> solution(this->chrom_len());
         std::generate(solution.chromosome.begin(), solution.chromosome.end(), [this]
         {
-            return rng::randomInt<GeneType>(bounds_.front().lower, bounds_.front().upper);
+            return rng::randomInt<GeneType>(bounds_.front().lower(), bounds_.front().upper());
         });
 
         return solution;

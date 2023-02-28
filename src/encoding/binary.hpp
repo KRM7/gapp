@@ -37,7 +37,7 @@ namespace genetic_algorithm
         explicit BinaryGA(F fitness_function, size_t population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
-            bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ 0, 1 });
+            bounds_ = BoundsVector<GeneType>(this->chrom_len(), GeneBounds<GeneType>{ 0, 1 });
             crossover_method(std::make_unique<crossover::binary::TwoPoint>());
             mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / this->chrom_len()));
         }

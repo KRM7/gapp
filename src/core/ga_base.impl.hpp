@@ -104,7 +104,7 @@ namespace genetic_algorithm
 
 
     template<Gene T>
-    inline auto GA<T>::gene_bounds() const noexcept -> const BoundsVector&
+    inline auto GA<T>::gene_bounds() const noexcept -> const BoundsVector<T>&
     {
         return bounds_;
     }

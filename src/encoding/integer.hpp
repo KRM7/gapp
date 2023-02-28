@@ -31,7 +31,7 @@ namespace genetic_algorithm
         * @param bounds The boundaries of the genes (their min and max values).
         * @param population_size The number of candidates in the population.
         */
-        IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, const GeneBounds& bounds, size_t population_size = DEFAULT_POPSIZE);
+        IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, GeneBounds<GeneType> bounds, size_t population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct an integer encoded genetic algorithm.
@@ -42,7 +42,7 @@ namespace genetic_algorithm
         */
         template<typename F>
         requires FitnessFunctionType<F, IntegerGene> && std::is_final_v<F>
-        IntegerGA(F fitness_function, const GeneBounds& bounds, size_t population_size = DEFAULT_POPSIZE) :
+        IntegerGA(F fitness_function, GeneBounds<GeneType> bounds, size_t population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
             this->gene_bounds(bounds);
@@ -56,9 +56,9 @@ namespace genetic_algorithm
         * 
         * With bounds = { 0, 1 }, the IntegerGA is effectively the same as the BinaryGA.
         *
-        * @param limits The lower and upper boundaries of the genes.
+        * @param bounds The lower and upper boundaries of the genes.
         */
-        void gene_bounds(const GeneBounds& limits);
+        void gene_bounds(GeneBounds<GeneType> bounds) noexcept;
 
         using GA::gene_bounds;
 

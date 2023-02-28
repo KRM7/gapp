@@ -30,10 +30,8 @@ namespace genetic_algorithm
     class GA : public GaInfo
     {
     public:
-        struct GeneBounds { T lower; T upper; };        /**< The type used to represent the lower and upper bounds of a gene. */
-        
-        using GeneType = T;                             /**< The gene type used in the chromosomes. */
-        using BoundsVector = std::vector<GeneBounds>;   /**< A vector of gene bounds. */
+        /** The gene type used for the chromosomes. */
+        using GeneType = T;
 
         /**
         * The general callable type that can be used as a crossover method in the algorithms. \n
@@ -120,7 +118,7 @@ namespace genetic_algorithm
 
         /** @returns The lower and upper bounds of each of the chromosomes' genes (the ranges are inclusive). */
         [[nodiscard]]
-        const BoundsVector& gene_bounds() const noexcept;
+        const BoundsVector<T>& gene_bounds() const noexcept;
 
         /**
         * Set the crossover method the algorithm will use. \n
@@ -300,7 +298,7 @@ namespace genetic_algorithm
 
     protected:
 
-        BoundsVector bounds_;
+        BoundsVector<T> bounds_;
 
     private:
 

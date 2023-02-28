@@ -15,17 +15,17 @@ using namespace genetic_algorithm::rng;
 using namespace genetic_algorithm::math;
 using namespace Catch::Matchers;
 
-std::vector<RealGene> randomPoint(const BenchmarkFunction<RealGene>::BoundsVector& bounds)
+std::vector<RealGene> randomPoint(const BoundsVector<RealGene>& bounds)
 {
     std::vector<RealGene> point;
     point.reserve(bounds.size());
 
-    for (const auto& [lbound, ubound] : bounds) { point.push_back(randomReal(lbound, ubound)); }
+    for (const auto& bound : bounds) { point.push_back(randomReal(bound.lower(), bound.upper())); }
 
     return point;
 }
 
-std::vector<BinaryGene> randomPoint(const BenchmarkFunction<BinaryGene>::BoundsVector& bounds)
+std::vector<BinaryGene> randomPoint(const BoundsVector<BinaryGene>& bounds)
 {
     std::vector<BinaryGene> point(bounds.size());
     std::generate(point.begin(), point.end(), randomBool);

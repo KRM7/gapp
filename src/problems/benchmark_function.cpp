@@ -27,8 +27,8 @@ namespace genetic_algorithm::problems
             });
 
             vars[i] = val / (std::pow(2.0, var_bits) - 1); // use double to avoid integer overflow
-            vars[i] *= bounds[i].upper - bounds[i].lower;
-            vars[i] += bounds[i].lower;
+            vars[i] *= bounds[i].upper() - bounds[i].lower();
+            vars[i] += bounds[i].lower();
         }
 
         return vars;

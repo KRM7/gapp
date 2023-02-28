@@ -17,14 +17,14 @@ namespace genetic_algorithm
     BinaryGA::BinaryGA(std::unique_ptr<FitnessFunction<BinaryGene>> fitness_function, size_t population_size) :
         GA(std::move(fitness_function), population_size)
     {
-        bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ 0, 1 });
+        bounds_ = BoundsVector<GeneType>(this->chrom_len(), GeneBounds<GeneType>{ 0, 1 });
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());
         mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / this->chrom_len()));
     }
 
     void BinaryGA::initialize()
     {
-        bounds_.resize(this->chrom_len(), GeneBounds{ 0, 1 });
+        bounds_.resize(this->chrom_len(), GeneBounds<GeneType>{ 0, 1 });
     }
 
     auto BinaryGA::generateCandidate() const -> Candidate<GeneType>

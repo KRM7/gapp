@@ -43,7 +43,7 @@ namespace genetic_algorithm
         explicit PermutationGA(F fitness_function, size_t population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
-            bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ 0_sz, this->chrom_len() - 1 });
+            bounds_ = BoundsVector<GeneType>(this->chrom_len(), GeneBounds<GeneType>{ 0_sz, this->chrom_len() - 1 });
             crossover_method(std::make_unique<crossover::perm::Order2>());
             mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
         }

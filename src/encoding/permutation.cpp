@@ -19,14 +19,14 @@ namespace genetic_algorithm
     PermutationGA::PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, size_t population_size) :
         GA(std::move(fitness_function), population_size)
     {
-        bounds_ = BoundsVector(this->chrom_len(), GeneBounds{ 0_sz, this->chrom_len() - 1 });
+        bounds_ = BoundsVector<GeneType>(this->chrom_len(), GeneBounds<GeneType>{ 0_sz, this->chrom_len() - 1 });
         crossover_method(std::make_unique<crossover::perm::Order2>());
         mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
     }
 
     void PermutationGA::initialize()
     {
-        bounds_.resize(this->chrom_len(), GeneBounds{ 0_sz, this->chrom_len() - 1 });
+        bounds_.resize(this->chrom_len(), GeneBounds<GeneType>{ 0_sz, this->chrom_len() - 1 });
     }
 
     auto PermutationGA::generateCandidate() const -> Candidate<GeneType>

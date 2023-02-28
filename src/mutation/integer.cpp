@@ -21,11 +21,11 @@ namespace genetic_algorithm::mutation::integer
 
         for (const auto& idx : mutated_indices)
         {
-            GeneType new_gene = rng::randomInt(bounds[idx].lower, bounds[idx].upper);
+            GeneType new_gene = rng::randomInt(bounds[idx].lower(), bounds[idx].upper());
 
             while (new_gene == candidate.chromosome[idx])
             {
-                new_gene = rng::randomInt(bounds[idx].lower, bounds[idx].upper);
+                new_gene = rng::randomInt(bounds[idx].lower(), bounds[idx].upper());
             }
 
             candidate.chromosome[idx] = new_gene;
