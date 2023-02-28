@@ -41,7 +41,7 @@ jobs:
       matrix:
         tool: [ { name: iwyu,       cmake-flag: CMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu;-Xiwyu;--mapping_file=../.iwyu-mappings" },
                 { name: clang-tidy, cmake-flag: CMAKE_CXX_CLANG_TIDY="clang-tidy" },
-                { name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck;--enable=all;--std=c++20;--suppressions-list=../.cppcheck-supressions" } ]
+                { name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck;--enable=all;--std=c++20" } ]
         include:
           - pkgs: clang-15 llvm-15-dev libclang-15-dev clang-tools-15 clang-tidy-15 iwyu cppcheck
             cxx: clang++-15
