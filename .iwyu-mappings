@@ -3,10 +3,10 @@
 
 [
   # Map C headers to their C++ counterparts
-  { include: [ "<assert.h>", private, "<cassert>", public ] },
-  { include: [ "<math.h>",   private, "<cmath>",   public ] },
-  { include: [ "<stddef.h>", private, "<cstddef>", public ] },
-  { include: [ "<stdlib.h>", private, "<cstdlib>", public ] },
+  { include: [ "<assert.h>", public, "<cassert>", public ] },
+  { include: [ "<math.h>",   public, "<cmath>",   public ] },
+  { include: [ "<stddef.h>", public, "<cstddef>", public ] },
+  { include: [ "<stdlib.h>", public, "<cstdlib>", public ] },
 
   # iwyu wants to include <new> whenever something allocates memory
   { symbol: ["std::bad_alloc", "private", "<vector>", "public" ] },
