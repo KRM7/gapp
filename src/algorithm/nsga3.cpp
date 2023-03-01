@@ -403,7 +403,7 @@ namespace genetic_algorithm::algorithm
             const size_t min_count = pimpl_->niche_counts_[refs[0]];
             const auto min_last = std::find_if(refs.begin(), refs.end(), [&](size_t idx) { return pimpl_->niche_counts_[idx] != min_count; });
 
-            size_t ref = rng::randomElement(refs.begin(), min_last);
+            size_t ref = *rng::randomElement(refs.begin(), min_last);
             pimpl_->incrementNicheCount(refs, ref);
 
             const size_t assoc_count = std::count_if(partial_first, partial_last, [&](const FrontInfo& sol) { return pimpl_->refIndexOf(sol) == ref; });

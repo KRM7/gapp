@@ -77,7 +77,7 @@ namespace genetic_algorithm::rng
 
     /** Pick a random element from a range. */
     template<std::input_iterator Iter>
-    inline auto randomElement(Iter first, Iter last);
+    inline Iter randomElement(Iter first, Iter last);
 
     /** Generates @p count unique integers from the range [lbound, ubound). */
     template<std::integral IntType>
@@ -216,14 +216,14 @@ namespace genetic_algorithm::rng
     }
 
     template<std::input_iterator Iter>
-    auto randomElement(Iter first, Iter last)
+    Iter randomElement(Iter first, Iter last)
     {
         GA_ASSERT(std::distance(first, last) > 0);
 
         const auto max_offset = std::distance(first, last) - 1;
         const auto offset = rng::randomInt(0_pd, max_offset);
 
-        return *std::next(first, offset);
+        return std::next(first, offset);
     }
 
     template<std::integral IntType>
