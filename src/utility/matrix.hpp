@@ -431,6 +431,7 @@ namespace genetic_algorithm::detail
                                     typename Matrix<T, A>::difference_type>
     {
     public:
+        using iterator_category = std::contiguous_iterator_tag;
         using my_base_ = stable_iterator_base<RowIterator, Matrix, RowRef, RowRef, RowRef, difference_type>;
         using my_base_::my_base_;
 
@@ -447,6 +448,7 @@ namespace genetic_algorithm::detail
                                     typename Matrix<T, A>::difference_type>
     {
     public:
+        using iterator_category = std::contiguous_iterator_tag;
         using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, ConstRowRef, ConstRowRef, ConstRowRef, difference_type>;
         using my_base_::my_base_;
 

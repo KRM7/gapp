@@ -172,6 +172,24 @@ namespace genetic_algorithm::detail
     };
 
 
+    /*
+    * The following should be implemented in Derived:
+    *   operator*
+    *   operator==
+    *   operator<
+    *   increment() function (equivalent to prefix operator++)
+    *   decrement() function (equivalent to prefix operator--)
+    *   operator +=(n)
+    *   operator-(it, it)
+    */
+    template<typename Derived, typename Distance = std::ptrdiff_t>
+    class contiguous_iterator_interface : public random_access_iterator_interface<Derived, Distance>
+    {
+    public:
+        using iterator_category = std::contiguous_iterator_tag;
+    };
+
+
     /* Iterators for random-access containers that aren't invalidated on reallocations and insertions(/deletions). */
 
     template<typename Derived,
