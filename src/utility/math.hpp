@@ -155,7 +155,7 @@ namespace genetic_algorithm::math
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
     {
-        // if lhs or rhs == NaN return unordered
+        GA_ASSERT(!std::isnan(lhs) && !std::isnan(rhs));
 
         const T diff = lhs - rhs;
         const T scale = std::max(std::abs(lhs), std::abs(rhs));
