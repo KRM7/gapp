@@ -62,11 +62,6 @@ TEST_CASE("argsort", "[algorithm]")
         const auto indices = detail::argsort(nums.begin(), nums.begin());
         REQUIRE(indices.empty());
     }
-
-    SECTION("bad range")
-    {
-        //REQUIRE_THROWS(detail::argsort(nums.end(), nums.begin()));
-    }
 }
 
 TEST_CASE("partial_argsort", "[algorithm]")
@@ -105,12 +100,6 @@ TEST_CASE("partial_argsort", "[algorithm]")
         auto indices = detail::partial_argsort(nums.begin(), nums.begin(), nums.begin());
         REQUIRE(indices.empty());
     }
-
-    SECTION("bad range")
-    {
-        //REQUIRE_THROWS(detail::partial_argsort(nums.begin(), nums.end(), nums.begin()));
-        //REQUIRE_THROWS(detail::partial_argsort(nums.end(), nums.begin(), nums.end()));
-    }
 }
 
 TEST_CASE("argmax", "[algorithm]")
@@ -124,9 +113,6 @@ TEST_CASE("argmax", "[algorithm]")
 
     REQUIRE(detail::argmax(nums.begin(), nums.begin() + 3) == 0);
     REQUIRE(detail::argmax(nums.begin() + 1, nums.end()) == 2);
-
-    //REQUIRE_THROWS(detail::argmax(nums.begin(), nums.begin()));
-    //REQUIRE_THROWS(detail::argmax(nums.end(), nums.begin()));
 }
 
 TEST_CASE("argmin", "[algorithm]")
@@ -139,9 +125,6 @@ TEST_CASE("argmin", "[algorithm]")
     REQUIRE(detail::argmin(nums.begin(), nums.end(), std::greater<>{}) == 3);
 
     REQUIRE(detail::argmin(nums.begin() + 2, nums.end()) == 2);
-
-    //REQUIRE_THROWS(detail::argmin(nums.begin(), nums.begin()));
-    //REQUIRE_THROWS(detail::argmin(nums.end(), nums.begin()));
 }
 
 TEST_CASE("partial_shuffle", "[algorithm]")
@@ -165,12 +148,6 @@ TEST_CASE("partial_shuffle", "[algorithm]")
         detail::partial_shuffle(nums.begin(), nums.end(), nums.end(), rng::prng);
         REQUIRE_THAT(nums, Catch::Matchers::UnorderedEquals(std::vector{ 4.0, 0.0, 2.0, 5.0, 1.0 }));
     }
-
-    SECTION("bad range")
-    {
-        //REQUIRE_THROWS(detail::partial_shuffle(nums.end(), nums.begin(), nums.end(), rng::prng));
-        //REQUIRE_THROWS(detail::partial_shuffle(nums.begin(), nums.end(), nums.begin(), rng::prng));
-    }
 }
 
 TEST_CASE("contains", "[algorithm]")
@@ -182,8 +159,6 @@ TEST_CASE("contains", "[algorithm]")
 
     REQUIRE(!detail::contains(nums.begin(), nums.end() - 1, 1.0));
     REQUIRE(!detail::contains(nums.begin(), nums.end(), 0.001));
-
-    //REQUIRE_THROWS(detail::contains(nums.end(), nums.begin(), 0.0));
 }
 
 TEST_CASE("find_all", "[algorithm]")
@@ -198,8 +173,6 @@ TEST_CASE("find_all", "[algorithm]")
 
     REQUIRE(detail::find_all(nums.begin(), nums.end(), always_true).size()  == nums.size());
     REQUIRE(detail::find_all(nums.begin(), nums.end(), always_false).size() == 0);
-
-    //REQUIRE_THROWS(detail::find_all(nums.end(), nums.begin(), std::logical_not<>{}));
 }
 
 TEST_CASE("find_all_v", "[algorithm]")
@@ -214,8 +187,6 @@ TEST_CASE("find_all_v", "[algorithm]")
 
     REQUIRE(detail::find_all_v(nums.begin(), nums.end(), always_true).size()  == nums.size());
     REQUIRE(detail::find_all_v(nums.begin(), nums.end(), always_false).size() == 0);
-
-    //REQUIRE_THROWS(detail::find_all_v(nums.end(), nums.begin(), std::logical_not<>{}));
 }
 
 TEST_CASE("find_indices", "[algorithm]")
@@ -269,8 +240,6 @@ TEST_CASE("elementwise_min", "[algorithm]")
 
     const auto min = detail::elementwise_min(nums1, nums2);
     REQUIRE(min == std::vector{ 2, 0, 1, 5, 0 });
-
-    //REQUIRE_THROWS(detail::elementwise_min(nums1, std::vector{ 1, 2, 3}));
 }
 
 TEST_CASE("elementwise_max", "[algorithm]")
@@ -280,8 +249,6 @@ TEST_CASE("elementwise_max", "[algorithm]")
 
     const auto max = detail::elementwise_max(nums1, nums2);
     REQUIRE(max == std::vector{ 4, 3, 2, 6, 1 });
-
-    //REQUIRE_THROWS(detail::elementwise_max(nums1, std::vector{ 1, 2, 3}));
 }
 
 TEST_CASE("erase_first_stable", "[algorithm]")
@@ -317,12 +284,6 @@ TEST_CASE("select", "[algorithm]")
 
     selected = detail::select(std::vector{ 1, 3, 5 }, { 0, 1 });
     REQUIRE(selected == std::vector{ 1, 3 });
-
-    selected = detail::select<int>({ }, { });
-    REQUIRE(selected.empty());
-
-    //REQUIRE_THROWS(detail::select({}, { 1 }));
-    //REQUIRE_THROWS(detail::select(nums, { 71 }));
 }
 
 TEST_CASE("erase_duplicates", "[algorithm]")

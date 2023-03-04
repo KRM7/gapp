@@ -125,6 +125,11 @@ namespace genetic_algorithm::detail
 
 
     template<typename T>
+    using iterator_value_t = typename std::iterator_traits<T>::value_type;
+
+
+
+    template<typename T>
     struct dereference : std::type_identity<decltype(*std::declval<T>())> {};
 
     template<typename T>
@@ -140,6 +145,11 @@ namespace genetic_algorithm::detail
 
     template<typename T>
     using remove_rvalue_ref_t = typename remove_rvalue_ref<T>::type;
+
+
+    
+    template<typename T, typename U>
+    using copy_const_t = std::conditional_t<std::is_const_v<std::remove_reference_t<T>>, const U, U>;
 
 
 } // namespace genetic_algorithm::detail

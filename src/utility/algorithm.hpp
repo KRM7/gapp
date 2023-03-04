@@ -22,13 +22,16 @@
 
 namespace genetic_algorithm::detail
 {
-    template<std::integral T>
-    constexpr void increment_mod(T& value, T mod)
+    template<typename T, typename U>
+    constexpr auto&& forward_like(U&& u) noexcept // from P2445R1
     {
-        GA_ASSERT(mod > 0);
-        GA_ASSERT(0 <= value && value < mod);
+        using NorefU = std::remove_reference_t<U>;
 
-        value = (value + 1 == mod) ? T(0) : value + 1;
+        using CastType = std::conditional_t<std::is_lvalue_reference_v<T>,
+            detail::copy_const_t<T, NorefU&>,
+            detail::copy_const_t<T, NorefU&&>>;
+
+        return static_cast<CastType>(u);
     }
 
     inline std::vector<size_t> index_vector(size_t n, size_t first = 0)
@@ -39,10 +42,9 @@ namespace genetic_algorithm::detail
         return indices;
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
-    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
-                                          typename std::iterator_traits<Iter>::value_type>
-    std::vector<size_t> argsort(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    template<std::random_access_iterator Iter, typename Comp = std::less<iterator_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, iterator_value_t<Iter>, iterator_value_t<Iter>>
+    std::vector<size_t> argsort(Iter first, Iter last, Comp&& comp = std::less<iterator_value_t<Iter>>{})
     {
         GA_ASSERT(std::distance(first, last) >= 0);
 
@@ -67,10 +69,9 @@ namespace genetic_algorithm::detail
         return indices;
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
-    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
-                                          typename std::iterator_traits<Iter>::value_type>
-    std::vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    template<std::random_access_iterator Iter, typename Comp = std::less<iterator_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, iterator_value_t<Iter>, iterator_value_t<Iter>>
+    std::vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = std::less<iterator_value_t<Iter>>{})
     {
         GA_ASSERT(std::distance(first, middle) >= 0);
         GA_ASSERT(std::distance(middle, last) >= 0);
@@ -98,10 +99,9 @@ namespace genetic_algorithm::detail
         return indices;
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
-    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
-                                          typename std::iterator_traits<Iter>::value_type>
-    constexpr size_t argmax(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    template<std::random_access_iterator Iter, typename Comp = std::less<iterator_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, iterator_value_t<Iter>, iterator_value_t<Iter>>
+    constexpr size_t argmax(Iter first, Iter last, Comp&& comp = std::less<iterator_value_t<Iter>>{})
     {
         GA_ASSERT(std::distance(first, last) > 0);
 
@@ -119,10 +119,9 @@ namespace genetic_algorithm::detail
         }
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<typename std::iterator_traits<Iter>::value_type>>
-    requires std::strict_weak_order<Comp, typename std::iterator_traits<Iter>::value_type,
-                                          typename std::iterator_traits<Iter>::value_type>
-    constexpr size_t argmin(Iter first, Iter last, Comp&& comp = std::less<typename std::iterator_traits<Iter>::value_type>{})
+    template<std::random_access_iterator Iter, typename Comp = std::less<iterator_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, iterator_value_t<Iter>, iterator_value_t<Iter>>
+    constexpr size_t argmin(Iter first, Iter last, Comp&& comp = std::less<iterator_value_t<Iter>>{})
     {
         GA_ASSERT(std::distance(first, last) > 0);
 
@@ -141,7 +140,7 @@ namespace genetic_algorithm::detail
     }
 
     template<std::random_access_iterator Iter, typename URBG>
-    void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)
+    constexpr void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)
     {
         GA_ASSERT(std::distance(first, middle) >= 0);
         GA_ASSERT(std::distance(middle, last) >= 0);
@@ -157,15 +156,14 @@ namespace genetic_algorithm::detail
     }
 
     template<std::input_iterator Iter>
-    constexpr bool contains(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type& val)
+    constexpr bool contains(Iter first, Iter last, const iterator_value_t<Iter>& val)
     {
         GA_ASSERT(std::distance(first, last) >= 0);
-
-        return std::any_of(first, last, [&](const auto& elem) { return elem == val; });
+        
+        return std::find(first, last, val) != last;
     }
 
-    template<std::input_iterator Iter, typename Pred>
-    requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
+    template<std::input_iterator Iter, std::predicate<iterator_value_t<Iter>> Pred>
     std::vector<Iter> find_all(Iter first, Iter last, Pred&& pred)
     {
         GA_ASSERT(std::distance(first, last) >= 0);
@@ -181,28 +179,28 @@ namespace genetic_algorithm::detail
         return result;
     }
 
-    template<std::input_iterator Iter, typename Pred>
-    requires std::predicate<Pred, typename std::iterator_traits<Iter>::value_type>
+    template<std::input_iterator Iter, std::predicate<iterator_value_t<Iter>> Pred>
     auto find_all_v(Iter first, Iter last, Pred&& pred)
     {
         GA_ASSERT(std::distance(first, last) >= 0);
 
-        using ValueType = typename std::iterator_traits<Iter>::value_type;
-
-        std::vector<ValueType> result;
+        std::vector<iterator_value_t<Iter>> result;
         result.reserve(last - first);
 
-        std::copy_if(first, last, std::back_inserter(result), std::forward<Pred>(pred));
+        for (; first != last; ++first)
+        {
+            if (std::invoke(pred, *first)) result.push_back(*first);
+        }
 
         return result;
     }
 
 
-    template<typename T, std::predicate<T> Pred>
-    std::vector<size_t> find_indices(const std::vector<T>& container, Pred&& pred)
+    template<detail::IndexableContainer Container, std::predicate<typename Container::value_type> Pred>
+    std::vector<size_t> find_indices(const Container& container, Pred&& pred)
     {
         std::vector<size_t> indices;
-        indices.reserve(indices.size());
+        indices.reserve(container.size() / 2);
 
         for (size_t i = 0; i < container.size(); i++)
         {
@@ -212,22 +210,22 @@ namespace genetic_algorithm::detail
         return indices;
     }
 
-    template<typename T>
-    std::optional<size_t> index_of(const std::vector<T>& container, const T& val)
+    template<detail::IndexableContainer Container>
+    std::optional<size_t> index_of(const Container& container, const typename Container::value_type& val)
     {
         const auto found = std::find(container.begin(), container.end(), val);
         const size_t idx = std::distance(container.begin(), found);
         
-        return (idx == container.size()) ? std::optional<size_t>{} : idx;
+        return (found == container.end()) ? std::optional<size_t>{} : idx;
     }
 
-    template<typename T, std::predicate<T> Pred>
-    std::optional<size_t> find_index(const std::vector<T>& container, Pred&& pred)
+    template<detail::IndexableContainer Container, std::predicate<typename Container::value_type> Pred>
+    std::optional<size_t> find_index(const Container& container, Pred&& pred)
     {
         const auto found = std::find_if(container.begin(), container.end(), std::forward<Pred>(pred));
         const size_t idx = std::distance(container.begin(), found);
 
-        return (idx == container.size()) ? std::optional<size_t>{} : idx;
+        return (found == container.end()) ? std::optional<size_t>{} : idx;
     }
 
     template<typename T>
@@ -250,8 +248,8 @@ namespace genetic_algorithm::detail
         return left;
     }
 
-    template<typename T>
-    bool erase_first_stable(std::vector<T>& container, const T& value)
+    template<detail::Container T>
+    bool erase_first_stable(T& container, const typename T::value_type& value)
     {
         const auto found = std::find(container.cbegin(), container.cend(), value);
         if (found != container.cend())
@@ -262,40 +260,40 @@ namespace genetic_algorithm::detail
         return false;
     }
 
-    template<typename ValueType>
-    std::vector<ValueType> select(const std::vector<ValueType>& cont, const std::vector<size_t>& indices)
+    template<typename Container>
+    requires detail::IndexableContainer<std::remove_cvref_t<Container>>
+    auto select(Container&& container, const std::vector<size_t>& indices)
     {
-        GA_ASSERT(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < cont.size(); }));
+        GA_ASSERT(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < container.size(); }));
+
+        using ValueType = typename std::remove_cvref_t<Container>::value_type;
 
         std::vector<ValueType> selected;
         selected.reserve(indices.size());
 
-        std::transform(indices.begin(), indices.end(), std::back_inserter(selected), [&](size_t idx) { return cont[idx]; });
+        for (size_t idx : indices)
+        {
+            selected.push_back(detail::forward_like<Container>(container[idx]));
+        }
 
         return selected;
     }
 
-    template<typename ValueType>
-    std::vector<ValueType> select(std::vector<ValueType>&& cont, const std::vector<size_t>& indices)
+    template<std::totally_ordered T>
+    constexpr void erase_duplicates(std::vector<T>& container)
     {
-        GA_ASSERT(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < cont.size(); }));
-
-        std::vector<ValueType> selected;
-        selected.reserve(indices.size());
-
-        std::transform(indices.begin(), indices.end(), std::back_inserter(selected), [&](size_t idx) { return std::move(cont[idx]); });
-
-        return selected;
-    }
-
-    template<typename T,
-             std::predicate<T, T> Pred = std::equal_to<T>,
-             std::strict_weak_order<T, T> Comp = std::less<T>>
-    constexpr void erase_duplicates(std::vector<T>& container, Pred&& pred = std::equal_to<T>{}, Comp&& comp = std::less<T>{})
-    {
-        std::sort(container.begin(), container.end(), std::forward<Comp>(comp));
-        const auto last = std::unique(container.begin(), container.end(), std::forward<Pred>(pred));
+        std::sort(container.begin(), container.end());
+        const auto last = std::unique(container.begin(), container.end());
         container.erase(last, container.end());
+    }
+
+    template<std::integral T>
+    constexpr void increment_mod(T& value, T mod)
+    {
+        GA_ASSERT(mod > 0);
+        GA_ASSERT(0 <= value && value < mod);
+
+        value = (value + 1 == mod) ? T(0) : value + 1;
     }
 
     namespace tr
@@ -322,8 +320,7 @@ namespace genetic_algorithm::detail
     requires is_specialization_of_v<std::remove_cvref_t<Tuple>, std::tuple>
     constexpr Acc transform_reduce(Tuple&& tup, Acc&& init, TransformOp&& transform, ReduceOp&& reduce)
     {
-        auto transform_reduce_ =
-        [&] (auto&&... args) mutable -> Acc
+        auto transform_reduce_ = [&](auto&&... args) mutable -> Acc
         {
             return tr::transform_reduce_impl(std::forward<TransformOp>(transform),
                                              std::forward<ReduceOp>(reduce), 

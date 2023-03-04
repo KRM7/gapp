@@ -36,23 +36,23 @@ namespace genetic_algorithm::detail
         typename C::difference_type;
         typename C::size_type;
 
-        requires std::same_as<typename C::reference, typename C::value_type&>;
-        requires std::same_as<typename C::const_reference, const typename C::value_type&>;
+        //requires std::same_as<typename C::reference, typename C::value_type&>;
+        //requires std::same_as<typename C::const_reference, const typename C::value_type&>;
 
         requires std::forward_iterator<typename C::iterator>;
-        requires std::same_as<typename std::iterator_traits<typename C::iterator>::value_type, typename C::value_type>;
         requires std::forward_iterator<typename C::const_iterator>;
+        requires std::same_as<typename std::iterator_traits<typename C::iterator>::value_type, typename C::value_type>;
         requires std::same_as<typename std::iterator_traits<typename C::const_iterator>::value_type, typename C::value_type>;
 
+        requires std::unsigned_integral<typename C::size_type>;
         requires std::signed_integral<typename C::difference_type>;
         requires std::same_as<typename C::difference_type, typename std::iterator_traits<typename C::iterator>::difference_type>;
         requires std::same_as<typename C::difference_type, typename std::iterator_traits<typename C::const_iterator>::difference_type>;
-        requires std::unsigned_integral<typename C::size_type>;
         requires std::numeric_limits<typename C::size_type>::max() >= std::numeric_limits<typename C::difference_type>::max();
 
-        requires std::destructible<typename C::value_type>;
         requires std::regular<C>;
         requires std::destructible<C>;
+        requires std::destructible<typename C::value_type>;
 
         { c.operator=(c) }  -> std::same_as<C&>;
         { c.operator=(cc) } -> std::same_as<C&>;

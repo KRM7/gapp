@@ -47,7 +47,8 @@ TEST_CASE("container", "[concepts]")
     STATIC_REQUIRE(detail::Container<std::array<int, 3>>);
     STATIC_REQUIRE(detail::Container<std::set<std::string>>);
 
-    STATIC_REQUIRE(!detail::Container<std::vector<bool>>);
+    STATIC_REQUIRE(detail::Container<std::vector<bool>>);
+
     STATIC_REQUIRE(!detail::Container<int*>);
     STATIC_REQUIRE(!detail::Container<void>);
 }
@@ -58,7 +59,8 @@ TEST_CASE("indexable_container", "[concepts]")
     STATIC_REQUIRE(detail::IndexableContainer<std::array<int, 3>>);
     STATIC_REQUIRE(detail::IndexableContainer<std::string>);
 
-    STATIC_REQUIRE(!detail::IndexableContainer<std::vector<bool>>);
+    STATIC_REQUIRE(detail::IndexableContainer<std::vector<bool>>);
+
     STATIC_REQUIRE(!detail::IndexableContainer<int*>);
     STATIC_REQUIRE(!detail::IndexableContainer<void>);
 }
