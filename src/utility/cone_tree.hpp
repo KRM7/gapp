@@ -76,8 +76,8 @@ namespace genetic_algorithm::detail
         constexpr const_iterator node_cbegin(const Node& node) const noexcept { return points_.cbegin() + node.first; }
         constexpr const_iterator node_cend(const Node& node) const noexcept { return points_.cbegin() + node.last; }
 
-        constexpr const Node& left_child(const Node& node) const noexcept { return nodes_[node.left]; }
-        constexpr const Node& right_child(const Node& node) const noexcept { return nodes_[node.right]; }
+        const Node& left_child(const Node& node) const noexcept { return nodes_[node.left]; }
+        const Node& right_child(const Node& node) const noexcept { return nodes_[node.right]; }
     };
 
 } // namespace genetic_algorithm::detail
