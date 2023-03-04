@@ -47,7 +47,7 @@ namespace genetic_algorithm::detail
 
         for (; first != last; ++first)
         {
-            const double distance = math::euclideanDistanceSq(first->begin(), first->end(), from->begin());
+            const double distance = math::euclideanDistanceSq(*first, *from);
 
             if (distance > max_distance)
             {
@@ -100,7 +100,7 @@ namespace genetic_algorithm::detail
 
         for (; first != last; ++first)
         {
-            const double distance = math::euclideanDistanceSq(center.begin(), center.end(), first->begin());
+            const double distance = math::euclideanDistanceSq(*first, center);
             max_distance = std::max(max_distance, distance);
         }
 
@@ -167,8 +167,8 @@ namespace genetic_algorithm::detail
 
                 auto middle = std::partition(node_begin(node), node_end(node), [&](auto point)
                 {
-                    const double left_dist = math::euclideanDistanceSq(partition_points.first->begin(), partition_points.first->end(), point.begin());
-                    const double right_dist = math::euclideanDistanceSq(partition_points.second->begin(), partition_points.second->end(), point.begin());
+                    const double left_dist = math::euclideanDistanceSq(point, *partition_points.first);
+                    const double right_dist = math::euclideanDistanceSq(point, *partition_points.second);
 
                     return left_dist < right_dist;
                 });

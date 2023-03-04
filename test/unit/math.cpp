@@ -260,10 +260,10 @@ TEST_CASE("pareto_compare_less", "[math]")
 
     SECTION("1D")
     {
-        REQUIRE(!paretoCompareLess({ 1.0 }, { 1.0 }));
+        REQUIRE(!paretoCompareLess(std::vector{ 1.0 }, std::vector{ 1.0 }));
 
-        REQUIRE(paretoCompareLess({ 1.0 }, { 2.3 }));
-        REQUIRE(!paretoCompareLess({ 2.3 }, { 1.0 }));
+        REQUIRE(paretoCompareLess(std::vector{ 1.0 }, std::vector{ 2.3 }));
+        REQUIRE(!paretoCompareLess(std::vector{ 2.3 }, std::vector{ 1.0 }));
     }
 
     SECTION("empty")
@@ -304,10 +304,10 @@ TEST_CASE("pareto_compare_three_way", "[math]")
 
     SECTION("1D")
     {
-        REQUIRE(paretoCompare({ 1.0 }, { 1.0 }) == 0);
+        REQUIRE(paretoCompare(std::vector{ 1.0 }, std::vector{ 1.0 }) == 0);
 
-        REQUIRE(paretoCompare({ 1.0 }, { 2.3 }) < 0);
-        REQUIRE(paretoCompare({ 2.3 }, { 1.0 }) > 0);
+        REQUIRE(paretoCompare(std::vector{ 1.0 }, std::vector{ 2.3 }) < 0);
+        REQUIRE(paretoCompare(std::vector{ 2.3 }, std::vector{ 1.0 }) > 0);
     }
 
     SECTION("empty")
@@ -319,7 +319,7 @@ TEST_CASE("pareto_compare_three_way", "[math]")
 TEST_CASE("euclidean_norm", "[math]")
 {
     REQUIRE(euclideanNorm({}) == 0.0);
-    REQUIRE(euclideanNorm({ 1.0, 4.5, 3.2, 0.3 }) == Approx(5.62).margin(0.01));
+    REQUIRE(euclideanNorm(std::vector{ 1.0, 4.5, 3.2, 0.3 }) == Approx(5.62).margin(0.01));
 }
 
 TEST_CASE("normalize", "[math]")
@@ -337,17 +337,17 @@ TEST_CASE("euclidean_distance", "[math]")
 {
     REQUIRE(euclideanDistanceSq({}, {}) == Approx(0.0));
 
-    REQUIRE(euclideanDistanceSq({ 3.0 }, { 1.0 }) == Approx(4.0).margin(0.01));
-    REQUIRE(euclideanDistanceSq({ 1.0, 0.0 }, { 2.0, 1.0 }) == Approx(2.0).margin(0.01));
-    REQUIRE(euclideanDistanceSq({ 1.0, 2.0, 0.0 }, { 3.0, 0.0, 1.0 }) == Approx(9.0).margin(0.01));
+    REQUIRE(euclideanDistanceSq(std::vector{ 3.0 }, std::vector{ 1.0 }) == Approx(4.0).margin(0.01));
+    REQUIRE(euclideanDistanceSq(std::vector{ 1.0, 0.0 }, std::vector{ 2.0, 1.0 }) == Approx(2.0).margin(0.01));
+    REQUIRE(euclideanDistanceSq(std::vector{ 1.0, 2.0, 0.0 }, std::vector{ 3.0, 0.0, 1.0 }) == Approx(9.0).margin(0.01));
 }
 
 TEST_CASE("perpendicular_distance", "[math]")
 {
     REQUIRE(perpendicularDistanceSq({}, {}) == Approx(0.0).margin(1E-8));
 
-    REQUIRE(perpendicularDistanceSq({ 3.1 }, { 0.95 }) == Approx(0.0).margin(1E-8));
-    REQUIRE(perpendicularDistanceSq({ 0.4, 0.9 }, { 2.5, 1.0 }) == Approx(3.53).margin(0.01));
+    REQUIRE(perpendicularDistanceSq(std::vector{ 3.1 }, std::vector{ 0.95 }) == Approx(0.0).margin(1E-8));
+    REQUIRE(perpendicularDistanceSq(std::vector{ 0.4, 0.9 }, std::vector{ 2.5, 1.0 }) == Approx(3.53).margin(0.01));
 }
 
 TEST_CASE("integral_sin_pow", "[math]")

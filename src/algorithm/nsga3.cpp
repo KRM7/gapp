@@ -248,13 +248,12 @@ namespace genetic_algorithm::algorithm
 
         std::for_each(GA_EXECUTION_UNSEQ, pfirst, plast, [&](const FrontInfo& sol)
         {
-            const FitnessVector& fvec = first[sol.idx];
-            const FitnessVector fnorm = normalizeFitnessVec(fvec, ideal_point_, nadir_point_);
+            const FitnessVector fnorm = normalizeFitnessVec(first[sol.idx], ideal_point_, nadir_point_);
 
             const auto best = ref_lines_.findBestMatch(fnorm);
 
             sol_info_[sol.idx].ref_idx = size_t(best.elem - ref_lines_.begin());
-            sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(best.elem->cbegin(), best.elem->cend(), fnorm.cbegin());
+            sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(*best.elem, fnorm);
         });
     }
 

@@ -148,7 +148,7 @@ namespace genetic_algorithm
     {
         if constexpr (std::is_floating_point_v<T>)
         {
-            return math::floatVecIsEqual(lhs.chromosome, rhs.chromosome);
+            return math::floatVecIsEqual<T>(lhs.chromosome, rhs.chromosome);
         }
         else
         {

@@ -5,6 +5,7 @@
 #include "utility.hpp"
 #include <algorithm>
 #include <numeric>
+#include <span>
 #include <functional>
 #include <iterator>
 #include <type_traits>
@@ -17,7 +18,7 @@ namespace genetic_algorithm::math
     std::atomic<unsigned> Tolerances::relative_tolerance_epsilons = 10;
 
 
-    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
+    bool paretoCompareLess(std::span<const double> lhs, std::span<const double> rhs) noexcept
     {
         GA_ASSERT(lhs.size() == rhs.size());
 
@@ -33,7 +34,7 @@ namespace genetic_algorithm::math
         return false;
     }
 
-    std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept
+    std::int8_t paretoCompare(std::span<const double> lhs, std::span<const double> rhs) noexcept
     {
         GA_ASSERT(lhs.size() == rhs.size());
 
@@ -58,7 +59,7 @@ namespace genetic_algorithm::math
         return std::int8_t(rhs_has_lower - lhs_has_lower);
     }
 
-    double euclideanNorm(const std::vector<double>& vec) noexcept
+    double euclideanNorm(std::span<const double> vec) noexcept
     {
         return std::sqrt(std::inner_product(vec.begin(), vec.end(), vec.begin(), 0.0));
     }
@@ -79,7 +80,7 @@ namespace genetic_algorithm::math
         return vec;
     }
 
-    double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept
+    double euclideanDistanceSq(std::span<const double> v1, std::span<const double> v2) noexcept
     {
         GA_ASSERT(v1.size() == v2.size());
 
@@ -88,47 +89,31 @@ namespace genetic_algorithm::math
                                      [](double lhs, double rhs) noexcept { return std::pow(lhs - rhs, 2); });
     }
 
-    double euclideanDistanceSq(const_vector_iterator first1, const_vector_iterator last1,
-                               const_vector_iterator first2) noexcept
-    {
-        return std::transform_reduce(first1, last1, first2, 0.0,
-                                     std::plus{},
-                                     [](double lhs, double rhs) noexcept { return std::pow(lhs - rhs, 2); });
-    }
-
-    double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept
+    double perpendicularDistanceSq(std::span<const double> line, std::span<const double> point) noexcept
     {
         GA_ASSERT(line.size() == point.size());
 
-        return perpendicularDistanceSq(line.begin(), line.end(), point.begin());
-    }
+        double k = std::inner_product(line.begin(), line.end(), point.begin(), 0.0) /
+                   std::inner_product(line.begin(), line.end(), line.begin(), 0.0);
 
-    double perpendicularDistanceSq(const_vector_iterator line_first, const_vector_iterator line_last,
-                                   const_vector_iterator point_first) noexcept
-    {
-        GA_ASSERT(std::distance(line_first, line_last) >= 0);
-
-        double k = std::inner_product(line_first, line_last, point_first, 0.0) /
-                   std::inner_product(line_first, line_last, line_first, 0.0);
-
-        return std::transform_reduce(line_first, line_last, point_first, 0.0,
+        return std::transform_reduce(line.begin(), line.end(), point.begin(), 0.0,
                                      std::plus{},
                                      [k](double l, double p) noexcept { return std::pow(p - k * l, 2); });
     }
 
-    double mean(const std::vector<double>& vec) noexcept
+    double mean(std::span<const double> vec) noexcept
     {
         GA_ASSERT(!vec.empty());
 
         return std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{}, detail::divide_by(vec.size()));
     }
 
-    double stdDev(const std::vector<double>& vec) noexcept
+    double stdDev(std::span<const double> vec) noexcept
     {
         return stdDev(vec, mean(vec));
     }
 
-    double stdDev(const std::vector<double>& vec, double mean) noexcept
+    double stdDev(std::span<const double> vec, double mean) noexcept
     {
         GA_ASSERT(!vec.empty());
 

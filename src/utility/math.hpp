@@ -5,6 +5,7 @@
 
 #include "utility.hpp"
 #include <vector>
+#include <span>
 #include <atomic>
 #include <concepts>
 #include <limits>
@@ -68,8 +69,6 @@ namespace genetic_algorithm::math
 
     using Point = std::vector<double>;
 
-    using vector_iterator       = std::vector<double>::iterator;
-    using const_vector_iterator = std::vector<double>::const_iterator;
 
     /* Comparison function for floating point numbers. Returns -1 if (lhs < rhs), +1 if (lhs > rhs), and 0 if (lhs == rhs). */
     template<std::floating_point T>
@@ -99,18 +98,18 @@ namespace genetic_algorithm::math
     template<std::floating_point T>
     constexpr bool floatIsGreaterEq(T lhs, T rhs) noexcept;
 
-    /* Equality comparison for fp vectors. Returns true if the elements of the vectors are approximately equal. */
+    /* Equality comparison for fp vectors. Returns true if the elements of the ranges are approximately equal. */
     template<std::floating_point T>
-    bool floatVecIsEqual(const std::vector<T>& lhs, const std::vector<T>& rhs) noexcept;
+    bool floatVecIsEqual(std::span<const T> lhs, std::span<const T> rhs) noexcept;
 
-    /* Pareto comparison for fp vectors. Returns true if lhs is dominated by rhs (lhs < rhs), assuming maximization. */
-    bool paretoCompareLess(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
+    /* Pareto comparison for fp ranges. Returns true if lhs is dominated by rhs (lhs < rhs), assuming maximization. */
+    bool paretoCompareLess(std::span<const double> lhs, std::span<const double> rhs) noexcept;
 
-    /* Pareto comparison for fp vectors. Returns -1 if (lhs < rhs), 1 if (lhs > rhs), and 0 if (lhs == rhs). */
-    std::int8_t paretoCompare(const std::vector<double>& lhs, const std::vector<double>& rhs) noexcept;
+    /* Pareto comparison for fp ranges. Returns -1 if (lhs < rhs), 1 if (lhs > rhs), and 0 if (lhs == rhs). */
+    std::int8_t paretoCompare(std::span<const double> lhs, std::span<const double> rhs) noexcept;
     
     /* Calculate the length of a vector. */
-    double euclideanNorm(const std::vector<double>& vec) noexcept;
+    double euclideanNorm(std::span<const double> vec) noexcept;
 
     /* Normalize the vector vec (divide by magnitude). */
     std::vector<double> normalizeVector(const std::vector<double>& vec);
@@ -119,25 +118,21 @@ namespace genetic_algorithm::math
     std::vector<double> normalizeVector(std::vector<double>&& vec) noexcept;
 
     /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
-    double euclideanDistanceSq(const std::vector<double>& v1, const std::vector<double>& v2) noexcept;
-
-    /* Calculate the square of the Euclidean distance between the vectors [first1, last1), [first2, first2 + last1 - first1). */
-    double euclideanDistanceSq(const_vector_iterator first1, const_vector_iterator last1, const_vector_iterator first2) noexcept;
+    double euclideanDistanceSq(std::span<const double> v1, std::span<const double> v2) noexcept;
 
     /* Calculate the square of the perpendicular distance between a line (passing through the origin) and a point. */
-    double perpendicularDistanceSq(const std::vector<double>& line, const std::vector<double>& point) noexcept;
+    double perpendicularDistanceSq(std::span<const double> line, std::span<const double> point) noexcept;
 
-    /* Calculate the square of the perpendicular distance between a line (passing through the origin) and a point. */
-    double perpendicularDistanceSq(const_vector_iterator line_first, const_vector_iterator line_last, const_vector_iterator point_first) noexcept;
 
     /* Calculate the arithmetic mean of the values in vec. */
-    double mean(const std::vector<double>& vec) noexcept;
+    double mean(std::span<const double> vec) noexcept;
 
     /* Calculate the standard deviation of the values in vec. */
-    double stdDev(const std::vector<double>& vec) noexcept;
+    double stdDev(std::span<const double> vec) noexcept;
 
     /* Calculate the standard deviation of the values in vec. */
-    double stdDev(const std::vector<double>& vec, double mean) noexcept;
+    double stdDev(std::span<const double> vec, double mean) noexcept;
+
 
     /* Computes the value of the function [ f(x) = integral sin(x)^n dx ] at x. */
     double integralSinPow(size_t exponent, double x) noexcept;
@@ -220,7 +215,7 @@ namespace genetic_algorithm::math
     }
 
     template<std::floating_point T>
-    bool floatVecIsEqual(const std::vector<T>& lhs, const std::vector<T>& rhs) noexcept
+    bool floatVecIsEqual(std::span<const T> lhs, std::span<const T> rhs) noexcept
     {
         return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), floatIsEqual<T>);
     }
