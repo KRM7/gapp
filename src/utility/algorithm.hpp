@@ -211,7 +211,7 @@ namespace genetic_algorithm::detail
     }
 
     template<detail::IndexableContainer Container>
-    std::optional<size_t> index_of(const Container& container, const typename Container::value_type& val)
+    constexpr std::optional<size_t> index_of(const Container& container, const typename Container::value_type& val)
     {
         const auto found = std::find(container.begin(), container.end(), val);
         const size_t idx = std::distance(container.begin(), found);
@@ -220,7 +220,7 @@ namespace genetic_algorithm::detail
     }
 
     template<detail::IndexableContainer Container, std::predicate<typename Container::value_type> Pred>
-    std::optional<size_t> find_index(const Container& container, Pred&& pred)
+    constexpr std::optional<size_t> find_index(const Container& container, Pred&& pred)
     {
         const auto found = std::find_if(container.begin(), container.end(), std::forward<Pred>(pred));
         const size_t idx = std::distance(container.begin(), found);
@@ -249,7 +249,7 @@ namespace genetic_algorithm::detail
     }
 
     template<detail::Container T>
-    bool erase_first_stable(T& container, const typename T::value_type& value)
+    constexpr bool erase_first_stable(T& container, const typename T::value_type& value)
     {
         const auto found = std::find(container.cbegin(), container.cend(), value);
         if (found != container.cend())
@@ -299,7 +299,7 @@ namespace genetic_algorithm::detail
     namespace tr
     {
         template<typename... Ts, typename R, typename Tr, typename Rd>
-        constexpr R transform_reduce_impl(Tr&&, Rd&&, R&& acc, Ts&&...)
+        constexpr R transform_reduce_impl(Tr&&, Rd&&, R&& acc, Ts&&...) noexcept
         {
             return acc;
         }

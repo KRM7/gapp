@@ -19,8 +19,6 @@ TEST_CASE("cone_tree constructors", "[cone_tree]")
     ConeTree tree(points);
 
     REQUIRE(tree.size() == points.size());
-
-    //REQUIRE_THROWS(ConeTree(points.begin(), point.begin()));
 }
 
 TEST_CASE("cone_tree lookup", "[cone_tree]")
@@ -55,9 +53,9 @@ TEST_CASE("cone_tree lookup", "[cone_tree]")
 
     ConeTree tree(points);
 
-    auto best = tree.findBestMatch({ 1.0, 1.0, 0.1 });
+    auto best = tree.findBestMatch(Point{ 1.0, 1.0, 0.1 });
     REQUIRE(*best.elem == Point{ 0.8, 0.8, 0.6 });
 
-    best = tree.findBestMatch({ 0.1, 0.5, 0.8 });
+    best = tree.findBestMatch(Point{ 0.1, 0.5, 0.8 });
     REQUIRE(*best.elem == Point{ 0.6, 0.8, 0.8 });
 }

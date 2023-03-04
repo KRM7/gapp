@@ -21,12 +21,12 @@ namespace genetic_algorithm::detail
     class iterator_interface
     {
     public:
-        auto cbegin() const { return derived().begin(); };
-        auto cend() const { return derived().end(); };
+        constexpr auto cbegin() const noexcept { return derived().begin(); };
+        constexpr auto cend() const noexcept { return derived().end(); };
 
     private:
-        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
@@ -38,16 +38,16 @@ namespace genetic_algorithm::detail
     class reverse_iterator_interface : public iterator_interface<Derived>
     {
     public:
-        auto rbegin()        { return std::make_reverse_iterator(derived().end()); }
-        auto rbegin() const  { return std::make_reverse_iterator(derived().end()); }
-        auto crbegin() const { return std::make_reverse_iterator(derived().cend()); }
-        auto rend()          { return std::make_reverse_iterator(derived().begin()); }
-        auto rend() const    { return std::make_reverse_iterator(derived().begin()); }
-        auto crend() const   { return std::make_reverse_iterator(derived().cbegin()); }
+        constexpr auto rbegin()        { return std::make_reverse_iterator(derived().end()); }
+        constexpr auto rbegin() const  { return std::make_reverse_iterator(derived().end()); }
+        constexpr auto crbegin() const { return std::make_reverse_iterator(derived().cend()); }
+        constexpr auto rend()          { return std::make_reverse_iterator(derived().begin()); }
+        constexpr auto rend() const    { return std::make_reverse_iterator(derived().begin()); }
+        constexpr auto crend() const   { return std::make_reverse_iterator(derived().cbegin()); }
 
     private:
-        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
@@ -63,32 +63,32 @@ namespace genetic_algorithm::detail
     public:
         using iterator_category = std::input_iterator_tag;
 
-        Derived& operator++()
+        constexpr Derived& operator++()
         {
             return derived().increment();
         }
 
-        Derived operator++(int)
+        constexpr Derived operator++(int)
         {
             Derived old_value(derived());
             derived().increment();
             return old_value;
         }
 
-        auto operator->() const
+        constexpr auto operator->() const
         {
             static_assert(std::is_lvalue_reference_v<dereference_t<Derived>>);
             return &*derived();
         }
 
-        friend bool operator!=(const Derived& lhs, const Derived& rhs)
+        friend constexpr bool operator!=(const Derived& lhs, const Derived& rhs)
         {
             return !(lhs == rhs);
         }
 
     private:
-        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
@@ -119,12 +119,12 @@ namespace genetic_algorithm::detail
     public:
         using iterator_category = std::bidirectional_iterator_tag;
 
-        Derived& operator--()
+        constexpr Derived& operator--()
         {
             return derived().decrement();
         }
 
-        Derived operator--(int)
+        constexpr Derived operator--(int)
         {
             Derived old_value(derived());
             derived().decrement();
@@ -132,8 +132,8 @@ namespace genetic_algorithm::detail
         }
 
     private:
-        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
     
@@ -154,21 +154,21 @@ namespace genetic_algorithm::detail
         using iterator_category = std::random_access_iterator_tag;
         using difference_type = Distance;
 
-        friend bool operator>(const Derived& lhs, const Derived& rhs)  { return rhs < lhs; }
-        friend bool operator<=(const Derived& lhs, const Derived& rhs) { return !(rhs < lhs); }
-        friend bool operator>=(const Derived& lhs, const Derived& rhs) { return !(lhs < rhs); }
+        friend constexpr bool operator>(const Derived& lhs, const Derived& rhs)  { return rhs < lhs; }
+        friend constexpr bool operator<=(const Derived& lhs, const Derived& rhs) { return !(rhs < lhs); }
+        friend constexpr bool operator>=(const Derived& lhs, const Derived& rhs) { return !(lhs < rhs); }
 
-        friend Derived operator+(Derived iter, difference_type n) { return iter += n; }
-        friend Derived operator+(difference_type n, Derived iter) { return iter += n; }
+        friend constexpr Derived operator+(Derived iter, difference_type n) { return iter += n; }
+        friend constexpr Derived operator+(difference_type n, Derived iter) { return iter += n; }
 
-        friend Derived& operator-=(Derived& lhs, difference_type n) { return lhs += -n; }
-        friend Derived operator-(Derived iter, difference_type n) { return iter -= n; }
+        friend constexpr Derived& operator-=(Derived& lhs, difference_type n) { return lhs += -n; }
+        friend constexpr Derived operator-(Derived iter, difference_type n) { return iter -= n; }
 
-        decltype(auto) operator[](difference_type n) const { return *(derived() + n); }
+        constexpr decltype(auto) operator[](difference_type n) const { return *(derived() + n); }
 
     private:
-        Derived& derived() noexcept { return static_cast<Derived&>(*this); }
-        const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+        constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
+        constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
 
@@ -190,7 +190,7 @@ namespace genetic_algorithm::detail
     };
 
 
-    /* Iterators for random-access containers that aren't invalidated on reallocations and insertions(/deletions). */
+    /* Iterators for random-access containers that aren't invalidated on reallocations. */
 
     template<typename Derived,
              typename Container,
@@ -209,17 +209,17 @@ namespace genetic_algorithm::detail
         using reference  = Reference;
         using pointer    = Pointer;
 
-        stable_iterator_base() noexcept :
+        constexpr stable_iterator_base() noexcept :
             data_(nullptr), idx_(0)
         {}
 
-        stable_iterator_base(Container& container, size_t idx) :
+        constexpr stable_iterator_base(Container& container, size_t idx) noexcept :
             data_(&container), idx_(idx)
         {
             GA_ASSERT(data_->size() >= idx_, "Iterator can't refer to element past the end of the range.");
         }
 
-        reference operator*() const
+        constexpr reference operator*() const
         {
             GA_ASSERT(data_ != nullptr, "Can't dereference value initialized iterator.");
             GA_ASSERT(data_->size() > idx_, "Can't dereference past-the-end iterator.");
@@ -227,7 +227,7 @@ namespace genetic_algorithm::detail
             return (*data_)[idx_];
         }
 
-        friend bool operator==(const Derived& lhs, const Derived& rhs)
+        friend constexpr bool operator==(const Derived& lhs, const Derived& rhs)
         {
             GA_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
             GA_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
@@ -236,7 +236,7 @@ namespace genetic_algorithm::detail
             return lhs.idx_ == rhs.idx_;  /* Value-initialized iterators will have the same idx. */
         }
 
-        friend bool operator<(const Derived& lhs, const Derived& rhs)
+        friend constexpr bool operator<(const Derived& lhs, const Derived& rhs)
         {
             GA_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
             GA_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
@@ -245,7 +245,7 @@ namespace genetic_algorithm::detail
             return lhs.idx_ < rhs.idx_;   /* Value-initialized iterators will have the same idx. */
         }
 
-        Derived& increment()
+        constexpr Derived& increment()
         {
             GA_ASSERT(data_ != nullptr, "Can't increment value initialized iterator.");
             GA_ASSERT(idx_ != data_->size(), "Can't increment past-the-end iterator.");
@@ -254,7 +254,7 @@ namespace genetic_algorithm::detail
             return static_cast<Derived&>(*this);
         }
 
-        Derived& decrement()
+        constexpr Derived& decrement()
         {
             GA_ASSERT(data_ != nullptr, "Can't decrement value initialized iterator.");
             GA_ASSERT(idx_ != 0, "Can't decremenet the begin iterator.");
@@ -263,7 +263,7 @@ namespace genetic_algorithm::detail
             return static_cast<Derived&>(*this);
         }
 
-        Derived& operator+=(difference_type n)
+        constexpr Derived& operator+=(difference_type n)
         {
             GA_ASSERT(data_ != nullptr, "Can't offset value initialized iterator.");
             GA_ASSERT(n < 0 ? idx_ >= size_t(-n) : true, "Can't move iterator to before the start of the range.");
@@ -273,7 +273,7 @@ namespace genetic_algorithm::detail
             return static_cast<Derived&>(*this);
         }
 
-        friend difference_type operator-(const Derived& lhs, const Derived& rhs)
+        friend constexpr difference_type operator-(const Derived& lhs, const Derived& rhs)
         {
             GA_ASSERT(lhs.data_ && rhs.data_, "Can't get the distance of value initialized iterators.");
             GA_ASSERT(lhs.data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
@@ -327,7 +327,7 @@ namespace genetic_algorithm::detail
         using my_base_ = stable_iterator_base<const_stable_iterator, const Container, ValueType, Reference, Pointer, Distance>;
         using my_base_::my_base_;
 
-        /* implicit */ const_stable_iterator(Iterator it) noexcept
+        /* implicit */ constexpr const_stable_iterator(Iterator it) noexcept
         {
             this->data_ = it.data_;
             this->idx_  = it.idx_;
@@ -336,37 +336,37 @@ namespace genetic_algorithm::detail
 
 
     template<typename Container>
-    inline auto stable_begin(Container& container)
+    constexpr auto stable_begin(Container& container) noexcept
     {
         return stable_iterator<Container>(container, 0);
     }
 
     template<typename Container>
-    inline auto stable_end(Container& container)
+    constexpr auto stable_end(Container& container) noexcept
     {
         return stable_iterator<Container>(container, container.size());
     }
 
     template<typename Container>
-    inline auto stable_begin(const Container& container)
+    constexpr auto stable_begin(const Container& container) noexcept
     {
         return const_stable_iterator<Container>(container, 0);
     }
 
     template<typename Container>
-    inline auto stable_end(const Container& container)
+    constexpr auto stable_end(const Container& container) noexcept
     {
         return const_stable_iterator<Container>(container, container.size());
     }
 
     template<typename Container>
-    inline auto stable_cbegin(const Container& container)
+    constexpr auto stable_cbegin(const Container& container) noexcept
     {
         return const_stable_iterator<Container>(container, 0);
     }
 
     template<typename Container>
-    inline auto stable_cend(const Container& container)
+    constexpr auto stable_cend(const Container& container) noexcept
     {
         return const_stable_iterator<Container>(container, container.size());
     }
@@ -386,32 +386,32 @@ namespace genetic_algorithm::detail
         using reference  = T;
         using pointer    = T;
 
-        iota_iterator() noexcept :
+        constexpr iota_iterator() noexcept :
             value_()
         {}
 
-        explicit iota_iterator(T val) noexcept :
+        explicit constexpr iota_iterator(T val) noexcept :
             value_(val)
         {}
 
         pointer operator->() const = delete;
 
-        reference operator*() const noexcept
+        constexpr reference operator*() const noexcept
         {
             return value_;
         }
 
-        friend bool operator==(const iota_iterator& lhs, const iota_iterator& rhs) noexcept
+        friend constexpr bool operator==(const iota_iterator& lhs, const iota_iterator& rhs) noexcept
         {
             return lhs.value_ == rhs.value_;
         }
 
-        friend bool operator<(const iota_iterator& lhs, const iota_iterator& rhs) noexcept
+        friend constexpr bool operator<(const iota_iterator& lhs, const iota_iterator& rhs) noexcept
         {
             return lhs.value_ < rhs.value_;
         }
 
-        iota_iterator& increment()
+        constexpr iota_iterator& increment()
         {
             GA_ASSERT(value_ != std::numeric_limits<T>::max(), "Can't increment iterator with max value.");
 
@@ -419,7 +419,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        iota_iterator& decrement()
+        constexpr iota_iterator& decrement()
         {
             GA_ASSERT(value_ != std::numeric_limits<T>::min(), "Can't decrement iterator with min value.");
 
@@ -427,7 +427,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        iota_iterator& operator+=(difference_type n)
+        constexpr iota_iterator& operator+=(difference_type n)
         {
             GA_ASSERT(n > 0 ? (std::numeric_limits<T>::max() - n) >= value_ : true, "Can't increment iterator past its max value.");
             GA_ASSERT(n < 0 ? size_t(-n) <= (value_ - std::numeric_limits<T>::min()) : true, "Can't decrement iterator past its min value.");
@@ -436,7 +436,7 @@ namespace genetic_algorithm::detail
             return *this;
         }
 
-        friend difference_type operator-(iota_iterator lhs, iota_iterator rhs)
+        friend constexpr difference_type operator-(iota_iterator lhs, iota_iterator rhs)
         {
             const T distance = lhs.value_ >= rhs.value_ ?
                 lhs.value_ - rhs.value_ :

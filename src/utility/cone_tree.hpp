@@ -51,12 +51,13 @@ namespace genetic_algorithm::detail
         /* Returns the closest point in the tree to the query point, and its distance. */
         FindResult findBestMatch(const Point& query_point) const;
 
-        const_iterator begin() const noexcept { return points_.begin(); }
-        const_iterator end() const noexcept   { return points_.end(); }
+        constexpr const_iterator begin() const noexcept { return points_.begin(); }
+        constexpr const_iterator end() const noexcept   { return points_.end(); }
 
-        size_t size() const noexcept { return points_.size(); }
+        constexpr size_t size() const noexcept { return points_.size(); }
+        constexpr bool empty() const noexcept { return points_.empty(); }
 
-        const Matrix<double>& data() const noexcept { return points_; }
+        constexpr const Matrix<double>& data() const noexcept { return points_; }
 
     private:
         Matrix<double> points_;
@@ -66,17 +67,17 @@ namespace genetic_algorithm::detail
 
         void buildTree();
 
-        iterator node_begin(const Node& node) { return points_.begin() + node.first; }
-        iterator node_end(const Node& node) { return points_.begin() + node.last; }
+        constexpr iterator node_begin(const Node& node) noexcept { return points_.begin() + node.first; }
+        constexpr iterator node_end(const Node& node) noexcept { return points_.begin() + node.last; }
 
-        const_iterator node_begin(const Node& node) const { return points_.begin() + node.first; }
-        const_iterator node_end(const Node& node) const { return points_.begin() + node.last; }
+        constexpr const_iterator node_begin(const Node& node) const noexcept { return points_.begin() + node.first; }
+        constexpr const_iterator node_end(const Node& node) const noexcept { return points_.begin() + node.last; }
 
-        const_iterator node_cbegin(const Node& node) const { return points_.cbegin() + node.first; }
-        const_iterator node_cend(const Node& node) const { return points_.cbegin() + node.last; }
+        constexpr const_iterator node_cbegin(const Node& node) const noexcept { return points_.cbegin() + node.first; }
+        constexpr const_iterator node_cend(const Node& node) const noexcept { return points_.cbegin() + node.last; }
 
-        const Node& left_child(const Node& node) const noexcept { return nodes_[node.left]; }
-        const Node& right_child(const Node& node) const noexcept { return nodes_[node.right]; }
+        constexpr const Node& left_child(const Node& node) const noexcept { return nodes_[node.left]; }
+        constexpr const Node& right_child(const Node& node) const noexcept { return nodes_[node.right]; }
     };
 
 } // namespace genetic_algorithm::detail
