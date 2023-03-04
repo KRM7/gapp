@@ -4,6 +4,7 @@
 #include "utility/iterators.hpp"
 #include <vector>
 #include <algorithm>
+#include <iterator>
 #include <type_traits>
 
 using namespace genetic_algorithm::detail;
@@ -22,6 +23,8 @@ TEST_CASE("stable_iterator", "[iterators]")
         STATIC_REQUIRE(std::is_same_v<const_iterator::value_type, int>);
         STATIC_REQUIRE(std::is_same_v<const_iterator::reference, const int&>);
         STATIC_REQUIRE(std::is_same_v<const_iterator::pointer, const int*>);
+
+        STATIC_REQUIRE(std::random_access_iterator<iterator>);
     }
 
     SECTION("constructors")
@@ -75,12 +78,6 @@ TEST_CASE("stable_iterator", "[iterators]")
     {
         REQUIRE(*first == 1);
         REQUIRE(*cfirst == 1);
-
-        //REQUIRE_THROWS(*last);
-        //REQUIRE_THROWS(*clast);
-
-        //REQUIRE_THROWS(*it);
-        //REQUIRE_THROWS(*cit);
     }
 
     SECTION("assignment")
@@ -99,9 +96,6 @@ TEST_CASE("stable_iterator", "[iterators]")
         REQUIRE(last > first);
         REQUIRE(clast >= cfirst);
         REQUIRE(first != last);
-
-        //REQUIRE_THROWS(first == it);
-        //REQUIRE_THROWS(cfirst < it);
     }
 
     SECTION("advance")
@@ -111,14 +105,6 @@ TEST_CASE("stable_iterator", "[iterators]")
         REQUIRE(*--first == 3);
         REQUIRE(*first-- == 3);
         REQUIRE(*first == 1);
-
-        //REQUIRE_THROWS(--first);
-        //REQUIRE_THROWS(cfirst--);
-        //REQUIRE_THROWS(++last);
-        //REQUIRE_THROWS(clast++);
-
-        //REQUIRE_THROWS(++it);
-        //REQUIRE_THROWS(--it);
     }
 
     SECTION("arithmetic")
@@ -130,13 +116,6 @@ TEST_CASE("stable_iterator", "[iterators]")
 
         REQUIRE(size_t(clast - cfirst) == nums.size());
         REQUIRE(size_t(last - cfirst) == nums.size());
-
-        //REQUIRE_THROWS(it + 3);
-        //REQUIRE_THROWS(cit + 0);
-
-        //REQUIRE_THROWS(first + 21);
-        //REQUIRE_THROWS(first - 8);
-        //REQUIRE_THROWS(clast += 174);
     }
 
     SECTION("algorithms")

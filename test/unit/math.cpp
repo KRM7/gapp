@@ -162,7 +162,6 @@ TEST_CASE("fp_compare", "[math]")
         REQUIRE(floatCompare(SMALL, SMALL) == 0);
         REQUIRE(floatCompare(BIG, BIG) == 0);
         REQUIRE(floatCompare(INF, INF) == 0);
-        //REQUIRE(floatCompare(NaN, NaN) == 0);
 
         REQUIRE(floatCompare(-INF, INF) < 0);
         REQUIRE(floatCompare(INF, -INF) > 0);
@@ -175,26 +174,14 @@ TEST_CASE("fp_compare", "[math]")
         REQUIRE(floatCompare(0.0, BIG) < 0);
         REQUIRE(floatCompare(BIG, 0.0) > 0);
 
-        //REQUIRE(floatCompare(0.0, NaN));
-        //REQUIRE(floatCompare(NaN, 0.0));
-
         REQUIRE(floatCompare(SMALL, BIG) < 0);
         REQUIRE(floatCompare(BIG, SMALL) > 0);
 
         REQUIRE(floatCompare(SMALL, INF) < 0);
         REQUIRE(floatCompare(INF, SMALL) > 0);
 
-        //REQUIRE(floatCompare(SMALL, NaN));
-        //REQUIRE(floatCompare(NaN, SMALL));
-
         REQUIRE(floatCompare(BIG, INF) < 0);
         REQUIRE(floatCompare(INF, BIG) > 0);
-
-        //REQUIRE(floatCompare(BIG, NaN));
-        //REQUIRE(floatCompare(NaN, BIG));
-
-        //REQUIRE(floatCompare(INF, NaN));
-        //REQUIRE(floatCompare(NaN, INF));
     }
 
     SECTION("is_less_not_greater")

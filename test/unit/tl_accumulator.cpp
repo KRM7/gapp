@@ -7,7 +7,6 @@
 #include <vector>
 #include <algorithm>
 #include <execution>
-#include <thread>
 
 using namespace genetic_algorithm::detail;
 
@@ -20,29 +19,6 @@ TEST_CASE("tl_vector_accumulator", "[tl_accumulator]")
 
     tl_vector_accumulator<int>::reset(ncols);
 
-    std::thread t1([&]()
-    {
-        for (size_t row = 0; row < nrows / 2; row++)
-        {
-            for (size_t col = 0; col < ncols; col++)
-            {
-                tl_vector_accumulator<int>::at(col) += mat[row][col];
-            }
-        }
-    });
-
-    std::thread t2([&]()
-    {
-        for (size_t row = nrows / 2; row < nrows; row++)
-        {
-            for (size_t col = 0; col < ncols; col++)
-            {
-                tl_vector_accumulator<int>::at(col) += mat[row][col];
-            }
-        }
-    });
-
-    /*
     std::for_each(std::execution::par_unseq, mat.begin(), mat.end(), [](const std::vector<int>& row)
     {
         for (size_t col = 0; col < row.size(); col++)
@@ -50,9 +26,6 @@ TEST_CASE("tl_vector_accumulator", "[tl_accumulator]")
             tl_vector_accumulator<int>::at(col) += row[col];
         }
     });
-    */
-    
-    t1.join(); t2.join();
 
     const auto colwise_sums = tl_vector_accumulator<int>::collect();
 

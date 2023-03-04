@@ -27,7 +27,7 @@ static constexpr bool fcomp(const Candidate<T>& lhs, const Candidate<T>& rhs) { 
 
 TEST_CASE("merge_pareto_sets", "[pareto_front]")
 {
-    //ScopedTolerances _(0, 0.0);
+    ScopedTolerances _(0, 0.0);
 
     FitnessMatrix front1 = {
         { 10.0, -1.0 }, //

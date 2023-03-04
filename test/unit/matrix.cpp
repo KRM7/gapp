@@ -284,8 +284,12 @@ TEST_CASE("matrix_algorithms", "[matrix]")
     Matrix mat2 = { { 37, 40, 13 }, { 14, 4, 0 }, { 8, -1, 9 } };
 
     for (auto row : mat1)
+    {
         for (int& entry : row)
+        {
             entry = 0;
+        }
+    }
 
     bool all_zero = std::all_of(mat1.cbegin(), mat1.cend(), [](auto row)
     {
