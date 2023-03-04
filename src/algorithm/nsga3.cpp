@@ -239,7 +239,7 @@ namespace genetic_algorithm::algorithm
     {
         GA_ASSERT(std::distance(first, last) > 0);
         GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
-        GA_ASSERT(ref_lines_.size() != 0);
+        GA_ASSERT(!ref_lines_.empty());
 
         updateIdealPoint(first, last);
         updateNadirPoint(first, last);
