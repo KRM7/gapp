@@ -61,7 +61,9 @@ namespace genetic_algorithm::algorithm
         * This method will be called exactly once every generation right before the selections are performed. \n
         * 
         * Implemented by prepareSelectionsImpl. \n
-        * The default implementation does nothing.
+        * The default implementation does nothing. \n
+        * 
+        * Precondition: The population hasn't changed since the last call to nextPopulation.
         *
         * @param ga The GA that uses the algorithm.
         * @param fmat The fitness matrix of the population.
@@ -76,7 +78,9 @@ namespace genetic_algorithm::algorithm
         * The population will be the unchanged population that was returned by nextPopulation in the previous generation. \n
         * 
         * Implemented by selectImpl. \n
-        * The implementation should be thread-safe if parallel execution is enabled for the GAs (enabled by default).
+        * The implementation should be thread-safe if parallel execution is enabled for the GAs (enabled by default). \n
+        * 
+        * Precondition: The population hasn't changed since the last call to prepareSelections.
         *
         * @param ga The GA that uses the algorithm.
         * @param pop The current population.
@@ -108,7 +112,9 @@ namespace genetic_algorithm::algorithm
         * 
         * Implemented by optimalSolutionsImpl. \n
         * The default implementation will use detail::findParetoFront to find the optimal
-        * solutions in the population.
+        * solutions in the population. \n
+        * 
+        * Precondition: The population hasn't changed since the last call to nextPopulation.
         * 
         * @param ga The GA that uses the algorithm.
         * @param pop The current population of the GA.
