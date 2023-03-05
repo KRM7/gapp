@@ -72,10 +72,10 @@ namespace genetic_algorithm::selection
 
     size_t Tournament::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
-        const auto candidates = rng::sampleUnique(0_sz, fvec_.size(), tourney_size_);
+        const auto candidate_indices = rng::sampleUnique(0_sz, fvec_.size(), tourney_size_);
 
-        return *std::max_element(candidates.begin(), candidates.end(),
-        [this](size_t lhs, size_t rhs) noexcept
+        return *std::max_element(candidate_indices.begin(), candidate_indices.end(),
+        [&](size_t lhs, size_t rhs) noexcept
         {
             return fvec_[lhs] < fvec_[rhs];
         });

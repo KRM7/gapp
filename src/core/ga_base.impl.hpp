@@ -273,7 +273,8 @@ namespace genetic_algorithm
     void GA<T>::initializeAlgorithm(const Population<T>& initial_population)
     {
         GA_ASSERT(fitness_function_);
-        GA_ASSERT(algorithm_ && crossover_ && mutation_ && stop_condition_);
+        GA_ASSERT(algorithm_ && stop_condition_);
+        GA_ASSERT(crossover_ && mutation_);
 
         /* Derived GA. */
         initialize();
@@ -305,7 +306,11 @@ namespace genetic_algorithm
     {
         GA_ASSERT(chrom_len() > 0);
         GA_ASSERT(pop_size > 0);
-        GA_ASSERT(isValidUnevaluatedPopulation(initial_population));
+
+        if (!isValidUnevaluatedPopulation(initial_population))
+        {
+            GA_THROW(std::invalid_argument, "An invalid initial population was specified for the GA.");
+        }
 
         Population<T> population;
         population.reserve(pop_size);
@@ -413,7 +418,7 @@ namespace genetic_algorithm
             sol.is_evaluated = true;
 
             std::atomic_ref num_evals{ num_fitness_evals_ };
-            num_evals.fetch_add(1, std::memory_order_acq_rel);
+            num_evals.fetch_add(1_sz, std::memory_order_acq_rel);
         }
 
         GA_ASSERT(hasValidFitness(sol));

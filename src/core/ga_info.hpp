@@ -32,7 +32,7 @@ namespace genetic_algorithm
         using FitnessMatrix = detail::FitnessMatrix;
 
         /**
-        * The type of the elements of a FitnessMatrix. \n
+        * The type of the candidate solutions' fitness vectors. \n
         * Contains fitness values along each objective axis.
         */
         using FitnessVector = detail::FitnessVector;

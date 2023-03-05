@@ -7,6 +7,7 @@
 #include "type_traits.hpp"
 #include "utility.hpp"
 #include <vector>
+#include <span>
 #include <tuple>
 #include <optional>
 #include <algorithm>
@@ -18,7 +19,6 @@
 #include <concepts>
 #include <utility>
 #include <cstddef>
-#include <cassert>
 
 namespace genetic_algorithm::detail
 {
@@ -229,21 +229,29 @@ namespace genetic_algorithm::detail
     }
 
     template<typename T>
-    std::vector<T> elementwise_min(std::vector<T> left, const std::vector<T>& right)
+    std::vector<T> elementwise_min(std::vector<T> left, std::span<const std::type_identity_t<T>> right)
     {
         GA_ASSERT(left.size() == right.size());
 
-        std::transform(left.begin(), left.end(), right.begin(), left.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? lhs : rhs; });
+        std::transform(left.begin(), left.end(), right.begin(), left.begin(),
+        [](const T& lhs, const T& rhs)
+        {
+            return lhs < rhs ? lhs : rhs;
+        });
 
         return left;
     }
 
     template<typename T>
-    std::vector<T> elementwise_max(std::vector<T> left, const std::vector<T>& right)
+    std::vector<T> elementwise_max(std::vector<T> left, std::span<const std::type_identity_t<T>> right)
     {
         GA_ASSERT(left.size() == right.size());
 
-        std::transform(left.begin(), left.end(), right.begin(), left.begin(), [](const T& lhs, const T& rhs) { return lhs < rhs ? rhs : lhs; });
+        std::transform(left.begin(), left.end(), right.begin(), left.begin(),
+        [](const T& lhs, const T& rhs)
+        {
+            return lhs < rhs ? rhs : lhs;
+        });
 
         return left;
     }
