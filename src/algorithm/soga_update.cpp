@@ -23,7 +23,7 @@ namespace genetic_algorithm::update
         const size_t n = std::min(n_, ga.population_size());
 
         const auto sorted_parent_indices = detail::partial_argsort(first, first + n, children_first,
-        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        [](const auto& lhs, const auto& rhs) noexcept
         {
             return math::paretoCompareLess(rhs, lhs); // descending
         });
@@ -40,7 +40,7 @@ namespace genetic_algorithm::update
         GA_ASSERT(size_t(children_first - first) == ga.population_size());
 
         auto sorted_indices = detail::partial_argsort(first, children_first, last,
-        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        [](const auto& lhs, const auto& rhs) noexcept
         {
             return math::paretoCompareLess(rhs, lhs); // descending
         });

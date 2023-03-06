@@ -4,6 +4,7 @@
 #define GA_POPULATION_HPP
 
 #include "candidate.hpp"
+#include "../utility/matrix.hpp"
 #include <vector>
 #include <cstddef>
 
@@ -22,7 +23,7 @@ namespace genetic_algorithm
 namespace genetic_algorithm::detail
 {
     using FitnessVector = std::vector<double>;
-    using FitnessMatrix = std::vector<std::vector<double>>;
+    using FitnessMatrix = detail::Matrix<double>;
 
     /* Return the fitness matrix of the population (multi-objective). */
     template<Gene T>
@@ -30,7 +31,6 @@ namespace genetic_algorithm::detail
 
     /* Return the fitness vector of a fitness matrix along the first objective axis. */
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
 
     /* Return the minimum fitness values of a fitness matrix along each objective axis. */
     FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
@@ -90,7 +90,17 @@ namespace genetic_algorithm::detail
     template<Gene T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop)
     {
-        return detail::map(pop, std::mem_fn(&Candidate<T>::fitness));
+        if (pop.empty()) return {};
+
+        FitnessMatrix fitness_matrix;
+        fitness_matrix.reserve(pop.size(), pop[0].fitness.size());
+
+        for (const Candidate<T>& sol : pop)
+        {
+            fitness_matrix.append_row(sol.fitness);
+        }
+
+        return fitness_matrix;
     }
 
     template<Gene T>
@@ -103,7 +113,7 @@ namespace genetic_algorithm::detail
 
         auto fitness_matrix = detail::toFitnessMatrix(pop);
 
-        auto optimal_indices = fitness_matrix[0].size() == 1 ?
+        auto optimal_indices = fitness_matrix.ncols() == 1 ?
             findParetoFront1D(fitness_matrix) :
             findParetoFrontSort(fitness_matrix);
 

@@ -65,7 +65,7 @@ namespace genetic_algorithm::selection
     void Tournament::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
         GA_ASSERT(fmat.size() >= tourney_size_);
-        GA_ASSERT(std::all_of(fmat.begin(), fmat.end(), detail::is_size(1)));
+        GA_ASSERT(fmat.ncols() == 1);
         
         fvec_ = detail::toFitnessVector(fmat.begin(), fmat.end());
     }

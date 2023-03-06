@@ -69,7 +69,7 @@ namespace genetic_algorithm::stopping
         const auto& fitness_matrix = ga.fitness_matrix();
 
         return std::any_of(fitness_matrix.begin(), fitness_matrix.end(),
-        [this](const FitnessVector& fitness_vector) noexcept
+        [this](const auto& fitness_vector) noexcept
         {
             return !math::paretoCompareLess(fitness_vector, fitness_threshold_);
         });

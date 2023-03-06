@@ -195,7 +195,7 @@ namespace genetic_algorithm::algorithm::dtl
         std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
         {
             FitnessVector fvec(popsize);
-            std::transform(first, last, fvec.begin(), [obj](const FitnessVector& row) { return row[obj]; });
+            std::transform(first, last, fvec.begin(), [obj](const auto& row) { return row[obj]; });
 
             const auto indices = detail::argsort(fvec.rbegin(), fvec.rend()); // descending
 
@@ -300,7 +300,6 @@ namespace genetic_algorithm::algorithm::dtl
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         GA_ASSERT(std::distance(first, last) >= 0);
-        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
         return dominanceDegreeSort(first, last);
     }

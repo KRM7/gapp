@@ -32,7 +32,7 @@ namespace genetic_algorithm::algorithm
         for (size_t obj = 0; obj < first->size(); obj++)
         {
             FitnessVector fvec(last - first, 0.0);
-            std::transform(first, last, fvec.begin(), [&](const FitnessVector& row) { return row[obj]; });
+            std::transform(first, last, fvec.begin(), [&](const auto& row) { return row[obj]; });
 
             for (auto [front_first, front_last] : front_bounds)
             {
@@ -99,7 +99,7 @@ namespace genetic_algorithm::algorithm
 
         GA_ASSERT(ga.num_objectives() > 1);
         GA_ASSERT(size_t(children_first - parents_first) == popsize);
-        GA_ASSERT(std::all_of(parents_first, children_last, detail::is_size(ga.num_objectives())));
+        GA_ASSERT(parents_first->size() == ga.num_objectives());
 
         auto pfronts = nonDominatedSort(parents_first, children_last);
         auto [partial_front_first, partial_front_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);

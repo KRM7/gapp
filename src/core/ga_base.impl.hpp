@@ -262,7 +262,7 @@ namespace genetic_algorithm
     inline bool GA<T>::fitnessMatrixIsSynced() const
     {
         return std::equal(fitness_matrix_.begin(), fitness_matrix_.end(), population_.begin(), population_.end(),
-        [this](const FitnessVector& fvec, const Candidate<T>& sol)
+        [this](const auto& fvec, const auto& sol)
         {
             return fvec == sol.fitness;
         });

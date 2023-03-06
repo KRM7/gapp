@@ -16,7 +16,7 @@ static Population<int> fmatToPopulation(const FitnessMatrix& fmat)
 {
     Population<int> pop(fmat.size(), Candidate<int>(0));
 
-    for (size_t i = 0; i < fmat.size(); i++) { pop[i].fitness = fmat[i]; }
+    for (size_t i = 0; i < fmat.size(); i++) { pop[i].fitness = FitnessVector(fmat[i]); }
 
     return pop;
 }

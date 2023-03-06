@@ -16,10 +16,8 @@ namespace genetic_algorithm::detail
 {
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(std::all_of(first, last, detail::is_size(1)));
-
-        std::vector<double> fitness_vector(last - first);
-        std::transform(first, last, fitness_vector.begin(), [](const FitnessVector& row) { return row[0]; });
+        FitnessVector fitness_vector(last - first);
+        std::transform(first, last, fitness_vector.begin(), [](const auto& row) { return row[0]; });
 
         return fitness_vector;
     }
@@ -27,28 +25,25 @@ namespace genetic_algorithm::detail
     FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
-        return std::reduce(std::next(first), last, *first, detail::elementwise_min<double>);
+        return std::accumulate(std::next(first), last, FitnessVector(*first), detail::elementwise_min<double>);
     }
 
     FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
-        return std::reduce(std::next(first), last, *first, detail::elementwise_max<double>);
+        return std::accumulate(std::next(first), last, FitnessVector(*first), detail::elementwise_max<double>);
     }
 
     FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
         const double ninv = 1.0 / (last - first);
         FitnessVector fitness_mean(first->size());
 
-        std::for_each(first, last, [&](const FitnessVector& fvec)
+        std::for_each(first, last, [&](const auto& fvec) noexcept
         {
             for (size_t i = 0; i < fvec.size(); i++)
             {
@@ -62,14 +57,14 @@ namespace genetic_algorithm::detail
     FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& fitness_mean)
     {
         GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
+        GA_ASSERT(first->size() == fitness_mean.size());
 
         const double ninv = 1.0 / (last - first - 1.0);
         FitnessVector fitness_variance(first->size(), 0.0);
 
         if (std::distance(first, last) == 1) return fitness_variance;
 
-        std::for_each(first, last, [&](const FitnessVector& fitness_vector) noexcept
+        std::for_each(first, last, [&](const auto& fitness_vector) noexcept
         {
             for (size_t i = 0; i < fitness_vector.size(); i++)
             {
@@ -100,17 +95,15 @@ namespace genetic_algorithm::detail
 
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
     {
-        GA_ASSERT(std::all_of(fmat.begin(), fmat.end(), detail::is_size(1)));
-
         const auto best = std::max_element(fmat.begin(), fmat.end(),
-        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        [](const auto& lhs, const auto& rhs) noexcept
         {
             return lhs[0] < rhs[0];
         });
 
         const double max_fitness = (*best)[0];
 
-        return detail::find_indices(fmat, [&](const FitnessVector& fitness_vector) noexcept
+        return detail::find_indices(fmat, [&](const auto& fitness_vector) noexcept
         {
             return math::floatIsEqual(max_fitness, fitness_vector[0]);
         });
@@ -119,7 +112,7 @@ namespace genetic_algorithm::detail
     std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat)
     {
         const auto indices = detail::argsort(fmat.begin(), fmat.end(),
-        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        [](const auto& lhs, const auto& rhs) noexcept
         {
             for (size_t i = 0; i < lhs.size(); i++)
             {
@@ -226,7 +219,7 @@ namespace genetic_algorithm::detail
         /* Doesn't work for d = 1 (single-objective optimization). */
 
         auto indices = detail::argsort(fmat.begin(), fmat.end(),
-        [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
+        [](const auto& lhs, const auto& rhs) noexcept
         {
             for (size_t i = 0; i < lhs.size(); i++)
             {

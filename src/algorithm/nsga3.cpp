@@ -193,7 +193,7 @@ namespace genetic_algorithm::algorithm
     void NSGA3::Impl::updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(std::all_of(first, last, detail::is_size(ideal_point_.size())));
+        GA_ASSERT(first->size() == ideal_point_.size());
 
         const auto popsize = size_t(last - first);
 
@@ -203,7 +203,7 @@ namespace genetic_algorithm::algorithm
         for (size_t dim = 0; dim < ideal_point_.size(); dim++)
         {
             auto weights = weightVector(ideal_point_.size(), dim);
-            auto ASFi = [&](const FitnessVector& fvec) noexcept { return ASF(ideal_point_, weights, fvec); };
+            auto ASFi = [&](const auto& fvec) noexcept { return ASF(ideal_point_, weights, fvec); };
             
             std::vector<double> chebysev_distances(popsize + extreme_points_.size());
 
@@ -214,7 +214,7 @@ namespace genetic_algorithm::algorithm
 
             (idx >= popsize) ?
                 new_extreme_points.push_back(extreme_points_[idx - popsize]) :
-                new_extreme_points.push_back(first[idx]);
+                new_extreme_points.push_back(FitnessVector(first[idx]));
         }
 
         extreme_points_ = std::move(new_extreme_points);
@@ -236,7 +236,6 @@ namespace genetic_algorithm::algorithm
                                            ParetoFronts::const_iterator pfirst, ParetoFronts::const_iterator plast)
     {
         GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
         GA_ASSERT(!ref_lines_.empty());
 
         updateIdealPoint(first, last);
@@ -376,7 +375,7 @@ namespace genetic_algorithm::algorithm
     {
         GA_ASSERT(ga.num_objectives() > 1);
         GA_ASSERT(size_t(children_last - parents_first) >= ga.population_size());
-        GA_ASSERT(std::all_of(parents_first, children_last, detail::is_size(ga.num_objectives())));
+        GA_ASSERT(parents_first->size() == ga.num_objectives());
 
         const size_t popsize = ga.population_size();
 
