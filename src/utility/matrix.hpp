@@ -29,28 +29,34 @@ namespace genetic_algorithm::detail
     class Matrix : public reverse_iterator_interface<Matrix<T, A>>
     {
     public:
-        using value_type     = T;
-        using allocator_type = A;
-        using storage_type   = std::vector<T, A>;
-
-        using size_type         = typename storage_type::size_type;
-        using difference_type   = typename storage_type::difference_type;
-
-        using reference         = typename storage_type::reference;
-        using pointer           = typename storage_type::pointer;
-        using const_reference   = typename storage_type::const_reference;
-        using const_pointer     = typename storage_type::const_pointer;
-
         using RowRef      = MatrixRowRef<T, A>;
         using ConstRowRef = ConstMatrixRowRef<T, A>;
 
         friend class MatrixRowBase<RowRef, Matrix>;
         friend class MatrixRowBase<ConstRowRef, const Matrix>;
 
-        /* Iterators */
-
         class RowIterator;
         class ConstRowIterator;
+
+        using value_type      = RowRef;
+        using allocator_type  = A;
+        using storage_type    = std::vector<T, A>;
+
+        using size_type       = typename storage_type::size_type;
+        using difference_type = typename storage_type::difference_type;
+
+        using reference       = RowRef;
+        using pointer         = RowIterator;
+        using const_reference = ConstRowRef;
+        using const_pointer   = ConstRowIterator;
+
+        using element_type            = T;
+        using element_reference       = typename storage_type::reference;
+        using const_element_reference = typename storage_type::const_reference;
+        using element_pointer         = typename storage_type::pointer;
+        using const_element_pointer   = typename storage_type::const_pointer;
+
+        /* Iterators */
 
         using iterator               = RowIterator;
         using const_iterator         = ConstRowIterator;
@@ -102,7 +108,7 @@ namespace genetic_algorithm::detail
             return ConstRowRef(*this, row);
         }
 
-        constexpr reference operator()(size_type row, size_type col) noexcept
+        constexpr element_reference operator()(size_type row, size_type col) noexcept
         {
             GA_ASSERT(row < nrows_, "Row index out of bounds.");
             GA_ASSERT(col < ncols_, "Col index out of bounds.");
@@ -110,7 +116,7 @@ namespace genetic_algorithm::detail
             return data_[row * ncols_ + col];
         }
 
-        constexpr const_reference operator()(size_type row, size_type col) const noexcept
+        constexpr const_element_reference operator()(size_type row, size_type col) const noexcept
         {
             GA_ASSERT(row < nrows_, "Row index out of bounds.");
             GA_ASSERT(col < ncols_, "Col index out of bounds.");
@@ -118,8 +124,8 @@ namespace genetic_algorithm::detail
             return data_[row * ncols_ + col];
         }
 
-        constexpr pointer data() noexcept             { return data_.data(); }
-        constexpr const_pointer data() const noexcept { return data_.data(); }
+        constexpr element_pointer data() noexcept             { return data_.data(); }
+        constexpr const_element_pointer data() const noexcept { return data_.data(); }
 
         /* Modifiers (for rows) */
 
@@ -154,7 +160,7 @@ namespace genetic_algorithm::detail
             return !(lhs == rhs);
         }
 
-        constexpr void swap(Matrix& other) noexcept(std::is_nothrow_swappable_v<T>)
+        constexpr void swap(Matrix& other) noexcept
         {
             std::swap(data_, other.data_);
             std::swap(nrows_, other.nrows_);
@@ -171,13 +177,13 @@ namespace genetic_algorithm::detail
         struct PtrHelper
         {
             /* implicit */ constexpr PtrHelper(const std::remove_cvref_t<U>& row) : row_(row) {}
-            constexpr U* operator->() { return &row_; }
+            constexpr U* operator->() noexcept { return &row_; }
             U row_;
         };
     };
 
     template<typename T, typename A>
-    constexpr void swap(Matrix<T, A>& lhs, Matrix<T, A>& rhs) noexcept(std::is_nothrow_swappable_v<T>)
+    constexpr void swap(Matrix<T, A>& lhs, Matrix<T, A>& rhs) noexcept
     {
         lhs.swap(rhs);
     }
@@ -193,11 +199,13 @@ namespace genetic_algorithm::detail
         using size_type       = typename MatrixType::storage_type::size_type;
         using difference_type = typename MatrixType::storage_type::difference_type;
 
-        using reference = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::const_reference, typename MatrixType::reference>;
-        using pointer   = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::const_pointer, typename MatrixType::pointer>;
+        using reference = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::storage_type::const_reference,
+                                                                          typename MatrixType::storage_type::reference>;
+        using pointer   = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::storage_type::const_pointer,
+                                                                          typename MatrixType::storage_type::pointer>;
 
-        using const_reference = typename MatrixType::const_reference;
-        using const_pointer   = typename MatrixType::const_pointer;
+        using const_reference = typename MatrixType::storage_type::const_reference;
+        using const_pointer   = typename MatrixType::storage_type::const_pointer;
 
         using iterator = std::conditional_t<std::is_const_v<MatrixType>, typename MatrixType::storage_type::const_iterator,
                                                                          typename MatrixType::storage_type::iterator>;
@@ -230,6 +238,10 @@ namespace genetic_algorithm::detail
 
         constexpr size_type size() const noexcept  { return mat_->ncols(); }
         constexpr size_type ncols() const noexcept { return mat_->ncols(); }
+
+        constexpr bool empty() const noexcept { return size() == 0_sz; }
+
+        explicit operator std::vector<value_type>() { return std::vector(begin(), end()); }
 
         /* Comparison operators */
 
