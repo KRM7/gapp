@@ -29,10 +29,10 @@ namespace genetic_algorithm::algorithm
 
         const auto front_bounds = paretoFrontBounds(pfronts);
 
-        for (size_t dim = 0; dim < first->size(); dim++)
+        for (size_t obj = 0; obj < first->size(); obj++)
         {
             FitnessVector fvec(last - first, 0.0);
-            std::transform(first, last, fvec.begin(), [&](const FitnessVector& f) { return f[dim]; });
+            std::transform(first, last, fvec.begin(), [&](const FitnessVector& row) { return row[obj]; });
 
             for (auto [front_first, front_last] : front_bounds)
             {
@@ -75,12 +75,12 @@ namespace genetic_algorithm::algorithm
         dists_ = crowdingDistances(fmat.begin(), fmat.end(), std::move(pfronts));
     }
 
-    size_t NSGA2::selectImpl(const GaInfo&, const FitnessMatrix& pop) const
+    size_t NSGA2::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
     {
-        GA_ASSERT(!pop.empty() && pop.size() == ranks_.size());
+        GA_ASSERT(!fmat.empty() && fmat.size() == ranks_.size());
 
-        const size_t idx1 = rng::randomIdx(pop);
-        const size_t idx2 = rng::randomIdx(pop);
+        const size_t idx1 = rng::randomIdx(fmat);
+        const size_t idx2 = rng::randomIdx(fmat);
 
         const bool first_is_better =
             (ranks_[idx1] != ranks_[idx2]) ?

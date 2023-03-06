@@ -18,10 +18,10 @@ namespace genetic_algorithm::detail
     {
         GA_ASSERT(std::all_of(first, last, detail::is_size(1)));
 
-        std::vector<double> fvec(last - first);
-        std::transform(first, last, fvec.begin(), [](const FitnessVector& f) { return f[0]; });
+        std::vector<double> fitness_vector(last - first);
+        std::transform(first, last, fitness_vector.begin(), [](const FitnessVector& row) { return row[0]; });
 
-        return fvec;
+        return fitness_vector;
     }
 
     FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
@@ -45,18 +45,52 @@ namespace genetic_algorithm::detail
         GA_ASSERT(std::distance(first, last) > 0);
         GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
 
+        const double ninv = 1.0 / (last - first);
         FitnessVector fitness_mean(first->size());
 
         std::for_each(first, last, [&](const FitnessVector& fvec)
         {
-            std::transform(fvec.begin(), fvec.end(), fitness_mean.begin(), fitness_mean.begin(),
-            [ninv = 1.0 / (first - last)](double mean, double f) noexcept
+            for (size_t i = 0; i < fvec.size(); i++)
             {
-                return mean + f * ninv;
-            });
+                fitness_mean[i] += fvec[i] * ninv;
+            }
         });
 
         return fitness_mean;
+    }
+
+    FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& fitness_mean)
+    {
+        GA_ASSERT(std::distance(first, last) > 0);
+        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
+
+        const double ninv = 1.0 / (last - first - 1.0);
+        FitnessVector fitness_variance(first->size(), 0.0);
+
+        if (std::distance(first, last) == 1) return fitness_variance;
+
+        std::for_each(first, last, [&](const FitnessVector& fitness_vector) noexcept
+        {
+            for (size_t i = 0; i < fitness_vector.size(); i++)
+            {
+                fitness_variance[i] += std::pow(fitness_vector[i] - fitness_mean[i], 2) * ninv;
+            }
+        });
+
+        return fitness_variance;
+    }
+
+    FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    {
+        return fitnessVariance(first, last, fitnessMean(first, last));
+    }
+
+    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean)
+    {
+        FitnessVector fitness_std_dev = fitnessVariance(first, last, mean);
+        for (double& f : fitness_std_dev) { f = std::sqrt(f); }
+
+        return fitness_std_dev;
     }
 
     FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
@@ -64,33 +98,10 @@ namespace genetic_algorithm::detail
         return fitnessStdDev(first, last, fitnessMean(first, last));
     }
 
-    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean)
-    {
-        GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(std::all_of(first, last, detail::is_size(first->size())));
-
-        FitnessVector variance(first->size());
-
-        if (std::distance(first, last) == 1) return variance;
-
-        std::for_each(first, last, [&, ninv = 1.0 / (last - first - 1.0)](const FitnessVector& fvec) noexcept
-        {
-            for (size_t dim = 0; dim < fvec.size(); dim++)
-            {
-                variance[dim] += std::pow(fvec[dim] - mean[dim], 2) * ninv;
-            }
-        });
-
-        for (double& var : variance)
-        { 
-            var = std::sqrt(var);
-        }
-
-        return variance;
-    }
-
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
     {
+        GA_ASSERT(std::all_of(fmat.begin(), fmat.end(), detail::is_size(1)));
+
         const auto best = std::max_element(fmat.begin(), fmat.end(),
         [](const FitnessVector& lhs, const FitnessVector& rhs) noexcept
         {
@@ -99,9 +110,9 @@ namespace genetic_algorithm::detail
 
         const double max_fitness = (*best)[0];
 
-        return detail::find_indices(fmat, [&](const FitnessVector& fvec) noexcept
+        return detail::find_indices(fmat, [&](const FitnessVector& fitness_vector) noexcept
         {
-            return math::floatIsEqual(max_fitness, fvec[0]);
+            return math::floatIsEqual(max_fitness, fitness_vector[0]);
         });
     }
 

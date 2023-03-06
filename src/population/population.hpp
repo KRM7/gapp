@@ -24,10 +24,6 @@ namespace genetic_algorithm::detail
     using FitnessVector = std::vector<double>;
     using FitnessMatrix = std::vector<std::vector<double>>;
 
-    /* Return the fitness vector of the population (single-objective). */
-    template<Gene T>
-    FitnessVector toFitnessVector(const Population<T>& pop);
-
     /* Return the fitness matrix of the population (multi-objective). */
     template<Gene T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop);
@@ -45,11 +41,17 @@ namespace genetic_algorithm::detail
     /* Return the mean fitness values of a fitness matrix along each objective axis. */
     FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
+    /* Return the variance of the fitness values of a fitness matrix along each objective axis. */
+    FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
+
+    /* Return the variance of the fitness values of a fitness matrix along each objective axis. */
+    FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& fitness_mean);
+
     /* Return the standard deviation of the fitness values of a fitness matrix along each objective axis. */
     FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
     /* Return the standard deviation of the fitness values of a fitness matrix along each objective axis. */
-    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean);
+    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& fitness_mean);
 
 
     /* Find the pareto-optimal solutions in a population. */
@@ -86,14 +88,6 @@ namespace genetic_algorithm::detail
 namespace genetic_algorithm::detail
 {
     template<Gene T>
-    FitnessVector toFitnessVector(const Population<T>& pop)
-    {
-        GA_ASSERT(std::all_of(pop.begin(), pop.end(), [](const Candidate<T>& sol) { return sol.fitness.size() == 1; }));
-
-        return detail::map(pop, [](const Candidate<T>& sol) { return sol.fitness[0]; });
-    }
-
-    template<Gene T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop)
     {
         return detail::map(pop, std::mem_fn(&Candidate<T>::fitness));
@@ -104,7 +98,7 @@ namespace genetic_algorithm::detail
     {
         if (pop.empty()) return {};
 
-        GA_ASSERT(pop[0].fitness.size() > 0);
+        GA_ASSERT(!pop[0].fitness.empty());
         GA_ASSERT(std::all_of(pop.begin(), pop.end(), [&](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
         auto fitness_matrix = detail::toFitnessMatrix(pop);

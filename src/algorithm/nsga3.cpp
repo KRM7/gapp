@@ -16,6 +16,7 @@
 #include <functional>
 #include <iterator>
 #include <vector>
+#include <span>
 #include <stdexcept>
 #include <utility>
 #include <cstddef>
@@ -29,7 +30,7 @@ namespace genetic_algorithm::algorithm
 
 
     /* Achievement scalarization function. */
-    static inline double ASF(const std::vector<double>& ideal_point, const std::vector<double>& weights, const std::vector<double>& fitness) noexcept
+    static inline double ASF(std::span<const double> ideal_point, std::span<const double> weights, std::span<const double> fitness) noexcept
     {
         GA_ASSERT(!ideal_point.empty());
         GA_ASSERT(weights.size() == ideal_point.size());
@@ -72,7 +73,7 @@ namespace genetic_algorithm::algorithm
     }
 
     /* Normalize a fitness vector using the ideal and nadir points. */
-    static inline FitnessVector normalizeFitnessVec(const FitnessVector& fvec, const Point& ideal_point, const Point& nadir_point)
+    static inline FitnessVector normalizeFitnessVec(std::span<const double> fvec, std::span<const double> ideal_point, std::span<const double> nadir_point)
     {
         GA_ASSERT(fvec.size() == ideal_point.size());
         GA_ASSERT(ideal_point.size() == nadir_point.size());
@@ -202,11 +203,8 @@ namespace genetic_algorithm::algorithm
         for (size_t dim = 0; dim < ideal_point_.size(); dim++)
         {
             auto weights = weightVector(ideal_point_.size(), dim);
-            auto ASFi = [&](const FitnessVector& fvec) noexcept
-            {
-                return ASF(ideal_point_, weights, fvec);
-            };
-
+            auto ASFi = [&](const FitnessVector& fvec) noexcept { return ASF(ideal_point_, weights, fvec); };
+            
             std::vector<double> chebysev_distances(popsize + extreme_points_.size());
 
             std::transform(first, last, chebysev_distances.begin(), ASFi);
