@@ -3,7 +3,6 @@
 #ifndef GA_ALGORITHM_ALGORITHM_BASE_HPP
 #define GA_ALGORITHM_ALGORITHM_BASE_HPP
 
-#include "algorithm_base.fwd.hpp"
 #include "algorithm_base.decl.hpp"
 #include "algorithm_base.impl.hpp"
 

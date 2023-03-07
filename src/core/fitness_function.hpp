@@ -123,15 +123,6 @@ namespace genetic_algorithm
     template<Gene T>
     std::unique_ptr<FitnessFunction<T>> makeFitnessFunction(size_t chrom_len, size_t num_obj, FitnessCallable<T> f);
 
-
-    /** Fitness function types. */
-    template<typename T, typename G>
-    concept FitnessFunctionType = requires
-    {
-        requires Gene<G>;
-        requires std::derived_from<T, FitnessFunction<G>>;
-    };
-
 } // namespace genetic_algorithm
 
 
@@ -165,6 +156,8 @@ namespace genetic_algorithm::detail
     private:
         FitnessVector invoke(const Chromosome<T>& chrom) const override
         {
+            GA_ASSERT(fitness_function_);
+
             return fitness_function_(chrom);
         }
 

@@ -3,7 +3,6 @@
 #ifndef GA_ALGORITHM_ALGORITHM_BASE_DECL_HPP
 #define GA_ALGORITHM_ALGORITHM_BASE_DECL_HPP
 
-#include "algorithm_base.fwd.hpp"
 #include "selection_base.hpp"
 #include "updater_base.hpp"
 #include "../population/population.hpp"

@@ -6,8 +6,6 @@
 #include "ga_info.hpp"
 #include "fitness_function.hpp"
 #include "../population/candidate.hpp"
-#include "../mutation/mutation_base.fwd.hpp"
-#include "../crossover/crossover_base.fwd.hpp"
 #include <algorithm>
 #include <vector>
 #include <utility>
@@ -16,6 +14,20 @@
 #include <concepts>
 #include <memory>
 #include <cstddef>
+
+namespace genetic_algorithm::crossover
+{
+    template<Gene T>
+    class Crossover;
+
+} // namespace genetic_algorithm::crossover
+
+namespace genetic_algorithm::mutation
+{
+    template<Gene T>
+    class Mutation;
+
+} // namespace genetic_algorithm::mutation
 
 namespace genetic_algorithm
 {
@@ -80,7 +92,7 @@ namespace genetic_algorithm
         * @param f The fitness function to use in the algorithm.
         */
         template<typename F>
-        requires FitnessFunctionType<F, T> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunction<T>> && std::is_final_v<F>
         void fitness_function(F f);
 
         /**
@@ -129,7 +141,7 @@ namespace genetic_algorithm
         * @param f The crossover method used by the algorithm.
         */
         template<typename F>
-        requires crossover::CrossoverType<F, T> && std::is_final_v<F>
+        requires std::derived_from<F, crossover::Crossover<T>> && std::is_final_v<F>
         void crossover_method(F f);
 
         /**
@@ -181,7 +193,7 @@ namespace genetic_algorithm
         * @param f The crossover function that will be used by the algorithm.
         */
         template<typename F>
-        requires mutation::MutationType<F, T> && std::is_final_v<F>
+        requires std::derived_from<F, mutation::Mutation<T>> && std::is_final_v<F>
         void mutation_method(F f);
 
         /**

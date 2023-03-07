@@ -38,7 +38,7 @@ namespace genetic_algorithm
 
     template<Gene T>
     template<typename F>
-    requires FitnessFunctionType<F, T> && std::is_final_v<F>
+    requires std::derived_from<F, FitnessFunction<T>> && std::is_final_v<F>
     void GA<T>::fitness_function(F f)
     {
         fitness_function_ = std::make_unique<F>(std::move(f));
@@ -112,7 +112,7 @@ namespace genetic_algorithm
 
     template<Gene T>
     template<typename F>
-    requires crossover::CrossoverType<F, T> && std::is_final_v<F>
+    requires std::derived_from<F, crossover::Crossover<T>> && std::is_final_v<F>
     inline void GA<T>::crossover_method(F f)
     {
         crossover_ = std::make_unique<F>(std::move(f));
@@ -166,7 +166,7 @@ namespace genetic_algorithm
 
     template<Gene T>
     template<typename F>
-    requires mutation::MutationType<F, T> && std::is_final_v<F>
+    requires std::derived_from<F, mutation::Mutation<T>> && std::is_final_v<F>
     inline void GA<T>::mutation_method(F f)
     {
         mutation_ = std::make_unique<F>(std::move(f));

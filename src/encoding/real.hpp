@@ -9,6 +9,7 @@
 #include "../population/candidate.hpp"
 #include "../crossover/real.hpp"
 #include "../mutation/real.hpp"
+#include <concepts>
 #include <memory>
 #include <utility>
 #include <cstddef>
@@ -51,7 +52,7 @@ namespace genetic_algorithm
         * @param population_size The number of candidates in the population.
         */
         template<typename F>
-        requires FitnessFunctionType<F, RealGene> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunction<GeneType>>&& std::is_final_v<F>
         RCGA(F fitness_function, const BoundsVector<GeneType>& bounds, size_t population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
@@ -69,7 +70,7 @@ namespace genetic_algorithm
         * @param population_size The number of candidates in the population.
         */
         template<typename F>
-        requires FitnessFunctionType<F, RealGene> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
         RCGA(F fitness_function, GeneBounds<GeneType> bounds, size_t population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {

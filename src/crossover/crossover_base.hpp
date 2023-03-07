@@ -3,7 +3,6 @@
 #ifndef GA_CROSSOVER_BASE_HPP
 #define GA_CROSSOVER_BASE_HPP
 
-#include "crossover_base.fwd.hpp"
 #include "crossover_base.decl.hpp"
 #include "crossover_base.impl.hpp"
 

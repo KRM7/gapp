@@ -8,6 +8,7 @@
 #include "../population/candidate.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
+#include <concepts>
 #include <memory>
 #include <utility>
 #include <cstddef>
@@ -39,7 +40,7 @@ namespace genetic_algorithm
         * @param population_size The number of candidates in the population.
         */
         template<typename F>
-        requires FitnessFunctionType<F, PermutationGene> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
         explicit PermutationGA(F fitness_function, size_t population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {

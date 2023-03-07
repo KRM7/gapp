@@ -4,15 +4,27 @@
 #define GA_CORE_GA_INFO_HPP
 
 #include "../population/population.hpp"
-#include "../algorithm/algorithm_base.fwd.hpp"
 #include "../algorithm/single_objective.hpp"
-#include "../stop_condition/stop_condition_base.fwd.hpp"
 #include "../utility/probability.hpp"
 #include "../utility/utility.hpp"
 #include <functional>
 #include <type_traits>
+#include <concepts>
 #include <memory>
 #include <cstddef>
+
+namespace genetic_algorithm::algorithm
+{
+    class Algorithm;
+
+} // namespace genetic_algorithm::algorithm
+
+namespace genetic_algorithm::stopping
+{
+    class StopCondition;
+
+} // namespace genetic_algorithm::stopping
+
 
 namespace genetic_algorithm
 {
@@ -143,7 +155,7 @@ namespace genetic_algorithm
         * @param f The algorithm used by the GA.
         */
         template<typename F>
-        requires algorithm::AlgorithmType<F> && std::is_final_v<F>
+        requires std::derived_from<F, algorithm::Algorithm> && std::is_final_v<F>
         void algorithm(F f);
 
         /**
@@ -174,7 +186,7 @@ namespace genetic_algorithm
         * @param f The StopCondition the algorithm should use.
         */
         template<typename F>
-        requires stopping::StopConditionType<F> && std::is_final_v<F>
+        requires std::derived_from<F, stopping::StopCondition> && std::is_final_v<F>
         void stop_condition(F f);
 
         /**
@@ -269,7 +281,7 @@ namespace genetic_algorithm
 namespace genetic_algorithm
 {
     template<typename F>
-    requires algorithm::AlgorithmType<F> && std::is_final_v<F>
+    requires std::derived_from<F, algorithm::Algorithm>&& std::is_final_v<F>
     inline void GaInfo::algorithm(F f)
     {
         algorithm_ = std::make_unique<F>(std::move(f));
@@ -277,7 +289,7 @@ namespace genetic_algorithm
     }
 
     template<typename F>
-    requires stopping::StopConditionType<F> && std::is_final_v<F>
+    requires std::derived_from<F, stopping::StopCondition>&& std::is_final_v<F>
     inline void GaInfo::stop_condition(F f)
     {
         stop_condition_ = std::make_unique<F>(std::move(f));

@@ -8,6 +8,7 @@
 #include "../population/candidate.hpp"
 #include "../crossover/binary.hpp"
 #include "../mutation/binary.hpp"
+#include <concepts>
 #include <memory>
 #include <utility>
 #include <cstddef>
@@ -33,7 +34,7 @@ namespace genetic_algorithm
         * @param population_size The number of candidates in the population.
         */
         template<typename F>
-        requires FitnessFunctionType<F, BinaryGene> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
         explicit BinaryGA(F fitness_function, size_t population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {

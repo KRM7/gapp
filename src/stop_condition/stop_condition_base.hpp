@@ -3,7 +3,6 @@
 #ifndef GA_STOP_CONDITION_BASE_HPP
 #define GA_STOP_CONDITION_BASE_HPP
 
-#include "stop_condition_base.fwd.hpp"
 #include "../utility/utility.hpp"
 #include <functional>
 #include <utility>
