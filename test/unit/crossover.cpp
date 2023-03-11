@@ -4,9 +4,12 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include "crossover/crossover_dtl.hpp"
 #include "population/candidate.hpp"
+#include "encoding/real.hpp"
+#include "crossover/real.hpp"
 
 
 using namespace genetic_algorithm;
+using namespace genetic_algorithm::crossover;
 using namespace genetic_algorithm::crossover::dtl;
 
 TEST_CASE("single_point_crossover", "[crossover]")
@@ -119,4 +122,31 @@ TEMPLATE_TEST_CASE("pmx_crossover", "[crossover]", int, unsigned)
 
     REQUIRE(child1.chromosome == Chromosome<TestType>{ { 1, 2, 0, 8, 4, 5, 6, 7, 9, 3 } });
     REQUIRE(child2.chromosome == Chromosome<TestType>{ { 0, 4, 5, 7, 1, 2, 8, 3, 6, 9 } });
+}
+
+TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa, real::SimulatedBinary, real::Wright)
+{
+    using Crossover = TestType;
+
+    constexpr size_t chrom_len = 9;
+    constexpr GeneBounds<RealGene> bounds = { 0.0, 1.0 };
+    auto objective = makeFitnessFunction<RealGene>(chrom_len, 1, [](const auto&) { return std::vector{ 0.0 }; });
+    const RCGA context(std::move(objective), bounds);
+
+    constexpr Crossover crossover{ 0.8 };
+
+    const Candidate<RealGene> parent1{ { 0.0, 0.12, 0.48, 0.19, 1.0, 1.0, 0.0, 0.72, 0.81 } };
+    const Candidate<RealGene> parent2{ { 1.0, 0.34, 0.97, 0.36, 1.0, 0.0, 0.0, 0.28, 0.49 } };
+
+    const auto [child1, child2] = crossover(context, parent1, parent2);
+
+    REQUIRE(child1.chromosome.size() == chrom_len);
+    REQUIRE(child2.chromosome.size() == chrom_len);
+    REQUIRE(std::all_of(child1.chromosome.begin(), child1.chromosome.end(), detail::between(bounds.lower(), bounds.upper())));
+    REQUIRE(std::all_of(child2.chromosome.begin(), child2.chromosome.end(), detail::between(bounds.lower(), bounds.upper())));
+
+    REQUIRE(child1.fitness.empty());
+    REQUIRE(child2.fitness.empty());
+    REQUIRE(!child1.is_evaluated);
+    REQUIRE(!child2.is_evaluated);
 }
