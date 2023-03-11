@@ -4,7 +4,7 @@
 #include "crossover_dtl.hpp"
 #include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
-#include "../utility/probability.hpp"
+#include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <vector>

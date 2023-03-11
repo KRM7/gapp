@@ -4,7 +4,7 @@
 #define GA_CROSSOVER_BASE_DECL_HPP
 
 #include "../population/candidate.hpp"
-#include "../utility/probability.hpp"
+#include "../utility/bounded_value.hpp"
 #include <vector>
 #include <utility>
 

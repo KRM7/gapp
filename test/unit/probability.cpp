@@ -1,27 +1,20 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
-#include "utility/probability.hpp"
+#include "utility/bounded_value.hpp"
 
 using namespace genetic_algorithm;
 
 TEST_CASE("probability", "[probability]")
 {
-    SECTION("good values")
+    SECTION("constructor")
     {
         REQUIRE_NOTHROW(Probability(0.123));
         REQUIRE_NOTHROW(Probability(0.0));
-        REQUIRE_NOTHROW(Probability(1.0));
+        REQUIRE_NOTHROW(1.0_p);
     }
 
-    SECTION("bad values")
-    {
-        REQUIRE_THROWS(Probability(-0.3));
-        REQUIRE_THROWS(Probability(1.3));
-        REQUIRE_THROWS(Probability(1E+300/1E-200));
-    }
-
-    SECTION("compile time constant")
+    SECTION("constexpr")
     {
         constexpr Probability p = 0.2;
 
@@ -32,8 +25,9 @@ TEST_CASE("probability", "[probability]")
     {
         Probability p = 0.3;
 
+        REQUIRE(p == 0.3);
+
         REQUIRE_NOTHROW(p = 0.1);
-        REQUIRE_THROWS(p = -3.0);
 
         REQUIRE(p == 0.1);
     }

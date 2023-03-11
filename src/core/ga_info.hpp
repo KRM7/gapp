@@ -5,7 +5,7 @@
 
 #include "../population/population.hpp"
 #include "../algorithm/single_objective.hpp"
-#include "../utility/probability.hpp"
+#include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <functional>
 #include <type_traits>

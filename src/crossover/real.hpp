@@ -6,7 +6,7 @@
 #include "crossover_base.decl.hpp"
 #include "../population/candidate.hpp"
 #include "../encoding/gene_types.hpp"
-#include "../utility/probability.hpp"
+#include "../utility/bounded_value.hpp"
 
 /** Predefined crossover operators for the real encoded genetic algorithms (RCGA). */
 namespace genetic_algorithm::crossover::real

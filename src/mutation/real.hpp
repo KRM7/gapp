@@ -5,7 +5,7 @@
 
 #include "mutation_base.hpp"
 #include "../encoding/gene_types.hpp"
-#include "../utility/probability.hpp"
+#include "../utility/bounded_value.hpp"
 
 /** Predefined mutation operators for the real encoded genetic algorithm (RCGA). */
 namespace genetic_algorithm::mutation::real

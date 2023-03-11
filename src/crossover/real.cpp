@@ -6,7 +6,7 @@
 #include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"
-#include "../utility/probability.hpp"
+#include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <vector>
