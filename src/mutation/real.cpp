@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <vector>
 #include <limits>
-#include <stdexcept>
 #include <cmath>
 #include <cstddef>
 
@@ -28,22 +27,6 @@ namespace genetic_algorithm::mutation::real
         {
             candidate.chromosome[idx] = rng::randomReal(bounds[idx].lower(), bounds[idx].upper());
         }
-    }
-
-    NonUniform::NonUniform(Probability pm, GeneType beta) :
-        Mutation(pm)
-    {
-        this->beta(beta);
-    }
-
-    void NonUniform::beta(GeneType beta)
-    {
-        if (!(0.0 <= beta && beta <= std::numeric_limits<GeneType>::max()))
-        {
-            GA_THROW(std::invalid_argument, "The beta parameter must be a nonnegative, finite value.");
-        }
-
-        beta_ = beta;
     }
 
     void NonUniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
@@ -69,22 +52,6 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-    Gauss::Gauss(Probability pm, GeneType sigma) :
-        Mutation(pm)
-    {
-        this->sigma(sigma);
-    }
-
-    void Gauss::sigma(GeneType sigma)
-    {
-        if (!(0.0 < sigma && sigma <= std::numeric_limits<GeneType>::max()))
-        {
-            GA_THROW(std::invalid_argument, "Sigma must be a positive, finite value.");
-        }
-
-        sigma_ = sigma;
-    }
-
     void Gauss::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
         GA_ASSERT(ga.gene_bounds().size() == candidate.chromosome.size(), "Mismatching bounds and chromosome lengths.");
@@ -102,22 +69,6 @@ namespace genetic_algorithm::mutation::real
             /* The value of the mutated gene might be outside of the allowed interval. */
             candidate.chromosome[idx] = std::clamp(candidate.chromosome[idx], bounds[idx].lower(), bounds[idx].upper());
         }
-    }
-
-    Polynomial::Polynomial(Probability pm, GeneType eta)
-        : Mutation(pm)
-    {
-        this->eta(eta);
-    }
-
-    void Polynomial::eta(GeneType eta)
-    {
-        if (!(0.0 <= eta && eta <= std::numeric_limits<GeneType>::max()))
-        {
-            GA_THROW(std::invalid_argument, "Eta must be a nonnegative, finite value.");
-        }
-
-        eta_ = eta;
     }
 
     void Polynomial::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const

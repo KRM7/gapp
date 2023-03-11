@@ -42,26 +42,28 @@ namespace genetic_algorithm::mutation::real
         /**
         * Create a non-uniform mutation operator with the specified parameters.
         * 
-        * @param pm The mutation probability used.
-        * @param beta The beta parameter of the non-uniform crossover. Must be >= 0.0.
+        * @param pm The mutation probability used. Must be in the closed range [0.0, 1.0].
+        * @param beta The beta parameter of the non-uniform crossover. Must be a finite value greater than 0.0.
         */
-        explicit NonUniform(Probability pm, GeneType beta = 2.0);
+        constexpr explicit NonUniform(Probability pm, NonNegative<GeneType> beta = 2.0) noexcept :
+            Mutation(pm), beta_(beta)
+        {}
         
         /**
         * Sets the beta parameter for the crossover.
         * 
-        * @param beta The beta parameter of the non-uniform crossover. Must be >= 0.0.
+        * @param beta The beta parameter of the non-uniform crossover. Must be a finite value greater than 0.0.
         */
-        void beta(GeneType beta);
+        constexpr void beta(NonNegative<GeneType> beta) noexcept { beta_ = beta; }
 
-        /** @returns The beta parameter currently set for the operator. */
+        /** @returns The beta parameter of the operator. */
         [[nodiscard]]
-        GeneType beta() const noexcept { return beta_; }
+        constexpr GeneType beta() const noexcept { return beta_; }
 
     private:
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
-        GeneType beta_;
+        NonNegative<GeneType> beta_;
     };
 
     /**
@@ -80,26 +82,28 @@ namespace genetic_algorithm::mutation::real
         /**
         * Create a Gauss mutation operator with the specified parameters.
         * 
-        * @param pm The mutation probability used.
-        * @param sigma The sigma parameter of the gauss crossover. Must be > 0.0.
+        * @param pm The mutation probability used. Must be in the closed range [0.0, 1.0].
+        * @param sigma The sigma parameter of the gauss crossover. Must be a finite value greater than 0.0.
         */
-        explicit Gauss(Probability pm, GeneType sigma = 6.0);
+        constexpr explicit Gauss(Probability pm, NonNegative<GeneType> sigma = 6.0) noexcept :
+            Mutation(pm), sigma_(sigma)
+        {}
 
         /**
         * Sets the sigma parameter for the crossover.
         * 
-        * @param sigma The sigma parameter of the gauss crossover. Must be > 0.0.
+        * @param sigma The sigma parameter of the gauss crossover. Must be a finite value greater than 0.0.
         */
-        void sigma(GeneType sigma);
+        constexpr void sigma(NonNegative<GeneType> sigma) noexcept { sigma_ = sigma; }
 
-        /** @returns The sigma parameter currently set for the operator. */
+        /** @returns The sigma parameter of the operator. */
         [[nodiscard]]
-        GeneType sigma() const noexcept { return sigma_; }
+        constexpr GeneType sigma() const noexcept { return sigma_; }
 
     private:
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
-        GeneType sigma_;
+        NonNegative<GeneType> sigma_;
     };
 
     /**
@@ -118,26 +122,28 @@ namespace genetic_algorithm::mutation::real
         * Create a polynomial mutation operator with the specified parameters.
         * 
         * @param bounds The (lower and upper) bounds of each gene. Must be the same length as the chromosomes used in the algorithm.
-        * @param pm The mutation probability used.
-        * @param eta The eta parameter of the polynomial mutation. Must be >= 0.0.
+        * @param pm The mutation probability used. Must be in the closed range [0.0, 1.0].
+        * @param eta The eta parameter of the polynomial mutation. Must be a finite value greater than 0.0.
         */
-        explicit Polynomial(Probability pm, GeneType eta = 40.0);
+        constexpr explicit Polynomial(Probability pm, NonNegative<GeneType> eta = 40.0) noexcept :
+            Mutation(pm), eta_(eta)
+        {}
 
         /**
         * Sets the eta parameter for the crossover.
         * 
-        * @param eta The eta parameter of the polynomial mutation. Must be >= 0.0.
+        * @param eta The eta parameter of the polynomial mutation. Must be a finite value greater than 0.0.
         */
-        void eta(GeneType eta);
+        constexpr void eta(NonNegative<GeneType> eta) noexcept { eta_ = eta; }
 
-        /** @returns The eta parameter currently set for the operator. */
+        /** @returns The eta parameter of the operator. */
         [[nodiscard]]
-        GeneType eta() const noexcept { return eta_; }
+        constexpr GeneType eta() const noexcept { return eta_; }
 
     private:
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
-        GeneType eta_;
+        NonNegative<GeneType> eta_;
     };
 
     /**

@@ -24,7 +24,9 @@ namespace genetic_algorithm::mutation::perm
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         * @param range_max The value of the range max parameter. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Inversion(Probability pm, double range_max = 0.75);
+        constexpr explicit Inversion(Probability pm, BoundedValue<double, 0.0, 1.0> range_max = 0.75) noexcept :
+            Mutation(pm), range_max_(range_max)
+        {}
 
         /**
         * Set the value of the maximum range length parameter for the operator. \n
@@ -34,16 +36,16 @@ namespace genetic_algorithm::mutation::perm
         * 
         * @param rm The value of the range max parameter.
         */
-        void range_max(double rm);
+        constexpr void range_max(BoundedValue<double, 0.0, 1.0> rm) noexcept { range_max_ = rm; }
 
         /** @ returns The value of the range_max parameter. */
         [[nodiscard]]
-        double range_max() const noexcept { return range_max_; }
+        constexpr double range_max() const noexcept { return range_max_; }
 
     private:
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
-        double range_max_;
+        BoundedValue<double, 0.0, 1.0> range_max_;
     };
 
     /**
@@ -86,7 +88,9 @@ namespace genetic_algorithm::mutation::perm
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         * @param range_max The value of the range_max parameter. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Shuffle(Probability pm, double range_max = 0.5);
+        explicit Shuffle(Probability pm, BoundedValue<double, 0.0, 1.0> range_max = 0.5) noexcept :
+            Mutation(pm), range_max_(range_max)
+        {}
 
         /**
         * Set the value of the maximum range length parameter for the operator. \n
@@ -96,16 +100,16 @@ namespace genetic_algorithm::mutation::perm
         *
         * @param rm The value of the range max parameter.
         */
-        void range_max(double rm);
+        constexpr void range_max(BoundedValue<double, 0.0, 1.0> rm) noexcept { range_max_ = rm; }
 
         /** @ returns The value of the range_max parameter. */
         [[nodiscard]]
-        double range_max() const noexcept { return range_max_; }
+        constexpr double range_max() const noexcept { return range_max_; }
 
     private:
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
-        double range_max_;
+        BoundedValue<double, 0.0, 1.0> range_max_;
     };
 
     /**
@@ -123,7 +127,9 @@ namespace genetic_algorithm::mutation::perm
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         * @param range_max The value of the range_max parameter. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Shift(Probability pm, double range_max = 0.75);
+        explicit Shift(Probability pm, BoundedValue<double, 0.0, 1.0> range_max = 0.75) noexcept :
+            Mutation(pm), range_max_(range_max)
+        {}
 
         /**
         * Set the value of the maximum range length parameter for the operator. \n
@@ -133,16 +139,16 @@ namespace genetic_algorithm::mutation::perm
         *
         * @param rm The value of the range max parameter.
         */
-        void range_max(double rm);
+        constexpr void range_max(BoundedValue<double, 0.0, 1.0> rm) noexcept { range_max_ = rm; }
 
         /** @ returns The value of the range_max parameter. */
         [[nodiscard]]
-        double range_max() const noexcept { return range_max_; }
+        constexpr double range_max() const noexcept { return range_max_; }
 
     private:
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
 
-        double range_max_;
+        BoundedValue<double, 0.0, 1.0> range_max_;
     };
 
 } // namespace genetic_algorithm::mutation::perm

@@ -11,27 +11,10 @@
 #include <vector>
 #include <tuple>
 #include <utility>
-#include <stdexcept>
 #include <cstddef>
 
 namespace genetic_algorithm::mutation::perm
 {
-    Inversion::Inversion(Probability pm, double range_max)
-        : Mutation(pm)
-    {
-        this->range_max(range_max);
-    }
-
-    void Inversion::range_max(double rm)
-    {
-        if (!(0.0 <= rm && rm <= 1.0))
-        {
-            GA_THROW(std::invalid_argument, "The range_max parameter must be in the closed interval [0.0, 1.0].");
-        }
-
-        range_max_ = rm;
-    }
-
     void Inversion::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
         const size_t chrom_len = candidate.chromosome.size();
@@ -78,22 +61,6 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-    Shuffle::Shuffle(Probability pm, double range_max)
-        : Mutation(pm)
-    {
-        this->range_max(range_max);
-    }
-
-    void Shuffle::range_max(double rm)
-    {
-        if (!(0.0 <= rm && rm <= 1.0))
-        {
-            GA_THROW(std::invalid_argument, "The range_max parameter must be in the closed interval [0.0, 1.0].");
-        }
-
-        range_max_ = rm;
-    }
-
     void Shuffle::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
         GA_ASSERT(range_max_ <= 1.0);
@@ -113,22 +80,6 @@ namespace genetic_algorithm::mutation::perm
 
             std::shuffle(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last, rng::prng);
         }
-    }
-
-    Shift::Shift(Probability pm, double range_max)
-        : Mutation(pm)
-    {
-        this->range_max(range_max);
-    }
-
-    void Shift::range_max(double rm)
-    {
-        if (!(0.0 <= rm && rm <= 1.0))
-        {
-            GA_THROW(std::invalid_argument, "The range_max parameter must be in the closed interval [0.0, 1.0].");
-        }
-
-        range_max_ = rm;
     }
 
     void Shift::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const

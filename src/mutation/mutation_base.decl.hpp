@@ -35,7 +35,7 @@ namespace genetic_algorithm::mutation
         *
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Mutation(Probability pm) noexcept :
+        constexpr explicit Mutation(Probability pm) noexcept :
             pm_(pm)
         {}
 
@@ -44,11 +44,11 @@ namespace genetic_algorithm::mutation
         * 
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         */
-        void mutation_rate(Probability pm) noexcept { pm_ = pm; };
+        constexpr void mutation_rate(Probability pm) noexcept { pm_ = pm; };
 
         /** @returns The mutation rate set for the operator. */
         [[nodiscard]]
-        Probability mutation_rate() const noexcept { return pm_; }
+        constexpr Probability mutation_rate() const noexcept { return pm_; }
 
         /**
         * Perform mutation on a candidate using the set mutation rate.
