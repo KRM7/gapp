@@ -36,7 +36,7 @@ namespace genetic_algorithm::algorithm
     private:
         void initializeImpl(const GaInfo& ga) override;
         void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) override {}
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
                                                FitnessMatrix::const_iterator first,

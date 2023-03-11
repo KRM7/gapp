@@ -49,7 +49,10 @@ namespace genetic_algorithm::update
         * 
         * @returns The indices of the candidates selected from the fitness matrix.
         */
-        virtual std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) = 0;
+        virtual std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
+                                                       FitnessMatrix::const_iterator first,
+                                                       FitnessMatrix::const_iterator children_first,
+                                                       FitnessMatrix::const_iterator last) = 0;
         
 
         /** Destructor. */
