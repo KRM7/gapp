@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: [ Debug, Release ]
+        build-type: [ Release, RelWithDebInfo ]
         compiler: [
             #{ cxx: g++-12, pkgs: gcc@12 },
             { cxx: clang++, pkgs: llvm@15 }

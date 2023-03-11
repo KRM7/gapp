@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: [ Debug, Release ]
+        build-type: [ Release, RelWithDebInfo ]
         compiler: [
             { cxx: cl, gen: "Visual Studio 17 2022", toolset: "v143" },
             { cxx: clang++, gen: "Visual Studio 17 2022", toolset: "ClangCL" },

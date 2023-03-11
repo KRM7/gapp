@@ -64,7 +64,7 @@ jobs:
       - name: setup-analysis
         env:
           CXX: ${{ matrix.cxx }}
-        run: cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=OFF -D${{ matrix.tool.cmake-flag }}
+        run: cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_TESTING=OFF -D${{ matrix.tool.cmake-flag }}
       
       - name: run-analysis
         run: cmake --build . --parallel --target GeneticAlgorithm 2>&1 | tee ${{ matrix.tool.name }}-out.txt
@@ -107,7 +107,7 @@ jobs:
       - name: setup-build
         env:
           CXX: ${{ matrix.cxx }}
-        run: cmake .. -DCMAKE_BUILD_TYPE=Release -DGA_LINK_TBB=ON -DBUILD_TESTING=OFF
+        run: cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_TESTING=OFF
       
       - name: build
         run: cmake --build . --target GeneticAlgorithm

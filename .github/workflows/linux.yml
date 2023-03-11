@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: [ Debug, Release ]
+        build-type: [ Release, RelWithDebInfo ]
         compiler: [
             { cxx: g++-11, pkgs: gcc-11 libtbb-dev },
             #{ cxx: g++-12, pkgs: gcc-12 libtbb-dev }, # disabled because of warnings in the std library
