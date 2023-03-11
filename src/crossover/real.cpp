@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <vector>
 #include <limits>
-#include <stdexcept>
 #include <utility>
 #include <cmath>
 #include <cstddef>
@@ -20,17 +19,11 @@ namespace genetic_algorithm::crossover::real
 {
     auto Arithmetic::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GA_ASSERT(ga.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+
         const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = parent1.chromosome.size();
-
-        if (parent1.chromosome.size() != parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the arithmetic crossover.");
-        }
-        if (bounds.size() != chrom_len)
-        {
-            GA_THROW(std::invalid_argument, "The chromosome and bounds vector sizes must be the same to perform the BLXa crossover.");
-        }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
@@ -50,17 +43,11 @@ namespace genetic_algorithm::crossover::real
 
     auto BLXa::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GA_ASSERT(ga.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+
         const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = parent1.chromosome.size();
-
-        if (parent1.chromosome.size() != parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the BLXa crossover.");
-        }
-        if (bounds.size() != chrom_len)
-        {
-            GA_THROW(std::invalid_argument, "The chromosome and bounds vector sizes must be the same to perform the BLXa crossover.");
-        }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
@@ -82,17 +69,11 @@ namespace genetic_algorithm::crossover::real
 
     auto SimulatedBinary::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GA_ASSERT(ga.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+
         const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = parent1.chromosome.size();
-
-        if (parent1.chromosome.size() != parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the Simulated Binary crossover.");
-        }
-        if (bounds.size() != chrom_len)
-        {
-            GA_THROW(std::invalid_argument, "The chromosome and bounds vector sizes must be the same to perform the simulated binary crossover.");
-        }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
@@ -133,17 +114,11 @@ namespace genetic_algorithm::crossover::real
 
     auto Wright::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GA_ASSERT(ga.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+
         const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = parent1.chromosome.size();
-
-        if (parent1.chromosome.size() != parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the Wright crossover.");
-        }
-        if (bounds.size() != chrom_len)
-        {
-            GA_THROW(std::invalid_argument, "The chromosome and bounds vector lengths must be the same to perform the Wright crossover.");
-        }
 
         Candidate child1{ parent1 }, child2{ parent2 };
 

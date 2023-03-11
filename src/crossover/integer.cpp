@@ -10,13 +10,14 @@
 #include <algorithm>
 #include <vector>
 #include <utility>
-#include <stdexcept>
 #include <cstddef>
 
 namespace genetic_algorithm::crossover::integer
 {
     auto SinglePoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+
         const size_t chrom_len = parent1.chromosome.size();
         const size_t crossover_point = rng::randomInt(0_sz, chrom_len);
 
@@ -25,6 +26,8 @@ namespace genetic_algorithm::crossover::integer
 
     auto TwoPoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+
         const size_t chrom_len = parent1.chromosome.size();
 
         return dtl::twoPointCrossoverImpl(parent1, parent2, { rng::randomInt(0_sz, chrom_len), rng::randomInt(0_sz, chrom_len) });
@@ -32,10 +35,7 @@ namespace genetic_algorithm::crossover::integer
 
     auto NPoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        if (parent1.chromosome.size() != parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the n-point crossover.");
-        }
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
 
         const size_t chrom_len = parent1.chromosome.size();
         const size_t num_cx_points = std::min(size_t(n_), chrom_len);
@@ -47,10 +47,7 @@ namespace genetic_algorithm::crossover::integer
 
     auto Uniform::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        if (parent1.chromosome.size() != parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the uniform crossover.");
-        }
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         
         const size_t chrom_len = parent1.chromosome.size();
         const size_t num_swapped = rng::randomBinomial(chrom_len, ps_);

@@ -21,10 +21,10 @@ namespace genetic_algorithm::mutation
     public:
         using MutationCallable = std::function<void(const GA<T>&, Candidate<T>&)>;
 
-        explicit Lambda(MutationCallable f) :
+        constexpr explicit Lambda(MutationCallable f) noexcept :
             Mutation<T>(0.01)
         {
-            if (!f) GA_THROW(std::invalid_argument, "The mutation method can't be a nullptr.");
+            GA_ASSERT(f, "The mutation method can't be a nullptr.");
 
             mutate_ = std::move(f);
         }

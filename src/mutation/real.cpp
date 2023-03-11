@@ -17,12 +17,9 @@ namespace genetic_algorithm::mutation::real
 {
     void Uniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = ga.gene_bounds();
+        GA_ASSERT(ga.gene_bounds().size() == candidate.chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        if (candidate.chromosome.size() != bounds.size())
-        {
-            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Uniform mutation.");
-        }
+        const auto& bounds = ga.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(candidate.chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
@@ -51,12 +48,9 @@ namespace genetic_algorithm::mutation::real
 
     void NonUniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = ga.gene_bounds();
+        GA_ASSERT(ga.gene_bounds().size() == candidate.chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        if (candidate.chromosome.size() != bounds.size())
-        {
-            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Non-Uniform mutation.");
-        }
+        const auto& bounds = ga.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(candidate.chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
@@ -93,12 +87,9 @@ namespace genetic_algorithm::mutation::real
 
     void Gauss::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = ga.gene_bounds();
+        GA_ASSERT(ga.gene_bounds().size() == candidate.chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        if (candidate.chromosome.size() != bounds.size())
-        {
-            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Gauss mutation.");
-        }
+        const auto& bounds = ga.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(candidate.chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
@@ -131,12 +122,9 @@ namespace genetic_algorithm::mutation::real
 
     void Polynomial::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = ga.gene_bounds();
+        GA_ASSERT(ga.gene_bounds().size() == candidate.chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        if (candidate.chromosome.size() != bounds.size())
-        {
-            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Polynomial mutation.");
-        }
+        const auto& bounds = ga.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(candidate.chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);
@@ -161,12 +149,9 @@ namespace genetic_algorithm::mutation::real
 
     void Boundary::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
-        const auto& bounds = ga.gene_bounds();
+        GA_ASSERT(ga.gene_bounds().size() == candidate.chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        if (candidate.chromosome.size() != bounds.size())
-        {
-            GA_THROW(std::invalid_argument, "The length of the chromosome must be the same as the bounds vector for the Boundary mutation.");
-        }
+        const auto& bounds = ga.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(candidate.chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, candidate.chromosome.size(), mutate_count);

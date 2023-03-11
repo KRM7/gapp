@@ -8,7 +8,6 @@
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <utility>
-#include <stdexcept>
 
 namespace genetic_algorithm::mutation
 {
@@ -35,10 +34,11 @@ namespace genetic_algorithm::mutation
             candidate.is_evaluated = (candidate.chromosome == old_chromosome);
         }
 
-        if (!ga.variable_chrom_len() && candidate.chromosome.size() != ga.chrom_len())
-        {
-            GA_THROW(std::logic_error, "The mutation resulted in a candidate with incorrect chromosome length.");
-        }
+        GA_ASSERT(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len(),
+                  "The mutation resulted in a candidate with incorrect chromosome length.");
+
+        GA_ASSERT(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives(),
+                  "The mutation incorrectly modified the fitness vector of the candidate.");
     }
 
 } // namespace genetic_algorithm::mutation

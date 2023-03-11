@@ -8,7 +8,6 @@
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <utility>
-#include <stdexcept>
 
 namespace genetic_algorithm::crossover
 {
@@ -40,13 +39,10 @@ namespace genetic_algorithm::crossover
         /* Perform the actual crossover. */
         auto [child1, child2] = crossover(ga, parent1, parent2);
 
-        if (!ga.variable_chrom_len())
-        {
-            if (child1.chromosome.size() != ga.chrom_len() || child2.chromosome.size() != ga.chrom_len())
-            {
-                GA_THROW(std::logic_error, "The crossover function returned a candidate with incorrect chromosome length.");
-            }
-        }
+        GA_ASSERT(ga.variable_chrom_len() || child1.chromosome.size() == ga.chrom_len(),
+                  "The crossover returned a candidate with incorrect chromosome length.");
+        GA_ASSERT(ga.variable_chrom_len() || child2.chromosome.size() == ga.chrom_len(),
+                  "The crossover returned a candidate with incorrect chromosome length.");
 
         child1.is_evaluated = false;
         child2.is_evaluated = false;

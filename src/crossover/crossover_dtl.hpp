@@ -140,11 +140,7 @@ namespace genetic_algorithm::crossover::dtl
     CandidatePair<T> singlePointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t crossover_point)
     {
         GA_ASSERT(crossover_point <= parent1.chromosome.size());
-
-        if (parent1.chromosome.size() != parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the n-point crossover.");
-        }
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         Candidate child1 = parent1;
         Candidate child2 = parent2;
@@ -163,11 +159,7 @@ namespace genetic_algorithm::crossover::dtl
     {
         GA_ASSERT(crossover_points.first <= parent1.chromosome.size());
         GA_ASSERT(crossover_points.second <= parent1.chromosome.size());
-
-        if (parent1.chromosome.size() != parent2.chromosome.size())
-        {
-            GA_THROW(std::invalid_argument, "The parent chromosomes must be the same length for the n-point crossover.");
-        }
+        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         if (crossover_points.first > crossover_points.second)
         {
