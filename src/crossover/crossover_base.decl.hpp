@@ -32,7 +32,7 @@ namespace genetic_algorithm::crossover
         using GeneType = T;
 
         /** Create a crossover operator with a crossover probability of 0.8. */
-        explicit Crossover() noexcept :
+        constexpr explicit Crossover() noexcept :
             pc_(0.8_p) {}
 
         /**
@@ -40,7 +40,7 @@ namespace genetic_algorithm::crossover
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Crossover(Probability pc) noexcept :
+        constexpr explicit Crossover(Probability pc) noexcept :
             pc_(pc) {}
 
         /**
@@ -48,11 +48,11 @@ namespace genetic_algorithm::crossover
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
-        void crossover_rate(Probability pc) noexcept { pc_ = pc; }
+        constexpr void crossover_rate(Probability pc) noexcept { pc_ = pc; }
 
         /** @returns The crossover rate set for the operator. */
         [[nodiscard]]
-        Probability crossover_rate() const noexcept { return pc_; }
+        constexpr Probability crossover_rate() const noexcept { return pc_; }
 
         /**
         * Perform the crossover operation on 2 individuals with the set probability.

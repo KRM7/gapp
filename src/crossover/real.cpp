@@ -18,40 +18,6 @@
 
 namespace genetic_algorithm::crossover::real
 {
-    BLXa::BLXa(Probability pc, GeneType alpha) :
-        Crossover(pc)
-    {
-        this->alpha(alpha);
-    }
-
-    void BLXa::alpha(GeneType alpha)
-    {
-        if (!(0.0 <= alpha && alpha <= std::numeric_limits<GeneType>::max()))
-        {
-            GA_THROW(std::invalid_argument, "Alpha must be a nonnegative, finite value.");
-        }
-
-        alpha_ = alpha;
-    }
-
-
-    SimulatedBinary::SimulatedBinary(Probability pc, GeneType eta) :
-        Crossover(pc)
-    {
-        this->eta(eta);
-    }
-
-    void SimulatedBinary::eta(GeneType eta)
-    {
-        if (!(0.0 <= eta && eta <= std::numeric_limits<GeneType>::max()))
-        {
-            GA_THROW(std::invalid_argument, "Eta must be a nonnegative, finite value.");
-        }
-
-        eta_ = eta;
-    }
-
-
     auto Arithmetic::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         const auto& bounds = ga.gene_bounds();

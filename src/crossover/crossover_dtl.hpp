@@ -117,10 +117,9 @@ namespace genetic_algorithm::crossover::dtl
         std::sort(crossover_points.begin(), crossover_points.end());
         crossover_points.push_back(chrom_len);
 
-        Candidate child1 = parent1;
-        Candidate child2 = parent2;
+        Candidate child1{ parent1 }, child2{ parent2 };
 
-        for (size_t j = 0, i = 0; j < crossover_points.size(); j++)
+        for (size_t i = 0, j = 0; j < crossover_points.size(); j++)
         {
             if (j % 2)
             {

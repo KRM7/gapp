@@ -43,7 +43,7 @@ namespace genetic_algorithm::crossover::real
     {
     public:
         /** Create a BLX-alpha crossover operator using the default parameter values. */
-        BLXa() noexcept :
+        constexpr BLXa() noexcept :
             alpha_(GeneType{ 0.5 })
         {}
 
@@ -51,25 +51,27 @@ namespace genetic_algorithm::crossover::real
         * Create a BLX-alpha crossover operator with the specified parameters.
         *
         * @param pc The crossover probability used.
-        * @param alpha The alpha parameter of the BLX-alpha crossover. Must be >= 0.0.
+        * @param alpha The alpha parameter of the BLX-alpha crossover. Must be a finite value greater than 0.0.
         */
-        explicit BLXa(Probability pc, GeneType alpha = 0.5);
+        constexpr explicit BLXa(Probability pc, NonNegative<GeneType> alpha = 0.5) noexcept :
+            Crossover(pc), alpha_(alpha)
+        {}
 
         /**
         * Sets the alpha parameter for the crossover.
         *
-        * @param alpha The alpha parameter of the BLX-alpha crossover. Must be >= 0.0.
+        * @param alpha The alpha parameter of the BLX-alpha crossover. Must be a finite value greater than 0.0.
         */
-        void alpha(GeneType alpha);
+        constexpr void alpha(NonNegative<GeneType> alpha) noexcept { alpha_ = alpha; }
 
-        /** @returns The alpha parameter currently set for this operator. */
+        /** @returns The alpha parameter of the operator. */
         [[nodiscard]]
-        GeneType alpha() const noexcept { return alpha_; }
+        constexpr GeneType alpha() const noexcept { return alpha_; }
 
     private:
         CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
-        GeneType alpha_;    /* The range parameter (alpha) of the BLX-alpha crossover. */
+        NonNegative<GeneType> alpha_;    /* The range parameter (alpha) of the BLX-alpha crossover. */
     };
 
     /**
@@ -85,7 +87,7 @@ namespace genetic_algorithm::crossover::real
     {
     public:
         /** Create a simulated binary crossover operator using the default parameter values. */
-        SimulatedBinary() noexcept :
+        constexpr SimulatedBinary() noexcept :
             eta_(GeneType{ 4.0 })
         {}
 
@@ -95,23 +97,25 @@ namespace genetic_algorithm::crossover::real
         * @param pc The crossover probability used.
         * @param eta The shape parameter of the simulated binary crossover.
         */
-        explicit SimulatedBinary(Probability pc, GeneType eta = 4.0);
+        constexpr explicit SimulatedBinary(Probability pc, NonNegative<GeneType> eta = 4.0) noexcept :
+            Crossover(pc), eta_(eta)
+        {}
 
         /**
         * Sets the shape parameter (eta) of the simulated binary crossover.
         * 
         * @param eta The eta parameter of the crossover. Must be >=0.0.
         */
-        void eta(GeneType eta);
+        constexpr void eta(NonNegative<GeneType> eta) noexcept { eta_ = eta; }
 
-        /** @returns The eta parameter currently set for this operator. */
+        /** @returns The eta parameter of the operator. */
         [[nodiscard]]
-        GeneType eta() const noexcept { return eta_; }
+        constexpr GeneType eta() const noexcept { return eta_; }
 
     private:
         CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
-        GeneType eta_;  /* The shape parameter (eta) for the distribution of the simulated binary crossover. */
+        NonNegative<GeneType> eta_;  /* The shape parameter (eta) for the distribution of the simulated binary crossover. */
     };
 
     /**
