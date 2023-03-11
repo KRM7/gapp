@@ -135,8 +135,10 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
 
     constexpr Crossover crossover{ 0.8 };
 
-    const Candidate<RealGene> parent1{ { 0.0, 0.12, 0.48, 0.19, 1.0, 1.0, 0.0, 0.72, 0.81 } };
-    const Candidate<RealGene> parent2{ { 1.0, 0.34, 0.97, 0.36, 1.0, 0.0, 0.0, 0.28, 0.49 } };
+    Candidate<RealGene> parent1{ { 0.0, 0.12, 0.48, 0.19, 1.0, 1.0, 0.0, 0.72, 0.81 } };
+    Candidate<RealGene> parent2{ { 1.0, 0.34, 0.97, 0.36, 1.0, 0.0, 0.0, 0.28, 0.49 } };
+    parent1.fitness = { 0.0 }; parent1.is_evaluated = true;
+    parent2.fitness = { 0.0 }; parent2.is_evaluated = true;
 
     const auto [child1, child2] = crossover(context, parent1, parent2);
 
@@ -145,8 +147,9 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
     REQUIRE(std::all_of(child1.chromosome.begin(), child1.chromosome.end(), detail::between(bounds.lower(), bounds.upper())));
     REQUIRE(std::all_of(child2.chromosome.begin(), child2.chromosome.end(), detail::between(bounds.lower(), bounds.upper())));
 
-    REQUIRE(child1.fitness.empty());
-    REQUIRE(child2.fitness.empty());
-    REQUIRE(!child1.is_evaluated);
-    REQUIRE(!child2.is_evaluated);
+    REQUIRE((!child1.is_evaluated || child1.chromosome == parent1.chromosome));
+    REQUIRE((!child2.is_evaluated || child2.chromosome == parent2.chromosome));
+
+    if (child1.is_evaluated) REQUIRE(child1.fitness == parent1.fitness);
+    if (child2.is_evaluated) REQUIRE(child2.fitness == parent2.fitness);
 }
