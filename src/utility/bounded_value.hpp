@@ -85,6 +85,10 @@ namespace genetic_algorithm
         return { double(arg) };
     }
 
+    /** Type representing a value in the closed interval of [0.0, 1.0]. */
+    template<typename T>
+    using Normalized = detail::BoundedValue<T, detail::Interval<T>{ 0.0, 1.0, true, true }>;
+
 } // namespace genetic_algorithm
 
 #endif // !GA_UTILITY_BOUNDED_VALUE_HPP
