@@ -51,11 +51,11 @@ namespace genetic_algorithm::rng
     template<std::integral IntType = int>
     inline IntType randomInt(IntType lbound, IntType ubound);
 
-    /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [0.0, 1.0). */
+    /** Generates a random floating-point value of type RealType from a uniform distribution on the closed interval [0.0, 1.0]. */
     template<std::floating_point RealType = double>
     inline RealType randomReal();
 
-    /** Generates a random floating-point value of type RealType from a uniform distribution on the interval [lbound, ubound). */
+    /** Generates a random floating-point value of type RealType from a uniform distribution on the closed interval [lbound, ubound]. */
     template<std::floating_point RealType = double>
     inline RealType randomReal(RealType lbound, RealType ubound);
 
@@ -142,7 +142,7 @@ namespace genetic_algorithm::rng
     template<std::floating_point RealType>
     RealType randomReal()
     {
-        return std::uniform_real_distribution<RealType>{ 0.0, 1.0 }(rng::prng);
+        return std::uniform_real_distribution<RealType>{ 0.0, std::nextafter(1.0, 2.0) }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -150,7 +150,7 @@ namespace genetic_algorithm::rng
     {
         GA_ASSERT(lbound <= ubound);
 
-        return std::uniform_real_distribution{ lbound, ubound }(rng::prng);
+        return std::uniform_real_distribution{ lbound, std::nextafter(ubound, std::numeric_limits<RealType>::max()) }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -164,14 +164,15 @@ namespace genetic_algorithm::rng
     template<std::floating_point RealType>
     RealType randomNormal(RealType mean, RealType SD)
     {
-        GA_ASSERT(SD > 0.0);
+        GA_ASSERT(SD >= 0.0);
 
-        return std::normal_distribution{ mean, SD }(rng::prng);
+        return (SD == 0.0) ? mean : std::normal_distribution{ mean, SD }(rng::prng);
     }
 
     template<std::integral IntType>
     IntType randomBinomialApprox(IntType n, double p)
     {
+        GA_ASSERT(n >= 0);
         GA_ASSERT(0.0 <= p && p <= 1.0);
 
         const double mean = n * p;
@@ -192,12 +193,16 @@ namespace genetic_algorithm::rng
     template<std::integral IntType>
     IntType randomBinomialExact(IntType n, double p)
     {
+        GA_ASSERT(n >= 0);
+        GA_ASSERT(0.0 <= p && p <= 1.0);
+
         return std::binomial_distribution{ n, p }(rng::prng);
     }
 
     template<std::integral IntType>
     IntType randomBinomial(IntType n, double p)
     {
+        GA_ASSERT(n >= 0);
         GA_ASSERT(0.0 <= p && p <= 1.0);
 
         const double mean = n * p;
@@ -234,8 +239,8 @@ namespace genetic_algorithm::rng
         GA_ASSERT(ubound >= lbound);
         GA_ASSERT(range_len >= count);
 
-        std::vector is_selected(range_len, false);
-        std::vector numbers(count, ubound);
+        std::vector<bool> is_selected(range_len);
+        std::vector<IntType> numbers(count);
 
         for (IntType i = ubound - IntType(count); i < ubound; i++)
         {
@@ -244,7 +249,7 @@ namespace genetic_algorithm::rng
             const auto npos = size_t(i + IntType(count) - ubound);
 
             numbers[npos] = is_selected[spos] ? i : num;
-            is_selected[spos] = true;
+            is_selected[numbers[npos] - lbound] = true;
         }
 
         return numbers;
