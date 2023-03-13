@@ -2,11 +2,11 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
-#include "crossover/crossover_dtl.hpp"
 #include "population/candidate.hpp"
-#include "encoding/real.hpp"
-#include "crossover/real.hpp"
-
+#include "encoding/encoding.hpp"
+#include "crossover/crossover.hpp"
+#include "crossover/crossover_dtl.hpp"
+#include "test_utils.hpp"
 
 using namespace genetic_algorithm;
 using namespace genetic_algorithm::crossover;
@@ -128,19 +128,18 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
 {
     using Crossover = TestType;
 
-    constexpr size_t chrom_len = 9;
+    constexpr size_t chrom_len = 10;
     constexpr GeneBounds<RealGene> bounds = { 0.0, 1.0 };
-    auto objective = makeFitnessFunction<RealGene>(chrom_len, 1, [](const auto&) { return std::vector{ 0.0 }; });
-    const RCGA context(std::move(objective), bounds);
+    const RCGA context{ DummyFitnessFunction<RealGene>(chrom_len), bounds };
 
     constexpr Crossover crossover{ 0.8 };
 
-    Candidate<RealGene> parent1{ { 0.0, 0.12, 0.48, 0.19, 1.0, 1.0, 0.0, 0.72, 0.81 } };
-    Candidate<RealGene> parent2{ { 1.0, 0.34, 0.97, 0.36, 1.0, 0.0, 0.0, 0.28, 0.49 } };
+    Candidate<RealGene> parent1{ { 0.0, 0.12, 0.48, 0.19, 1.0, 1.0, 0.0, 0.72, 0.81, 0.03 } };
+    Candidate<RealGene> parent2{ { 1.0, 0.34, 0.97, 0.36, 1.0, 0.0, 0.0, 0.28, 0.49, 0.79 } };
     parent1.fitness = { 0.0 }; parent1.is_evaluated = true;
     parent2.fitness = { 0.0 }; parent2.is_evaluated = true;
 
-    const auto [child1, child2] = crossover(context, parent1, parent2);
+    auto [child1, child2] = crossover(context, parent1, parent2);
 
     REQUIRE(child1.chromosome.size() == chrom_len);
     REQUIRE(child2.chromosome.size() == chrom_len);
@@ -150,6 +149,41 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
     REQUIRE((!child1.is_evaluated || child1.chromosome == parent1.chromosome));
     REQUIRE((!child2.is_evaluated || child2.chromosome == parent2.chromosome));
 
-    if (child1.is_evaluated) REQUIRE(child1.fitness == parent1.fitness);
-    if (child2.is_evaluated) REQUIRE(child2.fitness == parent2.fitness);
+    REQUIRE(child1.fitness == parent1.fitness);
+    REQUIRE(child2.fitness == parent2.fitness);
+}
+
+TEST_CASE("crossover_fitness_eval", "[crossover]")
+{
+    const BinaryGA context{ DummyFitnessFunction<BinaryGene>(10) };
+    binary::SinglePoint crossover;
+
+    Candidate<BinaryGene> parent1{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+    Candidate<BinaryGene> parent2{ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } };
+    parent1.fitness = { 0.0 }; parent1.is_evaluated = true;
+    parent2.fitness = { 0.0 }; parent2.is_evaluated = true;
+
+    SECTION("unchanged chromosomes")
+    {
+        crossover.crossover_rate(0.0);
+
+        auto [child1, child2] = crossover(context, parent1, parent2);
+
+        REQUIRE(child1.is_evaluated);
+        REQUIRE(child2.is_evaluated);
+        REQUIRE(child1.fitness == parent1.fitness);
+        REQUIRE(child2.fitness == parent2.fitness);
+    }
+
+    SECTION("changed chromosomes")
+    {
+        crossover.crossover_rate(1.0);
+
+        auto [child1, child2] = crossover(context, parent1, parent2);
+
+        REQUIRE(!child1.is_evaluated);
+        REQUIRE(!child2.is_evaluated);
+        REQUIRE(child1.fitness == parent1.fitness);
+        REQUIRE(child2.fitness == parent2.fitness);
+    }
 }
