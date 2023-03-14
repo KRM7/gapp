@@ -2,6 +2,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
+#include <catch2/catch_approx.hpp>
 #include "utility/rng.hpp"
 #include "utility/functional.hpp"
 #include <algorithm>
@@ -23,7 +24,7 @@ TEST_CASE("random_int", "[rng]")
 
 TEST_CASE("random_real", "[rng]")
 {
-    REQUIRE(randomReal(1.0, 1.0) == 1.0);
+    REQUIRE(randomReal(1.0, 1.0) == Catch::Approx(1.0));
 
     for (size_t i = 0; i < 100; i++)
     {

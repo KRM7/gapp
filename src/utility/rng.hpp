@@ -150,7 +150,9 @@ namespace genetic_algorithm::rng
     {
         GA_ASSERT(lbound <= ubound);
 
-        return std::uniform_real_distribution{ lbound, std::nextafter(ubound, std::numeric_limits<RealType>::max()) }(rng::prng);
+        ubound = std::nextafter(ubound, std::numeric_limits<RealType>::max());
+
+        return std::uniform_real_distribution{ lbound, ubound }(rng::prng);
     }
 
     template<std::floating_point RealType>
