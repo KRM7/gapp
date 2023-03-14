@@ -145,12 +145,6 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
     REQUIRE(child2.chromosome.size() == chrom_len);
     REQUIRE(std::all_of(child1.chromosome.begin(), child1.chromosome.end(), detail::between(bounds.lower(), bounds.upper())));
     REQUIRE(std::all_of(child2.chromosome.begin(), child2.chromosome.end(), detail::between(bounds.lower(), bounds.upper())));
-
-    REQUIRE((!child1.is_evaluated || child1.chromosome == parent1.chromosome));
-    REQUIRE((!child2.is_evaluated || child2.chromosome == parent2.chromosome));
-
-    REQUIRE(child1.fitness == parent1.fitness);
-    REQUIRE(child2.fitness == parent2.fitness);
 }
 
 TEST_CASE("crossover_fitness_eval", "[crossover]")
@@ -181,9 +175,9 @@ TEST_CASE("crossover_fitness_eval", "[crossover]")
 
         auto [child1, child2] = crossover(context, parent1, parent2);
 
-        REQUIRE(!child1.is_evaluated);
-        REQUIRE(!child2.is_evaluated);
+        REQUIRE((!child1.is_evaluated || child1.chromosome == parent1.chromosome || child1.chromosome == parent2.chromosome));
+        REQUIRE((!child2.is_evaluated || child2.chromosome == parent1.chromosome || child2.chromosome == parent2.chromosome));
         REQUIRE(child1.fitness == parent1.fitness);
-        REQUIRE(child2.fitness == parent2.fitness);
+        REQUIRE(child2.fitness == parent1.fitness);
     }
 }

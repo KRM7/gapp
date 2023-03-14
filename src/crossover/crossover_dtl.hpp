@@ -142,8 +142,7 @@ namespace genetic_algorithm::crossover::dtl
         GA_ASSERT(crossover_point <= parent1.chromosome.size());
         GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
-        Candidate child1 = parent1;
-        Candidate child2 = parent2;
+        Candidate child1{ parent1 }, child2{ parent2 };
 
         for (size_t i = 0; i < crossover_point; i++)
         {
@@ -166,8 +165,7 @@ namespace genetic_algorithm::crossover::dtl
             std::swap(crossover_points.first, crossover_points.second);
         }
 
-        Candidate child1 = parent1;
-        Candidate child2 = parent2;
+        Candidate child1{ parent1 }, child2{ parent2 };
 
         for (size_t i = crossover_points.first; i < crossover_points.second; i++)
         {
