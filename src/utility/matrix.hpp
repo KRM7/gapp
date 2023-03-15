@@ -144,7 +144,13 @@ namespace genetic_algorithm::detail
         constexpr size_type empty() const noexcept { return data_.empty(); }
 
         constexpr void reserve(size_type nrows, size_type ncols) { data_.reserve(nrows * ncols); }
-        constexpr void resize(size_type nrows, size_type ncols, const T& val = {}) { data_.resize(nrows * ncols, val); nrows_ = nrows; ncols_ = ncols; }
+
+        constexpr void resize(size_type nrows, size_type ncols, const T& val = {})
+        {
+            data_.resize(nrows * ncols, val);
+            nrows_ = nrows;
+            ncols_ = ncols;
+        }
 
         /* Other */
 
@@ -405,10 +411,7 @@ namespace genetic_algorithm::detail
 
         ncols_ = mat.begin()->size();
 
-        if (!std::all_of(mat.begin(), mat.end(), detail::is_size(ncols_)))
-        {
-            GA_THROW(std::invalid_argument, "Unequal row sizes in the input matrix.");
-        }
+        GA_ASSERT(std::all_of(mat.begin(), mat.end(), detail::is_size(ncols_)), "Unequal row sizes in the input matrix.");
 
         data_.reserve(nrows_ * ncols_);
         for (auto& row : mat)
@@ -423,10 +426,7 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     constexpr void Matrix<T, A>::append_row(const std::vector<T, A>& row)
     {
-        if (row.size() != ncols_ && nrows_ != 0)
-        {
-            GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
-        }
+        GA_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
 
         data_.insert(data_.end(), row.begin(), row.end());
         if (nrows_ == 0) ncols_ = row.size();
@@ -436,10 +436,7 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     constexpr void Matrix<T, A>::append_row(std::vector<T, A>&& row)
     {
-        if (row.size() != ncols_ && nrows_ != 0)
-        {
-            GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
-        }
+        GA_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
 
         data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
         if (nrows_ == 0) ncols_ = row.size();
@@ -449,10 +446,7 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     constexpr void Matrix<T, A>::append_row(ConstRowRef row)
     {
-        if (row.size() != ncols_ && nrows_ != 0)
-        {
-            GA_THROW(std::invalid_argument, "Can't insert row with different column count.");
-        }
+        GA_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
 
         data_.insert(data_.end(), row.begin(), row.end());
         if (nrows_ == 0) ncols_ = row.size();
@@ -485,10 +479,7 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(ConstMatrixRowRef<T, A> rhs) const
     {
-        if (rhs.size() != this->size())
-        {
-            GA_THROW(std::invalid_argument, "Can't assign row with different length.");
-        }
+        GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
         if (rhs.mat_ == this->mat_ && rhs.row_ == this->row_)
         {
@@ -506,10 +497,7 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(const std::vector<T>& rhs) const
     {
-        if (rhs.size() != this->size())
-        {
-            GA_THROW(std::invalid_argument, "Can't assign row with different length.");
-        }
+        GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
         for (size_t col = 0; col < rhs.size(); col++)
         {
@@ -522,14 +510,11 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(std::vector<T>&& rhs) const
     {
-        if (rhs.size() != this->size())
-        {
-            GA_THROW(std::invalid_argument, "Can't assign row with different length.");
-        }
+        GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
         for (size_t col = 0; col < rhs.size(); col++)
         {
-            (*this->mat_)(this->row_, col) = std::move_if_noexcept(rhs[col]);
+            (*this->mat_)(this->row_, col) = std::move(rhs[col]);
         }
 
         return *this;
@@ -538,10 +523,7 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     constexpr void MatrixRowRef<T, A>::swap(MatrixRowRef other) const
     {
-        if (other.size() != this->size())
-        {
-            GA_THROW(std::invalid_argument, "Rows must be the same size to swap them.");
-        }
+        GA_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
 
         for (size_t col = 0; col < other.size(); col++)
         {
@@ -553,10 +535,7 @@ namespace genetic_algorithm::detail
     template<typename T, typename A>
     constexpr void MatrixRowRef<T, A>::swap(std::vector<T>& other) const
     {
-        if (other.size() != this->size())
-        {
-            GA_THROW(std::invalid_argument, "Rows must be the same size to swap them.");
-        }
+        GA_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
 
         for (size_t col = 0; col < other.size(); col++)
         {

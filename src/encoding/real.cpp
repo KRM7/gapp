@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <vector>
 #include <memory>
-#include <stdexcept>
 #include <utility>
 
 namespace genetic_algorithm
@@ -34,10 +33,7 @@ namespace genetic_algorithm
 
     void RCGA::gene_bounds(const BoundsVector<GeneType>& bounds)
     {
-        if (bounds.size() != this->chrom_len())
-        {
-            GA_THROW(std::invalid_argument, "The number of limits must be equal to the chromosome length.");
-        }
+        GA_ASSERT(bounds.size() == this->chrom_len(), "The size of the bounds vector must match the chromosome length.");
 
         bounds_ = bounds;
     }
@@ -49,15 +45,12 @@ namespace genetic_algorithm
 
     void RCGA::initialize()
     {
-        if (bounds_.size() != chrom_len())
-        {
-            GA_THROW(std::logic_error, "The size of the bounds vector must match the chromosome length for the RCGA.");
-        }
+        GA_ASSERT(bounds_.size() == chrom_len(), "The size of the bounds vector must match the chromosome length.");
     }
 
     auto RCGA::generateCandidate() const -> Candidate<GeneType>
     {
-        GA_ASSERT(chrom_len() == bounds_.size());
+        GA_ASSERT(chrom_len() == bounds_.size(), "The size of the bounds vector must match the chromosome length.");
 
         Candidate<GeneType> solution(chrom_len());
         for (size_t i = 0; i < solution.chromosome.size(); i++)

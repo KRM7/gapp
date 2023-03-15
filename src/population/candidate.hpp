@@ -28,7 +28,7 @@ namespace genetic_algorithm
     {
     public:
         /** Constructor for the range [lower, upper]. */
-        constexpr GeneBounds(const T& lower, const T& upper);
+        constexpr GeneBounds(const T& lower, const T& upper) noexcept;
 
         /** @returns The lower gene bound. */
         [[nodiscard]]
@@ -132,15 +132,14 @@ namespace genetic_algorithm
 #include <algorithm>
 #include <functional>
 #include <type_traits>
-#include <stdexcept>
 
 namespace genetic_algorithm
 {
     template<Gene T>
-    constexpr GeneBounds<T>::GeneBounds(const T& lower, const T& upper) :
+    constexpr GeneBounds<T>::GeneBounds(const T& lower, const T& upper) noexcept :
         lower_(lower), upper_(upper)
     {
-        if (lower > upper) GA_THROW(std::invalid_argument, "The lower bound can't be greater than the upper bound.");
+        GA_ASSERT(lower <= upper, "The lower bound can't be greater than the upper bound.");
     }
 
     template<typename T>
