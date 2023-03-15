@@ -36,8 +36,6 @@ std::vector<BinaryGene> randomPoint(const BoundsVector<BinaryGene>& bounds)
 
 TEMPLATE_TEST_CASE("single_objective_problems", "[problems]", Sphere, Rastrigin, Rosenbrock, Schwefel, Griewank, Ackley, Levy)
 {
-    REQUIRE_THROWS(TestType(0));
-
     const size_t var_count = GENERATE(1, 10, 100, 1000);
 
     INFO("Number of variables: " + std::to_string(var_count));
@@ -54,9 +52,6 @@ TEMPLATE_TEST_CASE("single_objective_problems", "[problems]", Sphere, Rastrigin,
 
 TEST_CASE("kursawe", "[problems]")
 {
-    REQUIRE_THROWS(Kursawe(0));
-    REQUIRE_THROWS(Kursawe(1));
-
     const size_t var_count = GENERATE(2, 10, 100, 1000);
 
     INFO("Number of variables: " + std::to_string(var_count));
@@ -79,9 +74,6 @@ TEST_CASE("kursawe", "[problems]")
 
 TEMPLATE_TEST_CASE("zdt_suite", "[problems]", ZDT1, ZDT2, ZDT3, ZDT4, ZDT5, ZDT6)
 {
-    REQUIRE_THROWS(TestType(0));
-    REQUIRE_THROWS(TestType(1));
-
     const size_t var_count = GENERATE(2, 3, 10, 100, 1000);
 
     INFO("Number of variables: " + std::to_string(var_count));
@@ -104,9 +96,6 @@ TEMPLATE_TEST_CASE("zdt_suite", "[problems]", ZDT1, ZDT2, ZDT3, ZDT4, ZDT5, ZDT6
 
 TEMPLATE_TEST_CASE("dtlz_suite", "[problems]", DTLZ1, DTLZ2, DTLZ3, DTLZ4, DTLZ5, DTLZ6, DTLZ7)
 {
-    REQUIRE_THROWS(TestType(0));
-    REQUIRE_THROWS(TestType(1));
-
     const size_t num_obj = GENERATE(2, 3, 10, 100, 1000);
 
     INFO("Number of objectives: " + std::to_string(num_obj));

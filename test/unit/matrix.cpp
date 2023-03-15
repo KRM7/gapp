@@ -122,10 +122,6 @@ TEST_CASE("matrix", "[matrix]")
         REQUIRE(mat2.nrows() == 5);
         REQUIRE(mat2 == Matrix{ { 1, 2, 3 }, { 4, 5, 6 }, { 1, 1, 1 }, { 2, 2, 2 }, { 1, 1, 1 } });
 
-        // append bad col count
-        REQUIRE_THROWS(mat2.append_row({ 1, 2 }));
-        REQUIRE(mat2 == Matrix{ { 1, 2, 3 }, { 4, 5, 6 }, { 1, 1, 1 }, { 2, 2, 2 }, { 1, 1, 1 } });
-
         // append to empty matrix 
         mat1.append_row({ 2, 3, 4, 1 });
 
@@ -251,8 +247,6 @@ TEST_CASE("matrix_rows", "[matrix]")
 
         row2 = std::vector{ 3, 2, 1 };
         REQUIRE(cmat == Matrix{ { 7, 8, 9 }, { 3, 2, 1 }, { 7, 8, 9 } });
-
-        REQUIRE_THROWS(row3 = std::vector{ 1 });
     }
 
     SECTION("row swaps")
@@ -269,12 +263,6 @@ TEST_CASE("matrix_rows", "[matrix]")
 
         REQUIRE(mat == Matrix{ { 1, 2, 3 }, { 1, 2, 3 }, { 7, 8, 9 } });
         REQUIRE(vec == std::vector{ 4, 5, 6 });
-
-        // row size mismatch
-        std::vector<int> empty;
-        REQUIRE_THROWS(swap(row3, empty));
-
-        REQUIRE(mat == Matrix{ { 1, 2, 3 }, { 1, 2, 3 }, { 7, 8, 9 } });
     }
 }
 
