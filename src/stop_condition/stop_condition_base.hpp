@@ -55,9 +55,9 @@ namespace genetic_algorithm::stopping
     public:
         using StopConditionCallable = std::function<bool(const GaInfo&)>;
 
-        explicit Lambda(StopConditionCallable f)
+        explicit Lambda(StopConditionCallable f) noexcept
         {
-            if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
+            GA_ASSERT(f, "The stop condition can't be a nullptr.");
 
             stop_condition_ = std::move(f);
         }

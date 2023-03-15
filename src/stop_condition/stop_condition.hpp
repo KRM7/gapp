@@ -5,6 +5,7 @@
 
 #include "stop_condition_base.hpp"
 #include "../population/population.hpp"
+#include "../utility/bounded_value.hpp"
 #include <cstddef>
 
 /* Early stop conditions for the genetic algorithms. */
@@ -28,7 +29,9 @@ namespace genetic_algorithm::stopping
         *
         * @param max_fitness_evals The maximum number of fitness function evaluations to perform.
         */
-        explicit FitnessEvals(size_t max_fitness_evals) noexcept;
+        constexpr explicit FitnessEvals(size_t max_fitness_evals) noexcept :
+            max_fitness_evals_(max_fitness_evals)
+        {}
 
         /**
         * Set the maximum number of fitness function evaluations allowed in the algorithm. \n
@@ -37,11 +40,11 @@ namespace genetic_algorithm::stopping
         *
         * @param max_fitness_evals The maximum number of fitness function evaluations to perform.
         */
-        void max_fitness_evals(size_t max_fitness_evals) noexcept;
+        constexpr void max_fitness_evals(size_t max_fitness_evals) noexcept { max_fitness_evals_ = max_fitness_evals; }
 
         /** @returns The number of fitness function evaluations allowed. */
         [[nodiscard]]
-        size_t max_fitness_evals() const noexcept { return max_fitness_evals_; }
+        constexpr size_t max_fitness_evals() const noexcept { return max_fitness_evals_; }
 
     private:
         size_t max_fitness_evals_;
@@ -51,7 +54,7 @@ namespace genetic_algorithm::stopping
 
     /**
     * Early stop condition based on the fitness of the best solution discovered so far. \n
-    * The algorithm will stop if the best solution's fitness vector dominates the set
+    * The algorithm will stop if the best solution's fitness vector is equal to or dominates the set
     * fitness threshold vector (assuming fitness maximization).
     */
     class FitnessValue final : public StopCondition
@@ -61,19 +64,23 @@ namespace genetic_algorithm::stopping
         * Create a stop condition based on reaching a set fitness threshold.
         *
         * @param fitness_threshold The fitness threshold vector used for checking the stop condition (assuming fitness maximization).
+        *   The size of this vector should be the same as the size of the fitness vectors (ie. the number of objectives).
         */
-        explicit FitnessValue(const FitnessVector& fitness_threshold);
+        explicit FitnessValue(FitnessVector fitness_threshold) noexcept :
+            fitness_threshold_(std::move(fitness_threshold))
+        {}
 
         /**
         * Set the fitness threshold vector used when evaluating the stop condition.
         *
         * @param threshold The fitness threshold at which the algorithm will be stopped (assuming fitness maximization).
+        *   The size of this vector should be the same as the size of the fitness vectors (ie. the number of objectives).
         */
-        void fitness_threshold(const FitnessVector& threshold);
+        void fitness_threshold(FitnessVector threshold) noexcept { fitness_threshold_ = std::move(threshold); }
 
-        /** @returns The currently set fitness threshold vector. */
+        /** @returns The fitness threshold vector of the operator. */
         [[nodiscard]]
-        const FitnessVector& fitness_threshold() const noexcept { return fitness_threshold_; }
+        const FitnessVector& fitness_threshold() const& noexcept { return fitness_threshold_; }
 
     private:
         FitnessVector fitness_threshold_;
@@ -92,7 +99,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /** Create a stop condition based on the mean fitness values of the population. */
-        FitnessMeanStall() noexcept :
+        constexpr FitnessMeanStall() noexcept :
             patience_(0), delta_(1E-6), cntr_(0)
         {}
 
@@ -102,30 +109,33 @@ namespace genetic_algorithm::stopping
         * @param patience The number of generations to wait without stopping even if there is no improvement.
         * @param delta The minimum fitness difference considered an improvement.
         */
-        explicit FitnessMeanStall(size_t patience, double delta = 1E-6);
+        constexpr explicit FitnessMeanStall(size_t patience, double delta = 1E-6) noexcept :
+            patience_(patience), delta_(delta), cntr_(0)
+        {}
 
         /**
         * Set the patience value used for the stop condition.
         *
         * @param patience The number of generations to wait without stopping if there is no improvement.
         */
-        void patience(size_t patience) noexcept;
+        constexpr void patience(size_t patience) noexcept { patience_ = patience; reset(); }
 
         /** @returns The currently set patience value for the stop condition. */
         [[nodiscard]]
-        size_t patience() const noexcept { return patience_; }
+        constexpr size_t patience() const noexcept { return patience_; }
 
         /**
         * Sets the delta value used for the stop condition. \n
-        * The same delta value is used for every fitness coordinate in multi-objective problems.
+        * The same delta value is used for every fitness coordinate in multi-objective problems. \n
+        * Negative delta values may also be used.
         *
         * @param delta The minimum fitness difference considered an improvement.
         */
-        void delta(double delta) noexcept;
+        constexpr void delta(double delta) noexcept { delta_ = delta; }
 
-        /** @returns The currently set minimum fitness improvement value. */
+        /** @returns The minimum fitness improvement value. */
         [[nodiscard]]
-        double delta() const noexcept { return delta_; }
+        constexpr double delta() const noexcept { return delta_; }
 
     private:
         size_t patience_;
@@ -133,7 +143,7 @@ namespace genetic_algorithm::stopping
         size_t cntr_;
         FitnessVector best_fitness_mean_;
 
-        void resetCntr() noexcept;
+        constexpr void reset() noexcept { cntr_ = patience_ + 1; }
         bool stop_condition(const GaInfo& ga) override;
     };
 
@@ -148,7 +158,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /** Create a stop condition based on the best fitness values of the population. */
-        FitnessBestStall() noexcept :
+        constexpr FitnessBestStall() noexcept :
             patience_(0), delta_(1E-6), cntr_(0)
         {}
 
@@ -158,30 +168,33 @@ namespace genetic_algorithm::stopping
         * @param patience The number of generations to wait without stopping even if there is no improvement.
         * @param delta The minimum fitness difference considered an improvement.
         */
-        explicit FitnessBestStall(size_t patience, double delta = 1E-6);
+        constexpr explicit FitnessBestStall(size_t patience, double delta = 1E-6) noexcept :
+            patience_(patience), delta_(delta), cntr_(0)
+        {}
 
         /**
         * Set the patience value used for the stop condition.
         *
         * @param patience The number of generations to wait without stopping if there is no improvement.
         */
-        void patience(size_t patience) noexcept;
+        constexpr void patience(size_t patience) noexcept { patience_ = patience; reset(); }
 
         /** @returns The currently set patience value for the stop condition. */
         [[nodiscard]]
-        size_t patience() const noexcept { return patience_; }
+        constexpr size_t patience() const noexcept { return patience_; }
 
         /**
         * Set the delta value used for the stop condition. \n
-        * The same delta is used for every fitness coordinate in multi-objective problems.
+        * The same delta is used for every fitness coordinate in multi-objective problems. \n
+        * Negative delta values may also be used.
         *
         * @param delta The minimum fitness difference considered an improvement.
         */
-        void delta(double delta) noexcept;
+        constexpr void delta(double delta) noexcept { delta_ = delta; }
 
         /** @returns The currently set minimum fitness improvement value. */
         [[nodiscard]]
-        double delta() const noexcept { return delta_; }
+        constexpr double delta() const noexcept { return delta_; }
 
     private:
         size_t patience_;
@@ -189,7 +202,7 @@ namespace genetic_algorithm::stopping
         size_t cntr_;
         FitnessVector best_fitness_max_;
 
-        void resetCntr() noexcept;
+        constexpr void reset() noexcept { cntr_ = patience_ + 1; }
         bool stop_condition(const GaInfo& ga) override;
     };
 
@@ -203,7 +216,7 @@ namespace genetic_algorithm::stopping
     public:
         using StopCondition::StopCondition;
     private:
-        bool stop_condition(const GaInfo&) override { return false; };
+        bool stop_condition(const GaInfo&) noexcept override { return false; };
     };
 
 } // namespace genetic_algorithm::stopping

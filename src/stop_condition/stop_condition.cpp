@@ -29,72 +29,23 @@ namespace genetic_algorithm::stopping
         return improved;
     }
 
-    FitnessEvals::FitnessEvals(size_t max_fitness_evals) noexcept
-    {
-        this->max_fitness_evals(max_fitness_evals);
-    }
-
-    void FitnessEvals::max_fitness_evals(size_t max_fitness_evals) noexcept
-    {
-        max_fitness_evals_ = max_fitness_evals;
-    }
-
     bool FitnessEvals::stop_condition(const GaInfo& ga)
     {
         return (ga.num_fitness_evals() >= max_fitness_evals_);
     }
 
-    FitnessValue::FitnessValue(const FitnessVector& fitness_threshold)
-    {
-        this->fitness_threshold(fitness_threshold);
-    }
-
-    void FitnessValue::fitness_threshold(const FitnessVector& fitness_threshold)
-    {
-        if (fitness_threshold.empty())
-        {
-            GA_THROW(std::invalid_argument, "Empty fitness threshold vector.");
-        }
-
-        fitness_threshold_ = fitness_threshold;
-    }
-
     bool FitnessValue::stop_condition(const GaInfo& ga)
     {
-        if (ga.num_objectives() != fitness_threshold_.size())
-        {
-            GA_THROW(std::domain_error, "The size of the fitness threshold vector does not match the size of the fitness vectors.");
-        }
+        GA_ASSERT(ga.num_objectives() == fitness_threshold_.size(),
+                  "The size of the fitness threshold vector must match the number of objectives.");
 
         const auto& fitness_matrix = ga.fitness_matrix();
 
         return std::any_of(fitness_matrix.begin(), fitness_matrix.end(),
-        [this](const auto& fitness_vector) noexcept
+        [&](const auto& fitness_vector) noexcept
         {
             return !math::paretoCompareLess(fitness_vector, fitness_threshold_);
         });
-    }
-
-    FitnessMeanStall::FitnessMeanStall(size_t patience, double delta)
-    {
-        this->patience(patience);
-        this->delta(delta);
-    }
-
-    void FitnessMeanStall::patience(size_t patience) noexcept
-    {
-        patience_ = patience;
-        resetCntr();
-    }
-
-    void FitnessMeanStall::delta(double delta) noexcept
-    {
-        delta_ = delta;
-    }
-
-    void FitnessMeanStall::resetCntr() noexcept
-    {
-        cntr_ = patience_ + 1;
     }
 
     bool FitnessMeanStall::stop_condition(const GaInfo& ga)
@@ -105,41 +56,16 @@ namespace genetic_algorithm::stopping
         /* Init on first gen. */
         if (ga.generation_cntr() == 0)
         {
-            resetCntr();
+            reset();
             best_fitness_mean_ = current_mean;
 
             return false;
         }
 
         const bool improved = metricImproved(best_fitness_mean_, current_mean, delta_);
-
-        if (improved) resetCntr();
-        else --cntr_;
+        improved ? reset() : (void)--cntr_;
 
         return cntr_ == 0;
-    }
-
-    FitnessBestStall::FitnessBestStall(size_t patience, double delta) :
-        cntr_(0)
-    {
-        this->patience(patience);
-        this->delta(delta);
-    }
-
-    void FitnessBestStall::patience(size_t patience) noexcept
-    {
-        patience_ = patience;
-        resetCntr();
-    }
-
-    void FitnessBestStall::delta(double delta) noexcept
-    {
-        delta_ = delta;
-    }
-
-    void FitnessBestStall::resetCntr() noexcept
-    {
-        cntr_ = patience_ + 1;
     }
 
     bool FitnessBestStall::stop_condition(const GaInfo& ga)
@@ -150,16 +76,14 @@ namespace genetic_algorithm::stopping
         /* Init on first gen. */
         if (ga.generation_cntr() == 0)
         {
-            resetCntr();
+            reset();
             best_fitness_max_ = current_max;
 
             return false;
         }
 
         const bool improved = metricImproved(best_fitness_max_, current_max, delta_);
-
-        if (improved) resetCntr();
-        else --cntr_;
+        improved ? reset() : (void)--cntr_;
 
         return cntr_ == 0;
     }
