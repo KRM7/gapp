@@ -99,7 +99,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /** Create a stop condition based on the mean fitness values of the population. */
-        constexpr FitnessMeanStall() noexcept :
+        FitnessMeanStall() noexcept :
             patience_(0), delta_(1E-6), cntr_(0)
         {}
 
@@ -109,7 +109,7 @@ namespace genetic_algorithm::stopping
         * @param patience The number of generations to wait without stopping even if there is no improvement.
         * @param delta The minimum fitness difference considered an improvement.
         */
-        constexpr explicit FitnessMeanStall(size_t patience, double delta = 1E-6) noexcept :
+        explicit FitnessMeanStall(size_t patience, double delta = 1E-6) noexcept :
             patience_(patience), delta_(delta), cntr_(0)
         {}
 
@@ -158,7 +158,7 @@ namespace genetic_algorithm::stopping
     {
     public:
         /** Create a stop condition based on the best fitness values of the population. */
-        constexpr FitnessBestStall() noexcept :
+        FitnessBestStall() noexcept :
             patience_(0), delta_(1E-6), cntr_(0)
         {}
 
@@ -168,7 +168,7 @@ namespace genetic_algorithm::stopping
         * @param patience The number of generations to wait without stopping even if there is no improvement.
         * @param delta The minimum fitness difference considered an improvement.
         */
-        constexpr explicit FitnessBestStall(size_t patience, double delta = 1E-6) noexcept :
+        explicit FitnessBestStall(size_t patience, double delta = 1E-6) noexcept :
             patience_(patience), delta_(delta), cntr_(0)
         {}
 
