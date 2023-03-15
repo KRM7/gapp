@@ -55,14 +55,15 @@ namespace genetic_algorithm::problems
     protected:
 
         /* Single-objective, uniform bounds. */
-        BenchmarkFunctionTraits(std::string name, Bounds bounds, const std::vector<T>& optimum, double optimal_value) :
-            name_(std::move(name)), bounds_(std::vector(optimum.size(), bounds)), optimum_(optimum),
+        BenchmarkFunctionTraits(std::string name, Bounds bounds, std::vector<T> optimum, double optimal_value) :
+            name_(std::move(name)), bounds_(std::vector(optimum.size(), bounds)), optimum_(std::move(optimum)),
             optimal_value_(math::Point(1, optimal_value)), ideal_point_(optimal_value_), nadir_point_(optimal_value_)
         {}
 
         /* Multi-objective, uniform bounds. */
-        BenchmarkFunctionTraits(std::string name, Bounds bounds, const std::vector<T>& optimum, const math::Point& optimal_value) :
-            name_(std::move(name)), bounds_(std::vector(optimum.size(), bounds)), optimum_(optimum), optimal_value_(optimal_value)
+        BenchmarkFunctionTraits(std::string name, Bounds bounds, std::vector<T> optimum, math::Point optimal_value) :
+            name_(std::move(name)), bounds_(std::vector(optimum.size(), bounds)),
+            optimum_(std::move(optimum)), optimal_value_(std::move(optimal_value))
         {}
 
         /* General ctor, uniform bounds. */
@@ -102,15 +103,15 @@ namespace genetic_algorithm::problems
     protected:
 
         /* Single-objective, uniform bounds. */
-        BenchmarkFunction(std::string name, Bounds bounds, const std::vector<T>& optimum, double optimal_value) :
+        BenchmarkFunction(std::string name, Bounds bounds, std::vector<T> optimum, double optimal_value) :
             FitnessFunction<T>(optimum.size(), 1),
-            BenchmarkFunctionTraits<T>(std::move(name), bounds, optimum, optimal_value)
+            BenchmarkFunctionTraits<T>(std::move(name), bounds, std::move(optimum), optimal_value)
         {}
 
         /* Multi-objective, uniform bounds. */
-        BenchmarkFunction(std::string name, Bounds bounds, const std::vector<T>& optimum, const math::Point& optimal_value) :
+        BenchmarkFunction(std::string name, Bounds bounds, std::vector<T> optimum, math::Point optimal_value) :
             FitnessFunction<T>(optimum.size(), optimal_value.size()),
-            BenchmarkFunctionTraits<T>(std::move(name), bounds, optimum, optimal_value)
+            BenchmarkFunctionTraits<T>(std::move(name), bounds, std::move(optimum), std::move(optimal_value))
         {}
 
         /* General ctor, uniform bounds. */
@@ -150,17 +151,17 @@ namespace genetic_algorithm::problems
     protected:
 
         /* Single-objective, uniform bounds. */
-        BenchmarkFunction(std::string name, Bounds bounds, const std::vector<RealGene>& optimum, double optimal_value, size_t var_bits) :
+        BenchmarkFunction(std::string name, Bounds bounds, std::vector<RealGene> optimum, double optimal_value, size_t var_bits) :
             FitnessFunction<RealGene>(optimum.size(), 1),
             FitnessFunction<BinaryGene>(optimum.size() * var_bits, 1),
-            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, optimum, optimal_value)
+            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), optimal_value)
         {}
 
        /* Multi-objective, uniform bounds. */
-        BenchmarkFunction(std::string name, Bounds bounds, const std::vector<RealGene>& optimum, const math::Point& optimal_value, size_t var_bits) :
+        BenchmarkFunction(std::string name, Bounds bounds, std::vector<RealGene> optimum, math::Point optimal_value, size_t var_bits) :
             FitnessFunction<RealGene>(optimum.size(), optimal_value.size()),
             FitnessFunction<BinaryGene>(optimum.size() * var_bits, optimal_value.size()),
-            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, optimum, optimal_value)
+            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), std::move(optimal_value))
         {}
 
        /* General ctor, uniform bounds. */
