@@ -15,7 +15,7 @@ namespace genetic_algorithm::mutation::perm
     * Each individual is mutated with the specified mutation probability.
     * In the mutated individuals, a randomly selected range of genes are reversed.
     */
-    class Inversion : public Mutation<PermutationGene>
+    class Inversion final : public Mutation<PermutationGene>
     {
     public:
         /**
@@ -88,7 +88,7 @@ namespace genetic_algorithm::mutation::perm
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         * @param range_max The value of the range_max parameter. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Shuffle(Probability pm, Normalized<double> range_max = 0.5) noexcept :
+        constexpr explicit Shuffle(Probability pm, Normalized<double> range_max = 0.5) noexcept :
             Mutation(pm), range_max_(range_max)
         {}
 
@@ -127,7 +127,7 @@ namespace genetic_algorithm::mutation::perm
         * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
         * @param range_max The value of the range_max parameter. Must be in the closed interval [0.0, 1.0].
         */
-        explicit Shift(Probability pm, Normalized<double> range_max = 0.75) noexcept :
+        constexpr explicit Shift(Probability pm, Normalized<double> range_max = 0.75) noexcept :
             Mutation(pm), range_max_(range_max)
         {}
 

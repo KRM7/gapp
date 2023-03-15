@@ -85,12 +85,12 @@ namespace genetic_algorithm::mutation::real
             const GeneType alpha = rng::randomReal<GeneType>();
             if (alpha <= 0.5)
             {
-                const GeneType delta = std::pow(2.0 * alpha, -(1.0 + eta_)) - 1.0;
+                const GeneType delta = std::pow(2.0 * alpha, 1.0 / (1.0 + eta_)) - 1.0;
                 candidate.chromosome[idx] += delta * (candidate.chromosome[idx] - bounds[idx].lower());
             }
             else
             {
-                const GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, -(1.0 + eta_));
+                const GeneType delta = 1.0 - std::pow(2.0 - 2.0 * alpha, 1.0 / (1.0 + eta_));
                 candidate.chromosome[idx] += delta * (bounds[idx].upper() - candidate.chromosome[idx]);
             }
             /* The value of the mutated gene might be outside of the allowed interval. */

@@ -1,0 +1,227 @@
+﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
+#include "population/candidate.hpp"
+#include "mutation/mutation.hpp"
+#include "encoding/encoding.hpp"
+#include "utility/functional.hpp"
+#include "test_utils.hpp"
+#include <algorithm>
+#include <numeric>
+
+using namespace genetic_algorithm;
+using namespace genetic_algorithm::mutation;
+
+TEST_CASE("mutation_fitness_eval", "[crossover]")
+{
+    const BinaryGA context{ DummyFitnessFunction<BinaryGene>(10) };
+    binary::Flip mutation{ 0.0 };
+
+    Candidate<BinaryGene> candidate{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+    candidate.fitness = { 0.0 };
+
+    SECTION("evaluated, unchanged")
+    {
+        candidate.is_evaluated = true;
+        mutation.mutation_rate(0.0);
+
+        mutation(context, candidate);
+
+        REQUIRE(candidate.is_evaluated);
+    }
+
+    SECTION("evaluated, changed")
+    {
+        candidate.is_evaluated = true;
+        mutation.mutation_rate(1.0);
+
+        mutation(context, candidate);
+
+        REQUIRE(!candidate.is_evaluated);
+    }
+
+    SECTION("unevaluated")
+    {
+        candidate.is_evaluated = false;
+        mutation.mutation_rate(0.1);
+
+        mutation(context, candidate);
+
+        REQUIRE(!candidate.is_evaluated);
+    }
+
+    REQUIRE(candidate.fitness == detail::FitnessVector{ 0.0 });
+}
+
+TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
+{
+    using Mutation = TestType;
+    const BinaryGA context(DummyFitnessFunction<BinaryGene>(10));
+
+    Candidate<BinaryGene> candidate{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+    candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
+
+    Candidate<BinaryGene> old_candidate = candidate;
+
+    SECTION("mutation probability = 0.0")
+    {
+        constexpr Mutation mutation{ 0.0 };
+
+        mutation(context, candidate);
+
+        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
+        REQUIRE(candidate.chromosome == old_candidate.chromosome);
+
+        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
+    }
+
+    SECTION("mutation probability = 1.0")
+    {
+        constexpr Mutation mutation{ 1.0 };
+
+        mutation(context, candidate);
+
+        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
+        REQUIRE(candidate.chromosome != old_candidate.chromosome);
+
+        REQUIRE(!candidate.is_evaluated);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
+    }
+
+    REQUIRE(
+        std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(0, 1))
+    );
+}
+
+TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, real::NonUniform, real::Polynomial, real::Uniform)
+{
+    using Mutation = TestType;
+    const GeneBounds bounds = { 0.0, 1.0 };
+    const RCGA context(DummyFitnessFunction<RealGene>(10), bounds);
+
+    Candidate<RealGene> candidate{ { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } };
+    candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
+
+    Candidate<RealGene> old_candidate = candidate;
+
+    SECTION("mutation probability = 0.0")
+    {
+        constexpr Mutation mutation{ 0.0 };
+
+        mutation(context, candidate);
+
+        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
+        REQUIRE(candidate.chromosome == old_candidate.chromosome);
+
+        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
+    }
+
+    SECTION("mutation probability = 1.0")
+    {
+        constexpr Mutation mutation{ 1.0 };
+
+        mutation(context, candidate);
+
+        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
+        REQUIRE(candidate.chromosome != old_candidate.chromosome);
+
+        REQUIRE((!candidate.is_evaluated || candidate.chromosome == old_candidate.chromosome));
+        REQUIRE(candidate.fitness == old_candidate.fitness);
+    }
+
+    REQUIRE(
+        std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(bounds.lower(), bounds.upper()))
+    );
+}
+
+TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, perm::Shuffle, perm::Swap2, perm::Swap3)
+{
+    using Mutation = TestType;
+    const PermutationGA context(DummyFitnessFunction<PermutationGene>(10));
+
+    Candidate<PermutationGene> candidate{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+    candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
+
+    Candidate<PermutationGene> old_candidate = candidate;
+
+    SECTION("mutation probability = 0.0")
+    {
+        constexpr Mutation mutation{ 0.0 };
+
+        mutation(context, candidate);
+
+        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
+        REQUIRE(candidate.chromosome == old_candidate.chromosome);
+    }
+
+    SECTION("mutation probability = 1.0")
+    {
+        constexpr Mutation mutation{ 1.0 };
+
+        mutation(context, candidate);
+
+        REQUIRE(!candidate.is_evaluated);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
+        REQUIRE(candidate.chromosome != old_candidate.chromosome);
+    }
+
+    REQUIRE(
+        candidate.chromosome.size() == old_candidate.chromosome.size()
+    );
+
+    REQUIRE(
+        std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(0, 9))
+    );
+
+    REQUIRE((
+        std::sort(candidate.chromosome.begin(), candidate.chromosome.end()),
+        std::unique(candidate.chromosome.begin(), candidate.chromosome.end()) == candidate.chromosome.end()
+    ));
+}
+
+TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
+{
+    using Mutation = TestType;
+    const GeneBounds<IntegerGene> bounds = { 0, 3 };
+    const IntegerGA context(DummyFitnessFunction<IntegerGene>(10), bounds);
+
+    Candidate<IntegerGene> candidate{ { 0, 1, 2, 3, 3, 1, 0, 1, 0, 2 } };
+    candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
+
+    Candidate<IntegerGene> old_candidate = candidate;
+
+    SECTION("mutation probability = 0.0")
+    {
+        constexpr Mutation mutation{ 0.0 };
+
+        mutation(context, candidate);
+
+        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
+        REQUIRE(candidate.chromosome == old_candidate.chromosome);
+
+        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
+    }
+
+    SECTION("mutation probability = 1.0")
+    {
+        constexpr Mutation mutation{ 1.0 };
+
+        mutation(context, candidate);
+
+        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
+        REQUIRE(candidate.chromosome != old_candidate.chromosome);
+
+        REQUIRE(!candidate.is_evaluated);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
+    }
+
+    REQUIRE(
+        std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(bounds.lower(), bounds.upper()))
+    );
+}

@@ -14,7 +14,7 @@ namespace genetic_algorithm::mutation::integer
     * Each gene of the chromosome is changed with the specified mutation probability
     * to another value selected from a uniform distribution over all other values.
     */
-    class Uniform : public Mutation<IntegerGene>
+    class Uniform final : public Mutation<IntegerGene>
     {
     public:
         using Mutation::Mutation;

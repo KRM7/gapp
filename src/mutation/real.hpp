@@ -111,7 +111,7 @@ namespace genetic_algorithm::mutation::real
     * Each gene of the candidate is mutated with pm probability, and the values of the mutated genes
     * are randomly generated from a non-uniform distribution. \n
     * 
-    * This operator has one parameter, eta, which controls shape of the probability distribution
+    * This operator has one parameter - eta - which controls shape of the probability distribution
     * the mutated genes are picked from. The value of eta must be >= 0.0, with larger values leading
     * to mutated genes closer to the original ones. Typical values for eta are [20.0, 100.0].
     */
