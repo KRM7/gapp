@@ -63,8 +63,8 @@ namespace genetic_algorithm::rng
     QuasiRandom<T>::QuasiRandom(size_type dim, T seed) :
         dim_(dim), seed_(seed), alpha_(dim, 0.0), point_(dim, 0.0)
     {
-        if (dim == 0)   GA_THROW(std::invalid_argument, "The dimension of the generator must be at least 1.");
-        if (seed < 0.0) GA_THROW(std::invalid_argument, "The seed value can't be negative.");
+        GA_ASSERT(dim != 0, "The dimension of the generator must be at least 1.");
+        GA_ASSERT(seed >= 0.0, "The seed value can't be negative.");
 
         const T phid = phi(dim);
         for (size_type i = 0; i < dim; i++)
@@ -95,7 +95,7 @@ namespace genetic_algorithm::rng
     template<std::floating_point RealType>
     inline void QuasiRandom<RealType>::reset(RealType new_seed)
     {
-        if (new_seed < 0.0) GA_THROW(std::invalid_argument, "The seed value can't be negative.");
+        GA_ASSERT(new_seed >= 0.0, "The seed value can't be negative.");
 
         seed_ = new_seed;
         std::fill(point_.begin(), point_.end(), seed_);
