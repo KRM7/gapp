@@ -192,7 +192,8 @@ namespace genetic_algorithm::detail
 
     FindResult ConeTree::findBestMatch(const Point& query_point) const
     {
-        GA_ASSERT(!nodes_.empty());
+        if (points_.empty()) return { points_.end(), 0.0 };
+
         GA_ASSERT(query_point.size() == points_.ncols());
 
         const double query_norm = math::euclideanNorm(query_point);

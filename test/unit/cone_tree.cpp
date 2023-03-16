@@ -59,3 +59,12 @@ TEST_CASE("cone_tree lookup", "[cone_tree]")
     best = tree.findBestMatch(Point{ 0.1, 0.5, 0.8 });
     REQUIRE(*best.elem == Point{ 0.6, 0.8, 0.8 });
 }
+
+TEST_CASE("empty_cone_tree", "[cone_tree]")
+{
+    ConeTree tree;
+
+    auto best = tree.findBestMatch(Point{ 1.0, 1.0 });
+
+    REQUIRE(best.elem == tree.end());
+}
