@@ -13,6 +13,9 @@ x86/
 out/
 build/*
 !build/*.sh
+!build/reflines/
+!build/mo_results/
+build/mo_results/*.txt
 *.exe
 
 # Doc outputs
