@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_SOGA_UPDATER_BASE_HPP
-#define GA_ALGORITHM_SOGA_UPDATER_BASE_HPP
+#ifndef GA_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
+#define GA_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
 
 #include "../population/population.hpp"
 #include <vector>
@@ -13,22 +13,21 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-/** Population update methods for the single-objective algorithms. */
-namespace genetic_algorithm::update
+/** Population replacement policies for the single-objective algorithms. */
+namespace genetic_algorithm::replacement
 {
     using detail::FitnessVector;
     using detail::FitnessMatrix;
 
     /**
-    * The base class used for all of the single-objective population update operators. \n
+    * The base class used for all of the single-objective population replacement policies. \n
     *
-    * This operator is used to select the candidates of the next population from the candidates
-    * of the current population and the children created from this population. The class only has
-    * a single method that has to be implemented: \n
+    * This operator is used to select the candidates of the next population from the combined
+    * parent and child populations. The class only has a single method that has to be implemented: \n
     * 
     *   - nextPopulationImpl :  Selects the candidates of the next population.
     */
-    class Updater
+    class Replacement
     {
     public:
         /**
@@ -56,25 +55,17 @@ namespace genetic_algorithm::update
         
 
         /** Destructor. */
-        virtual ~Updater()                  = default;
+        virtual ~Replacement()                      = default;
 
     protected:
 
-        Updater()                           = default;
-        Updater(const Updater&)             = default;
-        Updater(Updater&&)                  = default;
-        Updater& operator=(const Updater&)  = default;
-        Updater& operator=(Updater&&)       = default;
-
+        Replacement()                               = default;
+        Replacement(const Replacement&)             = default;
+        Replacement(Replacement&&)                  = default;
+        Replacement& operator=(const Replacement&)  = default;
+        Replacement& operator=(Replacement&&)       = default;
     };
 
-    /** Single-objective population update method types. */
-    template<typename T>
-    concept UpdaterType = requires
-    {
-        requires std::derived_from<T, Updater>;
-    };
+} // namespace genetic_algorithm::replacement
 
-} // namespace genetic_algorithm::update
-
-#endif // !GA_ALGORITHM_SOGA_UPDATER_BASE_HPP
+#endif // !GA_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP

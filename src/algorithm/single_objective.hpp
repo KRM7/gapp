@@ -5,11 +5,12 @@
 
 #include "algorithm_base.decl.hpp"
 #include "selection_base.hpp"
-#include "updater_base.hpp"
+#include "replacement_base.hpp"
 #include "soga_selection.hpp"
-#include "soga_update.hpp"
+#include "soga_replacement.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
+#include <concepts>
 #include <functional>
 #include <memory>
 #include <cstddef>
@@ -18,9 +19,9 @@ namespace genetic_algorithm::algorithm
 {
     /**
     * A generic algorithm for single-objective optimization. \n
-    * The algorithm combines a selection method and a population update
+    * The algorithm combines a selection method and a population replacement
     * method. The selection method is used to select candidates from the populations
-    * for crossover, while the population update method is used to create the population
+    * for crossover, while the population replacement method is used to create the population
     * for the next generation of the algorithm from the combined parent and child populations.
     * 
     * Move-only.
@@ -28,14 +29,14 @@ namespace genetic_algorithm::algorithm
     class SingleObjective final : public Algorithm
     {
     public:
-        using DefaultSelection = selection::Tournament; /**< The selection method used when not specified explicitly. */
-        using DefaultUpdater   = update::KeepBest;      /**< The population update method used when not specified explicitly. */
+        using DefaultSelection   = selection::Tournament; /**< The selection method used when not specified explicitly. */
+        using DefaultReplacement = replacement::KeepBest; /**< The population update method used when not specified explicitly. */
 
         /** The general callable type that can be used as a selection method. */
         using SelectionCallable = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
 
-        /** The general callable type that can be used as a population update method. */
-        using UpdateCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
+        /** The general callable type that can be used as a population replacement policy. */
+        using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
 
         /**
         * Create a single objective algorithm using the default selection
@@ -49,18 +50,19 @@ namespace genetic_algorithm::algorithm
         * @param selection The selection method to use in the algorithm.
         */
         template<typename S>
-        requires selection::SelectionType<S> && std::is_final_v<S>
+        requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
         explicit SingleObjective(S selection);
 
         /**
         * Create a single objective algorithm.
         *
         * @param selection The selection method to use in the algorithm.
-        * @param updater The method used to update the population between generations of the algorithm.
+        * @param replacement The method used to update the population between generations of the algorithm.
         */
-        template<typename S, typename U>
-        requires selection::SelectionType<S> && std::is_final_v<S> && update::UpdaterType<U> && std::is_final_v<U>
-        SingleObjective(S selection, U updater);
+        template<typename S, typename R>
+        requires std::derived_from<S, selection::Selection> && std::is_final_v<S> &&
+                 std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
+        SingleObjective(S selection, R replacement);
 
         /**
         * Create a single objective algorithm using the default population update method.
@@ -73,9 +75,9 @@ namespace genetic_algorithm::algorithm
         * Create a single objective algorithm.
         *
         * @param selection The selection method to use in the algorithm. Can't be a nullptr.
-        * @param updater The method used to update the population between generations of the algorithm. Can't be a nullptr.
+        * @param replacement The method used to update the population between generations of the algorithm. Can't be a nullptr.
         */
-        SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<update::Updater> updater);
+        SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<replacement::Replacement> replacement);
 
         /**
         * Create a single objective algorithm using the default population update method.
@@ -88,26 +90,24 @@ namespace genetic_algorithm::algorithm
         * Create a single objective algorithm.
         *
         * @param selection The selection method to use in the algorithm. Can't be a nullptr.
-        * @param updater The method used to update the population between generations of the algorithm. Can't be a nullptr.
+        * @param replacement The method used to update the population between generations of the algorithm. Can't be a nullptr.
         */
-        SingleObjective(SelectionCallable selection, UpdateCallable updater);
+        SingleObjective(SelectionCallable selection, ReplacementCallable replacement);
 
         
         /**
         * Set the selection method used by the algorithm.
-        * 
-        * @see Selection
+        *   @see Selection
         *
         * @param selection The selection method used by the algorithm.
         */
         template<typename S>
-        requires selection::SelectionType<S> && std::is_final_v<S>
+        requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
         void selection_method(S selection);
 
         /**
         * Set the selection method used by the algorithm.
-        * 
-        * @see Selection
+        *   @see Selection
         *
         * @param selection The selection method used by the algorithm. Can't be a nullptr.
         */
@@ -116,9 +116,8 @@ namespace genetic_algorithm::algorithm
         /**
         * Set the selection method used by the algorithm. \n
         * The function used should be thread-safe if parallel execution is enabled (enabled by default).
-        * 
-        * @see Selection
-        * @see SelectionCallable
+        *   @see Selection
+        *   @see SelectionCallable
         *
         * @param f The selection method used by the algorithm. Can't be a nullptr.
         */
@@ -134,42 +133,39 @@ namespace genetic_algorithm::algorithm
 
 
         /**
-        * Set the population update method used by the algorithm.
-        * 
-        * @see Updater
+        * Set the population replacement policy used by the algorithm.
+        *   @see Replacement
         *
-        * @param updater The population update method used by the algorithm.
+        * @param replacement The method used to update the population between generations of the algorithm.
         */
-        template<typename U>
-        requires update::UpdaterType<U> && std::is_final_v<U>
-        void update_method(U updater);
+        template<typename R>
+        requires std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
+        void replacement_method(R replacement);
 
         /**
-        * Set the population update method used by the algorithm.
-        * 
-        * @see Updater
+        * Set the population replacement policy used by the algorithm.
+        *   @see Replacement
         *
-        * @param updater The population update method used by the algorithm. Can't be a nullptr.
+        * @param replacement The population update method used by the algorithm. Can't be a nullptr.
         */
-        void update_method(std::unique_ptr<update::Updater> updater);
+        void replacement_method(std::unique_ptr<replacement::Replacement> replacement);
 
         /**
-        * Set the population update method used by the algorithm.
+        * Set the population replacement policy used by the algorithm.
+        *   @see Replacement
+        *   @see ReplacementCallable
         *
-        * @see Updater
-        * @see UpdateCallable
-        *
-        * @param f The population update method used by the algorithm. Can't be a nullptr.
+        * @param f The population replacement method used by the algorithm. Can't be a nullptr.
         */
-        void update_method(UpdateCallable f);
+        void replacement_method(ReplacementCallable f);
 
-        /** @returns The population update operator used by the algorithm. */
+        /** @returns The population replacement operator used by the algorithm. */
         [[nodiscard]]
-        update::Updater& update_method() & noexcept { GA_ASSERT(updater_); return *updater_; }
+        replacement::Replacement& replacement_method() & noexcept { GA_ASSERT(replacement_); return *replacement_; }
 
-        /** @returns The population update operator used by the algorithm. */
+        /** @returns The population replacement operator used by the algorithm. */
         [[nodiscard]]
-        const update::Updater& update_method() const& noexcept { GA_ASSERT(updater_); return *updater_; }
+        const replacement::Replacement& replacement_method() const& noexcept { GA_ASSERT(replacement_); return *replacement_; }
 
     private:
 
@@ -180,7 +176,7 @@ namespace genetic_algorithm::algorithm
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
 
         std::unique_ptr<selection::Selection> selection_;
-        std::unique_ptr<update::Updater> updater_;
+        std::unique_ptr<replacement::Replacement> replacement_;
     };
 
 } // namespace genetic_algorithm::algorithm
@@ -193,33 +189,34 @@ namespace genetic_algorithm::algorithm
 namespace genetic_algorithm::algorithm
 {
     inline SingleObjective::SingleObjective() :
-        selection_(std::make_unique<DefaultSelection>()), updater_(std::make_unique<DefaultUpdater>())
+        selection_(std::make_unique<DefaultSelection>()), replacement_(std::make_unique<DefaultReplacement>())
     {}
 
     template<typename S>
-    requires selection::SelectionType<S> && std::is_final_v<S>
+    requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
     inline SingleObjective::SingleObjective(S selection) :
-        SingleObjective(std::move(selection), DefaultUpdater{})
+        SingleObjective(std::move(selection), DefaultReplacement{})
     {}
 
-    template<typename S, typename U>
-    requires selection::SelectionType<S> && std::is_final_v<S> && update::UpdaterType<U> && std::is_final_v<U>
-    inline SingleObjective::SingleObjective(S selection, U updater) :
-        selection_(std::make_unique<S>(std::move(selection))), updater_(std::make_unique<U>(std::move(updater)))
+    template<typename S, typename R>
+    requires std::derived_from<S, selection::Selection> && std::is_final_v<S> &&
+             std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
+    inline SingleObjective::SingleObjective(S selection, R replacement) :
+        selection_(std::make_unique<S>(std::move(selection))), replacement_(std::make_unique<R>(std::move(replacement)))
     {}
 
     template<typename S>
-    requires selection::SelectionType<S> && std::is_final_v<S>
+    requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
     inline void SingleObjective::selection_method(S selection)
     {
         selection_ = std::make_unique<S>(std::move(selection));
     }
 
-    template<typename U>
-    requires update::UpdaterType<U> && std::is_final_v<U>
-    inline void SingleObjective::update_method(U updater)
+    template<typename R>
+    requires std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
+    inline void SingleObjective::replacement_method(R replacement)
     {
-        updater_ = std::make_unique<U>(std::move(updater));
+        replacement_ = std::make_unique<R>(std::move(replacement));
     }
 
     inline void SingleObjective::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)

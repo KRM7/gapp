@@ -2,39 +2,38 @@
 
 #include "single_objective.hpp"
 #include "soga_selection.hpp"
-#include "soga_update.hpp"
+#include "soga_replacement.hpp"
 #include "../core/ga_info.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <memory>
-#include <stdexcept>
 #include <utility>
 
 namespace genetic_algorithm::algorithm
 {
     SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection) :
-        SingleObjective(std::move(selection), std::make_unique<DefaultUpdater>())
+        SingleObjective(std::move(selection), std::make_unique<DefaultReplacement>())
     {}
 
-    SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<update::Updater> updater) :
-        selection_(std::move(selection)), updater_(std::move(updater))
+    SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<replacement::Replacement> replacement) :
+        selection_(std::move(selection)), replacement_(std::move(replacement))
     {
-        if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
-        if (!updater_)   GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+        GA_ASSERT(selection_, "The selection method can't be a nullptr.");
+        GA_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
     }
 
     SingleObjective::SingleObjective(SelectionCallable selection) :
         SingleObjective(std::make_unique<selection::Lambda>(std::move(selection)))
     {}
 
-    SingleObjective::SingleObjective(SelectionCallable selection, UpdateCallable updater) :
-        SingleObjective(std::make_unique<selection::Lambda>(std::move(selection)), std::make_unique<update::Lambda>(std::move(updater)))
+    SingleObjective::SingleObjective(SelectionCallable selection, ReplacementCallable replacement) :
+        SingleObjective(std::make_unique<selection::Lambda>(std::move(selection)), std::make_unique<replacement::Lambda>(std::move(replacement)))
     {}
 
     void SingleObjective::selection_method(std::unique_ptr<selection::Selection> selection)
     {
-        if (!selection_) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
+        GA_ASSERT(selection_, "The selection method can't be a nullptr.");
 
         selection_ = std::move(selection);
     }
@@ -44,40 +43,32 @@ namespace genetic_algorithm::algorithm
         selection_ = std::make_unique<selection::Lambda>(std::move(f));
     }
 
-    void SingleObjective::update_method(std::unique_ptr<update::Updater> updater)
+    void SingleObjective::replacement_method(std::unique_ptr<replacement::Replacement> replacement)
     {
-        if (!updater_) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+        GA_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
 
-        updater_ = std::move(updater);
+        replacement_ = std::move(replacement);
     }
 
-    void SingleObjective::update_method(UpdateCallable f)
+    void SingleObjective::replacement_method(ReplacementCallable f)
     {
-        updater_ = std::make_unique<update::Lambda>(std::move(f));
+        replacement_ = std::make_unique<replacement::Lambda>(std::move(f));
     }
 
     void SingleObjective::initializeImpl(const GaInfo& ga)
     {
         GA_ASSERT(selection_);
-
-        if (ga.num_objectives() != 1)
-        {
-            GA_THROW(std::logic_error, "The number of objectives must be 1 for the single-objective algorithms.");
-        }
+        GA_ASSERT(ga.num_objectives() == 1, "The number of objectives must be 1 for the single-objective algorithms.");
 
         selection_->initializeImpl(ga);
     }
 
     std::vector<size_t> SingleObjective::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(updater_);
+        GA_ASSERT(replacement_);
+        GA_ASSERT(ga.num_objectives() == 1, "The number of objectives must be 1 for the single-objective algorithms.");
 
-        if (ga.num_objectives() != 1)
-        {
-            GA_THROW(std::logic_error, "The number of objectives must be 1 for the single-objective algorithms.");
-        }
-
-        return updater_->nextPopulationImpl(ga, first, children_first, last);
+        return replacement_->nextPopulationImpl(ga, first, children_first, last);
     }
 
 } // namespace genetic_algorithm::algorithm

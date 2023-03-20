@@ -1,9 +1,9 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_SOGA_UPDATE_HPP
-#define GA_ALGORITHM_SOGA_UPDATE_HPP
+#ifndef GA_ALGORITHM_SOGA_REPLACEMENT_HPP
+#define GA_ALGORITHM_SOGA_REPLACEMENT_HPP
 
-#include "updater_base.hpp"
+#include "replacement_base.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <functional>
@@ -15,7 +15,7 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-namespace genetic_algorithm::update
+namespace genetic_algorithm::replacement
 {
     using detail::FitnessVector;
     using detail::FitnessMatrix;
@@ -27,11 +27,12 @@ namespace genetic_algorithm::update
     * If the number of children is greater than the population size used in the algorithm,
     * only the first pop_size children will be selected.
     */
-    class KeepChildren final : public Updater
+    class KeepChildren final : public Replacement
     {
     private:
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
     };
+
 
     /**
     * A population update method that selects the candidates of the next generation using elitism. \n
@@ -42,28 +43,28 @@ namespace genetic_algorithm::update
     * 
     * If N = 0, this is equivalent to only keeping the children for the next generation (KeepChildren).
     */
-    class Elitism final : public Updater
+    class Elitism final : public Replacement
     {
     public:
         /**
         * Create an elitist population update operator.
         * 
-        * @param n The number of solutions from the parent population that will be carried over to the next generation of the algorithm.
+        * @param n The number of solutions from the population that will be copied to the next generation of the algorithm.
         */
-        Elitism(size_t n = 1) noexcept :
+        constexpr Elitism(size_t n = 1) noexcept :
             n_(n)
         {}
 
         /**
-        * Set the number of elite solutions used to @p n.
+        * Set the number of elite solutions used to n.
         * 
-        * @param n The number of solutions from the parent population that will be carried over to the next generation of the algorithm.
+        * @param n The number of solutions from the population that will be copied to the next generation of the algorithm.
         */
-        void elite_num(size_t n) noexcept { n_ = n; }
+        constexpr void elite_num(size_t n) noexcept { n_ = n; }
 
         /** @returns The number of elite solutions used. */
         [[nodiscard]]
-        size_t elite_num() const noexcept { return n_; }
+        constexpr size_t elite_num() const noexcept { return n_; }
 
     private:
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
@@ -71,34 +72,36 @@ namespace genetic_algorithm::update
         size_t n_;
     };
 
+
     /**
     * A population update method that selects the best (pop_size) candidates of the combined
     * parent and child populations, and uses these as the candidates of the next generation of the algorithm. \n
     */
-    class KeepBest final : public Updater
+    class KeepBest final : public Replacement
     {
     private:
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
     };
+
 
     /*
-    * Wraps a callable with the right signature so that it can be used as a population update
+    * Wraps a callable with the right signature so that it can be used as a population replacement
     * method in the single-objective GAs.
     */
-    class Lambda final : public Updater
+    class Lambda final : public Replacement
     {
     public:
-        using UpdateCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
+        using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
 
-        explicit Lambda(UpdateCallable f);
+        explicit Lambda(ReplacementCallable f) noexcept;
 
     private:
         std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
 
-        UpdateCallable updater_;
+        ReplacementCallable replacement_;
     };
 
-} // namespace genetic_algorithm::update
+} // namespace genetic_algorithm::replacement
 
 
-#endif // !GA_ALGORITHM_SOGA_UPDATE_HPP
+#endif // !GA_ALGORITHM_SOGA_REPLACEMENT_HPP

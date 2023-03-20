@@ -4,7 +4,7 @@
 #define GA_ALGORITHM_ALGORITHM_BASE_DECL_HPP
 
 #include "selection_base.hpp"
-#include "updater_base.hpp"
+#include "replacement_base.hpp"
 #include "../population/population.hpp"
 #include <vector>
 #include <cstddef>
@@ -26,7 +26,7 @@ namespace genetic_algorithm::algorithm
     * Base class used for all of the algorithms. \n
     * 
     * The algorithms define the way the population is evolved over the generations (i.e. the selection and
-    * population update methods used). They may be single-, multi-objective, or both, and have 5
+    * population replacement methods used). They may be single-, multi-objective, or both, and have 5
     * methods that can be implemented in the derived classes: \n
     * 
     *  - initializeImpl        (optional) : Initializes the algorithm (at the start of a run). \n
@@ -35,7 +35,7 @@ namespace genetic_algorithm::algorithm
     *  - nextPopulationImpl               : Selects the candidates of the next population from the parent and the child populations. \n 
     *  - optimalSolutionsImpl  (optional) : Selects the optimal solutions of the population. \n
     */
-    class Algorithm : protected selection::Selection, protected update::Updater
+    class Algorithm : protected selection::Selection, protected replacement::Replacement
     {
     public:
         using FitnessVector = detail::FitnessVector;
@@ -104,7 +104,7 @@ namespace genetic_algorithm::algorithm
         * @returns The candidates of the next generation of the algorithm.
         */
         template<Gene T>
-        Population<T> nextPopulation(const GA<T>& ga, Population<T>&& parents, Population<T>&& children);
+        Population<T> nextPopulation(const GA<T>& ga, Population<T> parents, Population<T> children);
 
         /**
         * Find the optimal solutions in the unchanged population that was created by nextPopulation. \n

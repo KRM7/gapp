@@ -87,13 +87,6 @@ namespace genetic_algorithm::selection
 
     };
 
-    /** Single-objective selection method types. */
-    template<typename T>
-    concept SelectionType = requires
-    {
-        requires std::derived_from<T, Selection>;
-    };
-
 } // namespace genetic_algorithm::selection
 
 #endif // !GA_ALGORITHM_SOGA_SELECTION_BASE_HPP

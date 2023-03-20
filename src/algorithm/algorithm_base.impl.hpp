@@ -12,7 +12,6 @@
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <iterator>
-#include <stdexcept>
 #include <cstddef>
 
 namespace genetic_algorithm::algorithm
@@ -25,16 +24,13 @@ namespace genetic_algorithm::algorithm
 
         const size_t selected_idx = selectImpl(ga, fmat);
 
-        if (selected_idx >= pop.size())
-        {
-            GA_THROW(std::logic_error, "An invalid candidate was selected by the algorithm.");
-        }
+        GA_ASSERT(selected_idx < pop.size(), "An invalid index was returned by selectImpl().");
 
         return pop[selected_idx];
     }
 
     template<Gene T>
-    auto Algorithm::nextPopulation(const GA<T>& ga, Population<T>&& parents, Population<T>&& children) -> Population<T>
+    auto Algorithm::nextPopulation(const GA<T>& ga, Population<T> parents, Population<T> children) -> Population<T>
     {
         GA_ASSERT(ga.population_size() == parents.size());
         GA_ASSERT(ga.population_size() <= children.size());
@@ -45,10 +41,8 @@ namespace genetic_algorithm::algorithm
 
         const auto next_indices = nextPopulationImpl(ga, fmat.begin(), fmat.begin() + ga.population_size(), fmat.end());
 
-        if (std::any_of(next_indices.begin(), next_indices.end(), detail::greater_eq_than(parents.size())))
-        {
-            GA_THROW(std::logic_error, "An invalid candidate was selected for the next population by the algorithm.");
-        }
+        GA_ASSERT(std::all_of(next_indices.begin(), next_indices.end(), detail::less_than(parents.size())),
+                  "An invalid index was returned by nextPopulationImpl().");
 
         return detail::select(std::move(parents), next_indices);
     }
@@ -60,10 +54,8 @@ namespace genetic_algorithm::algorithm
 
         const auto optimal_indices = optimalSolutionsImpl(ga);
 
-        if (std::any_of(optimal_indices.begin(), optimal_indices.end(), detail::greater_eq_than(pop.size())))
-        {
-            GA_THROW(std::logic_error, "An invalid optimal solution index was returned by optimalSolutionsImpl.");
-        }
+        GA_ASSERT(std::all_of(optimal_indices.begin(), optimal_indices.end(), detail::less_than(pop.size())),
+                  "An invalid index was returned by optimalSolutionsImpl().");
 
         auto optimal_sols = optimal_indices.empty() ?
             detail::findParetoFront(pop) :

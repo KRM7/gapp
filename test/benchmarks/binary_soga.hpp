@@ -46,7 +46,7 @@ void binary_rosenbrock()
     Rosenbrock fitness_func(10);
     BinaryGA GA(fitness_func, 300);
 
-    GA.algorithm(algorithm::SingleObjective{ selection::Tournament{}, update::KeepChildren{} });
+    GA.algorithm(algorithm::SingleObjective{ selection::Tournament{}, replacement::KeepChildren{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
 
@@ -58,7 +58,7 @@ void binary_schwefel()
     Schwefel fitness_func(10);
     BinaryGA GA(fitness_func, 200);
 
-    GA.algorithm(algorithm::SingleObjective{ selection::Rank{}, update::Elitism{ 10 } });
+    GA.algorithm(algorithm::SingleObjective{ selection::Rank{}, replacement::Elitism{ 10 } });
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.stop_condition(stopping::FitnessEvals{ 200 * 1000 });
@@ -71,7 +71,7 @@ void binary_griewank()
     Griewank fitness_func(10);
     BinaryGA GA(fitness_func, 200);
 
-    GA.algorithm(algorithm::SingleObjective{ selection::Sigma{}, update::KeepBest{} });
+    GA.algorithm(algorithm::SingleObjective{ selection::Sigma{}, replacement::KeepBest{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.2 / fitness_func.num_vars() });
     GA.stop_condition(stopping::FitnessValue{ { -0.01 } });
@@ -84,7 +84,7 @@ void binary_ackley()
     Ackley fitness_func(10);
     BinaryGA GA(fitness_func, 250);
 
-    GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{}, update::KeepBest{} });
+    GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{}, replacement::KeepBest{} });
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.stop_condition(stopping::FitnessBestStall{ 50, 0.002 });
@@ -97,7 +97,7 @@ void binary_levy()
     Levy fitness_func(10);
     BinaryGA GA(fitness_func, 250);
 
-    GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{}, update::KeepBest{} });
+    GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{}, replacement::KeepBest{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.03 });
 

@@ -1,6 +1,6 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#include "soga_update.hpp"
+#include "soga_replacement.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
@@ -9,9 +9,8 @@
 #include <algorithm>
 #include <numeric>
 #include <utility>
-#include <stdexcept>
 
-namespace genetic_algorithm::update
+namespace genetic_algorithm::replacement
 {
     std::vector<size_t> KeepChildren::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)
     {
@@ -50,18 +49,18 @@ namespace genetic_algorithm::update
     }
 
 
-    Lambda::Lambda(UpdateCallable f)
+    Lambda::Lambda(ReplacementCallable f) noexcept
     {
-        if (!f) GA_THROW(std::invalid_argument, "The population update method can't be a nullptr.");
+        GA_ASSERT(f, "The population replacement method can't be a nullptr.");
 
-        updater_ = std::move(f);
+        replacement_ = std::move(f);
     }
 
     std::vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(updater_);
+        GA_ASSERT(replacement_);
 
-        return updater_(ga, first, children_first, last);
+        return replacement_(ga, first, children_first, last);
     }
 
-} // namespace genetic_algorithm::update
+} // namespace genetic_algorithm::replacement
