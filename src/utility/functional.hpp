@@ -279,6 +279,14 @@ namespace genetic_algorithm::detail
             return container.size() == size;
         };
     }
+
+    constexpr auto element_at(size_t idx) noexcept
+    {
+        return [=](const auto& container) noexcept(noexcept(container[idx]))
+        {
+            return container[idx];
+        };
+    }
     
 } // namespace genetic_algorithm::detail
 
