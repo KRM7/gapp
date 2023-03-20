@@ -76,6 +76,11 @@ namespace genetic_algorithm::detail
         GA_ASSERT(std::distance(first, middle) >= 0);
         GA_ASSERT(std::distance(middle, last) >= 0);
 
+        if (std::distance(first, middle) >= 0.2 * std::distance(first, last))
+        {
+            return detail::argsort(first, last, std::forward<Comp>(comp));
+        }
+
         auto indices = detail::index_vector(last - first);
 
         if constexpr (detail::is_reverse_iterator_v<Iter>)
