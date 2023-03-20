@@ -6,6 +6,7 @@
 #include "utility.hpp"
 #include "concepts.hpp"
 #include <vector>
+#include <span>
 #include <random>
 #include <limits>
 #include <cstdint>
@@ -85,7 +86,7 @@ namespace genetic_algorithm::rng
 
     /** Select an index based on a discrete CDF. */
     template<std::floating_point T>
-    inline size_t sampleCdf(const std::vector<T>& cdf);
+    inline size_t sampleCdf(std::span<const T> cdf);
 
 } // namespace genetic_algorithm::rng
 
@@ -258,7 +259,7 @@ namespace genetic_algorithm::rng
     }
 
     template<std::floating_point T>
-    size_t sampleCdf(const std::vector<T>& cdf)
+    size_t sampleCdf(std::span<const T> cdf)
     {
         GA_ASSERT(!cdf.empty());
 
