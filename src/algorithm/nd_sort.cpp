@@ -3,6 +3,7 @@
 #include "nd_sort.hpp"
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/functional.hpp"
 #include "../utility/iterators.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
@@ -34,10 +35,7 @@ namespace genetic_algorithm::algorithm::dtl
     {
         GA_ASSERT(std::distance(current, last) >= 0);
 
-        return std::find_if(current, last, [&](const FrontInfo& sol) noexcept
-        {
-            return sol.rank != current->rank;
-        });
+        return std::find_if(current, last, compose(&FrontInfo::rank, detail::not_equal_to(current->rank)));
     }
 
     std::vector<ParetoFrontsRange> paretoFrontBounds(ParetoFronts& pareto_fronts)
@@ -50,11 +48,11 @@ namespace genetic_algorithm::algorithm::dtl
         std::vector<IterPair> front_bounds;
         front_bounds.reserve(pareto_fronts.back().rank + 1);
 
-        for (auto first = pareto_fronts.begin(); first != pareto_fronts.end(); )
+        for (auto front_first = pareto_fronts.begin(); front_first != pareto_fronts.end(); )
         {
-            auto last = nextFrontBegin(first, pareto_fronts.end());
-            front_bounds.emplace_back(first, last);
-            first = last;
+            auto front_last = nextFrontBegin(front_first, pareto_fronts.end());
+            front_bounds.emplace_back(front_first, front_last);
+            front_first = front_last;
         }
 
         return front_bounds;
@@ -62,15 +60,14 @@ namespace genetic_algorithm::algorithm::dtl
 
     ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize)
     {
-        GA_ASSERT(size_t(last - first) >= popsize);
+        GA_ASSERT(0 < popsize && popsize <= size_t(last - first));
 
-        if (size_t(last - first) == popsize) return { last, last };
+        auto last_in = first + popsize;
 
-        auto partial_front_first = std::find_if(first, first + popsize, [&](const FrontInfo& sol)
-        {
-            return sol.rank == first[popsize].rank;
-        });
-        auto partial_front_last = (partial_front_first == first + popsize) ? partial_front_first : nextFrontBegin(partial_front_first, last);
+        if (last_in == last) return { last, last };
+
+        auto partial_front_first = std::find_if(first, last_in, compose(&FrontInfo::rank, detail::equal_to(last_in->rank)));
+        auto partial_front_last = nextFrontBegin(std::prev(last_in), last);
 
         return { partial_front_first, partial_front_last };
     }
@@ -195,7 +192,7 @@ namespace genetic_algorithm::algorithm::dtl
         std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
         {
             FitnessVector fvec(popsize);
-            std::transform(first, last, fvec.begin(), [obj](const auto& row) { return row[obj]; });
+            std::transform(first, last, fvec.begin(), detail::element_at(obj));
 
             const auto indices = detail::argsort(fvec.rbegin(), fvec.rend()); // descending
 

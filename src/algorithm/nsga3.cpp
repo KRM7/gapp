@@ -17,7 +17,6 @@
 #include <iterator>
 #include <vector>
 #include <span>
-#include <stdexcept>
 #include <utility>
 #include <cstddef>
 
@@ -345,11 +344,7 @@ namespace genetic_algorithm::algorithm
     void NSGA3::initializeImpl(const GaInfo& ga)
     {
         GA_ASSERT(ga.population_size() != 0);
-
-        if (ga.num_objectives() <= 1)
-        {
-            GA_THROW(std::logic_error, "The number of objectives must be greater than 1 for the NSGA-III algorithm.");
-        }
+        GA_ASSERT(ga.num_objectives() > 1, "The number of objectives must be greater than 1 for the NSGA-III algorithm.");
 
         const auto& fitness_matrix = ga.fitness_matrix();
 

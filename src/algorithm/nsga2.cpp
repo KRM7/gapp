@@ -26,13 +26,12 @@ namespace genetic_algorithm::algorithm
         GA_ASSERT(std::distance(first, last) >= 0);
 
         std::vector<double> crowding_distances(last - first, 0.0);
-
         const auto front_bounds = paretoFrontBounds(pfronts);
 
         for (size_t obj = 0; obj < first->size(); obj++)
         {
             FitnessVector fvec(last - first, 0.0);
-            std::transform(first, last, fvec.begin(), [&](const auto& row) { return row[obj]; });
+            std::transform(first, last, fvec.begin(), detail::element_at(obj));
 
             for (auto [front_first, front_last] : front_bounds)
             {
@@ -63,10 +62,7 @@ namespace genetic_algorithm::algorithm
 
     void NSGA2::initializeImpl(const GaInfo& ga)
     {
-        if (ga.num_objectives() <= 1)
-        {
-            GA_THROW(std::logic_error, "The number of objectives must be greater than 1 for the NSGA-II algorithm.");
-        }
+        GA_ASSERT(ga.num_objectives() > 1, "The number of objectives must be greater than 1 for the NSGA-II algorithm.");
 
         const auto& fmat = ga.fitness_matrix();
         auto pfronts = nonDominatedSort(fmat.begin(), fmat.end());
@@ -82,6 +78,7 @@ namespace genetic_algorithm::algorithm
         const size_t idx1 = rng::randomIdx(fmat);
         const size_t idx2 = rng::randomIdx(fmat);
 
+        // lower ranks and higher crowding distances are better
         const bool first_is_better =
             (ranks_[idx1] != ranks_[idx2]) ?
                 ranks_[idx1] < ranks_[idx2] :
@@ -91,9 +88,9 @@ namespace genetic_algorithm::algorithm
     }
 
     std::vector<size_t> NSGA2::nextPopulationImpl(const GaInfo& ga,
-                                              FitnessMatrix::const_iterator parents_first,
-                                              [[maybe_unused]] FitnessMatrix::const_iterator children_first,
-                                              FitnessMatrix::const_iterator children_last)
+                                                  FitnessMatrix::const_iterator parents_first,
+                                                  [[maybe_unused]] FitnessMatrix::const_iterator children_first,
+                                                  FitnessMatrix::const_iterator children_last)
     {
         const size_t popsize = ga.population_size();
 
@@ -113,13 +110,12 @@ namespace genetic_algorithm::algorithm
             return dists_[lhs.idx] > dists_[rhs.idx]; // descending
         });
 
-        /* Crowding distances of all of the next generation's solutions. */
+        /* Crowding distances of all of the solutions. */
         dists_ = crowdingDistances(parents_first, children_last, ParetoFronts(pfronts.begin(), pfronts.begin() + popsize));
         dists_.resize(popsize);
 
-        std::vector<size_t> new_pop(popsize);
-
         /* Add the first popsize elements from pfronts to the next pop. */
+        std::vector<size_t> new_pop(popsize);
         for (size_t i = 0; i < popsize; i++)
         {
             new_pop[i] = pfronts[i].idx;
