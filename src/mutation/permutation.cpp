@@ -93,8 +93,8 @@ namespace genetic_algorithm::mutation::perm
             const size_t range_len = rng::randomInt(min_len, max_len);
 
             const auto idxs = rng::sampleUnique(0_sz, chrom_len - range_len + 1, 2);
-            const auto src_first  = candidate.chromosome.begin() + idxs[0];
-            const auto dest_first = candidate.chromosome.begin() + idxs[1];
+            const auto src_first  = candidate.chromosome.begin() + ptrdiff_t(idxs[0]);
+            const auto dest_first = candidate.chromosome.begin() + ptrdiff_t(idxs[1]);
 
             const auto [first, middle, last] = (dest_first < src_first) ?
                 std::tuple(dest_first, src_first, src_first + range_len) :
