@@ -52,6 +52,8 @@ namespace genetic_algorithm::algorithm::reflines
     {
         GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
+        if (point.empty()) return { 1.0 };
+
         point.back() = std::pow(point.back(), 1.0 / point.size());
 
         for (auto it = std::next(point.rbegin()); it != point.rend(); ++it)
@@ -71,6 +73,7 @@ namespace genetic_algorithm::algorithm::reflines
         GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         point.push_back(1.0);
+        if (point.size() == 1) return point;
 
         for (auto last = std::prev(point.end(), 2); ; )
         {
@@ -113,17 +116,18 @@ namespace genetic_algorithm::algorithm::reflines
     template<auto Transform>
     static inline std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t num_points)
     {
+        std::vector<Point> points(num_points);
+
+        if (dim == 0) return points;
+
         rng::QuasiRandom qrng{ SimplexMappingTraits<Transform>::required_input_dim(dim) };
 
-        std::vector<Point> points;
-        points.reserve(num_points);
-
-        while (num_points--)
+        for (size_t i = 0; i < num_points; i++)
         {
             Point hypercubePoint = qrng();
             Point simplexPoint = Transform(std::move(hypercubePoint));
 
-            points.push_back(std::move(simplexPoint));
+            points[i] = std::move(simplexPoint);
         }
 
         return points;
@@ -151,9 +155,9 @@ namespace genetic_algorithm::algorithm::reflines
     }
 
 
-    std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, size_t k)
+    std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, Positive<size_t> k)
     {
-        GA_ASSERT(k > 0);
+        if (num_points == 0) return {};
 
         std::vector<Point> candidate_points = generator(dim, k * num_points);
 

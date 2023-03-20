@@ -4,6 +4,7 @@
 #define GA_ALGORITHM_REFERENCE_LINES_HPP
 
 #include "../utility/math.hpp"
+#include "../utility/bounded_value.hpp"
 #include <vector>
 #include <cstddef>
 
@@ -70,7 +71,7 @@ namespace genetic_algorithm::algorithm::reflines
     * 
     * @returns The generated simplex points.
     */
-    std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, size_t k = 10);
+    std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, Positive<size_t> k = 10);
 
 } // namespace genetic_algorithm::algorithm::reflines
 

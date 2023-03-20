@@ -19,8 +19,8 @@ using namespace genetic_algorithm::algorithm::reflines;
 
 TEMPLATE_TEST_CASE_SIG("reference_lines", "[pareto_front]", ((auto F), F), quasirandomSimplexPointsMirror, quasirandomSimplexPointsSort, quasirandomSimplexPointsRoot, quasirandomSimplexPointsLog)
 {
-    size_t num_points = 10;
-    size_t dim = GENERATE(2, 3, 5, 10, 100);
+    const size_t num_points = GENERATE(0, 1, 10);
+    const size_t dim = GENERATE(0, 1, 2, 3, 100);
 
     INFO("Dimensions: " << dim);
 
@@ -28,6 +28,8 @@ TEMPLATE_TEST_CASE_SIG("reference_lines", "[pareto_front]", ((auto F), F), quasi
 
     REQUIRE(points.size() == num_points);
     REQUIRE(std::all_of(points.begin(), points.end(), is_size(dim)));
+
+    if (dim == 0) return;
 
     for (const Point& point : points)
     {
@@ -39,8 +41,8 @@ TEMPLATE_TEST_CASE_SIG("reference_lines", "[pareto_front]", ((auto F), F), quasi
 
 TEMPLATE_TEST_CASE_SIG("reference_lines_subset", "[pareto_front]", ((auto F), F), quasirandomSimplexPointsMirror, quasirandomSimplexPointsSort, quasirandomSimplexPointsRoot, quasirandomSimplexPointsLog)
 {
-    size_t num_points = 10;
-    size_t dim = GENERATE(2, 3, 5, 10, 100);
+    const size_t num_points = GENERATE(0, 1, 10);
+    const size_t dim = GENERATE(0, 1, 2, 3, 100);
 
     INFO("Dimensions: " << dim);
 
@@ -48,6 +50,8 @@ TEMPLATE_TEST_CASE_SIG("reference_lines_subset", "[pareto_front]", ((auto F), F)
 
     REQUIRE(points.size() == num_points);
     REQUIRE(std::all_of(points.begin(), points.end(), is_size(dim)));
+
+    if (dim == 0) return;
 
     for (const Point& point : points)
     {
