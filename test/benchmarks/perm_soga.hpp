@@ -22,7 +22,7 @@ void perm_tsp52()
 
     GA.algorithm(algorithm::SingleObjective{ selection::Sigma{} });
     GA.crossover_method(crossover::perm::Edge{ 0.9 });
-    GA.mutation_method(mutation::perm::Inversion{ 0.05 });
+    GA.mutation_method(mutation::perm::Inversion{ 0.5 });
 
     benchmarkTSP(GA, 1250, tsp52);
 }
@@ -35,7 +35,7 @@ void perm_tsp76()
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::perm::Order1{ 0.9 });
-    GA.mutation_method(mutation::perm::Shift{ 0.1 });
+    GA.mutation_method(mutation::perm::Shift{ 0.5 });
 
     benchmarkTSP(GA, 1000, tsp76);
 }
@@ -48,7 +48,7 @@ void perm_tsp124()
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::perm::Position{ 0.9 });
-    GA.mutation_method(mutation::perm::Swap3{ 0.4 });
+    GA.mutation_method(mutation::perm::Swap3{ 0.5 });
 
     benchmarkTSP(GA, 1500, tsp124);
 }
@@ -61,7 +61,7 @@ void perm_tsp152()
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::perm::PMX{ 0.9 });
-    GA.mutation_method(mutation::perm::Shift{ 0.6 });
+    GA.mutation_method(mutation::perm::Shift{ 0.5 });
 
     benchmarkTSP(GA, 1250, tsp152);
 }
@@ -74,7 +74,7 @@ void perm_tsp226()
 
     GA.algorithm(algorithm::SingleObjective{ selection::Roulette{} });
     GA.crossover_method(crossover::perm::Cycle{ 0.9 });
-    GA.mutation_method(mutation::perm::Shuffle{ 0.2 });
+    GA.mutation_method(mutation::perm::Shuffle{ 0.7 });
 
     benchmarkTSP(GA, 1250, tsp226);
 }
