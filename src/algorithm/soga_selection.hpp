@@ -5,6 +5,7 @@
 
 #include "selection_base.hpp"
 #include "../population/population.hpp"
+#include "../utility/bounded_value.hpp"
 #include <vector>
 #include <utility>
 #include <functional>
@@ -25,7 +26,9 @@ namespace genetic_algorithm::selection
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.
     * The probability of selecting an individual from the population is proportional to it's fitness value. \n
     *
-    * The algorithm is modified so that it also works with negative fitness values. \n
+    * All of the fitness values must be finite for the roulette selection operator to work
+    * (the algorithm is modified so that it also works with negative fitness values). \n
+    * 
     * Has no parameters.
     */
     class Roulette final : public Selection
@@ -41,6 +44,9 @@ namespace genetic_algorithm::selection
     * Tournament selection operator for single-objective optimization. \n
     * When performing a selection, a number of individuals are randomly chosen (from a uniform distribution)
     * from the population, and the best one is selected from these (assuming fitness maximization). \n
+    * 
+    * The operator works with arbitrary fitness values, infinite values are also allowed
+    * in the fitness matrix.
     *
     * The number of candidates in the tournaments is determined by the size parameter of the operator.
     */
@@ -50,28 +56,29 @@ namespace genetic_algorithm::selection
         /**
         * Create a tournament selection operator for the single-objective GA.
         *
-        * @param size The size of the tournaments.
+        * @param size The size of the tournaments. Must be greater than 0.
         */
-        explicit Tournament(size_t size = 2);
+        constexpr explicit Tournament(Positive<size_t> size = 2) noexcept :
+            tourney_size_(size)
+        {}
 
         /**
         * Set the number of individuals that participate in a tournament. \n
-        * Must be at least 2.
+        * If the tourney size is 1, the selection operator is equivalent to
+        * randomly selecting a candidate from a uniform distribution.
         *
-        * @param size The size of the tournaments during tournament selection.
+        * @param size The size of the tournaments during tournament selection. Must be greater than 0.
         */
-        void size(size_t size);
+        constexpr void size(Positive<size_t> size) noexcept { tourney_size_ = size; }
 
         /** @returns The tournament size used. */
         [[nodiscard]]
-        size_t size() const noexcept { return tourney_size_; }
+        constexpr size_t size() const noexcept { return tourney_size_; }
 
     private:
-        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        size_t tourney_size_;
-        std::vector<double> fvec_;
+        Positive<size_t> tourney_size_;
     };
 
     /**
@@ -79,6 +86,9 @@ namespace genetic_algorithm::selection
     * The individuals of the population are assigned selection weights between a
     * minimum and maximum value based on their rank in the population relative to
     * other individuals (assuming fitness maximization).
+    * 
+    * The operator works with arbitrary fitness values, infinite values are also allowed
+    * in the fitness matrix.
     */
     class Rank final : public Selection
     {
@@ -91,31 +101,7 @@ namespace genetic_algorithm::selection
         * @param min_weight The selection weight assigned to the worst individual of the population.
         * @param max_weight The selection weight assigned to the best individual of the population.
         */
-        explicit Rank(double min_weight = 0.1, double max_weight = 1.1);
-
-        /**
-        * Set the minimum selection weight. \n
-        * Must be on the closed interval [0.0, max_weight].
-        *
-        * @param min_weight The selection weight assigned to the worst individual of the population.
-        */
-        void min_weight(double min_weight);
-
-        /** @returns The minimum selection weight. */
-        [[nodiscard]]
-        double min_weight() const noexcept { return min_weight_; }
-
-        /**
-        * Set the maximum selection weight. \n
-        * Must be greater than the minimum weight.
-        *
-        * @param max_weight The selection weight assigned to the best individual of the population.
-        */
-        void max_weight(double max_weight);
-
-        /** @returns The maximum selection weight. */
-        [[nodiscard]]
-        double max_weight() const noexcept { return max_weight_; }
+        explicit Rank(NonNegative<double> min_weight = 0.1, NonNegative<double> max_weight = 1.1) noexcept;
 
         /**
         * Sets the minimum and maximum selection weights used. \n
@@ -125,19 +111,27 @@ namespace genetic_algorithm::selection
         * @param min_weight The selection weight assigned to the worst individual of the population.
         * @param max_weight The selection weight assigned to the best individual of the population.
         */
-        void weights(double min_weight, double max_weight);
+        void weights(NonNegative<double> min_weight, NonNegative<double> max_weight) noexcept;
 
         /** @returns The minimum and maximum selection weights. */
         [[nodiscard]]
         std::pair<double, double> weights() const noexcept { return { min_weight_, max_weight_ }; }
 
+        /** @returns The minimum selection weight. */
+        [[nodiscard]]
+        double min_weight() const noexcept { return min_weight_; }
+
+        /** @returns The maximum selection weight. */
+        [[nodiscard]]
+        double max_weight() const noexcept { return max_weight_; }
+
     private:
         void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        double min_weight_;
-        double max_weight_;
         std::vector<double> cdf_;
+        NonNegative<double> min_weight_;
+        NonNegative<double> max_weight_;
     };
 
     /**
@@ -149,20 +143,20 @@ namespace genetic_algorithm::selection
     {
     public:
         /**
-        * Create a sigma scaling selection operator with the specified scaling. \n
-        * The @p scale must be on the closed interval [1.0, DBL_MAX].
+        * Create a sigma scaling selection operator with the specified scaling.
         *
-        * @param scale The scaling parameter used.
+        * @param scale The scaling parameter used. Must be greater than 0.0.
         */
-        explicit Sigma(double scale = 3.0);
+        explicit Sigma(Positive<double> scale = 3.0) noexcept :
+            scale_(scale)
+        {}
 
         /**
-        * Sets the scaling parameter used. \n
-        * Must be on the closed interval [1.0, DBL_MAX].
+        * Set the scaling parameter used.
         *
-        * @param scale The scaling parameter used.
+        * @param scale The scaling parameter of the selection.
         */
-        void scale(double scale);
+        void scale(Positive<double> scale) noexcept { scale_ = scale; }
 
         /** @returns The scale parameter. */
         [[nodiscard]]
@@ -172,8 +166,8 @@ namespace genetic_algorithm::selection
         void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        double scale_;
         std::vector<double> cdf_;
+        Positive<double> scale_;
     };
 
     /**
@@ -186,24 +180,19 @@ namespace genetic_algorithm::selection
     class Boltzmann final : public Selection
     {
     public:
-        using TemperatureFunction = std::function<double(size_t, size_t)>;  /**< The type of the temperature function. */
+        /**
+        * The type of the temperature function. \n
+        * The function should return the temperature in the given generation, with its signature being: \n
+        *   double f(size_t current_generation, size_t max_generation) \n
+        */
+        using TemperatureFunction = std::function<double(size_t, size_t)>;
         
         /**
         * Create a Boltzmann selection operator with the specified temperature function.
         *
         * @param f The temperature function used by the operator.
         */
-        explicit Boltzmann(TemperatureFunction f = boltzmannDefaultTemp);
-
-        /**
-        * Set the temperature function used. \n
-        * The temperature functions signature should be: \n
-        *   double f(size_t current_generation, size_t max_generation) \n
-        * and return the current temperature.
-        *
-        * @param f The temperature function.
-        */
-        void temperature_function(TemperatureFunction f);
+        explicit Boltzmann(TemperatureFunction f = boltzmannDefaultTemp) noexcept;
         
     private:
         void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
@@ -211,20 +200,20 @@ namespace genetic_algorithm::selection
 
         static double boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept;
 
-        TemperatureFunction temperature_;
         std::vector<double> cdf_;
+        TemperatureFunction temperature_;
     };
 
     /*
     * Wraps a callable with the right signature so that it can be used as a selection
-    * method in the single-objective GAs.
+    * method in the single-objective algorithms.
     */
     class Lambda final : public Selection
     {
     public:
         using SelectionCallable = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
 
-        explicit Lambda(SelectionCallable f);
+        explicit Lambda(SelectionCallable f) noexcept;
 
     private:
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;

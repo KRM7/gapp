@@ -119,13 +119,13 @@ namespace genetic_algorithm::math
 
         if (vec.size() == 1) return 0.0;
 
-        auto var = std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{},
-        [mean, n = 1.0 / (vec.size() - 1.0)](double val) noexcept
+        long double var = std::transform_reduce(vec.begin(), vec.end(), 0.0L, std::plus{},
+        [mean, n = 1.0 / std::sqrt(vec.size())](long double val) noexcept
         {
-            return std::pow(val - mean, 2) * n;
+            return std::pow(n * (val - mean), 2);
         });
 
-        return std::sqrt(var);
+        return static_cast<double>(std::sqrt(var));
     }
 
     double integralSinPow(size_t exponent, double x) noexcept

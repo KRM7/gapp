@@ -12,7 +12,6 @@ option(GA_USE_WERROR "Treat warnings as errors during the build." ON)
 option(GA_USE_LTO "Enable link time optimizations for the library." ON)
 option(GA_USE_MARCH_NATIVE "Add -march=native option to release builds when using gcc or clang." ON)
 option(GA_LINK_TBB "Add -ltbb to the compiler flags (needed for parallel stl algorithms when using gcc/clang)." OFF)
-#option(GA_ENABLE_EXCEPTIONS "Enable exceptions in the library." ON) # TODO
 
 
 # Set the output directory for the build files
@@ -46,7 +45,7 @@ if(MSVC) # MSVC style compiler interface
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DEBUG:FULL -OPT:REF -OPT:ICF")
     # msvc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -MP -fp:contract -Zc:preprocessor -Zc:throwingNew")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fp:contract -Zc:preprocessor -Zc:throwingNew")
     endif()
     # clang-cl specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -57,28 +56,32 @@ else() # GNU style compiler interface
     if(GA_USE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
-    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std=c++20 ${GA_WARN_FLAGS}")
-    set(CMAKE_CXX_FLAGS_DEBUG "-Og")
-    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -ffast-math -fno-finite-math-only")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3 -ffast-math -fno-finite-math-only")
+
+    set(GA_OPT_FLAGS "-O3 -fno-math-errno -fno-signed-zeros -fno-trapping-math -freciprocal-math -fno-rounding-math")
     if (GA_USE_MARCH_NATIVE)
-        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
+        set(GA_OPT_FLAGS "${GA_OPT_FLAGS} -march=native")
     endif()
+
     # gcc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op")
+	    set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -Wlogical-op")
     endif()
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        set(GA_OPT_FLAGS "${GA_OPT_FLAGS} -fno-honor-nans -fapprox-func")
     endif()
+
+    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std=c++20 ${GA_WARN_FLAGS}")
+    set(CMAKE_CXX_FLAGS_DEBUG "-Og")
+    set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG ${GA_OPT_FLAGS}")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g ${GA_OPT_FLAGS}")
 endif()
 
 # LTO setup
 check_ipo_supported(RESULT LTO_SUPPORTED)
 if(GA_USE_LTO AND LTO_SUPPORTED AND CMAKE_BUILD_TYPE MATCHES "(Release|RelWithDebInfo)")
     if (BUILD_SHARED_LIBS AND MSVC)
-        message("LTO is not available for shared libs using MSVC.")
+        message("LTO is not available for shared libs using MSVC because of CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS.")
     else()
         message("Using link time optimizations.")
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)

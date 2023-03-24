@@ -103,29 +103,28 @@ namespace genetic_algorithm::algorithm::reflines
     template<auto Mapping>
     struct SimplexMappingTraits
     {
-        static constexpr size_t required_input_dim(size_t desired_output_dim) { return desired_output_dim - 1; }
+        static constexpr size_t input_dim(size_t output_dim) noexcept { return output_dim - 1; }
     };
 
     template<>
     struct SimplexMappingTraits<simplexMappingLog>
     {
-        static constexpr size_t required_input_dim(size_t desired_output_dim) { return desired_output_dim; }
+        static constexpr size_t input_dim(size_t output_dim) noexcept { return output_dim; }
     };
 
 
-    template<auto Transform>
-    static inline std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t num_points)
+    template<auto Mapping>
+    static std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t num_points)
     {
+        if (dim == 0) return std::vector<Point>(num_points);
+
         std::vector<Point> points(num_points);
-
-        if (dim == 0) return points;
-
-        rng::QuasiRandom qrng{ SimplexMappingTraits<Transform>::required_input_dim(dim) };
+        rng::QuasiRandom qrng{ SimplexMappingTraits<Mapping>::input_dim(dim) };
 
         for (size_t i = 0; i < num_points; i++)
         {
             Point hypercubePoint = qrng();
-            Point simplexPoint = Transform(std::move(hypercubePoint));
+            Point simplexPoint = Mapping(std::move(hypercubePoint));
 
             points[i] = std::move(simplexPoint);
         }

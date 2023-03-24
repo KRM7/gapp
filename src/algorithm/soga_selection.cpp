@@ -12,19 +12,26 @@
 #include <functional>
 #include <numeric>
 #include <vector>
+#include <span>
 #include <limits>
-#include <stdexcept>
 #include <cmath>
 
 namespace genetic_algorithm::selection
 {
     /* Calculate the cumulative distribution function of the population from the selection weights. */
-    static std::vector<double> weightsToCdf(const std::vector<double>& weights)
+    static std::vector<double> weightsToCdf(std::span<const double> weights)
     {
-        const double wsum = std::reduce(weights.begin(), weights.end());
+        GA_ASSERT(!weights.empty());
+        GA_ASSERT(std::all_of(weights.begin(), weights.end(), detail::between(0.0, math::large<double>)));
 
         std::vector<double> cdf(weights.size());
-        std::transform_inclusive_scan(weights.begin(), weights.end(), cdf.begin(), std::plus{}, detail::divide_by(wsum));
+
+        const double wmax = std::max(math::small<double>, *std::max_element(weights.begin(), weights.end()));
+        const double wsum = std::transform_reduce(weights.begin(), weights.end(), 0.0, std::plus{}, detail::divide_by(wmax));
+        const double idiv = std::isfinite(1.0 / wsum) ? (1.0 / wsum) : 1.0;
+        const double corr = std::isfinite(1.0 / wsum) ? 0.0 : (1.0 / weights.size());
+
+        std::transform_inclusive_scan(weights.begin(), weights.end(), cdf.begin(), std::plus{}, detail::multiply_add(idiv / wmax, corr));
 
         return cdf;
     }
@@ -32,81 +39,50 @@ namespace genetic_algorithm::selection
 
     void Roulette::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
-        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
+        GA_ASSERT(!fmat.empty());
+
+        FitnessVector fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
 
         /* Roulette selection wouldn't work for negative fitness values. */
-        double offset = *std::min_element(fvec.begin(), fvec.end());
-        offset = 2.0 * offset;              /* The selection probability of the worst candidate should also be > 0. */
-        offset = std::min(0.0, offset);     /* Only adjust fitness values if it's neccesary (there are negative fitness values). */
+        const double lowest = *std::min_element(fvec.begin(), fvec.end());
+        const double offset = -(2.0 / 3.0) * std::min(0.0, lowest); // only adjust if there are negative fitness values
+        const double scale = (lowest >= 0.0) ? 1.0 : (1.0 / 3.0);   // scaling to prevent overflow
 
-        std::transform(fvec.begin(), fvec.end(), fvec.begin(), detail::subtract(offset));
+        std::transform(fvec.begin(), fvec.end(), fvec.begin(), detail::multiply_add(scale, offset));
 
         cdf_ = weightsToCdf(fvec);
     }
 
     size_t Roulette::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
-        return rng::sampleCdf(cdf_);
+        return rng::sampleCdf<double>(cdf_);
     }
 
 
-    Tournament::Tournament(size_t size)
-    {
-        this->size(size);
-    }
-
-    void Tournament::size(size_t size)
-    {
-        if (size < 2) GA_THROW(std::invalid_argument, "The tournament size must be at least 2.");
-
-        tourney_size_ = size;
-    }
-
-    void Tournament::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
+    size_t Tournament::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
     {
         GA_ASSERT(fmat.size() >= tourney_size_);
         GA_ASSERT(fmat.ncols() == 1);
-        
-        fvec_ = detail::toFitnessVector(fmat.begin(), fmat.end());
-    }
 
-    size_t Tournament::selectImpl(const GaInfo&, const FitnessMatrix&) const
-    {
-        const auto candidate_indices = rng::sampleUnique(0_sz, fvec_.size(), tourney_size_);
+        const auto candidate_indices = rng::sampleUnique(0_sz, fmat.size(), tourney_size_);
 
         return *std::max_element(candidate_indices.begin(), candidate_indices.end(),
         [&](size_t lhs, size_t rhs) noexcept
         {
-            return fvec_[lhs] < fvec_[rhs];
+            return fmat[lhs][0] < fmat[rhs][0];
         });
     }
 
 
-    Rank::Rank(double min_weight, double max_weight)
+    Rank::Rank(NonNegative<double> min_weight, NonNegative<double> max_weight) noexcept :
+        min_weight_(min_weight), max_weight_(max_weight)
     {
-        this->weights(min_weight, max_weight);
+        GA_ASSERT(min_weight <= max_weight, "The maximum selection weight can't be less than the minimum.");
     }
 
-    void Rank::min_weight(double min_weight)
+    void Rank::weights(NonNegative<double> min_weight, NonNegative<double> max_weight) noexcept
     {
-        this->weights(min_weight, max_weight_);
-    }
-
-    void Rank::max_weight(double max_weight)
-    {
-        this->weights(min_weight_, max_weight);
-    }
-
-    void Rank::weights(double min_weight, double max_weight)
-    {
-        if (!(0.0 <= min_weight && min_weight <= max_weight))
-        {
-            GA_THROW(std::invalid_argument, "The minimum weight must be in the closed interval [0.0, max_weight].");
-        }
-        if (!(min_weight <= max_weight && max_weight <= std::numeric_limits<double>::max()))
-        {
-            GA_THROW(std::invalid_argument, "The maximum weight must be in the closed interval [min_weight, DBL_MAX].");
-        }
+        GA_ASSERT(min_weight <= max_weight, "The maximum selection weight can't be less than the minimum.");
 
         min_weight_ = min_weight;
         max_weight_ = max_weight;
@@ -114,10 +90,9 @@ namespace genetic_algorithm::selection
 
     void Rank::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
-        GA_ASSERT(0.0 <= min_weight_ && min_weight_ <= max_weight_);
+        GA_ASSERT(fmat.ncols() == 1);
 
-        const auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
-        const auto indices = detail::argsort(fvec.begin(), fvec.end());
+        const auto indices = detail::argsort(fmat.begin(), fmat.end(), [](const auto& lhs, const auto& rhs) { return lhs[0] < rhs[0]; });
 
         std::vector<double> weights(fmat.size());
         for (size_t i = 0; i < indices.size(); i++)
@@ -131,38 +106,22 @@ namespace genetic_algorithm::selection
 
     size_t Rank::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
-        return rng::sampleCdf(cdf_);
+        return rng::sampleCdf<double>(cdf_);
     }
 
-
-    Sigma::Sigma(double scale)
-    {
-        this->scale(scale);
-    }
-
-    void Sigma::scale(double scale)
-    {
-        if (!(1.0 <= scale && scale <= std::numeric_limits<double>::max()))
-        {
-            GA_THROW(std::invalid_argument, "Scale must be in the closed interval [1.0, DBL_MAX].");
-        }
-
-        scale_ = scale;
-    }
 
     void Sigma::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
-        GA_ASSERT(scale_ > 1.0);
-
-        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
+        FitnessVector fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const double fmean = math::mean(fvec);
-        const double fdev = std::max(math::stdDev(fvec, fmean), 1E-6);
+        const double fdev = math::stdDev(fvec, fmean);
+        const double idiv = 1.0 / std::clamp(fdev, math::small<double>, math::large<double>);
 
         std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&](double f)
         {
-            const double weight = 1.0 + (f - fmean) / (scale_ * fdev);
+            const double weight = 1.0 + (f - fmean) * idiv;
 
-            return std::max(weight, 0.0);  /* If ( fitness < (f_mean - scale * SD) ) the weight could be negative. */
+            return std::clamp(weight, 0.0, math::large<double>);  /* If ( fitness < (f_mean - scale * SD) ) the weight could be negative. */
         });
 
         cdf_ = weightsToCdf(fvec);
@@ -170,38 +129,32 @@ namespace genetic_algorithm::selection
 
     size_t Sigma::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
-        return rng::sampleCdf(cdf_);
+        return rng::sampleCdf<double>(cdf_);
     }
 
 
-    Boltzmann::Boltzmann(TemperatureFunction f)
+    Boltzmann::Boltzmann(TemperatureFunction f) noexcept
     {
-        temperature_function(std::move(f));
-    }
-
-    void Boltzmann::temperature_function(TemperatureFunction f)
-    {
-        if (!f) GA_THROW(std::invalid_argument, "The temperature function can't be a nullptr.");
+        GA_ASSERT(f, "The temperature function can't be a nullptr.");
 
         temperature_ = std::move(f);
     }
 
     void Boltzmann::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
-        GA_ASSERT(temperature_);
+        GA_ASSERT(fmat.ncols() == 1);
 
-        auto fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
+        FitnessVector fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
-        const double df = std::max(*fmax - *fmin, 1E-6);
-
-        const auto temperature = temperature_(ga.generation_cntr(), ga.max_gen());
+        const double df = std::clamp(*fmax - *fmin, math::small<double>, math::large<double>);
+        const double temperature = temperature_(ga.generation_cntr(), ga.max_gen());
 
         // can't capture the iterators by ref or value here
-        std::transform(fvec.begin(), fvec.end(), fvec.begin(), [fmin = *fmin, df, temperature](double f) noexcept
+        std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&, fmin = *fmin](double f) noexcept
         {
-            const double fnorm = (f - fmin) / df;
+            const double fnorm = f / df - fmin / df;
 
-            return std::exp(fnorm / temperature);
+            return std::min(math::large<double>, std::exp(fnorm / temperature));
         });
 
         cdf_ = weightsToCdf(fvec);
@@ -209,18 +162,23 @@ namespace genetic_algorithm::selection
 
     size_t Boltzmann::selectImpl(const GaInfo&, const FitnessMatrix&) const
     {
-        return rng::sampleCdf(cdf_);
+        return rng::sampleCdf<double>(cdf_);
     }
 
     double Boltzmann::boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept
     {
-        return -4.0 / (1.0 + std::exp(-10.0 * (double(gen) / max_gen) + 3.0)) + 4.0 + 0.25;
+        constexpr double Tmin = 0.2;
+        constexpr double Tmax = 4.0;
+        constexpr double tbeg = 3.0;
+        constexpr double Vtd = 10.0;
+
+        return -Tmax / (1.0 + std::exp(-Vtd * (double(gen) / max_gen) + tbeg)) + Tmax + Tmin;
     }
 
 
-    Lambda::Lambda(SelectionCallable f)
+    Lambda::Lambda(SelectionCallable f) noexcept
     {
-        if (!f) GA_THROW(std::invalid_argument, "The selection method can't be a nullptr.");
+        GA_ASSERT(f, "The selection method can't be a nullptr.");
 
         selection_ = std::move(f);
     }
