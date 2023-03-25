@@ -116,10 +116,12 @@ namespace genetic_algorithm::algorithm::reflines
     template<auto Mapping>
     static std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t num_points)
     {
-        if (dim == 0) return std::vector<Point>(num_points);
-
         std::vector<Point> points(num_points);
-        rng::QuasiRandom qrng{ SimplexMappingTraits<Mapping>::input_dim(dim) };
+        size_t input_dim = SimplexMappingTraits<Mapping>::input_dim(dim);
+
+        if (dim == 0) return points;
+
+        rng::QuasiRandom qrng{ input_dim };
 
         for (size_t i = 0; i < num_points; i++)
         {
