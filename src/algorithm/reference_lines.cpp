@@ -16,6 +16,8 @@
 
 namespace genetic_algorithm::algorithm::reflines
 {
+    using SimplexMapping = Point(Point&&);
+
     /*
     * The unit-hypercube -> unit-simplex transformations used for the quasirandom points are based on:
     * 
@@ -100,7 +102,7 @@ namespace genetic_algorithm::algorithm::reflines
     }
 
 
-    template<auto Mapping>
+    template<SimplexMapping>
     struct SimplexMappingTraits
     {
         static constexpr size_t input_dim(size_t output_dim) noexcept { return output_dim - 1; }
@@ -113,11 +115,11 @@ namespace genetic_algorithm::algorithm::reflines
     };
 
 
-    template<auto Mapping>
+    template<SimplexMapping F>
     static std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t num_points)
     {
         std::vector<Point> points(num_points);
-        size_t input_dim = SimplexMappingTraits<Mapping>::input_dim(dim);
+        size_t input_dim = SimplexMappingTraits<F>::input_dim(dim);
 
         if (dim == 0) return points;
 
@@ -126,7 +128,7 @@ namespace genetic_algorithm::algorithm::reflines
         for (size_t i = 0; i < num_points; i++)
         {
             Point hypercubePoint = qrng();
-            Point simplexPoint = Mapping(std::move(hypercubePoint));
+            Point simplexPoint = F(std::move(hypercubePoint));
 
             points[i] = std::move(simplexPoint);
         }

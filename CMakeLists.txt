@@ -19,7 +19,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
 # Set the default build type to release
 if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release|RelWithDebInfo)$")
-    message("Unrecognized build type: ${CMAKE_BUILD_TYPE}. Defaulting to Release.")
+    message(WARNING "Unrecognized build type: ${CMAKE_BUILD_TYPE}. Defaulting to Release.")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
@@ -68,7 +68,7 @@ else() # GNU style compiler interface
     endif()
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(GA_OPT_FLAGS "${GA_OPT_FLAGS} -fno-honor-nans -fapprox-func")
+        set(GA_OPT_FLAGS "${GA_OPT_FLAGS} -fapprox-func")
     endif()
 
     set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std=c++20 ${GA_WARN_FLAGS}")
@@ -81,9 +81,9 @@ endif()
 check_ipo_supported(RESULT LTO_SUPPORTED)
 if(GA_USE_LTO AND LTO_SUPPORTED AND CMAKE_BUILD_TYPE MATCHES "(Release|RelWithDebInfo)")
     if (BUILD_SHARED_LIBS AND MSVC)
-        message("LTO is not available for shared libs using MSVC because of CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS.")
+        message(WARNING "LTO is not available for shared libs using MSVC because of CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS.")
     else()
-        message("Using link time optimizations.")
+        message(STATUS "Using link time optimizations.")
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
     endif()
 endif()
