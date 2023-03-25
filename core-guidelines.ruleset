@@ -16,18 +16,20 @@
   <Include Path="cppcorechecktyperules.ruleset" Action="Default" />
   <Include Path="cppcorecheckuniquepointerrules.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
-    <Rule Id="C26429" Action="None" />
-    <Rule Id="C26438" Action="Warning" />
-    <Rule Id="C26440" Action="Warning" />
-    <Rule Id="C26446" Action="None" />
-    <Rule Id="C26455" Action="None" />
-    <Rule Id="C26472" Action="None" />
-    <Rule Id="C26493" Action="None" />
-    <Rule Id="C26496" Action="None" />
-    <Rule Id="C26800" Action="Warning" />
-    <Rule Id="C26812" Action="None" />
-    <Rule Id="C26814" Action="None" />
-    <Rule Id="C26815" Action="Warning" />
-    <Rule Id="C26822" Action="Warning" />
+	<!-- Disable rules that recommend using non-std functions. -->
+    <Rule Id="C26429" Action="None" /> <!-- Use gsl::not_null<T>. -->
+	<Rule Id="C26472" Action="None" /> <!-- Don't use a static_cast for arithmetic conversions. -->
+	<Rule Id="C26446" Action="None" /> <!-- Prefer to use gsl::at() instead of unchecked subscript operator. -->
+
+	<!-- Disable rules that are too noisy/not helpful. -->	  
+    <Rule Id="C26493" Action="None" /> <!-- Don't use C-style casts. -->
+    <Rule Id="C26496" Action="None" /> <!-- The variable 'xyz' is assigned only once, mark it as const. -->
+	<Rule Id="C26814" Action="None" /> <!-- The const variable 'xyz' can be computed at compile time. Use constexpr. -->
+    <Rule Id="C26812" Action="None" /> <!-- Prefer 'enum class' over 'enum'. -->
+	<Rule Id="C26455" Action="None" /> <!-- Default constructor should not throw. Declare it 'noexcept'. -->
+
+	<!-- Enable useful rules that are off by default. -->
+    <Rule Id="C26815" Action="Warning" /> <!-- The pointer is dangling because it points at a temporary instance that was destroyed. -->
+    <Rule Id="C26822" Action="Warning" /> <!-- Dereferencing a null pointer. -->
   </Rules>
 </RuleSet>
