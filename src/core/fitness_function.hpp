@@ -4,6 +4,7 @@
 #define GA_CORE_FITNESS_FUNCTION_HPP
 
 #include "../population/population.hpp"
+#include "../utility/bounded_value.hpp"
 #include <concepts>
 #include <cstddef>
 
@@ -41,9 +42,9 @@ namespace genetic_algorithm
         * @param dynamic Should be true if the fitness vector returned for a chromosome will not
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
-        constexpr FitnessFunction(size_t chrom_len, size_t num_objectives, bool variable_len = false, bool dynamic = false);
+        constexpr FitnessFunction(Positive<size_t> chrom_len, Positive<size_t> num_objectives, bool variable_len = false, bool dynamic = false);
 
-        /** @returns The chromosome length used for the candidates of the population. */
+        /** @returns The chromosome length the fitness function expects. */
         [[nodiscard]]
         constexpr size_t chrom_len() const noexcept { return chrom_len_; }
 
@@ -92,8 +93,8 @@ namespace genetic_algorithm
         /** The implementation of the fitness function. Should be thread-safe. */
         virtual FitnessVector invoke(const Chromosome<T>& chrom) const = 0;
 
-        size_t chrom_len_;
-        size_t num_objectives_;
+        Positive<size_t> chrom_len_;
+        Positive<size_t> num_objectives_;
         bool dynamic_            = false;
         bool variable_chrom_len_ = false;
     };
@@ -131,7 +132,6 @@ namespace genetic_algorithm
 #include "../utility/utility.hpp"
 #include <functional>
 #include <utility>
-#include <stdexcept>
 
 namespace genetic_algorithm::detail
 {
@@ -145,10 +145,10 @@ namespace genetic_algorithm::detail
     public:
         using FitnessCallable = std::function<FitnessVector(const Chromosome<T>&)>;
 
-        FitnessLambda(size_t chrom_len, size_t num_objectives, FitnessCallable f) :
+        FitnessLambda(size_t chrom_len, size_t num_objectives, FitnessCallable f) noexcept :
             FitnessFunction<T>(chrom_len, num_objectives)
         {
-            if (!f) GA_THROW(std::invalid_argument, "The fitness function can't be a nullptr.");
+            GA_ASSERT(f, "The fitness function can't be a nullptr.");
 
             fitness_function_ = std::move(f);
         }
@@ -169,27 +169,18 @@ namespace genetic_algorithm::detail
 namespace genetic_algorithm
 {
     template<Gene T>
-    constexpr FitnessFunction<T>::FitnessFunction(size_t chrom_len, size_t num_objectives, bool variable_len, bool dynamic) :
+    constexpr FitnessFunction<T>::FitnessFunction(Positive<size_t> chrom_len, Positive<size_t> num_objectives, bool variable_len, bool dynamic) :
         chrom_len_(chrom_len), num_objectives_(num_objectives), dynamic_(dynamic), variable_chrom_len_(variable_len)
-    {
-        if (chrom_len == 0)      GA_THROW(std::invalid_argument, "The chromosome length must be at least 1.");
-        if (num_objectives == 0) GA_THROW(std::invalid_argument, "The number of objectives must be at least 1.");
-    }
+    {}
 
     template<Gene T>
     auto FitnessFunction<T>::operator()(const Chromosome<T>& chrom) -> FitnessVector
     {
-        if (!variable_chrom_len() && chrom.size() != chrom_len())
-        {
-            GA_THROW(std::invalid_argument, "A chromosome of incorrect size was passed to the fitness function.");
-        }
+        GA_ASSERT(chrom.size() == chrom_len() || variable_chrom_len(), "A chromosome of incorrect size was passed to the fitness function.");
 
         FitnessVector fvec = this->invoke(chrom);
 
-        if (fvec.size() != num_objectives())
-        {
-            GA_THROW(std::logic_error, "A fitness vector of incorrect length was returned by the fitness function.");
-        }
+        GA_ASSERT(fvec.size() == num_objectives(), "A fitness vector of incorrect length was returned by the fitness function.");
 
         return fvec;
     }

@@ -14,17 +14,17 @@
 
 namespace genetic_algorithm
 {
-    IntegerGA::IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, GeneBounds<GeneType> bounds, size_t population_size) :
+    IntegerGA::IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
-        this->gene_bounds(bounds);
+        gene_bounds(bounds);
         crossover_method(std::make_unique<crossover::integer::TwoPoint>());
-        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / this->chrom_len()));
+        mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len()));
     }
 
     void IntegerGA::gene_bounds(GeneBounds<GeneType> bounds) noexcept
     {
-        bounds_ = BoundsVector<GeneType>(this->chrom_len(), bounds);
+        bounds_ = BoundsVector<GeneType>(chrom_len(), bounds);
     }
 
     void IntegerGA::initialize()
@@ -34,7 +34,7 @@ namespace genetic_algorithm
 
     auto IntegerGA::generateCandidate() const -> Candidate<GeneType>
     {
-        Candidate<GeneType> solution(this->chrom_len());
+        Candidate<GeneType> solution(chrom_len());
         std::generate(solution.chromosome.begin(), solution.chromosome.end(), [this]
         {
             return rng::randomInt<GeneType>(bounds_.front().lower(), bounds_.front().upper());

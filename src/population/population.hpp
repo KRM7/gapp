@@ -168,6 +168,7 @@ namespace genetic_algorithm::detail
                     lhs_state[i] = OPTIMAL;
                     rhs_state[j] = DOMINATED;
                 }
+                // comp == 0 --> both are OPTIMAL or DOMINATED, can't know
             }
         });
 

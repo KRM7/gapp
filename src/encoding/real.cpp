@@ -15,27 +15,27 @@
 
 namespace genetic_algorithm
 {
-    RCGA::RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, const BoundsVector<GeneType>& bounds, size_t population_size) :
+    RCGA::RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, BoundsVector<GeneType> bounds, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
-        this->gene_bounds(bounds);
+        gene_bounds(std::move(bounds));
         crossover_method(std::make_unique<crossover::real::Wright>());
-        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
+        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len()));
     }
 
-    RCGA::RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, GeneBounds<GeneType> bounds, size_t population_size) :
+    RCGA::RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
-        this->gene_bounds(bounds);
+        gene_bounds(bounds);
         crossover_method(std::make_unique<crossover::real::Wright>());
-        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
+        mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len()));
     }
 
-    void RCGA::gene_bounds(const BoundsVector<GeneType>& bounds)
+    void RCGA::gene_bounds(BoundsVector<GeneType> bounds)
     {
-        GA_ASSERT(bounds.size() == this->chrom_len(), "The size of the bounds vector must match the chromosome length.");
+        GA_ASSERT(bounds.size() == chrom_len(), "The size of the bounds vector must match the chromosome length.");
 
-        bounds_ = bounds;
+        bounds_ = std::move(bounds);
     }
 
     void RCGA::gene_bounds(GeneBounds<GeneType> bounds)

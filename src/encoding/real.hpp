@@ -9,6 +9,7 @@
 #include "../population/candidate.hpp"
 #include "../crossover/real.hpp"
 #include "../mutation/real.hpp"
+#include "../utility/bounded_value.hpp"
 #include <concepts>
 #include <memory>
 #include <utility>
@@ -27,21 +28,21 @@ namespace genetic_algorithm
         * Construct a real encoded genetic algorithm. \n
         * The gene bounds are specified for each gene separately.
         *
-        * @param fitness_function The fitness function used in the algorithm.
+        * @param fitness_function The fitness function used in the algorithm. Can't be a nullptr.
         * @param bounds The boundaries of the genes (their min and max values), specified for each gene.
-        * @param population_size The number of candidates in the population.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, const BoundsVector<GeneType>& bounds, size_t population_size = DEFAULT_POPSIZE);
+        RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, BoundsVector<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct a real encoded genetic algorithm. \n
         * The gene bounds will be the same for every gene.
         *
-        * @param fitness_function The fitness function used in the algorithm.
+        * @param fitness_function The fitness function used in the algorithm. Can't be a nullptr.
         * @param bounds The boundaries of the genes (their min and max values).
-        * @param population_size The number of candidates in the population.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, GeneBounds<GeneType> bounds, size_t population_size = DEFAULT_POPSIZE);
+        RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct a real encoded genetic algorithm. \n
@@ -49,16 +50,16 @@ namespace genetic_algorithm
         *
         * @param fitness_function The fitness function used in the algorithm.
         * @param bounds The boundaries of the genes (their min and max values), specified for each gene.
-        * @param population_size The number of candidates in the population.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
         template<typename F>
-        requires std::derived_from<F, FitnessFunction<GeneType>>&& std::is_final_v<F>
-        RCGA(F fitness_function, const BoundsVector<GeneType>& bounds, size_t population_size = DEFAULT_POPSIZE) :
+        requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
+        RCGA(F fitness_function, BoundsVector<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
-            this->gene_bounds(bounds);
+            gene_bounds(std::move(bounds));
             crossover_method(std::make_unique<crossover::real::Wright>());
-            mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
+            mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len()));
         }
 
         /**
@@ -67,16 +68,16 @@ namespace genetic_algorithm
         *
         * @param fitness_function The fitness function used in the algorithm.
         * @param bounds The boundaries of the genes (their min and max values).
-        * @param population_size The number of candidates in the population.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
         template<typename F>
         requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
-        RCGA(F fitness_function, GeneBounds<GeneType> bounds, size_t population_size = DEFAULT_POPSIZE) :
+        RCGA(F fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
-            this->gene_bounds(bounds);
+            gene_bounds(bounds);
             crossover_method(std::make_unique<crossover::real::Wright>());
-            mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / this->chrom_len()));
+            mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len()));
         }
 
 
@@ -89,7 +90,7 @@ namespace genetic_algorithm
         *
         * @param bounds The lower and upper boundaries of the genes.
         */
-        void gene_bounds(const BoundsVector<GeneType>& bounds);
+        void gene_bounds(BoundsVector<GeneType> bounds);
 
         /**
         * Sets the the same lower and upper bounds for every gene. \n

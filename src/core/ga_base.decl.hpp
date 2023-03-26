@@ -6,6 +6,7 @@
 #include "ga_info.hpp"
 #include "fitness_function.hpp"
 #include "../population/candidate.hpp"
+#include "../utility/bounded_value.hpp"
 #include <algorithm>
 #include <vector>
 #include <utility>
@@ -80,10 +81,10 @@ namespace genetic_algorithm
         /**
         * Create a genetic algorithm.
         *
-        * @param fitness_function The fitness function used. @see FitnessFunction
-        * @param population_size The number of candidates in the population.
+        * @param fitness_function The fitness function used. Can't be a nullptr.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        GA(std::unique_ptr<FitnessFunction<T>> fitness_function, size_t population_size);
+        GA(std::unique_ptr<FitnessFunction<T>> fitness_function, Positive<size_t> population_size);
 
         /**
         * Set the fitness function used by the algorithm.
@@ -99,7 +100,7 @@ namespace genetic_algorithm
         * Set the fitness function used by the algorithm.
         * @see FitnessFunction
         *
-        * @param f The fitness function to use in the algorithm.
+        * @param f The fitness function to use in the algorithm. Can't be a nullptr.
         */
         void fitness_function(std::unique_ptr<FitnessFunction<T>> f);
 
@@ -241,7 +242,7 @@ namespace genetic_algorithm
         * This function will be applied to each chromosome after the mutations have been performed. \n
         * This can be used to perform a local search for example. \n
         * 
-        * No repair function is used in the algorithm by default, set to nullptr if no repair function should be used.
+        * No repair function is used in the algorithm by default, set it to nullptr if no repair function should be used.
         * 
         * The repair function should be thread-safe if parallel execution is enabled (enabled by default).
         * 
@@ -249,7 +250,7 @@ namespace genetic_algorithm
         */
         void repair_function(RepairCallable f);
 
-        /** 
+        /**
         * @returns The pareto optimal solutions found by the algorithm.
         * These are just the optimal solutions of the last generation's population if
         * keep_all_optimal_sols is not set, otherwise it contains every optimal solution
@@ -272,7 +273,7 @@ namespace genetic_algorithm
         * @param initial_population The population to use as the first generation of the algorithm.
         * @returns The pareto-optimal solutions found. @see solutions
         */
-        Candidates<T> run(const Population<T>& initial_population = {});
+        Candidates<T> run(Population<T> initial_population = {});
 
         /**
         * Run the genetic algorithm for a set number of generations. \n
@@ -295,7 +296,7 @@ namespace genetic_algorithm
         * @param num_generations The maximum number of generations.
         * @returns The pareto-optimal solutions found. @see solutions
         */
-        Candidates<T> run(const Population<T>& initial_population, size_t num_generations);
+        Candidates<T> run(Population<T> initial_population, size_t num_generations);
 
         /**
         * Continue running the genetic algorithm for the set number of generations. \n
@@ -325,8 +326,8 @@ namespace genetic_algorithm
         virtual void initialize() = 0;
         virtual Candidate<T> generateCandidate() const = 0;
 
-        void initializeAlgorithm(const Population<T>& initial_population);
-        Population<T> generatePopulation(size_t pop_size, const Population<T>& initial_population) const;
+        void initializeAlgorithm(Population<T> initial_population);
+        Population<T> generatePopulation(Positive<size_t> pop_size, Population<T> initial_population) const;
         void prepareSelections() const;
         const Candidate<T>& select() const;
         CandidatePair<T> crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const;
@@ -359,10 +360,6 @@ namespace genetic_algorithm
         using GaInfo::keep_all_optimal_sols_;
         using GaInfo::is_initialized_;
     };
-
-    /** Genetic algorithm types. */
-    template<typename T>
-    concept GeneticAlgorithmType = detail::DerivedFromSpecializationOf<T, GA>;
 
 } // namespace genetic_algorithm
 

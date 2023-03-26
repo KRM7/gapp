@@ -169,8 +169,8 @@ namespace genetic_algorithm::algorithm::reflines
         points.push_back(candidate_points.back());
         candidate_points.pop_back();
 
-        auto min_distances = detail::map(candidate_points, [&](const Point& p) noexcept { return math::euclideanDistanceSq(p, points.back()); });
-
+        std::vector<double> min_distances = detail::map(candidate_points, std::bind_front(math::euclideanDistanceSq, points.back()));
+        
         while (points.size() < num_points)
         {
             const size_t idx = detail::argmax(min_distances.begin(), min_distances.end());

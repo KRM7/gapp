@@ -9,6 +9,7 @@
 #include "../population/candidate.hpp"
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"
+#include "../utility/bounded_value.hpp"
 #include <concepts>
 #include <memory>
 #include <utility>
@@ -28,27 +29,27 @@ namespace genetic_algorithm
         /**
         * Construct an integer encoded genetic algorithm.
         *
-        * @param fitness_function The fitness function used in the algorithm.
+        * @param fitness_function The fitness function used in the algorithm. Can't be a nullptr.
         * @param bounds The boundaries of the genes (their min and max values).
-        * @param population_size The number of candidates in the population.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, GeneBounds<GeneType> bounds, size_t population_size = DEFAULT_POPSIZE);
+        IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct an integer encoded genetic algorithm.
         *
         * @param fitness_function The fitness function used in the algorithm.
         * @param bounds The boundaries of the genes (their min and max values).
-        * @param population_size The number of candidates in the population.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
         template<typename F>
         requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
-        IntegerGA(F fitness_function, GeneBounds<GeneType> bounds, size_t population_size = DEFAULT_POPSIZE) :
+        IntegerGA(F fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
-            this->gene_bounds(bounds);
+            gene_bounds(bounds);
             crossover_method(std::make_unique<crossover::integer::TwoPoint>());
-            mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / this->chrom_len()));
+            mutation_method(std::make_unique<mutation::integer::Uniform>(1.0 / chrom_len()));
         }
 
         /**

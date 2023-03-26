@@ -8,6 +8,7 @@
 #include "../population/candidate.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
+#include "../utility/bounded_value.hpp"
 #include <concepts>
 #include <memory>
 #include <utility>
@@ -28,23 +29,23 @@ namespace genetic_algorithm
         /**
         * Construct a permutation encoded genetic algorithm.
         *
-        * @param fitness_function The fitness function used in the algorithm.
-        * @param population_size The number of candidates in the population.
+        * @param fitness_function The fitness function used in the algorithm. Can't be a nullptr.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        explicit PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, size_t population_size = DEFAULT_POPSIZE);
+        explicit PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, Positive<size_t> population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct a permutation encoded genetic algorithm.
         *
         * @param fitness_function The fitness function used in the algorithm.
-        * @param population_size The number of candidates in the population.
+        * @param population_size The number of candidates in the population. Must be at least 1.
         */
         template<typename F>
         requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
-        explicit PermutationGA(F fitness_function, size_t population_size = DEFAULT_POPSIZE) :
+        explicit PermutationGA(F fitness_function, Positive<size_t> population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
-            bounds_ = BoundsVector<GeneType>(this->chrom_len(), GeneBounds<GeneType>{ 0_sz, this->chrom_len() - 1 });
+            bounds_ = BoundsVector<GeneType>(chrom_len(), GeneBounds<GeneType>{ 0_sz, chrom_len() - 1 });
             crossover_method(std::make_unique<crossover::perm::Order2>());
             mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
         }

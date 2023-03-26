@@ -61,18 +61,17 @@ namespace genetic_algorithm
         /** 
         * Create a genetic algorithm.
         *
-        * @param population_size The size of the population.
-        * @param nobj The number of objectives.
+        * @param population_size The size of the population. Must be at least 1.
+        * @param nobj The number of objectives. Must be at least 1.
         */
-        GaInfo(size_t population_size, size_t nobj);
+        GaInfo(Positive<size_t> population_size, Positive<size_t> nobj);
 
         /**
-        * Set the number of candidates used in the population. \n
-        * Must be at least 1.
+        * Set the number of candidates used in the population.
         *
-        * @param size The number of candidates in a population.
+        * @param size The number of candidates in a population. Must be at least 1.
         */
-        void population_size(size_t size);
+        void population_size(Positive<size_t> size) noexcept { population_size_ = size; }
 
         /** @returns The number of candidates in the population. */
         [[nodiscard]]
@@ -80,12 +79,11 @@ namespace genetic_algorithm
 
         /**
         * Set the maximum number of generations a run can last for. \n
-        * The algorthm will always stop when reaching this generation, even if another stop condition was set. \n
-        * Must be at least 1.
+        * The algorthm will always stop when reaching this generation, even if another stop condition was set.
         * 
-        * @param max_gen The maximum number of generations.
+        * @param max_gen The maximum number of generations. Must be at least 1.
         */
-        void max_gen(size_t max_gen);
+        void max_gen(Positive<size_t> max_gen) noexcept { max_gen_ = max_gen; }
 
         /** @returns The maximum number of generations set for the algorithm. */
         [[nodiscard]]
@@ -151,6 +149,8 @@ namespace genetic_algorithm
         * Set the algorithm used by the GA. \n
         * The algorithm type should be consistent with the size of the fitness vectors returned by
         * the fitness function (single- or multi-objective).
+        * 
+        * @see Algorithm
         *
         * @param f The algorithm used by the GA.
         */
@@ -162,6 +162,8 @@ namespace genetic_algorithm
         * Set the algorithm used by the GA. \n
         * The algorithm type should be consistent with the size of the fitness vectors returned by
         * the fitness function (single- or multi-objective).
+        * 
+        * @see Algorithm
         *
         * @param f The algorithm used by the GA. Can't be a nullptr.
         */
@@ -258,8 +260,8 @@ namespace genetic_algorithm
         std::unique_ptr<algorithm::Algorithm> algorithm_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
 
-        size_t population_size_ = 100;
-        size_t max_gen_ = 500;
+        Positive<size_t> population_size_ = DEFAULT_POPSIZE;
+        Positive<size_t> max_gen_ = 500;
         size_t generation_cntr_ = 0;
         size_t num_fitness_evals_ = 0;
 

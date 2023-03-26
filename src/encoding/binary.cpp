@@ -14,22 +14,22 @@
 
 namespace genetic_algorithm
 {
-    BinaryGA::BinaryGA(std::unique_ptr<FitnessFunction<BinaryGene>> fitness_function, size_t population_size) :
+    BinaryGA::BinaryGA(std::unique_ptr<FitnessFunction<BinaryGene>> fitness_function, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
-        bounds_ = BoundsVector<GeneType>(this->chrom_len(), GeneBounds<GeneType>{ 0, 1 });
+        bounds_ = BoundsVector<GeneType>(chrom_len(), GeneBounds<GeneType>{ 0, 1 });
         crossover_method(std::make_unique<crossover::binary::TwoPoint>());
-        mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / this->chrom_len()));
+        mutation_method(std::make_unique<mutation::binary::Flip>(1.0 / chrom_len()));
     }
 
     void BinaryGA::initialize()
     {
-        bounds_.resize(this->chrom_len(), GeneBounds<GeneType>{ 0, 1 });
+        bounds_.resize(chrom_len(), GeneBounds<GeneType>{ 0, 1 });
     }
 
     auto BinaryGA::generateCandidate() const -> Candidate<GeneType>
     {
-        Candidate<GeneType> solution(this->chrom_len());
+        Candidate<GeneType> solution(chrom_len());
         std::generate(solution.chromosome.begin(), solution.chromosome.end(), rng::randomBool);
 
         return solution;

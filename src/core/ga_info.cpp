@@ -10,7 +10,6 @@
 #include <atomic>
 #include <memory>
 #include <utility>
-#include <stdexcept>
 
 namespace genetic_algorithm
 {
@@ -19,31 +18,14 @@ namespace genetic_algorithm
     GaInfo::~GaInfo()                            = default;
 
 
-    GaInfo::GaInfo(size_t population_size, size_t nobj)
+    GaInfo::GaInfo(Positive<size_t> population_size, Positive<size_t> nobj) :
+        population_size_(population_size)
     {
-        if (nobj == 0) GA_THROW(std::invalid_argument, "The number of objectives must be at least 1.");
-
-        this->population_size(population_size);
-
         (nobj == 1) ?
             algorithm(std::make_unique<algorithm::SingleObjective>()) :
             algorithm(std::make_unique<algorithm::NSGA3>());
 
         stop_condition_ = std::make_unique<stopping::NoEarlyStop>();
-    }
-
-    void GaInfo::population_size(size_t size)
-    {
-        if (size == 0) GA_THROW(std::invalid_argument, "The population size must be at least 1.");
-
-        population_size_ = size;
-    }
-
-    void GaInfo::max_gen(size_t max_gen)
-    {
-        if (max_gen == 0) GA_THROW(std::invalid_argument, "The number of generations must be at least 1.");
-
-        max_gen_ = max_gen;
     }
 
     size_t GaInfo::num_fitness_evals() const noexcept
@@ -54,7 +36,7 @@ namespace genetic_algorithm
 
     void GaInfo::algorithm(std::unique_ptr<algorithm::Algorithm> f)
     {
-        if (!f) GA_THROW(std::invalid_argument, "The algorithm can't be a nullptr.");
+        GA_ASSERT(f, "The algorithm can't be a nullptr.");
 
         algorithm_ = std::move(f);
         is_initialized_ = false;
@@ -62,7 +44,7 @@ namespace genetic_algorithm
 
     void GaInfo::stop_condition(std::unique_ptr<stopping::StopCondition> f)
     {
-        if (!f) GA_THROW(std::invalid_argument, "The stop condition can't be a nullptr.");
+        GA_ASSERT(f, "The stop condition can't be a nullptr.");
 
         stop_condition_ = std::move(f);
     }
