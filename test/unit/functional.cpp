@@ -180,3 +180,19 @@ TEST_CASE("comparison_funcs", "[functional]")
         REQUIRE(n == 3);
     }
 }
+
+TEST_CASE("is_size", "[functional]")
+{
+    std::vector<double> empty;
+
+    REQUIRE(is_size(0)(empty));
+    REQUIRE(!is_size(1)(empty));
+}
+
+TEST_CASE("element_at", "[functional]")
+{
+    std::vector<double> vec{ 4.0, 2.0, 3.0 };
+
+    REQUIRE(element_at(0)(vec) == 4.0);
+    REQUIRE(element_at(2)(vec) == 3.0);
+}
