@@ -7,7 +7,7 @@ include(CTest)
 include(CheckIPOSupported)
 
 option(GA_BUILD_TESTS "Enable the tests for the library." ON)
-option(GA_BUILD_EXAMPLES "Enable building the examples for the library." OFF) # TODO
+option(GA_BUILD_EXAMPLES "Enable building the examples for the library." ON)
 option(GA_USE_WERROR "Treat warnings as errors during the build." ON)
 option(GA_USE_LTO "Enable link time optimizations for the library." ON)
 option(GA_USE_MARCH_NATIVE "Add -march=native option to release builds when using gcc or clang." ON)
