@@ -13,9 +13,9 @@ namespace genetic_algorithm::crossover
 {
     /*
     * Wraps a callable with the right signature so that it can be used as a crossover
-    * method in the GAs.
+    * operator in the GAs.
     */
-    template<Gene T>
+    template<typename T>
     class Lambda final : public Crossover<T>
     {
     public:

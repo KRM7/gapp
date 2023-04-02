@@ -24,7 +24,7 @@ namespace genetic_algorithm
     * 
     * @tparam T The gene type used in the algorithm.
     */
-    template<Gene T>
+    template<typename T>
     class FitnessFunctionBase
     {
     public:
@@ -123,7 +123,7 @@ namespace genetic_algorithm
     * @tparam Nobj The number of objectives. Must be at least 1.
     * @tparam ChromLen The length of the chromosomes expected by the fitness function. Must be at least 1.
     */
-    template<Gene T, size_t Nobj = detail::dynamic_tag, size_t ChromLen = detail::dynamic_tag>
+    template<typename T, size_t Nobj = detail::dynamic_tag, size_t ChromLen = detail::dynamic_tag>
     class FitnessFunction : public FitnessFunctionBase<T>
     {
     public:
@@ -212,7 +212,7 @@ namespace genetic_algorithm
     *
     * @tparam ChromLen The length of the chromosomes expected by the fitness function.
     */
-    template<Gene T, size_t ChromLen = detail::dynamic_tag>
+    template<typename T, size_t ChromLen = detail::dynamic_tag>
     using SingleObjFitnessFunction = FitnessFunction<T, 1, ChromLen>;
 
 
@@ -221,7 +221,7 @@ namespace genetic_algorithm
     * Takes a vector of genes (chromosome) and returns the fitness vector of the chromosome. \n
     * The returned fitness vector should always be the same length. \n
     */
-    template<Gene T>
+    template<typename T>
     using FitnessCallable = std::function<detail::FitnessVector(const Chromosome<T>&)>;
 
     /**
@@ -232,7 +232,7 @@ namespace genetic_algorithm
     * @param f The fitness function to use in the algorithm.
     * @returns The fitness function.
     */
-    template<Gene T>
+    template<typename T>
     std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(size_t num_obj, size_t chrom_len, FitnessCallable<T> f);
 
     /**
@@ -243,7 +243,7 @@ namespace genetic_algorithm
     * @param f The fitness function to use in the algorithm.
     * @returns The fitness function.
     */
-    template<Gene T, size_t Nobj, size_t ChromLen>
+    template<typename T, size_t Nobj, size_t ChromLen>
     std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(FitnessCallable<T> f);
 
     /**
@@ -253,7 +253,7 @@ namespace genetic_algorithm
     * @param f The fitness function to use in the algorithm.
     * @returns The fitness function.
     */
-    template<Gene T, size_t ChromLen>
+    template<typename T, size_t ChromLen>
     std::unique_ptr<FitnessFunctionBase<T>> makeSingleObjFitnessFunction(FitnessCallable<T> f);
 
 } // namespace genetic_algorithm
@@ -271,7 +271,7 @@ namespace genetic_algorithm::detail
     * Wraps a callable with the right signature so that it can be used as a fitness
     * function in the GAs.
     */
-    template<Gene T>
+    template<typename T>
     class FitnessLambda final : public FitnessFunctionBase<T>
     {
     public:
@@ -298,7 +298,7 @@ namespace genetic_algorithm::detail
 
 namespace genetic_algorithm
 {
-    template<Gene T>
+    template<typename T>
     auto FitnessFunctionBase<T>::operator()(const Chromosome<T>& chrom) -> FitnessVector
     {
         GA_ASSERT(chrom.size() == chrom_len() || variable_chrom_len(), "A chromosome of incorrect size was passed to the fitness function.");
@@ -310,19 +310,19 @@ namespace genetic_algorithm
         return fvec;
     }
 
-    template<Gene T>
+    template<typename T>
     inline std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(size_t chrom_len, size_t num_obj, FitnessCallable<T> f)
     {
         return std::make_unique<detail::FitnessLambda<T>>(chrom_len, num_obj, std::move(f));
     }
 
-    template<Gene T, size_t Nobj, size_t ChromLen>
+    template<typename T, size_t Nobj, size_t ChromLen>
     inline std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(FitnessCallable<T> f)
     {
         return std::make_unique<detail::FitnessLambda<T>>(ChromLen, Nobj, std::move(f));
     }
 
-    template<Gene T, size_t ChromLen>
+    template<typename T, size_t ChromLen>
     inline std::unique_ptr<FitnessFunctionBase<T>> makeSingleObjFitnessFunction(FitnessCallable<T> f)
     {
         return std::make_unique<detail::FitnessLambda<T>>(ChromLen, 1, std::move(f));

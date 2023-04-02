@@ -10,7 +10,7 @@
 
 namespace genetic_algorithm
 {
-    template<Gene T>
+    template<typename T>
     class GA;
 
 } // namespace genetic_algorithm
@@ -25,7 +25,7 @@ namespace genetic_algorithm::crossover
     * the returned children will be the same as the parents. \n
     * The generated children's chromosome sizes may be different from eachother, and also from the parent's chromosomes.
     */
-    template<Gene T>
+    template<typename T>
     class Crossover
     {
     public:

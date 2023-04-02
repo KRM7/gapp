@@ -26,7 +26,7 @@
 
 namespace genetic_algorithm
 {
-    template<Gene T>
+    template<typename T>
     GA<T>::GA(std::unique_ptr<FitnessFunctionBase<T>> f, Positive<size_t> population_size) :
         GaInfo(population_size, f->num_objectives())
     {
@@ -35,7 +35,7 @@ namespace genetic_algorithm
         fitness_function_ = std::move(f);
     }
 
-    template<Gene T>
+    template<typename T>
     template<typename F>
     requires std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>
     inline void GA<T>::fitness_function(F f)
@@ -44,7 +44,7 @@ namespace genetic_algorithm
         is_initialized_ = false;
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::fitness_function(std::unique_ptr<FitnessFunctionBase<T>> f)
     {
         GA_ASSERT(f, "The fitness function can't be a nullptr.");
@@ -53,7 +53,7 @@ namespace genetic_algorithm
         is_initialized_ = false;
     }
 
-    template<Gene T>
+    template<typename T>
     inline FitnessFunctionBase<T>& GA<T>::fitness_function() & noexcept
     {
         GA_ASSERT(fitness_function_);
@@ -61,7 +61,7 @@ namespace genetic_algorithm
         return *fitness_function_;
     }
 
-    template<Gene T>
+    template<typename T>
     inline const FitnessFunctionBase<T>& GA<T>::fitness_function() const& noexcept
     {
         GA_ASSERT(fitness_function_);
@@ -69,7 +69,7 @@ namespace genetic_algorithm
         return *fitness_function_;
     }
 
-    template<Gene T>
+    template<typename T>
     inline size_t GA<T>::chrom_len() const noexcept
     {
         GA_ASSERT(fitness_function_);
@@ -77,7 +77,7 @@ namespace genetic_algorithm
         return fitness_function_->chrom_len();
     }
 
-    template<Gene T>
+    template<typename T>
     inline bool GA<T>::variable_chrom_len() const noexcept
     {
         GA_ASSERT(fitness_function_);
@@ -85,7 +85,7 @@ namespace genetic_algorithm
         return fitness_function_->variable_chrom_len();
     }
 
-    template<Gene T>
+    template<typename T>
     inline size_t GA<T>::num_objectives() const noexcept
     {
         GA_ASSERT(fitness_function_);
@@ -93,7 +93,7 @@ namespace genetic_algorithm
         return fitness_function_->num_objectives();
     }
 
-    template<Gene T>
+    template<typename T>
     inline bool GA<T>::dynamic_fitness() const noexcept
     {
         GA_ASSERT(fitness_function_);
@@ -102,14 +102,14 @@ namespace genetic_algorithm
     }
 
 
-    template<Gene T>
+    template<typename T>
     inline auto GA<T>::gene_bounds() const noexcept -> const BoundsVector<T>&
     {
         return bounds_;
     }
 
 
-    template<Gene T>
+    template<typename T>
     template<typename F>
     requires std::derived_from<F, crossover::Crossover<T>> && std::is_final_v<F>
     inline void GA<T>::crossover_method(F f)
@@ -117,7 +117,7 @@ namespace genetic_algorithm
         crossover_ = std::make_unique<F>(std::move(f));
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::crossover_method(std::unique_ptr<typename crossover::Crossover<T>> f)
     {
         GA_ASSERT(f, "The crossover method can't be a nullptr.");
@@ -125,13 +125,13 @@ namespace genetic_algorithm
         crossover_ = std::move(f);
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::crossover_method(CrossoverCallable f)
     {
         crossover_ = std::make_unique<crossover::Lambda<T>>(std::move(f));
     }
 
-    template<Gene T>
+    template<typename T>
     inline crossover::Crossover<T>& GA<T>::crossover_method() & noexcept
     {
         GA_ASSERT(crossover_);
@@ -139,7 +139,7 @@ namespace genetic_algorithm
         return *crossover_;
     }
 
-    template<Gene T>
+    template<typename T>
     inline const crossover::Crossover<T>& GA<T>::crossover_method() const& noexcept
     {
         GA_ASSERT(crossover_);
@@ -147,7 +147,7 @@ namespace genetic_algorithm
         return *crossover_;
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::crossover_rate(Probability pc) noexcept
     {
         GA_ASSERT(crossover_);
@@ -155,7 +155,7 @@ namespace genetic_algorithm
         crossover_->crossover_rate(pc);
     }
 
-    template<Gene T>
+    template<typename T>
     inline Probability GA<T>::crossover_rate() const noexcept
     {
         GA_ASSERT(crossover_);
@@ -163,7 +163,7 @@ namespace genetic_algorithm
         return crossover_->crossover_rate();
     }
 
-    template<Gene T>
+    template<typename T>
     template<typename F>
     requires std::derived_from<F, mutation::Mutation<T>> && std::is_final_v<F>
     inline void GA<T>::mutation_method(F f)
@@ -171,7 +171,7 @@ namespace genetic_algorithm
         mutation_ = std::make_unique<F>(std::move(f));
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::mutation_method(std::unique_ptr<typename mutation::Mutation<T>> f)
     {
         GA_ASSERT(f, "The mutation method can't be a nullptr.");
@@ -179,13 +179,13 @@ namespace genetic_algorithm
         mutation_ = std::move(f);
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::mutation_method(MutationCallable f)
     {
         mutation_ = std::make_unique<mutation::Lambda<T>>(std::move(f));
     }
 
-    template<Gene T>
+    template<typename T>
     inline mutation::Mutation<T>& GA<T>::mutation_method() & noexcept
     {
         GA_ASSERT(mutation_);
@@ -193,7 +193,7 @@ namespace genetic_algorithm
         return *mutation_;
     }
 
-    template<Gene T>
+    template<typename T>
     inline const mutation::Mutation<T>& GA<T>::mutation_method() const& noexcept
     {
         GA_ASSERT(mutation_);
@@ -201,7 +201,7 @@ namespace genetic_algorithm
         return *mutation_;
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::mutation_rate(Probability pm) noexcept
     {
         GA_ASSERT(mutation_);
@@ -209,7 +209,7 @@ namespace genetic_algorithm
         mutation_->mutation_rate(pm);
     }
 
-    template<Gene T>
+    template<typename T>
     inline Probability GA<T>::mutation_rate() const noexcept
     {
         GA_ASSERT(mutation_);
@@ -217,7 +217,7 @@ namespace genetic_algorithm
         return mutation_->mutation_rate();
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::repair_function(RepairCallable f)
     {
         /* Nullptr is fine here, it just won't be called */
@@ -225,7 +225,7 @@ namespace genetic_algorithm
     }
 
 
-    template<Gene T>
+    template<typename T>
     inline bool GA<T>::hasValidFitness(const Candidate<T>& sol) const noexcept
     {
         GA_ASSERT(fitness_function_);
@@ -233,13 +233,13 @@ namespace genetic_algorithm
         return sol.is_evaluated && (sol.fitness.size() == fitness_function_->num_objectives());
     }
 
-    template<Gene T>
+    template<typename T>
     inline bool GA<T>::hasValidChromosome(const Candidate<T>& sol) const noexcept
     {
         return variable_chrom_len() || (sol.chromosome.size() == chrom_len());
     }
 
-    template<Gene T>
+    template<typename T>
     inline bool GA<T>::isValidEvaluatedPopulation(const Population<T>& pop) const
     {
         return std::all_of(pop.begin(), pop.end(), [this](const Candidate<T>& sol)
@@ -248,7 +248,7 @@ namespace genetic_algorithm
         });
     }
 
-    template<Gene T>
+    template<typename T>
     inline bool GA<T>::isValidUnevaluatedPopulation(const Population<T>& pop) const
     {
         return std::all_of(pop.begin(), pop.end(), [this](const Candidate<T>& sol)
@@ -257,7 +257,7 @@ namespace genetic_algorithm
         });
     }
 
-    template<Gene T>
+    template<typename T>
     inline bool GA<T>::fitnessMatrixIsSynced() const
     {
         return std::equal(fitness_matrix_.begin(), fitness_matrix_.end(), population_.begin(), population_.end(),
@@ -268,7 +268,7 @@ namespace genetic_algorithm
     }
 
 
-    template<Gene T>
+    template<typename T>
     void GA<T>::initializeAlgorithm(Population<T> initial_population)
     {
         GA_ASSERT(fitness_function_);
@@ -300,7 +300,7 @@ namespace genetic_algorithm
         is_initialized_ = true;
     }
 
-    template<Gene T>
+    template<typename T>
     Population<T> GA<T>::generatePopulation(Positive<size_t> pop_size, Population<T> initial_population) const
     {
         GA_ASSERT(isValidUnevaluatedPopulation(initial_population), "An invalid initial population was specified for the GA.");
@@ -320,7 +320,7 @@ namespace genetic_algorithm
         return population;
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::prepareSelections() const
     {
         GA_ASSERT(algorithm_);
@@ -330,7 +330,7 @@ namespace genetic_algorithm
         algorithm_->prepareSelections(*this, fitness_matrix());
     }
 
-    template<Gene T>
+    template<typename T>
     inline const Candidate<T>& GA<T>::select() const
     {
         GA_ASSERT(algorithm_);
@@ -338,7 +338,7 @@ namespace genetic_algorithm
         return algorithm_->select(*this, population(), fitness_matrix());
     }
 
-    template<Gene T>
+    template<typename T>
     inline CandidatePair<T> GA<T>::crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         GA_ASSERT(crossover_);
@@ -346,7 +346,7 @@ namespace genetic_algorithm
         return (*crossover_)(*this, parent1, parent2);
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::mutate(Candidate<T>& sol) const
     {
         GA_ASSERT(mutation_);
@@ -354,7 +354,7 @@ namespace genetic_algorithm
         (*mutation_)(*this, sol);
     }
 
-    template<Gene T>
+    template<typename T>
     void GA<T>::repair(Candidate<T>& sol) const
     {
         GA_ASSERT(hasValidChromosome(sol));
@@ -373,7 +373,7 @@ namespace genetic_algorithm
         GA_ASSERT(hasValidChromosome(sol), "Invalid chromosome returned by the repair function.");
     }
 
-    template<Gene T>
+    template<typename T>
     void GA<T>::updatePopulation(Population<T>&& children)
     {
         GA_ASSERT(algorithm_);
@@ -384,7 +384,7 @@ namespace genetic_algorithm
         fitness_matrix_ = detail::toFitnessMatrix(population_);
     }
 
-    template<Gene T>
+    template<typename T>
     inline bool GA<T>::stopCondition() const
     {
         GA_ASSERT(stop_condition_);
@@ -392,7 +392,7 @@ namespace genetic_algorithm
         return (*stop_condition_)(*this);
     }
 
-    template<Gene T>
+    template<typename T>
     inline void GA<T>::evaluate(Candidate<T>& sol)
     {
         GA_ASSERT(fitness_function_);
@@ -413,7 +413,7 @@ namespace genetic_algorithm
         GA_ASSERT(hasValidFitness(sol));
     }
 
-    template<Gene T>
+    template<typename T>
     void GA<T>::updateOptimalSolutions(Candidates<T>& optimal_sols, const Population<T>& pop) const
     {
         GA_ASSERT(algorithm_);
@@ -424,7 +424,7 @@ namespace genetic_algorithm
         detail::erase_duplicates(optimal_sols);
     }
 
-    template<Gene T>
+    template<typename T>
     void GA<T>::advance()
     {
         GA_ASSERT(population_.size() == population_size_);
@@ -463,19 +463,19 @@ namespace genetic_algorithm
         generation_cntr_++;
     }
 
-    template<Gene T>
+    template<typename T>
     inline Candidates<T> GA<T>::run(Population<T> initial_population)
     {
         return run(std::move(initial_population), max_gen());
     }
 
-    template<Gene T>
+    template<typename T>
     inline Candidates<T> GA<T>::run(size_t num_generations)
     {
         return run({}, num_generations);
     }
 
-    template<Gene T>
+    template<typename T>
     Candidates<T> GA<T>::run(Population<T> initial_population, size_t num_generations)
     {
         max_gen(num_generations);
@@ -490,7 +490,7 @@ namespace genetic_algorithm
         return solutions_;
     }
 
-    template<Gene T>
+    template<typename T>
     Candidates<T> GA<T>::continueFor(size_t num_generations)
     {
         max_gen(max_gen_ + num_generations);

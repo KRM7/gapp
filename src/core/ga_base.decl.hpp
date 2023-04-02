@@ -18,14 +18,14 @@
 
 namespace genetic_algorithm::crossover
 {
-    template<Gene T>
+    template<typename T>
     class Crossover;
 
 } // namespace genetic_algorithm::crossover
 
 namespace genetic_algorithm::mutation
 {
-    template<Gene T>
+    template<typename T>
     class Mutation;
 
 } // namespace genetic_algorithm::mutation
@@ -39,7 +39,7 @@ namespace genetic_algorithm
     *
     * @tparam Gene The type of the genes in the candidates' chromosomes.
     */
-    template<Gene T>
+    template<typename T>
     class GA : public GaInfo
     {
     public:

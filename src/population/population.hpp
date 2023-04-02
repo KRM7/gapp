@@ -11,11 +11,11 @@
 namespace genetic_algorithm
 {
     /** The Population type used in all of the genetic algorithms. */
-    template<Gene T>
+    template<typename T>
     using Population = std::vector<Candidate<T>>;
 
     /** A vector of Candidates. */
-    template<Gene T>
+    template<typename T>
     using Candidates = std::vector<Candidate<T>>;
 
 } // namespace genetic_algorithm
@@ -26,7 +26,7 @@ namespace genetic_algorithm::detail
     using FitnessMatrix = detail::Matrix<double>;
 
     /* Return the fitness matrix of the population (multi-objective). */
-    template<Gene T>
+    template<typename T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop);
 
     /* Return the fitness vector of a fitness matrix along the first objective axis. */
@@ -55,7 +55,7 @@ namespace genetic_algorithm::detail
 
 
     /* Find the pareto-optimal solutions in a population. */
-    template<Gene T>
+    template<typename T>
     Candidates<T> findParetoFront(const Population<T>& pop);
 
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat);
@@ -68,7 +68,7 @@ namespace genetic_algorithm::detail
 
 
     /* Find the pareto-optimal solutions in the set (lhs U rhs), assuming both lhs and rhs are pareto sets. */
-    template<Gene T>
+    template<typename T>
     Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs);
 
 } // namespace genetic_algorithm::detail
@@ -87,7 +87,7 @@ namespace genetic_algorithm::detail
 
 namespace genetic_algorithm::detail
 {
-    template<Gene T>
+    template<typename T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop)
     {
         if (pop.empty()) return {};
@@ -103,7 +103,7 @@ namespace genetic_algorithm::detail
         return fitness_matrix;
     }
 
-    template<Gene T>
+    template<typename T>
     Candidates<T> findParetoFront(const Population<T>& pop)
     {
         if (pop.empty()) return {};
@@ -120,7 +120,7 @@ namespace genetic_algorithm::detail
         return detail::select(pop, optimal_indices);
     }
     
-    template<Gene T>
+    template<typename T>
     Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs)
     {
         if (lhs.empty()) return rhs;

@@ -16,7 +16,7 @@
 
 namespace genetic_algorithm::algorithm
 {
-    template<Gene T>
+    template<typename T>
     auto Algorithm::select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const -> const Candidate<T>&
     {
         GA_ASSERT(ga.population_size() == pop.size());
@@ -29,7 +29,7 @@ namespace genetic_algorithm::algorithm
         return pop[selected_idx];
     }
 
-    template<Gene T>
+    template<typename T>
     auto Algorithm::nextPopulation(const GA<T>& ga, Population<T> parents, Population<T> children) -> Population<T>
     {
         GA_ASSERT(ga.population_size() == parents.size());
@@ -47,7 +47,7 @@ namespace genetic_algorithm::algorithm
         return detail::select(std::move(parents), next_indices);
     }
 
-    template<Gene T>
+    template<typename T>
     auto Algorithm::optimalSolutions(const GA<T>& ga, const Population<T>& pop) const -> Candidates<T>
     {
         GA_ASSERT(ga.population_size() == pop.size());

@@ -10,7 +10,7 @@
 
 namespace genetic_algorithm
 {
-    template<Gene T>
+    template<typename T>
     class GA;
 
 } // namespace genetic_algorithm
@@ -24,7 +24,7 @@ namespace genetic_algorithm::mutation
     * (This probability can either be per-candidate or per-gene depending on how the particular operator is defined.) \n
     * The mutation is allowed change the length of the candidate's chromosome.
     */
-    template<Gene T>
+    template<typename T>
     class Mutation
     {
     public:

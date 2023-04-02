@@ -15,7 +15,7 @@ namespace genetic_algorithm::mutation
     * Wraps a callable with the right signature so that it can be used as a mutation
     * method in the GAs.
     */
-    template<Gene T>
+    template<typename T>
     class Lambda final : public Mutation<T>
     {
     public:

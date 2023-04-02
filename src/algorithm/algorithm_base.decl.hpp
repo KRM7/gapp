@@ -14,7 +14,7 @@ namespace genetic_algorithm
 {
     class GaInfo;
 
-    template<Gene T>
+    template<typename T>
     class GA;
 
 } // namespace genetic_algorithm
@@ -86,7 +86,7 @@ namespace genetic_algorithm::algorithm
         * @param fmat The fitness matrix of the current population.
         * @returns The candidate selected from the population.
         */
-        template<Gene T>
+        template<typename T>
         const Candidate<T>& select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const;
 
         /**
@@ -103,7 +103,7 @@ namespace genetic_algorithm::algorithm
         * 
         * @returns The candidates of the next generation of the algorithm.
         */
-        template<Gene T>
+        template<typename T>
         Population<T> nextPopulation(const GA<T>& ga, Population<T> parents, Population<T> children);
 
         /**
@@ -119,7 +119,7 @@ namespace genetic_algorithm::algorithm
         * @param pop The current population of the GA.
         * @returns The pareto optimal solutions of the population pop.
         */
-        template<Gene T>
+        template<typename T>
         Candidates<T> optimalSolutions(const GA<T>& ga, const Population<T>& pop) const;
 
     protected:

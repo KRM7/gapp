@@ -11,7 +11,7 @@
 
 namespace genetic_algorithm::mutation
 {
-    template<Gene T>
+    template<typename T>
     void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
     {
         GA_ASSERT(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives());

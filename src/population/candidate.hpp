@@ -12,18 +12,8 @@
 
 namespace genetic_algorithm
 {
-    /** Valid gene types in the genetic algorithms. */
-    template<typename T>
-    concept Gene = requires
-    {
-        requires detail::Hashable<T>;
-        requires std::regular<T>;
-        requires std::destructible<T>;
-        requires std::three_way_comparable<T>;
-    };
-
      /** The type used to represent the lower and upper bounds of a gene. */
-    template<Gene T>
+    template<typename T>
     class GeneBounds
     {
     public:
@@ -44,21 +34,21 @@ namespace genetic_algorithm
     };
 
     /** A vector of gene lower and upper bounds. */
-    template<Gene T>
+    template<typename T>
     using BoundsVector = std::vector<GeneBounds<T>>;
 
     /** The chromosome type of the Candidates. */
-    template<Gene T>
+    template<typename T>
     using Chromosome = std::vector<T>;
 
     /**
     * The Candidate class that is used to represent solutions in the genetic algorithms. \n
     * This is used as the candidate type in all of the algorithms.
     */
-    template<Gene T>
+    template<typename T>
     struct Candidate
     {
-        using GeneType = T;
+        using Gene = T;
 
         explicit Candidate(size_t chrom_len) :
             chromosome(chrom_len)
@@ -89,7 +79,7 @@ namespace genetic_algorithm
     };
 
     /** A pair of candidates. */
-    template<Gene T>
+    template<typename T>
     using CandidatePair = std::pair<Candidate<T>, Candidate<T>>;
 
     /** Two candidates are considered equal if their chromosomes are the same. */
@@ -135,7 +125,7 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm
 {
-    template<Gene T>
+    template<typename T>
     constexpr GeneBounds<T>::GeneBounds(const T& lower, const T& upper) noexcept :
         lower_(lower), upper_(upper)
     {
@@ -194,13 +184,13 @@ namespace genetic_algorithm
         return !(rhs < lhs);
     }
 
-    template<detail::Hashable GeneType>
-    size_t CandidateHasher<GeneType>::operator()(const Candidate<GeneType>& candidate) const noexcept
+    template<detail::Hashable T>
+    size_t CandidateHasher<T>::operator()(const Candidate<T>& candidate) const noexcept
     {
         size_t seed = candidate.chromosome.size();
         for (const auto& gene : candidate.chromosome)
         {
-            seed ^= std::hash<GeneType>()(gene) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+            seed ^= std::hash<T>{}(gene) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
         }
         return seed;
     }

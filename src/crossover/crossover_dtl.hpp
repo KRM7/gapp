@@ -13,15 +13,15 @@
 namespace genetic_algorithm::crossover::dtl
 {
     /* General n-point crossover implementation for any gene type. */
-    template<Gene T>
+    template<typename T>
     CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::vector<size_t> crossover_points);
 
     /* Simpler single-point crossover function for any gene type. */
-    template<Gene T>
+    template<typename T>
     CandidatePair<T> singlePointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t crossover_point);
 
     /* Simpler two-point crossover function for any gene type. */
-    template<Gene T>
+    template<typename T>
     CandidatePair<T> twoPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::pair<size_t, size_t> crossover_points);
 
 
@@ -57,7 +57,7 @@ namespace genetic_algorithm::crossover::dtl
     std::vector<size_t> findOddCycleIndices(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
 
     /* Implementation of the cycle crossover for any gene type. */
-    template<Gene T>
+    template<typename T>
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
 
@@ -70,8 +70,8 @@ namespace genetic_algorithm::crossover::dtl
     class NeighbourList<T>;
 
     /* Conctruct the neighbour lists of each gene based on 2 chromosomes. The first and last elements are considered neighbours. */
-    template<typename T, typename Ret = std::conditional_t<std::is_unsigned_v<T>, std::vector<NeighbourList<T>>, std::unordered_map<T, NeighbourList<T>>>>
-    Ret makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
+    template<typename T, typename R = std::conditional_t<std::is_unsigned_v<T>, std::vector<NeighbourList<T>>, std::unordered_map<T, NeighbourList<T>>>>
+    R makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
 
     /* Implementation of the edge crossover for any gene type, only generates a single child. */
     template<typename T>
@@ -107,7 +107,7 @@ namespace genetic_algorithm::crossover::dtl
 
 namespace genetic_algorithm::crossover::dtl
 {
-    template<Gene T>
+    template<typename T>
     CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::vector<size_t> crossover_points)
     {
         const size_t chrom_len = parent1.chromosome.size();
@@ -136,7 +136,7 @@ namespace genetic_algorithm::crossover::dtl
         return { std::move(child1), std::move(child2) };
     }
 
-    template<Gene T>
+    template<typename T>
     CandidatePair<T> singlePointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t crossover_point)
     {
         GA_ASSERT(crossover_point <= parent1.chromosome.size());
@@ -153,7 +153,7 @@ namespace genetic_algorithm::crossover::dtl
         return { std::move(child1), std::move(child2) };
     }
 
-    template<Gene T>
+    template<typename T>
     CandidatePair<T> twoPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::pair<size_t, size_t> crossover_points)
     {
         GA_ASSERT(crossover_points.first <= parent1.chromosome.size());
@@ -382,7 +382,7 @@ namespace genetic_algorithm::crossover::dtl
         return odd_indices;
     }
 
-    template<Gene T>
+    template<typename T>
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
         GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
@@ -479,12 +479,12 @@ namespace genetic_algorithm::crossover::dtl
         std::array<T, 4> neighbours_{ EMPTY, EMPTY, EMPTY, EMPTY };
     };
 
-    template<typename T, typename Ret>
-    Ret makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
+    template<typename T, typename R>
+    R makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
     {
         GA_ASSERT(chrom1.size() == chrom2.size());
 
-        Ret nb_lists(chrom1.size());
+        R nb_lists(chrom1.size());
 
         nb_lists[chrom1.front()].add(chrom1[1]);
         nb_lists[chrom2.front()].add(chrom2[1]);

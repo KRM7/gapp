@@ -89,16 +89,16 @@ namespace genetic_algorithm::problems
     * Includes some additional properties for each benchmark in addition to what
     * is in a fitness function (eg. known optimum, optimal values).
     */
-    template<Gene T>
+    template<typename T>
     class BenchmarkFunction : public FitnessFunctionBase<T>, public BenchmarkFunctionTraits<T>
     {
     public:
-        using typename FitnessFunction<T>::GeneType;
+        using typename FitnessFunctionBase<T>::GeneType;
         using typename BenchmarkFunctionTraits<T>::Bounds;
 
         /** @returns The number of variables of the benchmark function. */
         [[nodiscard]]
-        size_t num_vars() const noexcept { return FitnessFunction<T>::chrom_len(); }
+        size_t num_vars() const noexcept { return FitnessFunctionBase<T>::chrom_len(); }
 
     protected:
 
