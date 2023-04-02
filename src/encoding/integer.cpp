@@ -14,7 +14,7 @@
 
 namespace genetic_algorithm
 {
-    IntegerGA::IntegerGA(std::unique_ptr<FitnessFunction<IntegerGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size) :
+    IntegerGA::IntegerGA(std::unique_ptr<FitnessFunctionBase<IntegerGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
         gene_bounds(bounds);

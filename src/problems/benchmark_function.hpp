@@ -90,7 +90,7 @@ namespace genetic_algorithm::problems
     * is in a fitness function (eg. known optimum, optimal values).
     */
     template<Gene T>
-    class BenchmarkFunction : public FitnessFunction<T>, public BenchmarkFunctionTraits<T>
+    class BenchmarkFunction : public FitnessFunctionBase<T>, public BenchmarkFunctionTraits<T>
     {
     public:
         using typename FitnessFunction<T>::GeneType;
@@ -104,19 +104,19 @@ namespace genetic_algorithm::problems
 
         /* Single-objective, uniform bounds. */
         BenchmarkFunction(std::string name, Bounds bounds, std::vector<T> optimum, double optimal_value) :
-            FitnessFunction<T>(optimum.size(), 1),
+            FitnessFunctionBase<T>(optimum.size(), 1),
             BenchmarkFunctionTraits<T>(std::move(name), bounds, std::move(optimum), optimal_value)
         {}
 
         /* Multi-objective, uniform bounds. */
         BenchmarkFunction(std::string name, Bounds bounds, std::vector<T> optimum, math::Point optimal_value) :
-            FitnessFunction<T>(optimum.size(), optimal_value.size()),
+            FitnessFunctionBase<T>(optimum.size(), optimal_value.size()),
             BenchmarkFunctionTraits<T>(std::move(name), bounds, std::move(optimum), std::move(optimal_value))
         {}
 
         /* General ctor, uniform bounds. */
         BenchmarkFunction(std::string name, size_t nvars, size_t nobj, Bounds bounds) :
-            FitnessFunction<T>(nvars, nobj),
+            FitnessFunctionBase<T>(nvars, nobj),
             BenchmarkFunctionTraits<T>(std::move(name), nvars, bounds)
         {}
 
@@ -132,42 +132,42 @@ namespace genetic_algorithm::problems
     * These are also usable as binary benchmark functions, not just real encoded ones.
     */
     template<>
-    class BenchmarkFunction<RealGene> : public FitnessFunction<RealGene>, public FitnessFunction<BinaryGene>, public BenchmarkFunctionTraits<RealGene>
+    class BenchmarkFunction<RealGene> : public FitnessFunctionBase<RealGene>, public FitnessFunctionBase<BinaryGene>, public BenchmarkFunctionTraits<RealGene>
     {
     public:
-        using FitnessFunction<RealGene>::GeneType;
-        using FitnessFunction<RealGene>::FitnessVector;
+        using FitnessFunctionBase<RealGene>::GeneType;
+        using FitnessFunctionBase<RealGene>::FitnessVector;
         using BenchmarkFunctionTraits<RealGene>::Bounds;
 
-        using FitnessFunction<RealGene>::operator();
-        using FitnessFunction<BinaryGene>::operator();
+        using FitnessFunctionBase<RealGene>::operator();
+        using FitnessFunctionBase<BinaryGene>::operator();
 
         /** @returns The number of variables of the benchmark function. */
         [[nodiscard]]
-        size_t num_vars() const noexcept { return FitnessFunction<RealGene>::chrom_len(); }
+        size_t num_vars() const noexcept { return FitnessFunctionBase<RealGene>::chrom_len(); }
 
-        using FitnessFunction<RealGene>::num_objectives;
+        using FitnessFunctionBase<RealGene>::num_objectives;
 
     protected:
 
         /* Single-objective, uniform bounds. */
         BenchmarkFunction(std::string name, Bounds bounds, std::vector<RealGene> optimum, double optimal_value, size_t var_bits) :
-            FitnessFunction<RealGene>(optimum.size(), 1),
-            FitnessFunction<BinaryGene>(optimum.size() * var_bits, 1),
+            FitnessFunctionBase<RealGene>(optimum.size(), 1),
+            FitnessFunctionBase<BinaryGene>(optimum.size() * var_bits, 1),
             BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), optimal_value)
         {}
 
        /* Multi-objective, uniform bounds. */
         BenchmarkFunction(std::string name, Bounds bounds, std::vector<RealGene> optimum, math::Point optimal_value, size_t var_bits) :
-            FitnessFunction<RealGene>(optimum.size(), optimal_value.size()),
-            FitnessFunction<BinaryGene>(optimum.size() * var_bits, optimal_value.size()),
+            FitnessFunctionBase<RealGene>(optimum.size(), optimal_value.size()),
+            FitnessFunctionBase<BinaryGene>(optimum.size() * var_bits, optimal_value.size()),
             BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), std::move(optimal_value))
         {}
 
        /* General ctor, uniform bounds. */
         BenchmarkFunction(std::string name, size_t nvars, size_t nobj, Bounds bounds, size_t var_bits) :
-            FitnessFunction<RealGene>(nvars, nobj),
-            FitnessFunction<BinaryGene>(nvars * var_bits, nobj),
+            FitnessFunctionBase<RealGene>(nvars, nobj),
+            FitnessFunctionBase<BinaryGene>(nvars * var_bits, nobj),
             BenchmarkFunctionTraits<RealGene>(std::move(name), nvars, bounds)
         {}
 
@@ -181,7 +181,7 @@ namespace genetic_algorithm::problems
 
         FitnessVector invoke(const Chromosome<BinaryGene>& chrom) const final
         {
-            size_t var_bits = FitnessFunction<BinaryGene>::chrom_len() / FitnessFunction<RealGene>::chrom_len();
+            size_t var_bits = FitnessFunctionBase<BinaryGene>::chrom_len() / FitnessFunctionBase<RealGene>::chrom_len();
             return this->invoke(convert(chrom, bounds(), var_bits));
         }
 

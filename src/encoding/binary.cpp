@@ -14,7 +14,7 @@
 
 namespace genetic_algorithm
 {
-    BinaryGA::BinaryGA(std::unique_ptr<FitnessFunction<BinaryGene>> fitness_function, Positive<size_t> population_size) :
+    BinaryGA::BinaryGA(std::unique_ptr<FitnessFunctionBase<BinaryGene>> fitness_function, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
         bounds_ = BoundsVector<GeneType>(chrom_len(), GeneBounds<GeneType>{ 0, 1 });

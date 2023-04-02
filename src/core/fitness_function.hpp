@@ -10,16 +10,25 @@
 
 namespace genetic_algorithm
 {
+    namespace detail { inline constexpr size_t dynamic_tag = std::numeric_limits<size_t>::max(); }
+
     /**
-    * Base class used for the fitness functions used in the algorithms. \n
+    * Base class for the fitness functions used in the algorithms. \n
     * The fitness function takes a candidate solution (chromosome) and returns a fitness vector
     * after evaluating it.
+    * 
+    * This should be used as the base class for the fitness functions if the number
+    * of objectives or the chromosome length is not known at compile time.
+    * Otherwise use FitnessFunction, or SingleObjFinessFunction for single-objective
+    * problems.
+    * 
+    * @tparam T The gene type used in the algorithm.
     */
     template<Gene T>
-    class FitnessFunction
+    class FitnessFunctionBase
     {
     public:
-         /** The gene type used in the chromosomes. */
+        /** The gene type used in the chromosomes. */
         using GeneType = T;
 
         /**
@@ -42,7 +51,9 @@ namespace genetic_algorithm
         * @param dynamic Should be true if the fitness vector returned for a chromosome will not
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
-        constexpr FitnessFunction(Positive<size_t> chrom_len, Positive<size_t> num_objectives, bool variable_len = false, bool dynamic = false);
+        constexpr FitnessFunctionBase(Positive<size_t> chrom_len, Positive<size_t> num_objectives, bool variable_len = false, bool dynamic = false) noexcept :
+            num_objectives_(num_objectives), chrom_len_(chrom_len), dynamic_(dynamic), variable_chrom_len_(variable_len)
+        {}
 
         /** @returns The chromosome length the fitness function expects. */
         [[nodiscard]]
@@ -80,6 +91,110 @@ namespace genetic_algorithm
 
 
         /** Destructor. */
+        virtual ~FitnessFunctionBase()                                      = default;
+
+    protected:
+
+        FitnessFunctionBase(const FitnessFunctionBase&) noexcept            = default;
+        FitnessFunctionBase(FitnessFunctionBase&&) noexcept                 = default;
+        FitnessFunctionBase& operator=(const FitnessFunctionBase&) noexcept = default;
+        FitnessFunctionBase& operator=(FitnessFunctionBase&&) noexcept      = default;
+
+    private:
+        /** The implementation of the fitness function. Should be thread-safe. */
+        virtual FitnessVector invoke(const Chromosome<T>& chrom) const = 0;
+
+        Positive<size_t> num_objectives_;
+        Positive<size_t> chrom_len_;
+        bool dynamic_            = false;
+        bool variable_chrom_len_ = false;
+    };
+
+    /**
+    * Base class for the fitness functions used in the algorithms. \n
+    * The fitness function takes a candidate solution (chromosome) and returns a fitness vector
+    * after evaluating it.
+    *
+    * This should be used as the base class for the fitness functions if the number
+    * of objectives or the chromosome length is known at compile time,
+    * otherwise use FitnessFunctionBase.
+    *
+    * @tparam T The gene type used in the algorithm.
+    * @tparam Nobj The number of objectives. Must be at least 1.
+    * @tparam ChromLen The length of the chromosomes expected by the fitness function. Must be at least 1.
+    */
+    template<Gene T, size_t Nobj = detail::dynamic_tag, size_t ChromLen = detail::dynamic_tag>
+    class FitnessFunction : public FitnessFunctionBase<T>
+    {
+    public:
+        /**
+        * Create a fitness function.
+        *
+        * @param variable_len Should be true if the fitness function supports and will be used with
+        *   variable chromosome lengths. The other genetic operators (crossover, mutation, repair)
+        *   must also support variable length chromosomes if this is enabled.
+        * @param dynamic Should be true if the fitness vector returned for a chromosome will not
+        *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
+        */
+        constexpr FitnessFunction(bool variable_len = false, bool dynamic = false) noexcept
+        requires (Nobj != detail::dynamic_tag) && (ChromLen != detail::dynamic_tag) :
+            FitnessFunctionBase<T>(ChromLen, Nobj, variable_len, dynamic)
+        {}
+
+        /**
+        * Create a fitness function.
+        *
+        * @param num_objectives The number of objective functions used. This is the
+        *   expected size of the fitness vector returned by the fitness function.
+        *   Must be at least 1.
+        * @param variable_len Should be true if the fitness function supports and will be used with
+        *   variable chromosome lengths. The other genetic operators (crossover, mutation, repair)
+        *   must also support variable length chromosomes if this is enabled.
+        * @param dynamic Should be true if the fitness vector returned for a chromosome will not
+        *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
+        */
+        constexpr FitnessFunction(Positive<size_t> num_objectives, bool variable_len = false, bool dynamic = false) noexcept
+        requires (Nobj == detail::dynamic_tag) && (ChromLen != detail::dynamic_tag) :
+            FitnessFunctionBase<T>(ChromLen, num_objectives, variable_len, dynamic)
+        {}
+
+        /**
+        * Create a fitness function.
+        *
+        * @param chrom_len The chromosome length that will be used for the candidate
+        *   solutions in the algorithm. Must be at least 1.
+        * @param variable_len Should be true if the fitness function supports and will be used with
+        *   variable chromosome lengths. The other genetic operators (crossover, mutation, repair)
+        *   must also support variable length chromosomes if this is enabled.
+        * @param dynamic Should be true if the fitness vector returned for a chromosome will not
+        *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
+        */
+        constexpr FitnessFunction(Positive<size_t> chrom_len, bool variable_len = false, bool dynamic = false) noexcept
+        requires (Nobj != detail::dynamic_tag) && (ChromLen == detail::dynamic_tag) :
+            FitnessFunctionBase<T>(chrom_len, Nobj, variable_len, dynamic)
+        {}
+
+        /**
+        * Create a fitness function.
+        *
+        * @param chrom_len The chromosome length that will be used for the candidate
+        *   solutions in the algorithm. Must be at least 1.
+        * @param num_objectives The number of objective functions used. This is the
+        *   expected size of the fitness vector returned by the fitness function.
+        *   Must be at least 1.
+        * @param variable_len Should be true if the fitness function supports and will be used with
+        *   variable chromosome lengths. The other genetic operators (crossover, mutation, repair)
+        *   must also support variable length chromosomes if this is enabled.
+        * @param dynamic Should be true if the fitness vector returned for a chromosome will not
+        *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
+        */
+        constexpr FitnessFunction(Positive<size_t> chrom_len, Positive<size_t> num_objectives, bool variable_len = false, bool dynamic = false) noexcept
+        requires (Nobj == detail::dynamic_tag) && (ChromLen == detail::dynamic_tag) :
+            FitnessFunctionBase<T>(chrom_len, num_objectives, variable_len, dynamic)
+        {}
+
+
+        /** Destructor. */
         virtual ~FitnessFunction()                                  = default;
 
     protected:
@@ -88,16 +203,17 @@ namespace genetic_algorithm
         FitnessFunction(FitnessFunction&&) noexcept                 = default;
         FitnessFunction& operator=(const FitnessFunction&) noexcept = default;
         FitnessFunction& operator=(FitnessFunction&&) noexcept      = default;
-
-    private:
-        /** The implementation of the fitness function. Should be thread-safe. */
-        virtual FitnessVector invoke(const Chromosome<T>& chrom) const = 0;
-
-        Positive<size_t> chrom_len_;
-        Positive<size_t> num_objectives_;
-        bool dynamic_            = false;
-        bool variable_chrom_len_ = false;
     };
+
+    /**
+    * Base class for single-objective fitness functions. \n
+    * The fitness function takes a candidate solution (chromosome) and returns a fitness vector
+    * of size 1 after evaluating it.
+    *
+    * @tparam ChromLen The length of the chromosomes expected by the fitness function.
+    */
+    template<Gene T, size_t ChromLen = detail::dynamic_tag>
+    using SingleObjFitnessFunction = FitnessFunction<T, 1, ChromLen>;
 
 
     /**
@@ -109,20 +225,36 @@ namespace genetic_algorithm
     using FitnessCallable = std::function<detail::FitnessVector(const Chromosome<T>&)>;
 
     /**
-    * Create a fitness function that can be used in the genetic algorithms from
-    * a callable with the right signature.
-    *
-    * @see FitnessFunction
-    * @see FitnessCallable
-    *
-    * @param chrom_len The length of the chromosomes in the population.
-    * @param num_obj The number of objective functions (i.e. the size of the fitness vector returned by the fitness callable).
-    * @param f The fitness function to use in the algorithm.
+    * Create a fitness function that can be used in the genetic algorithms from a callable  object.
     * 
+    * @param num_obj The number of objective functions (i.e. the size of the fitness vector returned by the fitness callable).
+    * @param chrom_len The length of the chromosomes in the population.
+    * @param f The fitness function to use in the algorithm.
     * @returns The fitness function.
     */
     template<Gene T>
-    std::unique_ptr<FitnessFunction<T>> makeFitnessFunction(size_t chrom_len, size_t num_obj, FitnessCallable<T> f);
+    std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(size_t num_obj, size_t chrom_len, FitnessCallable<T> f);
+
+    /**
+    * Create a fitness function that can be used in the genetic algorithms from a callable object.
+    * 
+    * @tparam Nobj The number of objective functions (i.e. the size of the fitness vector returned by the fitness callable).
+    * @tparam ChromLen The length of the chromosomes in the population.
+    * @param f The fitness function to use in the algorithm.
+    * @returns The fitness function.
+    */
+    template<Gene T, size_t Nobj, size_t ChromLen>
+    std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(FitnessCallable<T> f);
+
+    /**
+    * Create a single-objective fitness function that can be used in the genetic algorithms from a callable object.
+    *
+    * @tparam ChromLen The length of the chromosomes in the population.
+    * @param f The fitness function to use in the algorithm.
+    * @returns The fitness function.
+    */
+    template<Gene T, size_t ChromLen>
+    std::unique_ptr<FitnessFunctionBase<T>> makeSingleObjFitnessFunction(FitnessCallable<T> f);
 
 } // namespace genetic_algorithm
 
@@ -140,12 +272,10 @@ namespace genetic_algorithm::detail
     * function in the GAs.
     */
     template<Gene T>
-    class FitnessLambda final : public FitnessFunction<T>
+    class FitnessLambda final : public FitnessFunctionBase<T>
     {
     public:
-        using FitnessCallable = std::function<FitnessVector(const Chromosome<T>&)>;
-
-        FitnessLambda(size_t chrom_len, size_t num_objectives, FitnessCallable f) noexcept :
+        FitnessLambda(size_t chrom_len, size_t num_objectives, FitnessCallable<T> f) noexcept :
             FitnessFunction<T>(chrom_len, num_objectives)
         {
             GA_ASSERT(f, "The fitness function can't be a nullptr.");
@@ -161,7 +291,7 @@ namespace genetic_algorithm::detail
             return fitness_function_(chrom);
         }
 
-        FitnessCallable fitness_function_;
+        FitnessCallable<T> fitness_function_;
     };
 
 } // namespace genetic_algorithm::detail
@@ -169,12 +299,7 @@ namespace genetic_algorithm::detail
 namespace genetic_algorithm
 {
     template<Gene T>
-    constexpr FitnessFunction<T>::FitnessFunction(Positive<size_t> chrom_len, Positive<size_t> num_objectives, bool variable_len, bool dynamic) :
-        chrom_len_(chrom_len), num_objectives_(num_objectives), dynamic_(dynamic), variable_chrom_len_(variable_len)
-    {}
-
-    template<Gene T>
-    auto FitnessFunction<T>::operator()(const Chromosome<T>& chrom) -> FitnessVector
+    auto FitnessFunctionBase<T>::operator()(const Chromosome<T>& chrom) -> FitnessVector
     {
         GA_ASSERT(chrom.size() == chrom_len() || variable_chrom_len(), "A chromosome of incorrect size was passed to the fitness function.");
 
@@ -186,9 +311,21 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    std::unique_ptr<FitnessFunction<T>> makeFitnessFunction(size_t chrom_len, size_t num_obj, FitnessCallable<T> f)
+    inline std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(size_t chrom_len, size_t num_obj, FitnessCallable<T> f)
     {
         return std::make_unique<detail::FitnessLambda<T>>(chrom_len, num_obj, std::move(f));
+    }
+
+    template<Gene T, size_t Nobj, size_t ChromLen>
+    inline std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(FitnessCallable<T> f)
+    {
+        return std::make_unique<detail::FitnessLambda<T>>(ChromLen, Nobj, std::move(f));
+    }
+
+    template<Gene T, size_t ChromLen>
+    inline std::unique_ptr<FitnessFunctionBase<T>> makeSingleObjFitnessFunction(FitnessCallable<T> f)
+    {
+        return std::make_unique<detail::FitnessLambda<T>>(ChromLen, 1, std::move(f));
     }
 
 } // namespace genetic_algorithm

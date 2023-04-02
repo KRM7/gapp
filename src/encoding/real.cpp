@@ -15,7 +15,7 @@
 
 namespace genetic_algorithm
 {
-    RCGA::RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, BoundsVector<GeneType> bounds, Positive<size_t> population_size) :
+    RCGA::RCGA(std::unique_ptr<FitnessFunctionBase<RealGene>> fitness_function, BoundsVector<GeneType> bounds, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
         gene_bounds(std::move(bounds));
@@ -23,7 +23,7 @@ namespace genetic_algorithm
         mutation_method(std::make_unique<mutation::real::Gauss>(1.0 / chrom_len()));
     }
 
-    RCGA::RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size) :
+    RCGA::RCGA(std::unique_ptr<FitnessFunctionBase<RealGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
         gene_bounds(bounds);

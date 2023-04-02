@@ -32,7 +32,7 @@ namespace genetic_algorithm
         * @param bounds The boundaries of the genes (their min and max values), specified for each gene.
         * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, BoundsVector<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE);
+        RCGA(std::unique_ptr<FitnessFunctionBase<RealGene>> fitness_function, BoundsVector<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct a real encoded genetic algorithm. \n
@@ -42,7 +42,7 @@ namespace genetic_algorithm
         * @param bounds The boundaries of the genes (their min and max values).
         * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        RCGA(std::unique_ptr<FitnessFunction<RealGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE);
+        RCGA(std::unique_ptr<FitnessFunctionBase<RealGene>> fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct a real encoded genetic algorithm. \n
@@ -53,7 +53,7 @@ namespace genetic_algorithm
         * @param population_size The number of candidates in the population. Must be at least 1.
         */
         template<typename F>
-        requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunctionBase<GeneType>> && std::is_final_v<F>
         RCGA(F fitness_function, BoundsVector<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {
@@ -71,7 +71,7 @@ namespace genetic_algorithm
         * @param population_size The number of candidates in the population. Must be at least 1.
         */
         template<typename F>
-        requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunctionBase<GeneType>> && std::is_final_v<F>
         RCGA(F fitness_function, GeneBounds<GeneType> bounds, Positive<size_t> population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {

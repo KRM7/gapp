@@ -27,7 +27,7 @@
 namespace genetic_algorithm
 {
     template<Gene T>
-    GA<T>::GA(std::unique_ptr<FitnessFunction<T>> f, Positive<size_t> population_size) :
+    GA<T>::GA(std::unique_ptr<FitnessFunctionBase<T>> f, Positive<size_t> population_size) :
         GaInfo(population_size, f->num_objectives())
     {
         GA_ASSERT(f, "The fitness function can't be a nullptr.");
@@ -37,15 +37,15 @@ namespace genetic_algorithm
 
     template<Gene T>
     template<typename F>
-    requires std::derived_from<F, FitnessFunction<T>> && std::is_final_v<F>
-    void GA<T>::fitness_function(F f)
+    requires std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>
+    inline void GA<T>::fitness_function(F f)
     {
         fitness_function_ = std::make_unique<F>(std::move(f));
         is_initialized_ = false;
     }
 
     template<Gene T>
-    void GA<T>::fitness_function(std::unique_ptr<FitnessFunction<T>> f)
+    inline void GA<T>::fitness_function(std::unique_ptr<FitnessFunctionBase<T>> f)
     {
         GA_ASSERT(f, "The fitness function can't be a nullptr.");
 
@@ -54,7 +54,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline FitnessFunction<T>& GA<T>::fitness_function() & noexcept
+    inline FitnessFunctionBase<T>& GA<T>::fitness_function() & noexcept
     {
         GA_ASSERT(fitness_function_);
 
@@ -62,7 +62,7 @@ namespace genetic_algorithm
     }
 
     template<Gene T>
-    inline const FitnessFunction<T>& GA<T>::fitness_function() const& noexcept
+    inline const FitnessFunctionBase<T>& GA<T>::fitness_function() const& noexcept
     {
         GA_ASSERT(fitness_function_);
 

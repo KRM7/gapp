@@ -84,7 +84,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function used. Can't be a nullptr.
         * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        GA(std::unique_ptr<FitnessFunction<T>> fitness_function, Positive<size_t> population_size);
+        GA(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Positive<size_t> population_size);
 
         /**
         * Set the fitness function used by the algorithm.
@@ -93,7 +93,7 @@ namespace genetic_algorithm
         * @param f The fitness function to use in the algorithm.
         */
         template<typename F>
-        requires std::derived_from<F, FitnessFunction<T>> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>
         void fitness_function(F f);
 
         /**
@@ -102,15 +102,15 @@ namespace genetic_algorithm
         *
         * @param f The fitness function to use in the algorithm. Can't be a nullptr.
         */
-        void fitness_function(std::unique_ptr<FitnessFunction<T>> f);
+        void fitness_function(std::unique_ptr<FitnessFunctionBase<T>> f);
 
         /** @returns The fitness function used in the algorithm. */
         [[nodiscard]]
-        FitnessFunction<T>& fitness_function() & noexcept;
+        FitnessFunctionBase<T>& fitness_function() & noexcept;
 
         /** @returns The fitness function used in the algorithm. */
         [[nodiscard]]
-        const FitnessFunction<T>& fitness_function() const& noexcept;
+        const FitnessFunctionBase<T>& fitness_function() const& noexcept;
 
         /** @returns The chromosome length used for the candidates of the population. */
         [[nodiscard]]
@@ -318,7 +318,7 @@ namespace genetic_algorithm
         Population<T> population_;
         Candidates<T> solutions_;
 
-        std::unique_ptr<FitnessFunction<T>> fitness_function_;
+        std::unique_ptr<FitnessFunctionBase<T>> fitness_function_;
         std::unique_ptr<crossover::Crossover<T>> crossover_;
         std::unique_ptr<mutation::Mutation<T>> mutation_;
         RepairCallable repair_ = nullptr;

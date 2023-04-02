@@ -32,7 +32,7 @@ namespace genetic_algorithm
         * @param fitness_function The fitness function used in the algorithm. Can't be a nullptr.
         * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        explicit PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, Positive<size_t> population_size = DEFAULT_POPSIZE);
+        explicit PermutationGA(std::unique_ptr<FitnessFunctionBase<PermutationGene>> fitness_function, Positive<size_t> population_size = DEFAULT_POPSIZE);
 
         /**
         * Construct a permutation encoded genetic algorithm.
@@ -41,7 +41,7 @@ namespace genetic_algorithm
         * @param population_size The number of candidates in the population. Must be at least 1.
         */
         template<typename F>
-        requires std::derived_from<F, FitnessFunction<GeneType>> && std::is_final_v<F>
+        requires std::derived_from<F, FitnessFunctionBase<GeneType>> && std::is_final_v<F>
         explicit PermutationGA(F fitness_function, Positive<size_t> population_size = DEFAULT_POPSIZE) :
             GA(std::make_unique<F>(std::move(fitness_function)), population_size)
         {

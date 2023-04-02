@@ -16,7 +16,7 @@
 
 namespace genetic_algorithm
 {
-    PermutationGA::PermutationGA(std::unique_ptr<FitnessFunction<PermutationGene>> fitness_function, Positive<size_t> population_size) :
+    PermutationGA::PermutationGA(std::unique_ptr<FitnessFunctionBase<PermutationGene>> fitness_function, Positive<size_t> population_size) :
         GA(std::move(fitness_function), population_size)
     {
         bounds_ = BoundsVector<GeneType>(chrom_len(), GeneBounds<GeneType>{ 0_sz, chrom_len() - 1 });
