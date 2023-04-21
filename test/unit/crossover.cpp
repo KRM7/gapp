@@ -130,7 +130,9 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
 
     constexpr size_t chrom_len = 10;
     constexpr GeneBounds<RealGene> bounds = { 0.0, 1.0 };
-    const RCGA context{ DummyFitnessFunction<RealGene>(chrom_len), bounds };
+
+    RCGA context;
+    context.solve(DummyFitnessFunction<RealGene>(chrom_len), bounds, 1);
 
     constexpr Crossover crossover{ 0.8 };
 
@@ -149,7 +151,9 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
 
 TEST_CASE("crossover_fitness_eval", "[crossover]")
 {
-    const BinaryGA context{ DummyFitnessFunction<BinaryGene>(10) };
+    BinaryGA context;
+    context.solve(DummyFitnessFunction<BinaryGene>(10), 1);
+
     binary::SinglePoint crossover;
 
     Candidate<BinaryGene> parent1{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };

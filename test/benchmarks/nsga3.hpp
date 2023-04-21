@@ -18,27 +18,27 @@ using namespace genetic_algorithm;
 using namespace genetic_algorithm::problems;
 
 template<typename Problem>
-void benchmark_real_nsga3(const Problem& problem, size_t generations, size_t population_size = 100)
+void benchmark_real_nsga3(Problem problem, size_t generations, size_t population_size = 100)
 {
-    RCGA GA(problem, problem.bounds(), population_size);
+    RCGA GA(population_size);
 
     GA.algorithm(algorithm::NSGA3{});
     GA.crossover_method(crossover::real::SimulatedBinary{ 0.9 });
     GA.mutation_method(mutation::real::Uniform{ 1.0 / problem.num_vars() });
 
-    benchmarkMoga(GA, generations, "NSGA3", problem);
+    benchmarkMoga(GA, generations, "NSGA3", std::move(problem));
 }
 
 template<typename Problem>
-void benchmark_binary_nsga3(const Problem& problem, size_t generations, size_t population_size = 100)
+void benchmark_binary_nsga3(Problem problem, size_t generations, size_t population_size = 100)
 {
-    BinaryGA GA(problem, population_size);
+    BinaryGA GA(population_size);
 
     GA.algorithm(algorithm::NSGA3{});
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 1.0 / problem.num_vars() });
 
-    benchmarkMoga(GA, generations, "NSGA3", problem);
+    benchmarkMoga(GA, generations, "NSGA3", std::move(problem));
 }
 
 inline void benchmark_nsga3_zdt(size_t generations = 250, size_t population_size = 100)

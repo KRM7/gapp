@@ -10,11 +10,10 @@
 using namespace genetic_algorithm;
 using namespace genetic_algorithm::replacement;
 
+static constexpr size_t POPSIZE = 10;
+static const BinaryGA context = []{ BinaryGA GA(POPSIZE); GA.solve(DummyFitnessFunction<BinaryGene>(10), 1); return GA; }();
 
-const size_t POPSIZE = 10;
-const BinaryGA context{ DummyFitnessFunction<BinaryGene>(10), POPSIZE };
-
-const FitnessMatrix fmat = {
+static const FitnessMatrix fitness_mat = {
     // parents
     { math::inf<double> },
     { math::large<double> },
@@ -45,7 +44,7 @@ TEST_CASE("replacement_best", "[replacement][single-objective]")
     math::ScopedTolerances _(0, 0.0);
 
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepBest>();
-    const auto indices = replacement->nextPopulationImpl(context, fmat.begin(), fmat.begin() + POPSIZE, fmat.end());
+    const auto indices = replacement->nextPopulationImpl(context, fitness_mat.begin(), fitness_mat.begin() + POPSIZE, fitness_mat.end());
 
     const std::vector<size_t> expected = { 0, 1, 4, 5, 9, 11, 12, 15, 16, 17 };
 
@@ -55,7 +54,7 @@ TEST_CASE("replacement_best", "[replacement][single-objective]")
 TEST_CASE("replacement_children", "[replacement][single-objective]")
 {
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepChildren>();
-    const auto indices = replacement->nextPopulationImpl(context, fmat.begin(), fmat.begin() + POPSIZE, fmat.end());
+    const auto indices = replacement->nextPopulationImpl(context, fitness_mat.begin(), fitness_mat.begin() + POPSIZE, fitness_mat.end());
 
     const std::vector<size_t> expected = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
@@ -65,7 +64,7 @@ TEST_CASE("replacement_children", "[replacement][single-objective]")
 TEST_CASE("replacement_elitism", "[replacement][single-objective]")
 {
     std::unique_ptr<Replacement> replacement = std::make_unique<Elitism>(2);
-    const auto indices = replacement->nextPopulationImpl(context, fmat.begin(), fmat.begin() + POPSIZE, fmat.end());
+    const auto indices = replacement->nextPopulationImpl(context, fitness_mat.begin(), fitness_mat.begin() + POPSIZE, fitness_mat.end());
 
     const std::vector<size_t> expected = { 0, 5, 10, 11, 12, 13, 14, 15, 16, 17 };
 

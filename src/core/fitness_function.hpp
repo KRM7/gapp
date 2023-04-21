@@ -10,7 +10,7 @@
 
 namespace genetic_algorithm
 {
-    namespace detail { inline constexpr size_t dynamic_tag = std::numeric_limits<size_t>::max(); }
+    namespace detail { inline constexpr size_t dynamic_size_tag = std::numeric_limits<size_t>::max(); }
 
     /**
     * Base class for the fitness functions used in the algorithms. \n
@@ -123,7 +123,7 @@ namespace genetic_algorithm
     * @tparam Nobj The number of objectives. Must be at least 1.
     * @tparam ChromLen The length of the chromosomes expected by the fitness function. Must be at least 1.
     */
-    template<typename T, size_t Nobj = detail::dynamic_tag, size_t ChromLen = detail::dynamic_tag>
+    template<typename T, size_t Nobj = detail::dynamic_size_tag, size_t ChromLen = detail::dynamic_size_tag>
     class FitnessFunction : public FitnessFunctionBase<T>
     {
     public:
@@ -137,7 +137,7 @@ namespace genetic_algorithm
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
         constexpr FitnessFunction(bool variable_len = false, bool dynamic = false) noexcept
-        requires (Nobj != detail::dynamic_tag) && (ChromLen != detail::dynamic_tag) :
+        requires (Nobj != detail::dynamic_size_tag) && (ChromLen != detail::dynamic_size_tag) :
             FitnessFunctionBase<T>(ChromLen, Nobj, variable_len, dynamic)
         {}
 
@@ -154,7 +154,7 @@ namespace genetic_algorithm
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
         constexpr FitnessFunction(Positive<size_t> num_objectives, bool variable_len = false, bool dynamic = false) noexcept
-        requires (Nobj == detail::dynamic_tag) && (ChromLen != detail::dynamic_tag) :
+        requires (Nobj == detail::dynamic_size_tag) && (ChromLen != detail::dynamic_size_tag) :
             FitnessFunctionBase<T>(ChromLen, num_objectives, variable_len, dynamic)
         {}
 
@@ -170,7 +170,7 @@ namespace genetic_algorithm
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
         constexpr FitnessFunction(Positive<size_t> chrom_len, bool variable_len = false, bool dynamic = false) noexcept
-        requires (Nobj != detail::dynamic_tag) && (ChromLen == detail::dynamic_tag) :
+        requires (Nobj != detail::dynamic_size_tag) && (ChromLen == detail::dynamic_size_tag) :
             FitnessFunctionBase<T>(chrom_len, Nobj, variable_len, dynamic)
         {}
 
@@ -189,7 +189,7 @@ namespace genetic_algorithm
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
         constexpr FitnessFunction(Positive<size_t> chrom_len, Positive<size_t> num_objectives, bool variable_len = false, bool dynamic = false) noexcept
-        requires (Nobj == detail::dynamic_tag) && (ChromLen == detail::dynamic_tag) :
+        requires (Nobj == detail::dynamic_size_tag) && (ChromLen == detail::dynamic_size_tag) :
             FitnessFunctionBase<T>(chrom_len, num_objectives, variable_len, dynamic)
         {}
 
@@ -212,7 +212,7 @@ namespace genetic_algorithm
     *
     * @tparam ChromLen The length of the chromosomes expected by the fitness function.
     */
-    template<typename T, size_t ChromLen = detail::dynamic_tag>
+    template<typename T, size_t ChromLen = detail::dynamic_size_tag>
     using SingleObjFitnessFunction = FitnessFunction<T, 1, ChromLen>;
 
 
@@ -299,7 +299,7 @@ namespace genetic_algorithm::detail
 namespace genetic_algorithm
 {
     template<typename T>
-    auto FitnessFunctionBase<T>::operator()(const Chromosome<T>& chrom) -> FitnessVector
+    inline auto FitnessFunctionBase<T>::operator()(const Chromosome<T>& chrom) -> FitnessVector
     {
         GA_ASSERT(chrom.size() == chrom_len() || variable_chrom_len(), "A chromosome of incorrect size was passed to the fitness function.");
 

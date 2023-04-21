@@ -8,6 +8,13 @@
 
 namespace genetic_algorithm::detail
 {
+    struct empty_t {};
+
+
+    template<typename T>
+    inline constexpr bool always_false = false;
+
+
     template<template<typename...> class T1, template<typename...> class T2>
     struct is_same_template : std::false_type {};
 

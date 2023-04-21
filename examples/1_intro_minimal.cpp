@@ -13,12 +13,7 @@ class SinX final : public SingleObjFitnessFunction<RealGene, 1>
 
 int main()
 {
-    SinX objective_function;
-    GeneBounds bounds{ 0.0, 3.14 };
+    Population<RealGene> solutions = RCGA{}.solve(SinX{}, GeneBounds{ 0.0, 3.14 });
 
-    RCGA GA(objective_function, bounds);
-
-    Population<RealGene> solutions = GA.run();
-
-    std::cout << "The maximum of sin(x) in [0.0, 3.14] is at x = " << solutions[0].chromosome[0] << ".\n";
+    std::cout << "The maximum of sin(x) in [0.0, 3.14] is at x = " << solutions[0].chromosome[0];
 }

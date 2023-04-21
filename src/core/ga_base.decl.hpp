@@ -4,9 +4,13 @@
 #define GA_CORE_GA_BASE_DECL_HPP
 
 #include "ga_info.hpp"
+#include "ga_traits.hpp"
 #include "fitness_function.hpp"
 #include "../population/candidate.hpp"
+#include "../stop_condition/stop_condition.hpp"
+#include "../encoding/gene_types.hpp"
 #include "../utility/bounded_value.hpp"
+#include "../utility/type_traits.hpp"
 #include <algorithm>
 #include <vector>
 #include <utility>
@@ -79,38 +83,96 @@ namespace genetic_algorithm
 
 
         /**
-        * Create a genetic algorithm.
+        * Create a genetic algorithm using the default genetic operators. \n
+        * The algorithm used will be deduced from the number of objectives of the fitness function
+        * (single- or multi-objective) along with the mutation probability used for the mutation operator.
         *
-        * @param fitness_function The fitness function used. Can't be a nullptr.
         * @param population_size The number of candidates in the population. Must be at least 1.
         */
-        GA(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Positive<size_t> population_size);
+        GA(Positive<size_t> population_size = DEFAULT_POPSIZE);
 
         /**
-        * Set the fitness function used by the algorithm.
-        * @see FitnessFunction
+        * Create a genetic algorithm using the default genetic operators. \n
+        * The mutation probability used for the mutation operator will be deduced from the fitness function.
         *
-        * @param f The fitness function to use in the algorithm.
+        * @param population_size The number of candidates in the population. Must be at least 1.
+        * @param algorithm The algorithm to use. Can't be a nullptr.
         */
-        template<typename F>
-        requires std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>
-        void fitness_function(F f);
+        GA(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm);
 
         /**
-        * Set the fitness function used by the algorithm.
-        * @see FitnessFunction
+        * Create a genetic algorithm. \n
+        * The algorithm used will be deduced from the number of objectives of the fitness function
+        * (single- or multi-objective).
         *
-        * @param f The fitness function to use in the algorithm. Can't be a nullptr.
+        * @param population_size The number of candidates in the population. Must be at least 1.
+        * @param crossover The crossover operator to use in the algorithm. Can't be a nullptr.
+        * @param mutation The mutation operator to use in the algorithm. Can't be a nullptr.
+        * @param stop_condition The early-stop condition to use. Can't be a nullptr.
         */
-        void fitness_function(std::unique_ptr<FitnessFunctionBase<T>> f);
+        GA(Positive<size_t> population_size,
+           std::unique_ptr<crossover::Crossover<T>> crossover,
+           std::unique_ptr<mutation::Mutation<T>> mutation,
+           std::unique_ptr<stopping::StopCondition> stop_condition = std::make_unique<stopping::NoEarlyStop>());
 
-        /** @returns The fitness function used in the algorithm. */
-        [[nodiscard]]
-        FitnessFunctionBase<T>& fitness_function() & noexcept;
+        /**
+        * Create a genetic algorithm.
+        *
+        * @param population_size The number of candidates in the population. Must be at least 1.
+        * @param algorithm The algorithm to use. Can't be a nullptr.
+        * @param crossover The crossover operator to use in the algorithm. Can't be a nullptr.
+        * @param mutation The mutation operator to use in the algorithm. Can't be a nullptr.
+        * @param stop_condition The early-stop condition to use. Can't be a nullptr.
+        */
+        GA(Positive<size_t> population_size,
+           std::unique_ptr<algorithm::Algorithm> algorithm,
+           std::unique_ptr<crossover::Crossover<T>> crossover,
+           std::unique_ptr<mutation::Mutation<T>> mutation,
+           std::unique_ptr<stopping::StopCondition> stop_condition = std::make_unique<stopping::NoEarlyStop>());
 
-        /** @returns The fitness function used in the algorithm. */
-        [[nodiscard]]
-        const FitnessFunctionBase<T>& fitness_function() const& noexcept;
+        /**
+        * Create a genetic algorithm using the default genetic operators. \n
+        * The mutation probability used for the mutation operator will be deduced from the fitness function.
+        *
+        * @param population_size The number of candidates in the population. Must be at least 1.
+        * @param algorithm The algorithm to use. Can't be a nullptr.
+        */
+        template<typename AlgorithmType>
+        requires std::derived_from<AlgorithmType, algorithm::Algorithm> && std::is_final_v<AlgorithmType>
+        GA(Positive<size_t> population_size, AlgorithmType algorithm);
+
+        /**
+        * Create a genetic algorithm. \n
+        * The algorithm used will be deduced from the number of objectives of the fitness function
+        * (single- or multi-objective).
+        *
+        * @param population_size The number of candidates in the population. Must be at least 1.
+        * @param crossover The crossover operator to use in the algorithm.
+        * @param mutation The mutation operator to use in the algorithm.
+        * @param stop_condition The early-stop condition to use.
+        */
+        template<typename CrossoverType, typename MutationType, typename StoppingType = stopping::NoEarlyStop>
+        requires std::derived_from<CrossoverType, crossover::Crossover<T>> && std::is_final_v<CrossoverType> &&
+                 std::derived_from<MutationType, mutation::Mutation<T>> && std::is_final_v<MutationType> &&
+                 std::derived_from<StoppingType, stopping::StopCondition> && std::is_final_v<StoppingType>
+        GA(Positive<size_t> population_size, CrossoverType crossover, MutationType mutation, StoppingType stop_condition = {});
+
+        /**
+        * Create a genetic algorithm.
+        *
+        * @param population_size The number of candidates in the population. Must be at least 1.
+        * @param algorithm The algorithm to use.
+        * @param crossover The crossover operator to use in the algorithm.
+        * @param mutation The mutation operator to use in the algorithm.
+        * @param stop_condition The early-stop condition to use.
+        */
+        template<typename AlgorithmType, typename CrossoverType, typename MutationType, typename StoppingType = stopping::NoEarlyStop>
+        requires std::derived_from<AlgorithmType, algorithm::Algorithm> && std::is_final_v<AlgorithmType> &&
+                 std::derived_from<CrossoverType, crossover::Crossover<T>> && std::is_final_v<CrossoverType> &&
+                 std::derived_from<MutationType, mutation::Mutation<T>> && std::is_final_v<MutationType> &&
+                 std::derived_from<StoppingType, stopping::StopCondition> && std::is_final_v<StoppingType>
+        GA(Positive<size_t> population_size, AlgorithmType algorithm, CrossoverType crossover, MutationType mutation, StoppingType stop_condition = {});
+
 
         /** @returns The chromosome length used for the candidates of the population. */
         [[nodiscard]]
@@ -131,7 +193,7 @@ namespace genetic_algorithm
 
         /** @returns The lower and upper bounds of each of the chromosomes' genes (the ranges are inclusive). */
         [[nodiscard]]
-        const BoundsVector<T>& gene_bounds() const noexcept;
+        const BoundsVector<T>& gene_bounds() const noexcept requires (is_bounded<T>);
 
         /**
         * Set the crossover method the algorithm will use. \n
@@ -165,10 +227,6 @@ namespace genetic_algorithm
         * @param f The crossover method used by the algorithm.
         */
         void crossover_method(CrossoverCallable f);
-
-        /** @returns The crossover operator used by the algorithm. */
-        [[nodiscard]]
-        crossover::Crossover<T>& crossover_method() & noexcept;
 
         /** @returns The crossover operator used by the algorithm. */
         [[nodiscard]]
@@ -220,10 +278,6 @@ namespace genetic_algorithm
 
         /** @returns The mutation operator used by the algorithm. */
         [[nodiscard]]
-        mutation::Mutation<T>& mutation_method() & noexcept;
-
-        /** @returns The mutation operator used by the algorithm. */
-        [[nodiscard]]
         const mutation::Mutation<T>& mutation_method() const& noexcept;
 
         /**
@@ -257,7 +311,7 @@ namespace genetic_algorithm
         * found during the run, updated in every generation.
         */
         [[nodiscard]]
-        const Candidates<T>& solutions() const noexcept { return solutions_; }
+        const Candidates<T>& solutions() const& noexcept { return solutions_; }
 
         /**
         * @returns The current population of the algorithm.
@@ -265,68 +319,222 @@ namespace genetic_algorithm
         * and may also contain non pareto-optimal solutions.
         */
         [[nodiscard]]
-        const Population<T>& population() const noexcept { return population_; }
+        const Population<T>& population() const& noexcept { return population_; }
+
+
+        /********************* NON-BOUNDED ALGORITHM SOLVE *********************/
 
         /**
-        * Run the genetic algorithm. \n
-        *
-        * @param initial_population The population to use as the first generation of the algorithm.
-        * @returns The pareto-optimal solutions found. @see solutions
-        */
-        Candidates<T> run(Population<T> initial_population = {});
-
-        /**
-        * Run the genetic algorithm for a set number of generations. \n
-        * The algorithm will always stop when reaching this number of generations.
-        *
-        * @param num_generations The maximum number of generations.
-        * @returns The pareto-optimal solutions found. @see solutions
-        */
-        Candidates<T> run(size_t num_generations);
-
-        /**
-        * Run the genetic algorithm for a set number of generations, using the specified initial population. \n
-        * The algorithm will always stop when reaching this set number of generations. \n
-        * Te initial population may have any number of solutions, but only the first popsize elements
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
         * will be used if it's greater than the population size set for the algorithm. If it has less
         * elements than the population size, the rest of the candidates will be generated using
         * the generateCandidate method.
         *
+        * @param fitness_function The fitness function the algorithm should find the maximum of. Can't be a nullptr.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
         * @param initial_population The population to use as the first generation of the algorithm.
-        * @param num_generations The maximum number of generations.
-        * @returns The pareto-optimal solutions found. @see solutions
+        * @returns The pareto-optimal solutions found (this is not the final population).
         */
-        Candidates<T> run(Population<T> initial_population, size_t num_generations);
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, size_t generations, Population<T> initial_population = {}) requires (!is_bounded<T>);
 
         /**
-        * Continue running the genetic algorithm for the set number of generations. \n
-        * The algorithm can only continue if run has already been called at least once,
-        * and the selection_method hasn't been changed since then.
-        * (Otherwise this function will behave the same as calling run().)
+        * Run the genetic algorithm for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
         *
-        * @param num_generations The number of generations to run the algorithm for.
-        * @returns The optimal solutions.
+        * @param fitness_function The fitness function the algorithm should find the maximum of. Can't be a nullptr.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
         */
-        Candidates<T> continueFor(size_t num_generations);
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Population<T> initial_population = {}) requires (!is_bounded<T>);
 
-    protected:
+        /**
+        * Run the genetic algorithm for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        template<typename F>
+        requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        Candidates<T> solve(F fitness_function, Population<T> initial_population = {});
 
-        BoundsVector<T> bounds_;
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of. Can't be a nullptr.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        template<typename F>
+        requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        Candidates<T> solve(F fitness_function, size_t generations, Population<T> initial_population = {});
+
+
+        /********************* BOUNDED ALGORITHM SOLVE *********************/
+
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of. Can't be a nullptr.
+        * @param bounds The lower and upper bounds of each of the chromosomes' genes.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population = {}) requires (is_bounded<T>);
+
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of. Can't be a nullptr.
+        * @param bounds The lower and upper bounds of a gene. These bounds will be used for every gene of the chromosomes.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, GeneBounds<T> bounds, size_t generations, Population<T> initial_population = {}) requires (is_bounded<T>);
+
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of. Can't be a nullptr.
+        * @param bounds The lower and upper bounds of each of the chromosomes' genes.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, Population<T> initial_population = {}) requires (is_bounded<T>);
+
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of. Can't be a nullptr.
+        * @param bounds The lower and upper bounds of a gene. These bounds will be used for every gene of the chromosomes.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, GeneBounds<T> bounds, Population<T> initial_population = {}) requires (is_bounded<T>);
+
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of.
+        * @param bounds The lower and upper bounds of each of the chromosomes' genes.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        template<typename F>
+        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        Candidates<T> solve(F fitness_function, BoundsVector<T> bounds, Population<T> initial_population = {});
+
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of.
+        * @param bounds The lower and upper bounds of a gene. These bounds will be used for every gene of the chromosomes.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        template<typename F>
+        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        Candidates<T> solve(F fitness_function, GeneBounds<T> bounds, Population<T> initial_population = {});
+
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of.
+        * @param bounds The lower and upper bounds of each of the chromosomes' genes.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        template<typename F>
+        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        Candidates<T> solve(F fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population = {});
+
+        /**
+        * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
+        * The initial population may have any number of solutions, but only the first popsize elements
+        * will be used if it's greater than the population size set for the algorithm. If it has less
+        * elements than the population size, the rest of the candidates will be generated using
+        * the generateCandidate method.
+        *
+        * @param fitness_function The fitness function the algorithm should find the maximum of. Can't be a nullptr.
+        * @param bounds The lower and upper bounds of a gene. These bounds will be used for every gene of the chromosomes.
+        * @param generations The maximum number of generations. The algorithm will always stop when reaching this, even if another stop condition was set.
+        * @param initial_population The population to use as the first generation of the algorithm.
+        * @returns The pareto-optimal solutions found (this is not the final population).
+        */
+        template<typename F>
+        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        Candidates<T> solve(F fitness_function, GeneBounds<T> bounds, size_t generations, Population<T> initial_population = {});
 
     private:
 
+        using MaybeBoundsVector = std::conditional_t<is_bounded<T>, BoundsVector<T>, detail::empty_t>;
+
         Population<T> population_;
         Candidates<T> solutions_;
+
+        [[no_unique_address]]
+        MaybeBoundsVector bounds_;
 
         std::unique_ptr<FitnessFunctionBase<T>> fitness_function_;
         std::unique_ptr<crossover::Crossover<T>> crossover_;
         std::unique_ptr<mutation::Mutation<T>> mutation_;
         RepairCallable repair_ = nullptr;
 
-        virtual void initialize() = 0;
+        bool use_default_mutation_rate_ = false;
+
+
+        virtual void initialize() {};
         virtual Candidate<T> generateCandidate() const = 0;
 
-        void initializeAlgorithm(Population<T> initial_population);
+        void initializeAlgorithm(MaybeBoundsVector bounds, Population<T> initial_population);
         Population<T> generatePopulation(Positive<size_t> pop_size, Population<T> initial_population) const;
         void prepareSelections() const;
         const Candidate<T>& select() const;
@@ -341,6 +549,9 @@ namespace genetic_algorithm
 
         void advance();
 
+
+        std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
+        Probability defaultMutationRate() const;
 
         bool hasValidFitness(const Candidate<T>& sol) const noexcept;
         bool hasValidChromosome(const Candidate<T>& sol) const noexcept;
@@ -358,7 +569,7 @@ namespace genetic_algorithm
         using GaInfo::generation_cntr_;
         using GaInfo::num_fitness_evals_;
         using GaInfo::keep_all_optimal_sols_;
-        using GaInfo::is_initialized_;
+        using GaInfo::use_default_algorithm_;
     };
 
 } // namespace genetic_algorithm

@@ -16,7 +16,9 @@ using namespace genetic_algorithm::mutation;
 
 TEST_CASE("mutation_fitness_eval", "[crossover]")
 {
-    const BinaryGA context{ DummyFitnessFunction<BinaryGene>(10) };
+    BinaryGA context;
+    context.solve(DummyFitnessFunction<BinaryGene>(10), 1);
+
     binary::Flip mutation{ 0.0 };
 
     Candidate<BinaryGene> candidate{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
@@ -58,7 +60,9 @@ TEST_CASE("mutation_fitness_eval", "[crossover]")
 TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
 {
     using Mutation = TestType;
-    const BinaryGA context(DummyFitnessFunction<BinaryGene>(10));
+
+    BinaryGA context;
+    context.solve(DummyFitnessFunction<BinaryGene>(10), 1);
 
     Candidate<BinaryGene> candidate{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
     candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
@@ -100,7 +104,9 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
 {
     using Mutation = TestType;
     const GeneBounds bounds = { 0.0, 1.0 };
-    const RCGA context(DummyFitnessFunction<RealGene>(10), bounds);
+
+    RCGA context;
+    context.solve(DummyFitnessFunction<RealGene>(10), bounds);
 
     Candidate<RealGene> candidate{ { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } };
     candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
@@ -141,7 +147,9 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
 TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, perm::Shuffle, perm::Swap2, perm::Swap3)
 {
     using Mutation = TestType;
-    const PermutationGA context(DummyFitnessFunction<PermutationGene>(10));
+
+    PermutationGA context;
+    context.solve(DummyFitnessFunction<PermutationGene>(10), 1);
 
     Candidate<PermutationGene> candidate{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
     candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
@@ -188,7 +196,9 @@ TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
 {
     using Mutation = TestType;
     const GeneBounds<IntegerGene> bounds = { 0, 3 };
-    const IntegerGA context(DummyFitnessFunction<IntegerGene>(10), bounds);
+
+    IntegerGA context;
+    context.solve(DummyFitnessFunction<IntegerGene>(10), bounds, 1);
 
     Candidate<IntegerGene> candidate{ { 0, 1, 2, 3, 3, 1, 0, 1, 0, 2 } };
     candidate.fitness = { 0.0 }; candidate.is_evaluated = true;

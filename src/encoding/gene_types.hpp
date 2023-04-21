@@ -8,10 +8,20 @@
 
 namespace genetic_algorithm
 {
-    using BinaryGene      = std::int8_t;
-    using RealGene        = double;
-    using PermutationGene = std::size_t;
-    using IntegerGene     = std::int64_t;
+    using BinaryGene      = std::int8_t;    /**< The gene type used in the binary encoded algorithms (BinaryGA). */
+    using RealGene        = double;         /**< The gene type used in the real encoded algorithms (RCGA). */
+    using PermutationGene = std::size_t;    /**< The gene type used in the permutation encoded algorithms (PermutationGA). */
+    using IntegerGene     = std::int64_t;   /**< The gene type used in the integer encoded algorithms (IntegerGA). */
+
+    /**
+    * Type trait to check if a particular gene type is bounded or not. \n
+    * Must be specialized for custom gene types if they are bounded.
+    */
+    template<typename GeneType>
+    inline constexpr bool is_bounded = false;
+
+    template<> inline constexpr bool is_bounded<RealGene>    = true;
+    template<> inline constexpr bool is_bounded<IntegerGene> = true;
 
 } // namespace genetic_algorithm
 

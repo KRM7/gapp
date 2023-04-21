@@ -2,11 +2,8 @@
 
 #include "ga_info.hpp"
 #include "../algorithm/algorithm_base.hpp"
-#include "../algorithm/single_objective.hpp"
-#include "../algorithm/nsga3.hpp"
-#include "../stop_condition/stop_condition.hpp"
+#include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/utility.hpp"
-#include <vector>
 #include <atomic>
 #include <memory>
 #include <utility>
@@ -15,17 +12,14 @@ namespace genetic_algorithm
 {
     GaInfo::GaInfo(GaInfo&&) noexcept            = default;
     GaInfo& GaInfo::operator=(GaInfo&&) noexcept = default;
+
     GaInfo::~GaInfo()                            = default;
 
 
-    GaInfo::GaInfo(Positive<size_t> population_size, Positive<size_t> nobj) :
-        population_size_(population_size)
+    GaInfo::GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) noexcept :
+        algorithm_(std::move(algorithm)), stop_condition_(std::move(stop_condition)), population_size_(population_size)
     {
-        (nobj == 1) ?
-            algorithm(std::make_unique<algorithm::SingleObjective>()) :
-            algorithm(std::make_unique<algorithm::NSGA3>());
-
-        stop_condition_ = std::make_unique<stopping::NoEarlyStop>();
+        GA_ASSERT(stop_condition_, "The stop condition can't be a nullptr.");
     }
 
     size_t GaInfo::num_fitness_evals() const noexcept
@@ -39,7 +33,7 @@ namespace genetic_algorithm
         GA_ASSERT(f, "The algorithm can't be a nullptr.");
 
         algorithm_ = std::move(f);
-        is_initialized_ = false;
+        use_default_algorithm_ = false;
     }
 
     void GaInfo::stop_condition(std::unique_ptr<stopping::StopCondition> f)

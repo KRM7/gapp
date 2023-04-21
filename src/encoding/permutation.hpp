@@ -8,14 +8,19 @@
 #include "../population/candidate.hpp"
 #include "../crossover/permutation.hpp"
 #include "../mutation/permutation.hpp"
-#include "../utility/bounded_value.hpp"
-#include <concepts>
-#include <memory>
-#include <utility>
 #include <cstddef>
 
 namespace genetic_algorithm
 {
+    template<>
+    struct GaTraits<PermutationGene>
+    {
+        using DefaultCrossover = crossover::perm::Order2;
+        using DefaultMutation = mutation::perm::Inversion;
+
+        static constexpr Probability defaultMutationRate(size_t) noexcept { return 0.6; }
+    };
+
     /**
     * Genetic algorithm in which the chromosomes encode permutations. \n
     * The genes of the chromosomes are unique unsigned integers on the closed interval [0, chrom_len - 1].
@@ -26,32 +31,8 @@ namespace genetic_algorithm
     class PermutationGA final : public GA<PermutationGene>
     {
     public:
-        /**
-        * Construct a permutation encoded genetic algorithm.
-        *
-        * @param fitness_function The fitness function used in the algorithm. Can't be a nullptr.
-        * @param population_size The number of candidates in the population. Must be at least 1.
-        */
-        explicit PermutationGA(std::unique_ptr<FitnessFunctionBase<PermutationGene>> fitness_function, Positive<size_t> population_size = DEFAULT_POPSIZE);
-
-        /**
-        * Construct a permutation encoded genetic algorithm.
-        *
-        * @param fitness_function The fitness function used in the algorithm.
-        * @param population_size The number of candidates in the population. Must be at least 1.
-        */
-        template<typename F>
-        requires std::derived_from<F, FitnessFunctionBase<GeneType>> && std::is_final_v<F>
-        explicit PermutationGA(F fitness_function, Positive<size_t> population_size = DEFAULT_POPSIZE) :
-            GA(std::make_unique<F>(std::move(fitness_function)), population_size)
-        {
-            bounds_ = BoundsVector<GeneType>(chrom_len(), GeneBounds<GeneType>{ 0_sz, chrom_len() - 1 });
-            crossover_method(std::make_unique<crossover::perm::Order2>());
-            mutation_method(std::make_unique<mutation::perm::Inversion>(0.2));
-        }
-
+        using GA::GA;
     private:
-        void initialize() override;
         Candidate<GeneType> generateCandidate() const override;
     };
 

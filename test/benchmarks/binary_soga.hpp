@@ -16,21 +16,19 @@ using namespace genetic_algorithm::problems;
 
 void binary_sphere()
 {
-    Sphere fitness_func(100);
-    BinaryGA GA(fitness_func, 200);
+    BinaryGA GA(200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Sigma{} });
     GA.crossover_method(crossover::binary::SinglePoint{ 0.9 });
     GA.mutation_method(mutation::binary::Flip{ 0.001 });
     GA.stop_condition(stopping::FitnessValue{ { -1E-12 } });
 
-    benchmarkSoga(GA, 1000, fitness_func);
+    benchmarkSoga(GA, 1000, Sphere{ 100 });
 }
 
 void binary_rastrigin()
 {
-    Rastrigin fitness_func(10);
-    BinaryGA GA(fitness_func, 400);
+    BinaryGA GA(400);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Roulette{} });
     GA.crossover_method(crossover::binary::NPoint{ 0.75, 2 });
@@ -38,70 +36,65 @@ void binary_rastrigin()
     GA.stop_condition(stopping::AND(stopping::FitnessMeanStall{ 50, 0.005 },
                                     stopping::FitnessBestStall{ 50, 0.005 }));
 
-    benchmarkSoga(GA, 1000, fitness_func);
+    benchmarkSoga(GA, 1000, Rastrigin{ 10 });
 }
 
 void binary_rosenbrock()
 {
-    Rosenbrock fitness_func(10);
-    BinaryGA GA(fitness_func, 300);
+    BinaryGA GA(300);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{}, replacement::KeepChildren{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
 
-    benchmarkSoga(GA, 1500, fitness_func);
+    benchmarkSoga(GA, 1500, Rosenbrock{ 10 });
 }
 
 void binary_schwefel()
 {
-    Schwefel fitness_func(10);
-    BinaryGA GA(fitness_func, 200);
+    BinaryGA GA(200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Rank{}, replacement::Elitism{ 10 } });
     GA.crossover_method(crossover::binary::Uniform{ 0.7 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.stop_condition(stopping::FitnessEvals{ 200 * 1000 });
 
-    benchmarkSoga(GA, 1500, fitness_func);
+    benchmarkSoga(GA, 1500, Schwefel{ 10 });
 }
 
 void binary_griewank()
 {
-    Griewank fitness_func(10);
-    BinaryGA GA(fitness_func, 200);
+    BinaryGA GA(200);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Sigma{}, replacement::KeepBest{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
-    GA.mutation_method(mutation::binary::Flip{ 0.2 / fitness_func.num_vars() });
+    GA.mutation_method(mutation::binary::Flip{ 0.02 });
     GA.stop_condition(stopping::FitnessValue{ { -0.01 } });
 
-    benchmarkSoga(GA, 1500, fitness_func);
+    benchmarkSoga(GA, 1500, Griewank{ 10 });
 }
 
 void binary_ackley()
 {
-    Ackley fitness_func(10);
-    BinaryGA GA(fitness_func, 250);
+    BinaryGA GA(250);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{}, replacement::KeepBest{} });
     GA.crossover_method(crossover::binary::SinglePoint{ 0.75 });
     GA.mutation_method(mutation::binary::Flip{ 0.01 });
     GA.stop_condition(stopping::FitnessBestStall{ 50, 0.002 });
 
-    benchmarkSoga(GA, 2500, fitness_func);
+    benchmarkSoga(GA, 2500, Ackley{ 10 });
 }
 
 void binary_levy()
 {
-    Levy fitness_func(10);
-    BinaryGA GA(fitness_func, 250);
+    BinaryGA GA(250);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{}, replacement::KeepBest{} });
     GA.crossover_method(crossover::binary::TwoPoint{ 0.8 });
     GA.mutation_method(mutation::binary::Flip{ 0.03 });
 
-    benchmarkSoga(GA, 1500, fitness_func);
+    benchmarkSoga(GA, 1500, Levy{ 10 });
 }
 
 #endif // !GA_TEST_BENCHMARK_BINARY_HPP

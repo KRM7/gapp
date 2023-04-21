@@ -4,10 +4,12 @@
 #define GA_CORE_GA_BASE_IMPL_HPP
 
 #include "ga_base.decl.hpp"
+#include "ga_traits.hpp"
 #include "fitness_function.hpp"
 #include "../population/population.hpp"
 #include "../algorithm/algorithm_base.hpp"
 #include "../algorithm/single_objective.hpp"
+#include "../algorithm/nsga3.hpp"
 #include "../crossover/crossover_base.hpp"
 #include "../crossover/lambda.hpp"
 #include "../mutation/mutation_base.hpp"
@@ -21,58 +23,92 @@
 #include <numeric>
 #include <execution>
 #include <type_traits>
+#include <memory>
 #include <atomic>
 #include <utility>
 
 namespace genetic_algorithm
 {
     template<typename T>
-    GA<T>::GA(std::unique_ptr<FitnessFunctionBase<T>> f, Positive<size_t> population_size) :
-        GaInfo(population_size, f->num_objectives())
+    GA<T>::GA(Positive<size_t> population_size,
+              std::unique_ptr<typename algorithm::Algorithm> algorithm,
+              std::unique_ptr<typename crossover::Crossover<T>> crossover,
+              std::unique_ptr<typename mutation::Mutation<T>> mutation,
+              std::unique_ptr<typename stopping::StopCondition> stop_condition) :
+        GaInfo(population_size, std::move(algorithm), std::move(stop_condition)), crossover_(std::move(crossover)), mutation_(std::move(mutation))
     {
-        GA_ASSERT(f, "The fitness function can't be a nullptr.");
-
-        fitness_function_ = std::move(f);
+        GA_ASSERT(algorithm_, "The algorithm can't be a nullptr.");
+        GA_ASSERT(crossover_, "The crossover method can't be a nullptr.");
+        GA_ASSERT(mutation_, "The mutation method can't be a nullptr.");
+        GA_ASSERT(stop_condition_, "The stop condition can't be a nullptr.");
     }
 
     template<typename T>
-    template<typename F>
-    requires std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>
-    inline void GA<T>::fitness_function(F f)
+    GA<T>::GA(Positive<size_t> population_size) :
+        GA(population_size, std::make_unique<algorithm::SingleObjective>(), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>(0.01))
     {
-        fitness_function_ = std::make_unique<F>(std::move(f));
-        is_initialized_ = false;
+        use_default_algorithm_ = true;
+        use_default_mutation_rate_ = true;
     }
 
     template<typename T>
-    inline void GA<T>::fitness_function(std::unique_ptr<FitnessFunctionBase<T>> f)
+    GA<T>::GA(Positive<size_t> population_size, std::unique_ptr<typename algorithm::Algorithm> algorithm) :
+        GA(population_size, std::move(algorithm), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>(0.01))
     {
-        GA_ASSERT(f, "The fitness function can't be a nullptr.");
-
-        fitness_function_ = std::move(f);
-        is_initialized_ = false;
+        use_default_algorithm_ = false;
+        use_default_mutation_rate_ = true;
     }
 
     template<typename T>
-    inline FitnessFunctionBase<T>& GA<T>::fitness_function() & noexcept
+    GA<T>::GA(Positive<size_t> population_size,
+              std::unique_ptr<typename crossover::Crossover<T>> crossover,
+              std::unique_ptr<typename mutation::Mutation<T>> mutation,
+              std::unique_ptr<typename stopping::StopCondition> stop_condition) :
+        GA(population_size, std::make_unique<algorithm::SingleObjective>(), std::move(crossover), std::move(mutation), std::move(stop_condition))
     {
-        GA_ASSERT(fitness_function_);
-
-        return *fitness_function_;
+        use_default_algorithm_ = true;
+        use_default_mutation_rate_ = false;
     }
 
     template<typename T>
-    inline const FitnessFunctionBase<T>& GA<T>::fitness_function() const& noexcept
-    {
-        GA_ASSERT(fitness_function_);
+    template<typename AlgorithmType>
+    requires std::derived_from<AlgorithmType, algorithm::Algorithm> && std::is_final_v<AlgorithmType>
+    GA<T>::GA(Positive<size_t> population_size, AlgorithmType algorithm) :
+        GA(population_size, std::make_unique<AlgorithmType>(std::move(algorithm)))
+    {}
 
-        return *fitness_function_;
-    }
+    template<typename T>
+    template<typename CrossoverType, typename MutationType, typename StoppingType>
+    requires std::derived_from<CrossoverType, crossover::Crossover<T>> && std::is_final_v<CrossoverType> &&
+             std::derived_from<MutationType, mutation::Mutation<T>> && std::is_final_v<MutationType> &&
+             std::derived_from<StoppingType, stopping::StopCondition> && std::is_final_v<StoppingType>
+    GA<T>::GA(Positive<size_t> population_size, CrossoverType crossover, MutationType mutation, StoppingType stop_condition) :
+        GA(population_size,
+           std::make_unique<algorithm::SingleObjective>(),
+           std::make_unique<CrossoverType>(std::move(crossover)),
+           std::make_unique<MutationType>(std::move(mutation)),
+           std::make_unique<StoppingType>(std::move(stop_condition)))
+    {}
+
+    template<typename T>
+    template<typename AlgorithmType, typename CrossoverType, typename MutationType, typename StoppingType>
+    requires std::derived_from<AlgorithmType, algorithm::Algorithm> && std::is_final_v<AlgorithmType> &&
+             std::derived_from<CrossoverType, crossover::Crossover<T>> && std::is_final_v<CrossoverType> &&
+             std::derived_from<MutationType, mutation::Mutation<T>> && std::is_final_v<MutationType> &&
+             std::derived_from<StoppingType, stopping::StopCondition> && std::is_final_v<StoppingType>
+    GA<T>::GA(Positive<size_t> population_size, AlgorithmType algorithm, CrossoverType crossover, MutationType mutation, StoppingType stop_condition) :
+        GA(population_size,
+           std::make_unique<AlgorithmType>(std::move(algorithm)),
+           std::make_unique<CrossoverType>(std::move(crossover)),
+           std::make_unique<MutationType>(std::move(mutation)),
+           std::make_unique<StoppingType>(std::move(stop_condition)))
+    {}
+
 
     template<typename T>
     inline size_t GA<T>::chrom_len() const noexcept
     {
-        GA_ASSERT(fitness_function_);
+        GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
 
         return fitness_function_->chrom_len();
     }
@@ -80,7 +116,7 @@ namespace genetic_algorithm
     template<typename T>
     inline bool GA<T>::variable_chrom_len() const noexcept
     {
-        GA_ASSERT(fitness_function_);
+        GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
 
         return fitness_function_->variable_chrom_len();
     }
@@ -88,7 +124,7 @@ namespace genetic_algorithm
     template<typename T>
     inline size_t GA<T>::num_objectives() const noexcept
     {
-        GA_ASSERT(fitness_function_);
+        GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
 
         return fitness_function_->num_objectives();
     }
@@ -96,14 +132,14 @@ namespace genetic_algorithm
     template<typename T>
     inline bool GA<T>::dynamic_fitness() const noexcept
     {
-        GA_ASSERT(fitness_function_);
+        GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
 
         return fitness_function_->dynamic();
     }
 
 
     template<typename T>
-    inline auto GA<T>::gene_bounds() const noexcept -> const BoundsVector<T>&
+    inline const BoundsVector<T>& GA<T>::gene_bounds() const noexcept requires(is_bounded<T>)
     {
         return bounds_;
     }
@@ -129,14 +165,6 @@ namespace genetic_algorithm
     inline void GA<T>::crossover_method(CrossoverCallable f)
     {
         crossover_ = std::make_unique<crossover::Lambda<T>>(std::move(f));
-    }
-
-    template<typename T>
-    inline crossover::Crossover<T>& GA<T>::crossover_method() & noexcept
-    {
-        GA_ASSERT(crossover_);
-
-        return *crossover_;
     }
 
     template<typename T>
@@ -169,6 +197,7 @@ namespace genetic_algorithm
     inline void GA<T>::mutation_method(F f)
     {
         mutation_ = std::make_unique<F>(std::move(f));
+        use_default_mutation_rate_ = false;
     }
 
     template<typename T>
@@ -177,20 +206,14 @@ namespace genetic_algorithm
         GA_ASSERT(f, "The mutation method can't be a nullptr.");
 
         mutation_ = std::move(f);
+        use_default_mutation_rate_ = false;
     }
 
     template<typename T>
     inline void GA<T>::mutation_method(MutationCallable f)
     {
         mutation_ = std::make_unique<mutation::Lambda<T>>(std::move(f));
-    }
-
-    template<typename T>
-    inline mutation::Mutation<T>& GA<T>::mutation_method() & noexcept
-    {
-        GA_ASSERT(mutation_);
-
-        return *mutation_;
+        use_default_mutation_rate_ = true;
     }
 
     template<typename T>
@@ -207,6 +230,7 @@ namespace genetic_algorithm
         GA_ASSERT(mutation_);
 
         mutation_->mutation_rate(pm);
+        use_default_mutation_rate_ = false;
     }
 
     template<typename T>
@@ -224,6 +248,28 @@ namespace genetic_algorithm
         repair_ = std::move(f);
     }
 
+    template<typename T>
+    inline std::unique_ptr<algorithm::Algorithm> GA<T>::defaultAlgorithm() const
+    {
+        GA_ASSERT(fitness_function_);
+
+        if (fitness_function_->single_objective())
+        {
+            return std::make_unique<algorithm::SingleObjective>();
+        }
+        else
+        {
+            return std::make_unique<algorithm::NSGA3>();
+        }
+    }
+
+    template<typename T>
+    inline Probability GA<T>::defaultMutationRate() const
+    {
+        GA_ASSERT(fitness_function_);
+
+        return GaTraits<T>::defaultMutationRate(chrom_len());
+    }
 
     template<typename T>
     inline bool GA<T>::hasValidFitness(const Candidate<T>& sol) const noexcept
@@ -269,20 +315,22 @@ namespace genetic_algorithm
 
 
     template<typename T>
-    void GA<T>::initializeAlgorithm(Population<T> initial_population)
+    void GA<T>::initializeAlgorithm(MaybeBoundsVector bounds, Population<T> initial_population)
     {
         GA_ASSERT(fitness_function_);
         GA_ASSERT(algorithm_ && stop_condition_);
         GA_ASSERT(crossover_ && mutation_);
 
-        /* Derived GA. */
-        initialize();
-
-        /* Reset state variables in case run() has already been called before. */
+        /* Reset state in case solve() has already been called before. */
         generation_cntr_ = 0;
         num_fitness_evals_ = 0;
         solutions_.clear();
         population_.clear();
+
+        if constexpr (is_bounded<T>) { bounds_ = std::move(bounds); }
+
+        /* Derived GA. */
+        initialize();
 
         /* Create and evaluate the initial population of the algorithm. */
         population_ = generatePopulation(population_size_, std::move(initial_population));
@@ -295,9 +343,10 @@ namespace genetic_algorithm
         /* Initialize the algorithm used.
          * This must be done after the initial population has been created and evaluted,
          * as it might want to use the population's fitness values (fitness_matrix_). */
+        if (use_default_algorithm_) algorithm_ = defaultAlgorithm();
         algorithm_->initialize(*this);
 
-        is_initialized_ = true;
+        if (use_default_mutation_rate_) mutation_rate(defaultMutationRate());
     }
 
     template<typename T>
@@ -464,23 +513,14 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    inline Candidates<T> GA<T>::run(Population<T> initial_population)
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, size_t generations, Population<T> initial_population) requires (!is_bounded<T>)
     {
-        return run(std::move(initial_population), max_gen());
-    }
+        GA_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
 
-    template<typename T>
-    inline Candidates<T> GA<T>::run(size_t num_generations)
-    {
-        return run({}, num_generations);
-    }
+        fitness_function_ = std::move(fitness_function);
+        max_gen(generations);
 
-    template<typename T>
-    Candidates<T> GA<T>::run(Population<T> initial_population, size_t num_generations)
-    {
-        max_gen(num_generations);
-
-        initializeAlgorithm(std::move(initial_population));
+        initializeAlgorithm({ /* no bounds */ }, std::move(initial_population));
         while (!stopCondition())
         {
             advance();
@@ -491,11 +531,15 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    Candidates<T> GA<T>::continueFor(size_t num_generations)
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population) requires (is_bounded<T>)
     {
-        max_gen(max_gen_ + num_generations);
+        GA_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
+        GA_ASSERT(bounds.size() == fitness_function->chrom_len(), "The length of the bounds vector must match the chromosome length.");
 
-        if (!is_initialized_) initializeAlgorithm(); // fallback to run() if called on uninitialized GA
+        fitness_function_ = std::move(fitness_function);
+        max_gen(generations);
+
+        initializeAlgorithm(std::move(bounds), std::move(initial_population));
         while (!stopCondition())
         {
             advance();
@@ -503,6 +547,86 @@ namespace genetic_algorithm
         updateOptimalSolutions(solutions_, population_);
 
         return solutions_;
+    }
+
+    template<typename T>
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Population<T> initial_population) requires (!is_bounded<T>)
+    {
+        return solve(std::move(fitness_function), max_gen(), std::move(initial_population));
+    }
+
+    template<typename T>
+    template<typename F>
+    requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    Candidates<T> GA<T>::solve(F fitness_function, Population<T> initial_population)
+    {
+        return solve(std::make_unique<F>(std::move(fitness_function)), max_gen(), std::move(initial_population));
+    }
+
+    template<typename T>
+    template<typename F>
+    requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    Candidates<T> GA<T>::solve(F fitness_function, size_t generations, Population<T> initial_population)
+    {
+        return solve(std::make_unique<F>(std::move(fitness_function)), generations, std::move(initial_population));
+    }
+
+    template<typename T>
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, GeneBounds<T> bounds, size_t generations, Population<T> initial_population) requires (is_bounded<T>)
+    {
+        const size_t chrom_len = fitness_function->chrom_len();
+
+        return solve(std::move(fitness_function), BoundsVector<T>(chrom_len, bounds), generations, std::move(initial_population));
+    }
+
+    template<typename T>
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, Population<T> initial_population) requires (is_bounded<T>)
+    {
+        return solve(std::move(fitness_function), std::move(bounds), max_gen(), std::move(initial_population));
+    }
+
+    template<typename T>
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, GeneBounds<T> bounds, Population<T> initial_population) requires (is_bounded<T>)
+    {
+        const size_t chrom_len = fitness_function->chrom_len();
+
+        return solve(std::move(fitness_function), BoundsVector<T>(chrom_len, bounds), max_gen(), std::move(initial_population));
+    }
+
+    template<typename T>
+    template<typename F>
+    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    Candidates<T> GA<T>::solve(F fitness_function, BoundsVector<T> bounds, Population<T> initial_population)
+    {
+        return solve(std::make_unique<F>(std::move(fitness_function)), std::move(bounds), max_gen(), std::move(initial_population));
+    }
+
+    template<typename T>
+    template<typename F>
+    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    Candidates<T> GA<T>::solve(F fitness_function, GeneBounds<T> bounds, Population<T> initial_population)
+    {
+        const size_t chrom_len = fitness_function.chrom_len();
+
+        return solve(std::make_unique<F>(std::move(fitness_function)), BoundsVector<T>(chrom_len, bounds), max_gen(), std::move(initial_population));
+    }
+
+    template<typename T>
+    template<typename F>
+    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    Candidates<T> GA<T>::solve(F fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population)
+    {
+        return solve(std::make_unique<F>(std::move(fitness_function)), std::move(bounds), generations, std::move(initial_population));
+    }
+
+    template<typename T>
+    template<typename F>
+    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    Candidates<T> GA<T>::solve(F fitness_function, GeneBounds<T> bounds, size_t generations, Population<T> initial_population)
+    {
+        const size_t chrom_len = fitness_function.chrom_len();
+
+        return solve(std::make_unique<F>(std::move(fitness_function)), BoundsVector<T>(chrom_len, bounds), generations, std::move(initial_population));
     }
 
 } // namespace genetic_algorithm

@@ -9,8 +9,8 @@
 using namespace genetic_algorithm;
 using namespace genetic_algorithm::selection;
 
-const BinaryGA context{ DummyFitnessFunction<BinaryGene>(10), 10 };
-
+static constexpr size_t POPSIZE = 10;
+static const BinaryGA context = []{ BinaryGA GA(POPSIZE); GA.solve(DummyFitnessFunction<BinaryGene>(10), 1); return GA; }();
 
 TEST_CASE("roulette_selection", "[selection][single-objective]")
 {

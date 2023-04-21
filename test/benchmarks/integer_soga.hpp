@@ -16,28 +16,24 @@ using namespace genetic_algorithm::problems;
 
 void integer_hello()
 {
-    StringFinder fitness_func("HELLO WORLD!");
-
-    IntegerGA GA(fitness_func, fitness_func.bounds().front(), 100);
+    IntegerGA GA(100);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::integer::TwoPoint{ 0.85 });
     GA.mutation_method(mutation::integer::Uniform{ 0.01 });
     
-    benchmarkInt(GA, 500, fitness_func);
+    benchmarkInt(GA, 500, StringFinder{ "Hello World!" });
 }
 
 void integer_sentence()
 {
-    StringFinder fitness_func("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque gravida ut ipsum at tincidunt.");
-
-    IntegerGA GA(fitness_func, fitness_func.bounds().front(), 250);
+    IntegerGA GA(250);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::integer::Uniform{ 0.8 });
     GA.mutation_method(mutation::integer::Uniform{ 5.0 / 250 });
     
-    benchmarkInt(GA, 1000, fitness_func);
+    benchmarkInt(GA, 1000, StringFinder{ "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque gravida ut ipsum at tincidunt." });
 }
 
 #endif // !GA_TEST_BENCHMARK_INTEGER_HPP

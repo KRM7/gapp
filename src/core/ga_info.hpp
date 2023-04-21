@@ -4,7 +4,6 @@
 #define GA_CORE_GA_INFO_HPP
 
 #include "../population/population.hpp"
-#include "../algorithm/single_objective.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <functional>
@@ -62,9 +61,10 @@ namespace genetic_algorithm
         * Create a genetic algorithm.
         *
         * @param population_size The size of the population. Must be at least 1.
-        * @param nobj The number of objectives. Must be at least 1.
+        * @param algorithm The algorithm to use. Should be consistent with the objective function (single- or multi-objective).
+        * @param stop_condition The stop condition to use for the algorithm.
         */
-        GaInfo(Positive<size_t> population_size, Positive<size_t> nobj);
+        GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) noexcept;
 
         /**
         * Set the number of candidates used in the population.
@@ -171,10 +171,6 @@ namespace genetic_algorithm
 
         /** @returns The algorithm used by the GA. */
         [[nodiscard]]
-        algorithm::Algorithm& algorithm() & noexcept { GA_ASSERT(algorithm_); return *algorithm_; }
-
-        /** @returns The algorithm used by the GA. */
-        [[nodiscard]]
         const algorithm::Algorithm& algorithm() const& noexcept { GA_ASSERT(algorithm_); return *algorithm_; }
 
 
@@ -213,10 +209,6 @@ namespace genetic_algorithm
         * @param f The function used to check for the early-stop condition.
         */
         void stop_condition(StopConditionCallable f);
-
-        /** @returns The stop condition used by the algorithm. */
-        [[nodiscard]]
-        stopping::StopCondition& stop_condition() & noexcept { GA_ASSERT(stop_condition_); return *stop_condition_; }
 
         /** @returns The stop condition used by the algorithm. */
         [[nodiscard]]
@@ -266,7 +258,7 @@ namespace genetic_algorithm
         size_t num_fitness_evals_ = 0;
 
         bool keep_all_optimal_sols_ = false;
-        bool is_initialized_ = false;
+        bool use_default_algorithm_ = false;
 
         static constexpr size_t DEFAULT_POPSIZE = 100;
     };
@@ -276,22 +268,20 @@ namespace genetic_algorithm
 
 /* IMPLEMENTATION */
 
-#include "../algorithm/algorithm_base.hpp"
-#include "../stop_condition/stop_condition_base.hpp"
 #include <utility>
 
 namespace genetic_algorithm
 {
     template<typename F>
-    requires std::derived_from<F, algorithm::Algorithm>&& std::is_final_v<F>
+    requires std::derived_from<F, algorithm::Algorithm> && std::is_final_v<F>
     inline void GaInfo::algorithm(F f)
     {
         algorithm_ = std::make_unique<F>(std::move(f));
-        is_initialized_ = false;
+        use_default_algorithm_ = false;
     }
 
     template<typename F>
-    requires std::derived_from<F, stopping::StopCondition>&& std::is_final_v<F>
+    requires std::derived_from<F, stopping::StopCondition> && std::is_final_v<F>
     inline void GaInfo::stop_condition(F f)
     {
         stop_condition_ = std::make_unique<F>(std::move(f));

@@ -16,93 +16,79 @@ using namespace genetic_algorithm::problems;
 
 void perm_tsp52()
 {
-    TSP52 tsp52;
-
-    PermutationGA GA(tsp52, 500);
+    PermutationGA GA(500);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Sigma{} });
     GA.crossover_method(crossover::perm::Edge{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.5 });
 
-    benchmarkTSP(GA, 1250, tsp52);
+    benchmarkTSP(GA, 1250, TSP52{});
 }
 
 void perm_tsp76()
 {
-    TSP76 tsp76;
-
-    PermutationGA GA(tsp76, 400);
+    PermutationGA GA(400);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::perm::Order1{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.5 });
 
-    benchmarkTSP(GA, 1000, tsp76);
+    benchmarkTSP(GA, 1000, TSP76{});
 }
 
 void perm_tsp124()
 {
-    TSP124 tsp124;
-
-    PermutationGA GA(tsp124, 500);
+    PermutationGA GA(500);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::perm::Position{ 0.9 });
     GA.mutation_method(mutation::perm::Swap3{ 0.5 });
 
-    benchmarkTSP(GA, 1500, tsp124);
+    benchmarkTSP(GA, 1500, TSP124{});
 }
 
 void perm_tsp152()
 {
-    TSP152 tsp152;
-
-    PermutationGA GA(tsp152, 500);
+    PermutationGA GA(500);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Tournament{} });
     GA.crossover_method(crossover::perm::PMX{ 0.9 });
     GA.mutation_method(mutation::perm::Shift{ 0.5 });
 
-    benchmarkTSP(GA, 1250, tsp152);
+    benchmarkTSP(GA, 1250, TSP152{});
 }
 
 void perm_tsp226()
 {
-    TSP226 tsp226;
-
-    PermutationGA GA(tsp226, 500);
+    PermutationGA GA(500);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Roulette{} });
     GA.crossover_method(crossover::perm::Cycle{ 0.9 });
     GA.mutation_method(mutation::perm::Shuffle{ 0.7 });
 
-    benchmarkTSP(GA, 1250, tsp226);
+    benchmarkTSP(GA, 1250, TSP226{});
 }
 
 void perm_tsp299()
 {
-    TSP299 tsp299;
-
-    PermutationGA GA(tsp299, 500);
+    PermutationGA GA(500);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
 
-    benchmarkTSP(GA, 1000, tsp299);
+    benchmarkTSP(GA, 1000, TSP299{});
 }
 
 void perm_tsp439()
 {
-    TSP439 tsp439;
-
-    PermutationGA GA(tsp439, 500);
+    PermutationGA GA(500);
 
     GA.algorithm(algorithm::SingleObjective{ selection::Boltzmann{} });
     GA.crossover_method(crossover::perm::Order2{ 0.9 });
     GA.mutation_method(mutation::perm::Inversion{ 0.3 });
 
-    benchmarkTSP(GA, 1000, tsp439);
+    benchmarkTSP(GA, 1000, TSP439{});
 }
 
 #endif // !GA_TEST_BENCHMARK_PERM_HPP

@@ -47,12 +47,20 @@ void writePopulationToFile(const std::vector<T>& sols, std::ostream& os)
     }
 }
 
-template<typename T>
-void benchmarkSoga(GA<T>& ga, size_t max_gen, const BenchmarkFunction<RealGene>& fitness_func)
+template<typename T, typename F>
+void benchmarkSoga(GA<T>& ga, size_t max_gen, F fitness_func)
 {
-    using RunFn = Candidates<T>(GA<T>::*)(size_t);
+    using RunFn = std::conditional_t<!is_bounded<T>,
+        Candidates<T>(GA<T>::*)(F, size_t, Population<T>),
+        Candidates<T>(GA<T>::*)(F, BoundsVector<T>, size_t, Population<T>)>;
 
-    auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&GA<T>::run), ga, max_gen);
+    auto [sols, time_spent] = [&]
+    {
+        if constexpr (!is_bounded<T>)
+            return invoke_timed(static_cast<RunFn>(&GA<T>::template solve<F>), ga, fitness_func, max_gen, Population<T>{});
+        else
+            return invoke_timed(static_cast<RunFn>(&GA<T>::template solve<F>), ga, fitness_func, fitness_func.bounds(), max_gen, Population<T>{});
+    }();
 
     std::string algo = std::is_floating_point_v<T> ? "RCGA" : "BinaryGA";
 
@@ -65,12 +73,20 @@ void benchmarkSoga(GA<T>& ga, size_t max_gen, const BenchmarkFunction<RealGene>&
               << "\nTime taken: " << std::fixed << std::setprecision(4) << time_spent << "s\n\n";
 }
 
-template<typename T>
-void benchmarkMoga(GA<T>& ga, size_t max_gen, const std::string& ga_name, const BenchmarkFunction<T>& fitness_func)
+template<typename T, typename F>
+void benchmarkMoga(GA<T>& ga, size_t max_gen, const std::string& ga_name, F fitness_func)
 {
-    using RunFn = Candidates<T>(GA<T>::*)(size_t);
+    using RunFn = std::conditional_t<!is_bounded<T>,
+        Candidates<T>(GA<T>::*)(F, size_t, Population<T>),
+        Candidates<T>(GA<T>::*)(F, BoundsVector<T>, size_t, Population<T>)>;
 
-    auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&GA<T>::run), ga, max_gen);
+    auto [sols, time_spent] = [&]
+    {
+        if constexpr (!is_bounded<T>)
+            return invoke_timed(static_cast<RunFn>(&GA<T>::template solve<F>), ga, fitness_func, max_gen, Population<T>{});
+        else
+            return invoke_timed(static_cast<RunFn>(&GA<T>::template solve<F>), ga, fitness_func, fitness_func.bounds(), max_gen, Population<T>{});
+    }();
 
     std::string problem = fitness_func.name();
 
@@ -92,11 +108,12 @@ void benchmarkMoga(GA<T>& ga, size_t max_gen, const std::string& ga_name, const 
     writePopulationToFile(sols, fsols);
 }
 
-inline void benchmarkTSP(PermutationGA& ga, size_t max_gen, const TSP& fitness_func)
+template<typename F>
+void benchmarkTSP(PermutationGA& ga, size_t max_gen, F fitness_func)
 {
-    using RunFn = Population<PermutationGene>(PermutationGA::*)(size_t);
+    using RunFn = Candidates<PermutationGene>(PermutationGA::*)(F, size_t, Population<PermutationGene>);
 
-    auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&PermutationGA::run), ga, max_gen);
+    auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&PermutationGA::template solve<F>), ga, fitness_func, max_gen, Population<PermutationGene>{});
 
     std::cout << "Function: " << fitness_func.name()
               << "\nNumber of optimal sols: " << sols.size()
@@ -107,11 +124,12 @@ inline void benchmarkTSP(PermutationGA& ga, size_t max_gen, const TSP& fitness_f
               << "\nTime taken: " << std::fixed << std::setprecision(4) << time_spent << "s\n\n";
 }
 
-inline void benchmarkInt(IntegerGA& ga, size_t max_gen, const StringFinder& fitness_func)
+template<typename F>
+void benchmarkInt(IntegerGA& ga, size_t max_gen, F fitness_func)
 {
-    using RunFn = Candidates<IntegerGene>(IntegerGA::*)(size_t);
+    using RunFn = Candidates<IntegerGene>(IntegerGA::*)(F, BoundsVector<IntegerGene>, size_t, Population<IntegerGene>);
 
-    auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&IntegerGA::run), ga, max_gen);
+    auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&IntegerGA::template solve<F>), ga, fitness_func, fitness_func.bounds(), max_gen, Population<IntegerGene>{});
 
     std::cout << "Function: " << fitness_func.name()
               << "\nNumber of optimal sols: " << sols.size()
