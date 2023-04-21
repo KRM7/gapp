@@ -311,7 +311,7 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    inline std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(size_t chrom_len, size_t num_obj, FitnessCallable<T> f)
+    inline std::unique_ptr<FitnessFunctionBase<T>> makeFitnessFunction(size_t num_obj, size_t chrom_len, FitnessCallable<T> f)
     {
         return std::make_unique<detail::FitnessLambda<T>>(chrom_len, num_obj, std::move(f));
     }
