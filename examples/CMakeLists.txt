@@ -1,4 +1,3 @@
-find_package(Catch2 3 REQUIRED)
 find_package(TBB)
 
 if(GA_LINK_TBB)
