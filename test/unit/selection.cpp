@@ -75,7 +75,7 @@ TEST_CASE("rank_selection", "[selection][single-objective]")
         { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }
     };
 
-    std::unique_ptr<Selection> selection = std::make_unique<Rank>();
+    std::unique_ptr<Selection> selection = std::make_unique<Rank>(0.0);
     selection->initializeImpl(context);
 
     selection->prepareSelectionsImpl(context, fmat);
