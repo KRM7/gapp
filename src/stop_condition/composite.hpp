@@ -5,86 +5,66 @@
 
 #include "stop_condition_base.hpp"
 #include "../core/ga_info.hpp"
-#include <tuple>
+#include "../utility/concepts.hpp"
+#include <functional>
 #include <concepts>
+#include <utility>
 
-namespace genetic_algorithm::stopping
+namespace genetic_algorithm::stopping::dtl
 {
-    /**
-    * A stop condition that is the combination of other stop conditions, and
-    * will evaluate to true if any of its members evaluate to true.
-    */
-    template<std::derived_from<StopCondition> T1, std::derived_from<StopCondition> T2, std::derived_from<StopCondition>... Rest>
+    template<std::derived_from<StopCondition> Left, std::derived_from<StopCondition> Right>
     class OR final : public StopCondition
     {
     public:
-        /**
-        * Create a composite stop condition from other stop conditions. \n
-        * This composite stop condition will return true if any of its members return true.
-        */
-        OR(T1 first, T2 second, Rest... rest) noexcept;
+        constexpr OR(Left left, Right right) noexcept :
+            left_(std::move(left)), right_(std::move(right))
+        {}
 
     private:
-        bool stop_condition(const GaInfo& ga) override;
+        bool stop_condition(const GaInfo& ga) override
+        {
+            // Both of the stop conditions should be evaluated, so avoid short circuits with logical ops
+            // (the stop conditions might rely on side effects of operator() to maintain their state).
+            return std::invoke(left_, ga) + std::invoke(right_, ga);   
+        }
 
-        std::tuple<T1, T2, Rest...> parts_;
+        Left left_;
+        Right right_;
     };
 
-    /**
-    * A stop condition that is the combination of other stop conditions,
-    * and will evaluate to true if all of its members evaluate to true.
-    */
-    template<std::derived_from<StopCondition> T1, std::derived_from<StopCondition> T2, std::derived_from<StopCondition>... Rest>
+    template<std::derived_from<StopCondition> Left, std::derived_from<StopCondition> Right>
     class AND final : public StopCondition
     {
     public:
-        /**
-        * Create a composite stop condition from other stop conditions. \n
-        * This composite stop condition will return true if all of its members return true.
-        */
-        AND(T1 first, T2 second, Rest... rest) noexcept;
+        constexpr AND(Left left, Right right) noexcept :
+            left_(std::move(left)), right_(std::move(right))
+        {}
 
     private:
-        bool stop_condition(const GaInfo& ga) override;
+        bool stop_condition(const GaInfo& ga) override
+        {
+            // Both of the stop conditions should be evaluated, so avoid short circuits with logical ops
+            // (the stop conditions might rely on side effects of operator() to maintain their state).
+            return std::invoke(left_, ga) * std::invoke(right_, ga);
+        }
 
-        std::tuple<T1, T2, Rest...> parts_;
+        Left left_;
+        Right right_;
     };
 
-} // namespace genetic_algorithm::stopping
+} // namespace genetic_algorithm::stopping::dtl
 
-
-/* IMPLEMENTATION */
-
-#include "../utility/algorithm.hpp"
-#include <functional>
-#include <utility>
 
 namespace genetic_algorithm::stopping
 {
-    template<std::derived_from<StopCondition> T1, std::derived_from<StopCondition> T2, std::derived_from<StopCondition>... Rest>
-    OR<T1, T2, Rest...>::OR(T1 first, T2 second, Rest... rest) noexcept
-        : StopCondition(), parts_(std::move(first), std::move(second), std::move(rest)...)
-    {}
-
-    template<std::derived_from<StopCondition> T1, std::derived_from<StopCondition> T2, std::derived_from<StopCondition>... Rest>
-    bool OR<T1, T2, Rest...>::stop_condition(const GaInfo& ga)
+    constexpr auto operator&&(detail::Leaf<StopCondition> auto lhs, detail::Leaf<StopCondition> auto rhs) noexcept
     {
-        /* All of the member stop conditions should be evaluated, so avoid short circuits with logical ops. */
-        /* (The stop conditions might rely on side effects of operator() to maintain their state.) */
-        return detail::transform_reduce(parts_, false, [&](auto& part) { return part(ga); }, std::plus{});
+        return dtl::AND{ std::move(lhs), std::move(rhs) };
     }
 
-    template<std::derived_from<StopCondition> T1, std::derived_from<StopCondition> T2, std::derived_from<StopCondition>... Rest>
-    AND<T1, T2, Rest...>::AND(T1 first, T2 second, Rest... rest) noexcept
-        : StopCondition(), parts_(std::move(first), std::move(second), std::move(rest)...)
-    {}
-
-    template<std::derived_from<StopCondition> T1, std::derived_from<StopCondition> T2, std::derived_from<StopCondition>... Rest>
-    bool AND<T1, T2, Rest...>::stop_condition(const GaInfo& ga)
+    constexpr auto operator||(detail::Leaf<StopCondition> auto lhs, detail::Leaf<StopCondition> auto rhs) noexcept
     {
-        /* All of the member stop conditions should be evaluated, so avoid short circuits with logical ops. */
-        /* (The stop conditions might rely on side effects of operator() to maintain their state.) */
-        return detail::transform_reduce(parts_, false, [&](auto& part) { return part(ga); }, std::multiplies{});
+        return dtl::OR{ std::move(lhs), std::move(rhs) };
     }
 
 } // namespace genetic_algorithm::stopping

@@ -8,6 +8,7 @@
 #include "crossover/binary.hpp"
 #include "mutation/binary.hpp"
 #include "stop_condition/stop_condition.hpp"
+#include "stop_condition/composite.hpp"
 #include "problems/single_objective.hpp"
 #include "benchmark_utils.hpp"
 
@@ -33,8 +34,7 @@ void binary_rastrigin()
     GA.algorithm(algorithm::SingleObjective{ selection::Roulette{} });
     GA.crossover_method(crossover::binary::NPoint{ 0.75, 2 });
     GA.mutation_method(mutation::binary::Flip{ 0.015 });
-    GA.stop_condition(stopping::AND(stopping::FitnessMeanStall{ 50, 0.005 },
-                                    stopping::FitnessBestStall{ 50, 0.005 }));
+    GA.stop_condition(stopping::FitnessMeanStall{ 50, 0.005 } && stopping::FitnessBestStall{ 50, 0.005 });
 
     benchmarkSoga(GA, 1000, Rastrigin{ 10 });
 }

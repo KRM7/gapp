@@ -25,6 +25,9 @@ namespace genetic_algorithm::detail
     template<typename Derived, template<typename...> class BaseTempl>
     concept DerivedFromSpecializationOf = is_derived_from_spec_of_v<Derived, BaseTempl>;
 
+    template<typename Derived, typename Base>
+    concept Leaf = std::derived_from<Derived, Base> && std::is_final_v<Derived>;
+
     template<typename C>
     concept Container = requires(C c, const C cc, C&& rc)
     {
