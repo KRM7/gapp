@@ -32,7 +32,7 @@ namespace genetic_algorithm::math
         friend class ScopedTolerances;
     };
 
-    class ScopedTolerances
+    class [[nodiscard]] ScopedTolerances
     {
     public:
         ScopedTolerances(unsigned num_epsilons, double abs) noexcept :
