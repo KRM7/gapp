@@ -173,9 +173,12 @@ TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, 
 
         mutation(context, candidate);
 
-        REQUIRE(!candidate.is_evaluated);
-        REQUIRE(candidate.fitness == old_candidate.fitness);
-        REQUIRE(candidate.chromosome != old_candidate.chromosome);
+        if constexpr (!std::is_same_v<Mutation, perm::Shuffle>) // shuffle could return the same sequence
+        {
+            REQUIRE(!candidate.is_evaluated);
+            REQUIRE(candidate.fitness == old_candidate.fitness);
+            REQUIRE(candidate.chromosome != old_candidate.chromosome);
+        }
     }
 
     REQUIRE(
