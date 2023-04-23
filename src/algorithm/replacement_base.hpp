@@ -16,9 +16,6 @@ namespace genetic_algorithm
 /** Population replacement policies for the single-objective algorithms. */
 namespace genetic_algorithm::replacement
 {
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
-
     /**
     * The base class used for all of the single-objective population replacement policies. \n
     *

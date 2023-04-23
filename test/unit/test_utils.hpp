@@ -11,13 +11,14 @@
 using namespace genetic_algorithm;
 
 template<typename T>
-class DummyFitnessFunction final : public FitnessFunction<T>
+class DummyFitnessFunction final : public FitnessFunctionBase<T>
 {
 public:
     explicit DummyFitnessFunction(size_t chrom_len, size_t nobj = 1, bool var_len = false, bool dynamic = false) :
-        FitnessFunction<T>(chrom_len, nobj, var_len, dynamic) {}
+        FitnessFunctionBase<T>(chrom_len, var_len, dynamic), nobj_(nobj) {}
 private:
-    detail::FitnessVector invoke(const Chromosome<T>&) const override { return std::vector(this->num_objectives(), 0.0); }
+    FitnessVector invoke(const Chromosome<T>&) const override { return std::vector(nobj_, 0.0); }
+    size_t nobj_;
 };
 
 #endif // !GA_TEST_UTILS_HPP

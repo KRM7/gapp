@@ -17,9 +17,6 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm::replacement
 {
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
-
     /**
     * A population update method that selects only the child Candidates from the
     * combined parent and child populations, and uses these as the population of the next generation of the algorithm. \n

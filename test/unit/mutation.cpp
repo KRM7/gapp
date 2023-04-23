@@ -54,7 +54,7 @@ TEST_CASE("mutation_fitness_eval", "[crossover]")
         REQUIRE(!candidate.is_evaluated);
     }
 
-    REQUIRE(candidate.fitness == detail::FitnessVector{ 0.0 });
+    REQUIRE(candidate.fitness == FitnessVector{ 0.0 });
 }
 
 TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)

@@ -182,10 +182,6 @@ namespace genetic_algorithm
         [[nodiscard]]
         bool variable_chrom_len() const noexcept final;
 
-        /** @returns The number of objectives of the fitness function. */
-        [[nodiscard]]
-        size_t num_objectives() const noexcept final;
-
         /** @returns True if a dynamic fitness function is used. */
         [[nodiscard]]
         bool dynamic_fitness() const noexcept final;
@@ -550,6 +546,7 @@ namespace genetic_algorithm
         void advance();
 
 
+        size_t findNumberOfObjectives() const;
         std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
         Probability defaultMutationRate() const;
 
@@ -566,6 +563,7 @@ namespace genetic_algorithm
         using GaInfo::stop_condition_;
         using GaInfo::population_size_;
         using GaInfo::max_gen_;
+        using GaInfo::num_objectives_;
         using GaInfo::generation_cntr_;
         using GaInfo::num_fitness_evals_;
         using GaInfo::keep_all_optimal_sols_;

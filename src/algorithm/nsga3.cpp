@@ -24,9 +24,6 @@ namespace genetic_algorithm::algorithm
 {
     using namespace dtl;
     using math::Point;
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
-
 
     /* Achievement scalarization function. */
     static inline double ASF(std::span<const double> ideal_point, std::span<const double> weights, std::span<const double> fitness) noexcept

@@ -11,9 +11,6 @@
 /* Early stop conditions for the genetic algorithms. */
 namespace genetic_algorithm::stopping
 {
-    using FitnessVector = detail::FitnessVector;
-    using FitnessMatrix = detail::FitnessMatrix;
-
     /**
     * Early stop condition based on the number of fitness function evaluations performed. \n
     * The algorithm will stop early if the set maximum number of objective function evaluations

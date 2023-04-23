@@ -6,7 +6,7 @@
 
 using namespace genetic_algorithm;
 
-class SinX final : public SingleObjFitnessFunction<RealGene, 1>
+class SinX final : public FitnessFunction<RealGene, 1>
 {
     FitnessVector invoke(const Chromosome<RealGene>& x) const override { return { std::sin(x[0]) }; }
 };

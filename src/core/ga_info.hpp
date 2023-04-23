@@ -36,19 +36,6 @@ namespace genetic_algorithm
     {
     public:
         /**
-        * Type returned by fitness_matrix(), used to represent the fitness matrix of the population. \n
-        * Each element of the matrix is the fitness vector of the corresponding solution of the population. \n
-        * Eg. fmat[0] is the fitness vector of the first member of the population.
-        */
-        using FitnessMatrix = detail::FitnessMatrix;
-
-        /**
-        * The type of the candidate solutions' fitness vectors. \n
-        * Contains fitness values along each objective axis.
-        */
-        using FitnessVector = detail::FitnessVector;
-
-        /**
         * The general callable type that can be used as a stop condition in the algorithm. \n
         * It should return true if the algorithm should stop.
         */
@@ -99,7 +86,7 @@ namespace genetic_algorithm
 
         /** @returns The number of objectives of the fitness function. */
         [[nodiscard]]
-        virtual size_t num_objectives() const noexcept = 0;
+        size_t num_objectives() const noexcept { return num_objectives_; }
 
         /** @returns True if a dynamic fitness function is used. */
         [[nodiscard]]
@@ -254,6 +241,7 @@ namespace genetic_algorithm
 
         Positive<size_t> population_size_ = DEFAULT_POPSIZE;
         Positive<size_t> max_gen_ = 500;
+        size_t num_objectives_ = 0;
         size_t generation_cntr_ = 0;
         size_t num_fitness_evals_ = 0;
 

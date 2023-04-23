@@ -4,6 +4,7 @@
 #define GA_CANDIDATE_H
 
 #include "../utility/math.hpp"
+#include "../utility/matrix.hpp"
 #include "../utility/concepts.hpp"
 #include <vector>
 #include <utility>
@@ -12,6 +13,12 @@
 
 namespace genetic_algorithm
 {
+    /** The type used to represent the fitness of the candidates. Contains a fitness value for each objective axis. */
+    using FitnessVector = std::vector<double>;
+
+    /** The type used to represent the fitness values of a population. Each row of the matrix is the fitness vector of a candidate. */
+    using FitnessMatrix = detail::Matrix<double>;
+
      /** The type used to represent the lower and upper bounds of a gene. */
     template<typename T>
     class GeneBounds
@@ -73,9 +80,9 @@ namespace genetic_algorithm
         Candidate& operator=(Candidate&&)       = default;
         ~Candidate()                            = default;
 
-        Chromosome<T> chromosome;       /**< The chromosome encoding the solution. */
-        std::vector<double> fitness;    /**< The fitness values (for each objective) of the solution. */
-        bool is_evaluated = false;      /**< False if the candidate's fitness value needs to be computed. */
+        Chromosome<T> chromosome;   /**< The chromosome encoding the solution. */
+        FitnessVector fitness;      /**< The fitness values (for each objective) of the solution. */
+        bool is_evaluated = false;  /**< False if the candidate's fitness value needs to be computed. */
     };
 
     /** A pair of candidates. */

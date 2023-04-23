@@ -19,9 +19,6 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm::selection
 {
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
-
     /**
     * Roulette selection operator for single-objective optimization, assuming fitness maximization.
     * The probability of selecting an individual from the population is proportional to it's fitness value. \n

@@ -22,9 +22,6 @@ namespace genetic_algorithm
 
 namespace genetic_algorithm::detail
 {
-    using FitnessVector = std::vector<double>;
-    using FitnessMatrix = detail::Matrix<double>;
-
     /* Return the fitness matrix of the population (multi-objective). */
     template<typename T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop);

@@ -27,7 +27,11 @@ namespace genetic_algorithm::problems
 
         /** @returns The name of the benchmark function. */
         [[nodiscard]]
-        const std::string& name() const { return name_; }
+        const std::string& name() const noexcept { return name_; }
+
+        /** @returns The number of objectives. */
+        [[nodiscard]]
+        size_t num_objectives() const noexcept { return num_objectives_; }
 
         /** @returns The lower and upper bounds for each variable of the benchmark function. */
         [[nodiscard]]
@@ -56,19 +60,19 @@ namespace genetic_algorithm::problems
 
         /* Single-objective, uniform bounds. */
         BenchmarkFunctionTraits(std::string name, Bounds bounds, std::vector<T> optimum, double optimal_value) :
-            name_(std::move(name)), bounds_(std::vector(optimum.size(), bounds)), optimum_(std::move(optimum)),
+            name_(std::move(name)), num_objectives_(1), bounds_(std::vector(optimum.size(), bounds)), optimum_(std::move(optimum)),
             optimal_value_(math::Point(1, optimal_value)), ideal_point_(optimal_value_), nadir_point_(optimal_value_)
         {}
 
         /* Multi-objective, uniform bounds. */
         BenchmarkFunctionTraits(std::string name, Bounds bounds, std::vector<T> optimum, math::Point optimal_value) :
-            name_(std::move(name)), bounds_(std::vector(optimum.size(), bounds)),
+            name_(std::move(name)), num_objectives_(optimal_value.size()), bounds_(std::vector(optimum.size(), bounds)),
             optimum_(std::move(optimum)), optimal_value_(std::move(optimal_value))
         {}
 
         /* General ctor, uniform bounds. */
-        BenchmarkFunctionTraits(std::string name, size_t num_vars, Bounds bounds) :
-            name_(std::move(name)), bounds_(std::vector(num_vars, bounds))
+        BenchmarkFunctionTraits(std::string name, size_t num_objectives, size_t num_vars, Bounds bounds) :
+            name_(std::move(name)), num_objectives_(num_objectives), bounds_(std::vector(num_vars, bounds))
         {}
 
         BenchmarkFunctionTraits(const BenchmarkFunctionTraits&)             = default;
@@ -77,6 +81,7 @@ namespace genetic_algorithm::problems
         BenchmarkFunctionTraits& operator=(BenchmarkFunctionTraits&&)       = default;
 
         std::string name_;
+        size_t num_objectives_;
         std::vector<Bounds> bounds_;
         std::vector<T> optimum_;
         math::Point optimal_value_;
@@ -117,7 +122,7 @@ namespace genetic_algorithm::problems
         /* General ctor, uniform bounds. */
         BenchmarkFunction(std::string name, size_t nvars, size_t nobj, Bounds bounds) :
             FitnessFunctionBase<T>(nvars, nobj),
-            BenchmarkFunctionTraits<T>(std::move(name), nvars, bounds)
+            BenchmarkFunctionTraits<T>(std::move(name), nobj, nvars, bounds)
         {}
 
         BenchmarkFunction(const BenchmarkFunction&)             = default;
@@ -136,7 +141,6 @@ namespace genetic_algorithm::problems
     {
     public:
         using FitnessFunctionBase<RealGene>::GeneType;
-        using FitnessFunctionBase<RealGene>::FitnessVector;
         using BenchmarkFunctionTraits<RealGene>::Bounds;
 
         using FitnessFunctionBase<RealGene>::operator();
@@ -145,8 +149,6 @@ namespace genetic_algorithm::problems
         /** @returns The number of variables of the benchmark function. */
         [[nodiscard]]
         size_t num_vars() const noexcept { return FitnessFunctionBase<RealGene>::chrom_len(); }
-
-        using FitnessFunctionBase<RealGene>::num_objectives;
 
     protected:
 
@@ -168,7 +170,7 @@ namespace genetic_algorithm::problems
         BenchmarkFunction(std::string name, size_t nvars, size_t nobj, Bounds bounds, size_t var_bits) :
             FitnessFunctionBase<RealGene>(nvars, nobj),
             FitnessFunctionBase<BinaryGene>(nvars * var_bits, nobj),
-            BenchmarkFunctionTraits<RealGene>(std::move(name), nvars, bounds)
+            BenchmarkFunctionTraits<RealGene>(std::move(name), nobj, nvars, bounds)
         {}
 
         BenchmarkFunction(const BenchmarkFunction&)             = default;

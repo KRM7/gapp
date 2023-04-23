@@ -122,14 +122,6 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    inline size_t GA<T>::num_objectives() const noexcept
-    {
-        GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
-
-        return fitness_function_->num_objectives();
-    }
-
-    template<typename T>
     inline bool GA<T>::dynamic_fitness() const noexcept
     {
         GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
@@ -249,11 +241,25 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    inline std::unique_ptr<algorithm::Algorithm> GA<T>::defaultAlgorithm() const
+    inline size_t GA<T>::findNumberOfObjectives() const
     {
         GA_ASSERT(fitness_function_);
 
-        if (fitness_function_->single_objective())
+        const Candidate<T> candidate = generateCandidate();
+        const FitnessVector fitness = (*fitness_function_)(candidate.chromosome);
+
+        GA_ASSERT(fitness.size() > 0, "The number of objectives must be greater than 0.");
+
+        return fitness.size();
+    }
+
+    template<typename T>
+    inline std::unique_ptr<algorithm::Algorithm> GA<T>::defaultAlgorithm() const
+    {
+        GA_ASSERT(fitness_function_);
+        GA_ASSERT(num_objectives() > 0);
+
+        if (num_objectives() == 1)
         {
             return std::make_unique<algorithm::SingleObjective>();
         }
@@ -276,7 +282,7 @@ namespace genetic_algorithm
     {
         GA_ASSERT(fitness_function_);
 
-        return sol.is_evaluated && (sol.fitness.size() == fitness_function_->num_objectives());
+        return sol.is_evaluated && (sol.fitness.size() == num_objectives());
     }
 
     template<typename T>
@@ -333,6 +339,7 @@ namespace genetic_algorithm
         initialize();
 
         /* Create and evaluate the initial population of the algorithm. */
+        num_objectives_ = findNumberOfObjectives();
         population_ = generatePopulation(population_size_, std::move(initial_population));
         std::for_each(GA_EXECUTION_UNSEQ, population_.begin(), population_.end(), [this](Candidate<T>& sol) { evaluate(sol); });
         fitness_matrix_ = detail::toFitnessMatrix(population_);

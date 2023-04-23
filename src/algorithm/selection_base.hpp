@@ -16,9 +16,6 @@ namespace genetic_algorithm
 /** Selection operators for the single-objective algorithms. */
 namespace genetic_algorithm::selection
 {
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
-
     /**
     * Base class used for all of the single-objective selection operators. \n
     * 

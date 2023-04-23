@@ -10,9 +10,6 @@
 
 namespace genetic_algorithm::algorithm::dtl
 {
-    using detail::FitnessVector;
-    using detail::FitnessMatrix;
-
     struct FrontInfo
     {
         size_t idx;  // The solution's idx in the fitness matrix

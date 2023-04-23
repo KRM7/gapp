@@ -38,9 +38,6 @@ namespace genetic_algorithm::algorithm
     class Algorithm : protected selection::Selection, protected replacement::Replacement
     {
     public:
-        using FitnessVector = detail::FitnessVector;
-        using FitnessMatrix = detail::FitnessMatrix;
-
         /**
         * Initialize the algorithm if needed. \n
         * 
