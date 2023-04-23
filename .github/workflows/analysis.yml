@@ -25,7 +25,7 @@ jobs:
           ruleset: ${{ github.workspace }}/core-guidelines.ruleset
           cmakeBuildDirectory: ${{ github.workspace }}/build
           buildConfiguration: Release
-          ignoredPaths: ${{ github.workspace }}/test
+          ignoredPaths: ${{ github.workspace }}/test;${{ github.workspace }}/examples
 
       - name: upload-sarif
         uses: github/codeql-action/upload-sarif@v2
