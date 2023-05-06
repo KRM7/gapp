@@ -60,7 +60,8 @@ TEMPLATE_TEST_CASE_SIG("find_pareto_front_nd", "[pareto_front]", ((auto F), F), 
         { 4.0,   1.0  },
         { 4.0,   2.0  }, //
         { 5.0,  -1.0  }, // ~
-        { 5.01, -0.99 }  //
+        { 5.01, -0.99 }, //
+        { 5.01, -0.99 }
     };
 
     SECTION("single optimum")
@@ -78,7 +79,7 @@ TEMPLATE_TEST_CASE_SIG("find_pareto_front_nd", "[pareto_front]", ((auto F), F), 
 
         auto optimal_indices = F(fmat);
 
-        REQUIRE_THAT(optimal_indices, Matchers::UnorderedEquals(std::vector<size_t>{ 5, 9, 11, 13 }));
+        REQUIRE_THAT(optimal_indices, Matchers::UnorderedEquals(std::vector<size_t>{ 5, 9, 11, 13, 14 }));
     }
 
     SECTION("multiple optimum approx")
@@ -87,6 +88,6 @@ TEMPLATE_TEST_CASE_SIG("find_pareto_front_nd", "[pareto_front]", ((auto F), F), 
 
         auto optimal_indices = F(fmat);
 
-        REQUIRE_THAT(optimal_indices, Matchers::UnorderedEquals(std::vector<size_t>{ 4, 5, 9, 11, 12, 13 }));
+        REQUIRE_THAT(optimal_indices, Matchers::UnorderedEquals(std::vector<size_t>{ 4, 5, 9, 11, 12, 13, 14 }));
     }
 }

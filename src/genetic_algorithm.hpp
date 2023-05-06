@@ -16,6 +16,7 @@
 #include "core/ga_base.hpp"
 #include "encoding/encoding.hpp"
 #include "problems/problems.hpp"
+#include "metrics/metrics.hpp"
 
 namespace ga = genetic_algorithm;
 

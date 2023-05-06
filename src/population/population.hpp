@@ -4,7 +4,6 @@
 #define GA_POPULATION_HPP
 
 #include "candidate.hpp"
-#include "../utility/matrix.hpp"
 #include <vector>
 #include <cstddef>
 
@@ -29,31 +28,11 @@ namespace genetic_algorithm::detail
     /* Return the fitness vector of a fitness matrix along the first objective axis. */
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
-    /* Return the minimum fitness values of a fitness matrix along each objective axis. */
-    FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-    /* Return the maximum fitness values of a fitness matrix along each objective axis. */
-    FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-    /* Return the mean fitness values of a fitness matrix along each objective axis. */
-    FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-    /* Return the variance of the fitness values of a fitness matrix along each objective axis. */
-    FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-    /* Return the variance of the fitness values of a fitness matrix along each objective axis. */
-    FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& fitness_mean);
-
-    /* Return the standard deviation of the fitness values of a fitness matrix along each objective axis. */
-    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
-
-    /* Return the standard deviation of the fitness values of a fitness matrix along each objective axis. */
-    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& fitness_mean);
-
-
-    /* Find the pareto-optimal solutions in a population. */
+    /* Find the pareto-optimal solutions in a population. Assumes fitness maximization, duplicates are not eliminated. */
     template<typename T>
     Candidates<T> findParetoFront(const Population<T>& pop);
+
+    std::vector<size_t> findParetoFront(const FitnessMatrix& fmat);
 
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat);
 
@@ -63,10 +42,12 @@ namespace genetic_algorithm::detail
 
     std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat);
 
-
     /* Find the pareto-optimal solutions in the set (lhs U rhs), assuming both lhs and rhs are pareto sets. */
     template<typename T>
     Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs);
+
+    /* Find the nadir point of a fitness matrix assuming fitness maximization. */
+    FitnessVector findNadirPoint(const FitnessMatrix& fitness_matrix);
 
 } // namespace genetic_algorithm::detail
 
@@ -110,9 +91,7 @@ namespace genetic_algorithm::detail
 
         auto fitness_matrix = detail::toFitnessMatrix(pop);
 
-        auto optimal_indices = fitness_matrix.ncols() == 1 ?
-            findParetoFront1D(fitness_matrix) :
-            findParetoFrontSort(fitness_matrix);
+        auto optimal_indices = detail::findParetoFront(fitness_matrix);
 
         return detail::select(pop, optimal_indices);
     }

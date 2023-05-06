@@ -5,6 +5,7 @@
 #include "reference_lines.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
+#include "../metrics/pop_stats.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/math.hpp"

@@ -7,7 +7,7 @@ namespace genetic_algorithm::stopping
 {
     bool StopCondition::operator()(const GaInfo& ga)
     {
-        return stop_condition(ga) || (ga.generation_cntr() > ga.max_gen());
+        return stop_condition(ga) || (ga.generation_cntr() + 1 >= ga.max_gen());
     }
 
 } // namespace genetic_algorithm::stopping

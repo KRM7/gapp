@@ -123,6 +123,9 @@ namespace genetic_algorithm::math
     /* Calculate the square of the perpendicular distance between a line (passing through the origin) and a point. */
     double perpendicularDistanceSq(std::span<const double> line, std::span<const double> point) noexcept;
 
+    /* Calculate the volume of a hyperrectangle given by 2 points. */
+    double volumeBetween(std::span<const double> p1, std::span<const double> p2) noexcept;
+
 
     /* Calculate the arithmetic mean of the values in vec. */
     double mean(std::span<const double> vec) noexcept;

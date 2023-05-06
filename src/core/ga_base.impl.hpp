@@ -355,6 +355,9 @@ namespace genetic_algorithm
         algorithm_->initialize(*this);
 
         if (use_default_mutation_rate_) mutation_rate(defaultMutationRate());
+
+        metrics_.initialize(*this);
+        metrics_.update(*this);
     }
 
     template<typename T>
@@ -514,6 +517,7 @@ namespace genetic_algorithm
 
         updatePopulation(std::move(children));
         if (keep_all_optimal_sols_) updateOptimalSolutions(solutions_, population_);
+        metrics_.update(*this);
 
         if (endOfGenerationCallback) endOfGenerationCallback(*this);
         generation_cntr_++;

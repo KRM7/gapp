@@ -6,6 +6,7 @@
 #include "../population/population.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
+#include "../metrics/metric_set.hpp"
 #include <functional>
 #include <type_traits>
 #include <concepts>
@@ -203,6 +204,51 @@ namespace genetic_algorithm
 
 
         /**
+        * Set a number of metrics to track through the run of the algorithms. \n
+        * The values of these metrics are computed and saved for each generation of the
+        * algorithm. \n
+        * 
+        * Example:
+        *   GA.track(metrics::FitnessMin{}, metrics::FitnessMax{});
+        *   GA.solve(...);
+        *   const auto& fmin = GA.get_metric<metrics::FitnessMin>();
+        * 
+        * The same metric type may be present multiple times in the parameters, but it is
+        * unspecified which one get_metric() will return in this case.
+        *
+        * Setting a new set of metrics to be tracked via this method will invalidate all references
+        * returned by get_metric().
+        * 
+        * @param metrics The metrics to track during the runs of the algorithm.
+        */
+        template<typename... Metrics>
+        requires ((std::derived_from<Metrics, metrics::MonitorBase> && std::is_final_v<Metrics>) && ...)
+        void track(Metrics... metrics);
+
+        /**
+        * Get one of the metrics tracked by the algorithm. \n
+        * The type parameter Metric must be the type of one of the metrics being tracked, otherwise
+        * the behaviour of this method is undefined. \n
+        * 
+        * Example:
+        *   GA.track(metrics::FitnessMin{}, metrics::FitnessMax{});
+        *   GA.solve(...);
+        *   const auto& fmin = GA.get_metric<metrics::FitnessMin>();
+        * 
+        * If the set of tracked metrics contains the same metric multiple times, get_metric() will return
+        * one of them, but it is unspecified which.
+        * 
+        * Setting a new set of metrics to be tracked via track() will invalidate all references
+        * returned by this function.
+        * 
+        * @returns The metric of the specified type if it is tracked, otherwise undefined.
+        */
+        template<typename Metric>
+        requires (std::derived_from<Metric, metrics::MonitorBase> && std::is_final_v<Metric>)
+        const Metric& get_metric() const noexcept;
+
+
+        /**
         * When set to true, all pareto optimal Candidates found by the algorithm during a run
         * will be kept and stored in the solutions set, regardless of which generation they were
         * found in. \n
@@ -238,6 +284,7 @@ namespace genetic_algorithm
 
         std::unique_ptr<algorithm::Algorithm> algorithm_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
+        detail::MetricSet metrics_;
 
         Positive<size_t> population_size_ = DEFAULT_POPSIZE;
         Positive<size_t> max_gen_ = 500;
@@ -257,6 +304,7 @@ namespace genetic_algorithm
 /* IMPLEMENTATION */
 
 #include <utility>
+#include "../utility/utility.hpp"
 
 namespace genetic_algorithm
 {
@@ -273,6 +321,22 @@ namespace genetic_algorithm
     inline void GaInfo::stop_condition(F f)
     {
         stop_condition_ = std::make_unique<F>(std::move(f));
+    }
+
+    template<typename... Metrics>
+    requires ((std::derived_from<Metrics, metrics::MonitorBase> && std::is_final_v<Metrics>) && ...)
+    void GaInfo::track(Metrics... metrics)
+    {
+        metrics_ = detail::MetricSet{ std::move(metrics)... };
+    }
+
+    template<typename Metric>
+    requires (std::derived_from<Metric, metrics::MonitorBase> && std::is_final_v<Metric>)
+    const Metric& GaInfo::get_metric() const noexcept
+    {
+        GA_ASSERT(metrics_.get<Metric>(), "Attempting to get an untracked metric type is invalid.");
+
+        return *metrics_.get<Metric>();
     }
 
 } // namespace genetic_algorithm

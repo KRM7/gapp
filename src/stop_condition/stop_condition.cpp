@@ -3,6 +3,7 @@
 #include "stop_condition.hpp"
 #include "../core/ga_info.hpp"
 #include "../population/population.hpp"
+#include "../metrics/pop_stats.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>

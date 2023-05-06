@@ -92,6 +92,8 @@ namespace genetic_algorithm::detail
 
         constexpr Matrix(std::initializer_list<std::initializer_list<T>> mat);
 
+        constexpr Matrix(const_iterator first, const_iterator last);
+
         /* Member access */
 
         constexpr RowRef operator[](size_t row) noexcept
@@ -124,6 +126,12 @@ namespace genetic_algorithm::detail
             return data_[row * ncols_ + col];
         }
 
+        constexpr RowRef front() noexcept { return operator[](0); }
+        constexpr ConstRowRef front() const noexcept { return operator[](0); }
+
+        constexpr RowRef back() noexcept { return operator[](nrows_ - 1); }
+        constexpr ConstRowRef back() const noexcept { return operator[](nrows_ - 1); }
+
         constexpr element_pointer data() noexcept             { return data_.data(); }
         constexpr const_element_pointer data() const noexcept { return data_.data(); }
 
@@ -150,6 +158,12 @@ namespace genetic_algorithm::detail
             data_.resize(nrows * ncols, val);
             nrows_ = nrows;
             ncols_ = ncols;
+        }
+
+        constexpr void clear() noexcept
+        {
+            data_.clear();
+            nrows_ = 0;
         }
 
         /* Other */
@@ -421,6 +435,16 @@ namespace genetic_algorithm::detail
                 data_.push_back(std::move(entry));
             }
         }
+    }
+
+    template<typename T, typename A>
+    constexpr Matrix<T, A>::Matrix(const_iterator first, const_iterator last)
+    {
+        if (std::distance(first, last) <= 0) return;
+
+        nrows_ = std::distance(first, last);
+        ncols_ = first->size();
+        data_ = storage_type(first->begin(), first->begin() + nrows_ * ncols_);
     }
 
     template<typename T, typename A>

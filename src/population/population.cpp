@@ -3,13 +3,9 @@
 #include "population.hpp"
 #include "../utility/math.hpp"
 #include "../utility/algorithm.hpp"
-#include "../utility/functional.hpp"
-#include "../utility/utility.hpp"
 #include <algorithm>
-#include <numeric>
 #include <iterator>
 #include <vector>
-#include <cmath>
 #include <cstddef>
 
 namespace genetic_algorithm::detail
@@ -22,75 +18,11 @@ namespace genetic_algorithm::detail
         return fitness_vector;
     }
 
-    FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    std::vector<size_t> findParetoFront(const FitnessMatrix& fmat)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        if (fmat.empty()) return {};
 
-        return std::accumulate(std::next(first), last, FitnessVector(*first), detail::elementwise_min<double>);
-    }
-
-    FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
-    {
-        GA_ASSERT(std::distance(first, last) > 0);
-
-        return std::accumulate(std::next(first), last, FitnessVector(*first), detail::elementwise_max<double>);
-    }
-
-    FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
-    {
-        GA_ASSERT(std::distance(first, last) > 0);
-
-        const double ninv = 1.0 / (last - first);
-        FitnessVector fitness_mean(first->size());
-
-        std::for_each(first, last, [&](const auto& fvec) noexcept
-        {
-            for (size_t i = 0; i < fvec.size(); i++)
-            {
-                fitness_mean[i] += fvec[i] * ninv;
-            }
-        });
-
-        return fitness_mean;
-    }
-
-    FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& fitness_mean)
-    {
-        GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(first->size() == fitness_mean.size());
-
-        const double ninv = 1.0 / (last - first - 1.0);
-        FitnessVector fitness_variance(first->size(), 0.0);
-
-        if (std::distance(first, last) == 1) return fitness_variance;
-
-        std::for_each(first, last, [&](const auto& fitness_vector) noexcept
-        {
-            for (size_t i = 0; i < fitness_vector.size(); i++)
-            {
-                fitness_variance[i] += std::pow(fitness_vector[i] - fitness_mean[i], 2) * ninv;
-            }
-        });
-
-        return fitness_variance;
-    }
-
-    FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
-    {
-        return fitnessVariance(first, last, fitnessMean(first, last));
-    }
-
-    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, const FitnessVector& mean)
-    {
-        FitnessVector fitness_std_dev = fitnessVariance(first, last, mean);
-        for (double& f : fitness_std_dev) { f = std::sqrt(f); }
-
-        return fitness_std_dev;
-    }
-
-    FitnessVector fitnessStdDev(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
-    {
-        return fitnessStdDev(first, last, fitnessMean(first, last));
+        return (fmat.ncols() == 1) ? findParetoFront1D(fmat) : findParetoFrontSort(fmat);
     }
 
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
@@ -229,6 +161,21 @@ namespace genetic_algorithm::detail
         });
 
         return findParetoFrontKungImpl(fmat, indices.cbegin(), indices.cend());
+    }
+
+    FitnessVector findNadirPoint(const FitnessMatrix& fitness_matrix)
+    {
+        if (fitness_matrix.empty()) return {};
+
+        const auto& front_indices = detail::findParetoFront(fitness_matrix);
+
+        auto nadir_point = math::Point(fitness_matrix[front_indices[0]]);
+        for (size_t i = 1; i < front_indices.size(); i++)
+        {
+            nadir_point = detail::elementwise_min(std::move(nadir_point), fitness_matrix[front_indices[i]]);
+        }
+
+        return nadir_point;
     }
 
 } // namespace genetic_algorithm::detail

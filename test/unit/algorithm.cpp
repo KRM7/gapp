@@ -293,19 +293,3 @@ TEST_CASE("erase_duplicates", "[algorithm]")
     detail::erase_duplicates(nums);
     REQUIRE_THAT(nums, Catch::Matchers::UnorderedEquals(std::vector{ 0, 1, 3, 5 }));
 }
-
-TEST_CASE("transform_reduce", "[algorithm]")
-{
-    constexpr std::tuple vals = { 0, 3.14, 'a', "abcd", 2_sz };
-    
-    constexpr int num_arithmetic = detail::transform_reduce(vals, 0, std::identity{},
-    []<typename T> (int acc, const T&) noexcept
-    {
-        return acc + std::is_arithmetic_v<std::decay_t<T>>;
-    });
-
-    STATIC_REQUIRE(num_arithmetic == 4);
-
-    const int sum = detail::transform_reduce(std::tuple{}, 1, std::identity{}, std::plus<>{});
-    REQUIRE(sum == 1);
-}

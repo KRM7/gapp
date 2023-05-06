@@ -350,6 +350,14 @@ TEST_CASE("perpendicular_distance", "[math]")
     REQUIRE(perpendicularDistanceSq(std::vector{ 0.4, 0.9 }, std::vector{ 2.5, 1.0 }) == Approx(3.53).margin(0.01));
 }
 
+TEST_CASE("volume_between", "[math]")
+{
+    REQUIRE(volumeBetween(std::vector{ 0.0 }, std::vector{ 1.0 }) == Approx(1.0).margin(1E-8));
+    REQUIRE(volumeBetween(std::vector{ 1.0 }, std::vector{ 0.0 }) == Approx(1.0).margin(1E-8));
+
+    REQUIRE(volumeBetween(std::vector{ -1.0, -1.0 }, std::vector{ 1.0, 1.0 }) == Approx(4.0).margin(1E-8));
+}
+
 TEST_CASE("integral_sin_pow", "[math]")
 {
     SECTION("n = 0")

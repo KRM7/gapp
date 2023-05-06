@@ -101,6 +101,13 @@ namespace genetic_algorithm::math
                                      [k](double l, double p) noexcept { return std::pow(p - k * l, 2); });
     }
 
+    double volumeBetween(std::span<const double> p1, std::span<const double> p2) noexcept
+    {
+        GA_ASSERT(p1.size() == p2.size());
+
+        return std::abs(std::transform_reduce(p1.begin(), p1.end(), p2.begin(), 1.0, std::multiplies{}, std::minus{}));
+    }
+
     double mean(std::span<const double> vec) noexcept
     {
         GA_ASSERT(!vec.empty());
