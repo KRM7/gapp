@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+<Type Name="genetic_algorithm::detail::Matrix&lt;*,*&gt;">
+  <DisplayString>{{ Matrix&lt;{"$T1",sb}, {"$T2",sb}&gt;{{ size = {nrows_}x{ncols_} }} }}</DisplayString>
+  <Expand>
+	<Item Name="[nrows]">nrows_</Item>
+	<Item Name="[ncols]">ncols_</Item>
+    <CustomListItems>
+      <Variable Name="row" InitialValue="0"/>
+      <Loop Condition="row  &lt; nrows_">
+        <Item Name="[row {row}]">&amp;data_[row * ncols_],[ncols_]nag</Item>
+        <Exec>row++</Exec>
+      </Loop>
+    </CustomListItems>
+  </Expand>
+</Type>
+
+</AutoVisualizer>

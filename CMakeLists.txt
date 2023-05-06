@@ -34,18 +34,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Compiler/linker setup
 if(MSVC) # MSVC style compiler interface
-    set(GA_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471")
+    set(GA_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471 -w44820 -w44986 -w45233 -external:W0")
     if(GA_USE_WERROR)
         set(GA_WARN_FLAGS "${GA_WARN_FLAGS} -WX")
     endif()
-    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++20 ${GA_WARN_FLAGS} -EHsc")
+    set(CMAKE_CXX_FLAGS "${GA_CXX_FLAGS} -std:c++20 ${GA_WARN_FLAGS} -EHsc -diagnostics:caret")
     set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -Z7 -RTC1 -Od")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -Zi -O2 -Oi -Gy")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Zi -O2 -Oi -Gy")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DEBUG:FULL -OPT:REF -OPT:ICF")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Zi -Zo -O2 -Oi -Gy")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DEBUG:FULL -OPT:REF -OPT:ICF -NATVIS:${CMAKE_SOURCE_DIR}/genetic_algorithm.natvis")
     # msvc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fp:contract -Zc:preprocessor -Zc:throwingNew")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fp:contract -Zc:preprocessor -Zc:throwingNew -external:anglebrackets")
     endif()
     # clang-cl specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
