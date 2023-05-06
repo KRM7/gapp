@@ -14,8 +14,8 @@
 
 namespace genetic_algorithm::math
 {
-    std::atomic<double> Tolerances::absolute_tolerance = 1E-12;
-    std::atomic<unsigned> Tolerances::relative_tolerance_epsilons = 10;
+    constinit std::atomic<double> Tolerances::absolute_tolerance = 1E-12;
+    constinit std::atomic<unsigned> Tolerances::relative_tolerance_epsilons = 10;
 
 
     bool paretoCompareLess(std::span<const double> lhs, std::span<const double> rhs) noexcept

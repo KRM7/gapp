@@ -27,7 +27,7 @@ namespace genetic_algorithm
         // using DefaultCrossover = ...
         // using DefaultMutation = ...
 
-        // static constexpr Probability defaultMutationRate(size_t chrom_len) noexcept { ... }
+        // static Probability defaultMutationRate(size_t chromosome_size) { ... }
     };
 
 } // namespace genetic_algorithm

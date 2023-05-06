@@ -309,41 +309,6 @@ namespace genetic_algorithm::detail
         value = (value + 1 == mod) ? T(0) : value + 1;
     }
 
-    namespace tr
-    {
-        template<typename... Ts, typename R, typename Tr, typename Rd>
-        constexpr R transform_reduce_impl(Tr&&, Rd&&, R&& acc, Ts&&...) noexcept
-        {
-            return acc;
-        }
-
-        template<typename T, typename... Ts, typename R, typename Tr, typename Rd>
-        constexpr R transform_reduce_impl(Tr&& tr, Rd&& rd, R&& acc, T&& arg, Ts&&... args)
-        {
-            auto transform_result = std::invoke(tr, std::forward<T>(arg));
-
-            acc = static_cast<std::remove_reference_t<R>>(std::invoke(rd, std::forward<R>(acc), std::move(transform_result)));
-
-            return transform_reduce_impl(std::forward<Tr>(tr), std::forward<Rd>(rd), std::forward<R>(acc), std::forward<Ts>(args)...);
-        }
-
-    } // namespace tr
-
-    template<typename Tuple, typename Acc, typename TransformOp, typename ReduceOp>
-    requires is_specialization_of_v<std::remove_cvref_t<Tuple>, std::tuple>
-    constexpr Acc transform_reduce(Tuple&& tup, Acc&& init, TransformOp&& transform, ReduceOp&& reduce)
-    {
-        auto transform_reduce_ = [&](auto&&... args) mutable -> Acc
-        {
-            return tr::transform_reduce_impl(std::forward<TransformOp>(transform),
-                                             std::forward<ReduceOp>(reduce), 
-                                             std::forward<Acc>(init),
-                                             std::forward<decltype(args)>(args)...);
-        };
-
-        return std::apply(std::move(transform_reduce_), std::forward<Tuple>(tup));
-    }
-
 } // namespace genetic_algorithm::detail
 
 #endif // !GA_UTILITY_ALGORITHM_HPP

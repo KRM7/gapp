@@ -343,6 +343,7 @@ namespace genetic_algorithm
         population_ = generatePopulation(population_size_, std::move(initial_population));
         std::for_each(GA_EXECUTION_UNSEQ, population_.begin(), population_.end(), [this](Candidate<T>& sol) { evaluate(sol); });
         fitness_matrix_ = detail::toFitnessMatrix(population_);
+        if (keep_all_optimal_sols_) solutions_ = detail::findParetoFront(population_);
 
         GA_ASSERT(isValidEvaluatedPopulation(population_));
         GA_ASSERT(fitnessMatrixIsSynced());
@@ -485,8 +486,6 @@ namespace genetic_algorithm
     {
         GA_ASSERT(population_.size() == population_size_);
 
-        if (keep_all_optimal_sols_) updateOptimalSolutions(solutions_, population_);
-
         const size_t num_children = population_size_ + population_size_ % 2;
         std::vector<CandidatePair<T>> child_pairs(num_children / 2);
 
@@ -514,6 +513,7 @@ namespace genetic_algorithm
         });
 
         updatePopulation(std::move(children));
+        if (keep_all_optimal_sols_) updateOptimalSolutions(solutions_, population_);
 
         if (endOfGenerationCallback) endOfGenerationCallback(*this);
         generation_cntr_++;
@@ -532,7 +532,7 @@ namespace genetic_algorithm
         {
             advance();
         }
-        updateOptimalSolutions(solutions_, population_);
+        if (!keep_all_optimal_sols_) updateOptimalSolutions(solutions_, population_);
 
         return solutions_;
     }
@@ -551,7 +551,7 @@ namespace genetic_algorithm
         {
             advance();
         }
-        updateOptimalSolutions(solutions_, population_);
+        if (!keep_all_optimal_sols_) updateOptimalSolutions(solutions_, population_);
 
         return solutions_;
     }

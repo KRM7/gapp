@@ -17,7 +17,7 @@ namespace genetic_algorithm::detail
             left_(left), right_(right), left_inclusive_(left_inclusive), right_inclusive_(right_inclusive)
         {}
 
-        constexpr bool test(const T& value) const noexcept
+        constexpr bool contains(const T& value) const noexcept
         {
             if (value < left_  || (!left_inclusive_  && value == left_))  return false;
             if (value > right_ || (!right_inclusive_ && value == right_)) return false;
@@ -31,7 +31,7 @@ namespace genetic_algorithm::detail
     };
 
     /* Class representing a value within an interval. */
-    template<typename T, detail::Interval<T> I>
+    template<typename T, Interval<T> I>
     class BoundedValue
     {
     public:
@@ -39,7 +39,7 @@ namespace genetic_algorithm::detail
 
         constexpr /* implicit */ BoundedValue(value_type value) noexcept
         {
-            GA_ASSERT(I.test(value), "Value outside the allowed interval.");
+            GA_ASSERT(I.contains(value), "Value outside the allowed interval.");
 
             value_ = std::move(value);
         }

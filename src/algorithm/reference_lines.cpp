@@ -16,7 +16,7 @@
 
 namespace genetic_algorithm::algorithm::reflines
 {
-    using SimplexMapping = Point(Point&&);
+    using SimplexMapping = Point(*)(Point&&);
 
     /*
     * The unit-hypercube -> unit-simplex transformations used for the quasirandom points are based on:
