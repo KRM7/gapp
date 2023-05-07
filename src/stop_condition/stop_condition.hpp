@@ -134,11 +134,13 @@ namespace genetic_algorithm::stopping
         [[nodiscard]]
         constexpr double delta() const noexcept { return delta_; }
 
+        void initialize(const GaInfo& ga) override;
+
     private:
+        FitnessVector best_fitness_mean_;
         size_t patience_;
         double delta_;
         size_t cntr_;
-        FitnessVector best_fitness_mean_;
 
         constexpr void reset() noexcept { cntr_ = patience_ + 1; }
         bool stop_condition(const GaInfo& ga) override;
@@ -193,11 +195,13 @@ namespace genetic_algorithm::stopping
         [[nodiscard]]
         constexpr double delta() const noexcept { return delta_; }
 
+        void initialize(const GaInfo& ga) override;
+
     private:
+        FitnessVector fitness_max_;
         size_t patience_;
         double delta_;
         size_t cntr_;
-        FitnessVector best_fitness_max_;
 
         constexpr void reset() noexcept { cntr_ = patience_ + 1; }
         bool stop_condition(const GaInfo& ga) override;

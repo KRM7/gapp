@@ -19,12 +19,20 @@ namespace genetic_algorithm::stopping
 {
     /**
     * Base class used for all of the stop conditions. \n
-    * The stop condition will be evaluated only once per generation at the end of the generation,
-    * and should return true if the algorithm should be stopped.
+    * The stop condition will be evaluated once at the end of every generation,
+    * and should return true if the algorithm should stop.
+    * 
+    * The class has 2 virtual methods that should be implemented by the derived classes:
+    * 
+    *   - initialize (optional) : Initializes the stop condition at the start of a run. Does nothing by default.
+    *   - stop_condition        : Evaluate the stop condition and return true when the algorithm should stop.
     */
     class StopCondition
     {
     public:
+        /** Initialize the stop condition. Will be called exactly once at the start of a run. */
+        virtual void initialize(const GaInfo&) {};
+
         /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
         bool operator()(const GaInfo& ga);
 
@@ -41,7 +49,7 @@ namespace genetic_algorithm::stopping
 
     private:
 
-        /* Implementation of the stop condition. */
+        /* Implementation of the stop condition. Will be called once at the end of each generation. */
         virtual bool stop_condition(const GaInfo& ga) = 0;
     };
 

@@ -30,10 +30,12 @@ namespace genetic_algorithm::stopping
         return improved;
     }
 
+
     bool FitnessEvals::stop_condition(const GaInfo& ga)
     {
         return (ga.num_fitness_evals() >= max_fitness_evals_);
     }
+
 
     bool FitnessValue::stop_condition(const GaInfo& ga)
     {
@@ -49,19 +51,17 @@ namespace genetic_algorithm::stopping
         });
     }
 
+
+    void FitnessMeanStall::initialize(const GaInfo& ga)
+    {
+        reset();
+        best_fitness_mean_ = FitnessVector(ga.num_objectives(), -math::inf<double>);
+    }
+
     bool FitnessMeanStall::stop_condition(const GaInfo& ga)
     {
-        const auto& fitness_matrix = ga.fitness_matrix();
-        const auto current_mean = detail::fitnessMean(fitness_matrix.begin(), fitness_matrix.end());
-
-        /* Init on first gen. */
-        if (ga.generation_cntr() == 0)
-        {
-            reset();
-            best_fitness_mean_ = current_mean;
-
-            return false;
-        }
+        const FitnessMatrix& fitness_matrix = ga.fitness_matrix();
+        const FitnessVector current_mean = detail::fitnessMean(fitness_matrix.begin(), fitness_matrix.end());
 
         const bool improved = metricImproved(best_fitness_mean_, current_mean, delta_);
         improved ? reset() : (void)--cntr_;
@@ -69,21 +69,19 @@ namespace genetic_algorithm::stopping
         return cntr_ == 0;
     }
 
+
+    void FitnessBestStall::initialize(const GaInfo& ga)
+    {
+        reset();
+        fitness_max_ = FitnessVector(ga.num_objectives(), -math::inf<double>);
+    }
+
     bool FitnessBestStall::stop_condition(const GaInfo& ga)
     {
-        const auto& fitness_matrix = ga.fitness_matrix();
-        const auto current_max = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
+        const FitnessMatrix& fitness_matrix = ga.fitness_matrix();
+        const FitnessVector current_max = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
 
-        /* Init on first gen. */
-        if (ga.generation_cntr() == 0)
-        {
-            reset();
-            best_fitness_max_ = current_max;
-
-            return false;
-        }
-
-        const bool improved = metricImproved(best_fitness_max_, current_max, delta_);
+        const bool improved = metricImproved(fitness_max_, current_max, delta_);
         improved ? reset() : (void)--cntr_;
 
         return cntr_ == 0;

@@ -21,6 +21,12 @@ namespace genetic_algorithm::stopping::dtl
         {}
 
     private:
+        void initialize(const GaInfo& ga) override
+        {
+            left_.initialize(ga);
+            right_.initialize(ga);
+        }
+
         bool stop_condition(const GaInfo& ga) override
         {
             // Both of the stop conditions should be evaluated, so avoid short circuits with logical ops
@@ -41,6 +47,12 @@ namespace genetic_algorithm::stopping::dtl
         {}
 
     private:
+        void initialize(const GaInfo& ga) override
+        {
+            left_.initialize(ga);
+            right_.initialize(ga);
+        }
+
         bool stop_condition(const GaInfo& ga) override
         {
             // Both of the stop conditions should be evaluated, so avoid short circuits with logical ops

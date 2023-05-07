@@ -356,6 +356,8 @@ namespace genetic_algorithm
 
         if (use_default_mutation_rate_) mutation_rate(defaultMutationRate());
 
+        stop_condition_->initialize(*this);
+
         metrics_.initialize(*this);
         metrics_.update(*this);
     }
