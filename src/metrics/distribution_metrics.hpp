@@ -43,7 +43,7 @@ namespace genetic_algorithm::metrics
         explicit Hypervolume(FitnessVector ref_point) noexcept;
 
         /** @returns The reference point used for computing the hypervolumes. */
-        const FitnessVector ref_point() const noexcept { return ref_point_; }
+        const FitnessVector& ref_point() const noexcept { return ref_point_; }
 
         double value_at(size_t generation) const noexcept;
 
@@ -67,7 +67,7 @@ namespace genetic_algorithm::metrics
     {
     public:
         /** @returns The reference point used for computing the hypervolumes. */
-        const FitnessVector ref_point() const noexcept { return worst_point_; }
+        const FitnessVector& ref_point() const noexcept { return worst_point_; }
 
         double value_at(size_t generation) const noexcept;
     private:

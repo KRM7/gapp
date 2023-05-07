@@ -248,7 +248,7 @@ namespace genetic_algorithm
         const Candidate<T> candidate = generateCandidate();
         const FitnessVector fitness = (*fitness_function_)(candidate.chromosome);
 
-        GA_ASSERT(fitness.size() > 0, "The number of objectives must be greater than 0.");
+        GA_ASSERT(!fitness.empty(), "The number of objectives must be greater than 0.");
 
         return fitness.size();
     }
@@ -263,10 +263,7 @@ namespace genetic_algorithm
         {
             return std::make_unique<algorithm::SingleObjective>();
         }
-        else
-        {
-            return std::make_unique<algorithm::NSGA3>();
-        }
+        return std::make_unique<algorithm::NSGA3>();
     }
 
     template<typename T>

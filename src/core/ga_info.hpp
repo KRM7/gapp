@@ -304,7 +304,6 @@ namespace genetic_algorithm
 /* IMPLEMENTATION */
 
 #include <utility>
-#include "../utility/utility.hpp"
 
 namespace genetic_algorithm
 {

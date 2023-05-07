@@ -42,7 +42,6 @@ namespace genetic_algorithm::detail
 /* IMPLEMENTATION */
 
 #include "../utility/type_id.hpp"
-#include "../utility/utility.hpp"
 #include <algorithm>
 
 namespace genetic_algorithm::detail
