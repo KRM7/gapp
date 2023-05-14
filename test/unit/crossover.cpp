@@ -129,7 +129,7 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
     using Crossover = TestType;
 
     constexpr size_t chrom_len = 10;
-    constexpr GeneBounds<RealGene> bounds = { 0.0, 1.0 };
+    constexpr Bounds<RealGene> bounds = { 0.0, 1.0 };
 
     RCGA context;
     context.solve(DummyFitnessFunction<RealGene>(chrom_len), bounds, 1);

@@ -582,7 +582,7 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, GeneBounds<T> bounds, size_t generations, Population<T> initial_population) requires (is_bounded<T>)
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population) requires (is_bounded<T>)
     {
         const size_t chrom_len = fitness_function->chrom_len();
 
@@ -596,7 +596,7 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, GeneBounds<T> bounds, Population<T> initial_population) requires (is_bounded<T>)
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Bounds<T> bounds, Population<T> initial_population) requires (is_bounded<T>)
     {
         const size_t chrom_len = fitness_function->chrom_len();
 
@@ -614,7 +614,7 @@ namespace genetic_algorithm
     template<typename T>
     template<typename F>
     requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
-    Candidates<T> GA<T>::solve(F fitness_function, GeneBounds<T> bounds, Population<T> initial_population)
+    Candidates<T> GA<T>::solve(F fitness_function, Bounds<T> bounds, Population<T> initial_population)
     {
         const size_t chrom_len = fitness_function.chrom_len();
 
@@ -632,7 +632,7 @@ namespace genetic_algorithm
     template<typename T>
     template<typename F>
     requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
-    Candidates<T> GA<T>::solve(F fitness_function, GeneBounds<T> bounds, size_t generations, Population<T> initial_population)
+    Candidates<T> GA<T>::solve(F fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population)
     {
         const size_t chrom_len = fitness_function.chrom_len();
 

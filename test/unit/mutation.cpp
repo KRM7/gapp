@@ -103,7 +103,7 @@ TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
 TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, real::NonUniform, real::Polynomial, real::Uniform)
 {
     using Mutation = TestType;
-    const GeneBounds bounds = { 0.0, 1.0 };
+    const Bounds bounds = { 0.0, 1.0 };
 
     RCGA context;
     context.solve(DummyFitnessFunction<RealGene>(10), bounds);
@@ -198,7 +198,7 @@ TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, 
 TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
 {
     using Mutation = TestType;
-    const GeneBounds<IntegerGene> bounds = { 0, 3 };
+    const Bounds<IntegerGene> bounds = { 0, 3 };
 
     IntegerGA context;
     context.solve(DummyFitnessFunction<IntegerGene>(10), bounds, 1);

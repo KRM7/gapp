@@ -21,11 +21,11 @@ namespace genetic_algorithm
 
      /** The type used to represent the lower and upper bounds of a gene. */
     template<typename T>
-    class GeneBounds
+    class Bounds
     {
     public:
         /** Constructor for the range [lower, upper]. */
-        constexpr GeneBounds(const T& lower, const T& upper) noexcept;
+        constexpr Bounds(const T& lower, const T& upper) noexcept;
 
         /** @returns The lower gene bound. */
         [[nodiscard]]
@@ -42,7 +42,7 @@ namespace genetic_algorithm
 
     /** A vector of gene lower and upper bounds. */
     template<typename T>
-    using BoundsVector = std::vector<GeneBounds<T>>;
+    using BoundsVector = std::vector<Bounds<T>>;
 
     /** The chromosome type of the Candidates. */
     template<typename T>
@@ -133,7 +133,7 @@ namespace genetic_algorithm
 namespace genetic_algorithm
 {
     template<typename T>
-    constexpr GeneBounds<T>::GeneBounds(const T& lower, const T& upper) noexcept :
+    constexpr Bounds<T>::Bounds(const T& lower, const T& upper) noexcept :
         lower_(lower), upper_(upper)
     {
         GA_ASSERT(lower <= upper, "The lower bound can't be greater than the upper bound.");

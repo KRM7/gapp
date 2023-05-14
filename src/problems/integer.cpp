@@ -10,7 +10,7 @@
 namespace genetic_algorithm::problems
 {
     StringFinder::StringFinder(std::string target) :
-        BenchmarkFunction("StringFinder", target.size(), 1, Bounds{ 32, 32 + 95 }),
+        BenchmarkFunction("StringFinder", target.size(), 1, Bounds<GeneType>{ 32, 32 + 95 }),
         target_(std::move(target))
     {
         optimal_value_ = { double(num_vars()) };

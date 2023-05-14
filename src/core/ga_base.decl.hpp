@@ -410,7 +410,7 @@ namespace genetic_algorithm
         * @param initial_population The population to use as the first generation of the algorithm.
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
-        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, GeneBounds<T> bounds, size_t generations, Population<T> initial_population = {}) requires (is_bounded<T>);
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population = {}) requires (is_bounded<T>);
 
         /**
         * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
@@ -440,7 +440,7 @@ namespace genetic_algorithm
         * @param initial_population The population to use as the first generation of the algorithm.
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
-        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, GeneBounds<T> bounds, Population<T> initial_population = {}) requires (is_bounded<T>);
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Bounds<T> bounds, Population<T> initial_population = {}) requires (is_bounded<T>);
 
         /**
         * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
@@ -474,7 +474,7 @@ namespace genetic_algorithm
         */
         template<typename F>
         requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
-        Candidates<T> solve(F fitness_function, GeneBounds<T> bounds, Population<T> initial_population = {});
+        Candidates<T> solve(F fitness_function, Bounds<T> bounds, Population<T> initial_population = {});
 
         /**
         * Run the genetic algorithm for a set number of generations for a fitness function, using the specified initial population. \n
@@ -508,7 +508,7 @@ namespace genetic_algorithm
         */
         template<typename F>
         requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
-        Candidates<T> solve(F fitness_function, GeneBounds<T> bounds, size_t generations, Population<T> initial_population = {});
+        Candidates<T> solve(F fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population = {});
 
     private:
 

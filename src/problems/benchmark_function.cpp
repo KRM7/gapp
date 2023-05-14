@@ -10,7 +10,7 @@
 
 namespace genetic_algorithm::problems
 {
-    Chromosome<RealGene> BenchmarkFunction<RealGene>::convert(const Chromosome<BinaryGene>& bchrom, const std::vector<Bounds>& bounds, size_t var_bits)
+    Chromosome<RealGene> BenchmarkFunction<RealGene>::convert(const Chromosome<BinaryGene>& bchrom, const BoundsVector<RealGene>& bounds, size_t var_bits)
     {
         GA_ASSERT(bchrom.size() == var_bits * bounds.size());
 

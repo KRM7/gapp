@@ -157,7 +157,7 @@ namespace genetic_algorithm::problems
 
 
     ZDT5::ZDT5(size_t num_vars) :
-        BenchmarkFunction("ZDT5", FIRST_BITS + (num_vars - 1) * REST_BITS, 2, Bounds{ 0, 1 })
+        BenchmarkFunction("ZDT5", FIRST_BITS + (num_vars - 1) * REST_BITS, 2, Bounds<GeneType>{ 0, 1 })
     {
         GA_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
