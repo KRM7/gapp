@@ -9,9 +9,10 @@ TEST_CASE("probability", "[probability]")
 {
     SECTION("constructor")
     {
-        REQUIRE_NOTHROW(Probability(0.123));
-        REQUIRE_NOTHROW(Probability(0.0));
-        REQUIRE_NOTHROW(1.0_p);
+        [[maybe_unused]] auto p1 = Probability(0.123);
+        [[maybe_unused]] auto p2 = Probability(0.0);
+        [[maybe_unused]] auto p3 = 1.0_p;
+        SUCCEED();
     }
 
     SECTION("constexpr")
@@ -24,11 +25,9 @@ TEST_CASE("probability", "[probability]")
     SECTION("assignment")
     {
         Probability p = 0.3;
-
         REQUIRE(p == 0.3);
 
-        REQUIRE_NOTHROW(p = 0.1);
-
+        p = 0.1;
         REQUIRE(p == 0.1);
     }
 
