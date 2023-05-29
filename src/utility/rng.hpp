@@ -53,6 +53,9 @@ namespace genetic_algorithm::rng
         /** @returns The largest value that can be generated. */
         static constexpr result_type max() noexcept;
 
+        /** Compare the internal state of 2 generators. @returns True if they are the same. */
+        friend constexpr bool operator==(const AtomicSplitmix64&, const AtomicSplitmix64&) = default;
+
     private:
         std::atomic<state_type> state_;
     };
