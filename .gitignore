@@ -19,7 +19,9 @@ build/mo_results/*.txt
 *.exe
 
 # Doc outputs
-docs/html/
+docs/api/doxygen-out
+docs/api/sphinx-out
+docs/api/latex
 docs/*.txt
 refs/
 
