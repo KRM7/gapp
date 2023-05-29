@@ -29,9 +29,8 @@ namespace genetic_algorithm::stopping::dtl
 
         bool stop_condition(const GaInfo& ga) override
         {
-            // Both of the stop conditions should be evaluated, so avoid short circuits with logical ops
-            // (the stop conditions might rely on side effects of operator() to maintain their state).
-            return std::invoke(left_, ga) + std::invoke(right_, ga);   
+            // short-circuiting is fine here, since the GA will be stopped anyway if left_ returns true.
+            return std::invoke(left_, ga) || std::invoke(right_, ga);   
         }
 
         Left left_;
