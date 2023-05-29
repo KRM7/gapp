@@ -1,0 +1,20 @@
+// https://github.com/pydata/pydata-sphinx-theme/blob/97757a1fc91d9d5e31355b686f9854be2b31dfd6/src/pydata_sphinx_theme/assets/styles/base/_base.scss#L10
+
+html {
+    --pst-font-size-base: 0.75rem;
+}
+
+body {
+    line-height: 1.5
+}
+
+.bd-sidebar-primary {
+    flex-basis: 15%;
+}
+
+dt {
+    background-color: oldlace;
+    margin-bottom: 0.65rem;
+    border-bottom: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
+}
