@@ -280,11 +280,13 @@ namespace genetic_algorithm::rng
     size_t sampleCdf(std::span<const T> cdf)
     {
         GA_ASSERT(!cdf.empty());
+        GA_ASSERT(0.0 <= cdf.front());
+        GA_ASSERT(std::is_sorted(cdf.begin(), cdf.end()));
 
-        const auto limit = rng::randomReal<T>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
-        const auto selected = std::lower_bound(cdf.begin(), cdf.end(), limit);
+        const auto limitval = rng::randomReal<T>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
+        const auto selected = std::lower_bound(cdf.begin(), cdf.end(), limitval);
 
-        return size_t(selected - cdf.begin());
+        return static_cast<size_t>(selected - cdf.begin());
     }
 
 } // namespace genetic_algorithm::rng
