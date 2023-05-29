@@ -2,6 +2,7 @@
 
 #include "single_objective.hpp"
 #include "../utility/utility.hpp"
+#include "../utility/functional.hpp"
 #include <vector>
 #include <numeric>
 #include <numbers>
@@ -89,7 +90,7 @@ namespace genetic_algorithm::problems
     {
         GA_ASSERT(!vars.empty());
 
-        constexpr auto fw = [](double val) noexcept { return 0.75 + val / 4.0; };
+        constexpr auto fw = detail::multiply_add(0.25, 0.75);
 
         double fx = std::pow(std::sin(pi * fw(vars[0])), 2);
         for (size_t i = 0; i < vars.size() - 1; i++)

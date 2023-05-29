@@ -224,7 +224,7 @@ namespace genetic_algorithm::problems
     * modified for maximization.
     * 
     * \f[ -f(\vec{x}) = \sin^2(\pi w_1) + (w_d - 1)^2( 1 + \sin^2(2\pi w_d) ) + \sum_{i=1}^d (w_i - 1)^2 (1 + 10\sin^2(\pi w_i + 1)) \f]
-    * \f[ \textrm{where\  } w_i = 1 + \frac{x_i - 1}{4} \f]
+    * \f[ \textrm{where  } w_i = 1 + \frac{x_i - 1}{4} \f]
     *
     * Evaluated on the hypercube \f$ x_i \in [-10.0, 10.0] \f$.
     * 
