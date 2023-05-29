@@ -13,25 +13,42 @@
 
 namespace genetic_algorithm
 {
-    /** The type used to represent the fitness of the candidates. Contains a fitness value for each objective axis. */
+    /** The class used to represent the fitness of the candidates. Contains a fitness value for each objective. */
     using FitnessVector = std::vector<double>;
 
-    /** The type used to represent the fitness values of a population. Each row of the matrix is the fitness vector of a candidate. */
+    /** 
+    * The class used to represent the fitness values of multiple candidates.
+    * Each row of the matrix is the fitness vector of a candidate.
+    * 
+    * The size of a fitness matrix is: [ number_of_candidates x number_of_objectives ].
+    */
     using FitnessMatrix = detail::Matrix<double>;
 
-     /** The type used to represent the lower and upper bounds of a gene. */
+     /**
+     * The class used to represent the lower and upper bounds of a gene.
+     * 
+     * @tparam T The gene type. The lower and upper bounds will also be this type.
+     */
     template<typename T>
     class Bounds
     {
     public:
-        /** Constructor for the range [lower, upper]. */
+        /** The type of the gene. */
+        using Gene = T;
+
+        /**
+        * Constructor for the closed range [@p lower, @p upper].
+        * 
+        * @param lower The lower bound (inclusive).
+        * @param upper The upper bound (inclusive).
+        */
         constexpr Bounds(const T& lower, const T& upper) noexcept;
 
-        /** @returns The lower gene bound. */
+        /** @returns The lower bound (inclusive). */
         [[nodiscard]]
         constexpr const T& lower() const noexcept { return lower_; }
 
-        /** @returns The upper gene bound. */
+        /** @returns The upper bound (inclusive). */
         [[nodiscard]]
         constexpr const T& upper() const noexcept { return upper_; }
 
@@ -40,35 +57,66 @@ namespace genetic_algorithm
         T upper_;
     };
 
-    /** A vector of gene lower and upper bounds. */
+    /**
+    * A vector of lower and upper gene bounds, containing the bounds for each gene of a chromosome.
+    * 
+    * @tparam T The gene type.
+    */
     template<typename T>
     using BoundsVector = std::vector<Bounds<T>>;
 
-    /** The chromosome type of the Candidates. */
+    /**
+    * The type used to represent the chromosome of a candidate solution.
+    * Every gene of a chromosome is the same type.
+    * 
+    * @tparam T The gene type.
+    */
     template<typename T>
     using Chromosome = std::vector<T>;
 
     /**
-    * The Candidate class that is used to represent solutions in the genetic algorithms. \n
-    * This is used as the candidate type in all of the algorithms.
+    * The class that is used to represent candidate solutions in all of the algorithms.
+    * 
+    * @tparam T The gene type used in the candidate's chromosome.
     */
     template<typename T>
     struct Candidate
     {
-        using Gene = T;
+        using Gene = T; /**< The type of the candidate's genes. */
 
+        /**
+        * Create a candidate with an empty fitness vector and specific chromosome size.
+        * The genes of the chromosome will be default constructed.
+        * 
+        * @param chrom_len The length of the chromosome.
+        */
         explicit Candidate(size_t chrom_len) :
             chromosome(chrom_len)
         {}
 
+        /**
+        * Create a candidate with an empty fitness vector and a given chromosome.
+        *
+        * @param chrom The chromosome of the candidate.
+        */
         explicit Candidate(const Chromosome<T>& chrom) :
             chromosome(chrom)
         {}
 
+        /**
+        * Create a candidate with an empty fitness vector and a given chromosome.
+        *
+        * @param chrom The chromosome of the candidate.
+        */
         explicit Candidate(Chromosome<T>&& chrom) noexcept :
             chromosome(std::move(chrom))
         {}
 
+        /**
+        * Create a candidate with an empty fitness vector from a list of genes.
+        *
+        * @param chrom A list of genes for the chromosome.
+        */
         Candidate(std::initializer_list<T> chrom) :
             chromosome(std::move(chrom))
         {}
@@ -81,39 +129,37 @@ namespace genetic_algorithm
         ~Candidate()                            = default;
 
         Chromosome<T> chromosome;   /**< The chromosome encoding the solution. */
-        FitnessVector fitness;      /**< The fitness values (for each objective) of the solution. */
-        bool is_evaluated = false;  /**< False if the candidate's fitness value needs to be computed. */
+        FitnessVector fitness;      /**< The fitness values of the solution (for every objective). */
+        bool is_evaluated = false;  /**< True if the candidate's fitness value doesn't need to be computed. */
     };
 
     /** A pair of candidates. */
     template<typename T>
     using CandidatePair = std::pair<Candidate<T>, Candidate<T>>;
 
-    /** Two candidates are considered equal if their chromosomes are the same. */
+    /* Candidates are considered equal if their chromosomes are the same. */
+
     template<typename T>
     bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
-    /** Two candidates are not equal if their chromosomes are different. */
     template<typename T>
     bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
-    /* Lexicographical comparison based on the chromosomes. */
+    /* Lexicographical comparison operators based on the chromosomes of the candidates. */
+
     template<typename T>
     bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
-    /* Lexicographical comparison based on the chromosomes. */
     template<typename T>
     bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
-    /* Lexicographical comparison based on the chromosomes. */
     template<typename T>
     bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
-    /* Lexicographical comparison based on the chromosomes. */
     template<typename T>
     bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
-    /** Hash function for the Candidate. */
+    /* Hash function for the candidates. */
     template<detail::Hashable T>
     struct CandidateHasher
     {

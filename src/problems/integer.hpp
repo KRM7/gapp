@@ -1,7 +1,5 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-/** Test problems for the integer-encoded algorithms. */
-
 #ifndef GA_PROBLEMS_INTEGER_HPP
 #define GA_PROBLEMS_INTEGER_HPP
 
@@ -13,12 +11,13 @@
 namespace genetic_algorithm::problems
 {
     /**
-    * Implementation of a simple test problem for the integer-encoded algorithm. \n
+    * Implementation of a simple test problem for the integer-encoded %GA.
     * The goal is for the algorithm to match a target string.
     * 
     * The problem is implemented for maximization, and only usable with the single-objective,
-    * integer-encoded algorithm. \n
-    * The number of variables will be equal to the length of the target string.
+    * integer-encoded %GA.
+    * The number of variables will be equal to the length of the target string set in the
+    * constructor.
     */
     class StringFinder final : public BenchmarkFunction<IntegerGene>
     {

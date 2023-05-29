@@ -15,19 +15,26 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-/** Mutation operators used in the algorithms. */
 namespace genetic_algorithm::mutation
 {
     /**
-    * Base class used for all of the mutation operators. \n
-    * Every mutation operator takes a Candidate, and mutates that candidate using a set probability. \n
-    * (This probability can either be per-candidate or per-gene depending on how the particular operator is defined.) \n
-    * The mutation is allowed change the length of the candidate's chromosome.
+    * The base class used for the mutation operators of the GAs.
+    * %Mutation operators take a candidate solution, and modify it in some way with a
+    * given probability. This probability can be interpreted either per-candidate or
+    * per-gene depending on how the particular operator is defined.
+    * 
+    * New mutation operators should be derived from this class, and they should
+    * implement the following virtual methods:
+    * 
+    *   - mutate : Perform the mutation on a single candidate's chromosome.
+    * 
+    * @tparam T The gene type the mutation operator is defined for.
     */
     template<typename T>
     class Mutation
     {
     public:
+        /** The gene type the mutation operator is defined for. */
         using GeneType = T;
 
         /**
@@ -51,9 +58,10 @@ namespace genetic_algorithm::mutation
         constexpr Probability mutation_rate() const noexcept { return pm_; }
 
         /**
-        * Perform mutation on a candidate using the set mutation rate.
+        * Perform mutation on a candidate using the set mutation probability.
+        * Implemented by mutate().
         *
-        * @param ga The genetic algorithm the crossover operator is being used in.
+        * @param ga The genetic algorithm the mutation operator is being used in.
         * @param candidate The candidate to mutate.
         */
         void operator()(const GA<T>& ga, Candidate<T>& candidate) const;
@@ -71,8 +79,23 @@ namespace genetic_algorithm::mutation
 
     private:
 
-        /* The actual implementation of the mutation function. Performs the mutation using the set probability.
-           This function should only change the chromosome of the candidate. */
+        /**
+        * The implementation of the mutation operator. Performs the mutation
+        * on the given candidate's chromosome in-place with the set probability.
+        * This function should only change the chromosome of the candidate,
+        * and must handle the mutation probability properly as part of its
+        * implementation. The results of the mutation should be valid candidate
+        * solutions for the given problem and %GA.
+        * 
+        * This method will be called exactly once for each child solution
+        * in every population.
+        *
+        * The function must be thread-safe if parallel execution is enabled for the
+        * GAs (which is true by default).
+        * 
+        * @param ga The genetic algorithm the mutation operator is being used in.
+        * @param candidate The candidate solution to mutate.
+        */
         virtual void mutate(const GA<T>& ga, Candidate<T>& candidate) const = 0;
 
         Probability pm_;

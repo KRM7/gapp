@@ -15,23 +15,31 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-/** Crossover operators used in the algorithms. */
 namespace genetic_algorithm::crossover
 {
     /**
-    * Base class used for all of the crossover operators.
-    * Every crossover operator takes 2 Candidates (the parents), and creates 2 children from these parents.
-    * The crossover operation is performed on the 2 parents with a set (pc) probability only, the rest of the time
-    * the returned children will be the same as the parents. \n
-    * The generated children's chromosome sizes may be different from eachother, and also from the parent's chromosomes.
+    * The base class used for the crossover operators of the GAs.
+    * 
+    * %Crossover operators take 2 candidate solutions (the parents), and create 2 new
+    * candidates (children) based on the the parent candidates.
+    * The crossover operation is only performed on the 2 parents with a set probability only,
+    * the rest of the time the returned children will be the same as the parents.
+    * 
+    * New crossover operators should be derived from this class, and they must implement the
+    * following virtual methods:
+    * 
+    *   - crossover : Perform the crossover on 2 candidate solutions.
+    * 
+    * @tparam The gene type the crossover operator is defined for.
     */
     template<typename T>
     class Crossover
     {
     public:
+        /** The gene type the crossover operator is defined for. */
         using GeneType = T;
 
-        /** Create a crossover operator with a crossover probability of 0.8. */
+        /** Create a crossover operator using the default crossover probability. */
         constexpr explicit Crossover() noexcept :
             pc_(0.8_p) {}
 
@@ -44,7 +52,7 @@ namespace genetic_algorithm::crossover
             pc_(pc) {}
 
         /**
-        * Set the crossover rate used by the operator.
+        * Set the crossover probability used for the crossovers.
         *
         * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
         */
@@ -55,11 +63,12 @@ namespace genetic_algorithm::crossover
         constexpr Probability crossover_rate() const noexcept { return pc_; }
 
         /**
-        * Perform the crossover operation on 2 individuals with the set probability.
+        * Perform the crossover operation on 2 candidate solutions with the set probability.
+        * This function is implemented by crossover().
         *
         * @param ga The genetic algorithm the crossover operator is being used in.
-        * @param parent1 The first parent.
-        * @param parent2 The second parent.
+        * @param parent1 The first parent solution.
+        * @param parent2 The second parent solution.
         * @returns The pair of children resulting from the crossover.
         */
         CandidatePair<T> operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
@@ -77,10 +86,29 @@ namespace genetic_algorithm::crossover
 
     private:
 
-        /* The actual crossover function. Generates 2 new Candidates from the parents (not with some probability). */
+        /**
+        * The implementation of the crossover operator. Performs the crossover operation
+        * on 2 parent solutions to generate 2 child solutions from them.
+        * The implementation of this function shouldn't handle the crossover probability,
+        * but instead it should perform the crossover unconditionally.
+        * The chromosomes of the returned children should be valid solutions for the given
+        * problem and %GA, but the rest of their properties (eg. fitness) are irrelevant.
+        * 
+        * This method will be called once for every 2 children that need to be generated
+        * (ie. population_size/2 number of times, rounded up if the population size is odd)
+        * in every generation.
+        * 
+        * The function must be thread-safe if parallel execution is enabled for the
+        * GAs (which is true by default).
+        * 
+        * @param ga The genetic algorithm the crossover operator is being used in.
+        * @param parent1 The first parent solution.
+        * @param parent2 The second parent solution.
+        * @returns The pair of children resulting from the crossover.
+        */
         virtual CandidatePair<T> crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
 
-        Probability pc_;   /* The probability of performing the crossover operation on the parents. */
+        Probability pc_;
     };
 
 } // namespace genetic_algorithm::crossover

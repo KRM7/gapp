@@ -22,10 +22,13 @@ namespace genetic_algorithm
     };
 
     /**
-    * Integer encoded genetic algorithm. \n
-    * Similar to the @ref BinaryGA, but the values of the genes can be any integer in a closed interval, not just 0 or 1.
-    * The interval is specified by the gene bounds. \n
-    * The algorithm also uses a modified mutation function with swaps and inversions.
+    * Integer-encoded genetic algorithm class. This is the main solver
+    * that should be used for binary-encoded objective functions.
+    * 
+    * Similar to the binary-encoded %GA, but the values of a genes can be any integer
+    * in a closed interval, not just 0 or 1. The particular interval is specified by the gene bounds.
+    * 
+    * @see BinaryGA
     */
     class IntegerGA final : public GA<IntegerGene>
     {

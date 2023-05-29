@@ -18,7 +18,8 @@
 namespace genetic_algorithm::algorithm
 {
     /**
-    * A generic algorithm for single-objective optimization. \n
+    * A generic algorithm for single-objective optimization.
+    * 
     * The algorithm combines a selection method and a population replacement
     * method. The selection method is used to select candidates from the populations
     * for crossover, while the population replacement method is used to create the population
@@ -32,32 +33,40 @@ namespace genetic_algorithm::algorithm
         using DefaultSelection   = selection::Tournament; /**< The selection method used when not specified explicitly. */
         using DefaultReplacement = replacement::KeepBest; /**< The population update method used when not specified explicitly. */
 
-        /** The general callable type that can be used as a selection method. */
+        /**
+        * The general callable type that can be used as a selection method,
+        * when not using a selection method derived from selection::Selection.
+        * @see selection_method()
+        */
         using SelectionCallable = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
 
-        /** The general callable type that can be used as a population replacement policy. */
+        /**
+        * The general callable type that can be used as a population replacement policy,
+        * when not using a replacement policy derived from replacement::Replacement.
+        * @see replacement_method()
+        */
         using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
 
         /**
-        * Create a single objective algorithm using the default selection
-        * and population update methods.
+        * Create a single-objective algorithm using the default selection
+        * and replacement methods.
         */
         SingleObjective();
 
         /**
-        * Create a single objective algorithm using the default population update method.
+        * Create a single-objective algorithm using the default replacement method.
         *
-        * @param selection The selection method to use in the algorithm.
+        * @param selection The selection method to use.
         */
         template<typename S>
         requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
         explicit SingleObjective(S selection);
 
         /**
-        * Create a single objective algorithm.
+        * Create a single-objective algorithm.
         *
-        * @param selection The selection method to use in the algorithm.
-        * @param replacement The method used to update the population between generations of the algorithm.
+        * @param selection The selection method to use.
+        * @param replacement The replacement policy to use.
         */
         template<typename S, typename R>
         requires std::derived_from<S, selection::Selection> && std::is_final_v<S> &&
@@ -65,41 +74,40 @@ namespace genetic_algorithm::algorithm
         SingleObjective(S selection, R replacement);
 
         /**
-        * Create a single objective algorithm using the default population update method.
+        * Create a single-objective algorithm using the default replacement method.
         *
-        * @param selection The selection method to use in the algorithm. Can't be a nullptr.
+        * @param selection The selection method to use. Can't be a nullptr.
         */
         explicit SingleObjective(std::unique_ptr<selection::Selection> selection);
 
         /**
-        * Create a single objective algorithm.
+        * Create a single-objective algorithm.
         *
-        * @param selection The selection method to use in the algorithm. Can't be a nullptr.
-        * @param replacement The method used to update the population between generations of the algorithm. Can't be a nullptr.
+        * @param selection The selection method to use. Can't be a nullptr.
+        * @param replacement The replacement policy to use. Can't be a nullptr.
         */
         SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<replacement::Replacement> replacement);
 
         /**
-        * Create a single objective algorithm using the default population update method.
+        * Create a single-objective algorithm using the default replacement method.
         *
-        * @param selection The selection method to use in the algorithm. Can't be a nullptr.
+        * @param selection The selection method to use. Can't be a nullptr.
         */
         explicit SingleObjective(SelectionCallable selection);
 
         /**
-        * Create a single objective algorithm.
+        * Create a single-objective algorithm.
         *
-        * @param selection The selection method to use in the algorithm. Can't be a nullptr.
-        * @param replacement The method used to update the population between generations of the algorithm. Can't be a nullptr.
+        * @param selection The selection method to use. Can't be a nullptr.
+        * @param replacement The replacement policy to use. Can't be a nullptr.
         */
         SingleObjective(SelectionCallable selection, ReplacementCallable replacement);
 
         
         /**
         * Set the selection method used by the algorithm.
-        *   @see Selection
         *
-        * @param selection The selection method used by the algorithm.
+        * @param selection The selection method to use.
         */
         template<typename S>
         requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
@@ -107,19 +115,17 @@ namespace genetic_algorithm::algorithm
 
         /**
         * Set the selection method used by the algorithm.
-        *   @see Selection
         *
-        * @param selection The selection method used by the algorithm. Can't be a nullptr.
+        * @param selection The selection method to use. Can't be a nullptr.
         */
         void selection_method(std::unique_ptr<selection::Selection> selection);
 
         /**
-        * Set the selection method used by the algorithm. \n
-        * The function used should be thread-safe if parallel execution is enabled (enabled by default).
-        *   @see Selection
-        *   @see SelectionCallable
+        * Set the selection method used by the algorithm.
+        * The function used should be thread-safe if parallel execution is enabled
+        * (which is true by default).
         *
-        * @param f The selection method used by the algorithm. Can't be a nullptr.
+        * @param f The selection method to use. Can't be a nullptr.
         */
         void selection_method(SelectionCallable f);
 
@@ -134,9 +140,8 @@ namespace genetic_algorithm::algorithm
 
         /**
         * Set the population replacement policy used by the algorithm.
-        *   @see Replacement
         *
-        * @param replacement The method used to update the population between generations of the algorithm.
+        * @param replacement The replacement policy to use.
         */
         template<typename R>
         requires std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
@@ -144,26 +149,23 @@ namespace genetic_algorithm::algorithm
 
         /**
         * Set the population replacement policy used by the algorithm.
-        *   @see Replacement
         *
-        * @param replacement The population update method used by the algorithm. Can't be a nullptr.
+        * @param replacement The replacement policy to use. Can't be a nullptr.
         */
         void replacement_method(std::unique_ptr<replacement::Replacement> replacement);
 
         /**
         * Set the population replacement policy used by the algorithm.
-        *   @see Replacement
-        *   @see ReplacementCallable
         *
-        * @param f The population replacement method used by the algorithm. Can't be a nullptr.
+        * @param f The replacement policy to use. Can't be a nullptr.
         */
         void replacement_method(ReplacementCallable f);
 
-        /** @returns The population replacement operator used by the algorithm. */
+        /** @returns The population replacement policy used by the algorithm. */
         [[nodiscard]]
         replacement::Replacement& replacement_method() & noexcept { GA_ASSERT(replacement_); return *replacement_; }
 
-        /** @returns The population replacement operator used by the algorithm. */
+        /** @returns The population replacement policy used by the algorithm. */
         [[nodiscard]]
         const replacement::Replacement& replacement_method() const& noexcept { GA_ASSERT(replacement_); return *replacement_; }
 

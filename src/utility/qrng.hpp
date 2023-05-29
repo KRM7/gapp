@@ -10,8 +10,8 @@
 
 namespace genetic_algorithm::rng
 {
-    /*
-    * Quasi-random number generator based on: http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/
+    /**
+    * Quasi-random number generator based on: http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/.
     * Generates points in the unit hypercube in dim dimensions.
     */
     template<std::floating_point RealType = double>
@@ -22,19 +22,19 @@ namespace genetic_algorithm::rng
         using state_type  = std::vector<RealType>;
         using size_type   = std::size_t;
 
-        /* Construct the generator in dim dimensions. */
+        /** Create a quasi-random number generator in @p dim dimensions. */
         explicit QuasiRandom(size_type dim, NonNegative<RealType> seed = 0.5);
 
-        /* Generate the next random point in the sequence. */
+        /** Generate the next quasi-random point of the sequence. */
         result_type operator()();
 
-        /* Discard the next n points of the sequence. */
+        /** Discard the next @p n points of the sequence. */
         void discard(size_type n = 1);
 
-        /* Set a new seed for the generator. */
         void reset(NonNegative<RealType> new_seed);
+        /** Reset the generator's state using a specified seed. */
 
-        /* Return the generator's number of dimensions. */
+        /** @returns The generator's number of dimensions. */
         [[nodiscard]]
         size_type dim() const noexcept;
 

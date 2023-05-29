@@ -5,6 +5,7 @@
 
 #include "utility.hpp"
 #include "concepts.hpp"
+#include <algorithm>
 #include <vector>
 #include <span>
 #include <random>
@@ -18,61 +19,68 @@
 #define GA_SEED 0x3da99432ab975d26LL
 #endif
 
-/** Contains the PRNG classes and functions for generating random numbers. */
+/** Contains the PRNG classes and functions used for generating random numbers. */
 namespace genetic_algorithm::rng
 {
-    /** Splitmix64 PRNG adapted from https://prng.di.unimi.it/splitmix64.c */
+    /**
+    * Splitmix64 pseudo-random number generator based on https://prng.di.unimi.it/splitmix64.c \n
+    * All of the member functions are thread-safe.
+    */
     class AtomicSplitmix64
     {
     public:
-        using result_type = std::uint64_t;
-        using state_type  = std::uint64_t;
-
         explicit constexpr AtomicSplitmix64(state_type seed) noexcept;
 
+        using result_type = std::uint64_t;  /**< The generator generates 64 bit integers. */
+        using state_type  = std::uint64_t;  /**< The generator has a 64 bit state. */
+
+        /** Generate the next pseudo-random number of the sequence. Thread-safe. */
         result_type operator()() noexcept;
 
+        /** @returns The smallest value that can be generated. */
         static constexpr result_type min() noexcept;
+
+        /** @returns The largest value that can be generated. */
         static constexpr result_type max() noexcept;
 
     private:
         std::atomic<state_type> state_;
     };
 
-    /** The PRNG type used in the genetic algorithms. */
+    /** The pseudo-random number generator class used in the algorithms. */
     using PRNG = AtomicSplitmix64;
 
-    /** PRNG instance used in the genetic algorithms. */
     inline PRNG prng{ GA_SEED };
+    /** The global pseudo-random number generator instance used in the algorithms. */
 
-    /** Generates a random boolean value from a uniform distribution. */
+    /** Generate a random boolean value from a uniform distribution. */
     inline bool randomBool() noexcept;
 
-    /** Generates a random integer of type IntType from a uniform distribution on the closed interval [lbound, ubound]. */
+    /** Generate a random integer from a uniform distribution on the closed interval [lbound, ubound]. */
     template<std::integral IntType = int>
     inline IntType randomInt(IntType lbound, IntType ubound);
 
-    /** Generates a random floating-point value of type RealType from a uniform distribution on the closed interval [0.0, 1.0]. */
+    /** Generate a random floating-point value from a uniform distribution on the closed interval [0.0, 1.0]. */
     template<std::floating_point RealType = double>
     inline RealType randomReal();
 
-    /** Generates a random floating-point value of type RealType from a uniform distribution on the closed interval [lbound, ubound]. */
+    /** Generate a random floating-point value of from a uniform distribution on the closed interval [lbound, ubound]. */
     template<std::floating_point RealType = double>
     inline RealType randomReal(RealType lbound, RealType ubound);
 
-    /** Generates a random floating-point value of type RealType from a standard normal distribution. */
+    /** Generate a random floating-point value from a standard normal distribution. */
     template<std::floating_point RealType = double>
     inline RealType randomNormal();
 
-    /** Generates a random floating-point value of type RealType from a normal distribution with the parameters mean and SD. */
+    /** Generate a random floating-point value from a normal distribution with the specified mean and std deviation. */
     template<std::floating_point RealType = double>
     inline RealType randomNormal(RealType mean, RealType SD);
 
-    /** Generates a random integer from a binomial distribution with the parameters n and p. */
+    /** Generate a random integer value from a binomial distribution with the parameters n and p. */
     template<std::integral IntType = int>
     inline IntType randomBinomial(IntType n, double p);
 
-    /** Generates a random idx for a container. */
+    /** Generate a random index for a container. */
     template<detail::IndexableContainer T>
     inline size_t randomIdx(const T& cont);
 
@@ -80,7 +88,7 @@ namespace genetic_algorithm::rng
     template<std::input_iterator Iter>
     inline Iter randomElement(Iter first, Iter last);
 
-    /** Generates @p count unique integers from the range [lbound, ubound). */
+    /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). */
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
 

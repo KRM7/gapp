@@ -10,8 +10,9 @@
 namespace genetic_algorithm::metrics
 {
     /**
-    * Record the nadir point of the population's fitness values in each generation. \n
-    * Intended for multi-objective problems, but works and is equivalent to FitnessMax for single-objective problems.
+    * Record the nadir point of the population's fitness values in each generation.
+    * This metric is intended for multi-objective problems, but it also works for
+    * single-objective problems, where it will be equivalent to the FitnessMax metric.
     */
     class NadirPoint final : public Monitor<NadirPoint, FitnessMatrix>
     {
@@ -24,12 +25,14 @@ namespace genetic_algorithm::metrics
 
     /**
     * Record the hypervolume of the population's fitness values in each generation
-    * relative to some reference point. \n
-    * The coordinates of the reference point should be less than any fitness value
-    * it will be compared to (ie. the worst point of the objective space). \n
+    * relative to some reference point. The coordinates of this reference point should be
+    * less than any fitness value it will be compared to
+    * (ie. the worst point of the objective space).
     * 
-    * Intended for multi-objective problems, but also works for single-objective ones. \n
-    * This metric can be computationally expensive for large populations and dimensions.
+    * This metric is intended for multi-objective problems, but it also works for
+    * single-objective ones.
+    * 
+    * @note This metric can be computationally expensive for large populations and dimensions.
     */
     class Hypervolume final : public Monitor<Hypervolume, std::vector<double>>
     {
@@ -38,7 +41,9 @@ namespace genetic_algorithm::metrics
         * Create a hypervolume metric.
         * 
         * @param ref_point The reference point that will be used to calculate the hypervolume.
-        *   This point should be dominated by every point in the objective space.
+        *   The size of this point should match the number of objectives of the fitness functions,
+        *   and it should be dominated by every point in the objective space that it will be
+        *   compared to.
         */
         explicit Hypervolume(FitnessVector ref_point) noexcept;
 
@@ -57,11 +62,16 @@ namespace genetic_algorithm::metrics
     /**
     * Record the hypervolume of the population's fitness values in each generation.
     * The reference point used for the calculation of the hypervolumes is determined automatically
-    * as the objective-wise worst point encountered by the algorithm during the run. \n
-    * Every generation's hypervolume is computed relative to the same reference point. \n
+    * as the objective-wise worst point encountered by the %GA throughout the run.
+    * 
+    * While the reference point will be updated throughout a run, the old hypervolume
+    * values will also be updated along with it, so every generation's hypervolume is
+    * computed relative to the same reference point.
     *
-    * Intended for multi-objective problems, but also works for single-objective ones. \n
-    * This metric can be computationally expensive for large populations and dimensions.
+    * This metric is intended for multi-objective problems, but it also works for
+    * single-objective ones.
+    * 
+    * @note This metric can be computationally expensive for large populations and dimensions.
     */
     class AutoHypervolume final : public Monitor<AutoHypervolume, std::vector<double>>
     {

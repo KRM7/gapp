@@ -1,12 +1,5 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-/**
-* Implementations of travelling salesman problems that can be used to test the
-* single-objective permutational algorithms. \n
-* All of the problems are implemented for maximization, so they return negative
-* distances.
-*/
-
 #ifndef GA_PROBLEMS_TSP_HPP
 #define GA_PROBLEMS_TSP_HPP
 
@@ -21,8 +14,10 @@
 namespace genetic_algorithm::problems
 {
     /**
-    * Base class used for the travelling salesman benchmark functions.
+    * The base class used for the travelling salesman benchmark functions.
     * The last node is fixed to be the last node of the city list supplied in the ctor.
+    * The travelling salesman problems are modified for maximization, so they will
+    * always return negative distance values.
     */
     class TSP : public BenchmarkFunction<PermutationGene>
     {
@@ -40,8 +35,9 @@ namespace genetic_algorithm::problems
 
 
     /**
-    * Travelling salesman problem with 52 nodes (Berlin52) for testing the PermutationGA. \n
-    * Implemented for maximization (returns negative distances).
+    * Travelling salesman problem with 52 nodes (Berlin52) for the PermutationGA.
+    * The problem is modified for maximization, so it always returns negative
+    * distances.
     */
     class TSP52 final : public TSP
     {
@@ -52,8 +48,9 @@ namespace genetic_algorithm::problems
 
 
     /**
-    * Travelling salesman problem with 76 nodes (Padberg/Rinaldi's 76 city problem) for testing the PermutationGA. \n
-    * Implemented for maximization (returns negative distances).
+    * Travelling salesman problem with 76 nodes (Padberg/Rinaldi's 76 city problem)
+    * for the PermutationGA. The problem is modified for maximization,
+    * so it always returns negative distances.
     */
     class TSP76 final : public TSP
     {
@@ -63,8 +60,9 @@ namespace genetic_algorithm::problems
     };
 
     /**
-    * Travelling salesman problem with 124 nodes (Padberg/Rinaldi's 124 city problem) for testing the PermutationGA. \n
-    * Implemented for maximization (returns negative distances).
+    * Travelling salesman problem with 124 nodes (Padberg/Rinaldi's 124 city problem)
+    * for the PermutationGA. The problem is modified for maximization,
+    * so it always returns negative distances.
     */
     class TSP124 final : public TSP
     {
@@ -74,8 +72,9 @@ namespace genetic_algorithm::problems
     };
     
     /**
-    * Travelling salesman problem with 152 nodes (Padberg/Rinaldi's 152 city problem) for testing the PermutationGA. \n
-    * Implemented for maximization (returns negative distances).
+    * Travelling salesman problem with 152 nodes (Padberg/Rinaldi's 152 city problem)
+    * for the PermutationGA. The problem is modified for maximization,
+    * so it always returns negative distances.
     */
     class TSP152 final : public TSP
     {
@@ -85,8 +84,9 @@ namespace genetic_algorithm::problems
     };
 
     /**
-    * Travelling salesman problem with 226 nodes (Padberg/Rinaldi's 226 city problem) for testing the PermutationGA. \n
-    * Implemented for maximization (returns negative distances).
+    * Travelling salesman problem with 226 nodes (Padberg/Rinaldi's 226 city problem)
+    * for the PermutationGA. The problem is modified for maximization,
+    * so it always returns negative distances.
     */
     class TSP226 final : public TSP
     {
@@ -96,8 +96,9 @@ namespace genetic_algorithm::problems
     };
 
     /**
-    * Travelling salesman problem with 299 nodes (Padberg/Rinaldi's 299 city problem) for testing the PermutationGA. \n
-    * Implemented for maximization (returns negative distances).
+    * Travelling salesman problem with 299 nodes (Padberg/Rinaldi's 299 city problem)
+    * for the PermutationGA. The problem is modified for maximization,
+    * so it always returns negative distances.
     */
     class TSP299 final : public TSP
     {
@@ -107,8 +108,9 @@ namespace genetic_algorithm::problems
     };
 
     /**
-    * Travelling salesman problem with 439 nodes (Padberg/Rinaldi's 439 city problem) for testing the PermutationGA. \n
-    * Implemented for maximization (returns negative distances).
+    * Travelling salesman problem with 439 nodes (Padberg/Rinaldi's 439 city problem)
+    * for the PermutationGA. The problem is modified for maximization,
+    * so it always returns negative distances.
     */
     class TSP439 final : public TSP
     {

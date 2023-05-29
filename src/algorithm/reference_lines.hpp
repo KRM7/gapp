@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstddef>
 
-/** Methods for generating reference lines for the NSGA-III algorithm. */
+/** Methods for generating reference lines for the NSGA3 algorithm. */
 namespace genetic_algorithm::algorithm::reflines
 {
     using math::Point;
@@ -21,7 +21,6 @@ namespace genetic_algorithm::algorithm::reflines
     *
     * @param dim The dimension of the generated points.
     * @param num_points The number of points to generate.
-    *
     * @returns The generated simplex points.
     */
     std::vector<Point> quasirandomSimplexPointsMirror(size_t dim, size_t num_points);
@@ -32,7 +31,6 @@ namespace genetic_algorithm::algorithm::reflines
     *
     * @param dim The dimension of the generated points.
     * @param num_points The number of points to generate.
-    *
     * @returns The generated simplex points.
     */
     std::vector<Point> quasirandomSimplexPointsSort(size_t dim, size_t num_points);
@@ -43,7 +41,6 @@ namespace genetic_algorithm::algorithm::reflines
     * 
     * @param dim The dimension of the generated points.
     * @param num_points The number of points to generate.
-    * 
     * @returns The generated simplex points.
     */
     std::vector<Point> quasirandomSimplexPointsRoot(size_t dim, size_t num_points);
@@ -54,7 +51,6 @@ namespace genetic_algorithm::algorithm::reflines
     *
     * @param dim The dimension of the generated points.
     * @param num_points The number of points to generate.
-    *
     * @returns The generated simplex points.
     */
     std::vector<Point> quasirandomSimplexPointsLog(size_t dim, size_t num_points);
@@ -68,7 +64,6 @@ namespace genetic_algorithm::algorithm::reflines
     * @param num_points The number of points to generate.
     * @param generator The simplex point generator function used for creating the initial set of points.
     * @param k The multiple of num_points to use for the size of the initial point set generated using the given generator function.
-    * 
     * @returns The generated simplex points.
     */
     std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, Positive<size_t> k = 10);

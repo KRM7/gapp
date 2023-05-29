@@ -11,7 +11,8 @@ namespace genetic_algorithm::mutation::binary
 {
     /**
     * Standard flip mutation for the binary encoded genetic algorithm.
-    * Each gene of the chromosome is flipped (0 -> 1, or 1 -> 0) with the specified mutation probability.
+    * Each gene of the chromosome is flipped (either from 0 to 1, or from 1 to 0)
+    * with the specified mutation probability.
     */
     class Flip final : public Mutation<BinaryGene>
     {

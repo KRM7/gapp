@@ -19,66 +19,62 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-/** Algorithm types that can be used in the genetic algorithms (both single- and multi-objective algorithms). */
 namespace genetic_algorithm::algorithm
 {
     /**
-    * Base class used for all of the algorithms. \n
+    * This is the base class used for all of the algorithms.
     * 
     * The algorithms define the way the population is evolved over the generations (i.e. the selection and
-    * population replacement methods used). They may be single-, multi-objective, or both, and have 5
-    * methods that can be implemented in the derived classes: \n
+    * population replacement methods used). They may be single-, multi-objective, or both.
+    *
+    * New algorithms should be derived from this class, and there are 5 virtual methods that should be
+    * implemented by them:
     * 
-    *  - initializeImpl        (optional) : Initializes the algorithm (at the start of a run). \n
-    *  - prepareSelectionsImpl (optional) : Prepares the algorithm for the selections if needed. \n
-    *  - selectImpl                       : Selects a candidate from the population for crossover (this should be thread-safe). \n
-    *  - nextPopulationImpl               : Selects the candidates of the next population from the parent and the child populations. \n 
-    *  - optimalSolutionsImpl  (optional) : Selects the optimal solutions of the population. \n
+    *  - initializeImpl        (optional) : Initializes the algorithm at the start of a run.
+    *  - prepareSelectionsImpl (optional) : Prepares the algorithm for the selections if needed.
+    *  - selectImpl                       : Selects a candidate from the population for crossover.
+    *  - nextPopulationImpl               : Selects the candidates of the next population from the parent and the child populations.
+    *  - optimalSolutionsImpl  (optional) : Selects the optimal solutions of the population.
     */
     class Algorithm : protected selection::Selection, protected replacement::Replacement
     {
     public:
         /**
-        * Initialize the algorithm if needed. \n
+        * Initialize the algorithm if needed.
         * 
         * This method will be called exactly once at start of the run,
-        * after the initial population has already been created. \n
+        * after the initial population has already been created.
         * 
-        * Implemented by initializeImpl. \n
-        * The default implementation does nothing.
+        * Implemented by initializeImpl().
         *
-        * @param ga The GA that uses the algorithm.
+        * @param ga The %GA that uses the algorithm.
         */
         void initialize(const GaInfo& ga) { initializeImpl(ga); };
 
         /**
-        * Prepare the algorithm for the selections if neccesary. \n
+        * Prepare the algorithm for the selections if neccesary.
         * 
-        * This method will be called exactly once every generation right before the selections are performed. \n
+        * This method will be called exactly once every generation before the selections are performed.
+        * The population will be unchanged since the last call to nextPopulation().
         * 
-        * Implemented by prepareSelectionsImpl. \n
-        * The default implementation does nothing. \n
-        * 
-        * Precondition: The population hasn't changed since the last call to nextPopulation.
+        * Implemented by prepareSelectionsImpl().
         *
-        * @param ga The GA that uses the algorithm.
+        * @param ga The %GA that uses the algorithm.
         * @param fmat The fitness matrix of the population.
         */
         void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat) { prepareSelectionsImpl(ga, fmat); }
 
         /**
-        * Select a single candidate for crossover from the population. \n
+        * Select a single candidate from the population for crossover.
         * 
         * This method will be called exactly (population_size) or (population_size + 1)
-        * times in every generation (depending on which number is even). \n
-        * The population will be the unchanged population that was returned by nextPopulation in the previous generation. \n
+        * times in every generation, depending on which one is even.
+        * The population will be the unchanged population that was returned by
+        * the last call to nextPopulation() in the previous generation.
         * 
-        * Implemented by selectImpl. \n
-        * The implementation should be thread-safe if parallel execution is enabled for the GAs (enabled by default). \n
-        * 
-        * Precondition: The population hasn't changed since the last call to prepareSelections.
+        * Implemented by selectImpl().
         *
-        * @param ga The GA that uses the algorithm.
+        * @param ga The %GA that uses the algorithm.
         * @param pop The current population.
         * @param fmat The fitness matrix of the current population.
         * @returns The candidate selected from the population.
@@ -88,31 +84,30 @@ namespace genetic_algorithm::algorithm
 
         /**
         * Select the candidates of the next generation from the candidates of the
-        * current and the child populations. \n
+        * current and the child populations.
         * 
-        * This method will be called exactly once at the end of each generation before the call to optimalSolutions. \n
+        * This method will be called exactly once at the end of each generation before
+        * the call to optimalSolutions().
         * 
-        * Implemented by nextPopulationImpl. \n
+        * Implemented by nextPopulationImpl().
         *
-        * @param ga The GA that uses the algorithm.
+        * @param ga The %GA that uses the algorithm.
         * @param parents The parent population (current population of the GA).
         * @param children The child population, created from the parent population.
-        * 
         * @returns The candidates of the next generation of the algorithm.
         */
         template<typename T>
         Population<T> nextPopulation(const GA<T>& ga, Population<T> parents, Population<T> children);
 
         /**
-        * Find the optimal solutions in the unchanged population that was created by nextPopulation. \n
+        * Find the optimal solutions in the population that was created by nextPopulation().
         * 
-        * Implemented by optimalSolutionsImpl. \n
-        * The default implementation will use detail::findParetoFront to find the optimal
-        * solutions in the population. \n
+        * Implemented by optimalSolutionsImpl().
+        * The default implementation will use a generic method to find the pareto-optimal
+        * solutions in the population. This default will be used if optimalSolutionsImpl()
+        * returns an empty vector.
         * 
-        * Precondition: The population hasn't changed since the last call to nextPopulation.
-        * 
-        * @param ga The GA that uses the algorithm.
+        * @param ga The %GA that uses the algorithm.
         * @param pop The current population of the GA.
         * @returns The pareto optimal solutions of the population pop.
         */
@@ -130,11 +125,15 @@ namespace genetic_algorithm::algorithm
     private:
 
         /**
-        * Implementation of the optimalSolutions function. \n
-        * Returns the indices of the optimal solutions in the current population. \n
+        * The implementation of the optimalSolutions() function.
         * 
+        * Returns the indices of the optimal solutions in the current population, which is
+        * the population that was returned by the last call to nextPopulation().
         * If the optimal solutions can't be found trivially, it should just return an empty
         * vector (this is the default behaviour).
+        * 
+        * @param ga The %GA that uses the algorithm.
+        * @returns The indices of the pareto optimal solutions in the current population.
         */
         virtual std::vector<size_t> optimalSolutionsImpl(const GaInfo&) const { return {}; }
     };

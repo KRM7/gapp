@@ -17,29 +17,30 @@ namespace genetic_algorithm::detail
 
 } // namespace genetic_algorithm::detail
 
-/** Metrics that can be used to track certain attributes of a GA throughout a run. */
 namespace genetic_algorithm::metrics
 {
     /**
-    * The base class used for the metrics. The Monitor class should be
-    * used as the base class of new metrics instead of directly inheriting from this class.
+    * The base class used for the metrics.
+    * 
+    * @note The Monitor class should be used as the base class of new metrics
+    * instead of directly inheriting from this class.
     */
     class MonitorBase
     {
     public:
         /**
-        * Initialize the monitor. \n
+        * Initialize the monitor.
         * This method will be called exactly once at the start of a run.
         * 
-        * @param ga The algorithm being monitored.
+        * @param ga The %GA that is being monitored.
         */
         virtual void initialize(const GaInfo& ga) = 0;
         
         /**
-        * Update the metric data based on the current generation of the algorithm. \n
-        * This method will be called once every generation.
+        * Update the metric data based on the current generation of the %GA.
+        * This method will be called exactly once at the end of every generation.
         * 
-        * @param ga The algorithm being monitored.
+        * @param ga The %GA that is being monitored.
         */
         virtual void update(const GaInfo& ga) = 0;
 

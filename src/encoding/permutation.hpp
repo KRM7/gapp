@@ -22,11 +22,16 @@ namespace genetic_algorithm
     };
 
     /**
-    * Genetic algorithm in which the chromosomes encode permutations. \n
-    * The genes of the chromosomes are unique unsigned integers on the closed interval [0, chrom_len - 1].
+    * Permutation-encoded genetic algorithm class. This is the main solver
+    * that should be used for combinatorial problems.
     * 
-    * The first and last elements of the permutations are assumed to be unrelated, eg. the permutation
-    * A-B-C-D will not be considered equal to the permutation B-C-D-A by the algorithm.
+    * The chromosome of a candidate solution encodes a permutation. Every gene of a chromosome
+    * is a unique unsigned integer in the closed interval of [0, chrom_len - 1],
+    * 
+    * Without any loss of generality, the first and last elements of the permutations are
+    * assumed to be unrelated, eg. the permutation A-B-C-D will not be considered equal
+    * to the permutation B-C-D-A by the %GA. The fitness function should also be written
+    * with this in mind.
     */
     class PermutationGA final : public GA<PermutationGene>
     {

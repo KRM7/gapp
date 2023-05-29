@@ -9,4 +9,7 @@
 #include "permutation.hpp"
 #include "integer.hpp"
 
+/** %Mutation operators used in the GAs. */
+namespace genetic_algorithm::mutation {}
+
 #endif // !GA_MUTATION_HPP

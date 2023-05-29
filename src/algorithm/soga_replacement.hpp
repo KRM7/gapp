@@ -18,11 +18,12 @@ namespace genetic_algorithm
 namespace genetic_algorithm::replacement
 {
     /**
-    * A population update method that selects only the child Candidates from the
-    * combined parent and child populations, and uses these as the population of the next generation of the algorithm. \n
+    * A population update method that selects only the child candidates from the
+    * combined parent and child populations, and uses these as the population of the
+    * next generation of the %GA.
     * 
     * If the number of children is greater than the population size used in the algorithm,
-    * only the first pop_size children will be selected.
+    * only the first @p population_size children will be selected.
     */
     class KeepChildren final : public Replacement
     {
@@ -32,13 +33,15 @@ namespace genetic_algorithm::replacement
 
 
     /**
-    * A population update method that selects the candidates of the next generation using elitism. \n
+    * A population update method that selects the candidates of the next generation using elitism.
     * 
-    * Of the combined parent and child populations, the N best candidates of the parent
-    * population are carried over to the next population, while the remaining
-    * (pop_size - N) slots are filled by the first (pop_size - N) child solutions. \n
+    * The operator has a single parameter @p N, which determines the number of candidates
+    * that will be selected from the parent population. Of the combined parent and child populations,
+    * the N best candidates of the parent population will be copied over to the next population,
+    * while the remaining (pop_size - N) slots are filled by the first (pop_size - N) child solutions.
     * 
-    * If N = 0, this is equivalent to only keeping the children for the next generation (KeepChildren).
+    * If N is equal to 0, this is equivalent to only keeping the children for the next generation
+    * (ie. KeepChildren).
     */
     class Elitism final : public Replacement
     {
@@ -46,16 +49,18 @@ namespace genetic_algorithm::replacement
         /**
         * Create an elitist population update operator.
         * 
-        * @param n The number of solutions from the population that will be copied to the next generation of the algorithm.
+        * @param n The number of solutions from the parent population that will be
+        *   copied to the next generation of the algorithm.
         */
         constexpr Elitism(size_t n = 1) noexcept :
             n_(n)
         {}
 
         /**
-        * Set the number of elite solutions used to n.
+        * Set the number of elite solutions used.
         * 
-        * @param n The number of solutions from the population that will be copied to the next generation of the algorithm.
+        * @param n The number of solutions from the parent population that will be
+        *   copied to the next generation of the algorithm.
         */
         constexpr void elite_num(size_t n) noexcept { n_ = n; }
 
@@ -71,8 +76,11 @@ namespace genetic_algorithm::replacement
 
 
     /**
-    * A population update method that selects the best (pop_size) candidates of the combined
-    * parent and child populations, and uses these as the candidates of the next generation of the algorithm. \n
+    * A population update method that selects the best @p pop_size candidates of the combined
+    * parent and child populations, and uses these as the candidates of the next generation of the
+    * algorithm.
+    * 
+    * The operator assumes fitness maximization.
     */
     class KeepBest final : public Replacement
     {
@@ -83,7 +91,7 @@ namespace genetic_algorithm::replacement
 
     /*
     * Wraps a callable with the right signature so that it can be used as a population replacement
-    * method in the single-objective GAs.
+    * policy in the single-objective algorithm.
     */
     class Lambda final : public Replacement
     {

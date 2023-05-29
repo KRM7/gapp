@@ -31,35 +31,35 @@ namespace genetic_algorithm::metrics
         }
     };
 
-    /** Record the minimum of the fitness values in the population for each objective. */
+    /** Record the objective-wise minimum of the fitness values in the population. */
     class FitnessMin final : public FitnessMonitor<FitnessMin>
     {
     private:
         void update(const GaInfo& ga) override;
     };
 
-    /** Record the maximum of the fitness values in the population for each objective. */
+    /** Record the objective-wise maximum of the fitness values in the population. */
     class FitnessMax final : public FitnessMonitor<FitnessMax>
     {
     private:
         void update(const GaInfo& ga) override;
     };
 
-    /** Record the mean of the fitness values in the population for each objective. */
+    /** Record the objective-wise mean of the fitness values in the population. */
     class FitnessMean final : public FitnessMonitor<FitnessMean>
     {
     private:
         void update(const GaInfo& ga) override;
     };
 
-    /** Record the variance of the fitness values in the population for each objective. */
+    /** Record the objective-wise variance of the fitness values in the population. */
     class FitnessVariance final : public FitnessMonitor<FitnessVariance>
     {
     private:
         void update(const GaInfo& ga) override;
     };
 
-    /** Record the standard deviation of the fitness values in the population for each objective. */
+    /** Record the objective-wise standard deviation of the fitness values in the population. */
     class FitnessStdDev final : public FitnessMonitor<FitnessStdDev>
     {
     private:

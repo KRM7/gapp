@@ -9,4 +9,7 @@
 #include "permutation.hpp"
 #include "integer.hpp"
 
+/** %Crossover operators used in the GAs. */
+namespace genetic_algorithm::crossover {}
+
 #endif // !GA_CROSSOVER_HPP

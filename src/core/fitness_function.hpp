@@ -14,32 +14,34 @@
 namespace genetic_algorithm
 {
     /**
-    * Base class for the fitness functions used in the algorithms. \n
-    * The fitness function takes a candidate solution (chromosome) and returns a fitness vector
-    * after evaluating it.
+    * The base class of the fitness functions used in the algorithms.
+    * The fitness functions take a candidate solution (chromosome) as a parameter
+    * and return a fitness vector after evaluating the chromosome.
     * 
-    * This should be used as the base class for the fitness functions if the number
-    * of objectives or the chromosome length is not known at compile time.
-    * Otherwise use FitnessFunction, or SingleObjFinessFunction for single-objective
-    * problems.
+    * This should be used as the base class for fitness functions if the chromosome length
+    * is not known at compile time.
+    * If the chromosome length is known at compile, use FitnessFunction as the base class instead.
     * 
-    * @tparam T The gene type used in the algorithm.
+    * @tparam T The gene type expected by the fitness function.
     */
     template<typename T>
     class FitnessFunctionBase
     {
     public:
-        /** The gene type used in the chromosomes. */
+        /** The gene type of the chromosomes that can be evaluated by the fitness function. */
         using GeneType = T;
 
         /**
         * Create a fitness function.
         *
-        * @param chrom_len The chromosome length that will be used for the candidate
-        *   solutions in the algorithm. Must be at least 1.
+        * @param chrom_len The chromosome length that is expected by the fitness function,
+        *   and will be used for the candidate solutions in the algorithm. \n
+        *   Must be at least 1, and a value must be given even if the chromosome lengths are variable,
+        *   as it will be used to generate the initial population.
         * @param variable_len Should be true if the fitness function supports and will be used with
-        *   variable chromosome lengths. The other genetic operators (crossover, mutation, repair)
-        *   must also support variable length chromosomes if this is enabled.
+        *   variable chromosome lengths. \n 
+        *   The other genetic operators (crossover, mutation, repair) must also support
+        *   variable length chromosomes if this is enabled.
         * @param dynamic Should be true if the fitness vector returned for a chromosome will not
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
@@ -51,21 +53,22 @@ namespace genetic_algorithm
         [[nodiscard]]
         constexpr size_t chrom_len() const noexcept { return chrom_len_; }
 
-        /** @returns true if variable chromosome lengths are allowed. */
+        /** @returns True if the fitness function can handle variable chromosome lengths. */
         [[nodiscard]]
         constexpr bool variable_chrom_len() const noexcept { return variable_chrom_len_; }
 
-        /** @returns True if dynamic fitness function support is enabled. */
+        /** @returns True if the fitness function is dynamic. */
         [[nodiscard]]
         constexpr bool dynamic() const noexcept { return dynamic_; }
 
         /**
         * Compute the fitness value of a chromosome.
-        * The size of the chromosome must be equal to the chrom_len set unless variable
-        * chromosome lengths are used.
+        * 
+        * The size of the chromosome must be equal to the chromosome length set
+        * for the fitness function, unless variable chromosome lengths are allowed.
         * 
         * @param chrom The chromosome to evaluate.
-        * @returns The fitness vector of the chromosome.
+        * @returns The fitness vector of the chromosome, with a size equal to the number of objectives.
         */
         FitnessVector operator()(const Chromosome<T>& chrom) const
         {
@@ -95,14 +98,15 @@ namespace genetic_algorithm
     };
 
     /**
-    * Base class for the fitness functions used in the algorithms. \n
-    * The fitness function takes a candidate solution (chromosome) and returns a fitness vector
-    * after evaluating it.
+    * The base class of the fitness functions used in the algorithms.
+    * The fitness functions take a candidate solution (chromosome) as a parameter
+    * and return a fitness vector after evaluating the chromosome.
     *
-    * This class can be used as the base class for the fitness functions if the
-    * chromosome length is known at compile time, otherwise use FitnessFunctionBase.
+    * This should only be used as the base class for fitness functions if the chromosome length
+    * is known at compile time.
+    * If the chromosome length is not known at compile, use FitnessFunctionBase as the base class instead.
     *
-    * @tparam T The gene type used in the algorithm.
+    * @tparam T The gene type expected by the fitness function.
     * @tparam ChromLen The length of the chromosomes expected by the fitness function. Must be at least 1.
     */
     template<typename T, size_t ChromLen>
@@ -113,8 +117,9 @@ namespace genetic_algorithm
         * Create a fitness function.
         *
         * @param variable_len Should be true if the fitness function supports and will be used with
-        *   variable chromosome lengths. The other genetic operators (crossover, mutation, repair)
-        *   must also support variable length chromosomes if this is enabled.
+        *   variable chromosome lengths. \n
+        *   The other genetic operators (crossover, mutation, repair) must also support
+        *   variable length chromosomes if this is enabled.
         * @param dynamic Should be true if the fitness vector returned for a chromosome will not
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */

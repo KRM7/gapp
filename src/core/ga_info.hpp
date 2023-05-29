@@ -29,45 +29,61 @@ namespace genetic_algorithm::stopping
 namespace genetic_algorithm
 {
     /**
-    * Base class that all GAs are derived from. \n
-    * Contains all of the general information about a GA that does not depend on the encoding (gene) type. \n
+    * The base class that all GAs are derived from.
+    * Contains all of the general properties of a genetic algorithm that 
+    * does not depend on the encoding type.
+    * 
+    * %GA implementations should use the GA class as their base class instead
+    * of inheriting from this class directly.
+    * 
     * Move-only.
     */
     class GaInfo
     {
     public:
         /**
-        * The general callable type that can be used as a stop condition in the algorithm. \n
-        * It should return true if the algorithm should stop.
+        * The general callable type that can be used as a stop condition in the algorithm (when
+        * not using a stop condition that is derived from StopCondition).
+        * The function should return true when the algorithm should be stopped.
+        * @see stop_condition
         */
         using StopConditionCallable = std::function<bool(const GaInfo&)>;
 
-        /** The type of the callback functions that can be used in the algorithm. */
+        /**
+        * The type of a generic callback function that can be provided for the algorithm.
+        * @see endOfGenerationCallback
+        */
         using GaCallback = std::function<void(const GaInfo&)>;
 
         /** 
         * Create a genetic algorithm.
         *
         * @param population_size The size of the population. Must be at least 1.
-        * @param algorithm The algorithm to use. Should be consistent with the objective function (single- or multi-objective).
-        * @param stop_condition The stop condition to use for the algorithm.
+        * @param algorithm The algorithm to use. Should be consistent with the objective function (ie. a single-objective
+        *       algorithm should be used for single-objective fitness functions, and a multi-objective algorithm should be
+        *       used for multi-objective problems).
+        * @param stop_condition The early-stop condition to use for the algorithm. The algorithm will stop when
+        *       reaching the maximum number of generations set regardless of the stop condition specified here.
         */
         GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) noexcept;
 
         /**
-        * Set the number of candidates used in the population.
+        * Set the number of candidate solutions used in the population.
         *
-        * @param size The number of candidates in a population. Must be at least 1.
+        * @param size The number of candidates in the population. Must be at least 1.
         */
         void population_size(Positive<size_t> size) noexcept { population_size_ = size; }
 
-        /** @returns The number of candidates in the population. */
+        /** @returns The number of candidate solutions in the population. */
         [[nodiscard]]
         size_t population_size() const noexcept { return population_size_; }
 
         /**
-        * Set the maximum number of generations a run can last for. \n
-        * The algorthm will always stop when reaching this generation, even if another stop condition was set.
+        * Set the maximum number of generations a run can last for.
+        * The algorthm will always stop when reaching this generation, even if there is
+        * another stop-condition being used.
+        * 
+        * @see stop_condition
         * 
         * @param max_gen The maximum number of generations. Must be at least 1.
         */
@@ -81,7 +97,7 @@ namespace genetic_algorithm
         [[nodiscard]]
         virtual size_t chrom_len() const noexcept = 0;
 
-        /** @returns True if variable chromosome lengths are allowed and used. */
+        /** @returns True if variable chromosome lengths are used. */
         [[nodiscard]]
         virtual bool variable_chrom_len() const noexcept = 0;
 
@@ -95,17 +111,23 @@ namespace genetic_algorithm
 
         /**
         * @returns The fitness matrix of the population.
-        * Each element of the matrix is the fitness vector of the corresponding solution in the population. \n
-        * Eg. fmat[0] is the fitness vector of the first member of the population.
+        * Each row of the matrix is the fitness vector of the corresponding solution in the population. \n
+        * For example, fmat[0] is the fitness vector of the first member of the population.
         */
         [[nodiscard]]
         const FitnessMatrix& fitness_matrix() const noexcept { return fitness_matrix_; }
 
-        /** @returns The number of fitness evaluations performed during the run. Updated after every objective function evaluation. */
+        /**
+        * @returns The number of fitness evaluations performed during the run so far.
+        * This value is updated after every objective function evaluation.
+        */
         [[nodiscard]]
         size_t num_fitness_evals() const noexcept;
 
-        /** @returns The current generation's number. */
+        /** 
+        * @returns The current generation's number. This value will be in the range [0, max_gen),
+        * where 0 corresponds to the initial/first generation.
+        */
         [[nodiscard]]
         size_t generation_cntr() const noexcept { return generation_cntr_; }
         
@@ -134,90 +156,87 @@ namespace genetic_algorithm
 
 
         /**
-        * Set the algorithm used by the GA. \n
-        * The algorithm type should be consistent with the size of the fitness vectors returned by
-        * the fitness function (single- or multi-objective).
-        * 
-        * @see Algorithm
+        * Set the algorithm used by the %GA. \n
+        * The algorithm type should be consistent with the fitness function (ie. it should
+        * be a single-objective algorithm for single-objective problems, and a multi-objective
+        * algorithm for multi-objective problems).
         *
-        * @param f The algorithm used by the GA.
+        * @param f The algorithm used by the %GA.
         */
         template<typename F>
         requires std::derived_from<F, algorithm::Algorithm> && std::is_final_v<F>
         void algorithm(F f);
 
         /**
-        * Set the algorithm used by the GA. \n
-        * The algorithm type should be consistent with the size of the fitness vectors returned by
-        * the fitness function (single- or multi-objective).
-        * 
-        * @see Algorithm
+        * Set the algorithm used by the %GA. \n
+        * The algorithm type should be consistent with the fitness function (ie. it should
+        * be a single-objective algorithm for single-objective problems, and a multi-objective
+        * algorithm for multi-objective problems).
         *
-        * @param f The algorithm used by the GA. Can't be a nullptr.
+        * @param f The algorithm used by the %GA. Can't be a nullptr.
         */
         void algorithm(std::unique_ptr<algorithm::Algorithm> f);
 
-        /** @returns The algorithm used by the GA. */
+        /** @returns The algorithm used by the %GA. */
         [[nodiscard]]
         const algorithm::Algorithm& algorithm() const& noexcept { GA_ASSERT(algorithm_); return *algorithm_; }
 
 
         /**
-        * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set,
-        * regardless of the stop condition set here.
-        * 
-        * @see StopCondition
+        * Set an early-stop condition for the algorithm. \n
+        * This is an optional early-stop condition that can be used to stop the run
+        * before the maximum number of generations is reached, but the algorithm will
+        * always stop when reaching the maximum generations regardless of the stop condition set here.
         *
-        * @param f The StopCondition the algorithm should use.
+        * @param f The early stop condition the %GA should use.
         */
         template<typename F>
         requires std::derived_from<F, stopping::StopCondition> && std::is_final_v<F>
         void stop_condition(F f);
 
         /**
-        * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set, regardless of the stop
-        * condition set here.
-        * 
-        * @see StopCondition
+        * Set an early-stop condition for the algorithm. \n
+        * This is an optional early-stop condition that can be used to stop the run
+        * before the maximum number of generations is reached, but the algorithm will
+        * always stop when reaching the maximum generations regardless of the stop condition set here.
         *
-        * @param f The StopCondition the algorithm should use. Can't be a nullptr.
+        * @param f The stop condition the %GA should use. Can't be a nullptr.
         */
         void stop_condition(std::unique_ptr<stopping::StopCondition> f);
 
         /**
-        * Set an early-stop condition for the genetic algorithm. \n
-        * The algorithm will always stop when reaching the maximum generations set,
-        * regardless of the stop condition set here.
+        * Set an early-stop condition for the algorithm. \n
+        * This is an optional early-stop condition that can be used to stop the run
+        * before the maximum number of generations is reached, but the algorithm will
+        * always stop when reaching the maximum generations regardless of the stop condition set here.
         * 
-        * @see StopCondition
         * @see StopConditionCallable
         *
         * @param f The function used to check for the early-stop condition.
         */
         void stop_condition(StopConditionCallable f);
 
-        /** @returns The stop condition used by the algorithm. */
+        /** @returns The stop condition used by the %GA. */
         [[nodiscard]]
         const stopping::StopCondition& stop_condition() const& noexcept { GA_ASSERT(stop_condition_); return *stop_condition_; }
 
 
         /**
-        * Set a number of metrics to track through the run of the algorithms. \n
-        * The values of these metrics are computed and saved for each generation of the
-        * algorithm. \n
+        * Set a number of metrics to track throughout the run of the algorithm.
+        * The values of these metrics will be computed and saved for each generation of the run.
         * 
         * Example:
+        * ```
         *   GA.track(metrics::FitnessMin{}, metrics::FitnessMax{});
         *   GA.solve(...);
         *   const auto& fmin = GA.get_metric<metrics::FitnessMin>();
+        * ```
         * 
         * The same metric type may be present multiple times in the parameters, but it is
         * unspecified which one get_metric() will return in this case.
         *
-        * Setting a new set of metrics to be tracked via this method will invalidate all references
-        * returned by get_metric().
+        * @warning
+        * Setting a new set of metrics to be tracked will invalidate all references returned by get_metric().
         * 
         * @param metrics The metrics to track during the runs of the algorithm.
         */
@@ -226,21 +245,27 @@ namespace genetic_algorithm
         void track(Metrics... metrics);
 
         /**
-        * Get one of the metrics tracked by the algorithm. \n
-        * The type parameter Metric must be the type of one of the metrics being tracked, otherwise
-        * the behaviour of this method is undefined. \n
+        * Get one of the metrics tracked by the algorithm.
         * 
         * Example:
+        * ```
         *   GA.track(metrics::FitnessMin{}, metrics::FitnessMax{});
         *   GA.solve(...);
         *   const auto& fmin = GA.get_metric<metrics::FitnessMin>();
+        * ```
         * 
-        * If the set of tracked metrics contains the same metric multiple times, get_metric() will return
-        * one of them, but it is unspecified which.
+        * If the set of tracked metrics contains the same metric multiple times,
+        * one of them will be returned, but it is unspecified which one.
         * 
+        * @warning
+        * The type parameter Metric must be the type of one of the metrics being tracked, otherwise
+        * the behaviour of this method is undefined.
+        * 
+        * @warning
         * Setting a new set of metrics to be tracked via track() will invalidate all references
         * returned by this function.
         * 
+        * @tparam Metric The tracked metric to get.
         * @returns The metric of the specified type if it is tracked, otherwise undefined.
         */
         template<typename Metric>
@@ -249,23 +274,29 @@ namespace genetic_algorithm
 
 
         /**
-        * When set to true, all pareto optimal Candidates found by the algorithm during a run
+        * When set to true, all pareto-optimal candidates found by the %GA during a run
         * will be kept and stored in the solutions set, regardless of which generation they were
         * found in. \n
-        * When set to false, the optimal solutions returned by the algorithm at the end of a run
-        * are the optimal solutions of the last generation. \n
+        * When set to false, the optimal solutions returned by the %GA at the end of a run
+        * are the optimal solutions of the last generation only, optimal solutions found
+        * in earlier generations are discarded.
         *
         * Disabled by default. \n
+        * 
+        * @note This will most likely have no effect for single-objective problems, as they likely
+        *   only have a single optimal solution.
+        * 
+        * @warning Setting this to True can significantly increase the run-time of the GA.
         *
         * @param enable Whether all pareto optimal solutions should be kept.
         */
         void keep_all_optimal_solutions(bool enable) noexcept { keep_all_optimal_sols_ = enable; }
 
-        /** @returns true if all pareto optimal solutions are kept during a run. */
+        /** @returns True if all pareto-optimal solutions are kept during a run. */
         [[nodiscard]]
         bool keep_all_optimal_solutions() const noexcept { return keep_all_optimal_sols_; }
 
-        /** This function will be called once at the end of each generation. */
+        /** A generic callback function that will be called exactly once at the end of each generation. */
         GaCallback endOfGenerationCallback = nullptr;
 
 
@@ -295,6 +326,7 @@ namespace genetic_algorithm
         bool keep_all_optimal_sols_ = false;
         bool use_default_algorithm_ = false;
 
+        /** The default population size used in the %GA if none is specified. */
         static constexpr size_t DEFAULT_POPSIZE = 100;
     };
 

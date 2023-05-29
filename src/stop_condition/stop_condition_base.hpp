@@ -14,26 +14,42 @@ namespace genetic_algorithm
 
 } // namespace genetic_algorithm
 
-/** Stop conditions that can be used in the algorithms. */
+/** Early-stop conditions that can be used to control when the %GA stops. */
 namespace genetic_algorithm::stopping
 {
     /**
-    * Base class used for all of the stop conditions. \n
+    * The base class used for all of the early-stop conditions.
     * The stop condition will be evaluated once at the end of every generation,
-    * and should return true if the algorithm should stop.
+    * and it should return true when the %GA should stop running.
     * 
-    * The class has 2 virtual methods that should be implemented by the derived classes:
+    * New stop conditions should be derived from this class, and there are 
+    * 2 virtual methods that should be implemented by them:
     * 
-    *   - initialize (optional) : Initializes the stop condition at the start of a run. Does nothing by default.
-    *   - stop_condition        : Evaluate the stop condition and return true when the algorithm should stop.
+    *   - initialize (optional) : Initialize the stop condition at the start of a run. Does nothing by default.
+    *   - stop_condition        : Evaluate the stop condition and return true when the %GA should stop running.
     */
     class StopCondition
     {
     public:
-        /** Initialize the stop condition. Will be called exactly once at the start of a run. */
+        /**
+        * Initialize the stop condition.
+        * This method will be called exactly once at the start of each run.
+        * The default implementation does nothing.
+        * 
+        * @param ga The genetic algorithm the stop condition is used in.
+        */
         virtual void initialize(const GaInfo&) {};
 
-        /** Evaluate the stop condition and return true if the genetic algorithm should stop. */
+        /**
+        * Evaluate the stop condition and return true if the %GA should be stopped.
+        * This method will be called exactly once at the end of each generation of
+        * a run.
+        * 
+        * Implemented by stop_condition().
+        * 
+        * @param ga The genetic algorithm the stop condition is used in.
+        * @returns True when the genetic algorithm should stop running.
+        */
         bool operator()(const GaInfo& ga);
 
         /** Destructor. */
@@ -49,7 +65,14 @@ namespace genetic_algorithm::stopping
 
     private:
 
-        /* Implementation of the stop condition. Will be called once at the end of each generation. */
+        /**
+        * The implementation of the early-stop condition.
+        * This method will be called exactly once at the end of each generation
+        * of a run, and it should return true when the %GA should be stopped.
+        * 
+        * @param ga The genetic algorithm the stop condition is used in.
+        * @returns True when genetic algorithm should stop running.
+        */
         virtual bool stop_condition(const GaInfo& ga) = 0;
     };
 

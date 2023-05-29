@@ -17,28 +17,30 @@ namespace genetic_algorithm
 namespace genetic_algorithm::replacement
 {
     /**
-    * The base class used for all of the single-objective population replacement policies. \n
-    *
-    * This operator is used to select the candidates of the next population from the combined
-    * parent and child populations. The class only has a single method that has to be implemented: \n
+    * This is the base class used for all of the single-objective population replacement policies.
+    * The replacement operator is used to select the candidates of the next population from the
+    * combined parent and child populations.
     * 
-    *   - nextPopulationImpl :  Selects the candidates of the next population.
+    * New replacement policies for the single-objective algorithm should be derived from this
+    * class, and there is a single method that should be implemented in the derived classes:
+    * 
+    *   - nextPopulationImpl :  Selects the candidates for the next population.
     */
     class Replacement
     {
     public:
         /**
         * Select the candidates of the next generation from the candidates of the
-        * combined current and child populations. \n
+        * combined current and child populations.
         *
         * The fitness matrix is given as the contiguous range [first, last), where
         * the subrange [first, children_first) belongs to the current population,
         * and the [children_first, last) subrange belongs to the child population.
         * 
-        * The method should return (population_size) number of unique indices from this fitness matrix,
+        * This method should return (population_size) number of unique indices from this fitness matrix,
         * assuming the index of the first iterator is 0.
         * 
-        * @param ga The GA that uses the update method.
+        * @param ga The %GA that uses the update method.
         * @param first The first element of the fitness matrix (first parent).
         * @param children_first The first element of the fitness matrix that belongs to a child.
         * @param last The end iterator of the fitness matrix.

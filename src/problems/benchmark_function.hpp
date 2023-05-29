@@ -15,10 +15,7 @@
 
 namespace genetic_algorithm::problems
 {
-    /**
-    * Base class for the benchmark function that contains
-    * the properties of a benchmark function (eg. name, optimum, optimal value etc.).
-    */
+    /** Base class that contains the properties of a benchmark function. */
     template<typename T>
     class BenchmarkFunctionTraits
     {
@@ -31,7 +28,7 @@ namespace genetic_algorithm::problems
         [[nodiscard]]
         size_t num_objectives() const noexcept { return num_objectives_; }
 
-        /** @returns The lower and upper bounds for each variable of the benchmark function. */
+        /** @returns The lower and upper bounds of each variable of the benchmark function. */
         [[nodiscard]]
         const std::vector<Bounds<T>>& bounds() const noexcept { return bounds_; }
 
@@ -39,7 +36,7 @@ namespace genetic_algorithm::problems
         [[nodiscard]]
         const math::Point& optimal_value() const noexcept { return optimal_value_; }
 
-        /** @returns The optimum (max) of the benchmark function. */
+        /** @returns The maximum of the benchmark function. */
         [[nodiscard]]
         const std::vector<T>& optimum() const noexcept { return optimum_; }
 

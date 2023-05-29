@@ -10,8 +10,8 @@
 namespace genetic_algorithm::mutation::integer
 {
     /**
-    * Uniform mutation operator for the integer encoded genetic algorithm.
-    * Each gene of the chromosome is changed with the specified mutation probability
+    * %Uniform mutation operator for the integer encoded genetic algorithm.
+    * Each gene of the chromosome is changed, with the specified mutation probability,
     * to another value selected from a uniform distribution over all other values.
     */
     class Uniform final : public Mutation<IntegerGene>

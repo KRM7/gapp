@@ -22,7 +22,10 @@ namespace genetic_algorithm
         static constexpr Probability defaultMutationRate(size_t chrom_len) noexcept { return 1.0 / chrom_len; }
     };
 
-    /** Standard binary encoded genetic algorithm. */
+    /**
+    * Binary-encoded genetic algorithm class. This is the main solver
+    * that should be used for binary-encoded objective functions.
+    */
     class BinaryGA final : public GA<BinaryGene>
     {
     public:

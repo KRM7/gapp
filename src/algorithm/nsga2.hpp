@@ -11,23 +11,23 @@ namespace genetic_algorithm::algorithm
 {
     /**
     * Non-dominated sorting genetic algorithm (NSGA-II), used for multi-objective optimization.
-    * (This algorithm doesn't work for single-objective problems.) \n
-    * The aim of the algorithm is to find a set of solutions which are well-spread out
-    * along the entire pareto-front (in the objective-space). \n
+    * This algorithm doesn't work for single-objective problems.
     * 
-    * The algorithm uses non-dominated sorting to sort the candidates into
-    * pareto fronts, and then selects the candidates of the best fronts for the population
-    * of the next generation. \n
+    * The aim of the algorithm is to find a set of solutions which are well spread out
+    * along the entire pareto-front in the objective-space.
+    * 
+    * The algorithm uses a non-dominated sorting method to sort the candidates of the population
+    * into distinct pareto fronts, and then selects the candidates of the best fronts for the
+    * population of the next generation.
     * Candidates that belong to the same front are ranked according to their crowding distances,
-    * which are their distances from the neigbouring solutions in the objective space. \n
+    * which are their distances from the neigbouring solutions in the objective space.
     * 
-    * The algorithm uses a selection operator that selects solutions based on these same criteria
-    * (their pareto ranks and crowding distances). \n
+    * The algorithm uses a selection operator that selects solutions for the crossovers
+    * based on these same criteria (their pareto ranks and crowding distances).
     * 
-    * The selection and population update methods of this algorithm can't be changed. \n
-    * Has no parameters. \n
+    * The algorithm assumes fitness maximization, and has no parameters.
     * 
-    * See:
+    * @see
     *  Deb, K., et al. "A fast and elitist multiobjective genetic algorithm: NSGA-II."
     *  IEEE transactions on evolutionary computation 6, no. 2 (2002): 182-197.
     */

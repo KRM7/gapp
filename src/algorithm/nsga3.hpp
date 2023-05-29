@@ -14,24 +14,29 @@
 namespace genetic_algorithm::algorithm
 {
     /**
-    * NSGA-III algorithm, used for many-objective optimization. (Doesn't work for single-objective problems.) \n
-    * The aim of the algorithm is to find a set of solutions which are well-spread out
-    * along the entire pareto-front (in the objective-space). \n
+    * NSGA-III algorithm, used for multi- and many-objective optimization.
+    * This algorithm doesn't work for single-objective problems.
     * 
-    * The algorithm uses non-dominated sorting to sort the solutions into pareto fronts,
-    * and then selects the candidates of the best fronts for the population of the next generation. \n
+    * The aim of the algorithm is to find a set of solutions which are well spread out
+    * along the entire pareto-front in the objective-space.
+    * 
+    * The algorithm uses a non-dominated sorting method to sort the solutions into a
+    * set of distinct pareto fronts, and then selects the candidates of the best fronts
+    * for the population of the next generation.
     * Candidates that belong to the same front are ranked using a set of reference
-    * directions in the objective space. Candidates closest to reference directions which have less candidates associated with them,
-    * and candidates closer to reference directions are considered better. \n
-    * The reference directions are generated at the start of the run, and don't change throughout it. \n
+    * directions in the objective space. The candidate solutions closest to a reference
+    * directions which has less candidates associated with it, and candidates closer to
+    * reference directions are considered better.
     * 
-    * The algorithm uses a selection operator that selects solutions based on these same criteria
-    * (their pareto ranks and their distances from the reference directions). \n
+    * The algorithm uses a selection operator that selects candidates for the crossovers
+    * based on these same criteria (their pareto ranks and their distances from the reference directions).
     * 
-    * The selection and population update methods of this algorithm can't be changed. \n
-    * Has no parameters. \n
+    * The reference directions are generated at the start of the run, and don't change throughout it.
+    * The method used for generating the reference directions can be specified in the constructor.
     * 
-    * See:
+    * The algorithm assumes fitness maximization, and it has no parameters.
+    * 
+    * @see
     *  Deb, K., and Jain, H. "An evolutionary many-objective optimization algorithm using reference-point-based nondominated sorting approach, part I:
     *  solving problems with box constraints." IEEE transactions on evolutionary computation 18, no. 4 (2013): 577-601.
     */

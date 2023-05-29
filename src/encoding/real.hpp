@@ -23,8 +23,8 @@ namespace genetic_algorithm
     };
 
     /**
-    * Real coded genetic algorithm. \n
-    * Each gene of the chromosomes is a floating point value.
+    * Real-encoded genetic algorithm class. This is the main solver
+    * that should be used for real-encoded objective functions.
     */
     class RCGA final : public GA<RealGene>
     {

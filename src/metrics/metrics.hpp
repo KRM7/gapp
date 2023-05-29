@@ -10,4 +10,7 @@
 #include "misc_metrics.hpp"
 #include "metric_set.hpp"
 
+/** Metrics that can be used to track certain attributes of %GA throughout a run. */
+namespace genetic_algorithm::metrics {}
+
 #endif // !GA_METRICS_METRICS_HPP

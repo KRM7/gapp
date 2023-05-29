@@ -12,16 +12,25 @@
 #include <cstdint>
 #include <cstddef>
 
+/** Math utility classes and functions. */
 namespace genetic_algorithm::math
 {
+    /**
+    * This class contains the global absolute and relative tolerance values used
+    * for comparing floating-point values in the GAs.
+    * 
+    * New tolerances can be set using the ScopedTolerances class.
+    */
     class Tolerances
     {
     public:
         Tolerances() = delete;
 
+        /** @returns The current absolute tolerance used for floating-point comparisons. */
         template<std::floating_point T = double>
         static T abs() noexcept { return T(absolute_tolerance.load(std::memory_order_acquire)); }
 
+        /** @returns The current relative tolerance used for floating-point comparisons. */
         template<std::floating_point T = double>
         static T eps() noexcept { return relative_tolerance_epsilons.load(std::memory_order_acquire) * std::numeric_limits<T>::epsilon(); }
 
@@ -32,14 +41,31 @@ namespace genetic_algorithm::math
         friend class ScopedTolerances;
     };
 
+    /**
+    * This class can be used to set the absolute and relative tolerances used for
+    * comparing floating-point values in the GAs.
+    * 
+    * When an instance of the class is created, the tolerance values are set to the
+    * values specified by the parameters of the constructor, and these new tolerance
+    * values will be used for floating-point comparisons until the instance of the class is destroyed.
+    * The tolerances are reset to their old values when the instance is destroyed.
+    */
     class [[nodiscard]] ScopedTolerances
     {
     public:
+        /**
+        * Create an instance of the class, setting new values for the tolerances
+        * used for floating-point comparisons.
+        * 
+        * @param num_epsilons The number of epsilons to use as the relative tolerance in the comparisons.
+        * @param abs The absolute tolerance value used for the comparisons.
+        */
         ScopedTolerances(unsigned num_epsilons, double abs) noexcept :
             old_abs_tol(Tolerances::absolute_tolerance.exchange(abs, std::memory_order_acq_rel)),
             old_eps_tol(Tolerances::relative_tolerance_epsilons.exchange(num_epsilons, std::memory_order_acq_rel))
         {}
 
+        /** Reset the tolerances to their previous values. */
         ~ScopedTolerances() noexcept
         {
             Tolerances::absolute_tolerance.store(old_abs_tol, std::memory_order_release);

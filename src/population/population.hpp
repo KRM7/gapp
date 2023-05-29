@@ -9,13 +9,13 @@
 
 namespace genetic_algorithm
 {
-    /** The Population type used in all of the genetic algorithms. */
-    template<typename T>
-    using Population = std::vector<Candidate<T>>;
+    /** The population type used in all of the algorithms. */
+    template<typename Gene>
+    using Population = std::vector<Candidate<Gene>>;
 
-    /** A vector of Candidates. */
-    template<typename T>
-    using Candidates = std::vector<Candidate<T>>;
+    /** A vector of candidates, same as the population type. */
+    template<typename Gene>
+    using Candidates = std::vector<Candidate<Gene>>;
 
 } // namespace genetic_algorithm
 
