@@ -29,10 +29,20 @@ namespace genetic_algorithm::rng
     class AtomicSplitmix64
     {
     public:
-        explicit constexpr AtomicSplitmix64(state_type seed) noexcept;
-
         using result_type = std::uint64_t;  /**< The generator generates 64 bit integers. */
         using state_type  = std::uint64_t;  /**< The generator has a 64 bit state. */
+
+        /**
+        * Create a new generator initialized from a 64 bit seed value.
+        * 
+        * Instead of creating new instances of this generator, the global prng
+        * instance should be used.
+        * 
+        * @param seed The seed used to initialize the state of the generator.
+        */
+        explicit constexpr AtomicSplitmix64(state_type seed) noexcept :
+            state_(seed)
+        {}
 
         /** Generate the next pseudo-random number of the sequence. Thread-safe. */
         result_type operator()() noexcept;
@@ -50,8 +60,9 @@ namespace genetic_algorithm::rng
     /** The pseudo-random number generator class used in the algorithms. */
     using PRNG = AtomicSplitmix64;
 
-    inline PRNG prng{ GA_SEED };
     /** The global pseudo-random number generator instance used in the algorithms. */
+    inline constinit PRNG prng{ GA_SEED };
+
 
     /** Generate a random boolean value from a uniform distribution. */
     inline bool randomBool() noexcept;
@@ -109,10 +120,6 @@ namespace genetic_algorithm::rng
 
 namespace genetic_algorithm::rng
 {
-    constexpr inline AtomicSplitmix64::AtomicSplitmix64(state_type seed) noexcept
-        : state_(seed)
-    {}
-
     inline AtomicSplitmix64::result_type AtomicSplitmix64::operator()() noexcept
     {
         result_type z = state_.fetch_add(0x9e3779b97f4a7c15, std::memory_order_relaxed) + 0x9e3779b97f4a7c15;

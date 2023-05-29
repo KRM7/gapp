@@ -31,8 +31,8 @@ namespace genetic_algorithm::rng
         /** Discard the next @p n points of the sequence. */
         void discard(size_type n = 1);
 
-        void reset(NonNegative<RealType> new_seed);
         /** Reset the generator's state using a specified seed. */
+        void reset(NonNegative<RealType> new_seed = 0.5);
 
         /** @returns The generator's number of dimensions. */
         [[nodiscard]]
@@ -64,10 +64,13 @@ namespace genetic_algorithm::rng
         dim_(dim), seed_(seed), alpha_(dim, 0.0), point_(dim, 0.0)
     {
         const T phid = phi(dim);
+        T phidpow = phid;
+
         for (size_type i = 0; i < dim; i++)
         {
-            alpha_[i] = 1.0 / std::pow(phid, i + 1);
+            alpha_[i] = 1.0 / phidpow;
             point_[i] = seed_;
+            phidpow *= phid;
         }
     }
 

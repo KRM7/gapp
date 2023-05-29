@@ -11,7 +11,7 @@ namespace genetic_algorithm::detail
     {
         static size_t next() noexcept
         {
-            static size_t id = 0;
+            constinit static size_t id = 0;
             return id++;
         }
 
