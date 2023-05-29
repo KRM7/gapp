@@ -241,7 +241,7 @@ namespace genetic_algorithm
     }
 
     template<typename T>
-    inline size_t GA<T>::findNumberOfObjectives() const
+    inline Positive<size_t> GA<T>::findNumberOfObjectives() const
     {
         GA_ASSERT(fitness_function_);
 

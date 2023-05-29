@@ -590,6 +590,10 @@ namespace genetic_algorithm
         */
         virtual Candidate<T> generateCandidate() const = 0;
 
+        Positive<size_t> findNumberOfObjectives() const;
+        std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
+        Probability defaultMutationRate() const;
+
         void initializeAlgorithm(MaybeBoundsVector bounds, Population<T> initial_population);
         Population<T> generatePopulation(Positive<size_t> pop_size, Population<T> initial_population) const;
         void prepareSelections() const;
@@ -606,10 +610,6 @@ namespace genetic_algorithm
         void advance();
 
 
-        size_t findNumberOfObjectives() const;
-        std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
-        Probability defaultMutationRate() const;
-
         bool hasValidFitness(const Candidate<T>& sol) const noexcept;
         bool hasValidChromosome(const Candidate<T>& sol) const noexcept;
         bool isValidEvaluatedPopulation(const Population<T>& pop) const;
@@ -621,6 +621,7 @@ namespace genetic_algorithm
         using GaInfo::fitness_matrix_;
         using GaInfo::algorithm_;
         using GaInfo::stop_condition_;
+        using GaInfo::metrics_;
         using GaInfo::population_size_;
         using GaInfo::max_gen_;
         using GaInfo::num_objectives_;
