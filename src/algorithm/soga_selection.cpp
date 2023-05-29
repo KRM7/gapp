@@ -152,7 +152,7 @@ namespace genetic_algorithm::selection
         // can't capture the iterators by ref or value here
         std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&, fmin = *fmin](double f) noexcept
         {
-            const double fnorm = f / df - fmin / df;
+            const double fnorm = f / df - fmin / df; // normalize the fitness values to prevent overflows with std::exp
 
             return std::min(math::large<double>, std::exp(fnorm / temperature));
         });
