@@ -11,8 +11,8 @@
 #include "problems/single_objective.hpp"
 #include "benchmark_utils.hpp"
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::problems;
+using namespace gapp;
+using namespace gapp::problems;
 
 void real_sphere()
 {

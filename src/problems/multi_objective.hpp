@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     /**
     * Implementation of the %Kursawe function for any number of variables,
@@ -258,6 +258,6 @@ namespace genetic_algorithm::problems
         FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems
 
 #endif // !GA_PROBLEMS_MULTI_OBJECTIVE_HPP

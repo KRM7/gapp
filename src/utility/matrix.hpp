@@ -13,7 +13,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     template<typename T, typename A>
     class MatrixRowBase;
@@ -568,6 +568,6 @@ namespace genetic_algorithm::detail
         }
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_MATRIX_HPP

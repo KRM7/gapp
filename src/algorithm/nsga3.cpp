@@ -21,7 +21,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     using namespace dtl;
     using math::Point;
@@ -425,4 +425,4 @@ namespace genetic_algorithm::algorithm
                                     detail::compose(&Impl::CandidateInfo::rank, detail::equal_to(0_sz)));
     }
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm

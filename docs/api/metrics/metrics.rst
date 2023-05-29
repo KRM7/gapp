@@ -9,7 +9,7 @@ Metrics
    metrics_misc
 
 
-.. doxygennamespace:: genetic_algorithm::metrics
+.. doxygennamespace:: gapp::metrics
    :project: gapp
    :desc-only:
 
@@ -21,7 +21,7 @@ class MonitorBase
 
    #include <metrics/monitor_base.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::MonitorBase
+.. doxygenclass:: gapp::metrics::MonitorBase
    :project: gapp
    :members:
    :protected-members:
@@ -35,7 +35,7 @@ class Monitor
 
    #include <metrics/monitor.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::Monitor
+.. doxygenclass:: gapp::metrics::Monitor
    :project: gapp
    :members:
    :protected-members:

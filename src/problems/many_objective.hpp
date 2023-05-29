@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     /**
     * Implementation of the %DTLZ1 function for any number of objectives, modified
@@ -313,6 +313,6 @@ namespace genetic_algorithm::problems
         static constexpr size_t K = 20;
     };
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems
 
 #endif // !GA_PROBLEMS_MANY_OBJECTIVE_HPP

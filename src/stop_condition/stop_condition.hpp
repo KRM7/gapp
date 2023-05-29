@@ -8,7 +8,7 @@
 #include "../utility/bounded_value.hpp"
 #include <cstddef>
 
-namespace genetic_algorithm::stopping
+namespace gapp::stopping
 {
     /**
     * Early stop condition based on the number of fitness function evaluations performed.
@@ -242,6 +242,6 @@ namespace genetic_algorithm::stopping
         bool stop_condition(const GaInfo&) noexcept override { return false; };
     };
 
-} // namespace genetic_algorithm::stopping
+} // namespace gapp::stopping
 
 #endif // !GA_STOP_CONDITION_DECL_HPP

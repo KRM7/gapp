@@ -8,7 +8,7 @@
 #include "../encoding/gene_types.hpp"
 
 /** Predefined crossover operators for the permutation encoded %GA. */
-namespace genetic_algorithm::crossover::perm
+namespace gapp::crossover::perm
 {
     /**
     * Order (OX1) crossover operator for the permutation encoded %GA.
@@ -116,6 +116,6 @@ namespace genetic_algorithm::crossover::perm
         CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
-} // namespace genetic_algorithm::crossover::perm
+} // namespace gapp::crossover::perm
 
 #endif // !GA_CROSSOVER_PERMUTATION_HPP

@@ -11,7 +11,7 @@
 #include <algorithm>
 
 using namespace std;
-using namespace genetic_algorithm;
+using namespace gapp;
 
 /* 
 * The example will show user-defined genetic operators used with a single-objective binary GA (custom operators can be defined for any encoding type).

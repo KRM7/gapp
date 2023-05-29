@@ -7,7 +7,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     TSP::TSP(std::span<const Coords> cities, double optimal_value) :
         BenchmarkFunction("TSP" + std::to_string(cities.size()), cities.size() - 1, 1, Bounds<GeneType>{ 0, cities.size() - 2 }),
@@ -44,4 +44,4 @@ namespace genetic_algorithm::problems
         return { -distance }; /* For maximization. */
     }
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems

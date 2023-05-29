@@ -13,7 +13,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::mutation::perm
+namespace gapp::mutation::perm
 {
     void Inversion::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
@@ -104,4 +104,4 @@ namespace genetic_algorithm::mutation::perm
         }
     }
 
-} // namespace genetic_algorithm::mutation::perm
+} // namespace gapp::mutation::perm

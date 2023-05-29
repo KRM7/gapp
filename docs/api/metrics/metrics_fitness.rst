@@ -1,7 +1,7 @@
 Fitness metrics
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::metrics
+.. doxygennamespace:: gapp::metrics
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class FitnessMin
 
    #include <metrics/fitness_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::FitnessMin
+.. doxygenclass:: gapp::metrics::FitnessMin
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class FitnessMax
 
    #include <metrics/fitness_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::FitnessMax
+.. doxygenclass:: gapp::metrics::FitnessMax
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class FitnessMean
 
    #include <metrics/fitness_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::FitnessMean
+.. doxygenclass:: gapp::metrics::FitnessMean
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class FitnessVariance
 
    #include <metrics/fitness_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::FitnessVariance
+.. doxygenclass:: gapp::metrics::FitnessVariance
    :project: gapp
    :members:
    :protected-members:
@@ -65,7 +65,7 @@ class FitnessStdDev
 
    #include <metrics/fitness_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::FitnessStdDev
+.. doxygenclass:: gapp::metrics::FitnessStdDev
    :project: gapp
    :members:
    :protected-members:

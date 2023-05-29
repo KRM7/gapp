@@ -1,7 +1,7 @@
 Real encoded mutations
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::mutation::real
+.. doxygennamespace:: gapp::mutation::real
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Uniform
 
    #include <mutation/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::real::Uniform
+.. doxygenclass:: gapp::mutation::real::Uniform
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class NonUniform
 
    #include <mutation/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::real::NonUniform
+.. doxygenclass:: gapp::mutation::real::NonUniform
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class Gauss
 
    #include <mutation/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::real::Gauss
+.. doxygenclass:: gapp::mutation::real::Gauss
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class Polynomial
 
    #include <mutation/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::real::Polynomial
+.. doxygenclass:: gapp::mutation::real::Polynomial
    :project: gapp
    :members:
    :protected-members:
@@ -65,7 +65,7 @@ class Boundary
 
    #include <mutation/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::real::Boundary
+.. doxygenclass:: gapp::mutation::real::Boundary
    :project: gapp
    :members:
    :protected-members:

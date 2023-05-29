@@ -6,7 +6,7 @@
 #include "../population/candidate.hpp"
 #include <span>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     /* Return the minimum fitness values of a fitness matrix along each objective axis. */
     FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
@@ -32,6 +32,6 @@ namespace genetic_algorithm::detail
     /* Compute the hypervolume of a set of points relative to a reference point. Works for any number of dimensions. */
     double hypervolume(const FitnessMatrix& fmat, std::span<const double> ref_point);
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_METRICS_POP_STATS_HPP

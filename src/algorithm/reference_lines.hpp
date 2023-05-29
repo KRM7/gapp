@@ -9,7 +9,7 @@
 #include <cstddef>
 
 /** Methods for generating reference lines for the NSGA3 algorithm. */
-namespace genetic_algorithm::algorithm::reflines
+namespace gapp::algorithm::reflines
 {
     using math::Point;
 
@@ -68,6 +68,6 @@ namespace genetic_algorithm::algorithm::reflines
     */
     std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, Positive<size_t> k = 10);
 
-} // namespace genetic_algorithm::algorithm::reflines
+} // namespace gapp::algorithm::reflines
 
 #endif // !GA_ALGORITHM_REFERENCE_LINES_HPP

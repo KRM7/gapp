@@ -9,7 +9,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::mutation::integer
+namespace gapp::mutation::integer
 {
     void Uniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
@@ -33,4 +33,4 @@ namespace genetic_algorithm::mutation::integer
         }
     }
 
-} // namespace genetic_algorithm::mutation::integer
+} // namespace gapp::mutation::integer

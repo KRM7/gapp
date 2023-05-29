@@ -11,7 +11,7 @@
 #include <compare>
 #include "type_traits.hpp"
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     template<typename T>
     concept Hashable = requires(T arg)
@@ -73,6 +73,6 @@ namespace genetic_algorithm::detail
         { cc.operator[](idx) } -> std::same_as<typename C::const_reference>;
     };
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_CONCEPTS_HPP

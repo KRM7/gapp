@@ -9,13 +9,13 @@
 #include <type_traits>
 #include <concepts>
 
-namespace genetic_algorithm
+namespace gapp
 {
     class GaInfo;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     /* A collection of metrics to be tracked in the GA. */
     class MetricSet final
@@ -36,7 +36,7 @@ namespace genetic_algorithm::detail
         std::vector<std::unique_ptr<metrics::MonitorBase>> metrics_;
     };
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 
 /* IMPLEMENTATION */
@@ -44,7 +44,7 @@ namespace genetic_algorithm::detail
 #include "../utility/type_id.hpp"
 #include <algorithm>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     template<typename... Metrics>
     requires ((std::derived_from<Metrics, metrics::MonitorBase> && std::is_final_v<Metrics>) && ...)
@@ -64,6 +64,6 @@ namespace genetic_algorithm::detail
         return static_cast<const Metric*>(found->get());
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_METRICS_METRIC_SET_HPP

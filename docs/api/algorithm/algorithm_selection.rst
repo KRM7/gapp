@@ -1,7 +1,7 @@
 Selection methods
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::selection
+.. doxygennamespace:: gapp::selection
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Roulette
 
    #include <algorithm/soga_selection.hpp>
 
-.. doxygenclass:: genetic_algorithm::selection::Roulette
+.. doxygenclass:: gapp::selection::Roulette
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class Tournament
 
    #include <algorithm/soga_selection.hpp>
 
-.. doxygenclass:: genetic_algorithm::selection::Tournament
+.. doxygenclass:: gapp::selection::Tournament
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class Rank
 
    #include <algorithm/soga_selection.hpp>
 
-.. doxygenclass:: genetic_algorithm::selection::Rank
+.. doxygenclass:: gapp::selection::Rank
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class Sigma
 
    #include <algorithm/soga_selection.hpp>
 
-.. doxygenclass:: genetic_algorithm::selection::Sigma
+.. doxygenclass:: gapp::selection::Sigma
    :project: gapp
    :members:
    :protected-members:
@@ -65,7 +65,7 @@ class Boltzmann
 
    #include <algorithm/soga_selection.hpp>
 
-.. doxygenclass:: genetic_algorithm::selection::Boltzmann
+.. doxygenclass:: gapp::selection::Boltzmann
    :project: gapp
    :members:
    :protected-members:

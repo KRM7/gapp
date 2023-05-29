@@ -7,7 +7,7 @@
 #include <utility>
 #include <limits>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     /* Class representing an arbitrary interval. */
     template<typename T>
@@ -56,9 +56,9 @@ namespace genetic_algorithm::detail
     };
 
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
-namespace genetic_algorithm
+namespace gapp
 {
     /** Type representing values in the closed interval [Low, High]. */
     template<typename T, T Low, T High>
@@ -89,6 +89,6 @@ namespace genetic_algorithm
     template<typename T>
     using Normalized = detail::BoundedValue<T, detail::Interval<T>{ 0.0, 1.0, true, true }>;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_UTILITY_BOUNDED_VALUE_HPP

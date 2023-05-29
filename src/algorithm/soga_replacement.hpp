@@ -9,13 +9,13 @@
 #include <functional>
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     class GaInfo;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::replacement
+namespace gapp::replacement
 {
     /**
     * A population update method that selects only the child candidates from the
@@ -106,7 +106,7 @@ namespace genetic_algorithm::replacement
         ReplacementCallable replacement_;
     };
 
-} // namespace genetic_algorithm::replacement
+} // namespace gapp::replacement
 
 
 #endif // !GA_ALGORITHM_SOGA_REPLACEMENT_HPP

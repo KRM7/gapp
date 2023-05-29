@@ -11,7 +11,7 @@
 #include <memory>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     /**
     * NSGA-III algorithm, used for multi- and many-objective optimization.
@@ -74,6 +74,6 @@ namespace genetic_algorithm::algorithm
         std::unique_ptr<Impl> pimpl_;
     };
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm
 
 #endif // !GA_ALGORITHM_NSGA2_HPP

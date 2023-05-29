@@ -9,7 +9,7 @@
 #include "../utility/bounded_value.hpp"
 
 /** Predefined crossover operators for the real encoded genetic algorithm. */
-namespace genetic_algorithm::crossover::real
+namespace gapp::crossover::real
 {
     /**
     * %Arithmetic crossover operator for the real-encoded %GA.
@@ -147,6 +147,6 @@ namespace genetic_algorithm::crossover::real
     };
 
 
-} // namespace genetic_algorithm::crossover::real
+} // namespace gapp::crossover::real
 
 #endif // !GA_CROSSOVER_REAL_HPP

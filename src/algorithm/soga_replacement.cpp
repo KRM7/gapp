@@ -10,7 +10,7 @@
 #include <numeric>
 #include <utility>
 
-namespace genetic_algorithm::replacement
+namespace gapp::replacement
 {
     std::vector<size_t> KeepChildren::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)
     {
@@ -63,4 +63,4 @@ namespace genetic_algorithm::replacement
         return replacement_(ga, first, children_first, last);
     }
 
-} // namespace genetic_algorithm::replacement
+} // namespace gapp::replacement

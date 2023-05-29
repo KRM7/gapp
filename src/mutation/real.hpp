@@ -8,7 +8,7 @@
 #include "../utility/bounded_value.hpp"
 
 /** Predefined mutation operators for the real encoded genetic algorithm. */
-namespace genetic_algorithm::mutation::real
+namespace gapp::mutation::real
 {
     /**
     * %Uniform mutation operator for the real encoded %GA.
@@ -194,6 +194,6 @@ namespace genetic_algorithm::mutation::real
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
     };
 
-} // namespace genetic_algorithm::mutation::real
+} // namespace gapp::mutation::real
 
 #endif // !GA_MUTATION_REAL_HPP

@@ -1,7 +1,7 @@
 Multi-objective algorithms
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::algorithm
+.. doxygennamespace:: gapp::algorithm
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class NSGA2
 
    #include <algorithm/nsga2.hpp>
 
-.. doxygenclass:: genetic_algorithm::algorithm::NSGA2
+.. doxygenclass:: gapp::algorithm::NSGA2
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class NSGA3
 
    #include <algorithm/nsga3.hpp>
 
-.. doxygenclass:: genetic_algorithm::algorithm::NSGA3
+.. doxygenclass:: gapp::algorithm::NSGA3
    :project: gapp
    :members:
    :protected-members:
@@ -35,7 +35,7 @@ class NSGA3
 Reference line generation methods
 ---------------------------------------------------
 
-.. doxygennamespace:: genetic_algorithm::algorithm::reflines
+.. doxygennamespace:: gapp::algorithm::reflines
    :project: gapp
    :desc-only:
 
@@ -43,18 +43,18 @@ Reference line generation methods
 
    #include <algorithm/reference_lines.hpp>
 
-.. doxygenfunction:: genetic_algorithm::algorithm::reflines::quasirandomSimplexPointsMirror
+.. doxygenfunction:: gapp::algorithm::reflines::quasirandomSimplexPointsMirror
    :project: gapp
 
-.. doxygenfunction:: genetic_algorithm::algorithm::reflines::quasirandomSimplexPointsSort
+.. doxygenfunction:: gapp::algorithm::reflines::quasirandomSimplexPointsSort
    :project: gapp
 
-.. doxygenfunction:: genetic_algorithm::algorithm::reflines::quasirandomSimplexPointsRoot
+.. doxygenfunction:: gapp::algorithm::reflines::quasirandomSimplexPointsRoot
    :project: gapp
 
-.. doxygenfunction:: genetic_algorithm::algorithm::reflines::quasirandomSimplexPointsLog
+.. doxygenfunction:: gapp::algorithm::reflines::quasirandomSimplexPointsLog
    :project: gapp
 
-.. doxygenfunction:: genetic_algorithm::algorithm::reflines::pickSparseSubset
+.. doxygenfunction:: gapp::algorithm::reflines::pickSparseSubset
    :project: gapp
 

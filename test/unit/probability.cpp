@@ -3,7 +3,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include "utility/bounded_value.hpp"
 
-using namespace genetic_algorithm;
+using namespace gapp;
 
 TEST_CASE("probability", "[probability]")
 {

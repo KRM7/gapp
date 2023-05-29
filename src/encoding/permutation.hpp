@@ -10,7 +10,7 @@
 #include "../mutation/permutation.hpp"
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     template<>
     struct GaTraits<PermutationGene>
@@ -41,6 +41,6 @@ namespace genetic_algorithm
         Candidate<GeneType> generateCandidate() const override;
     };
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_ENCODING_PERMUTATION_HPP

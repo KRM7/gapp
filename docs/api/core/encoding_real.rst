@@ -1,7 +1,7 @@
 Real-encoded genetic algorithm
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm
+.. doxygennamespace:: gapp
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class RealGene
 
    #include <encoding/real.hpp>
 
-.. doxygentypedef:: genetic_algorithm::RealGene
+.. doxygentypedef:: gapp::RealGene
    :project: gapp
 
 
@@ -24,7 +24,7 @@ class GaTraits<RealGene>
 
    #include <encoding/real.hpp>
 
-.. doxygenstruct:: genetic_algorithm::GaTraits< RealGene >
+.. doxygenstruct:: gapp::GaTraits< RealGene >
    :project: gapp
    :members:
    :undoc-members:
@@ -37,7 +37,7 @@ class RCGA
 
    #include <encoding/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::RCGA
+.. doxygenclass:: gapp::RCGA
    :project: gapp
    :members:
    :protected-members:

@@ -7,8 +7,8 @@
 #include "utility/functional.hpp"
 #include <algorithm>
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::rng;
+using namespace gapp;
+using namespace gapp::rng;
 
 
 TEST_CASE("qrng", "[rng][qrng]")

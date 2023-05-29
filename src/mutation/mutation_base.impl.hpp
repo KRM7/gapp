@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace genetic_algorithm::mutation
+namespace gapp::mutation
 {
     template<typename T>
     void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
@@ -41,6 +41,6 @@ namespace genetic_algorithm::mutation
                   "The mutation incorrectly modified the fitness vector of the candidate.");
     }
 
-} // namespace genetic_algorithm::mutation
+} // namespace gapp::mutation
 
 #endif // !GA_MUTATION_BASE_IMPL_HPP

@@ -11,7 +11,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     /**
     * The base class of the fitness functions used in the algorithms.
@@ -138,9 +138,9 @@ namespace genetic_algorithm
         FitnessFunction& operator=(FitnessFunction&&) noexcept      = default;
     };
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     /* Wrap a callable so it can be used as a fitness function. */
     template<typename T>
@@ -168,6 +168,6 @@ namespace genetic_algorithm::detail
         FitnessCallable fitness_function_;
     };
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_CORE_FITNESS_FUNCTION_HPP

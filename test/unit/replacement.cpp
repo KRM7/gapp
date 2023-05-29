@@ -7,8 +7,8 @@
 #include "utility/math.hpp"
 #include "test_utils.hpp"
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::replacement;
+using namespace gapp;
+using namespace gapp::replacement;
 
 static constexpr size_t POPSIZE = 10;
 static const BinaryGA context = []{ BinaryGA GA(POPSIZE); GA.solve(DummyFitnessFunction<BinaryGene>(10), 1); return GA; }();

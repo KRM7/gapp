@@ -15,7 +15,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace genetic_algorithm::crossover::real
+namespace gapp::crossover::real
 {
     auto Arithmetic::crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
@@ -141,4 +141,4 @@ namespace genetic_algorithm::crossover::real
         return { std::move(child1), std::move(child2) };
     }
 
-} // namespace genetic_algorithm::crossover::real
+} // namespace gapp::crossover::real

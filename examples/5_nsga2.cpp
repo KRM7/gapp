@@ -12,7 +12,7 @@
 #include <vector>
 
 using namespace std;
-using namespace genetic_algorithm;
+using namespace gapp;
 
 int main()
 {

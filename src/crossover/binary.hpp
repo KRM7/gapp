@@ -10,7 +10,7 @@
 #include <cstddef>
 
 /** Predefined crossover operators for the binary encoded genetic algorithm. */
-namespace genetic_algorithm::crossover::binary
+namespace gapp::crossover::binary
 {
     /**
     * Standard single-point crossover operator for the binary encoded %GA.
@@ -136,6 +136,6 @@ namespace genetic_algorithm::crossover::binary
         Probability ps_ = 0.5;
     };
 
-} // namespace genetic_algorithm::crossover::binary
+} // namespace gapp::crossover::binary
 
 #endif // !GA_CROSSOVER_BINARY_HPP

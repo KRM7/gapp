@@ -9,10 +9,10 @@
 #include <cstddef>
 
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::problems;
-using namespace genetic_algorithm::rng;
-using namespace genetic_algorithm::math;
+using namespace gapp;
+using namespace gapp::problems;
+using namespace gapp::rng;
+using namespace gapp::math;
 using namespace Catch::Matchers;
 
 std::vector<RealGene> randomPoint(const BoundsVector<RealGene>& bounds)

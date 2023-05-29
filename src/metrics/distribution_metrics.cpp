@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <functional>
 
-namespace genetic_algorithm::metrics
+namespace gapp::metrics
 {
     using math::Point;
 
@@ -106,4 +106,4 @@ namespace genetic_algorithm::metrics
         ideal_points_.append_row(std::move(ideal_point));
     }
 
-} // namespace genetic_algorithm::metrics
+} // namespace gapp::metrics

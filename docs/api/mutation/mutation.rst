@@ -10,7 +10,7 @@ Mutations
    mutation_integer
 
 
-.. doxygennamespace:: genetic_algorithm::mutation
+.. doxygennamespace:: gapp::mutation
    :project: gapp
    :desc-only:
 
@@ -22,7 +22,7 @@ class Mutation
 
    #include <crossover/mutation_base.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::Mutation
+.. doxygenclass:: gapp::mutation::Mutation
    :project: gapp
    :members:
    :protected-members:

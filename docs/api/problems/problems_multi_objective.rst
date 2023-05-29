@@ -1,7 +1,7 @@
 Multi-objective benchmark problems
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::problems
+.. doxygennamespace:: gapp::problems
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Kursawe
 
    #include <problems/multi_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::Kursawe
+.. doxygenclass:: gapp::problems::Kursawe
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class ZDT1
 
    #include <problems/multi_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::ZDT1
+.. doxygenclass:: gapp::problems::ZDT1
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class ZDT2
 
    #include <problems/multi_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::ZDT2
+.. doxygenclass:: gapp::problems::ZDT2
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class ZDT3
 
    #include <problems/multi_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::ZDT3
+.. doxygenclass:: gapp::problems::ZDT3
    :project: gapp
    :members:
    :protected-members:
@@ -65,7 +65,7 @@ class ZDT4
 
    #include <problems/multi_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::ZDT4
+.. doxygenclass:: gapp::problems::ZDT4
    :project: gapp
    :members:
    :protected-members:
@@ -78,7 +78,7 @@ class ZDT5
 
    #include <problems/multi_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::ZDT5
+.. doxygenclass:: gapp::problems::ZDT5
    :project: gapp
    :members:
    :protected-members:
@@ -91,7 +91,7 @@ class ZDT6
 
    #include <problems/multi_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::ZDT6
+.. doxygenclass:: gapp::problems::ZDT6
    :project: gapp
    :members:
    :protected-members:

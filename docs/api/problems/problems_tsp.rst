@@ -1,7 +1,7 @@
 Travelling salesman problems
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::problems
+.. doxygennamespace:: gapp::problems
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class TSP
 
    #include <problems/travelling_salesman.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::TSP
+.. doxygenclass:: gapp::problems::TSP
    :project: gapp
    :members:
    :protected-members:
@@ -27,7 +27,7 @@ class TSP52
 
    #include <problems/travelling_salesman.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::TSP52
+.. doxygenclass:: gapp::problems::TSP52
    :project: gapp
    :members:
    :protected-members:
@@ -40,7 +40,7 @@ class TSP76
 
    #include <problems/travelling_salesman.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::TSP76
+.. doxygenclass:: gapp::problems::TSP76
    :project: gapp
    :members:
    :protected-members:
@@ -53,7 +53,7 @@ class TSP124
 
    #include <problems/travelling_salesman.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::TSP124
+.. doxygenclass:: gapp::problems::TSP124
    :project: gapp
    :members:
    :protected-members:
@@ -66,7 +66,7 @@ class TSP152
 
    #include <problems/travelling_salesman.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::TSP152
+.. doxygenclass:: gapp::problems::TSP152
    :project: gapp
    :members:
    :protected-members:
@@ -79,7 +79,7 @@ class TSP226
 
    #include <problems/travelling_salesman.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::TSP226
+.. doxygenclass:: gapp::problems::TSP226
    :project: gapp
    :members:
    :protected-members:
@@ -92,7 +92,7 @@ class TSP299
 
    #include <problems/travelling_salesman.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::TSP299
+.. doxygenclass:: gapp::problems::TSP299
    :project: gapp
    :members:
    :protected-members:
@@ -105,7 +105,7 @@ class TSP439
 
    #include <problems/travelling_salesman.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::TSP439
+.. doxygenclass:: gapp::problems::TSP439
    :project: gapp
    :members:
    :protected-members:

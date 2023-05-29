@@ -1,7 +1,7 @@
 Real encoded crossovers
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::crossover::real
+.. doxygennamespace:: gapp::crossover::real
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Arithmetic
 
    #include <crossover/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::real::Arithmetic
+.. doxygenclass:: gapp::crossover::real::Arithmetic
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class BLXa
 
    #include <crossover/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::real::BLXa
+.. doxygenclass:: gapp::crossover::real::BLXa
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class SimulatedBinary
 
    #include <crossover/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::real::SimulatedBinary
+.. doxygenclass:: gapp::crossover::real::SimulatedBinary
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class Wright
 
    #include <crossover/real.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::real::Wright
+.. doxygenclass:: gapp::crossover::real::Wright
    :project: gapp
    :members:
    :protected-members:

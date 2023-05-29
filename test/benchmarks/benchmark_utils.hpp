@@ -3,7 +3,7 @@
 #ifndef GA_TEST_BENCHMARK_UTILS_HPP
 #define GA_TEST_BENCHMARK_UTILS_HPP
 
-#include "genetic_algorithm.hpp"
+#include "gapp.hpp"
 #include "problems/benchmark_function.hpp"
 #include "problems/single_objective.hpp"
 #include "problems/multi_objective.hpp"
@@ -19,8 +19,8 @@
 #include <atomic>
 #include <type_traits>
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::problems;
+using namespace gapp;
+using namespace gapp::problems;
 
 template<typename F, typename... Args>
 auto invoke_timed(F&& f, Args&&... args)

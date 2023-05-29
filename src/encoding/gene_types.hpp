@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     /** The gene type used in the binary-encoded genetic algorithm. @see BinaryGA */
     using BinaryGene = std::int8_t;
@@ -36,6 +36,6 @@ namespace genetic_algorithm
     template<> inline constexpr bool is_bounded<RealGene>    = true;
     template<> inline constexpr bool is_bounded<IntegerGene> = true;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_ENCODING_GENE_TYPES_HPP

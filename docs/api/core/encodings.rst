@@ -10,7 +10,7 @@ Encodings
    encoding_integer
 
 
-.. doxygennamespace:: genetic_algorithm
+.. doxygennamespace:: gapp
    :project: gapp
    :desc-only:
 
@@ -22,7 +22,7 @@ struct GaTraits
 
    #include <core/ga_traits.hpp>
 
-.. doxygenstruct:: genetic_algorithm::GaTraits
+.. doxygenstruct:: gapp::GaTraits
    :project: gapp
    :members:
    :protected-members:
@@ -36,7 +36,7 @@ bool is_bounded
 
    #include <core/ga_traits.hpp>
 
-.. doxygenvariable:: genetic_algorithm::is_bounded
+.. doxygenvariable:: gapp::is_bounded
    :project: gapp
 
 
@@ -47,7 +47,7 @@ class GA
 
    #include <core/ga_base.hpp>
 
-.. doxygenclass:: genetic_algorithm::GA
+.. doxygenclass:: gapp::GA
    :project: gapp
    :members:
    :protected-members:
@@ -61,7 +61,7 @@ class GaInfo
 
    #include <core/ga_info.hpp>
 
-.. doxygenclass:: genetic_algorithm::GaInfo
+.. doxygenclass:: gapp::GaInfo
    :project: gapp
    :members:
    :protected-members:

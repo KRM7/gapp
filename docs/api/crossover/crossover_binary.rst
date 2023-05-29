@@ -1,7 +1,7 @@
 Binary encoded crossovers
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::crossover::binary
+.. doxygennamespace:: gapp::crossover::binary
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class SinglePoint
 
    #include <crossover/binary.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::binary::SinglePoint
+.. doxygenclass:: gapp::crossover::binary::SinglePoint
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class TwoPoint
 
    #include <crossover/binary.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::binary::TwoPoint
+.. doxygenclass:: gapp::crossover::binary::TwoPoint
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class NPoint
 
    #include <crossover/binary.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::binary::NPoint
+.. doxygenclass:: gapp::crossover::binary::NPoint
    :project: gapp
    :members:
    :protected-members:

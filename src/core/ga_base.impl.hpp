@@ -27,7 +27,7 @@
 #include <atomic>
 #include <utility>
 
-namespace genetic_algorithm
+namespace gapp
 {
     template<typename T>
     GA<T>::GA(Positive<size_t> population_size,
@@ -639,6 +639,6 @@ namespace genetic_algorithm
         return solve(std::make_unique<F>(std::move(fitness_function)), BoundsVector<T>(chrom_len, bounds), generations, std::move(initial_population));
     }
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_CORE_GA_BASE_IMPL_HPP

@@ -1,7 +1,7 @@
 Permutation encoded mutations
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::mutation::perm
+.. doxygennamespace:: gapp::mutation::perm
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Inversion
 
    #include <mutation/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::perm::Inversion
+.. doxygenclass:: gapp::mutation::perm::Inversion
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class Swap2
 
    #include <mutation/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::perm::Swap2
+.. doxygenclass:: gapp::mutation::perm::Swap2
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class Swap3
 
    #include <mutation/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::perm::Swap3
+.. doxygenclass:: gapp::mutation::perm::Swap3
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class Shuffle
 
    #include <mutation/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::perm::Shuffle
+.. doxygenclass:: gapp::mutation::perm::Shuffle
    :project: gapp
    :members:
    :protected-members:
@@ -65,7 +65,7 @@ class Shift
 
    #include <mutation/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::perm::Shift
+.. doxygenclass:: gapp::mutation::perm::Shift
    :project: gapp
    :members:
    :protected-members:

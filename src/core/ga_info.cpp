@@ -8,7 +8,7 @@
 #include <memory>
 #include <utility>
 
-namespace genetic_algorithm
+namespace gapp
 {
     GaInfo::GaInfo(GaInfo&&) noexcept            = default;
     GaInfo& GaInfo::operator=(GaInfo&&) noexcept = default;
@@ -48,4 +48,4 @@ namespace genetic_algorithm
         stop_condition_ = std::make_unique<stopping::Lambda>(std::move(f));
     }
 
-} // namespace genetic_algorithm
+} // namespace gapp

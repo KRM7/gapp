@@ -10,7 +10,7 @@
 #include <concepts>
 #include <cstddef>
 
-namespace genetic_algorithm::crossover::dtl
+namespace gapp::crossover::dtl
 {
     /* General n-point crossover implementation for any gene type. */
     template<typename T>
@@ -90,7 +90,7 @@ namespace genetic_algorithm::crossover::dtl
     template<std::unsigned_integral T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last);
 
-} // namespace genetic_algorithm::crossover::dtl
+} // namespace gapp::crossover::dtl
 
 
 /* IMPLEMENTATION */
@@ -105,7 +105,7 @@ namespace genetic_algorithm::crossover::dtl
 #include <algorithm>
 #include <stdexcept>
 
-namespace genetic_algorithm::crossover::dtl
+namespace gapp::crossover::dtl
 {
     template<typename T>
     CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::vector<size_t> crossover_points)
@@ -655,6 +655,6 @@ namespace genetic_algorithm::crossover::dtl
         return child;
     }
     
-} // namespace genetic_algorithm::crossover::dtl
+} // namespace gapp::crossover::dtl
 
 #endif // !GA_CROSSOVER_DTL_HPP

@@ -5,7 +5,7 @@
 
 #include <cstddef>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     class TypeIdGen final
     {
@@ -28,6 +28,6 @@ namespace genetic_algorithm::detail
     template<typename T>
     inline const size_t type_id = TypeId<T>::value;
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_TYPE_ID_HPP

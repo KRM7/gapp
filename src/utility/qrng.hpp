@@ -8,7 +8,7 @@
 #include <cstddef>
 #include "bounded_value.hpp"
 
-namespace genetic_algorithm::rng
+namespace gapp::rng
 {
     /**
     * Quasi-random number generator based on: http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/.
@@ -48,7 +48,7 @@ namespace genetic_algorithm::rng
         static constexpr RealType phi(size_t dim, size_t n = 30) noexcept;
     };
 
-} // namespace genetic_algorithm::rng
+} // namespace gapp::rng
 
 
 /* IMPLEMENTATION */
@@ -57,7 +57,7 @@ namespace genetic_algorithm::rng
 #include <algorithm>
 #include "utility.hpp"
 
-namespace genetic_algorithm::rng
+namespace gapp::rng
 {
     template<std::floating_point T>
     QuasiRandom<T>::QuasiRandom(size_type dim, NonNegative<T> seed) :
@@ -117,6 +117,6 @@ namespace genetic_algorithm::rng
         return phid;
     }
 
-} // namespace genetic_algorithm::rng
+} // namespace gapp::rng
 
 #endif // !GA_UTILITY_QRNG_HPP

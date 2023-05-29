@@ -14,7 +14,7 @@
 #include <iterator>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     template<typename T>
     auto Algorithm::select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const -> const Candidate<T>&
@@ -64,6 +64,6 @@ namespace genetic_algorithm::algorithm
         return optimal_sols;
     }
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm
 
 #endif //!GA_ALGORITHM_ALGORITHM_BASE_IMPL_HPP

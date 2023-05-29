@@ -1,7 +1,7 @@
 Binary encoded mutations
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::mutation::binary
+.. doxygennamespace:: gapp::mutation::binary
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Flip
 
    #include <mutation/binary.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::binary::Flip
+.. doxygenclass:: gapp::mutation::binary::Flip
    :project: gapp
    :members:
    :protected-members:

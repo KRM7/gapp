@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
@@ -178,4 +178,4 @@ namespace genetic_algorithm::detail
         return nadir_point;
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail

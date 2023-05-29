@@ -10,16 +10,16 @@
 #include <cstddef>
 #include <optional>
 
-namespace genetic_algorithm
+namespace gapp
 {
     class GaInfo;
 
     template<typename T>
     class GA;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     /**
     * This is the base class used for all of the algorithms.
@@ -138,6 +138,6 @@ namespace genetic_algorithm::algorithm
         virtual std::vector<size_t> optimalSolutionsImpl(const GaInfo&) const { return {}; }
     };
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm
 
 #endif // !GA_ALGORITHM_ALGORITHM_BASE_DECL_HPP

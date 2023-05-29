@@ -1,7 +1,7 @@
 Permutation-encoded genetic algorithm
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm
+.. doxygennamespace:: gapp
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class PermutationGene
 
    #include <encoding/permutation.hpp>
 
-.. doxygentypedef:: genetic_algorithm::PermutationGene
+.. doxygentypedef:: gapp::PermutationGene
    :project: gapp
 
 
@@ -24,7 +24,7 @@ class GaTraits<PermutationGene>
 
    #include <encoding/permutation.hpp>
 
-.. doxygenstruct:: genetic_algorithm::GaTraits< PermutationGene >
+.. doxygenstruct:: gapp::GaTraits< PermutationGene >
    :project: gapp
    :members:
    :undoc-members:
@@ -37,7 +37,7 @@ class PermutationGA
 
    #include <encoding/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::PermutationGA
+.. doxygenclass:: gapp::PermutationGA
    :project: gapp
    :members:
    :protected-members:

@@ -8,14 +8,14 @@
 #include <vector>
 #include <utility>
 
-namespace genetic_algorithm
+namespace gapp
 {
     template<typename T>
     class GA;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::crossover
+namespace gapp::crossover
 {
     /**
     * The base class used for the crossover operators of the GAs.
@@ -111,6 +111,6 @@ namespace genetic_algorithm::crossover
         Probability pc_;
     };
 
-} // namespace genetic_algorithm::crossover
+} // namespace gapp::crossover
 
 #endif // !GA_CROSSOVER_BASE_DECL_HPP

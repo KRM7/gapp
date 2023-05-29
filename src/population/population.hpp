@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     /** The population type used in all of the algorithms. */
     template<typename Gene>
@@ -17,9 +17,9 @@ namespace genetic_algorithm
     template<typename Gene>
     using Candidates = std::vector<Candidate<Gene>>;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     /* Return the fitness matrix of the population (multi-objective). */
     template<typename T>
@@ -49,7 +49,7 @@ namespace genetic_algorithm::detail
     /* Find the nadir point of a fitness matrix assuming fitness maximization. */
     FitnessVector findNadirPoint(const FitnessMatrix& fitness_matrix);
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 
 /* IMPLEMENTATION */
@@ -63,7 +63,7 @@ namespace genetic_algorithm::detail
 #include <functional>
 #include <atomic>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     template<typename T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop)
@@ -163,6 +163,6 @@ namespace genetic_algorithm::detail
         return optimal_solutions;
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_POPULATION_HPP

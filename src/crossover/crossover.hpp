@@ -10,6 +10,6 @@
 #include "integer.hpp"
 
 /** %Crossover operators used in the GAs. */
-namespace genetic_algorithm::crossover {}
+namespace gapp::crossover {}
 
 #endif // !GA_CROSSOVER_HPP

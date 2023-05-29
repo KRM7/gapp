@@ -7,14 +7,14 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     class GaInfo;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 /** Population replacement policies for the single-objective algorithms. */
-namespace genetic_algorithm::replacement
+namespace gapp::replacement
 {
     /**
     * This is the base class used for all of the single-objective population replacement policies.
@@ -65,6 +65,6 @@ namespace genetic_algorithm::replacement
         Replacement& operator=(Replacement&&)       = default;
     };
 
-} // namespace genetic_algorithm::replacement
+} // namespace gapp::replacement
 
 #endif // !GA_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP

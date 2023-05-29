@@ -2,7 +2,7 @@
 
 #include "metric_set.hpp"
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     void MetricSet::initialize(const GaInfo& ga)
     {
@@ -20,4 +20,4 @@ namespace genetic_algorithm::detail
         }
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail

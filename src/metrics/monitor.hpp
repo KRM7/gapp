@@ -10,7 +10,7 @@
 #include <type_traits>
 #include <cstddef>
 
-namespace genetic_algorithm::metrics
+namespace gapp::metrics
 {
     /**
     * The base class used for all of the metrics.
@@ -71,6 +71,6 @@ namespace genetic_algorithm::metrics
         constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
     };
 
-} // namespace genetic_algorithm::metrics
+} // namespace gapp::metrics
 
 #endif // !GA_METRICS_MONITOR_HPP

@@ -7,7 +7,7 @@
 #include "../encoding/gene_types.hpp"
 
 /** Predefined mutation operators for the binary encoded genetic algorithm. */
-namespace genetic_algorithm::mutation::binary
+namespace gapp::mutation::binary
 {
     /**
     * Standard flip mutation for the binary encoded genetic algorithm.
@@ -22,6 +22,6 @@ namespace genetic_algorithm::mutation::binary
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
     };
 
-} // namespace genetic_algorithm::mutation::binary
+} // namespace gapp::mutation::binary
 
 #endif // !GA_MUTATION_BINARY_HPP

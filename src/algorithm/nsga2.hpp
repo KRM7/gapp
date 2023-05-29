@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     /**
     * Non-dominated sorting genetic algorithm (NSGA-II), used for multi-objective optimization.
@@ -49,6 +49,6 @@ namespace genetic_algorithm::algorithm
         std::vector<double> dists_;
     };
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm
 
 #endif // !GA_ALGORITHM_NSGA2_HPP

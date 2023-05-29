@@ -15,7 +15,7 @@
 #include <memory>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     /**
     * A generic algorithm for single-objective optimization.
@@ -181,14 +181,14 @@ namespace genetic_algorithm::algorithm
         std::unique_ptr<replacement::Replacement> replacement_;
     };
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm
 
 
 /* IMPLEMENTATION */
 
 #include <utility>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     inline SingleObjective::SingleObjective() :
         selection_(std::make_unique<DefaultSelection>()), replacement_(std::make_unique<DefaultReplacement>())
@@ -235,6 +235,6 @@ namespace genetic_algorithm::algorithm
         return selection_->selectImpl(ga, fmat);
     }
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm
 
 #endif // !GA_ALGORITHM_SINGLE_OBJECTIVE_HPP

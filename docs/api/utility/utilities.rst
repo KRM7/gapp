@@ -8,7 +8,7 @@ Random number generation
 
    #include <utility/rng.hpp>
 
-.. doxygennamespace:: genetic_algorithm::rng
+.. doxygennamespace:: gapp::rng
    :project: gapp
    :members:
    :undoc-members:
@@ -21,7 +21,7 @@ Floating-point comparison tolerances
 
    #include <utility/math.hpp>
 
-.. doxygenclass:: genetic_algorithm::math::ScopedTolerances
+.. doxygenclass:: gapp::math::ScopedTolerances
    :project: gapp
    :members:
    :protected-members:
@@ -32,7 +32,7 @@ Floating-point comparison tolerances
 
    #include <utility/math.hpp>
 
-.. doxygenclass:: genetic_algorithm::math::Tolerances
+.. doxygenclass:: gapp::math::Tolerances
    :project: gapp
    :members:
    :protected-members:
@@ -46,21 +46,21 @@ Bounded value types
 
    #include <utility/bounded_value.hpp>
 
-.. doxygentypedef:: genetic_algorithm::BoundedValue
+.. doxygentypedef:: gapp::BoundedValue
    :project: gapp
 
-.. doxygentypedef:: genetic_algorithm::NonNegative
+.. doxygentypedef:: gapp::NonNegative
    :project: gapp
 
-.. doxygentypedef:: genetic_algorithm::Negative
+.. doxygentypedef:: gapp::Negative
    :project: gapp
 
-.. doxygentypedef:: genetic_algorithm::Positive
+.. doxygentypedef:: gapp::Positive
    :project: gapp
 
-.. doxygentypedef:: genetic_algorithm::Probability
+.. doxygentypedef:: gapp::Probability
    :project: gapp
 
-.. doxygentypedef:: genetic_algorithm::Normalized
+.. doxygentypedef:: gapp::Normalized
    :project: gapp
 

@@ -11,7 +11,7 @@
 #include <array>
 #include <span>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     /**
     * The base class used for the travelling salesman benchmark functions.
@@ -119,6 +119,6 @@ namespace genetic_algorithm::problems
         TSP439() : TSP(tsp439_coords, -107217.0) {}
     };
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems
 
 #endif // !GA_PROBLEMS_TSP_HPP

@@ -9,8 +9,8 @@
 #include "test_utils.hpp"
 #include <algorithm>
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::metrics;
+using namespace gapp;
+using namespace gapp::metrics;
 
 constexpr static size_t num_obj = 3;
 constexpr static size_t num_gen = 10;

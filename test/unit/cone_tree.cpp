@@ -4,8 +4,8 @@
 #include "utility/cone_tree.hpp"
 #include <type_traits>
 
-using namespace genetic_algorithm::detail;
-using genetic_algorithm::math::Point;
+using namespace gapp::detail;
+using gapp::math::Point;
 
 TEST_CASE("cone_tree constructors", "[cone_tree]")
 {

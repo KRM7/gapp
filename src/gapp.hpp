@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_GENETIC_ALGORITHM_HPP
-#define GA_GENETIC_ALGORITHM_HPP
+#ifndef GA_GAPP_HPP
+#define GA_GAPP_HPP
 
 #include "utility/rng.hpp"
 #include "population/candidate.hpp"
@@ -18,6 +18,4 @@
 #include "problems/problems.hpp"
 #include "metrics/metrics.hpp"
 
-namespace ga = genetic_algorithm;
-
-#endif // !GA_GENETIC_ALGORITHM_HPP
+#endif // !GA_GAPP_HPP

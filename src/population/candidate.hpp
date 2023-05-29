@@ -11,7 +11,7 @@
 #include <concepts>
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     /** The class used to represent the fitness of the candidates. Contains a fitness value for each objective. */
     using FitnessVector = std::vector<double>;
@@ -166,7 +166,7 @@ namespace genetic_algorithm
         size_t operator()(const Candidate<T>& candidate) const noexcept;
     };
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 
 /* IMPLEMENTATION */
@@ -176,7 +176,7 @@ namespace genetic_algorithm
 #include <functional>
 #include <type_traits>
 
-namespace genetic_algorithm
+namespace gapp
 {
     template<typename T>
     constexpr Bounds<T>::Bounds(const T& lower, const T& upper) noexcept :
@@ -248,6 +248,6 @@ namespace genetic_algorithm
         return seed;
     }
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_CANDIDATE_H

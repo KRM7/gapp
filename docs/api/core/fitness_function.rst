@@ -1,7 +1,7 @@
 Fitness functions
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm
+.. doxygennamespace:: gapp
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class FitnessFunction
 
    #include <core/fitness_function.hpp>
 
-.. doxygenclass:: genetic_algorithm::FitnessFunction
+.. doxygenclass:: gapp::FitnessFunction
    :project: gapp
    :members:
    :protected-members:
@@ -27,7 +27,7 @@ class FitnessFunctionBase
 
    #include <core/fitness_function.hpp>
 
-.. doxygenclass:: genetic_algorithm::FitnessFunctionBase
+.. doxygenclass:: gapp::FitnessFunctionBase
    :project: gapp
    :members:
    :protected-members:

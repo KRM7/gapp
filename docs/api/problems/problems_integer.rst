@@ -1,7 +1,7 @@
 Integer encoded problems
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::problems
+.. doxygennamespace:: gapp::problems
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class StringFinder
 
    #include <problems/integer.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::StringFinder
+.. doxygenclass:: gapp::problems::StringFinder
    :project: gapp
    :members:
    :protected-members:

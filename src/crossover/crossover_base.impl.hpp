@@ -9,7 +9,7 @@
 #include "../utility/utility.hpp"
 #include <utility>
 
-namespace genetic_algorithm::crossover
+namespace gapp::crossover
 {
     template<typename T>
     CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
@@ -78,6 +78,6 @@ namespace genetic_algorithm::crossover
         return { std::move(child1), std::move(child2) };
     }
 
-} // namespace genetic_algorithm::crossover
+} // namespace gapp::crossover
 
 #endif // !GA_CROSSOVER_BASE_IMPL_HPP

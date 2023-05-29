@@ -11,7 +11,7 @@ Problems
    problems_integer
 
 
-.. doxygennamespace:: genetic_algorithm::problems
+.. doxygennamespace:: gapp::problems
    :project: gapp
    :desc-only:
 
@@ -23,7 +23,7 @@ class BenchmarkFunctionTraits
 
    #include <problems/benchmark_function.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::BenchmarkFunctionTraits
+.. doxygenclass:: gapp::problems::BenchmarkFunctionTraits
    :project: gapp
    :members:
    :protected-members:
@@ -37,13 +37,13 @@ class BenchmarkFunction
 
    #include <problems/benchmark_function.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::BenchmarkFunction
+.. doxygenclass:: gapp::problems::BenchmarkFunction
    :project: gapp
    :members:
    :protected-members:
    :private-members:
 
-.. doxygenclass:: genetic_algorithm::problems::BenchmarkFunction< RealGene >
+.. doxygenclass:: gapp::problems::BenchmarkFunction< RealGene >
    :project: gapp
    :members:
    :protected-members:

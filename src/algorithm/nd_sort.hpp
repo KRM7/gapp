@@ -8,7 +8,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm::dtl
+namespace gapp::algorithm::dtl
 {
     struct FrontInfo
     {
@@ -44,6 +44,6 @@ namespace genetic_algorithm::algorithm::dtl
     /* Find the pareto front with the lowest rank that can't be added to the next population in its entirety. */
     ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize);
 
-} // namespace genetic_algorithm::algorithm::dtl
+} // namespace gapp::algorithm::dtl
 
 #endif // !GA_ALGORITHM_NDSORT_HPP

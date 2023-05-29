@@ -1,10 +1,10 @@
 /* Example showing the minimal usage of a real-encoded, single-objective algorithm. */
 
-#include "genetic_algorithm.hpp" // include everything
+#include "gapp.hpp" // include everything
 #include <iostream>
 #include <cmath>
 
-using namespace genetic_algorithm;
+using namespace gapp;
 
 class SinX final : public FitnessFunction<RealGene, 1>
 {

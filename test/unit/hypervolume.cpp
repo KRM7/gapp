@@ -5,8 +5,8 @@
 #include "metrics/pop_stats.hpp"
 #include "population/candidate.hpp"
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::detail;
+using namespace gapp;
+using namespace gapp::detail;
 using Catch::Approx;
 
 

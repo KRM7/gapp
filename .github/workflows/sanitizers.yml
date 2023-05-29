@@ -40,7 +40,7 @@ jobs:
     - name: setup-build
       env:
         CXX: ${{ matrix.cxx }}
-      run: cmake .. -DGA_LINK_TBB=ON -DGA_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }} -g -fno-omit-frame-pointer"
+      run: cmake .. -DGAPP_LINK_TBB=ON -DGAPP_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }} -g -fno-omit-frame-pointer"
 
     - name: build
       run: cmake --build . --parallel

@@ -10,7 +10,7 @@
 #include <concepts>
 #include <utility>
 
-namespace genetic_algorithm::stopping::dtl
+namespace gapp::stopping::dtl
 {
     template<std::derived_from<StopCondition> Left, std::derived_from<StopCondition> Right>
     class OR final : public StopCondition
@@ -63,10 +63,10 @@ namespace genetic_algorithm::stopping::dtl
         Right right_;
     };
 
-} // namespace genetic_algorithm::stopping::dtl
+} // namespace gapp::stopping::dtl
 
 
-namespace genetic_algorithm::stopping
+namespace gapp::stopping
 {
     constexpr auto operator&&(detail::Leaf<StopCondition> auto lhs, detail::Leaf<StopCondition> auto rhs) noexcept
     {
@@ -78,6 +78,6 @@ namespace genetic_algorithm::stopping
         return dtl::OR{ std::move(lhs), std::move(rhs) };
     }
 
-} // namespace genetic_algorithm::stopping
+} // namespace gapp::stopping
 
 #endif // !GA_STOP_CONDITION_COMPOSITE

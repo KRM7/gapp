@@ -10,7 +10,7 @@
 #include <vector>
 #include <stdexcept>
 
-namespace genetic_algorithm::stopping
+namespace gapp::stopping
 {
     static bool metricImproved(FitnessVector& best_so_far, const FitnessVector& new_val, double delta) noexcept
     {
@@ -87,4 +87,4 @@ namespace genetic_algorithm::stopping
         return cntr_ == 0;
     }
 
-} // namespace genetic_algorithm::stopping
+} // namespace gapp::stopping

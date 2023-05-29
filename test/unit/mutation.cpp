@@ -11,8 +11,8 @@
 #include <algorithm>
 #include <numeric>
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::mutation;
+using namespace gapp;
+using namespace gapp::mutation;
 
 TEST_CASE("mutation_fitness_eval", "[crossover]")
 {

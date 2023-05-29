@@ -13,7 +13,7 @@
 #include <cstddef>
 
 using namespace std;
-using namespace genetic_algorithm;
+using namespace gapp;
 
 
 /* Define the gene type that will be used in the algorithm. */

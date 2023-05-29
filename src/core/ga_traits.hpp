@@ -5,7 +5,7 @@
 
 #include "../utility/type_traits.hpp"
 
-namespace genetic_algorithm
+namespace gapp
 {
     /**
     * Traits class describing some attributes of each %GA class. \n
@@ -43,6 +43,6 @@ namespace genetic_algorithm
         static_assert(detail::always_false<GeneType>, "The GaTraits class must be specialized for each new gene type.");
     };
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_CORE_GA_TRAITS_HPP

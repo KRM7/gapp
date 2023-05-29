@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace genetic_algorithm
+namespace gapp
 {
     auto IntegerGA::generateCandidate() const -> Candidate<GeneType>
     {
@@ -21,4 +21,4 @@ namespace genetic_algorithm
         return solution;
     }
 
-} // namespace genetic_algorithm
+} // namespace gapp

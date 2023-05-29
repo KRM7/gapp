@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <algorithm>
 
-using namespace genetic_algorithm::detail;
+using namespace gapp::detail;
 
 TEST_CASE("matrix", "[matrix]")
 {

@@ -1,7 +1,7 @@
 Many-objective benchmark problems
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::problems
+.. doxygennamespace:: gapp::problems
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class DTLZ1
 
    #include <problems/many_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::DTLZ1
+.. doxygenclass:: gapp::problems::DTLZ1
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class DTLZ2
 
    #include <problems/many_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::DTLZ2
+.. doxygenclass:: gapp::problems::DTLZ2
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class DTLZ3
 
    #include <problems/many_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::DTLZ3
+.. doxygenclass:: gapp::problems::DTLZ3
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class DTLZ4
 
    #include <problems/many_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::DTLZ4
+.. doxygenclass:: gapp::problems::DTLZ4
    :project: gapp
    :members:
    :protected-members:
@@ -65,7 +65,7 @@ class DTLZ5
 
    #include <problems/many_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::DTLZ5
+.. doxygenclass:: gapp::problems::DTLZ5
    :project: gapp
    :members:
    :protected-members:
@@ -78,7 +78,7 @@ class DTLZ6
 
    #include <problems/many_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::DTLZ6
+.. doxygenclass:: gapp::problems::DTLZ6
    :project: gapp
    :members:
    :protected-members:
@@ -91,7 +91,7 @@ class DTLZ7
 
    #include <problems/many_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::DTLZ7
+.. doxygenclass:: gapp::problems::DTLZ7
    :project: gapp
    :members:
    :protected-members:

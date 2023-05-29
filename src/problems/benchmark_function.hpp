@@ -13,7 +13,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     /** Base class that contains the properties of a benchmark function. */
     template<typename T>
@@ -183,6 +183,6 @@ namespace genetic_algorithm::problems
         static Chromosome<RealGene> convert(const Chromosome<BinaryGene>& bchrom, const BoundsVector<RealGene>& bounds, size_t var_bits);
     };
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems
 
 #endif // !GA_PROBLEMS_BENCHMARK_FUNCTION_HPP

@@ -1,7 +1,7 @@
 Binary-encoded genetic algorithm
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm
+.. doxygennamespace:: gapp
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class BinaryGene
 
    #include <encoding/binary.hpp>
 
-.. doxygentypedef:: genetic_algorithm::BinaryGene
+.. doxygentypedef:: gapp::BinaryGene
    :project: gapp
 
 
@@ -24,7 +24,7 @@ class GaTraits<BinaryGene>
 
    #include <encoding/binary.hpp>
 
-.. doxygenstruct:: genetic_algorithm::GaTraits< BinaryGene >
+.. doxygenstruct:: gapp::GaTraits< BinaryGene >
    :project: gapp
    :members:
    :undoc-members:
@@ -37,7 +37,7 @@ class BinaryGA
 
    #include <encoding/binary.hpp>
 
-.. doxygenclass:: genetic_algorithm::BinaryGA
+.. doxygenclass:: gapp::BinaryGA
    :project: gapp
    :members:
    :protected-members:

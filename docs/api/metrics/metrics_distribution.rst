@@ -1,7 +1,7 @@
 Distribution metrics
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::metrics
+.. doxygennamespace:: gapp::metrics
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class NadirPoint
 
    #include <metrics/distribution_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::NadirPoint
+.. doxygenclass:: gapp::metrics::NadirPoint
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class Hypervolume
 
    #include <metrics/distribution_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::Hypervolume
+.. doxygenclass:: gapp::metrics::Hypervolume
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class AutoHypervolume
 
    #include <metrics/distribution_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::AutoHypervolume
+.. doxygenclass:: gapp::metrics::AutoHypervolume
    :project: gapp
    :members:
    :protected-members:

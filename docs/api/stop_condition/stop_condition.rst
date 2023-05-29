@@ -1,7 +1,7 @@
 Stop conditions
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::stopping
+.. doxygennamespace:: gapp::stopping
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class StopCondition
 
    #include <stopping/stop_condition_base.hpp>
 
-.. doxygenclass:: genetic_algorithm::stopping::StopCondition
+.. doxygenclass:: gapp::stopping::StopCondition
    :project: gapp
    :members:
    :protected-members:
@@ -27,7 +27,7 @@ class FitnessEvals
 
    #include <stopping/stop_condition.hpp>
 
-.. doxygenclass:: genetic_algorithm::stopping::FitnessEvals
+.. doxygenclass:: gapp::stopping::FitnessEvals
    :project: gapp
    :members:
    :protected-members:
@@ -40,7 +40,7 @@ class FitnessValue
 
    #include <stopping/stop_condition.hpp>
 
-.. doxygenclass:: genetic_algorithm::stopping::FitnessValue
+.. doxygenclass:: gapp::stopping::FitnessValue
    :project: gapp
    :members:
    :protected-members:
@@ -53,7 +53,7 @@ class FitnessMeanStall
 
    #include <stopping/stop_condition.hpp>
 
-.. doxygenclass:: genetic_algorithm::stopping::FitnessMeanStall
+.. doxygenclass:: gapp::stopping::FitnessMeanStall
    :project: gapp
    :members:
    :protected-members:
@@ -66,7 +66,7 @@ class FitnessBestStall
 
    #include <stopping/stop_condition.hpp>
 
-.. doxygenclass:: genetic_algorithm::stopping::FitnessBestStall
+.. doxygenclass:: gapp::stopping::FitnessBestStall
    :project: gapp
    :members:
    :protected-members:
@@ -79,7 +79,7 @@ class NoEarlyStop
 
    #include <stopping/stop_condition.hpp>
 
-.. doxygenclass:: genetic_algorithm::stopping::NoEarlyStop
+.. doxygenclass:: gapp::stopping::NoEarlyStop
    :project: gapp
    :members:
    :protected-members:

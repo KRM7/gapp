@@ -12,7 +12,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace genetic_algorithm::math
+namespace gapp::math
 {
     constinit std::atomic<double> Tolerances::absolute_tolerance = 1E-12;
     constinit std::atomic<unsigned> Tolerances::relative_tolerance_epsilons = 10;
@@ -150,4 +150,4 @@ namespace genetic_algorithm::math
         return integral;
     }
 
-} // namespace genetic_algorithm::math
+} // namespace gapp::math

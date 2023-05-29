@@ -67,7 +67,7 @@ jobs:
         run: cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_TESTING=OFF -D${{ matrix.tool.cmake-flag }}
       
       - name: run-analysis
-        run: cmake --build . --parallel --target GeneticAlgorithm 2>&1 | tee ${{ matrix.tool.name }}-out.txt
+        run: cmake --build . --parallel --target gapp 2>&1 | tee ${{ matrix.tool.name }}-out.txt
       
       - uses: actions/upload-artifact@v3
         with:
@@ -110,7 +110,7 @@ jobs:
         run: cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_TESTING=OFF
       
       - name: build
-        run: cmake --build . --target GeneticAlgorithm
+        run: cmake --build . --target gapp
 
       - name: run-analysis
         uses: github/codeql-action/analyze@v2

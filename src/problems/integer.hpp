@@ -8,7 +8,7 @@
 #include <vector>
 #include <string>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     /**
     * Implementation of a simple test problem for the integer-encoded %GA.
@@ -35,6 +35,6 @@ namespace genetic_algorithm::problems
         std::string target_;
     };
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems
 
 #endif // !GA_PROBLEMS_INTEGER_HPP

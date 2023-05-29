@@ -14,8 +14,8 @@
 #include "problems/many_objective.hpp"
 #include "benchmark_utils.hpp"
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::problems;
+using namespace gapp;
+using namespace gapp::problems;
 
 template<typename Problem>
 void benchmark_real_nsga3(Problem problem, size_t generations, size_t population_size = 100)

@@ -11,7 +11,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     using std::numbers::pi;
     using const_iterator = std::vector<double>::const_iterator;
@@ -335,4 +335,4 @@ namespace genetic_algorithm::problems
         return dtlz7(vars, num_objectives());
     }
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems

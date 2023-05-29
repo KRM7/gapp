@@ -20,7 +20,7 @@
 #endif
 
 /** Contains the PRNG classes and functions used for generating random numbers. */
-namespace genetic_algorithm::rng
+namespace gapp::rng
 {
     /**
     * Splitmix64 pseudo-random number generator based on https://prng.di.unimi.it/splitmix64.c \n
@@ -110,7 +110,7 @@ namespace genetic_algorithm::rng
     template<std::floating_point T>
     inline size_t sampleCdf(std::span<const T> cdf);
 
-} // namespace genetic_algorithm::rng
+} // namespace gapp::rng
 
 
 /* IMPLEMENTATION */
@@ -121,7 +121,7 @@ namespace genetic_algorithm::rng
 #include <cmath>
 #include <climits>
 
-namespace genetic_algorithm::rng
+namespace gapp::rng
 {
     inline AtomicSplitmix64::result_type AtomicSplitmix64::operator()() noexcept
     {
@@ -289,6 +289,6 @@ namespace genetic_algorithm::rng
         return static_cast<size_t>(selected - cdf.begin());
     }
 
-} // namespace genetic_algorithm::rng
+} // namespace gapp::rng
 
 #endif // !GA_UTILITY_RNG_HPP

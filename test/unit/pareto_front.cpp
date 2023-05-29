@@ -7,9 +7,9 @@
 #include "utility/utility.hpp"
 #include <vector>
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::detail;
-using namespace genetic_algorithm::math;
+using namespace gapp;
+using namespace gapp::detail;
+using namespace gapp::math;
 using namespace Catch;
 
 TEST_CASE("find_pareto_front_1D", "[pareto_front]")

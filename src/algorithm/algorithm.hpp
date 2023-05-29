@@ -11,6 +11,6 @@
 #include "nsga3.hpp"
 
 /** Single- and multi-objective algorithms that can be used in the GAs. */
-namespace genetic_algorithm::algorithm {}
+namespace gapp::algorithm {}
 
 #endif // !GA_ALGORITHM_ALGORITHM_HPP

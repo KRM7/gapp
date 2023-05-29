@@ -11,7 +11,7 @@
 #include "../mutation/real.hpp"
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     template<>
     struct GaTraits<RealGene>
@@ -34,6 +34,6 @@ namespace genetic_algorithm
         Candidate<GeneType> generateCandidate() const override;
     };
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_ENCODING_REAL_HPP

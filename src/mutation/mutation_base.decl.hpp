@@ -8,14 +8,14 @@
 #include <vector>
 #include <utility>
 
-namespace genetic_algorithm
+namespace gapp
 {
     template<typename T>
     class GA;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::mutation
+namespace gapp::mutation
 {
     /**
     * The base class used for the mutation operators of the GAs.
@@ -101,6 +101,6 @@ namespace genetic_algorithm::mutation
         Probability pm_;
     };
 
-} // namespace genetic_algorithm::mutation
+} // namespace gapp::mutation
 
 #endif // !GA_MUTATION_BASE_DECL_HPP

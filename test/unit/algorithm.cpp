@@ -16,7 +16,7 @@ static constexpr auto always_true = [](auto) { return true; };
 static constexpr auto always_false = [](auto) { return false; };
 
 
-using namespace genetic_algorithm;
+using namespace gapp;
 
 TEST_CASE("increment_mod", "[algorithm]")
 {

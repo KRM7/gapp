@@ -7,7 +7,7 @@
 #include <iterator>
 #include <type_traits>
 
-using namespace genetic_algorithm::detail;
+using namespace gapp::detail;
 
 TEST_CASE("stable_iterator", "[iterators]")
 {

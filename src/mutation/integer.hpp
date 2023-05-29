@@ -7,7 +7,7 @@
 #include "../encoding/gene_types.hpp"
 
 /** Predefined mutation operators for the integer encoded genetic algorithm. */
-namespace genetic_algorithm::mutation::integer
+namespace gapp::mutation::integer
 {
     /**
     * %Uniform mutation operator for the integer encoded genetic algorithm.
@@ -22,6 +22,6 @@ namespace genetic_algorithm::mutation::integer
         void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
     };
 
-} // namespace genetic_algorithm::mutation::integer
+} // namespace gapp::mutation::integer
 
 #endif // !GA_MUTATION_INTEGER_HPP

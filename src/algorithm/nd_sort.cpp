@@ -17,7 +17,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm::dtl
+namespace gapp::algorithm::dtl
 {
     std::vector<size_t> paretoRanks(const ParetoFronts& pareto_fronts)
     {
@@ -301,4 +301,4 @@ namespace genetic_algorithm::algorithm::dtl
         return dominanceDegreeSort(first, last);
     }
 
-} // namespace genetic_algorithm::algorithm::dtl
+} // namespace gapp::algorithm::dtl

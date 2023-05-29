@@ -6,9 +6,9 @@
 #include "utility/math.hpp"
 #include <algorithm>
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::math;
-using namespace genetic_algorithm::detail;
+using namespace gapp;
+using namespace gapp::math;
+using namespace gapp::detail;
 using namespace Catch;
 
 

@@ -16,7 +16,7 @@
 #include <limits>
 #include <cmath>
 
-namespace genetic_algorithm::selection
+namespace gapp::selection
 {
     /* Calculate the cumulative distribution function of the population from the selection weights. */
     static std::vector<double> weightsToCdf(std::span<const double> weights)
@@ -190,4 +190,4 @@ namespace genetic_algorithm::selection
         return selection_(ga, fmat);
     }
 
-} // namespace genetic_algorithm::selection
+} // namespace gapp::selection

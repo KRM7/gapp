@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::metrics
+namespace gapp::metrics
 {
     /** Record the number of fitness function evaluations performed in each generation. */
     class FitnessEvaluations final : public Monitor<FitnessEvaluations, std::vector<size_t>>
@@ -21,6 +21,6 @@ namespace genetic_algorithm::metrics
         size_t sum_;
     };
 
-} // namespace genetic_algorithm::metrics
+} // namespace gapp::metrics
 
 #endif // !GA_METRICS_MISC_METRICS_HPP

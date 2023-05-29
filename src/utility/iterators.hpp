@@ -11,7 +11,7 @@
 #include <limits>
 #include <cstddef>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     /*
     * The following should be implemented in Derived:
@@ -451,6 +451,6 @@ namespace genetic_algorithm::detail
         T value_;
     };
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_ITERATORS_HPP

@@ -8,7 +8,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     Chromosome<RealGene> BenchmarkFunction<RealGene>::convert(const Chromosome<BinaryGene>& bchrom, const BoundsVector<RealGene>& bounds, size_t var_bits)
     {
@@ -34,4 +34,4 @@ namespace genetic_algorithm::problems
         return vars;
     }
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems

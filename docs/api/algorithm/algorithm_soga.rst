@@ -15,11 +15,11 @@ class SingleObjective
 
    #include <algorithm/single_objective.hpp>
 
-.. doxygennamespace:: genetic_algorithm::algorithm
+.. doxygennamespace:: gapp::algorithm
    :project: gapp
    :desc-only:
 
-.. doxygenclass:: genetic_algorithm::algorithm::SingleObjective
+.. doxygenclass:: gapp::algorithm::SingleObjective
    :project: gapp
    :members:
    :protected-members:
@@ -32,11 +32,11 @@ class Selection
 
    #include <algorithm/selection_base.hpp>
 
-.. doxygennamespace:: genetic_algorithm::selection
+.. doxygennamespace:: gapp::selection
    :project: gapp
    :desc-only:
 
-.. doxygenclass:: genetic_algorithm::selection::Selection
+.. doxygenclass:: gapp::selection::Selection
    :project: gapp
    :members:
    :protected-members:
@@ -50,11 +50,11 @@ class Replacement
 
    #include <algorithm/replacement_base.hpp>
 
-.. doxygennamespace:: genetic_algorithm::replacement
+.. doxygennamespace:: gapp::replacement
    :project: gapp
    :desc-only:
 
-.. doxygenclass:: genetic_algorithm::replacement::Replacement
+.. doxygenclass:: gapp::replacement::Replacement
    :project: gapp
    :members:
    :protected-members:

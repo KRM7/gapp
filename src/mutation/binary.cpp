@@ -9,7 +9,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace genetic_algorithm::mutation::binary
+namespace gapp::mutation::binary
 {
     void Flip::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
     {
@@ -22,4 +22,4 @@ namespace genetic_algorithm::mutation::binary
         }
     }
 
-} // namespace genetic_algorithm::mutation::binary
+} // namespace gapp::mutation::binary

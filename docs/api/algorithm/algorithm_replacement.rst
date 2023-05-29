@@ -1,7 +1,7 @@
 Replacement methods
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::replacement
+.. doxygennamespace:: gapp::replacement
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class KeepChildren
 
    #include <algorithm/soga_replacement.hpp>
 
-.. doxygenclass:: genetic_algorithm::replacement::KeepChildren
+.. doxygenclass:: gapp::replacement::KeepChildren
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class Elitism
 
    #include <algorithm/soga_replacement.hpp>
 
-.. doxygenclass:: genetic_algorithm::replacement::Elitism
+.. doxygenclass:: gapp::replacement::Elitism
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class KeepBest
 
    #include <algorithm/soga_replacement.hpp>
 
-.. doxygenclass:: genetic_algorithm::replacement::KeepBest
+.. doxygenclass:: gapp::replacement::KeepBest
    :project: gapp
    :members:
    :protected-members:

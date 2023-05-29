@@ -1,7 +1,7 @@
 Permutation encoded crossovers
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::crossover::perm
+.. doxygennamespace:: gapp::crossover::perm
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Order1
 
    #include <crossover/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::perm::Order1
+.. doxygenclass:: gapp::crossover::perm::Order1
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class Order2
 
    #include <crossover/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::perm::Order2
+.. doxygenclass:: gapp::crossover::perm::Order2
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class Position
 
    #include <crossover/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::perm::Position
+.. doxygenclass:: gapp::crossover::perm::Position
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class Cycle
 
    #include <crossover/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::perm::Cycle
+.. doxygenclass:: gapp::crossover::perm::Cycle
    :project: gapp
    :members:
    :protected-members:
@@ -65,7 +65,7 @@ class Edge
 
    #include <crossover/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::perm::Edge
+.. doxygenclass:: gapp::crossover::perm::Edge
    :project: gapp
    :members:
    :protected-members:
@@ -78,7 +78,7 @@ class PMX
 
    #include <crossover/permutation.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::perm::PMX
+.. doxygenclass:: gapp::crossover::perm::PMX
    :project: gapp
    :members:
    :protected-members:

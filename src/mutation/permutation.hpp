@@ -8,7 +8,7 @@
 #include "../utility/bounded_value.hpp"
 
 /** Predefined mutation operators for the permutation encoded genetic algorithm. */
-namespace genetic_algorithm::mutation::perm
+namespace gapp::mutation::perm
 {
     /**
     * %Inversion mutation operator for the permutation encoded %GA.
@@ -167,6 +167,6 @@ namespace genetic_algorithm::mutation::perm
         Normalized<double> range_max_;
     };
 
-} // namespace genetic_algorithm::mutation::perm
+} // namespace gapp::mutation::perm
 
 #endif // !GA_MUTATION_PERMUTATION_HPP

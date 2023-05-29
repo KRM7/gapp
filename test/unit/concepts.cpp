@@ -7,7 +7,7 @@
 #include <set>
 #include <string>
 
-using namespace genetic_algorithm;
+using namespace gapp;
 
 template<typename T>
 struct A {};

@@ -8,7 +8,7 @@ Algorithms
    algorithm_moga
 
 
-.. doxygennamespace:: genetic_algorithm::algorithm
+.. doxygennamespace:: gapp::algorithm
    :project: gapp
    :desc-only:
 
@@ -20,7 +20,7 @@ class Algorithm
 
    #include <algorithm/algorithm_base.hpp>
 
-.. doxygenclass:: genetic_algorithm::algorithm::Algorithm
+.. doxygenclass:: gapp::algorithm::Algorithm
    :project: gapp
    :members:
    :protected-members:

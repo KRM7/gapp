@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 
-using namespace genetic_algorithm::detail;
+using namespace gapp::detail;
 
 template<typename T>
 class Vec : public std::vector<T> {};

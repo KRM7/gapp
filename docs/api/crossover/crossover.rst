@@ -10,7 +10,7 @@ Crossovers
    crossover_integer
 
 
-.. doxygennamespace:: genetic_algorithm::crossover
+.. doxygennamespace:: gapp::crossover
    :project: gapp
    :desc-only:
 
@@ -22,7 +22,7 @@ class Crossover
 
    #include <crossover/crossover_base.hpp>
 
-.. doxygenclass:: genetic_algorithm::crossover::Crossover
+.. doxygenclass:: gapp::crossover::Crossover
    :project: gapp
    :members:
    :protected-members:

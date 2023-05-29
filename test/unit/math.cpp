@@ -10,7 +10,7 @@
 #include <numbers>
 #include <utility>
 
-using namespace genetic_algorithm::math;
+using namespace gapp::math;
 using namespace Catch;
 
 TEST_CASE("fp_compare", "[math]")

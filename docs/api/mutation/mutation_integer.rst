@@ -1,7 +1,7 @@
 Integer encoded mutations
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::mutation::integer
+.. doxygennamespace:: gapp::mutation::integer
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Uniform
 
    #include <mutation/integer.hpp>
 
-.. doxygenclass:: genetic_algorithm::mutation::integer::Uniform
+.. doxygenclass:: gapp::mutation::integer::Uniform
    :project: gapp
    :members:
    :protected-members:

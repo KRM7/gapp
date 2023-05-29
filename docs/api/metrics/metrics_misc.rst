@@ -1,7 +1,7 @@
 Other metrics
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::metrics
+.. doxygennamespace:: gapp::metrics
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class FitnessEvaluations
 
    #include <metrics/misc_metrics.hpp>
 
-.. doxygenclass:: genetic_algorithm::metrics::FitnessEvaluations
+.. doxygenclass:: gapp::metrics::FitnessEvaluations
    :project: gapp
    :members:
    :protected-members:

@@ -5,19 +5,19 @@
 
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     class GaInfo;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     class MetricSet;
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
-namespace genetic_algorithm::metrics
+namespace gapp::metrics
 {
     /**
     * The base class used for the metrics.
@@ -60,6 +60,6 @@ namespace genetic_algorithm::metrics
         friend class detail::MetricSet;
     };
 
-} // namespace genetic_algorithm::metrics
+} // namespace gapp::metrics
 
 #endif // !GA_METRICS_MONITOR_BASE_HPP

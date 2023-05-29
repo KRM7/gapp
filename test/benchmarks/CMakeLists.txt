@@ -9,7 +9,7 @@ file(GLOB_RECURSE BENCHMARK_HEADERS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/test/
 
 add_executable(benchmarks ${BENCHMARK_SOURCES} ${BENCHMARK_HEADERS})
 
-target_link_libraries(benchmarks PRIVATE GeneticAlgorithm)
+target_link_libraries(benchmarks PRIVATE gapp)
 
 #include(Catch)
 #catch_discover_tests(benchmarks)

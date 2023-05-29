@@ -11,7 +11,7 @@
 
 using namespace std;
 using namespace chrono;
-using namespace genetic_algorithm;
+using namespace gapp;
 
 int main()
 {

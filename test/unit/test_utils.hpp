@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstddef>
 
-using namespace genetic_algorithm;
+using namespace gapp;
 
 template<typename T>
 class DummyFitnessFunction final : public FitnessFunctionBase<T>

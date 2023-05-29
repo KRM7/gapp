@@ -8,9 +8,9 @@
 #include "crossover/crossover_dtl.hpp"
 #include "test_utils.hpp"
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::crossover;
-using namespace genetic_algorithm::crossover::dtl;
+using namespace gapp;
+using namespace gapp::crossover;
+using namespace gapp::crossover::dtl;
 
 TEST_CASE("single_point_crossover", "[crossover]")
 {

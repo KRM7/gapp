@@ -9,7 +9,7 @@
 #include <functional>
 #include <utility>
 
-namespace genetic_algorithm::mutation
+namespace gapp::mutation
 {
     /*
     * Wraps a callable with the right signature so that it can be used as a mutation
@@ -40,6 +40,6 @@ namespace genetic_algorithm::mutation
         }
     };
 
-} // namespace genetic_algorithm::mutation
+} // namespace gapp::mutation
 
 #endif // !GA_MUTATION_LAMBDA_HPP

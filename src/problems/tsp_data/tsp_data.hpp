@@ -5,7 +5,7 @@
 
 #include <array>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     using Coords = std::array<double, 2>;
 
@@ -44,6 +44,6 @@ namespace genetic_algorithm::problems
         #include "tsp439.txt"
     }};
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems
 
 #endif // !GA_PROBLEMS_TSP_DATA_HPP

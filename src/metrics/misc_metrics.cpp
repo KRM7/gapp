@@ -6,7 +6,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::metrics
+namespace gapp::metrics
 {
     void FitnessEvaluations::initialize(const GaInfo& ga)
     {
@@ -29,4 +29,4 @@ namespace genetic_algorithm::metrics
         return data_[generation];
     }
 
-} // namespace genetic_algorithm::metrics
+} // namespace gapp::metrics

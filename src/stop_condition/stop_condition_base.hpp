@@ -8,14 +8,14 @@
 #include <utility>
 #include <stdexcept>
 
-namespace genetic_algorithm
+namespace gapp
 {
     class GaInfo;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 /** Early-stop conditions that can be used to control when the %GA stops. */
-namespace genetic_algorithm::stopping
+namespace gapp::stopping
 {
     /**
     * The base class used for all of the early-stop conditions.
@@ -104,6 +104,6 @@ namespace genetic_algorithm::stopping
         }
     };
 
-} // namespace genetic_algorithm::stopping
+} // namespace gapp::stopping
 
 #endif

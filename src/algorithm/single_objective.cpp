@@ -10,7 +10,7 @@
 #include <memory>
 #include <utility>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection) :
         SingleObjective(std::move(selection), std::make_unique<DefaultReplacement>())
@@ -71,4 +71,4 @@ namespace genetic_algorithm::algorithm
         return replacement_->nextPopulationImpl(ga, first, children_first, last);
     }
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm

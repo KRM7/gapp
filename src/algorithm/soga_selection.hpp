@@ -11,13 +11,13 @@
 #include <functional>
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     class GaInfo;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::selection
+namespace gapp::selection
 {
     /**
     * %Roulette selection operator for the single-objective algorithm.
@@ -254,6 +254,6 @@ namespace genetic_algorithm::selection
         SelectionCallable selection_;
     };
 
-} // namespace genetic_algorithm::selection
+} // namespace gapp::selection
 
 #endif // !GA_ALGORITHM_SOGA_SELECTION_HPP

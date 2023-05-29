@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     using namespace dtl;
 
@@ -130,4 +130,4 @@ namespace genetic_algorithm::algorithm
         return detail::find_indices(ranks_, detail::equal_to(0_sz));
     }
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm

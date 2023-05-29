@@ -20,21 +20,21 @@
 #include <memory>
 #include <cstddef>
 
-namespace genetic_algorithm::crossover
+namespace gapp::crossover
 {
     template<typename T>
     class Crossover;
 
-} // namespace genetic_algorithm::crossover
+} // namespace gapp::crossover
 
-namespace genetic_algorithm::mutation
+namespace gapp::mutation
 {
     template<typename T>
     class Mutation;
 
-} // namespace genetic_algorithm::mutation
+} // namespace gapp::mutation
 
-namespace genetic_algorithm
+namespace gapp
 {
     /**
     * The base class used for all of the genetic algorithms. Contains all of the
@@ -631,6 +631,6 @@ namespace genetic_algorithm
         using GaInfo::use_default_algorithm_;
     };
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_CORE_GA_BASE_DECL_HPP

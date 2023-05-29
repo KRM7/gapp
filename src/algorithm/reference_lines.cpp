@@ -14,7 +14,7 @@
 #include <utility>
 #include <cmath>
 
-namespace genetic_algorithm::algorithm::reflines
+namespace gapp::algorithm::reflines
 {
     using SimplexMapping = Point(*)(Point&&);
 
@@ -194,4 +194,4 @@ namespace genetic_algorithm::algorithm::reflines
         return points;
     }
 
-} // namespace genetic_algorithm::algorithm::reflines
+} // namespace gapp::algorithm::reflines

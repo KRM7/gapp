@@ -10,7 +10,7 @@
 #include <cstddef>
 
 /** Predefined crossover operators for the integer encoded genetic algorithm. */
-namespace genetic_algorithm::crossover::integer
+namespace gapp::crossover::integer
 {
     /**
     * Standard single-point crossover operator for the integer encoded %GA.
@@ -136,6 +136,6 @@ namespace genetic_algorithm::crossover::integer
         Probability ps_ = 0.5;
     };
 
-} // namespace genetic_algorithm::crossover::integer
+} // namespace gapp::crossover::integer
 
 #endif // !GA_CROSSOVER_INTEGER_HPP

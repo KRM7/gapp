@@ -11,9 +11,9 @@
 #include <cstddef>
 #include <limits>
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::algorithm::dtl;
-using namespace genetic_algorithm::detail;
+using namespace gapp;
+using namespace gapp::algorithm::dtl;
+using namespace gapp::detail;
 using namespace Catch;
 
 static constexpr double inf = std::numeric_limits<double>::infinity();

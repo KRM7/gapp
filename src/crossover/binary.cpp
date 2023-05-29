@@ -11,7 +11,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::crossover::binary
+namespace gapp::crossover::binary
 {
     auto SinglePoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
@@ -65,4 +65,4 @@ namespace genetic_algorithm::crossover::binary
         return { std::move(child1), std::move(child2) };
     }
 
-} // namespace genetic_algorithm::crossover::binary
+} // namespace gapp::crossover::binary

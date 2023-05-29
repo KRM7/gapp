@@ -20,7 +20,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     template<typename T, typename U>
     constexpr auto&& forward_like(U&& u) noexcept // from P2445R1
@@ -309,6 +309,6 @@ namespace genetic_algorithm::detail
         value = (value + 1 == mod) ? T(0) : value + 1;
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_ALGORITHM_HPP

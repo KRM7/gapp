@@ -12,7 +12,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace genetic_algorithm::mutation::real
+namespace gapp::mutation::real
 {
     void Uniform::mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const
     {
@@ -113,4 +113,4 @@ namespace genetic_algorithm::mutation::real
         }
     }
 
-} // namespace genetic_algorithm::mutation::real
+} // namespace gapp::mutation::real

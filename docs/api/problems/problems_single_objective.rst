@@ -1,7 +1,7 @@
 Single-objective benchmark problems
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm::problems
+.. doxygennamespace:: gapp::problems
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class Sphere
 
    #include <problems/single_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::Sphere
+.. doxygenclass:: gapp::problems::Sphere
    :project: gapp
    :members:
    :protected-members:
@@ -26,7 +26,7 @@ class Rastrigin
 
    #include <problems/single_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::Rastrigin
+.. doxygenclass:: gapp::problems::Rastrigin
    :project: gapp
    :members:
    :protected-members:
@@ -39,7 +39,7 @@ class Rosenbrock
 
    #include <problems/single_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::Rosenbrock
+.. doxygenclass:: gapp::problems::Rosenbrock
    :project: gapp
    :members:
    :protected-members:
@@ -52,7 +52,7 @@ class Schwefel
 
    #include <problems/single_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::Schwefel
+.. doxygenclass:: gapp::problems::Schwefel
    :project: gapp
    :members:
    :protected-members:
@@ -65,7 +65,7 @@ class Griewank
 
    #include <problems/single_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::Griewank
+.. doxygenclass:: gapp::problems::Griewank
    :project: gapp
    :members:
    :protected-members:
@@ -78,7 +78,7 @@ class Ackley
 
    #include <problems/single_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::Ackley
+.. doxygenclass:: gapp::problems::Ackley
    :project: gapp
    :members:
    :protected-members:
@@ -91,7 +91,7 @@ class Levy
 
    #include <problems/single_objective.hpp>
 
-.. doxygenclass:: genetic_algorithm::problems::Levy
+.. doxygenclass:: gapp::problems::Levy
    :project: gapp
    :members:
    :protected-members:

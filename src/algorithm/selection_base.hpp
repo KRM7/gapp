@@ -7,14 +7,14 @@
 #include <type_traits>
 #include <cstddef>
 
-namespace genetic_algorithm
+namespace gapp
 {
     class GaInfo;
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 /** %Selection operators for the single-objective algorithm. */
-namespace genetic_algorithm::selection
+namespace gapp::selection
 {
     /**
     * This is the base class used for all of the single-objective selection operators.
@@ -88,6 +88,6 @@ namespace genetic_algorithm::selection
 
     };
 
-} // namespace genetic_algorithm::selection
+} // namespace gapp::selection
 
 #endif // !GA_ALGORITHM_SOGA_SELECTION_BASE_HPP

@@ -1,7 +1,7 @@
 Candidates & Populations
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm
+.. doxygennamespace:: gapp
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class FitnessVector
 
    #include <population/candidate.hpp>
 
-.. doxygentypedef:: genetic_algorithm::FitnessVector
+.. doxygentypedef:: gapp::FitnessVector
    :project: gapp
 
 
@@ -24,7 +24,7 @@ class FitnessMatrix
 
    #include <population/candidate.hpp>
 
-.. doxygentypedef:: genetic_algorithm::FitnessMatrix
+.. doxygentypedef:: gapp::FitnessMatrix
    :project: gapp
 
 
@@ -35,7 +35,7 @@ class Chromosome
 
    #include <population/candidate.hpp>
 
-.. doxygentypedef:: genetic_algorithm::Chromosome
+.. doxygentypedef:: gapp::Chromosome
    :project: gapp
 
 
@@ -46,14 +46,14 @@ class Candidate
 
    #include <population/candidate.hpp>
 
-.. doxygenstruct:: genetic_algorithm::Candidate
+.. doxygenstruct:: gapp::Candidate
    :project: gapp
    :members:
    :protected-members:
    :private-members:
 
 
-.. doxygentypedef:: genetic_algorithm::CandidatePair
+.. doxygentypedef:: gapp::CandidatePair
    :project: gapp
 
 
@@ -64,7 +64,7 @@ class Population
 
    #include <population/population.hpp>
 
-.. doxygentypedef:: genetic_algorithm::Population
+.. doxygentypedef:: gapp::Population
    :project: gapp
 
 
@@ -75,14 +75,14 @@ class Bounds
 
    #include <population/candidate.hpp>
 
-.. doxygenclass:: genetic_algorithm::Bounds
+.. doxygenclass:: gapp::Bounds
    :project: gapp
    :members:
    :protected-members:
    :private-members:
 
 
-.. doxygentypedef:: genetic_algorithm::BoundsVector
+.. doxygentypedef:: gapp::BoundsVector
    :project: gapp
 
 

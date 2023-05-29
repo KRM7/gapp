@@ -63,8 +63,8 @@
 #endif
 
 
-#if defined(_WIN32) && !defined(GA_BUILD_STATIC)
-#   if defined(GeneticAlgorithm_EXPORTS)
+#if defined(_WIN32) && !defined(GAPP_BUILD_STATIC)
+#   if defined(gapp_EXPORTS)
 #       define GA_API __declspec(dllexport)
 #   else
 #       define GA_API __declspec(dllimport)
@@ -83,7 +83,7 @@
 #endif
 
 
-namespace genetic_algorithm
+namespace gapp
 {
     constexpr std::size_t operator ""_sz(unsigned long long arg) noexcept
     {
@@ -95,10 +95,10 @@ namespace genetic_algorithm
         return static_cast<std::ptrdiff_t>(arg);
     }
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     template<typename T>
     inline void clear_reserve(std::vector<T>& vec, size_t new_capacity = 0)
@@ -108,6 +108,6 @@ namespace genetic_algorithm::detail
         temp.swap(vec);
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_UTILITY_HPP

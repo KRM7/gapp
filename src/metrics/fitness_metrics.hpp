@@ -10,7 +10,7 @@
 #include <span>
 #include <cstddef>
 
-namespace genetic_algorithm::metrics
+namespace gapp::metrics
 {
     /* The base class used for the objective-wise fitness metrics. */
     template<typename Derived>
@@ -66,6 +66,6 @@ namespace genetic_algorithm::metrics
         void update(const GaInfo& ga) override;
     };
 
-} // namespace genetic_algorithm::metrics
+} // namespace gapp::metrics
 
 #endif // !GA_METRICS_FITNESS_METRICS_HPP

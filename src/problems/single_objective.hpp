@@ -9,7 +9,7 @@
 #include <string>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     /**
     * Implementation of the function \f$ -f(\vec{x}) = \langle \vec{x}, \vec{x} \rangle \f$
@@ -249,6 +249,6 @@ namespace genetic_algorithm::problems
         FitnessVector invoke(const std::vector<RealGene>& vars) const override;
     };
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems
 
 #endif // !GA_PROBLEMS_SINGLE_OBJECTIVE_HPP

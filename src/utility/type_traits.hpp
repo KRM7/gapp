@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <iterator>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     struct empty_t {};
 
@@ -159,6 +159,6 @@ namespace genetic_algorithm::detail
     using copy_const_t = std::conditional_t<std::is_const_v<std::remove_reference_t<T>>, const U, U>;
 
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_TYPE_TRAITS_HPP

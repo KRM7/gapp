@@ -7,7 +7,7 @@
 #include <utility>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     StringFinder::StringFinder(std::string target) :
         BenchmarkFunction("StringFinder", target.size(), 1, Bounds<GeneType>{ 32, 32 + 95 }),
@@ -32,4 +32,4 @@ namespace genetic_algorithm::problems
         return { fitness };
     }
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems

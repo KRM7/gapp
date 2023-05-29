@@ -17,6 +17,6 @@
 * 
 * All of the problems are implemented for maximization.
 */
-namespace genetic_algorithm::problems {}
+namespace gapp::problems {}
 
 #endif // !GA_PROBLEMS_HPP

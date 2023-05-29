@@ -10,6 +10,6 @@
 #include "integer.hpp"
 
 /** %Mutation operators used in the GAs. */
-namespace genetic_algorithm::mutation {}
+namespace gapp::mutation {}
 
 #endif // !GA_MUTATION_HPP

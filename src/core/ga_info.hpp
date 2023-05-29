@@ -13,20 +13,20 @@
 #include <memory>
 #include <cstddef>
 
-namespace genetic_algorithm::algorithm
+namespace gapp::algorithm
 {
     class Algorithm;
 
-} // namespace genetic_algorithm::algorithm
+} // namespace gapp::algorithm
 
-namespace genetic_algorithm::stopping
+namespace gapp::stopping
 {
     class StopCondition;
 
-} // namespace genetic_algorithm::stopping
+} // namespace gapp::stopping
 
 
-namespace genetic_algorithm
+namespace gapp
 {
     /**
     * The base class that all GAs are derived from.
@@ -330,14 +330,14 @@ namespace genetic_algorithm
         static constexpr size_t DEFAULT_POPSIZE = 100;
     };
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 
 /* IMPLEMENTATION */
 
 #include <utility>
 
-namespace genetic_algorithm
+namespace gapp
 {
     template<typename F>
     requires std::derived_from<F, algorithm::Algorithm> && std::is_final_v<F>
@@ -370,6 +370,6 @@ namespace genetic_algorithm
         return *metrics_.get<Metric>();
     }
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
 #endif // !GA_CORE_GA_INFO_HPP

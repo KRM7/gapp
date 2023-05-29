@@ -1,7 +1,7 @@
 Integer-encoded genetic algorithm
 ===================================================
 
-.. doxygennamespace:: genetic_algorithm
+.. doxygennamespace:: gapp
    :project: gapp
    :desc-only:
 
@@ -13,7 +13,7 @@ class IntegerGene
 
    #include <encoding/integer.hpp>
 
-.. doxygentypedef:: genetic_algorithm::IntegerGene
+.. doxygentypedef:: gapp::IntegerGene
    :project: gapp
 
 
@@ -24,7 +24,7 @@ class GaTraits<IntegerGene>
 
    #include <encoding/integer.hpp>
 
-.. doxygenstruct:: genetic_algorithm::GaTraits< IntegerGene >
+.. doxygenstruct:: gapp::GaTraits< IntegerGene >
    :project: gapp
    :members:
    :undoc-members:
@@ -37,7 +37,7 @@ class IntegerGA
 
    #include <encoding/integer.hpp>
 
-.. doxygenclass:: genetic_algorithm::IntegerGA
+.. doxygenclass:: gapp::IntegerGA
    :project: gapp
    :members:
    :protected-members:

@@ -12,7 +12,7 @@
 #include <utility>
 #include <cmath>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     using iterator = ConeTree::iterator;
     using const_iterator = ConeTree::const_iterator;
@@ -242,4 +242,4 @@ namespace genetic_algorithm::detail
         return best;
     }
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail

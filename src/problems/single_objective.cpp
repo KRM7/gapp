@@ -9,7 +9,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace genetic_algorithm::problems
+namespace gapp::problems
 {
     using std::numbers::pi;
     using std::numbers::e;
@@ -102,4 +102,4 @@ namespace genetic_algorithm::problems
         return { -fx };
     }
 
-} // namespace genetic_algorithm::problems
+} // namespace gapp::problems

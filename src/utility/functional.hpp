@@ -13,7 +13,7 @@
 #include <cassert>
 
 
-namespace genetic_algorithm
+namespace gapp
 {
     template<auto F>
     inline constexpr auto Fn = [](auto&&... args) -> decltype(auto)
@@ -21,9 +21,9 @@ namespace genetic_algorithm
         return std::invoke(F, std::forward<decltype(args)>(args)...);
     };
 
-} // namespace genetic_algorithm
+} // namespace gapp
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     template<typename T>
     requires(std::is_lvalue_reference_v<T>)
@@ -288,6 +288,6 @@ namespace genetic_algorithm::detail
         };
     }
     
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_FUNCTIONAL_HPP

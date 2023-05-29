@@ -4,7 +4,7 @@
 #include "pop_stats.hpp"
 #include "../core/ga_info.hpp"
 
-namespace genetic_algorithm::metrics
+namespace gapp::metrics
 {
     void FitnessMin::update(const GaInfo& ga)
     {
@@ -36,4 +36,4 @@ namespace genetic_algorithm::metrics
         data_.append_row(detail::fitnessStdDev(fitness_matrix.begin(), fitness_matrix.end()));
     }
 
-} // namespace genetic_algorithm::metrics
+} // namespace gapp::metrics

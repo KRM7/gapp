@@ -10,7 +10,7 @@
 #include <type_traits>
 #include <cstddef>
 
-namespace genetic_algorithm::detail
+namespace gapp::detail
 {
     /* 
     * This data structure is used for the maximum inner product search in the NSGA-III algorithm,
@@ -80,6 +80,6 @@ namespace genetic_algorithm::detail
         const Node& right_child(const Node& node) const noexcept { return nodes_[node.right]; }
     };
 
-} // namespace genetic_algorithm::detail
+} // namespace gapp::detail
 
 #endif // !GA_UTILITY_CONE_TREE_HPP

@@ -12,9 +12,9 @@
 #include <cstddef>
 
 using Catch::Approx;
-using namespace genetic_algorithm::detail;
-using namespace genetic_algorithm::math;
-using namespace genetic_algorithm::algorithm::reflines;
+using namespace gapp::detail;
+using namespace gapp::math;
+using namespace gapp::algorithm::reflines;
 
 
 TEMPLATE_TEST_CASE_SIG("reference_lines", "[pareto_front]", ((auto F), F), quasirandomSimplexPointsMirror, quasirandomSimplexPointsSort, quasirandomSimplexPointsRoot, quasirandomSimplexPointsLog)

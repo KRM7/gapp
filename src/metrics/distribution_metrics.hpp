@@ -7,7 +7,7 @@
 #include "../population/candidate.hpp"
 #include <span>
 
-namespace genetic_algorithm::metrics
+namespace gapp::metrics
 {
     /**
     * Record the nadir point of the population's fitness values in each generation.
@@ -88,6 +88,6 @@ namespace genetic_algorithm::metrics
         FitnessMatrix ideal_points_;
     };
 
-} // namespace genetic_algorithm::metrics
+} // namespace gapp::metrics
 
 #endif // !GA_METRICS_DISTRIBUTION_METRICS_HPP

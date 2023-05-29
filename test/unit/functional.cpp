@@ -13,7 +13,7 @@ constexpr T square(const T& n) noexcept { return n * n; }
 template<typename T>
 constexpr T increment(const T& n) noexcept { return n + 1; }
 
-using namespace genetic_algorithm::detail;
+using namespace gapp::detail;
 
 
 TEST_CASE("lforward", "[functional]")

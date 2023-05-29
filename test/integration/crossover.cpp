@@ -3,11 +3,11 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
-#include "genetic_algorithm.hpp"
+#include "gapp.hpp"
 
-using namespace genetic_algorithm;
-using namespace genetic_algorithm::crossover;
-using namespace genetic_algorithm::problems;
+using namespace gapp;
+using namespace gapp::crossover;
+using namespace gapp::problems;
 using namespace Catch;
 
 

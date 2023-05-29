@@ -9,7 +9,7 @@
 #include <functional>
 #include <utility>
 
-namespace genetic_algorithm::crossover
+namespace gapp::crossover
 {
     /*
     * Wraps a callable with the right signature so that it can be used as a crossover
@@ -39,6 +39,6 @@ namespace genetic_algorithm::crossover
         }
     };
 
-} // namespace genetic_algorithm::crossover
+} // namespace gapp::crossover
 
 #endif

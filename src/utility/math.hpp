@@ -13,7 +13,7 @@
 #include <cstddef>
 
 /** Math utility classes and functions. */
-namespace genetic_algorithm::math
+namespace gapp::math
 {
     /**
     * This class contains the global absolute and relative tolerance values used
@@ -166,7 +166,7 @@ namespace genetic_algorithm::math
     /* Computes the value of the function [ f(x) = integral sin(x)^n dx ] at x. */
     double integralSinPow(size_t exponent, double x) noexcept;
 
-} // namespace genetic_algorithm::math
+} // namespace gapp::math
 
 
 /* IMPLEMENTATION */
@@ -174,7 +174,7 @@ namespace genetic_algorithm::math
 #include <algorithm>
 #include <cmath>
 
-namespace genetic_algorithm::math
+namespace gapp::math
 {
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
@@ -249,6 +249,6 @@ namespace genetic_algorithm::math
         return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), floatIsEqual<T>);
     }
 
-} // namespace genetic_algorithm::math
+} // namespace gapp::math
 
 #endif // !GA_UTILITY_MATH_HPP
