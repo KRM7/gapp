@@ -27,7 +27,7 @@ namespace gapp::algorithm
     using math::Point;
 
     /* Achievement scalarization function. */
-    static inline double ASF(std::span<const double> ideal_point, std::span<const double> weights, std::span<const double> fitness) noexcept
+    static constexpr double ASF(std::span<const double> ideal_point, std::span<const double> weights, std::span<const double> fitness) noexcept
     {
         GA_ASSERT(!ideal_point.empty());
         GA_ASSERT(weights.size() == ideal_point.size());
