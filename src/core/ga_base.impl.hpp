@@ -108,7 +108,7 @@ namespace gapp
     template<typename T>
     inline size_t GA<T>::chrom_len() const noexcept
     {
-        GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
+        GA_ASSERT(fitness_function_, "This method can only be called after a fitness function was set.");
 
         return fitness_function_->chrom_len();
     }
@@ -116,7 +116,7 @@ namespace gapp
     template<typename T>
     inline bool GA<T>::variable_chrom_len() const noexcept
     {
-        GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
+        GA_ASSERT(fitness_function_, "This method can only be called after a fitness function was set.");
 
         return fitness_function_->variable_chrom_len();
     }
@@ -124,7 +124,7 @@ namespace gapp
     template<typename T>
     inline bool GA<T>::dynamic_fitness() const noexcept
     {
-        GA_ASSERT(fitness_function_, "This method can only be called while the algorithm is running.");
+        GA_ASSERT(fitness_function_, "This method can only be called after a fitness function was set.");
 
         return fitness_function_->dynamic();
     }

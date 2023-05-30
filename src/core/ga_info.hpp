@@ -67,6 +67,7 @@ namespace gapp
         */
         GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) noexcept;
 
+
         /**
         * Set the number of candidate solutions used in the population.
         *
@@ -93,6 +94,7 @@ namespace gapp
         [[nodiscard]]
         size_t max_gen() const noexcept { return max_gen_; }
 
+
         /** @returns The chromosome length used for the candidates of the population. */
         [[nodiscard]]
         virtual size_t chrom_len() const noexcept = 0;
@@ -103,11 +105,12 @@ namespace gapp
 
         /** @returns The number of objectives of the fitness function. */
         [[nodiscard]]
-        size_t num_objectives() const noexcept { return num_objectives_; }
+        size_t num_objectives() const noexcept { GA_ASSERT(num_objectives_); return num_objectives_; }
 
         /** @returns True if a dynamic fitness function is used. */
         [[nodiscard]]
         virtual bool dynamic_fitness() const noexcept = 0;
+
 
         /**
         * @returns The fitness matrix of the population.
