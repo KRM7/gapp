@@ -4,11 +4,6 @@
 #define GA_TEST_BENCHMARK_UTILS_HPP
 
 #include "gapp.hpp"
-#include "problems/benchmark_function.hpp"
-#include "problems/single_objective.hpp"
-#include "problems/multi_objective.hpp"
-#include "problems/travelling_salesman.hpp"
-#include "problems/integer.hpp"
 #include <string>
 #include <vector>
 #include <iostream>

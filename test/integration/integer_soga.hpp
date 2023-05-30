@@ -14,7 +14,7 @@
 using namespace gapp;
 using namespace gapp::problems;
 
-void integer_hello()
+inline void integer_hello()
 {
     IntegerGA GA(100);
 
@@ -25,7 +25,7 @@ void integer_hello()
     benchmarkInt(GA, 500, StringFinder{ "Hello World!" });
 }
 
-void integer_sentence()
+inline void integer_sentence()
 {
     IntegerGA GA(250);
 

@@ -14,7 +14,7 @@
 using namespace gapp;
 using namespace gapp::problems;
 
-void perm_tsp52()
+inline void perm_tsp52()
 {
     PermutationGA GA(500);
 
@@ -25,7 +25,7 @@ void perm_tsp52()
     benchmarkTSP(GA, 1250, TSP52{});
 }
 
-void perm_tsp76()
+inline void perm_tsp76()
 {
     PermutationGA GA(400);
 
@@ -36,7 +36,7 @@ void perm_tsp76()
     benchmarkTSP(GA, 1000, TSP76{});
 }
 
-void perm_tsp124()
+inline void perm_tsp124()
 {
     PermutationGA GA(500);
 
@@ -47,7 +47,7 @@ void perm_tsp124()
     benchmarkTSP(GA, 1500, TSP124{});
 }
 
-void perm_tsp152()
+inline void perm_tsp152()
 {
     PermutationGA GA(500);
 
@@ -58,7 +58,7 @@ void perm_tsp152()
     benchmarkTSP(GA, 1250, TSP152{});
 }
 
-void perm_tsp226()
+inline void perm_tsp226()
 {
     PermutationGA GA(500);
 
@@ -69,7 +69,7 @@ void perm_tsp226()
     benchmarkTSP(GA, 1250, TSP226{});
 }
 
-void perm_tsp299()
+inline void perm_tsp299()
 {
     PermutationGA GA(500);
 
@@ -80,7 +80,7 @@ void perm_tsp299()
     benchmarkTSP(GA, 1000, TSP299{});
 }
 
-void perm_tsp439()
+inline void perm_tsp439()
 {
     PermutationGA GA(500);
 

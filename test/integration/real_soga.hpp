@@ -14,7 +14,7 @@
 using namespace gapp;
 using namespace gapp::problems;
 
-void real_sphere()
+inline void real_sphere()
 {
     RCGA GA(200);
 
@@ -26,7 +26,7 @@ void real_sphere()
     benchmarkSoga(GA, 1000, Sphere{ 10 });
 }
 
-void real_rastrigin()
+inline void real_rastrigin()
 {
     RCGA GA(100);
 
@@ -38,7 +38,7 @@ void real_rastrigin()
     benchmarkSoga(GA, 1000, Rastrigin{ 10 });
 }
 
-void real_rosenbrock()
+inline void real_rosenbrock()
 {
     RCGA GA(500);
 
@@ -50,7 +50,7 @@ void real_rosenbrock()
     benchmarkSoga(GA, 2000, Rosenbrock{ 10 });
 }
 
-void real_schwefel()
+inline void real_schwefel()
 {
     RCGA GA(500);
 
@@ -62,7 +62,7 @@ void real_schwefel()
     benchmarkSoga(GA, 1000, Schwefel{ 10 });
 }
 
-void real_griewank()
+inline void real_griewank()
 {
     RCGA GA(200);
 
@@ -73,7 +73,7 @@ void real_griewank()
     benchmarkSoga(GA, 1500, Griewank{ 10 });
 }
 
-void real_ackley()
+inline void real_ackley()
 {
     RCGA GA(200);
 
@@ -85,7 +85,7 @@ void real_ackley()
     benchmarkSoga(GA, 1000, Ackley{ 10 });
 }
 
-void real_levy()
+inline void real_levy()
 {
     RCGA GA(200);
 

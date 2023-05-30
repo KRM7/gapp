@@ -180,7 +180,7 @@ if(GAPP_BUILD_TESTS AND BUILD_TESTING AND PROJECT_IS_TOP_LEVEL)
     enable_testing()
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test/unit")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test/integration")
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test/benchmarks")
+    #add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test/benchmark")
 endif()
 
 if(GAPP_BUILD_EXAMPLES AND PROJECT_IS_TOP_LEVEL)

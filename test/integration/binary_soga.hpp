@@ -15,7 +15,7 @@
 using namespace gapp;
 using namespace gapp::problems;
 
-void binary_sphere()
+inline void binary_sphere()
 {
     BinaryGA GA(200);
 
@@ -27,7 +27,7 @@ void binary_sphere()
     benchmarkSoga(GA, 1000, Sphere{ 100 });
 }
 
-void binary_rastrigin()
+inline void binary_rastrigin()
 {
     BinaryGA GA(400);
 
@@ -39,7 +39,7 @@ void binary_rastrigin()
     benchmarkSoga(GA, 1000, Rastrigin{ 10 });
 }
 
-void binary_rosenbrock()
+inline void binary_rosenbrock()
 {
     BinaryGA GA(300);
 
@@ -50,7 +50,7 @@ void binary_rosenbrock()
     benchmarkSoga(GA, 1500, Rosenbrock{ 10 });
 }
 
-void binary_schwefel()
+inline void binary_schwefel()
 {
     BinaryGA GA(200);
 
@@ -62,7 +62,7 @@ void binary_schwefel()
     benchmarkSoga(GA, 1500, Schwefel{ 10 });
 }
 
-void binary_griewank()
+inline void binary_griewank()
 {
     BinaryGA GA(200);
 
@@ -74,7 +74,7 @@ void binary_griewank()
     benchmarkSoga(GA, 1500, Griewank{ 10 });
 }
 
-void binary_ackley()
+inline void binary_ackley()
 {
     BinaryGA GA(250);
 
@@ -86,7 +86,7 @@ void binary_ackley()
     benchmarkSoga(GA, 2500, Ackley{ 10 });
 }
 
-void binary_levy()
+inline void binary_levy()
 {
     BinaryGA GA(250);
 
