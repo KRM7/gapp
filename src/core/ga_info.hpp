@@ -272,6 +272,20 @@ namespace gapp
         requires (std::derived_from<Metric, metrics::MonitorBase> && std::is_final_v<Metric>)
         const Metric& get_metric() const noexcept;
 
+        /**
+        * Get one of the metrics tracked by the algorithm.
+        *
+        * This function is similar to the get_metric() method, but it returns a pointer
+        * to the metric, which will be a nullptr if the given metric is not being tracked
+        * by the %GA.
+        *
+        * @tparam Metric The tracked metric to get.
+        * @returns The metric of the specified type if it is tracked, or nullptr otherwise.
+        */
+        template<typename Metric>
+        requires (std::derived_from<Metric, metrics::MonitorBase>&& std::is_final_v<Metric>)
+        const Metric* get_metric_if() const noexcept;
+
 
         /**
         * When set to true, all pareto-optimal candidates found by the %GA during a run
@@ -368,6 +382,13 @@ namespace gapp
         GA_ASSERT(metrics_.get<Metric>(), "Attempting to get an untracked metric type is invalid.");
 
         return *metrics_.get<Metric>();
+    }
+
+    template<typename Metric>
+    requires (std::derived_from<Metric, metrics::MonitorBase>&& std::is_final_v<Metric>)
+    const Metric* GaInfo::get_metric_if() const noexcept
+    {
+        return metrics_.get<Metric>();
     }
 
 } // namespace gapp
