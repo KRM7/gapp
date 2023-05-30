@@ -68,12 +68,12 @@ namespace gapp::stopping::dtl
 
 namespace gapp::stopping
 {
-    constexpr auto operator&&(detail::Leaf<StopCondition> auto lhs, detail::Leaf<StopCondition> auto rhs) noexcept
+    constexpr auto operator&&(std::derived_from<StopCondition> auto lhs, std::derived_from<StopCondition> auto rhs) noexcept
     {
         return dtl::AND{ std::move(lhs), std::move(rhs) };
     }
 
-    constexpr auto operator||(detail::Leaf<StopCondition> auto lhs, detail::Leaf<StopCondition> auto rhs) noexcept
+    constexpr auto operator||(std::derived_from<StopCondition> auto lhs, std::derived_from<StopCondition> auto rhs) noexcept
     {
         return dtl::OR{ std::move(lhs), std::move(rhs) };
     }

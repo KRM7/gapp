@@ -72,16 +72,16 @@ namespace gapp
 
     template<typename T>
     template<typename AlgorithmType>
-    requires std::derived_from<AlgorithmType, algorithm::Algorithm> && std::is_final_v<AlgorithmType>
+    requires std::derived_from<AlgorithmType, algorithm::Algorithm>
     GA<T>::GA(Positive<size_t> population_size, AlgorithmType algorithm) :
         GA(population_size, std::make_unique<AlgorithmType>(std::move(algorithm)))
     {}
 
     template<typename T>
     template<typename CrossoverType, typename MutationType, typename StoppingType>
-    requires std::derived_from<CrossoverType, crossover::Crossover<T>> && std::is_final_v<CrossoverType> &&
-             std::derived_from<MutationType, mutation::Mutation<T>> && std::is_final_v<MutationType> &&
-             std::derived_from<StoppingType, stopping::StopCondition> && std::is_final_v<StoppingType>
+    requires std::derived_from<CrossoverType, crossover::Crossover<T>> &&
+             std::derived_from<MutationType, mutation::Mutation<T>> &&
+             std::derived_from<StoppingType, stopping::StopCondition>
     GA<T>::GA(Positive<size_t> population_size, CrossoverType crossover, MutationType mutation, StoppingType stop_condition) :
         GA(population_size,
            std::make_unique<algorithm::SingleObjective>(),
@@ -92,10 +92,10 @@ namespace gapp
 
     template<typename T>
     template<typename AlgorithmType, typename CrossoverType, typename MutationType, typename StoppingType>
-    requires std::derived_from<AlgorithmType, algorithm::Algorithm> && std::is_final_v<AlgorithmType> &&
-             std::derived_from<CrossoverType, crossover::Crossover<T>> && std::is_final_v<CrossoverType> &&
-             std::derived_from<MutationType, mutation::Mutation<T>> && std::is_final_v<MutationType> &&
-             std::derived_from<StoppingType, stopping::StopCondition> && std::is_final_v<StoppingType>
+    requires std::derived_from<AlgorithmType, algorithm::Algorithm> &&
+             std::derived_from<CrossoverType, crossover::Crossover<T>> &&
+             std::derived_from<MutationType, mutation::Mutation<T>> &&
+             std::derived_from<StoppingType, stopping::StopCondition>
     GA<T>::GA(Positive<size_t> population_size, AlgorithmType algorithm, CrossoverType crossover, MutationType mutation, StoppingType stop_condition) :
         GA(population_size,
            std::make_unique<AlgorithmType>(std::move(algorithm)),
@@ -139,7 +139,7 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires std::derived_from<F, crossover::Crossover<T>> && std::is_final_v<F>
+    requires std::derived_from<F, crossover::Crossover<T>>
     inline void GA<T>::crossover_method(F f)
     {
         crossover_ = std::make_unique<F>(std::move(f));
@@ -185,7 +185,7 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires std::derived_from<F, mutation::Mutation<T>> && std::is_final_v<F>
+    requires std::derived_from<F, mutation::Mutation<T>>
     inline void GA<T>::mutation_method(F f)
     {
         mutation_ = std::make_unique<F>(std::move(f));
@@ -567,7 +567,7 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, Population<T> initial_population)
     {
         return solve(std::make_unique<F>(std::move(fitness_function)), max_gen(), std::move(initial_population));
@@ -575,7 +575,7 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, size_t generations, Population<T> initial_population)
     {
         return solve(std::make_unique<F>(std::move(fitness_function)), generations, std::move(initial_population));
@@ -605,7 +605,7 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, BoundsVector<T> bounds, Population<T> initial_population)
     {
         return solve(std::make_unique<F>(std::move(fitness_function)), std::move(bounds), max_gen(), std::move(initial_population));
@@ -613,7 +613,7 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, Bounds<T> bounds, Population<T> initial_population)
     {
         const size_t chrom_len = fitness_function.chrom_len();
@@ -623,7 +623,7 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population)
     {
         return solve(std::make_unique<F>(std::move(fitness_function)), std::move(bounds), generations, std::move(initial_population));
@@ -631,7 +631,7 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population)
     {
         const size_t chrom_len = fitness_function.chrom_len();

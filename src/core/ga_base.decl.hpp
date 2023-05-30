@@ -147,7 +147,7 @@ namespace gapp
         * @param algorithm The algorithm to use.
         */
         template<typename AlgorithmType>
-        requires std::derived_from<AlgorithmType, algorithm::Algorithm> && std::is_final_v<AlgorithmType>
+        requires std::derived_from<AlgorithmType, algorithm::Algorithm>
         GA(Positive<size_t> population_size, AlgorithmType algorithm);
 
         /**
@@ -161,9 +161,9 @@ namespace gapp
         * @param stop_condition The early-stop condition to use.
         */
         template<typename CrossoverType, typename MutationType, typename StoppingType = stopping::NoEarlyStop>
-        requires std::derived_from<CrossoverType, crossover::Crossover<T>> && std::is_final_v<CrossoverType> &&
-                 std::derived_from<MutationType, mutation::Mutation<T>> && std::is_final_v<MutationType> &&
-                 std::derived_from<StoppingType, stopping::StopCondition> && std::is_final_v<StoppingType>
+        requires std::derived_from<CrossoverType, crossover::Crossover<T>> &&
+                 std::derived_from<MutationType, mutation::Mutation<T>> &&
+                 std::derived_from<StoppingType, stopping::StopCondition>
         GA(Positive<size_t> population_size, CrossoverType crossover, MutationType mutation, StoppingType stop_condition = {});
 
         /**
@@ -176,10 +176,10 @@ namespace gapp
         * @param stop_condition The early-stop condition to use.
         */
         template<typename AlgorithmType, typename CrossoverType, typename MutationType, typename StoppingType = stopping::NoEarlyStop>
-        requires std::derived_from<AlgorithmType, algorithm::Algorithm> && std::is_final_v<AlgorithmType> &&
-                 std::derived_from<CrossoverType, crossover::Crossover<T>> && std::is_final_v<CrossoverType> &&
-                 std::derived_from<MutationType, mutation::Mutation<T>> && std::is_final_v<MutationType> &&
-                 std::derived_from<StoppingType, stopping::StopCondition> && std::is_final_v<StoppingType>
+        requires std::derived_from<AlgorithmType, algorithm::Algorithm> &&
+                 std::derived_from<CrossoverType, crossover::Crossover<T>> &&
+                 std::derived_from<MutationType, mutation::Mutation<T>> &&
+                 std::derived_from<StoppingType, stopping::StopCondition>
         GA(Positive<size_t> population_size, AlgorithmType algorithm, CrossoverType crossover, MutationType mutation, StoppingType stop_condition = {});
 
 
@@ -210,7 +210,7 @@ namespace gapp
         * @param f The crossover method to use.
         */
         template<typename F>
-        requires std::derived_from<F, crossover::Crossover<T>> && std::is_final_v<F>
+        requires std::derived_from<F, crossover::Crossover<T>>
         void crossover_method(F f);
 
         /**
@@ -270,7 +270,7 @@ namespace gapp
         * @param f The mutation method to use.
         */
         template<typename F>
-        requires std::derived_from<F, mutation::Mutation<T>> && std::is_final_v<F>
+        requires std::derived_from<F, mutation::Mutation<T>>
         void mutation_method(F f);
 
         /**
@@ -396,7 +396,7 @@ namespace gapp
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
         Candidates<T> solve(F fitness_function, Population<T> initial_population = {});
 
         /**
@@ -413,7 +413,7 @@ namespace gapp
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
         Candidates<T> solve(F fitness_function, size_t generations, Population<T> initial_population = {});
 
 
@@ -495,7 +495,7 @@ namespace gapp
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
         Candidates<T> solve(F fitness_function, BoundsVector<T> bounds, Population<T> initial_population = {});
 
         /**
@@ -512,7 +512,7 @@ namespace gapp
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
         Candidates<T> solve(F fitness_function, Bounds<T> bounds, Population<T> initial_population = {});
 
         /**
@@ -530,7 +530,7 @@ namespace gapp
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
         Candidates<T> solve(F fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population = {});
 
         /**
@@ -548,7 +548,7 @@ namespace gapp
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>> && std::is_final_v<F>)
+        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
         Candidates<T> solve(F fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population = {});
 
     private:

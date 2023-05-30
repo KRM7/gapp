@@ -22,11 +22,11 @@ namespace gapp::detail
     {
     public:
         template<typename... Metrics>
-        requires ((std::derived_from<Metrics, metrics::MonitorBase> && std::is_final_v<Metrics>) && ...)
+        requires (std::derived_from<Metrics, metrics::MonitorBase> && ...)
         MetricSet(Metrics... metrics);
 
         template<typename Metric>
-        requires (std::derived_from<Metric, metrics::MonitorBase> && std::is_final_v<Metric>)
+        requires std::derived_from<Metric, metrics::MonitorBase>
         const Metric* get() const noexcept;
 
         void initialize(const GaInfo& ga);
@@ -47,7 +47,7 @@ namespace gapp::detail
 namespace gapp::detail
 {
     template<typename... Metrics>
-    requires ((std::derived_from<Metrics, metrics::MonitorBase> && std::is_final_v<Metrics>) && ...)
+    requires (std::derived_from<Metrics, metrics::MonitorBase> && ...)
     MetricSet::MetricSet(Metrics... metrics)
     {
         metrics_.reserve(sizeof...(metrics));
@@ -55,7 +55,7 @@ namespace gapp::detail
     }
 
     template<typename Metric>
-    requires (std::derived_from<Metric, metrics::MonitorBase> && std::is_final_v<Metric>)
+    requires std::derived_from<Metric, metrics::MonitorBase>
     const Metric* MetricSet::get() const noexcept
     {
         auto found = std::find_if(metrics_.begin(), metrics_.end(), [](const auto& metric) { return metric->type_id() == detail::type_id<Metric>; });

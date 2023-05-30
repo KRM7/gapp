@@ -59,7 +59,7 @@ namespace gapp::algorithm
         * @param selection The selection method to use.
         */
         template<typename S>
-        requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
+        requires std::derived_from<S, selection::Selection>
         explicit SingleObjective(S selection);
 
         /**
@@ -69,8 +69,7 @@ namespace gapp::algorithm
         * @param replacement The replacement policy to use.
         */
         template<typename S, typename R>
-        requires std::derived_from<S, selection::Selection> && std::is_final_v<S> &&
-                 std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
+        requires std::derived_from<S, selection::Selection> && std::derived_from<R, replacement::Replacement>
         SingleObjective(S selection, R replacement);
 
         /**
@@ -110,7 +109,7 @@ namespace gapp::algorithm
         * @param selection The selection method to use.
         */
         template<typename S>
-        requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
+        requires std::derived_from<S, selection::Selection>
         void selection_method(S selection);
 
         /**
@@ -144,7 +143,7 @@ namespace gapp::algorithm
         * @param replacement The replacement policy to use.
         */
         template<typename R>
-        requires std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
+        requires std::derived_from<R, replacement::Replacement>
         void replacement_method(R replacement);
 
         /**
@@ -195,27 +194,26 @@ namespace gapp::algorithm
     {}
 
     template<typename S>
-    requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
+    requires std::derived_from<S, selection::Selection>
     inline SingleObjective::SingleObjective(S selection) :
         SingleObjective(std::move(selection), DefaultReplacement{})
     {}
 
     template<typename S, typename R>
-    requires std::derived_from<S, selection::Selection> && std::is_final_v<S> &&
-             std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
+    requires std::derived_from<S, selection::Selection> && std::derived_from<R, replacement::Replacement>
     inline SingleObjective::SingleObjective(S selection, R replacement) :
         selection_(std::make_unique<S>(std::move(selection))), replacement_(std::make_unique<R>(std::move(replacement)))
     {}
 
     template<typename S>
-    requires std::derived_from<S, selection::Selection> && std::is_final_v<S>
+    requires std::derived_from<S, selection::Selection>
     inline void SingleObjective::selection_method(S selection)
     {
         selection_ = std::make_unique<S>(std::move(selection));
     }
 
     template<typename R>
-    requires std::derived_from<R, replacement::Replacement> && std::is_final_v<R>
+    requires std::derived_from<R, replacement::Replacement>
     inline void SingleObjective::replacement_method(R replacement)
     {
         replacement_ = std::make_unique<R>(std::move(replacement));

@@ -164,7 +164,7 @@ namespace gapp
         * @param f The algorithm used by the %GA.
         */
         template<typename F>
-        requires std::derived_from<F, algorithm::Algorithm> && std::is_final_v<F>
+        requires std::derived_from<F, algorithm::Algorithm>
         void algorithm(F f);
 
         /**
@@ -191,7 +191,7 @@ namespace gapp
         * @param f The early stop condition the %GA should use.
         */
         template<typename F>
-        requires std::derived_from<F, stopping::StopCondition> && std::is_final_v<F>
+        requires std::derived_from<F, stopping::StopCondition>
         void stop_condition(F f);
 
         /**
@@ -241,7 +241,7 @@ namespace gapp
         * @param metrics The metrics to track during the runs of the algorithm.
         */
         template<typename... Metrics>
-        requires ((std::derived_from<Metrics, metrics::MonitorBase> && std::is_final_v<Metrics>) && ...)
+        requires (std::derived_from<Metrics, metrics::MonitorBase> && ...)
         void track(Metrics... metrics);
 
         /**
@@ -269,7 +269,7 @@ namespace gapp
         * @returns The metric of the specified type if it is tracked, otherwise undefined.
         */
         template<typename Metric>
-        requires (std::derived_from<Metric, metrics::MonitorBase> && std::is_final_v<Metric>)
+        requires std::derived_from<Metric, metrics::MonitorBase>
         const Metric& get_metric() const noexcept;
 
         /**
@@ -283,7 +283,7 @@ namespace gapp
         * @returns The metric of the specified type if it is tracked, or nullptr otherwise.
         */
         template<typename Metric>
-        requires (std::derived_from<Metric, metrics::MonitorBase>&& std::is_final_v<Metric>)
+        requires std::derived_from<Metric, metrics::MonitorBase>
         const Metric* get_metric_if() const noexcept;
 
 
@@ -354,7 +354,7 @@ namespace gapp
 namespace gapp
 {
     template<typename F>
-    requires std::derived_from<F, algorithm::Algorithm> && std::is_final_v<F>
+    requires std::derived_from<F, algorithm::Algorithm>
     inline void GaInfo::algorithm(F f)
     {
         algorithm_ = std::make_unique<F>(std::move(f));
@@ -362,22 +362,22 @@ namespace gapp
     }
 
     template<typename F>
-    requires std::derived_from<F, stopping::StopCondition> && std::is_final_v<F>
+    requires std::derived_from<F, stopping::StopCondition>
     inline void GaInfo::stop_condition(F f)
     {
         stop_condition_ = std::make_unique<F>(std::move(f));
     }
 
     template<typename... Metrics>
-    requires ((std::derived_from<Metrics, metrics::MonitorBase> && std::is_final_v<Metrics>) && ...)
-    void GaInfo::track(Metrics... metrics)
+    requires (std::derived_from<Metrics, metrics::MonitorBase> && ...)
+    inline void GaInfo::track(Metrics... metrics)
     {
         metrics_ = detail::MetricSet{ std::move(metrics)... };
     }
 
     template<typename Metric>
-    requires (std::derived_from<Metric, metrics::MonitorBase> && std::is_final_v<Metric>)
-    const Metric& GaInfo::get_metric() const noexcept
+    requires std::derived_from<Metric, metrics::MonitorBase>
+    inline const Metric& GaInfo::get_metric() const noexcept
     {
         GA_ASSERT(metrics_.get<Metric>(), "Attempting to get an untracked metric type is invalid.");
 
@@ -385,8 +385,8 @@ namespace gapp
     }
 
     template<typename Metric>
-    requires (std::derived_from<Metric, metrics::MonitorBase>&& std::is_final_v<Metric>)
-    const Metric* GaInfo::get_metric_if() const noexcept
+    requires std::derived_from<Metric, metrics::MonitorBase>
+    inline const Metric* GaInfo::get_metric_if() const noexcept
     {
         return metrics_.get<Metric>();
     }
