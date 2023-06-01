@@ -104,29 +104,31 @@ namespace gapp
            std::make_unique<StoppingType>(std::move(stop_condition)))
     {}
 
+    
+    template<typename T>
+    inline const FitnessFunctionBase<T>& GA<T>::fitness_function() const& noexcept
+    {
+        GA_ASSERT(fitness_function_, "No fitness function is set for the GA.");
+
+        return *fitness_function_;
+    }
 
     template<typename T>
     inline size_t GA<T>::chrom_len() const noexcept
     {
-        GA_ASSERT(fitness_function_, "This method can only be called after a fitness function was set.");
-
-        return fitness_function_->chrom_len();
+        return fitness_function().chrom_len();
     }
 
     template<typename T>
     inline bool GA<T>::variable_chrom_len() const noexcept
     {
-        GA_ASSERT(fitness_function_, "This method can only be called after a fitness function was set.");
-
-        return fitness_function_->variable_chrom_len();
+        return fitness_function().variable_chrom_len();
     }
 
     template<typename T>
     inline bool GA<T>::dynamic_fitness() const noexcept
     {
-        GA_ASSERT(fitness_function_, "This method can only be called after a fitness function was set.");
-
-        return fitness_function_->dynamic();
+        return fitness_function().dynamic();
     }
 
 

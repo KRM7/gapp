@@ -183,6 +183,9 @@ namespace gapp
         GA(Positive<size_t> population_size, AlgorithmType algorithm, CrossoverType crossover, MutationType mutation, StoppingType stop_condition = {});
 
 
+        /** @returns The fitness function used. Undefined if no fitness function is set. */
+        const FitnessFunctionBase<T>& fitness_function() const& noexcept;
+
         /** @returns The chromosome length of the candidates of the population. */
         [[nodiscard]]
         size_t chrom_len() const noexcept final;
