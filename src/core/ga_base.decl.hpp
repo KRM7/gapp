@@ -78,7 +78,7 @@ namespace gapp
         * 
         * @see mutation_method
         */
-        using MutationCallable = std::function<void(const GA&, Candidate<T>&)>;
+        using MutationCallable = std::function<void(const GA&, const Candidate<T>&, Chromosome<T>&)>;
 
         /**
         * The general callable type that can be used as a repair function in the %GA.

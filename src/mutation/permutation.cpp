@@ -15,9 +15,9 @@
 
 namespace gapp::mutation::perm
 {
-    void Inversion::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
+    void Inversion::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        const size_t chrom_len = candidate.chromosome.size();
+        const size_t chrom_len = chromosome.size();
 
         if (chrom_len < 2) return;
 
@@ -30,40 +30,40 @@ namespace gapp::mutation::perm
             const size_t first = rng::randomInt(0_sz, chrom_len - range_len);
             const size_t last  = first + range_len;
 
-            std::reverse(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last);
+            std::reverse(chromosome.begin() + first, chromosome.begin() + last);
         }
     }
 
-    void Swap2::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
+    void Swap2::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        if (candidate.chromosome.size() < 2) return;
+        if (chromosome.size() < 2) return;
 
         if (rng::randomReal() <= mutation_rate())
         {
-            const auto idxs = rng::sampleUnique(0_sz, candidate.chromosome.size(), 2_sz);
+            const auto idxs = rng::sampleUnique(0_sz, chromosome.size(), 2_sz);
 
             using std::swap;
-            swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[1]]);
+            swap(chromosome[idxs[0]], chromosome[idxs[1]]);
         }
     }
 
-    void Swap3::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
+    void Swap3::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        if (candidate.chromosome.size() < 3) return;
+        if (chromosome.size() < 3) return;
 
         if (rng::randomReal() <= mutation_rate())
         {
-            const auto idxs = rng::sampleUnique(0_sz, candidate.chromosome.size(), 3_sz);
+            const auto idxs = rng::sampleUnique(0_sz, chromosome.size(), 3_sz);
 
             using std::swap;
-            swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[1]]);
-            swap(candidate.chromosome[idxs[0]], candidate.chromosome[idxs[2]]);
+            swap(chromosome[idxs[0]], chromosome[idxs[1]]);
+            swap(chromosome[idxs[0]], chromosome[idxs[2]]);
         }
     }
 
-    void Shuffle::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
+    void Shuffle::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        const size_t chrom_len = candidate.chromosome.size();
+        const size_t chrom_len = chromosome.size();
 
         if (chrom_len < 2) return;
 
@@ -76,13 +76,13 @@ namespace gapp::mutation::perm
             const size_t first = rng::randomInt(0_sz, chrom_len - range_len);
             const size_t last  = first + range_len;
 
-            std::shuffle(candidate.chromosome.begin() + first, candidate.chromosome.begin() + last, rng::prng);
+            std::shuffle(chromosome.begin() + first, chromosome.begin() + last, rng::prng);
         }
     }
 
-    void Shift::mutate(const GA<GeneType>&, Candidate<GeneType>& candidate) const
+    void Shift::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        const size_t chrom_len = candidate.chromosome.size();
+        const size_t chrom_len = chromosome.size();
 
         if (chrom_len < 2) return;
 
@@ -93,8 +93,8 @@ namespace gapp::mutation::perm
             const size_t range_len = rng::randomInt(min_len, max_len);
 
             const auto idxs = rng::sampleUnique(0_sz, chrom_len - range_len + 1, 2);
-            const auto src_first  = candidate.chromosome.begin() + ptrdiff_t(idxs[0]);
-            const auto dest_first = candidate.chromosome.begin() + ptrdiff_t(idxs[1]);
+            const auto src_first  = chromosome.begin() + ptrdiff_t(idxs[0]);
+            const auto dest_first = chromosome.begin() + ptrdiff_t(idxs[1]);
 
             const auto [first, middle, last] = (dest_first < src_first) ?
                 std::tuple(dest_first, src_first, src_first + range_len) :

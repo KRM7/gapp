@@ -19,7 +19,7 @@ namespace gapp::mutation
     class Lambda final : public Mutation<T>
     {
     public:
-        using MutationCallable = std::function<void(const GA<T>&, Candidate<T>&)>;
+        using MutationCallable = std::function<void(const GA<T>&, const Candidate<T>&, Chromosome<T>&)>;
 
         constexpr explicit Lambda(MutationCallable f) noexcept :
             Mutation<T>(0.01)
@@ -32,11 +32,11 @@ namespace gapp::mutation
     private:
         MutationCallable mutate_;
 
-        void mutate(const GA<T>& ga, Candidate<T>& candidate) const override
+        void mutate(const GA<T>& ga, const Candidate<T>& candidate, Chromosome<T>& chromosome) const override
         {
             GA_ASSERT(mutate_);
 
-            mutate_(ga, candidate);
+            mutate_(ga, candidate, chromosome);
         }
     };
 

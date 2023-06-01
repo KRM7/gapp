@@ -21,7 +21,7 @@ namespace gapp::mutation::real
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
     };
 
     /**
@@ -72,7 +72,7 @@ namespace gapp::mutation::real
         constexpr GeneType beta() const noexcept { return beta_; }
 
     private:
-        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
 
         NonNegative<GeneType> beta_;
     };
@@ -125,7 +125,7 @@ namespace gapp::mutation::real
         constexpr GeneType sigma() const noexcept { return sigma_; }
 
     private:
-        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
 
         Positive<GeneType> sigma_;
     };
@@ -174,7 +174,7 @@ namespace gapp::mutation::real
         constexpr GeneType eta() const noexcept { return eta_; }
 
     private:
-        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
 
         NonNegative<GeneType> eta_;
     };
@@ -191,7 +191,7 @@ namespace gapp::mutation::real
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
     };
 
 } // namespace gapp::mutation::real

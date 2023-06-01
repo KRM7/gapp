@@ -19,7 +19,7 @@ namespace gapp::mutation::binary
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<GeneType>& ga, Candidate<GeneType>& candidate) const override;
+        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
     };
 
 } // namespace gapp::mutation::binary

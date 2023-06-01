@@ -19,8 +19,7 @@ namespace gapp::mutation
 
         if (!candidate.is_evaluated)
         {
-            mutate(ga, candidate);
-            candidate.is_evaluated = false;
+            mutate(ga, candidate, candidate.chromosome);
         }
         else
         {
@@ -29,16 +28,12 @@ namespace gapp::mutation
                doesn't change the chromosome. */
             thread_local Chromosome<T> old_chromosome; old_chromosome = candidate.chromosome;
 
-            /* Assume that the call to mutate() doesn't change the fitness vector. */
-            mutate(ga, candidate);
+            mutate(ga, candidate, candidate.chromosome);
             candidate.is_evaluated = (candidate.chromosome == old_chromosome);
         }
 
         GA_ASSERT(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len(),
                   "The mutation resulted in a candidate with incorrect chromosome length.");
-
-        GA_ASSERT(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives(),
-                  "The mutation incorrectly modified the fitness vector of the candidate.");
     }
 
 } // namespace gapp::mutation

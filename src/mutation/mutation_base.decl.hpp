@@ -81,11 +81,10 @@ namespace gapp::mutation
 
         /**
         * The implementation of the mutation operator. Performs the mutation
-        * on the given candidate's chromosome in-place with the set probability.
-        * This function should only change the chromosome of the candidate,
-        * and must handle the mutation probability properly as part of its
-        * implementation. The results of the mutation should be valid candidate
-        * solutions for the given problem and %GA.
+        * on the given chromosome in-place with the set probability.
+        * This function must handle the mutation probability properly as part
+        * of its implementation. The mutated chromosome should be valid candidate
+        * solution for the given problem and %GA.
         * 
         * This method will be called exactly once for each child solution
         * in every population.
@@ -94,9 +93,10 @@ namespace gapp::mutation
         * GAs (which is true by default).
         * 
         * @param ga The genetic algorithm the mutation operator is being used in.
-        * @param candidate The candidate solution to mutate.
+        * @param candidate The candidate solution that will be mutated.
+        * @param chromosome The chromosome to mutate. This is the chromosome of @p candidate.
         */
-        virtual void mutate(const GA<T>& ga, Candidate<T>& candidate) const = 0;
+        virtual void mutate(const GA<T>& ga, const Candidate<T>& candidate, Chromosome<T>& chromosome) const = 0;
 
         Probability pm_;
     };
