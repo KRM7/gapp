@@ -21,8 +21,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
 
 # Set the default build type to release
 if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release|RelWithDebInfo)$")
-    message(WARNING "The specified build type [${CMAKE_BUILD_TYPE}] is not recognized. Defaulting to Release.")
-    set(CMAKE_BUILD_TYPE "Release")
+    message(WARNING "The specified build type [${CMAKE_BUILD_TYPE}] is not recognized. Defaulting to RelWithDebInfo.")
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
 # Shared library specific settings
