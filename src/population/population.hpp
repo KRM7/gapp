@@ -95,7 +95,7 @@ namespace gapp::detail
 
         return detail::select(pop, optimal_indices);
     }
-    
+
     template<typename T>
     Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs)
     {
@@ -113,18 +113,20 @@ namespace gapp::detail
         {
             for (size_t j = 0; j < rhs.size(); j++)
             {
+                const Dominance rhs_state_j = rhs_state[j].load(std::memory_order_acquire);
+
                 if (lhs_state[i] == DOMINATED) continue;
-                if (rhs_state[j] == DOMINATED) continue;
+                if (rhs_state_j  == DOMINATED) continue;
 
                 if (lhs_state[i] == OPTIMAL)
                 {
-                    if (math::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
+                    if (rhs_state_j == UNKNOWN && math::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
                     {
-                        rhs_state[j] = DOMINATED;
+                        rhs_state[j].store(DOMINATED, std::memory_order_release);
                     }
                     continue;
                 }
-                if (rhs_state[j] == OPTIMAL)
+                if (rhs_state_j == OPTIMAL)
                 {
                     if (math::paretoCompareLess(lhs[i].fitness, rhs[j].fitness))
                     {
@@ -137,12 +139,12 @@ namespace gapp::detail
                 if (comp < 0)
                 {
                     lhs_state[i] = DOMINATED;
-                    rhs_state[j] = OPTIMAL;
+                    rhs_state[j].store(OPTIMAL, std::memory_order_release);
                 }
                 else if (comp > 0)
                 {
                     lhs_state[i] = OPTIMAL;
-                    rhs_state[j] = DOMINATED;
+                    rhs_state[j].store(DOMINATED, std::memory_order_release);
                 }
                 // comp == 0 --> both are OPTIMAL or DOMINATED, can't know
             }
@@ -153,7 +155,7 @@ namespace gapp::detail
 
         for (size_t i = 0; i < rhs.size(); i++)
         {
-            if (rhs_state[i] != DOMINATED) optimal_solutions.push_back(std::move(rhs[i]));
+            if (rhs_state[i].load(std::memory_order_relaxed) != DOMINATED) optimal_solutions.push_back(std::move(rhs[i]));
         }
         for (size_t i = 0; i < lhs.size(); i++)
         {
