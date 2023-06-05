@@ -6,7 +6,7 @@
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=/analyze:WX-",
+      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=/analyze:WX- -DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
       "enableMicrosoftCodeAnalysis": false,
@@ -18,7 +18,7 @@
       "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=-analyze:WX-",
+      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=-analyze:WX- -DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
       "enableMicrosoftCodeAnalysis": false,
@@ -30,7 +30,7 @@
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=-analyze:WX-",
+      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=-analyze:WX- -DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
       "enableMicrosoftCodeAnalysis": false,
@@ -42,7 +42,7 @@
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
+      "cmakeCommandArgs": "-DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "inheritEnvironments": [ "clang_cl_x64_x64" ]
     },
@@ -52,7 +52,7 @@
       "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
+      "cmakeCommandArgs": "-DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "inheritEnvironments": [ "clang_cl_x64_x64" ]
     },
@@ -62,7 +62,7 @@
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
+      "cmakeCommandArgs": "-DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "inheritEnvironments": [ "clang_cl_x64_x64" ]
     },
@@ -72,11 +72,11 @@
       "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=-analyze:WX- -DBUILD_SHARED_LIBS=ON",
+      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=-analyze:WX- -DBUILD_SHARED_LIBS=ON -DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
       "enableMicrosoftCodeAnalysis": false,
-      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "inheritEnvironments": [ "msvc_x64_x64" ]
     }
   ]
 }
