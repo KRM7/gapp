@@ -1,9 +1,9 @@
-# Install guide
+﻿# Install guide
 
 [Requirements](#requirements)  
 [Install with CMake](#install-with-cmake)  
 [Usage with CMake](#usage-with-cmake)  
-[Using FetchContent](#using-fetch-content)  
+[Using FetchContent](#using-fetchcontent)  
 [CMake project options](#cmake-project-options)  
 [Building the API docs](#building-the-api-docs)
 
@@ -169,6 +169,9 @@ target_link_libraries(example_project PRIVATE gapp::gapp)
     also be built along with the library. This option can be used to control when the tests are built
     when using the library as a subproject, without having to change the value of `BUILD_TESTING`.
     The default value is `ON`.
+
+- `GAPP_BUILD_BENCHMARKS` - When this options and the `BUILD_TESTING` options are both `ON`, the
+    benchmarks will also be built. The default value is `OFF`.
 
 - `GAPP_BUILD_EXAMPLES` - When this option is `ON`, the usage examples in the examples folder will
     also be built. The default value is `OFF`.
