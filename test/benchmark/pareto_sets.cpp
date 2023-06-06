@@ -49,22 +49,6 @@ TEST_CASE("merge_pareto_sets_size", "[benchmark]")
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
-    BENCHMARK_ADVANCED("merge_medium")(Benchmark::Chronometer meter)
-    {
-        Population<int> lhs = randomPopulation(medium_size, num_obj);
-        Population<int> rhs = randomPopulation(medium_size, num_obj);
-
-        meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
-    };
-
-    BENCHMARK_ADVANCED("merge_large")(Benchmark::Chronometer meter)
-    {
-        Population<int> lhs = randomPopulation(large_size, num_obj);
-        Population<int> rhs = randomPopulation(large_size, num_obj);
-
-        meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
-    };
-
     BENCHMARK_ADVANCED("append_small")(Benchmark::Chronometer meter)
     {
         Population<int> lhs = randomPopulation(small_size, num_obj);
@@ -78,6 +62,14 @@ TEST_CASE("merge_pareto_sets_size", "[benchmark]")
         });
     };
 
+    BENCHMARK_ADVANCED("merge_medium")(Benchmark::Chronometer meter)
+    {
+        Population<int> lhs = randomPopulation(medium_size, num_obj);
+        Population<int> rhs = randomPopulation(medium_size, num_obj);
+
+        meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
+    };
+
     BENCHMARK_ADVANCED("append_medium")(Benchmark::Chronometer meter)
     {
         Population<int> lhs = randomPopulation(medium_size, num_obj);
@@ -89,6 +81,14 @@ TEST_CASE("merge_pareto_sets_size", "[benchmark]")
             lhs.insert(lhs.end(), rhs.begin(), rhs.end());
             return findParetoFront(lhs);
         });
+    };
+
+    BENCHMARK_ADVANCED("merge_large")(Benchmark::Chronometer meter)
+    {
+        Population<int> lhs = randomPopulation(large_size, num_obj);
+        Population<int> rhs = randomPopulation(large_size, num_obj);
+
+        meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
     BENCHMARK_ADVANCED("append_large")(Benchmark::Chronometer meter)
