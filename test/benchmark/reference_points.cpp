@@ -21,7 +21,7 @@ static double hypervolumeOf(size_t dim, size_t count)
     fmat.reserve(count, dim);
     for (const auto& point : points) { fmat.append_row(point); }
 
-    return gapp::detail::hypervolume(fmat, math::Point(dim, 0.0));
+    return detail::hypervolume(fmat, math::Point(dim, 0.0));
 }
 
 

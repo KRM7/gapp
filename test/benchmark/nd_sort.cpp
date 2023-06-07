@@ -1,6 +1,7 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include "algorithm/nd_sort.hpp"
 #include "population/population.hpp"
@@ -27,48 +28,20 @@ static FitnessMatrix randomFitnessMatrix(size_t pop_size, size_t num_obj)
 TEST_CASE("nd_sort_popsize", "[benchmark]")
 {
     constexpr size_t num_obj = 3;
-    constexpr size_t small_size = 40;
-    constexpr size_t medium_size = 200;
-    constexpr size_t large_size = 1500;
+    const size_t popsize = GENERATE(40, 200, 1500);
 
-    BENCHMARK_ADVANCED("fnds_small")(Benchmark::Chronometer meter)
+    WARN("Population size: " << popsize);
+
+    BENCHMARK_ADVANCED("FNDS")(Benchmark::Chronometer meter)
     {
-        FitnessMatrix fmat = randomFitnessMatrix(small_size, num_obj);
+        FitnessMatrix fmat = randomFitnessMatrix(popsize, num_obj);
 
         meter.measure([&] { return fastNonDominatedSort(fmat.begin(), fmat.end()); });
     };
 
-    BENCHMARK_ADVANCED("dds_small")(Benchmark::Chronometer meter)
+    BENCHMARK_ADVANCED("DDS")(Benchmark::Chronometer meter)
     {
-        FitnessMatrix fmat = randomFitnessMatrix(small_size, num_obj);
-
-        meter.measure([&] { return dominanceDegreeSort(fmat.begin(), fmat.end()); });
-    };
-
-    BENCHMARK_ADVANCED("fnds_medium")(Benchmark::Chronometer meter)
-    {
-        FitnessMatrix fmat = randomFitnessMatrix(medium_size, num_obj);
-
-        meter.measure([&] { return fastNonDominatedSort(fmat.begin(), fmat.end()); });
-    };
-
-    BENCHMARK_ADVANCED("dds_medium")(Benchmark::Chronometer meter)
-    {
-        FitnessMatrix fmat = randomFitnessMatrix(medium_size, num_obj);
-
-        meter.measure([&] { return dominanceDegreeSort(fmat.begin(), fmat.end()); });
-    };
-
-    BENCHMARK_ADVANCED("fnds_large")(Benchmark::Chronometer meter)
-    {
-        FitnessMatrix fmat = randomFitnessMatrix(large_size, num_obj);
-
-        meter.measure([&] { return fastNonDominatedSort(fmat.begin(), fmat.end()); });
-    };
-
-    BENCHMARK_ADVANCED("dds_large")(Benchmark::Chronometer meter)
-    {
-        FitnessMatrix fmat = randomFitnessMatrix(large_size, num_obj);
+        FitnessMatrix fmat = randomFitnessMatrix(popsize, num_obj);
 
         meter.measure([&] { return dominanceDegreeSort(fmat.begin(), fmat.end()); });
     };
@@ -78,48 +51,20 @@ TEST_CASE("nd_sort_popsize", "[benchmark]")
 TEST_CASE("nd_sort_num_objectives", "[benchmark]")
 {
     constexpr size_t popsize = 200;
-    constexpr size_t small_obj = 2;
-    constexpr size_t medium_obj = 15;
-    constexpr size_t large_obj = 100;
+    const size_t num_obj = GENERATE(2, 15, 100);
 
-    BENCHMARK_ADVANCED("fnds_small")(Benchmark::Chronometer meter)
+    WARN("Number of objectives: " << num_obj);
+
+    BENCHMARK_ADVANCED("FNDS")(Benchmark::Chronometer meter)
     {
-        FitnessMatrix fmat = randomFitnessMatrix(popsize, small_obj);
+        FitnessMatrix fmat = randomFitnessMatrix(popsize, num_obj);
 
         meter.measure([&] { return fastNonDominatedSort(fmat.begin(), fmat.end()); });
     };
 
-    BENCHMARK_ADVANCED("dds_small")(Benchmark::Chronometer meter)
+    BENCHMARK_ADVANCED("DDS")(Benchmark::Chronometer meter)
     {
-        FitnessMatrix fmat = randomFitnessMatrix(popsize, small_obj);
-
-        meter.measure([&] { return dominanceDegreeSort(fmat.begin(), fmat.end()); });
-    };
-
-    BENCHMARK_ADVANCED("fnds_medium")(Benchmark::Chronometer meter)
-    {
-        FitnessMatrix fmat = randomFitnessMatrix(popsize, medium_obj);
-
-        meter.measure([&] { return fastNonDominatedSort(fmat.begin(), fmat.end()); });
-    };
-
-    BENCHMARK_ADVANCED("dds_medium")(Benchmark::Chronometer meter)
-    {
-        FitnessMatrix fmat = randomFitnessMatrix(popsize, medium_obj);
-
-        meter.measure([&] { return dominanceDegreeSort(fmat.begin(), fmat.end()); });
-    };
-
-    BENCHMARK_ADVANCED("fnds_large")(Benchmark::Chronometer meter)
-    {
-        FitnessMatrix fmat = randomFitnessMatrix(popsize, large_obj);
-
-        meter.measure([&] { return fastNonDominatedSort(fmat.begin(), fmat.end()); });
-    };
-
-    BENCHMARK_ADVANCED("dds_large")(Benchmark::Chronometer meter)
-    {
-        FitnessMatrix fmat = randomFitnessMatrix(popsize, large_obj);
+        FitnessMatrix fmat = randomFitnessMatrix(popsize, num_obj);
 
         meter.measure([&] { return dominanceDegreeSort(fmat.begin(), fmat.end()); });
     };

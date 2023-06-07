@@ -1,6 +1,7 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include "population/population.hpp"
 #include "utility/rng.hpp"
@@ -37,64 +38,22 @@ static Population<int> randomPopulation(size_t popsize, size_t nobj, double radi
 TEST_CASE("merge_pareto_sets_size", "[benchmark]")
 {
     constexpr size_t num_obj = 3;
-    constexpr size_t small_size = 40;
-    constexpr size_t medium_size = 200;
-    constexpr size_t large_size = 1500;
+    const size_t popsize = GENERATE(40, 200, 1500);
 
-    BENCHMARK_ADVANCED("merge_small")(Benchmark::Chronometer meter)
+    WARN("Population/set size: " << popsize);
+
+    BENCHMARK_ADVANCED("merge")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(small_size, num_obj);
-        Population<int> rhs = randomPopulation(small_size, num_obj);
+        Population<int> lhs = randomPopulation(popsize, num_obj);
+        Population<int> rhs = randomPopulation(popsize, num_obj);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
-    BENCHMARK_ADVANCED("append_small")(Benchmark::Chronometer meter)
+    BENCHMARK_ADVANCED("append/naive")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(small_size, num_obj);
-        Population<int> rhs = randomPopulation(small_size, num_obj);
-
-        meter.measure([&]
-        {
-            lhs.reserve(lhs.size() + rhs.size());
-            lhs.insert(lhs.end(), rhs.begin(), rhs.end());
-            return findParetoFront(lhs);
-        });
-    };
-
-    BENCHMARK_ADVANCED("merge_medium")(Benchmark::Chronometer meter)
-    {
-        Population<int> lhs = randomPopulation(medium_size, num_obj);
-        Population<int> rhs = randomPopulation(medium_size, num_obj);
-
-        meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
-    };
-
-    BENCHMARK_ADVANCED("append_medium")(Benchmark::Chronometer meter)
-    {
-        Population<int> lhs = randomPopulation(medium_size, num_obj);
-        Population<int> rhs = randomPopulation(medium_size, num_obj);
-
-        meter.measure([&]
-        {
-            lhs.reserve(lhs.size() + rhs.size());
-            lhs.insert(lhs.end(), rhs.begin(), rhs.end());
-            return findParetoFront(lhs);
-        });
-    };
-
-    BENCHMARK_ADVANCED("merge_large")(Benchmark::Chronometer meter)
-    {
-        Population<int> lhs = randomPopulation(large_size, num_obj);
-        Population<int> rhs = randomPopulation(large_size, num_obj);
-
-        meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
-    };
-
-    BENCHMARK_ADVANCED("append_large")(Benchmark::Chronometer meter)
-    {
-        Population<int> lhs = randomPopulation(large_size, num_obj);
-        Population<int> rhs = randomPopulation(large_size, num_obj);
+        Population<int> lhs = randomPopulation(popsize, num_obj);
+        Population<int> rhs = randomPopulation(popsize, num_obj);
 
         meter.measure([&]
         {
