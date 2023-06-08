@@ -22,7 +22,7 @@ namespace gapp::detail
     {
         if (fmat.empty()) return {};
 
-        return (fmat.ncols() == 1) ? findParetoFront1D(fmat) : findParetoFrontSort(fmat);
+        return (fmat.ncols() == 1) ? findParetoFront1D(fmat) : findParetoFrontBest(fmat);
     }
 
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
@@ -70,10 +70,8 @@ namespace gapp::detail
 
     std::vector<size_t> findParetoFrontBest(const FitnessMatrix& fmat)
     {
-        /* Implementation of the BEST algorithm based on the description in:
-         * Godfrey et al. "Algorithms and analyses for maximal vector computation." The VLDB Journal 16, no. 1 (2007): 5-28. */
-
-        if (fmat.empty()) return {};
+        // Implementation of the BEST algorithm based on the description in:
+        //      Godfrey et al. "Algorithms and analyses for maximal vector computation." The VLDB Journal 16, no. 1 (2007): 5-28.
 
         auto indices = detail::index_vector(fmat.size());
 
@@ -91,29 +89,41 @@ namespace gapp::detail
                 auto comp = math::paretoCompare(fmat[*best], fmat[*it]);
                 if (comp > 0)
                 {
+                    // [it] is dominated by [best], so it is removed from the range, but
+                    // can't swap to the front of the range here, as that could overwrite the [best] element.
+                    // Swapping to the back is fine, but that element hasn't been checked yet, so shouldn't
+                    // advance [it] in this case.
                     std::iter_swap(it--, --last);
                 }
                 else if (comp < 0)
                 {
-                    /* Replace and remove best from the index list (can't swap to the back, as that element hasn't been checked yet). */
+                    // [best] is dominated by [it], so it is removed from the range, but
+                    // can't swap to the back of the range here, since that element hasn't been checked yet.
+                    // Swapping to the front is fine, since the [best] iterator will have to be updated anyway.
                     std::iter_swap(best, first++);
                     best = it;
                 }
             }
-            optimal_indices.push_back(*best);   /* best is definitely optimal */
 
-            /* best was only compared with the elements after it, there could be dominated elements before it still in the index list. */
+            optimal_indices.push_back(*best); // best is definitely optimal at this point
+
+            // best was only compared with the elements after it in the range,
+            // there could be dominated elements before it still in the list
+            // which have to be eliminated
             for (auto it = first; it < best; ++it)
             {
                 if (math::paretoCompareLess(fmat[*it], fmat[*best]))
                 {
+                    // removing the dominated element by swapping to the front is fine here,
+                    // since we know that first != best
                     std::iter_swap(it, first++);
                 }
             }
-            std::iter_swap(best, --last);       /* best shouldn't be selected again. */
+            std::iter_swap(best, --last); // best shouldn't be selected again, remove
 
-            /* None of the remaining indices in [first, last) are dominated by best, but they could be by another element in the list,
-               so they can't be added to the optimal list yet. */
+            // none of the remaining indices in [first, last) are dominated by best,
+            // but they could be dominated by another element in the list,
+            // so they can't be added to the optimal list yet, keep going.
         }
 
         return optimal_indices;

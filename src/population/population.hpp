@@ -35,11 +35,8 @@ namespace gapp::detail
     std::vector<size_t> findParetoFront(const FitnessMatrix& fmat);
 
     std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat);
-
     std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat);
-
     std::vector<size_t> findParetoFrontBest(const FitnessMatrix& fmat);
-
     std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat);
 
     /* Find the pareto-optimal solutions in the set (lhs U rhs), assuming both lhs and rhs are pareto sets. */
