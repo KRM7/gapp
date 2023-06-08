@@ -75,11 +75,8 @@ TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
-        REQUIRE(candidate.chromosome == old_candidate.chromosome);
-
         REQUIRE(candidate.is_evaluated);
-        REQUIRE(candidate.fitness == old_candidate.fitness);
+        REQUIRE(candidate.chromosome == old_candidate.chromosome);
     }
 
     SECTION("mutation probability = 1.0")
@@ -88,12 +85,17 @@ TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
-        REQUIRE(candidate.chromosome != old_candidate.chromosome);
-
         REQUIRE(!candidate.is_evaluated);
-        REQUIRE(candidate.fitness == old_candidate.fitness);
+        REQUIRE(candidate.chromosome != old_candidate.chromosome);
     }
+
+    REQUIRE(
+        candidate.fitness == old_candidate.fitness
+    );
+
+    REQUIRE(
+        candidate.chromosome.size() == old_candidate.chromosome.size()
+    );
 
     REQUIRE(
         std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(0, 1))
@@ -103,7 +105,7 @@ TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
 TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, real::NonUniform, real::Polynomial, real::Uniform)
 {
     using Mutation = TestType;
-    const Bounds bounds = { 0.0, 1.0 };
+    const Bounds bounds = { -1.0, 1.0 };
 
     RCGA context;
     context.solve(DummyFitnessFunction<RealGene>(10), bounds);
@@ -119,11 +121,8 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
-        REQUIRE(candidate.chromosome == old_candidate.chromosome);
-
         REQUIRE(candidate.is_evaluated);
-        REQUIRE(candidate.fitness == old_candidate.fitness);
+        REQUIRE(candidate.chromosome == old_candidate.chromosome);
     }
 
     SECTION("mutation probability = 1.0")
@@ -132,12 +131,16 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
-        REQUIRE(candidate.chromosome != old_candidate.chromosome);
-
-        REQUIRE((!candidate.is_evaluated || candidate.chromosome == old_candidate.chromosome));
-        REQUIRE(candidate.fitness == old_candidate.fitness);
+        REQUIRE(( candidate.is_evaluated == (candidate.chromosome == old_candidate.chromosome) ));
     }
+
+    REQUIRE(
+        candidate.fitness == old_candidate.fitness
+    );
+
+    REQUIRE(
+        candidate.chromosome.size() == old_candidate.chromosome.size()
+    );
 
     REQUIRE(
         std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(bounds.lower(), bounds.upper()))
@@ -163,7 +166,6 @@ TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, 
         mutation(context, candidate);
 
         REQUIRE(candidate.is_evaluated);
-        REQUIRE(candidate.fitness == old_candidate.fitness);
         REQUIRE(candidate.chromosome == old_candidate.chromosome);
     }
 
@@ -176,10 +178,13 @@ TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, 
         if constexpr (!std::is_same_v<Mutation, perm::Shuffle>) // shuffle could return the same sequence
         {
             REQUIRE(!candidate.is_evaluated);
-            REQUIRE(candidate.fitness == old_candidate.fitness);
             REQUIRE(candidate.chromosome != old_candidate.chromosome);
         }
     }
+
+    REQUIRE(
+        candidate.fitness == old_candidate.fitness
+    );
 
     REQUIRE(
         candidate.chromosome.size() == old_candidate.chromosome.size()
@@ -214,11 +219,8 @@ TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
-        REQUIRE(candidate.chromosome == old_candidate.chromosome);
-
         REQUIRE(candidate.is_evaluated);
-        REQUIRE(candidate.fitness == old_candidate.fitness);
+        REQUIRE(candidate.chromosome == old_candidate.chromosome);
     }
 
     SECTION("mutation probability = 1.0")
@@ -227,12 +229,17 @@ TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.chromosome.size() == old_candidate.chromosome.size());
-        REQUIRE(candidate.chromosome != old_candidate.chromosome);
-
         REQUIRE(!candidate.is_evaluated);
-        REQUIRE(candidate.fitness == old_candidate.fitness);
+        REQUIRE(candidate.chromosome != old_candidate.chromosome);
     }
+
+    REQUIRE(
+        candidate.fitness == old_candidate.fitness
+    );
+
+    REQUIRE(
+        candidate.chromosome.size() == old_candidate.chromosome.size()
+    );
 
     REQUIRE(
         std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(bounds.lower(), bounds.upper()))
