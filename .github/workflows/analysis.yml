@@ -20,6 +20,8 @@ jobs:
 
       - name: cpp-core-guidelines-check
         uses: microsoft/msvc-code-analysis-action@v0.1.1
+        # Allow failures because of the internal compiler error with reference_lines.cpp
+        continue-on-error: true
         id: run-analysis
         with:
           ruleset: ${{ github.workspace }}/core-guidelines.ruleset
