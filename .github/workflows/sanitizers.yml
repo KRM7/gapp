@@ -45,5 +45,8 @@ jobs:
     - name: build
       run: cmake --build . --parallel
     
-    - name: run-tests
+    - name: run-unit-tests
       run: ctest --output-on-failure --schedule-random
+
+    - name: run-integration-tests
+      run: ./integration_tests

@@ -9,7 +9,7 @@
 
 int main()
 {
-    while (true)
+    //while (true)
     {
         binary_sphere();
         binary_rastrigin();
