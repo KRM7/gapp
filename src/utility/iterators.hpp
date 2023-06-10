@@ -438,13 +438,7 @@ namespace gapp::detail
 
         friend constexpr difference_type operator-(iota_iterator lhs, iota_iterator rhs)
         {
-            const T distance = lhs.value_ >= rhs.value_ ?
-                lhs.value_ - rhs.value_ :
-                rhs.value_ - lhs.value_;
-
-            GA_ASSERT(distance <= T(std::numeric_limits<difference_type>::max()), "Can't represent the result of the operation as difference_type.");
-
-            return difference_type(distance);
+            return (lhs.value_ >= rhs.value_) ? difference_type(lhs.value_ - rhs.value_) : -difference_type(rhs.value_ - lhs.value_);
         }
 
     private:

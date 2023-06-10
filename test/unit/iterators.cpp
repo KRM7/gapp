@@ -170,4 +170,10 @@ TEST_CASE("iota_iterator", "[iterators]")
         REQUIRE(*r1 == 3);
         REQUIRE(*r2 == 5);
     }
+
+    SECTION("difference")
+    {
+        REQUIRE(first - last == -4);
+        REQUIRE(last - first == 4);
+    }
 }

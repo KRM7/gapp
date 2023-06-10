@@ -203,7 +203,7 @@ namespace gapp
         * before the maximum number of generations is reached, but the algorithm will
         * always stop when reaching the maximum generations regardless of the stop condition set here.
         *
-        * @param f The stop condition the %GA should use. Can't be a nullptr.
+        * @param f The stop condition the %GA should use. No early-stopping will be used if it's a nullptr.
         */
         void stop_condition(std::unique_ptr<stopping::StopCondition> f);
 

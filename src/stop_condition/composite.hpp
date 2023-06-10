@@ -63,6 +63,28 @@ namespace gapp::stopping::dtl
         Right right_;
     };
 
+    template<std::derived_from<StopCondition> Base>
+    class NOT final : public StopCondition
+    {
+    public:
+        constexpr NOT(Base base) noexcept :
+            base_(std::move(base))
+        {}
+
+    private:
+        void initialize(const GaInfo& ga) override
+        {
+            base_.initialize(ga);
+        }
+
+        bool stop_condition(const GaInfo& ga) override
+        {
+            return !std::invoke(base_, ga);
+        }
+
+        Base base_;
+    };
+
 } // namespace gapp::stopping::dtl
 
 
@@ -76,6 +98,11 @@ namespace gapp::stopping
     constexpr auto operator||(std::derived_from<StopCondition> auto lhs, std::derived_from<StopCondition> auto rhs) noexcept
     {
         return dtl::OR{ std::move(lhs), std::move(rhs) };
+    }
+
+    constexpr auto operator!(std::derived_from<StopCondition> auto base) noexcept
+    {
+        return dtl::NOT{ std::move(base) };
     }
 
 } // namespace gapp::stopping

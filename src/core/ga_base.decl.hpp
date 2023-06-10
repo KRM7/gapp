@@ -184,6 +184,7 @@ namespace gapp
 
 
         /** @returns The fitness function used. Undefined if no fitness function is set. */
+        [[nodiscard]]
         const FitnessFunctionBase<T>& fitness_function() const& noexcept;
 
         /** @returns The chromosome length of the candidates of the population. */

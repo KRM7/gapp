@@ -2,7 +2,7 @@
 
 #include "ga_info.hpp"
 #include "../algorithm/algorithm_base.hpp"
-#include "../stop_condition/stop_condition_base.hpp"
+#include "../stop_condition/stop_condition.hpp"
 #include "../utility/utility.hpp"
 #include <atomic>
 #include <memory>
@@ -38,9 +38,7 @@ namespace gapp
 
     void GaInfo::stop_condition(std::unique_ptr<stopping::StopCondition> f)
     {
-        GA_ASSERT(f, "The stop condition can't be a nullptr.");
-
-        stop_condition_ = std::move(f);
+        stop_condition_ = f ? std::move(f) : std::make_unique<stopping::NoEarlyStop>();
     }
 
     void GaInfo::stop_condition(StopConditionCallable f)
