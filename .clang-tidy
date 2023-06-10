@@ -43,6 +43,7 @@ HeaderFilterRegex: ".*"
 
 # List of warnings to treat as errors during the build
 WarningsAsErrors: >
+  *,
   clang-analyzer-*,
   portability-*,
   bugprone-assignment-in-if-condition,
