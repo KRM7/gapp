@@ -40,7 +40,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Compiler / linker setup
 if(MSVC) # MSVC style compiler interface
-    set(GAPP_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471 -w44820 -w44986 -w45233 -external:W0")
+    set(GAPP_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471 -w44820 -w44986 -w45024 -w45025 -w45038 -w45204 -w45233 -w45258 -w45262 -w45263 -w45264 -external:W0")
     if(GAPP_USE_WERROR)
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -WX")
     endif()
