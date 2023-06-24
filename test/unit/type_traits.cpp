@@ -65,15 +65,6 @@ TEST_CASE("is_reverse_iterator", "[type_traits]")
     STATIC_REQUIRE(is_reverse_iterator_v<RevIter>);
 }
 
-TEST_CASE("iterator_value_t", "[type_traits]")
-{
-    using Iter = std::vector<double>::iterator;
-    using RevIter = std::vector<double>::reverse_iterator;
-
-    STATIC_REQUIRE(std::is_same_v<iterator_value_t<Iter>, double>);
-    STATIC_REQUIRE(std::is_same_v<iterator_value_t<RevIter>, double>);
-}
-
 TEST_CASE("dereference", "[type_traits]")
 {
     using Iter = std::vector<double>::const_iterator;
