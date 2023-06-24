@@ -42,8 +42,8 @@ namespace gapp::detail
         return indices;
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<iterator_value_t<Iter>>>
-    requires std::strict_weak_order<Comp, iterator_value_t<Iter>, iterator_value_t<Iter>>
+    template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
     std::vector<size_t> argsort(Iter first, Iter last, Comp&& comp = {})
     {
         GA_ASSERT(std::distance(first, last) >= 0);
@@ -69,8 +69,8 @@ namespace gapp::detail
         return indices;
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<iterator_value_t<Iter>>>
-    requires std::strict_weak_order<Comp, iterator_value_t<Iter>, iterator_value_t<Iter>>
+    template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
     std::vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = {})
     {
         GA_ASSERT(std::distance(first, middle) >= 0);
@@ -104,8 +104,8 @@ namespace gapp::detail
         return indices;
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<iterator_value_t<Iter>>>
-    requires std::strict_weak_order<Comp, iterator_value_t<Iter>, iterator_value_t<Iter>>
+    template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
     constexpr size_t argmax(Iter first, Iter last, Comp&& comp = {})
     {
         GA_ASSERT(std::distance(first, last) > 0);
@@ -124,8 +124,8 @@ namespace gapp::detail
         }
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<iterator_value_t<Iter>>>
-    requires std::strict_weak_order<Comp, iterator_value_t<Iter>, iterator_value_t<Iter>>
+    template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
     constexpr size_t argmin(Iter first, Iter last, Comp&& comp = {})
     {
         GA_ASSERT(std::distance(first, last) > 0);
@@ -161,14 +161,12 @@ namespace gapp::detail
     }
 
     template<std::input_iterator Iter>
-    constexpr bool contains(Iter first, Iter last, const iterator_value_t<Iter>& val)
+    constexpr bool contains(Iter first, Iter last, const std::iter_value_t<Iter>& val)
     {
-        GA_ASSERT(std::distance(first, last) >= 0);
-        
         return std::find(first, last, val) != last;
     }
 
-    template<std::input_iterator Iter, std::predicate<iterator_value_t<Iter>> Pred>
+    template<std::forward_iterator Iter, std::predicate<std::iter_value_t<Iter>> Pred>
     std::vector<Iter> find_all(Iter first, Iter last, Pred&& pred)
     {
         GA_ASSERT(std::distance(first, last) >= 0);
@@ -184,12 +182,14 @@ namespace gapp::detail
         return result;
     }
 
-    template<std::input_iterator Iter, std::predicate<iterator_value_t<Iter>> Pred>
+    template<std::forward_iterator Iter, std::predicate<std::iter_value_t<Iter>> Pred>
     auto find_all_v(Iter first, Iter last, Pred&& pred)
     {
         GA_ASSERT(std::distance(first, last) >= 0);
 
-        std::vector<iterator_value_t<Iter>> result;
+        using ValueType = std::remove_cvref_t<std::iter_reference_t<Iter>>;
+
+        std::vector<ValueType> result;
         result.reserve(last - first);
 
         for (; first != last; ++first)

@@ -132,11 +132,6 @@ namespace gapp::detail
 
 
     template<typename T>
-    using iterator_value_t = typename std::iterator_traits<T>::value_type;
-
-
-
-    template<typename T>
     struct dereference : std::type_identity<decltype(*std::declval<T>())> {};
 
     template<typename T>
