@@ -4,10 +4,12 @@
 #define GA_UTILITY_RNG_HPP
 
 #include "utility.hpp"
+#include "type_traits.hpp"
 #include "concepts.hpp"
 #include <algorithm>
 #include <vector>
 #include <span>
+#include <unordered_set>
 #include <random>
 #include <limits>
 #include <cstdint>
@@ -99,7 +101,7 @@ namespace gapp::rng
     inline size_t randomIdx(const T& cont);
 
     /** Pick a random element from a range. */
-    template<std::input_iterator Iter>
+    template<std::forward_iterator Iter>
     inline Iter randomElement(Iter first, Iter last);
 
     /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). */
@@ -144,8 +146,8 @@ namespace gapp::rng
 
     bool randomBool() noexcept
     {
-        constexpr size_t nbits = CHAR_BIT * sizeof(PRNG::result_type);
-        constexpr auto msb_mask = PRNG::result_type{ 1 } << (nbits - 1);
+        static constexpr size_t nbits = CHAR_BIT * sizeof(PRNG::result_type);
+        static constexpr auto msb_mask = PRNG::result_type{ 1 } << (nbits - 1);
 
         return static_cast<bool>(rng::prng() & msb_mask);
     }
@@ -155,7 +157,15 @@ namespace gapp::rng
     {
         GA_ASSERT(lbound <= ubound);
 
-        return std::uniform_int_distribution{ lbound, ubound }(rng::prng);
+        // std::uniform_int_distribution doesnt support char
+        if constexpr (sizeof(IntType) == 1)
+        {
+            return static_cast<IntType>(std::uniform_int_distribution<int>{ lbound, ubound }(rng::prng));
+        }
+        else
+        {
+            return std::uniform_int_distribution{ lbound, ubound }(rng::prng);
+        }
     }
 
     template<std::floating_point RealType>
@@ -177,7 +187,8 @@ namespace gapp::rng
     template<std::floating_point RealType>
     RealType randomNormal()
     {
-        thread_local std::normal_distribution<RealType> dist{ 0.0, 1.0 }; // keep the distribution for the state
+        // keep the distribution for the state
+        thread_local std::normal_distribution<RealType> dist{ 0.0, 1.0 };
 
         return dist(rng::prng);
     }
@@ -241,7 +252,7 @@ namespace gapp::rng
         return std::uniform_int_distribution{ 0_sz, container.size() - 1 }(rng::prng);
     }
 
-    template<std::input_iterator Iter>
+    template<std::forward_iterator Iter>
     Iter randomElement(Iter first, Iter last)
     {
         GA_ASSERT(std::distance(first, last) > 0);
@@ -253,24 +264,68 @@ namespace gapp::rng
     }
 
     template<std::integral IntType>
+    GA_NOINLINE std::vector<IntType> sampleUniqueSet(IntType lbound, IntType ubound, size_t count)
+    {
+        std::unordered_set<IntType> selected(count);
+        std::vector<IntType> numbers(count);
+
+        IntType limit = ubound - detail::promoted_t<IntType>(count);
+
+        for (auto number = numbers.begin(); limit < ubound; ++limit, ++number)
+        {
+            const auto n = rng::randomInt(lbound, limit);
+            *number = selected.contains(n) ? limit : n;
+            selected.insert(n);
+        }
+
+        return numbers;
+    }
+
+    template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count)
     {
-        const auto range_len = size_t(ubound - lbound);
+        const size_t range_len = detail::range_length(lbound, ubound);
 
         GA_ASSERT(ubound >= lbound);
         GA_ASSERT(range_len >= count);
 
-        std::vector<bool> is_selected(range_len);
+        const bool select_many = (count > 0.6 * range_len);
+        const bool huge_range  = range_len >= (1ull << 32);
+
+        if (huge_range) [[unlikely]] return rng::sampleUniqueSet(lbound, ubound, count);
+
         std::vector<IntType> numbers(count);
 
-        for (IntType i = ubound - IntType(count); i < ubound; i++)
-        {
-            const auto num = rng::randomInt(lbound, i);
-            const auto spos = size_t(num - lbound);
-            const auto npos = size_t(i + IntType(count) - ubound);
+        thread_local std::vector<bool> is_selected;
+        is_selected.resize(range_len);
+        std::fill(is_selected.begin(), is_selected.end(), select_many);
 
-            numbers[npos] = is_selected[spos] ? i : num;
-            is_selected[numbers[npos] - lbound] = true;
+        if (!select_many)
+        {
+            IntType limit = ubound - detail::promoted_t<IntType>(count);
+
+            for (auto number = numbers.begin(); limit < ubound; ++limit, ++number)
+            {
+                const auto n = rng::randomInt(lbound, limit);
+                *number = is_selected[n - lbound] ? limit : n;
+                is_selected[*number - lbound] = true;
+            }
+        }
+        else
+        {
+            IntType rcount = detail::promoted_t<IntType>(range_len - count);
+
+            for (IntType limit = ubound - rcount; limit < ubound; ++limit)
+            {
+                const auto n = rng::randomInt(lbound, limit);
+                (is_selected[n - lbound] ? is_selected[n - lbound] : is_selected[limit - lbound]) = false;
+            }
+
+            auto number = numbers.begin();
+            for (size_t n = 0; n < is_selected.size(); n++)
+            {
+                if (is_selected[n]) { *number++ = lbound + n; }
+            }
         }
 
         return numbers;
@@ -281,7 +336,6 @@ namespace gapp::rng
     {
         GA_ASSERT(!cdf.empty());
         GA_ASSERT(0.0 <= cdf.front());
-        GA_ASSERT(std::is_sorted(cdf.begin(), cdf.end()));
 
         const auto limitval = rng::randomReal<T>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
         const auto selected = std::lower_bound(cdf.begin(), cdf.end(), limitval);

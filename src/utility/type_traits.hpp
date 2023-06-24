@@ -159,6 +159,14 @@ namespace gapp::detail
     using copy_const_t = std::conditional_t<std::is_const_v<std::remove_reference_t<T>>, const U, U>;
 
 
+
+    template<typename T>
+    struct promoted : std::conditional<std::is_signed_v<T>, std::ptrdiff_t, std::size_t> {};
+
+    template<typename T>
+    using promoted_t = typename promoted<T>::type;
+
+
 } // namespace gapp::detail
 
 #endif // !GA_UTILITY_TYPE_TRAITS_HPP

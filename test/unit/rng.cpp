@@ -1,11 +1,14 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/catch_approx.hpp>
 #include "utility/rng.hpp"
 #include "utility/functional.hpp"
 #include <algorithm>
+#include <limits>
+#include <cstdint>
 
 using namespace gapp;
 using namespace gapp::rng;
@@ -88,4 +91,38 @@ TEST_CASE("sample_unique", "[rng]")
             std::unique(nums.begin(), nums.end()) == nums.end()
         ));
     }
+}
+
+TEMPLATE_TEST_CASE("sample_unique_bounds_8", "[rng]", std::int8_t, std::uint8_t)
+{
+    using IntegralType = TestType;
+    constexpr IntegralType low  = std::numeric_limits<IntegralType>::min();
+    constexpr IntegralType high = std::numeric_limits<IntegralType>::max();
+    const size_t count = GENERATE(2, 130, 250);
+
+    auto nums = sampleUnique<IntegralType>(low, high, count);
+
+    REQUIRE(nums.size() == count);
+    REQUIRE(std::all_of(nums.begin(), nums.end(), detail::between<IntegralType>(low, high - 1)));
+    REQUIRE((
+        std::sort(nums.begin(), nums.end()),
+        std::unique(nums.begin(), nums.end()) == nums.end()
+    ));
+}
+
+TEMPLATE_TEST_CASE("sample_unique_bounds_64", "[rng]", std::int64_t, std::uint64_t)
+{
+    using IntegralType = TestType;
+    constexpr IntegralType low = std::numeric_limits<IntegralType>::min();
+    constexpr IntegralType high = std::numeric_limits<IntegralType>::max();
+    constexpr size_t count = 3;
+
+    auto nums = sampleUnique<IntegralType>(low, high, count);
+
+    REQUIRE(nums.size() == count);
+    REQUIRE(std::all_of(nums.begin(), nums.end(), detail::between<IntegralType>(low, high - 1)));
+    REQUIRE((
+        std::sort(nums.begin(), nums.end()),
+        std::unique(nums.begin(), nums.end()) == nums.end()
+    ));
 }

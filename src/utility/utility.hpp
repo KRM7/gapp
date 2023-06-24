@@ -5,6 +5,8 @@
 
 #include <execution>
 #include <vector>
+#include <concepts>
+#include <type_traits>
 #include <cassert>
 #include <cstddef>
 
@@ -106,6 +108,33 @@ namespace gapp::detail
         std::vector<T> temp;
         temp.reserve(new_capacity);
         temp.swap(vec);
+    }
+
+    // returns true if the signs of the parameters are the same
+    template<std::signed_integral T>
+    constexpr bool same_sign(T left, T right) noexcept
+    {
+        return (left ^ right) >= 0;
+    }
+
+    // returns the length of the range [low, high)
+    template<std::integral T>
+    constexpr size_t range_length(T low, T high) noexcept
+    {
+        GA_ASSERT(low <= high);
+
+        if constexpr (std::is_unsigned_v<T>)
+        {
+            return high - low;
+        }
+        else if (same_sign(low, high))
+        {
+            return high - low;
+        }
+        else
+        {
+            return static_cast<size_t>(-(low + 1)) + high + 1;
+        }
     }
 
 } // namespace gapp::detail
