@@ -1,0 +1,101 @@
+
+# Genetic Algorithms in C++ 
+
+[![linux](https://github.com/KRM7/genetic-algorithms/actions/workflows/linux.yml/badge.svg?branch=dev)](https://github.com/KRM7/genetic-algorithms/actions/workflows/linux.yml)
+[![windows](https://github.com/KRM7/genetic-algorithms/actions/workflows/windows.yml/badge.svg?branch=dev)](https://github.com/KRM7/genetic-algorithms/actions/workflows/windows.yml)
+[![sanitizers](https://github.com/KRM7/genetic-algorithms/actions/workflows/sanitizers.yml/badge.svg?branch=dev)](https://github.com/KRM7/genetic-algorithms/actions/workflows/sanitizers.yml)
+[![code analysis](https://github.com/KRM7/genetic-algorithms/actions/workflows/analysis.yml/badge.svg?branch=dev)](https://github.com/KRM7/genetic-algorithms/actions/workflows/analysis.yml)
+
+
+## Overview
+
+gapp is a library of genetic algorithm implementations in C++ for solving single-
+and multi-objective optimization problems. All parts of the algorithms can be customized
+and defined by the user, but the library already includes GAs for several commonly used encoding types,
+frequently used crossover and mutation methods for each of these encodings,
+and also several stop conditions that can be used.
+
+
+## Usage example
+
+```cpp
+#include <gapp/gapp.hpp>
+#include <iostream>
+
+using namespace gapp;
+
+class SinX : public FitnessFunction<RealGene, 1> 
+{
+    auto invoke(const Chromosome<RealGene>& x) const override { return FitnessVector{ std::sin(x[0]) }; }
+};
+
+int main()
+{
+    auto solutions = RCGA{}.solve(SinX{}, Bounds{ 0.0, 3.14 });
+
+    std::cout << "The maximum of sin(x) in [0.0, 3.14] is at x = " << solutions[0].chromosome[0];
+}
+```
+Console output:
+```shell
+The maximum of sin(x) in [0.0, 3.14] is at x = 1.57079
+```
+
+
+## Requirements
+
+The following are needed for building and using the library:
+
+- C++20 compiler (gcc 11.0, clang 14.0, msvc 14.30 or later)
+- CMake 3.21 or later
+- Intel TBB (optional, depending on the standard library implementation)
+- Catch2 3.3 or later (optional, only needed for the tests)
+
+
+## Installing the library
+
+*See [install-guide.md](docs/install-guide.md) for a more detailed installation and usage guide.*
+
+The library uses CMake as its build system. Assuming you have all of the requirements
+listed above, the steps for installing the library in Release config are:
+
+```shell
+git clone https://github.com/KRM7/gapp.git
+cd gapp/build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+cmake --build . --config Release
+sudo cmake --install . --config Release
+```
+
+Alternatively, you can also use the install script that is provided with the library, which
+will install all available configurations:
+
+```shell
+git clone https://github.com/KRM7/gapp.git
+sudo gapp/build/install.sh
+```
+
+Once the library is installed, you can import it using `find_package` and then link
+against the `gapp::gapp` target provided by the library:
+
+```cmake
+find_package(gapp REQUIRED)
+target_link_libraries(YourTarget PRIVATE gapp::gapp)
+```
+
+
+## Examples
+
+The [examples](./examples) directory contains several examples for using the library.
+
+
+## Documentation
+
+The documentation of the library can be found in the [docs](./docs) directory.
+
+The API documentation is available [here](.).
+
+
+-------------------------------------------------------------------------------------------------
+
+
