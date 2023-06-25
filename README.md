@@ -10,10 +10,10 @@
 ## Overview
 
 gapp is a library of genetic algorithm implementations in C++ for solving single-
-and multi-objective optimization problems. All parts of the algorithms can be customized
-and defined by the user, but the library already includes GAs for several commonly used encoding types,
+and multi-objective optimization problems. Every part of the algorithms can be customized
+and defined by the user, but the library also includes GAs for several commonly used encoding types,
 frequently used crossover and mutation methods for each of these encodings,
-and also several stop conditions that can be used.
+and several stop conditions that can be used.
 
 
 ## Usage example
@@ -26,7 +26,7 @@ using namespace gapp;
 
 class SinX : public FitnessFunction<RealGene, 1> 
 {
-    auto invoke(const Chromosome<RealGene>& x) const override { return FitnessVector{ std::sin(x[0]) }; }
+    FitnessVector invoke(const Chromosome<RealGene>& x) const override { return { std::sin(x[0]) }; }
 };
 
 int main()
