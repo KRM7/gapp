@@ -520,7 +520,7 @@ namespace gapp
         if (keep_all_optimal_sols_) updateOptimalSolutions(solutions_, population_);
         metrics_.update(*this);
 
-        if (endOfGenerationCallback) endOfGenerationCallback(*this);
+        if (end_of_generation_callback_) end_of_generation_callback_(*this);
         generation_cntr_++;
     }
 

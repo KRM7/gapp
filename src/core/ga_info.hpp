@@ -51,7 +51,7 @@ namespace gapp
 
         /**
         * The type of a generic callback function that can be provided for the algorithm.
-        * @see endOfGenerationCallback
+        * @see on_generation_end
         */
         using GaCallback = std::function<void(const GaInfo&)>;
 
@@ -313,8 +313,13 @@ namespace gapp
         [[nodiscard]]
         bool keep_all_optimal_solutions() const noexcept { return keep_all_optimal_sols_; }
 
-        /** A generic callback function that will be called exactly once at the end of each generation. */
-        GaCallback endOfGenerationCallback = nullptr;
+        /**
+        * Set a generic callback function that will be called exactly once at the end
+        * of each generation of a run.
+        * 
+        * @param f The function that will be invoked at the end of each generation.
+        */
+        void on_generation_end(GaCallback f) noexcept { end_of_generation_callback_ = std::move(f); }
 
 
         GaInfo(const GaInfo&)            = delete;
@@ -333,6 +338,7 @@ namespace gapp
         std::unique_ptr<algorithm::Algorithm> algorithm_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
         detail::MetricSet metrics_;
+        GaCallback end_of_generation_callback_ = nullptr;
 
         Positive<size_t> population_size_ = DEFAULT_POPSIZE;
         Positive<size_t> max_gen_ = 500;
