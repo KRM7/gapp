@@ -36,7 +36,7 @@ namespace gapp::replacement
 
     std::vector<size_t> KeepBest::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(size_t(children_first - first) == ga.population_size());
+        GAPP_ASSERT(size_t(children_first - first) == ga.population_size());
 
         auto sorted_indices = detail::partial_argsort(first, children_first, last,
         [](const auto& lhs, const auto& rhs) noexcept
@@ -51,14 +51,14 @@ namespace gapp::replacement
 
     Lambda::Lambda(ReplacementCallable f) noexcept
     {
-        GA_ASSERT(f, "The population replacement method can't be a nullptr.");
+        GAPP_ASSERT(f, "The population replacement method can't be a nullptr.");
 
         replacement_ = std::move(f);
     }
 
     std::vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(replacement_);
+        GAPP_ASSERT(replacement_);
 
         return replacement_(ga, first, children_first, last);
     }

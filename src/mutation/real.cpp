@@ -16,7 +16,7 @@ namespace gapp::mutation::real
 {
     void Uniform::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        GA_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = ga.gene_bounds();
 
@@ -31,7 +31,7 @@ namespace gapp::mutation::real
 
     void NonUniform::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        GA_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = ga.gene_bounds();
 
@@ -54,7 +54,7 @@ namespace gapp::mutation::real
 
     void Gauss::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        GA_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = ga.gene_bounds();
 
@@ -73,7 +73,7 @@ namespace gapp::mutation::real
 
     void Polynomial::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        GA_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = ga.gene_bounds();
 
@@ -100,7 +100,7 @@ namespace gapp::mutation::real
 
     void Boundary::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
-        GA_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = ga.gene_bounds();
 

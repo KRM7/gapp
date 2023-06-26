@@ -40,7 +40,7 @@ namespace gapp::detail
     /* Find the point in the range [first, last) furthest from a point (using Euclidean distances). */
     static inline const_iterator findFurthestElement(const_iterator first, const_iterator last, const_iterator from)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         const_iterator furthest;
         double max_distance = -math::inf<double>;
@@ -62,7 +62,7 @@ namespace gapp::detail
     /* Find the 2 partition points that will be used to split the range [first, last) into 2 parts. */
     static inline std::pair<const_iterator, const_iterator> partitionPoints(const_iterator first, const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         const_iterator rand_elem = first;
 
@@ -75,7 +75,7 @@ namespace gapp::detail
     /* The center of the range of points [first, last) is the mean of the coords along each axis. */
     static inline Point findCenter(const_iterator first, const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         const ptrdiff_t range_len = std::distance(first, last);
 
@@ -94,7 +94,7 @@ namespace gapp::detail
     /* Find the Euclidean distance between the center point and the point in the range [first, last) furthest from it. */
     static inline double findRadius(const_iterator first, const_iterator last, const Point& center)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         double max_distance = -math::inf<double>;
 
@@ -124,8 +124,8 @@ namespace gapp::detail
     /* Find the best match in the range [first, last) using linear search. */
     static FindResult findBestMatchLinear(const Point& query_point, const_iterator first, const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(query_point.size() == first->size());
+        GAPP_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(query_point.size() == first->size());
 
         FindResult best = { {}, -math::inf<double> };
 
@@ -145,7 +145,7 @@ namespace gapp::detail
 
     void ConeTree::buildTree()
     {
-        GA_ASSERT(nodes_.size() == 1);
+        GAPP_ASSERT(nodes_.size() == 1);
 
         for (size_t i = 0; i < nodes_.size(); i++)
         {
@@ -194,7 +194,7 @@ namespace gapp::detail
     {
         if (points_.empty()) return { points_.end(), 0.0 };
 
-        GA_ASSERT(query_point.size() == points_.ncols());
+        GAPP_ASSERT(query_point.size() == points_.ncols());
 
         const double query_norm = math::euclideanNorm(query_point);
 

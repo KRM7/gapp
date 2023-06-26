@@ -20,7 +20,7 @@ namespace gapp::math
 
     bool paretoCompareLess(std::span<const double> lhs, std::span<const double> rhs) noexcept
     {
-        GA_ASSERT(lhs.size() == rhs.size());
+        GAPP_ASSERT(lhs.size() == rhs.size());
 
         for (size_t i = 0; i < lhs.size(); i++)
         {
@@ -36,7 +36,7 @@ namespace gapp::math
 
     std::int8_t paretoCompare(std::span<const double> lhs, std::span<const double> rhs) noexcept
     {
-        GA_ASSERT(lhs.size() == rhs.size());
+        GAPP_ASSERT(lhs.size() == rhs.size());
 
         std::int8_t lhs_has_lower = 0;
         std::int8_t rhs_has_lower = 0;
@@ -82,7 +82,7 @@ namespace gapp::math
 
     double euclideanDistanceSq(std::span<const double> v1, std::span<const double> v2) noexcept
     {
-        GA_ASSERT(v1.size() == v2.size());
+        GAPP_ASSERT(v1.size() == v2.size());
 
         return std::transform_reduce(v1.begin(), v1.end(), v2.begin(), 0.0,
                                      std::plus{},
@@ -91,7 +91,7 @@ namespace gapp::math
 
     double perpendicularDistanceSq(std::span<const double> line, std::span<const double> point) noexcept
     {
-        GA_ASSERT(line.size() == point.size());
+        GAPP_ASSERT(line.size() == point.size());
 
         double k = std::inner_product(line.begin(), line.end(), point.begin(), 0.0) /
                    std::inner_product(line.begin(), line.end(), line.begin(), 0.0);
@@ -103,14 +103,14 @@ namespace gapp::math
 
     double volumeBetween(std::span<const double> p1, std::span<const double> p2) noexcept
     {
-        GA_ASSERT(p1.size() == p2.size());
+        GAPP_ASSERT(p1.size() == p2.size());
 
         return std::abs(std::transform_reduce(p1.begin(), p1.end(), p2.begin(), 1.0, std::multiplies{}, std::minus{}));
     }
 
     double mean(std::span<const double> vec) noexcept
     {
-        GA_ASSERT(!vec.empty());
+        GAPP_ASSERT(!vec.empty());
 
         return std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{}, detail::divide_by(vec.size()));
     }
@@ -122,7 +122,7 @@ namespace gapp::math
 
     double stdDev(std::span<const double> vec, double mean) noexcept
     {
-        GA_ASSERT(!vec.empty());
+        GAPP_ASSERT(!vec.empty());
 
         if (vec.size() == 1) return 0.0;
 

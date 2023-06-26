@@ -182,7 +182,7 @@ namespace gapp
     constexpr Bounds<T>::Bounds(const T& lower, const T& upper) noexcept :
         lower_(lower), upper_(upper)
     {
-        GA_ASSERT(lower <= upper, "The lower bound can't be greater than the upper bound.");
+        GAPP_ASSERT(lower <= upper, "The lower bound can't be greater than the upper bound.");
     }
 
     template<typename T>

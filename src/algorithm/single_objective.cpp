@@ -19,8 +19,8 @@ namespace gapp::algorithm
     SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<replacement::Replacement> replacement) :
         selection_(std::move(selection)), replacement_(std::move(replacement))
     {
-        GA_ASSERT(selection_, "The selection method can't be a nullptr.");
-        GA_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
+        GAPP_ASSERT(selection_, "The selection method can't be a nullptr.");
+        GAPP_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
     }
 
     SingleObjective::SingleObjective(SelectionCallable selection) :
@@ -33,7 +33,7 @@ namespace gapp::algorithm
 
     void SingleObjective::selection_method(std::unique_ptr<selection::Selection> selection)
     {
-        GA_ASSERT(selection_, "The selection method can't be a nullptr.");
+        GAPP_ASSERT(selection_, "The selection method can't be a nullptr.");
 
         selection_ = std::move(selection);
     }
@@ -45,7 +45,7 @@ namespace gapp::algorithm
 
     void SingleObjective::replacement_method(std::unique_ptr<replacement::Replacement> replacement)
     {
-        GA_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
+        GAPP_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
 
         replacement_ = std::move(replacement);
     }
@@ -57,16 +57,16 @@ namespace gapp::algorithm
 
     void SingleObjective::initializeImpl(const GaInfo& ga)
     {
-        GA_ASSERT(selection_);
-        GA_ASSERT(ga.num_objectives() == 1, "The number of objectives must be 1 for the single-objective algorithms.");
+        GAPP_ASSERT(selection_);
+        GAPP_ASSERT(ga.num_objectives() == 1, "The number of objectives must be 1 for the single-objective algorithms.");
 
         selection_->initializeImpl(ga);
     }
 
     std::vector<size_t> SingleObjective::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(replacement_);
-        GA_ASSERT(ga.num_objectives() == 1, "The number of objectives must be 1 for the single-objective algorithms.");
+        GAPP_ASSERT(replacement_);
+        GAPP_ASSERT(ga.num_objectives() == 1, "The number of objectives must be 1 for the single-objective algorithms.");
 
         return replacement_->nextPopulationImpl(ga, first, children_first, last);
     }

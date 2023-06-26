@@ -29,9 +29,9 @@ namespace gapp::algorithm
     /* Achievement scalarization function. */
     static constexpr double ASF(std::span<const double> ideal_point, std::span<const double> weights, std::span<const double> fitness) noexcept
     {
-        GA_ASSERT(!ideal_point.empty());
-        GA_ASSERT(weights.size() == ideal_point.size());
-        GA_ASSERT(fitness.size() == weights.size());
+        GAPP_ASSERT(!ideal_point.empty());
+        GAPP_ASSERT(weights.size() == ideal_point.size());
+        GAPP_ASSERT(fitness.size() == weights.size());
 
         double dmax = -math::inf<double>;
 
@@ -46,7 +46,7 @@ namespace gapp::algorithm
     /* Create a weight vector for the given axis (used in the ASF). */
     static inline std::vector<double> weightVector(size_t dimensions, size_t axis)
     {
-        GA_ASSERT(dimensions > axis);
+        GAPP_ASSERT(dimensions > axis);
 
         std::vector weights(dimensions, 1E-6);
         weights[axis] = 1.0;
@@ -57,7 +57,7 @@ namespace gapp::algorithm
     /* Find an approximation of the pareto front's nadir point using the minimum of the extreme points. */
     static inline Point findNadirPoint(const std::vector<Point>& extreme_points)
     {
-        GA_ASSERT(!extreme_points.empty());
+        GAPP_ASSERT(!extreme_points.empty());
 
         /* Nadir point estimate = minimum of extreme points along each objective axis. */
         Point nadir = extreme_points[0];
@@ -72,8 +72,8 @@ namespace gapp::algorithm
     /* Normalize a fitness vector using the ideal and nadir points. */
     static inline FitnessVector normalizeFitnessVec(std::span<const double> fvec, std::span<const double> ideal_point, std::span<const double> nadir_point)
     {
-        GA_ASSERT(fvec.size() == ideal_point.size());
-        GA_ASSERT(ideal_point.size() == nadir_point.size());
+        GAPP_ASSERT(fvec.size() == ideal_point.size());
+        GAPP_ASSERT(ideal_point.size() == nadir_point.size());
 
         FitnessVector fnorm(fvec.size());
 
@@ -182,15 +182,15 @@ namespace gapp::algorithm
 
     inline void NSGA3::Impl::updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         ideal_point_ = detail::elementwise_max(std::move(ideal_point_), detail::maxFitness(first, last));
     }
 
     void NSGA3::Impl::updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(first->size() == ideal_point_.size());
+        GAPP_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(first->size() == ideal_point_.size());
 
         const auto popsize = size_t(last - first);
 
@@ -232,15 +232,15 @@ namespace gapp::algorithm
     void NSGA3::Impl::associatePopWithRefs(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last,
                                            ParetoFronts::const_iterator pfirst, ParetoFronts::const_iterator plast)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(!ref_lines_.empty());
+        GAPP_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(!ref_lines_.empty());
 
         updateIdealPoint(first, last);
         updateNadirPoint(first, last);
 
         sol_info_.resize(last - first);
 
-        std::for_each(GA_EXECUTION_UNSEQ, pfirst, plast, [&](const FrontInfo& sol)
+        std::for_each(GAPP_EXEC_UNSEQ, pfirst, plast, [&](const FrontInfo& sol)
         {
             const FitnessVector fnorm = normalizeFitnessVec(first[sol.idx], ideal_point_, nadir_point_);
 
@@ -341,8 +341,8 @@ namespace gapp::algorithm
 
     void NSGA3::initializeImpl(const GaInfo& ga)
     {
-        GA_ASSERT(ga.population_size() != 0);
-        GA_ASSERT(ga.num_objectives() > 1, "The number of objectives must be greater than 1 for the NSGA-III algorithm.");
+        GAPP_ASSERT(ga.population_size() != 0);
+        GAPP_ASSERT(ga.num_objectives() > 1, "The number of objectives must be greater than 1 for the NSGA-III algorithm.");
 
         const auto& fitness_matrix = ga.fitness_matrix();
 
@@ -366,9 +366,9 @@ namespace gapp::algorithm
                                                                     FitnessMatrix::const_iterator /* parents_last */,
                                                                     FitnessMatrix::const_iterator children_last)
     {
-        GA_ASSERT(ga.num_objectives() > 1);
-        GA_ASSERT(size_t(children_last - parents_first) >= ga.population_size());
-        GA_ASSERT(parents_first->size() == ga.num_objectives());
+        GAPP_ASSERT(ga.num_objectives() > 1);
+        GAPP_ASSERT(size_t(children_last - parents_first) >= ga.population_size());
+        GAPP_ASSERT(parents_first->size() == ga.num_objectives());
 
         const size_t popsize = ga.population_size();
 
@@ -411,7 +411,7 @@ namespace gapp::algorithm
 
     size_t NSGA3::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
     {
-        GA_ASSERT(!fmat.empty());
+        GAPP_ASSERT(!fmat.empty());
 
         const size_t idx1 = rng::randomIdx(fmat);
         const size_t idx2 = rng::randomIdx(fmat);

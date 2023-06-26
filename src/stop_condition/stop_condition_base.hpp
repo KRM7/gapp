@@ -88,7 +88,7 @@ namespace gapp::stopping
 
         explicit Lambda(StopConditionCallable f) noexcept
         {
-            GA_ASSERT(f, "The stop condition can't be a nullptr.");
+            GAPP_ASSERT(f, "The stop condition can't be a nullptr.");
 
             stop_condition_ = std::move(f);
         }
@@ -98,7 +98,7 @@ namespace gapp::stopping
 
         bool stop_condition(const GaInfo& ga) override
         {
-            GA_ASSERT(stop_condition_);
+            GAPP_ASSERT(stop_condition_);
 
             return stop_condition_(ga);
         }

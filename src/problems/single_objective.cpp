@@ -32,7 +32,7 @@ namespace gapp::problems
 
     auto Rosenbrock::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
-        GA_ASSERT(!vars.empty());
+        GAPP_ASSERT(!vars.empty());
 
         double fx = 0.0;
         for (size_t i = 0; i < vars.size() - 1; i++)
@@ -69,7 +69,7 @@ namespace gapp::problems
 
     auto Ackley::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
-        GA_ASSERT(!vars.empty());
+        GAPP_ASSERT(!vars.empty());
 
         double f1 = 0.0;
         double f2 = 0.0;
@@ -88,7 +88,7 @@ namespace gapp::problems
 
     auto Levy::invoke(const std::vector<double>& vars) const -> FitnessVector
     {
-        GA_ASSERT(!vars.empty());
+        GAPP_ASSERT(!vars.empty());
 
         constexpr auto fw = detail::multiply_add(0.25, 0.75);
 

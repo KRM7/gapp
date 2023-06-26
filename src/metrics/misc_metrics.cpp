@@ -24,7 +24,7 @@ namespace gapp::metrics
 
     size_t FitnessEvaluations::value_at(size_t generation) const noexcept
     {
-        GA_ASSERT(generation < data_.size());
+        GAPP_ASSERT(generation < data_.size());
 
         return data_[generation];
     }

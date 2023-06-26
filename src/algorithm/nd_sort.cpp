@@ -33,7 +33,7 @@ namespace gapp::algorithm::dtl
 
     ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept
     {
-        GA_ASSERT(std::distance(current, last) >= 0);
+        GAPP_ASSERT(std::distance(current, last) >= 0);
 
         return std::find_if(current, last, compose(&FrontInfo::rank, detail::not_equal_to(current->rank)));
     }
@@ -60,7 +60,7 @@ namespace gapp::algorithm::dtl
 
     ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize)
     {
-        GA_ASSERT(0 < popsize && popsize <= size_t(last - first));
+        GAPP_ASSERT(0 < popsize && popsize <= size_t(last - first));
 
         auto last_in = first + popsize;
 
@@ -189,7 +189,7 @@ namespace gapp::algorithm::dtl
         const size_t popsize = std::distance(first, last);
         DominanceMatrix dmat(popsize, popsize /*, MAXIMAL */);
 
-        std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
+        std::for_each(GAPP_EXEC_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
         {
             FitnessVector fvec(popsize);
             std::transform(first, last, fvec.begin(), detail::element_at(obj));
@@ -210,7 +210,7 @@ namespace gapp::algorithm::dtl
             });
         });
 
-        std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
+        std::for_each(GAPP_EXEC_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
         {
             dmat(row, row).store(NONMAXIMAL, std::memory_order_relaxed); // diagonal is all nonmax
 
@@ -296,7 +296,7 @@ namespace gapp::algorithm::dtl
 
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) >= 0);
+        GAPP_ASSERT(std::distance(first, last) >= 0);
 
         return dominanceDegreeSort(first, last);
     }

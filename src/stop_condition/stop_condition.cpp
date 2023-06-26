@@ -14,7 +14,7 @@ namespace gapp::stopping
 {
     static bool metricImproved(FitnessVector& best_so_far, const FitnessVector& new_val, double delta) noexcept
     {
-        GA_ASSERT(best_so_far.size() == new_val.size());
+        GAPP_ASSERT(best_so_far.size() == new_val.size());
 
         bool improved = false;
         for (size_t i = 0; i < new_val.size(); i++)
@@ -39,8 +39,8 @@ namespace gapp::stopping
 
     bool FitnessValue::stop_condition(const GaInfo& ga)
     {
-        GA_ASSERT(ga.num_objectives() == fitness_threshold_.size(),
-                  "The size of the fitness threshold vector must match the number of objectives.");
+        GAPP_ASSERT(ga.num_objectives() == fitness_threshold_.size(),
+          "The size of the fitness threshold vector must match the number of objectives.");
 
         const auto& fitness_matrix = ga.fitness_matrix();
 

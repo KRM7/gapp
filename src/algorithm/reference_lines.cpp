@@ -28,7 +28,7 @@ namespace gapp::algorithm::reflines
     /* Transform a point from the n-dimensional unit hypercube to the n-dimensional unit simplex. */
     static inline Point simplexMappingLog(Point&& point)
     {
-        GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+        GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         std::transform(point.begin(), point.end(), point.begin(), [](double p) { return -std::log(std::max(p, math::small<double>)); });
         const double sum = std::reduce(point.begin(), point.end(), 0.0);
@@ -40,7 +40,7 @@ namespace gapp::algorithm::reflines
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
     static inline Point simplexMappingSort(Point&& point)
     {
-        GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+        GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         point.push_back(1.0);
         std::sort(point.begin(), point.end());
@@ -52,7 +52,7 @@ namespace gapp::algorithm::reflines
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
     static inline Point simplexMappingRoot(Point&& point)
     {
-        GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+        GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         if (point.empty()) return { 1.0 };
 
@@ -72,7 +72,7 @@ namespace gapp::algorithm::reflines
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
     static inline Point simplexMappingMirror(Point&& point)
     {
-        GA_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
+        GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         point.push_back(1.0);
         if (point.size() == 1) return point;
@@ -183,7 +183,7 @@ namespace gapp::algorithm::reflines
             min_distances.pop_back();
 
             /* Calc the distance of each candidate to the closest ref point. */
-            std::transform(GA_EXECUTION_UNSEQ, candidate_points.begin(), candidate_points.end(), min_distances.begin(), min_distances.begin(),
+            std::transform(GAPP_EXEC_UNSEQ, candidate_points.begin(), candidate_points.end(), min_distances.begin(), min_distances.begin(),
             [&](const Point& candidate, double current_min) noexcept
             {
                 const double dist = math::euclideanDistanceSq(candidate, points.back());

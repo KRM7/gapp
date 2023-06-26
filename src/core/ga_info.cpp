@@ -19,7 +19,7 @@ namespace gapp
     GaInfo::GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) noexcept :
         algorithm_(std::move(algorithm)), stop_condition_(std::move(stop_condition)), population_size_(population_size)
     {
-        GA_ASSERT(stop_condition_, "The stop condition can't be a nullptr.");
+        GAPP_ASSERT(stop_condition_, "The stop condition can't be a nullptr.");
     }
 
     size_t GaInfo::num_fitness_evals() const noexcept
@@ -30,7 +30,7 @@ namespace gapp
 
     void GaInfo::algorithm(std::unique_ptr<algorithm::Algorithm> f)
     {
-        GA_ASSERT(f, "The algorithm can't be a nullptr.");
+        GAPP_ASSERT(f, "The algorithm can't be a nullptr.");
 
         algorithm_ = std::move(f);
         use_default_algorithm_ = false;

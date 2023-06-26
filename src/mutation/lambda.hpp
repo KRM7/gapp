@@ -24,7 +24,7 @@ namespace gapp::mutation
         constexpr explicit Lambda(MutationCallable f) noexcept :
             Mutation<T>(0.01)
         {
-            GA_ASSERT(f, "The mutation method can't be a nullptr.");
+            GAPP_ASSERT(f, "The mutation method can't be a nullptr.");
 
             mutate_ = std::move(f);
         }
@@ -34,7 +34,7 @@ namespace gapp::mutation
 
         void mutate(const GA<T>& ga, const Candidate<T>& candidate, Chromosome<T>& chromosome) const override
         {
-            GA_ASSERT(mutate_);
+            GAPP_ASSERT(mutate_);
 
             mutate_(ga, candidate, chromosome);
         }

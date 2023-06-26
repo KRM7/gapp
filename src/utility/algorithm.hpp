@@ -46,7 +46,7 @@ namespace gapp::detail
     requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
     std::vector<size_t> argsort(Iter first, Iter last, Comp&& comp = {})
     {
-        GA_ASSERT(std::distance(first, last) >= 0);
+        GAPP_ASSERT(std::distance(first, last) >= 0);
 
         auto indices = detail::index_vector(last - first);
 
@@ -73,8 +73,8 @@ namespace gapp::detail
     requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
     std::vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = {})
     {
-        GA_ASSERT(std::distance(first, middle) >= 0);
-        GA_ASSERT(std::distance(middle, last) >= 0);
+        GAPP_ASSERT(std::distance(first, middle) >= 0);
+        GAPP_ASSERT(std::distance(middle, last) >= 0);
 
         if (std::distance(first, middle) >= 0.2 * std::distance(first, last))
         {
@@ -108,7 +108,7 @@ namespace gapp::detail
     requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
     constexpr size_t argmax(Iter first, Iter last, Comp&& comp = {})
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         const auto it = std::max_element(first, last, std::forward<Comp>(comp));
         const size_t idx = std::distance(first, it);
@@ -128,7 +128,7 @@ namespace gapp::detail
     requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
     constexpr size_t argmin(Iter first, Iter last, Comp&& comp = {})
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         const auto it = std::min_element(first, last, std::forward<Comp>(comp));
         const size_t idx = std::distance(first, it);
@@ -147,8 +147,8 @@ namespace gapp::detail
     template<std::random_access_iterator Iter, typename URBG>
     constexpr void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)
     {
-        GA_ASSERT(std::distance(first, middle) >= 0);
-        GA_ASSERT(std::distance(middle, last) >= 0);
+        GAPP_ASSERT(std::distance(first, middle) >= 0);
+        GAPP_ASSERT(std::distance(middle, last) >= 0);
 
         for (; first != middle; ++first)
         {
@@ -169,7 +169,7 @@ namespace gapp::detail
     template<std::forward_iterator Iter, std::predicate<std::iter_value_t<Iter>> Pred>
     std::vector<Iter> find_all(Iter first, Iter last, Pred&& pred)
     {
-        GA_ASSERT(std::distance(first, last) >= 0);
+        GAPP_ASSERT(std::distance(first, last) >= 0);
 
         std::vector<Iter> result;
         result.reserve(last - first);
@@ -185,7 +185,7 @@ namespace gapp::detail
     template<std::forward_iterator Iter, std::predicate<std::iter_value_t<Iter>> Pred>
     auto find_all_v(Iter first, Iter last, Pred&& pred)
     {
-        GA_ASSERT(std::distance(first, last) >= 0);
+        GAPP_ASSERT(std::distance(first, last) >= 0);
 
         using ValueType = std::remove_cvref_t<std::iter_reference_t<Iter>>;
 
@@ -236,7 +236,7 @@ namespace gapp::detail
     template<typename T>
     std::vector<T> elementwise_min(std::vector<T> left, std::span<const std::type_identity_t<T>> right)
     {
-        GA_ASSERT(left.size() == right.size());
+        GAPP_ASSERT(left.size() == right.size());
 
         std::transform(left.begin(), left.end(), right.begin(), left.begin(),
         [](const T& lhs, const T& rhs)
@@ -250,7 +250,7 @@ namespace gapp::detail
     template<typename T>
     std::vector<T> elementwise_max(std::vector<T> left, std::span<const std::type_identity_t<T>> right)
     {
-        GA_ASSERT(left.size() == right.size());
+        GAPP_ASSERT(left.size() == right.size());
 
         std::transform(left.begin(), left.end(), right.begin(), left.begin(),
         [](const T& lhs, const T& rhs)
@@ -277,7 +277,7 @@ namespace gapp::detail
     requires detail::IndexableContainer<std::remove_cvref_t<Container>>
     auto select(Container&& container, const std::vector<size_t>& indices)
     {
-        GA_ASSERT(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < container.size(); }));
+        GAPP_ASSERT(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < container.size(); }));
 
         using ValueType = typename std::remove_cvref_t<Container>::value_type;
 
@@ -303,8 +303,8 @@ namespace gapp::detail
     template<std::integral T>
     constexpr void increment_mod(T& value, T mod)
     {
-        GA_ASSERT(mod > 0);
-        GA_ASSERT(0 <= value && value < mod);
+        GAPP_ASSERT(mod > 0);
+        GAPP_ASSERT(0 <= value && value < mod);
 
         value = (value + 1 == mod) ? T(0) : value + 1;
     }

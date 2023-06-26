@@ -11,77 +11,86 @@
 #include <cstddef>
 
 
-#define GA_ASSERT(condition, ...) assert( (condition) __VA_OPT__(&& (__VA_ARGS__)) )
-#define GA_THROW(exception_type, msg) throw exception_type(msg)
+#define GAPP_ASSERT(condition, ...) assert( (condition) __VA_OPT__(&& (__VA_ARGS__)) )
+#define GAPP_THROW(exception_type, msg) throw exception_type(msg)
 
 
 #ifdef __GNUC__
-#   define GA_UNREACHABLE() __builtin_unreachable()
+#   define GAPP_UNREACHABLE() __builtin_unreachable()
 #elif defined(_MSC_VER)
-#   define GA_UNREACHABLE() __assume(false)
+#   define GAPP_UNREACHABLE() __assume(false)
 #else
-#   define GA_UNREACHABLE() assert(false);
+#   define GAPP_UNREACHABLE() assert(false);
+#endif
+
+
+#if defined(_MSC_VER) && !defined(__clang__)
+#   define GAPP_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
+#elif __has_cpp_attribute(no_unique_address)
+#   define GAPP_NO_UNIQUE_ADDRESS [[no_unique_address]]
+#else
+#   define GAPP_NO_UNIQUE_ADDRESS
 #endif
 
 
 #if defined(__GNUC__) || defined(__clang__)
-#   define GA_CONST __attribute__((const))
+#   define GAPP_CONST __attribute__((const))
 #elif defined(_MSC_VER)
-#   define GA_CONST __declspec(noalias)
+#   define GAPP_CONST __declspec(noalias)
 #else
-#   define GA_CONST
+#   define GAPP_CONST
 #endif
 
 
 #if defined(__GNUC__) || defined(__clang__)
-#   define GA_PURE __attribute__((pure))
+#   define GAPP_PURE __attribute__((pure))
 #else
-#   define GA_PURE
+#   define GAPP_PURE
 #endif
 
 
 #if defined(__GNUC__) || defined(__clang__)
-#   define GA_NON_NULL __attribute__((nonnull))
+#   define GAPP_NON_NULL __attribute__((nonnull))
 #else
-#   define GA_NON_NULL
+#   define GAPP_NON_NULL
 #endif
 
 
 #if defined(__GNUC__) || defined(__clang__)
-#   define GA_NOINLINE __attribute((noinline))
+#   define GAPP_NOINLINE __attribute((noinline))
 #elif defined(_MSC_VER)
-#   define GA_NOINLINE __declspec(noinline)
+#   define GAPP_NOINLINE __declspec(noinline)
 #else
-#   define GA_NOINLINE
+#   define GAPP_NOINLINE
 #endif
 
 
 #if defined(__GNUC__) || defined(__clang__)
-#   define GA_PAUSE() __builtin_ia32_pause()
+#   define GAPP_PAUSE() __builtin_ia32_pause()
 #elif defined(_MSC_VER)
-#   define GA_PAUSE() _mm_pause()
+#   define GAPP_PAUSE() _mm_pause()
 #else
-#   define GA_PAUSE()
+#   define GAPP_PAUSE()
 #endif
 
 
 #if defined(_WIN32) && !defined(GAPP_BUILD_STATIC)
 #   if defined(gapp_EXPORTS)
-#       define GA_API __declspec(dllexport)
+#       define GAPP_API __declspec(dllexport)
 #   else
-#       define GA_API __declspec(dllimport)
+#       define GAPP_API __declspec(dllimport)
 #   endif
 #else
-#   define GA_API
+#   define GAPP_API
 #endif
 
 
-#ifndef GA_EXCUTION_UNSEQ
-#   define GA_EXECUTION_UNSEQ std::execution::par_unseq
+#ifndef GAPP_EXCUTION_UNSEQ
+#   define GAPP_EXEC_UNSEQ std::execution::par_unseq
 #endif
 
-#ifndef GA_EXECUTION_SEQ
-#   define GA_EXECUTION_SEQ std::execution::par
+#ifndef GAPP_EXEC_SEQ
+#   define GAPP_EXEC_SEQ std::execution::par
 #endif
 
 
@@ -121,7 +130,7 @@ namespace gapp::detail
     template<std::integral T>
     constexpr size_t range_length(T low, T high) noexcept
     {
-        GA_ASSERT(low <= high);
+        GAPP_ASSERT(low <= high);
 
         if constexpr (std::is_unsigned_v<T>)
         {

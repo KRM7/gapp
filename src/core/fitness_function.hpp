@@ -72,7 +72,7 @@ namespace gapp
         */
         FitnessVector operator()(const Chromosome<T>& chrom) const
         {
-            GA_ASSERT(chrom.size() == chrom_len() || variable_chrom_len(), "A chromosome of incorrect size was passed to the fitness function.");
+            GAPP_ASSERT(chrom.size() == chrom_len() || variable_chrom_len(), "A chromosome of incorrect size was passed to the fitness function.");
 
             return invoke(chrom);
         }
@@ -127,9 +127,6 @@ namespace gapp
             FitnessFunctionBase<T>(ChromLen, variable_len, dynamic)
         {}
 
-        /** Destructor. */
-        virtual ~FitnessFunction()                                  = default;
-
     protected:
 
         FitnessFunction(const FitnessFunction&) noexcept            = default;
@@ -152,7 +149,7 @@ namespace gapp::detail
         FitnessLambda(size_t chrom_len, FitnessCallable f) noexcept :
             FitnessFunctionBase<T>(chrom_len)
         {
-            GA_ASSERT(f, "The fitness function can't be a nullptr.");
+            GAPP_ASSERT(f, "The fitness function can't be a nullptr.");
 
             fitness_function_ = std::move(f);
         }
@@ -160,7 +157,7 @@ namespace gapp::detail
     private:
         FitnessVector invoke(const Chromosome<T>& chrom) const override
         {
-            GA_ASSERT(fitness_function_);
+            GAPP_ASSERT(fitness_function_);
 
             return fitness_function_(chrom);
         }

@@ -11,7 +11,7 @@ namespace gapp
 {
     auto RCGA::generateCandidate() const -> Candidate<GeneType>
     {
-        GA_ASSERT(chrom_len() == gene_bounds().size(), "The size of the bounds vector must match the chromosome length.");
+        GAPP_ASSERT(chrom_len() == gene_bounds().size(), "The size of the bounds vector must match the chromosome length.");
 
         Candidate<GeneType> solution(chrom_len());
         for (size_t i = 0; i < solution.chromosome.size(); i++)

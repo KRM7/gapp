@@ -83,8 +83,8 @@ namespace gapp::detail
     {
         if (pop.empty()) return {};
 
-        GA_ASSERT(!pop[0].fitness.empty());
-        GA_ASSERT(std::all_of(pop.begin(), pop.end(), [&](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
+        GAPP_ASSERT(!pop[0].fitness.empty());
+        GAPP_ASSERT(std::all_of(pop.begin(), pop.end(), [&](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
         auto fitness_matrix = detail::toFitnessMatrix(pop);
 
@@ -106,7 +106,7 @@ namespace gapp::detail
         std::vector<Dominance> lhs_state(lhs.size());
         std::vector<std::atomic<Dominance>> rhs_state(rhs.size());
 
-        std::for_each(GA_EXECUTION_UNSEQ, iota_iterator(0_sz), iota_iterator(lhs.size()), [&](size_t i) noexcept
+        std::for_each(GAPP_EXEC_UNSEQ, iota_iterator(0_sz), iota_iterator(lhs.size()), [&](size_t i) noexcept
         {
             for (size_t j = 0; j < rhs.size(); j++)
             {

@@ -130,11 +130,11 @@ namespace gapp::algorithm
 
         /** @returns The selection operator used by the algorithm. */
         [[nodiscard]]
-        selection::Selection& selection_method() & noexcept { GA_ASSERT(selection_); return *selection_; }
+        selection::Selection& selection_method() & noexcept { GAPP_ASSERT(selection_); return *selection_; }
 
         /** @returns The selection operator used by the algorithm. */
         [[nodiscard]]
-        const selection::Selection& selection_method() const& noexcept { GA_ASSERT(selection_); return *selection_; }
+        const selection::Selection& selection_method() const& noexcept { GAPP_ASSERT(selection_); return *selection_; }
 
 
         /**
@@ -162,11 +162,11 @@ namespace gapp::algorithm
 
         /** @returns The population replacement policy used by the algorithm. */
         [[nodiscard]]
-        replacement::Replacement& replacement_method() & noexcept { GA_ASSERT(replacement_); return *replacement_; }
+        replacement::Replacement& replacement_method() & noexcept { GAPP_ASSERT(replacement_); return *replacement_; }
 
         /** @returns The population replacement policy used by the algorithm. */
         [[nodiscard]]
-        const replacement::Replacement& replacement_method() const& noexcept { GA_ASSERT(replacement_); return *replacement_; }
+        const replacement::Replacement& replacement_method() const& noexcept { GAPP_ASSERT(replacement_); return *replacement_; }
 
     private:
 
@@ -221,14 +221,14 @@ namespace gapp::algorithm
 
     inline void SingleObjective::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
-        GA_ASSERT(selection_);
+        GAPP_ASSERT(selection_);
 
         selection_->prepareSelectionsImpl(ga, fmat);
     }
 
     inline size_t SingleObjective::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
     {
-        GA_ASSERT(selection_);
+        GAPP_ASSERT(selection_);
 
         return selection_->selectImpl(ga, fmat);
     }

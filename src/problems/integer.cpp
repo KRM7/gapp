@@ -20,7 +20,7 @@ namespace gapp::problems
 
     auto StringFinder::invoke(const std::vector<IntegerGene>& chrom) const -> FitnessVector
     {
-        GA_ASSERT(chrom.size() == num_vars());
+        GAPP_ASSERT(chrom.size() == num_vars());
 
         double fitness = 0.0;
         for (size_t i = 0; i < chrom.size(); i++)

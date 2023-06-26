@@ -21,7 +21,7 @@ namespace gapp::problems
 
     static inline double dtlz1_g(const_iterator first, const_iterator last) noexcept
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         double g = double(last - first);
         for (; first != last; ++first)
@@ -34,7 +34,7 @@ namespace gapp::problems
 
     static inline double dtlz2_g(const_iterator first, const_iterator last) noexcept
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         double g = 0.0;
         for (; first != last; ++first)
@@ -53,7 +53,7 @@ namespace gapp::problems
 
     static inline double dtlz6_g(const_iterator first, const_iterator last) noexcept
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         double g = 0.0;
         for (; first != last; ++first)
@@ -66,7 +66,7 @@ namespace gapp::problems
 
     static constexpr double dtlz7_g(const_iterator first, const_iterator last) noexcept
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         return 1.0 + 9.0 / double(last - first) * std::reduce(first, last, 0.0);
     }
@@ -76,7 +76,7 @@ namespace gapp::problems
 
     static inline std::vector<double> dtlz1_f(const_iterator first, const_iterator last, double)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 0.5);
 
@@ -91,7 +91,7 @@ namespace gapp::problems
 
     static inline std::vector<double> dtlz2_f(const_iterator first, const_iterator last, double)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 1.0);
 
@@ -108,7 +108,7 @@ namespace gapp::problems
 
     static inline std::vector<double> dtlz4_f(const_iterator first, const_iterator last, double)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 1.0);
 
@@ -123,7 +123,7 @@ namespace gapp::problems
 
     static inline std::vector<double> dtlz5_f(const_iterator first, const_iterator last, double g)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 1.0);
 
@@ -146,7 +146,7 @@ namespace gapp::problems
 
     static inline std::vector<double> dtlz7_f(const_iterator first, const_iterator last, double g)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         std::vector fx(last - first + 1, 0.0);
 
@@ -190,7 +190,7 @@ namespace gapp::problems
     DTLZ1::DTLZ1(size_t num_obj, size_t bits_per_var) :
         BenchmarkFunction("DTLZ1", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
+        GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
         ideal_point_ = math::Point(num_obj, 0.0);
         nadir_point_ = math::Point(num_obj, -0.5);
@@ -210,7 +210,7 @@ namespace gapp::problems
     DTLZ2::DTLZ2(size_t num_obj, size_t bits_per_var) :
         BenchmarkFunction("DTLZ2", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
+        GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
         ideal_point_ = math::Point(num_obj, 0.0);
         nadir_point_ = math::Point(num_obj, -1.0);
@@ -230,7 +230,7 @@ namespace gapp::problems
     DTLZ3::DTLZ3(size_t num_obj, size_t bits_per_var) :
         BenchmarkFunction("DTLZ3", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
+        GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
         ideal_point_ = math::Point(num_obj, 0.0);
         nadir_point_ = math::Point(num_obj, -1.0);
@@ -250,7 +250,7 @@ namespace gapp::problems
     DTLZ4::DTLZ4(size_t num_obj, size_t bits_per_var) :
         BenchmarkFunction("DTLZ4", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
+        GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
         ideal_point_ = math::Point(num_obj, 0.0);
         nadir_point_ = math::Point(num_obj, -1.0);
@@ -269,7 +269,7 @@ namespace gapp::problems
     DTLZ5::DTLZ5(size_t num_obj, size_t bits_per_var) :
         BenchmarkFunction("DTLZ5", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
+        GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
         ideal_point_ = math::Point(num_obj, 0.0);
         nadir_point_ = math::Point(num_obj, 0.0);
@@ -294,7 +294,7 @@ namespace gapp::problems
     DTLZ6::DTLZ6(size_t num_obj, size_t bits_per_var) :
         BenchmarkFunction("DTLZ6", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
+        GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
         ideal_point_ = math::Point(num_obj, 0.0);
         nadir_point_ = math::Point(num_obj, 0.0);
@@ -318,7 +318,7 @@ namespace gapp::problems
     DTLZ7::DTLZ7(size_t num_obj, size_t bits_per_var) :
         BenchmarkFunction("DTLZ7", num_obj + K - 1, num_obj, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
+        GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
         optimum_ = std::vector(num_vars(), 0.0);
         optimal_value_ = math::Point(num_obj, 0.0);

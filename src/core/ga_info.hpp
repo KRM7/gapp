@@ -105,7 +105,7 @@ namespace gapp
 
         /** @returns The number of objectives of the fitness function. */
         [[nodiscard]]
-        size_t num_objectives() const noexcept { GA_ASSERT(num_objectives_); return num_objectives_; }
+        size_t num_objectives() const noexcept { GAPP_ASSERT(num_objectives_); return num_objectives_; }
 
         /** @returns True if a dynamic fitness function is used. */
         [[nodiscard]]
@@ -182,7 +182,7 @@ namespace gapp
 
         /** @returns The algorithm used by the %GA. */
         [[nodiscard]]
-        const algorithm::Algorithm& algorithm() const& noexcept { GA_ASSERT(algorithm_); return *algorithm_; }
+        const algorithm::Algorithm& algorithm() const& noexcept { GAPP_ASSERT(algorithm_); return *algorithm_; }
 
 
         /**
@@ -221,7 +221,7 @@ namespace gapp
 
         /** @returns The stop condition used by the %GA. */
         [[nodiscard]]
-        const stopping::StopCondition& stop_condition() const& noexcept { GA_ASSERT(stop_condition_); return *stop_condition_; }
+        const stopping::StopCondition& stop_condition() const& noexcept { GAPP_ASSERT(stop_condition_); return *stop_condition_; }
 
 
         /**
@@ -388,7 +388,7 @@ namespace gapp
     requires std::derived_from<Metric, metrics::MonitorBase>
     inline const Metric& GaInfo::get_metric() const noexcept
     {
-        GA_ASSERT(metrics_.get<Metric>(), "Attempting to get an untracked metric type is invalid.");
+        GAPP_ASSERT(metrics_.get<Metric>(), "Attempting to get an untracked metric type is invalid.");
 
         return *metrics_.get<Metric>();
     }

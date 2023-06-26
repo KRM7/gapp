@@ -35,8 +35,8 @@ namespace gapp::math
         static T eps() noexcept { return relative_tolerance_epsilons.load(std::memory_order_acquire) * std::numeric_limits<T>::epsilon(); }
 
     private:
-        GA_API static std::atomic<double> absolute_tolerance;
-        GA_API static std::atomic<unsigned> relative_tolerance_epsilons;
+        GAPP_API static std::atomic<double> absolute_tolerance;
+        GAPP_API static std::atomic<unsigned> relative_tolerance_epsilons;
 
         friend class ScopedTolerances;
     };
@@ -179,7 +179,7 @@ namespace gapp::math
     template<std::floating_point T>
     constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
     {
-        GA_ASSERT(!std::isnan(lhs) && !std::isnan(rhs));
+        GAPP_ASSERT(!std::isnan(lhs) && !std::isnan(rhs));
 
         const T diff = lhs - rhs;
         const T scale = std::max(std::abs(lhs), std::abs(rhs));

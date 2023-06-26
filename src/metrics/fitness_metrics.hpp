@@ -19,7 +19,7 @@ namespace gapp::metrics
     public:
         std::span<const double> value_at(size_t generation) const noexcept
         {
-            GA_ASSERT(generation < this->data_.size());
+            GAPP_ASSERT(generation < this->data_.size());
 
             return this->data_[generation];
         }

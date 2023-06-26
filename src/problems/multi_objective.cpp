@@ -17,7 +17,7 @@ namespace gapp::problems
     Kursawe::Kursawe(size_t num_vars, size_t bits_per_var) :
         BenchmarkFunction("Kursawe", num_vars, 2, Bounds{ -5.0, 5.0 }, bits_per_var)
     {
-        GA_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
+        GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
         optimum_ = std::vector(num_vars, 0.0);
         optimal_value_ = { 10.0 * double(num_vars - 1), 0.0 };
@@ -28,7 +28,7 @@ namespace gapp::problems
 
     auto Kursawe::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        GA_ASSERT(vars.size() >= 2);
+        GAPP_ASSERT(vars.size() >= 2);
 
         double f1 = 0.0;
         double f2 = 0.0;
@@ -47,7 +47,7 @@ namespace gapp::problems
     ZDT1::ZDT1(size_t num_vars, size_t bits_per_var) :
         BenchmarkFunction("ZDT1", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
+        GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
         optimum_ = std::vector(num_vars, 0.0);
         optimal_value_ = { 0.0, -1.0 };
@@ -58,7 +58,7 @@ namespace gapp::problems
 
     auto ZDT1::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        GA_ASSERT(vars.size() >= 2);
+        GAPP_ASSERT(vars.size() >= 2);
 
         double f1 = vars[0];
 
@@ -74,7 +74,7 @@ namespace gapp::problems
     ZDT2::ZDT2(size_t num_vars, size_t bits_per_var) :
         BenchmarkFunction("ZDT2", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
+        GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
         optimum_ = std::vector(num_vars, 0.0);
         optimal_value_ = { 0.0, -1.0 };
@@ -85,7 +85,7 @@ namespace gapp::problems
 
     auto ZDT2::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        GA_ASSERT(vars.size() >= 2);
+        GAPP_ASSERT(vars.size() >= 2);
 
         double f1 = vars[0];
 
@@ -101,7 +101,7 @@ namespace gapp::problems
     ZDT3::ZDT3(size_t num_vars, size_t bits_per_var) :
         BenchmarkFunction("ZDT3", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
+        GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
         optimum_ = std::vector(num_vars, 0.0);
         optimal_value_ = { 0.0, -1.0 };
@@ -112,7 +112,7 @@ namespace gapp::problems
 
     auto ZDT3::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        GA_ASSERT(vars.size() >= 2);
+        GAPP_ASSERT(vars.size() >= 2);
 
         double f1 = vars[0];
 
@@ -128,7 +128,7 @@ namespace gapp::problems
     ZDT4::ZDT4(size_t num_vars, size_t bits_per_var) :
         BenchmarkFunction("ZDT4", num_vars, 2, Bounds{ -5.0, 5.0 }, bits_per_var)
     {
-        GA_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
+        GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
         bounds_[0] = { 0.0, 1.0 };
 
@@ -141,7 +141,7 @@ namespace gapp::problems
 
     auto ZDT4::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        GA_ASSERT(vars.size() >= 2);
+        GAPP_ASSERT(vars.size() >= 2);
 
         double f1 = vars[0];
 
@@ -159,7 +159,7 @@ namespace gapp::problems
     ZDT5::ZDT5(size_t num_vars) :
         BenchmarkFunction("ZDT5", FIRST_BITS + (num_vars - 1) * REST_BITS, 2, Bounds<GeneType>{ 0, 1 })
     {
-        GA_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
+        GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
         optimum_ = std::vector(this->num_vars(), GeneType{ 1 });
         optimal_value_ = { -(FIRST_BITS + 1.0), -(num_vars - 1.0) / (FIRST_BITS + 1.0) };
@@ -170,8 +170,8 @@ namespace gapp::problems
 
     auto ZDT5::invoke(const std::vector<BinaryGene>& vars) const -> FitnessVector
     {
-        GA_ASSERT(vars.size() >= FIRST_BITS);
-        GA_ASSERT(vars.size() % REST_BITS == 0);
+        GAPP_ASSERT(vars.size() >= FIRST_BITS);
+        GAPP_ASSERT(vars.size() % REST_BITS == 0);
 
         double f1 = 1.0 + std::count(vars.begin(), vars.begin() + FIRST_BITS, GeneType{ 1 });
 
@@ -191,7 +191,7 @@ namespace gapp::problems
     ZDT6::ZDT6(size_t num_vars, size_t bits_per_var) :
         BenchmarkFunction("ZDT6", num_vars, 2, Bounds{ 0.0, 1.0 }, bits_per_var)
     {
-        GA_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
+        GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
         optimum_ = std::vector(num_vars, 0.0);
         optimal_value_ = { -1.0, 0.0 };
@@ -202,7 +202,7 @@ namespace gapp::problems
 
     auto ZDT6::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
     {
-        GA_ASSERT(vars.size() >= 2);
+        GAPP_ASSERT(vars.size() >= 2);
 
         double f1 = 1.0 - std::exp(-4.0 * vars[0]) * std::pow(std::sin(6.0 * pi * vars[0]), 6);
 

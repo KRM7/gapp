@@ -19,12 +19,12 @@ namespace gapp::algorithm
     template<typename T>
     auto Algorithm::select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const -> const Candidate<T>&
     {
-        GA_ASSERT(ga.population_size() == pop.size());
-        GA_ASSERT(pop.size() == fmat.size());
+        GAPP_ASSERT(ga.population_size() == pop.size());
+        GAPP_ASSERT(pop.size() == fmat.size());
 
         const size_t selected_idx = selectImpl(ga, fmat);
 
-        GA_ASSERT(selected_idx < pop.size(), "An invalid index was returned by selectImpl().");
+        GAPP_ASSERT(selected_idx < pop.size(), "An invalid index was returned by selectImpl().");
 
         return pop[selected_idx];
     }
@@ -32,8 +32,8 @@ namespace gapp::algorithm
     template<typename T>
     auto Algorithm::nextPopulation(const GA<T>& ga, Population<T> parents, Population<T> children) -> Population<T>
     {
-        GA_ASSERT(ga.population_size() == parents.size());
-        GA_ASSERT(ga.population_size() <= children.size());
+        GAPP_ASSERT(ga.population_size() == parents.size());
+        GAPP_ASSERT(ga.population_size() <= children.size());
 
         parents.reserve(parents.size() + children.size());
         std::move(children.begin(), children.end(), std::back_inserter(parents));
@@ -41,7 +41,7 @@ namespace gapp::algorithm
 
         const auto next_indices = nextPopulationImpl(ga, fmat.begin(), fmat.begin() + ga.population_size(), fmat.end());
 
-        GA_ASSERT(std::all_of(next_indices.begin(), next_indices.end(), detail::less_than(parents.size())),
+        GAPP_ASSERT(std::all_of(next_indices.begin(), next_indices.end(), detail::less_than(parents.size())),
                   "An invalid index was returned by nextPopulationImpl().");
 
         return detail::select(std::move(parents), next_indices);
@@ -50,11 +50,11 @@ namespace gapp::algorithm
     template<typename T>
     auto Algorithm::optimalSolutions(const GA<T>& ga, const Population<T>& pop) const -> Candidates<T>
     {
-        GA_ASSERT(ga.population_size() == pop.size());
+        GAPP_ASSERT(ga.population_size() == pop.size());
 
         const auto optimal_indices = optimalSolutionsImpl(ga);
 
-        GA_ASSERT(std::all_of(optimal_indices.begin(), optimal_indices.end(), detail::less_than(pop.size())),
+        GAPP_ASSERT(std::all_of(optimal_indices.begin(), optimal_indices.end(), detail::less_than(pop.size())),
                   "An invalid index was returned by optimalSolutionsImpl().");
 
         auto optimal_sols = optimal_indices.empty() ?

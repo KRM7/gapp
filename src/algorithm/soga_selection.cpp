@@ -21,8 +21,8 @@ namespace gapp::selection
     /* Calculate the cumulative distribution function of the population from the selection weights. */
     static std::vector<double> weightsToCdf(std::span<const double> weights)
     {
-        GA_ASSERT(!weights.empty());
-        GA_ASSERT(std::all_of(weights.begin(), weights.end(), detail::between(0.0, math::large<double>)));
+        GAPP_ASSERT(!weights.empty());
+        GAPP_ASSERT(std::all_of(weights.begin(), weights.end(), detail::between(0.0, math::large<double>)));
 
         std::vector<double> cdf(weights.size());
 
@@ -39,7 +39,7 @@ namespace gapp::selection
 
     void Roulette::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
-        GA_ASSERT(!fmat.empty());
+        GAPP_ASSERT(!fmat.empty());
 
         FitnessVector fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
 
@@ -61,8 +61,8 @@ namespace gapp::selection
 
     size_t Tournament::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
     {
-        GA_ASSERT(fmat.size() >= tourney_size_);
-        GA_ASSERT(fmat.ncols() == 1);
+        GAPP_ASSERT(fmat.size() >= tourney_size_);
+        GAPP_ASSERT(fmat.ncols() == 1);
 
         const auto candidate_indices = rng::sampleUnique(0_sz, fmat.size(), tourney_size_);
 
@@ -77,12 +77,12 @@ namespace gapp::selection
     Rank::Rank(NonNegative<double> min_weight, NonNegative<double> max_weight) noexcept :
         min_weight_(min_weight), max_weight_(max_weight)
     {
-        GA_ASSERT(min_weight <= max_weight, "The maximum selection weight can't be less than the minimum.");
+        GAPP_ASSERT(min_weight <= max_weight, "The maximum selection weight can't be less than the minimum.");
     }
 
     void Rank::weights(NonNegative<double> min_weight, NonNegative<double> max_weight) noexcept
     {
-        GA_ASSERT(min_weight <= max_weight, "The maximum selection weight can't be less than the minimum.");
+        GAPP_ASSERT(min_weight <= max_weight, "The maximum selection weight can't be less than the minimum.");
 
         min_weight_ = min_weight;
         max_weight_ = max_weight;
@@ -90,7 +90,7 @@ namespace gapp::selection
 
     void Rank::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
     {
-        GA_ASSERT(fmat.ncols() == 1);
+        GAPP_ASSERT(fmat.ncols() == 1);
 
         const auto indices = detail::argsort(fmat.begin(), fmat.end(), [](const auto& lhs, const auto& rhs) { return lhs[0] < rhs[0]; });
 
@@ -135,14 +135,14 @@ namespace gapp::selection
 
     Boltzmann::Boltzmann(TemperatureFunction f) noexcept
     {
-        GA_ASSERT(f, "The temperature function can't be a nullptr.");
+        GAPP_ASSERT(f, "The temperature function can't be a nullptr.");
 
         temperature_ = std::move(f);
     }
 
     void Boltzmann::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
-        GA_ASSERT(fmat.ncols() == 1);
+        GAPP_ASSERT(fmat.ncols() == 1);
 
         FitnessVector fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
         const auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
@@ -178,14 +178,14 @@ namespace gapp::selection
 
     Lambda::Lambda(SelectionCallable f) noexcept
     {
-        GA_ASSERT(f, "The selection method can't be a nullptr.");
+        GAPP_ASSERT(f, "The selection method can't be a nullptr.");
 
         selection_ = std::move(f);
     }
 
     size_t Lambda::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
     {
-        GA_ASSERT(selection_);
+        GAPP_ASSERT(selection_);
 
         return selection_(ga, fmat);
     }

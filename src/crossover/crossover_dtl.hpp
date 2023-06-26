@@ -112,7 +112,7 @@ namespace gapp::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
-        GA_ASSERT(std::all_of(crossover_points.begin(), crossover_points.end(), detail::between(0_sz, chrom_len)));
+        GAPP_ASSERT(std::all_of(crossover_points.begin(), crossover_points.end(), detail::between(0_sz, chrom_len)));
 
         std::sort(crossover_points.begin(), crossover_points.end());
         crossover_points.push_back(chrom_len);
@@ -139,8 +139,8 @@ namespace gapp::crossover::dtl
     template<typename T>
     CandidatePair<T> singlePointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t crossover_point)
     {
-        GA_ASSERT(crossover_point <= parent1.chromosome.size());
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(crossover_point <= parent1.chromosome.size());
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         Candidate child1{ parent1 }, child2{ parent2 };
 
@@ -156,9 +156,9 @@ namespace gapp::crossover::dtl
     template<typename T>
     CandidatePair<T> twoPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::pair<size_t, size_t> crossover_points)
     {
-        GA_ASSERT(crossover_points.first <= parent1.chromosome.size());
-        GA_ASSERT(crossover_points.second <= parent1.chromosome.size());
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(crossover_points.first <= parent1.chromosome.size());
+        GAPP_ASSERT(crossover_points.second <= parent1.chromosome.size());
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         if (crossover_points.first > crossover_points.second)
         {
@@ -183,8 +183,8 @@ namespace gapp::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
         const size_t range_len = last - first;
 
-        GA_ASSERT(first <= last && last <= chrom_len);
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(first <= last && last <= chrom_len);
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         std::unordered_set<T> direct(last - first);
         for (size_t idx = first; idx != last; idx++) direct.insert(parent1.chromosome[idx]);
@@ -214,10 +214,10 @@ namespace gapp::crossover::dtl
         const size_t range_len = last - first;
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        GA_ASSERT(first <= last && last <= chrom_len);
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(first <= last && last <= chrom_len);
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         std::vector is_direct(chrom_len, false);
         for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
@@ -244,8 +244,8 @@ namespace gapp::crossover::dtl
     template<typename T>
     Candidate<T> order2CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
-        GA_ASSERT(first <= last && last <= parent1.chromosome.size());
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(first <= last && last <= parent1.chromosome.size());
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         std::unordered_set<T> direct(last - first);
         for (size_t idx = first; idx != last; idx++) direct.insert(parent1.chromosome[idx]);
@@ -270,10 +270,10 @@ namespace gapp::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        GA_ASSERT(first <= last && last <= chrom_len);
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(first <= last && last <= chrom_len);
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         std::vector is_direct(chrom_len, false);
         for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
@@ -296,8 +296,8 @@ namespace gapp::crossover::dtl
     template<typename T>
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
     {
-        GA_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         std::unordered_set<T> direct(indices.size());
         for (size_t idx : indices) direct.insert(parent1.chromosome[idx]);
@@ -322,10 +322,10 @@ namespace gapp::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        GA_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         std::vector is_direct(chrom_len, false);
         for (size_t idx : indices) is_direct[parent1.chromosome[idx]] = true;
@@ -348,7 +348,7 @@ namespace gapp::crossover::dtl
     template<typename T>
     std::vector<size_t> findOddCycleIndices(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
     {
-        GA_ASSERT(chrom1.size() == chrom2.size());
+        GAPP_ASSERT(chrom1.size() == chrom2.size());
 
         const size_t chrom_len = chrom1.size();
 
@@ -385,7 +385,7 @@ namespace gapp::crossover::dtl
     template<typename T>
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         const auto odd_cycle_idxs = dtl::findOddCycleIndices(parent1.chromosome, parent2.chromosome);
 
@@ -436,7 +436,7 @@ namespace gapp::crossover::dtl
     public:
         void add(T value)
         {
-            GA_ASSERT(value != EMPTY);
+            GAPP_ASSERT(value != EMPTY);
 
             /* Assume that EMPTY values are at the back. */
             for (T& neighbour : neighbours_)
@@ -448,12 +448,12 @@ namespace gapp::crossover::dtl
                     return;
                 }
             }
-            GA_UNREACHABLE();
+            GAPP_UNREACHABLE();
         }
 
         void remove(T value)
         {
-            GA_ASSERT(value != EMPTY);
+            GAPP_ASSERT(value != EMPTY);
 
             for (T& neighbour : neighbours_)
             {
@@ -482,7 +482,7 @@ namespace gapp::crossover::dtl
     template<typename T, typename R>
     R makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
     {
-        GA_ASSERT(chrom1.size() == chrom2.size());
+        GAPP_ASSERT(chrom1.size() == chrom2.size());
 
         R nb_lists(chrom1.size());
 
@@ -507,7 +507,7 @@ namespace gapp::crossover::dtl
     template<typename T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
 
         const size_t chrom_len = parent1.chromosome.size();
 
@@ -546,9 +546,9 @@ namespace gapp::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         auto nb_lists = makeNeighbourLists(parent1.chromosome, parent2.chromosome);
 
@@ -585,8 +585,8 @@ namespace gapp::crossover::dtl
     template<typename T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GA_ASSERT(first <= last && last <= parent1.chromosome.size());
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(first <= last && last <= parent1.chromosome.size());
 
         Candidate child = parent2;
 
@@ -619,10 +619,10 @@ namespace gapp::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GA_ASSERT(first <= last && last <= parent1.chromosome.size());
-        GA_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GA_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
+        GAPP_ASSERT(first <= last && last <= parent1.chromosome.size());
+        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
+        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
         Candidate child = parent2;
 

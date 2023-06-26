@@ -12,7 +12,7 @@ namespace gapp::problems
 {
     Chromosome<RealGene> BenchmarkFunction<RealGene>::convert(const Chromosome<BinaryGene>& bchrom, const BoundsVector<RealGene>& bounds, size_t var_bits)
     {
-        GA_ASSERT(bchrom.size() == var_bits * bounds.size());
+        GAPP_ASSERT(bchrom.size() == var_bits * bounds.size());
 
         std::vector<RealGene> vars(bounds.size());
 

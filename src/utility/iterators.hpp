@@ -216,39 +216,39 @@ namespace gapp::detail
         constexpr stable_iterator_base(Container& container, size_t idx) noexcept :
             data_(&container), idx_(idx)
         {
-            GA_ASSERT(data_->size() >= idx_, "Iterator can't refer to element past the end of the range.");
+            GAPP_ASSERT(data_->size() >= idx_, "Iterator can't refer to element past the end of the range.");
         }
 
         constexpr reference operator*() const
         {
-            GA_ASSERT(data_ != nullptr, "Can't dereference value initialized iterator.");
-            GA_ASSERT(data_->size() > idx_, "Can't dereference past-the-end iterator.");
+            GAPP_ASSERT(data_ != nullptr, "Can't dereference value initialized iterator.");
+            GAPP_ASSERT(data_->size() > idx_, "Can't dereference past-the-end iterator.");
 
             return (*data_)[idx_];
         }
 
         friend constexpr bool operator==(const Derived& lhs, const Derived& rhs)
         {
-            GA_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
-            GA_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
-            GA_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
+            GAPP_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
+            GAPP_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
+            GAPP_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
 
             return lhs.idx_ == rhs.idx_;  /* Value-initialized iterators will have the same idx. */
         }
 
         friend constexpr bool operator<(const Derived& lhs, const Derived& rhs)
         {
-            GA_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
-            GA_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
-            GA_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
+            GAPP_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
+            GAPP_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
+            GAPP_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
 
             return lhs.idx_ < rhs.idx_;   /* Value-initialized iterators will have the same idx. */
         }
 
         constexpr Derived& increment()
         {
-            GA_ASSERT(data_ != nullptr, "Can't increment value initialized iterator.");
-            GA_ASSERT(idx_ != data_->size(), "Can't increment past-the-end iterator.");
+            GAPP_ASSERT(data_ != nullptr, "Can't increment value initialized iterator.");
+            GAPP_ASSERT(idx_ != data_->size(), "Can't increment past-the-end iterator.");
 
             ++idx_;
             return static_cast<Derived&>(*this);
@@ -256,8 +256,8 @@ namespace gapp::detail
 
         constexpr Derived& decrement()
         {
-            GA_ASSERT(data_ != nullptr, "Can't decrement value initialized iterator.");
-            GA_ASSERT(idx_ != 0, "Can't decremenet the begin iterator.");
+            GAPP_ASSERT(data_ != nullptr, "Can't decrement value initialized iterator.");
+            GAPP_ASSERT(idx_ != 0, "Can't decremenet the begin iterator.");
 
             --idx_;
             return static_cast<Derived&>(*this);
@@ -265,9 +265,9 @@ namespace gapp::detail
 
         constexpr Derived& operator+=(difference_type n)
         {
-            GA_ASSERT(data_ != nullptr, "Can't offset value initialized iterator.");
-            GA_ASSERT(n < 0 ? idx_ >= size_t(-n) : true, "Can't move iterator to before the start of the range.");
-            GA_ASSERT(n > 0 ? idx_ <= (data_->size() - n) : true, "Can't move iterator past the end of the range.");
+            GAPP_ASSERT(data_ != nullptr, "Can't offset value initialized iterator.");
+            GAPP_ASSERT(n < 0 ? idx_ >= size_t(-n) : true, "Can't move iterator to before the start of the range.");
+            GAPP_ASSERT(n > 0 ? idx_ <= (data_->size() - n) : true, "Can't move iterator past the end of the range.");
 
             idx_ += n;
             return static_cast<Derived&>(*this);
@@ -275,16 +275,16 @@ namespace gapp::detail
 
         friend constexpr difference_type operator-(const Derived& lhs, const Derived& rhs)
         {
-            GA_ASSERT(lhs.data_ && rhs.data_, "Can't get the distance of value initialized iterators.");
-            GA_ASSERT(lhs.data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
-            GA_ASSERT(lhs.data_->size() >= lhs.idx_, "Invalid lhs iterator.");
-            GA_ASSERT(rhs.data_->size() >= rhs.idx_, "Invalid rhs iterator.");
+            GAPP_ASSERT(lhs.data_ && rhs.data_, "Can't get the distance of value initialized iterators.");
+            GAPP_ASSERT(lhs.data_ == rhs.data_, "Can't get the distance of iterators of different ranges.");
+            GAPP_ASSERT(lhs.data_->size() >= lhs.idx_, "Invalid lhs iterator.");
+            GAPP_ASSERT(rhs.data_->size() >= rhs.idx_, "Invalid rhs iterator.");
 
             const size_t distance = lhs.idx_ >= rhs.idx_ ?
                 lhs.idx_ - rhs.idx_ :
                 rhs.idx_ - lhs.idx_;
 
-            GA_ASSERT(distance <= size_t(std::numeric_limits<difference_type>::max()), "Can't represent the result of the operation as difference_type.");
+            GAPP_ASSERT(distance <= size_t(std::numeric_limits<difference_type>::max()), "Can't represent the result of the operation as difference_type.");
 
             return difference_type(distance);
         }
@@ -413,7 +413,7 @@ namespace gapp::detail
 
         constexpr iota_iterator& increment()
         {
-            GA_ASSERT(value_ != std::numeric_limits<T>::max(), "Can't increment iterator with max value.");
+            GAPP_ASSERT(value_ != std::numeric_limits<T>::max(), "Can't increment iterator with max value.");
 
             ++value_;
             return *this;
@@ -421,7 +421,7 @@ namespace gapp::detail
 
         constexpr iota_iterator& decrement()
         {
-            GA_ASSERT(value_ != std::numeric_limits<T>::min(), "Can't decrement iterator with min value.");
+            GAPP_ASSERT(value_ != std::numeric_limits<T>::min(), "Can't decrement iterator with min value.");
 
             --value_;
             return *this;
@@ -429,8 +429,8 @@ namespace gapp::detail
 
         constexpr iota_iterator& operator+=(difference_type n)
         {
-            GA_ASSERT(n > 0 ? (std::numeric_limits<T>::max() - n) >= value_ : true, "Can't increment iterator past its max value.");
-            GA_ASSERT(n < 0 ? size_t(-n) <= (value_ - std::numeric_limits<T>::min()) : true, "Can't decrement iterator past its min value.");
+            GAPP_ASSERT(n > 0 ? (std::numeric_limits<T>::max() - n) >= value_ : true, "Can't increment iterator past its max value.");
+            GAPP_ASSERT(n < 0 ? size_t(-n) <= (value_ - std::numeric_limits<T>::min()) : true, "Can't decrement iterator past its min value.");
 
             value_ += n;
             return *this;

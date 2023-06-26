@@ -66,7 +66,7 @@ if(MSVC) # MSVC style compiler interface
     endif()
     # clang-cl specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wno-unknown-attributes")
+        set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS}")
     endif()
 
     set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} -Z7 -diagnostics:caret ${GAPP_WARN_FLAGS}")

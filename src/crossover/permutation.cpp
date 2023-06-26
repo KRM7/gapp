@@ -14,7 +14,7 @@ namespace gapp::crossover::perm
 {
     auto Order1::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         /* The genes of the parent chromosomes must be unique. */
 
         const size_t chrom_len = parent1.chromosome.size();
@@ -33,7 +33,7 @@ namespace gapp::crossover::perm
 
     auto Order2::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         /* The genes of the parent chromosomes must be unique. */
 
         const size_t chrom_len = parent1.chromosome.size();
@@ -52,7 +52,7 @@ namespace gapp::crossover::perm
 
     auto Position::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         /* The genes of the parent chromosomes must be unique. */
 
         const size_t chrom_len = parent1.chromosome.size();
@@ -70,7 +70,7 @@ namespace gapp::crossover::perm
 
     auto Cycle::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         /* The genes of the parent chromosomes must be unique. */
 
         const size_t chrom_len = parent1.chromosome.size();
@@ -82,7 +82,7 @@ namespace gapp::crossover::perm
 
     auto Edge::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         /* The genes of the parent chromosomes must be unique. */
 
         const size_t chrom_len = parent1.chromosome.size();
@@ -97,7 +97,7 @@ namespace gapp::crossover::perm
 
     auto PMX::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         /* The genes of the parent chromosomes must be unique. */
 
         const size_t chrom_len = parent1.chromosome.size();

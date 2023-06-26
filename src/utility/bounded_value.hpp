@@ -39,7 +39,7 @@ namespace gapp::detail
 
         constexpr /* implicit */ BoundedValue(value_type value) noexcept
         {
-            GA_ASSERT(I.contains(value), "The value is outside of the allowed interval.");
+            GAPP_ASSERT(I.contains(value), "The value is outside of the allowed interval.");
 
             value_ = std::move(value);
         }

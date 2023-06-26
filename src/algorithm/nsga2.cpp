@@ -23,7 +23,7 @@ namespace gapp::algorithm
     /* Calculate the crowding distances of the solutions in pfronts. */
     static std::vector<double> crowdingDistances(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, ParetoFronts pfronts)
     {
-        GA_ASSERT(std::distance(first, last) >= 0);
+        GAPP_ASSERT(std::distance(first, last) >= 0);
 
         std::vector<double> crowding_distances(last - first, 0.0);
         const auto front_bounds = paretoFrontBounds(pfronts);
@@ -62,7 +62,7 @@ namespace gapp::algorithm
 
     void NSGA2::initializeImpl(const GaInfo& ga)
     {
-        GA_ASSERT(ga.num_objectives() > 1, "The number of objectives must be greater than 1 for the NSGA-II algorithm.");
+        GAPP_ASSERT(ga.num_objectives() > 1, "The number of objectives must be greater than 1 for the NSGA-II algorithm.");
 
         const auto& fmat = ga.fitness_matrix();
         auto pfronts = nonDominatedSort(fmat.begin(), fmat.end());
@@ -73,7 +73,7 @@ namespace gapp::algorithm
 
     size_t NSGA2::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
     {
-        GA_ASSERT(!fmat.empty() && fmat.size() == ranks_.size());
+        GAPP_ASSERT(!fmat.empty() && fmat.size() == ranks_.size());
 
         const size_t idx1 = rng::randomIdx(fmat);
         const size_t idx2 = rng::randomIdx(fmat);
@@ -94,9 +94,9 @@ namespace gapp::algorithm
     {
         const size_t popsize = ga.population_size();
 
-        GA_ASSERT(ga.num_objectives() > 1);
-        GA_ASSERT(size_t(children_first - parents_first) == popsize);
-        GA_ASSERT(parents_first->size() == ga.num_objectives());
+        GAPP_ASSERT(ga.num_objectives() > 1);
+        GAPP_ASSERT(size_t(children_first - parents_first) == popsize);
+        GAPP_ASSERT(parents_first->size() == ga.num_objectives());
 
         auto pfronts = nonDominatedSort(parents_first, children_last);
         auto [partial_front_first, partial_front_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);

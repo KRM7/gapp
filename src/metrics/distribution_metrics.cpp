@@ -15,7 +15,7 @@ namespace gapp::metrics
 
     std::span<const double> NadirPoint::value_at(size_t generation) const noexcept
     {
-        GA_ASSERT(generation < data_.size());
+        GAPP_ASSERT(generation < data_.size());
 
         return data_[generation];
     }
@@ -28,7 +28,7 @@ namespace gapp::metrics
 
     void NadirPoint::update(const GaInfo& ga)
     {
-        GA_ASSERT(ga.population_size() > 0);
+        GAPP_ASSERT(ga.population_size() > 0);
 
         const auto& fitness_matrix = ga.fitness_matrix();
         data_.append_row(detail::findNadirPoint(fitness_matrix));
@@ -41,14 +41,14 @@ namespace gapp::metrics
 
     double Hypervolume::value_at(size_t generation) const noexcept
     {
-        GA_ASSERT(generation < data_.size());
+        GAPP_ASSERT(generation < data_.size());
 
         return data_[generation];
     }
 
     void Hypervolume::initialize(const GaInfo& ga)
     {
-        GA_ASSERT(ref_point_.size() == ga.num_objectives());
+        GAPP_ASSERT(ref_point_.size() == ga.num_objectives());
 
         data_.clear();
         data_.reserve(ga.max_gen());
@@ -56,7 +56,7 @@ namespace gapp::metrics
 
     void Hypervolume::update(const GaInfo& ga)
     {
-        GA_ASSERT(ref_point_.size() == ga.num_objectives());
+        GAPP_ASSERT(ref_point_.size() == ga.num_objectives());
 
         const auto& fitness_matrix = ga.fitness_matrix();
         data_.push_back(detail::hypervolume(fitness_matrix, ref_point_));
@@ -65,7 +65,7 @@ namespace gapp::metrics
 
     double AutoHypervolume::value_at(size_t generation) const noexcept
     {
-        GA_ASSERT(generation < data_.size());
+        GAPP_ASSERT(generation < data_.size());
 
         return data_[generation];
     }

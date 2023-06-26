@@ -17,8 +17,8 @@
 #include <concepts>
 #include <atomic>
 
-#ifndef GA_SEED
-#define GA_SEED 0x3da99432ab975d26LL
+#ifndef GAPP_SEED
+#   define GAPP_SEED 0x3da99432ab975d26LL
 #endif
 
 /** Contains the PRNG classes and functions used for generating random numbers. */
@@ -66,7 +66,7 @@ namespace gapp::rng
     using PRNG = AtomicSplitmix64;
 
     /** The global pseudo-random number generator instance used in the algorithms. */
-    inline constinit PRNG prng{ GA_SEED };
+    inline constinit PRNG prng{ GAPP_SEED };
 
 
     /** Generate a random boolean value from a uniform distribution. */
@@ -155,7 +155,7 @@ namespace gapp::rng
     template<std::integral IntType>
     IntType randomInt(IntType lbound, IntType ubound)
     {
-        GA_ASSERT(lbound <= ubound);
+        GAPP_ASSERT(lbound <= ubound);
 
         // std::uniform_int_distribution doesnt support char
         if constexpr (sizeof(IntType) == 1)
@@ -177,7 +177,7 @@ namespace gapp::rng
     template<std::floating_point RealType>
     RealType randomReal(RealType lbound, RealType ubound)
     {
-        GA_ASSERT(lbound <= ubound);
+        GAPP_ASSERT(lbound <= ubound);
 
         ubound = std::nextafter(ubound, std::numeric_limits<RealType>::max());
 
@@ -196,7 +196,7 @@ namespace gapp::rng
     template<std::floating_point RealType>
     RealType randomNormal(RealType mean, RealType SD)
     {
-        GA_ASSERT(SD >= 0.0);
+        GAPP_ASSERT(SD >= 0.0);
 
         return (SD == 0.0) ? mean : std::normal_distribution{ mean, SD }(rng::prng);
     }
@@ -204,8 +204,8 @@ namespace gapp::rng
     template<std::integral IntType>
     IntType randomBinomialApprox(IntType n, double p)
     {
-        GA_ASSERT(n >= 0);
-        GA_ASSERT(0.0 <= p && p <= 1.0);
+        GAPP_ASSERT(n >= 0);
+        GAPP_ASSERT(0.0 <= p && p <= 1.0);
 
         const double mean = n * p;
         const double SD = std::sqrt(mean * (1.0 - p));
@@ -225,8 +225,8 @@ namespace gapp::rng
     template<std::integral IntType>
     IntType randomBinomialExact(IntType n, double p)
     {
-        GA_ASSERT(n >= 0);
-        GA_ASSERT(0.0 <= p && p <= 1.0);
+        GAPP_ASSERT(n >= 0);
+        GAPP_ASSERT(0.0 <= p && p <= 1.0);
 
         return std::binomial_distribution{ n, p }(rng::prng);
     }
@@ -234,8 +234,8 @@ namespace gapp::rng
     template<std::integral IntType>
     IntType randomBinomial(IntType n, double p)
     {
-        GA_ASSERT(n >= 0);
-        GA_ASSERT(0.0 <= p && p <= 1.0);
+        GAPP_ASSERT(n >= 0);
+        GAPP_ASSERT(0.0 <= p && p <= 1.0);
 
         const double mean = n * p;
 
@@ -247,7 +247,7 @@ namespace gapp::rng
     template<detail::IndexableContainer T>
     size_t randomIdx(const T& container)
     {
-        GA_ASSERT(!container.empty());
+        GAPP_ASSERT(!container.empty());
 
         return std::uniform_int_distribution{ 0_sz, container.size() - 1 }(rng::prng);
     }
@@ -255,7 +255,7 @@ namespace gapp::rng
     template<std::forward_iterator Iter>
     Iter randomElement(Iter first, Iter last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         const auto max_offset = std::distance(first, last) - 1;
         const auto offset = rng::randomInt(0_pd, max_offset);
@@ -264,7 +264,7 @@ namespace gapp::rng
     }
 
     template<std::integral IntType>
-    GA_NOINLINE std::vector<IntType> sampleUniqueSet(IntType lbound, IntType ubound, size_t count)
+    GAPP_NOINLINE std::vector<IntType> sampleUniqueSet(IntType lbound, IntType ubound, size_t count)
     {
         std::unordered_set<IntType> selected(count);
         std::vector<IntType> numbers(count);
@@ -286,8 +286,8 @@ namespace gapp::rng
     {
         const size_t range_len = detail::range_length(lbound, ubound);
 
-        GA_ASSERT(ubound >= lbound);
-        GA_ASSERT(range_len >= count);
+        GAPP_ASSERT(ubound >= lbound);
+        GAPP_ASSERT(range_len >= count);
 
         const bool select_many = (count > 0.6 * range_len);
         const bool huge_range  = range_len >= (1ull << 32);
@@ -334,8 +334,8 @@ namespace gapp::rng
     template<std::floating_point T>
     size_t sampleCdf(std::span<const T> cdf)
     {
-        GA_ASSERT(!cdf.empty());
-        GA_ASSERT(0.0 <= cdf.front());
+        GAPP_ASSERT(!cdf.empty());
+        GAPP_ASSERT(0.0 <= cdf.front());
 
         const auto limitval = rng::randomReal<T>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
         const auto selected = std::lower_bound(cdf.begin(), cdf.end(), limitval);

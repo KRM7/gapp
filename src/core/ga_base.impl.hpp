@@ -37,10 +37,10 @@ namespace gapp
               std::unique_ptr<typename stopping::StopCondition> stop_condition) :
         GaInfo(population_size, std::move(algorithm), std::move(stop_condition)), crossover_(std::move(crossover)), mutation_(std::move(mutation))
     {
-        GA_ASSERT(algorithm_, "The algorithm can't be a nullptr.");
-        GA_ASSERT(crossover_, "The crossover method can't be a nullptr.");
-        GA_ASSERT(mutation_, "The mutation method can't be a nullptr.");
-        GA_ASSERT(stop_condition_, "The stop condition can't be a nullptr.");
+        GAPP_ASSERT(algorithm_, "The algorithm can't be a nullptr.");
+        GAPP_ASSERT(crossover_, "The crossover method can't be a nullptr.");
+        GAPP_ASSERT(mutation_, "The mutation method can't be a nullptr.");
+        GAPP_ASSERT(stop_condition_, "The stop condition can't be a nullptr.");
     }
 
     template<typename T>
@@ -108,7 +108,7 @@ namespace gapp
     template<typename T>
     inline const FitnessFunctionBase<T>& GA<T>::fitness_function() const& noexcept
     {
-        GA_ASSERT(fitness_function_, "No fitness function is set for the GA.");
+        GAPP_ASSERT(fitness_function_, "No fitness function is set for the GA.");
 
         return *fitness_function_;
     }
@@ -150,7 +150,7 @@ namespace gapp
     template<typename T>
     inline void GA<T>::crossover_method(std::unique_ptr<typename crossover::Crossover<T>> f)
     {
-        GA_ASSERT(f, "The crossover method can't be a nullptr.");
+        GAPP_ASSERT(f, "The crossover method can't be a nullptr.");
 
         crossover_ = std::move(f);
     }
@@ -164,7 +164,7 @@ namespace gapp
     template<typename T>
     inline const crossover::Crossover<T>& GA<T>::crossover_method() const& noexcept
     {
-        GA_ASSERT(crossover_);
+        GAPP_ASSERT(crossover_);
 
         return *crossover_;
     }
@@ -172,7 +172,7 @@ namespace gapp
     template<typename T>
     inline void GA<T>::crossover_rate(Probability pc) noexcept
     {
-        GA_ASSERT(crossover_);
+        GAPP_ASSERT(crossover_);
 
         crossover_->crossover_rate(pc);
     }
@@ -180,7 +180,7 @@ namespace gapp
     template<typename T>
     inline Probability GA<T>::crossover_rate() const noexcept
     {
-        GA_ASSERT(crossover_);
+        GAPP_ASSERT(crossover_);
 
         return crossover_->crossover_rate();
     }
@@ -197,7 +197,7 @@ namespace gapp
     template<typename T>
     inline void GA<T>::mutation_method(std::unique_ptr<typename mutation::Mutation<T>> f)
     {
-        GA_ASSERT(f, "The mutation method can't be a nullptr.");
+        GAPP_ASSERT(f, "The mutation method can't be a nullptr.");
 
         mutation_ = std::move(f);
         use_default_mutation_rate_ = false;
@@ -213,7 +213,7 @@ namespace gapp
     template<typename T>
     inline const mutation::Mutation<T>& GA<T>::mutation_method() const& noexcept
     {
-        GA_ASSERT(mutation_);
+        GAPP_ASSERT(mutation_);
 
         return *mutation_;
     }
@@ -221,7 +221,7 @@ namespace gapp
     template<typename T>
     inline void GA<T>::mutation_rate(Probability pm) noexcept
     {
-        GA_ASSERT(mutation_);
+        GAPP_ASSERT(mutation_);
 
         mutation_->mutation_rate(pm);
         use_default_mutation_rate_ = false;
@@ -230,7 +230,7 @@ namespace gapp
     template<typename T>
     inline Probability GA<T>::mutation_rate() const noexcept
     {
-        GA_ASSERT(mutation_);
+        GAPP_ASSERT(mutation_);
 
         return mutation_->mutation_rate();
     }
@@ -245,12 +245,12 @@ namespace gapp
     template<typename T>
     inline Positive<size_t> GA<T>::findNumberOfObjectives() const
     {
-        GA_ASSERT(fitness_function_);
+        GAPP_ASSERT(fitness_function_);
 
         const Candidate<T> candidate = generateCandidate();
         const FitnessVector fitness = (*fitness_function_)(candidate.chromosome);
 
-        GA_ASSERT(!fitness.empty(), "The number of objectives must be greater than 0.");
+        GAPP_ASSERT(!fitness.empty(), "The number of objectives must be greater than 0.");
 
         return fitness.size();
     }
@@ -258,8 +258,8 @@ namespace gapp
     template<typename T>
     inline std::unique_ptr<algorithm::Algorithm> GA<T>::defaultAlgorithm() const
     {
-        GA_ASSERT(fitness_function_);
-        GA_ASSERT(num_objectives() > 0);
+        GAPP_ASSERT(fitness_function_);
+        GAPP_ASSERT(num_objectives() > 0);
 
         if (num_objectives() == 1)
         {
@@ -271,7 +271,7 @@ namespace gapp
     template<typename T>
     inline Probability GA<T>::defaultMutationRate() const
     {
-        GA_ASSERT(fitness_function_);
+        GAPP_ASSERT(fitness_function_);
 
         return GaTraits<T>::defaultMutationRate(chrom_len());
     }
@@ -279,7 +279,7 @@ namespace gapp
     template<typename T>
     inline bool GA<T>::hasValidFitness(const Candidate<T>& sol) const noexcept
     {
-        GA_ASSERT(fitness_function_);
+        GAPP_ASSERT(fitness_function_);
 
         return sol.is_evaluated && (sol.fitness.size() == num_objectives());
     }
@@ -322,9 +322,9 @@ namespace gapp
     template<typename T>
     void GA<T>::initializeAlgorithm(MaybeBoundsVector bounds, Population<T> initial_population)
     {
-        GA_ASSERT(fitness_function_);
-        GA_ASSERT(algorithm_ && stop_condition_);
-        GA_ASSERT(crossover_ && mutation_);
+        GAPP_ASSERT(fitness_function_);
+        GAPP_ASSERT(algorithm_ && stop_condition_);
+        GAPP_ASSERT(crossover_ && mutation_);
 
         /* Reset state in case solve() has already been called before. */
         generation_cntr_ = 0;
@@ -340,12 +340,12 @@ namespace gapp
         /* Create and evaluate the initial population of the algorithm. */
         num_objectives_ = findNumberOfObjectives();
         population_ = generatePopulation(population_size_, std::move(initial_population));
-        std::for_each(GA_EXECUTION_UNSEQ, population_.begin(), population_.end(), [this](Candidate<T>& sol) { evaluate(sol); });
+        std::for_each(GAPP_EXEC_UNSEQ, population_.begin(), population_.end(), [this](Candidate<T>& sol) { evaluate(sol); });
         fitness_matrix_ = detail::toFitnessMatrix(population_);
         if (keep_all_optimal_sols_) solutions_ = detail::findParetoFront(population_);
 
-        GA_ASSERT(isValidEvaluatedPopulation(population_));
-        GA_ASSERT(fitnessMatrixIsSynced());
+        GAPP_ASSERT(isValidEvaluatedPopulation(population_));
+        GAPP_ASSERT(fitnessMatrixIsSynced());
 
         /* Initialize the algorithm used.
          * This must be done after the initial population has been created and evaluted,
@@ -364,7 +364,7 @@ namespace gapp
     template<typename T>
     Population<T> GA<T>::generatePopulation(Positive<size_t> pop_size, Population<T> initial_population) const
     {
-        GA_ASSERT(isValidUnevaluatedPopulation(initial_population), "An invalid initial population was specified for the GA.");
+        GAPP_ASSERT(isValidUnevaluatedPopulation(initial_population), "An invalid initial population was specified for the GA.");
 
         Population<T> population;
         population.reserve(pop_size);
@@ -375,7 +375,7 @@ namespace gapp
         while (population.size() < pop_size)
         {
             population.push_back(generateCandidate());
-            GA_ASSERT(hasValidChromosome(population.back()), "An invalid solution was returned by generateCandidate().");
+            GAPP_ASSERT(hasValidChromosome(population.back()), "An invalid solution was returned by generateCandidate().");
         }
 
         return population;
@@ -384,9 +384,9 @@ namespace gapp
     template<typename T>
     inline void GA<T>::prepareSelections() const
     {
-        GA_ASSERT(algorithm_);
-        GA_ASSERT(isValidEvaluatedPopulation(population_));
-        GA_ASSERT(fitnessMatrixIsSynced());
+        GAPP_ASSERT(algorithm_);
+        GAPP_ASSERT(isValidEvaluatedPopulation(population_));
+        GAPP_ASSERT(fitnessMatrixIsSynced());
 
         algorithm_->prepareSelections(*this, fitness_matrix());
     }
@@ -394,7 +394,7 @@ namespace gapp
     template<typename T>
     inline const Candidate<T>& GA<T>::select() const
     {
-        GA_ASSERT(algorithm_);
+        GAPP_ASSERT(algorithm_);
 
         return algorithm_->select(*this, population(), fitness_matrix());
     }
@@ -402,7 +402,7 @@ namespace gapp
     template<typename T>
     inline CandidatePair<T> GA<T>::crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
-        GA_ASSERT(crossover_);
+        GAPP_ASSERT(crossover_);
 
         return (*crossover_)(*this, parent1, parent2);
     }
@@ -410,7 +410,7 @@ namespace gapp
     template<typename T>
     inline void GA<T>::mutate(Candidate<T>& sol) const
     {
-        GA_ASSERT(mutation_);
+        GAPP_ASSERT(mutation_);
 
         (*mutation_)(*this, sol);
     }
@@ -418,7 +418,7 @@ namespace gapp
     template<typename T>
     void GA<T>::repair(Candidate<T>& sol) const
     {
-        GA_ASSERT(hasValidChromosome(sol));
+        GAPP_ASSERT(hasValidChromosome(sol));
 
         /* Don't try to do anything unless a repair function is set. */
         if (!repair_) return;
@@ -431,15 +431,15 @@ namespace gapp
             sol.chromosome = std::move(improved_chrom);
         }
 
-        GA_ASSERT(hasValidChromosome(sol), "Invalid chromosome returned by the repair function.");
+        GAPP_ASSERT(hasValidChromosome(sol), "Invalid chromosome returned by the repair function.");
     }
 
     template<typename T>
     void GA<T>::updatePopulation(Population<T>&& children)
     {
-        GA_ASSERT(algorithm_);
-        GA_ASSERT(isValidEvaluatedPopulation(population_));
-        GA_ASSERT(fitnessMatrixIsSynced());
+        GAPP_ASSERT(algorithm_);
+        GAPP_ASSERT(isValidEvaluatedPopulation(population_));
+        GAPP_ASSERT(fitnessMatrixIsSynced());
 
         population_ = algorithm_->nextPopulation(*this, std::move(population_), std::move(children));
         fitness_matrix_ = detail::toFitnessMatrix(population_);
@@ -448,7 +448,7 @@ namespace gapp
     template<typename T>
     inline bool GA<T>::stopCondition() const
     {
-        GA_ASSERT(stop_condition_);
+        GAPP_ASSERT(stop_condition_);
 
         return (*stop_condition_)(*this);
     }
@@ -456,8 +456,8 @@ namespace gapp
     template<typename T>
     inline void GA<T>::evaluate(Candidate<T>& sol)
     {
-        GA_ASSERT(fitness_function_);
-        GA_ASSERT(hasValidChromosome(sol));
+        GAPP_ASSERT(fitness_function_);
+        GAPP_ASSERT(hasValidChromosome(sol));
 
         /* If the fitness function is static, and the solution has already
          * been evaluted sometime earlier (in an earlier generation), there
@@ -471,13 +471,13 @@ namespace gapp
             num_evals.fetch_add(1_sz, std::memory_order_acq_rel);
         }
 
-        GA_ASSERT(hasValidFitness(sol));
+        GAPP_ASSERT(hasValidFitness(sol));
     }
 
     template<typename T>
     void GA<T>::updateOptimalSolutions(Candidates<T>& optimal_sols, const Population<T>& pop) const
     {
-        GA_ASSERT(algorithm_);
+        GAPP_ASSERT(algorithm_);
 
         auto optimal_pop = algorithm_->optimalSolutions(*this, pop);
 
@@ -488,13 +488,13 @@ namespace gapp
     template<typename T>
     void GA<T>::advance()
     {
-        GA_ASSERT(population_.size() == population_size_);
+        GAPP_ASSERT(population_.size() == population_size_);
 
         const size_t num_children = population_size_ + population_size_ % 2;
         std::vector<CandidatePair<T>> child_pairs(num_children / 2);
 
         prepareSelections();
-        std::generate(GA_EXECUTION_UNSEQ, child_pairs.begin(), child_pairs.end(),
+        std::generate(GAPP_EXEC_UNSEQ, child_pairs.begin(), child_pairs.end(),
         [this]
         {
             const auto& parent1 = select();
@@ -508,7 +508,7 @@ namespace gapp
         /* If the population size is odd, one too many child candidates were generated by the crossovers. */
         if (children.size() > population_size_) children.pop_back();
 
-        std::for_each(GA_EXECUTION_UNSEQ, children.begin(), children.end(),
+        std::for_each(GAPP_EXEC_UNSEQ, children.begin(), children.end(),
         [this](Candidate<T>& child)
         {
             mutate(child);
@@ -527,7 +527,7 @@ namespace gapp
     template<typename T>
     Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, size_t generations, Population<T> initial_population) requires (!is_bounded<T>)
     {
-        GA_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
+        GAPP_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
 
         fitness_function_ = std::move(fitness_function);
         max_gen(generations);
@@ -545,8 +545,8 @@ namespace gapp
     template<typename T>
     Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population) requires (is_bounded<T>)
     {
-        GA_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
-        GA_ASSERT(bounds.size() == fitness_function->chrom_len(), "The length of the bounds vector must match the chromosome length.");
+        GAPP_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
+        GAPP_ASSERT(bounds.size() == fitness_function->chrom_len(), "The length of the bounds vector must match the chromosome length.");
 
         fitness_function_ = std::move(fitness_function);
         max_gen(generations);

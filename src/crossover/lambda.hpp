@@ -23,7 +23,7 @@ namespace gapp::crossover
 
         constexpr explicit Lambda(CrossoverCallable f) noexcept
         {
-            GA_ASSERT(f, "The crossover method can't be a nullptr.");
+            GAPP_ASSERT(f, "The crossover method can't be a nullptr.");
 
             crossover_ = std::move(f);
         }
@@ -33,7 +33,7 @@ namespace gapp::crossover
 
         CandidatePair<T> crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const override
         {
-            GA_ASSERT(crossover_);
+            GAPP_ASSERT(crossover_);
 
             return crossover_(ga, parent1, parent2);
         }

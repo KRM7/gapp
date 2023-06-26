@@ -20,21 +20,21 @@ namespace gapp::detail
 {
     FitnessVector minFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         return std::accumulate(std::next(first), last, FitnessVector(*first), detail::elementwise_min<double>);
     }
 
     FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         return std::accumulate(std::next(first), last, FitnessVector(*first), detail::elementwise_max<double>);
     }
 
     FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
         const double ninv = 1.0 / (last - first);
         FitnessVector fitness_mean(first->size());
@@ -52,8 +52,8 @@ namespace gapp::detail
 
     FitnessVector fitnessVariance(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last, std::span<const double> fitness_mean)
     {
-        GA_ASSERT(std::distance(first, last) > 0);
-        GA_ASSERT(first->size() == fitness_mean.size());
+        GAPP_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(first->size() == fitness_mean.size());
 
         const double ninv = 1.0 / (last - first - 1.0);
         FitnessVector fitness_variance(first->size(), 0.0);
@@ -135,8 +135,8 @@ namespace gapp::detail
 
     static inline double inclusiveHypervolume(std::span<const double> point, std::span<const double> ref_point) noexcept
     {
-        GA_ASSERT(point.size() == ref_point.size());
-        GA_ASSERT(std::equal(point.begin(), point.end(), ref_point.begin(), ref_point.end(), std::greater_equal{}));
+        GAPP_ASSERT(point.size() == ref_point.size());
+        GAPP_ASSERT(std::equal(point.begin(), point.end(), ref_point.begin(), ref_point.end(), std::greater_equal{}));
         
         return math::volumeBetween(point, ref_point);
     }
@@ -154,7 +154,7 @@ namespace gapp::detail
         const FitnessMatrix front = uniqueSortedParetoFront(fmat);
 
         std::atomic<double> hypervolume = 0.0;
-        std::for_each(GA_EXECUTION_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(front.size()), [&](size_t idx)
+        std::for_each(GAPP_EXEC_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(front.size()), [&](size_t idx)
         {
             const auto point = front[idx];
             const FitnessMatrix rest = { front.begin() + idx + 1, front.end() };

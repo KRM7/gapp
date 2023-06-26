@@ -16,7 +16,7 @@ namespace gapp::crossover::integer
 {
     auto SinglePoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
 
         const size_t chrom_len = parent1.chromosome.size();
         const size_t crossover_point = rng::randomInt(0_sz, chrom_len);
@@ -26,7 +26,7 @@ namespace gapp::crossover::integer
 
     auto TwoPoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
 
         const size_t chrom_len = parent1.chromosome.size();
 
@@ -35,7 +35,7 @@ namespace gapp::crossover::integer
 
     auto NPoint::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
 
         const size_t chrom_len = parent1.chromosome.size();
         const size_t num_cx_points = std::min(size_t(n_), chrom_len);
@@ -47,7 +47,7 @@ namespace gapp::crossover::integer
 
     auto Uniform::crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
-        GA_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         
         const size_t chrom_len = parent1.chromosome.size();
         const size_t num_swapped = rng::randomBinomial(chrom_len, ps_);

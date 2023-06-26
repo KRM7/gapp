@@ -98,30 +98,30 @@ namespace gapp::detail
 
         constexpr RowRef operator[](size_t row) noexcept
         {
-            GA_ASSERT(row < nrows_, "Row index out of bounds.");
+            GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
 
             return RowRef(*this, row);
         }
 
         constexpr ConstRowRef operator[](size_t row) const noexcept
         {
-            GA_ASSERT(row < nrows_, "Row index out of bounds.");
+            GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
 
             return ConstRowRef(*this, row);
         }
 
         constexpr element_reference operator()(size_type row, size_type col) noexcept
         {
-            GA_ASSERT(row < nrows_, "Row index out of bounds.");
-            GA_ASSERT(col < ncols_, "Col index out of bounds.");
+            GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
+            GAPP_ASSERT(col < ncols_, "Col index out of bounds.");
 
             return data_[row * ncols_ + col];
         }
 
         constexpr const_element_reference operator()(size_type row, size_type col) const noexcept
         {
-            GA_ASSERT(row < nrows_, "Row index out of bounds.");
-            GA_ASSERT(col < ncols_, "Col index out of bounds.");
+            GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
+            GAPP_ASSERT(col < ncols_, "Col index out of bounds.");
 
             return data_[row * ncols_ + col];
         }
@@ -251,7 +251,7 @@ namespace gapp::detail
 
         constexpr reference operator[](size_type col) const noexcept
         {
-            GA_ASSERT(mat_->ncols() > col, "Col index out of bounds.");
+            GAPP_ASSERT(mat_->ncols() > col, "Col index out of bounds.");
 
             return (*mat_)(row_, col);
         }
@@ -425,7 +425,7 @@ namespace gapp::detail
 
         ncols_ = mat.begin()->size();
 
-        GA_ASSERT(std::all_of(mat.begin(), mat.end(), detail::is_size(ncols_)), "Unequal row sizes in the input matrix.");
+        GAPP_ASSERT(std::all_of(mat.begin(), mat.end(), detail::is_size(ncols_)), "Unequal row sizes in the input matrix.");
 
         data_.reserve(nrows_ * ncols_);
         for (auto& row : mat)
@@ -450,7 +450,7 @@ namespace gapp::detail
     template<typename T, typename A>
     constexpr void Matrix<T, A>::append_row(const std::vector<T, A>& row)
     {
-        GA_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
+        GAPP_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
 
         data_.insert(data_.end(), row.begin(), row.end());
         if (nrows_ == 0) ncols_ = row.size();
@@ -460,7 +460,7 @@ namespace gapp::detail
     template<typename T, typename A>
     constexpr void Matrix<T, A>::append_row(std::vector<T, A>&& row)
     {
-        GA_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
+        GAPP_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
 
         data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
         if (nrows_ == 0) ncols_ = row.size();
@@ -470,7 +470,7 @@ namespace gapp::detail
     template<typename T, typename A>
     constexpr void Matrix<T, A>::append_row(ConstRowRef row)
     {
-        GA_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
+        GAPP_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
 
         data_.insert(data_.end(), row.begin(), row.end());
         if (nrows_ == 0) ncols_ = row.size();
@@ -503,7 +503,7 @@ namespace gapp::detail
     template<typename T, typename A>
     constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(ConstMatrixRowRef<T, A> rhs) const
     {
-        GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+        GAPP_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
         if (rhs.mat_ == this->mat_ && rhs.row_ == this->row_)
         {
@@ -521,7 +521,7 @@ namespace gapp::detail
     template<typename T, typename A>
     constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(const std::vector<T>& rhs) const
     {
-        GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+        GAPP_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
         for (size_t col = 0; col < rhs.size(); col++)
         {
@@ -534,7 +534,7 @@ namespace gapp::detail
     template<typename T, typename A>
     constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(std::vector<T>&& rhs) const
     {
-        GA_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+        GAPP_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
 
         for (size_t col = 0; col < rhs.size(); col++)
         {
@@ -547,7 +547,7 @@ namespace gapp::detail
     template<typename T, typename A>
     constexpr void MatrixRowRef<T, A>::swap(MatrixRowRef other) const
     {
-        GA_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
+        GAPP_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
 
         for (size_t col = 0; col < other.size(); col++)
         {
@@ -559,7 +559,7 @@ namespace gapp::detail
     template<typename T, typename A>
     constexpr void MatrixRowRef<T, A>::swap(std::vector<T>& other) const
     {
-        GA_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
+        GAPP_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
 
         for (size_t col = 0; col < other.size(); col++)
         {
