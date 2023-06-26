@@ -88,13 +88,17 @@ target_link_libraries(YourTarget PRIVATE gapp::gapp)
 
 The [examples](./examples) directory contains several examples for using the library.
 
+* [Minimal example](./examples/1_minimal_example.cpp)
+* [Single-objective optimization](./examples/3_basic_single_objective.cpp)
+
 
 ## Documentation
 
-The documentation of the library can be found in the [docs](./docs) directory.
+The API documentation is available [here](https://krm7.github.io/genetic-algorithms/).
 
-The API documentation is available [here](.).
+Additional documentation for the library can be found in the [docs](./docs) directory.
 
+* [Introduction](./docs/introduction.md)
 
 -------------------------------------------------------------------------------------------------
 
