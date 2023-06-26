@@ -562,8 +562,7 @@ namespace gapp
         Population<T> population_;
         Candidates<T> solutions_;
 
-        [[no_unique_address]]
-        MaybeBoundsVector bounds_;
+        GAPP_NO_UNIQUE_ADDRESS MaybeBoundsVector bounds_;
 
         std::unique_ptr<FitnessFunctionBase<T>> fitness_function_;
         std::unique_ptr<crossover::Crossover<T>> crossover_;
