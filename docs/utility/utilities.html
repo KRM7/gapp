@@ -1,0 +1,1184 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Utility classes and functions &#8212; gapp 0.3.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=83a61292"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'utility/utilities';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Integer encoded problems" href="../problems/problems_integer.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 0.3.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../algorithm/algorithm.html">Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../algorithm/algorithm_soga.html">Single-objective algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../algorithm/algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mutation/mutation.html">Mutations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Utility classes and functions</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#random-number-generation">Random number generation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rngE"><code class="docutils literal notranslate"><span class="pre">gapp::rng</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10randomBoolEv"><code class="docutils literal notranslate"><span class="pre">randomBool()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType7IntType"><code class="docutils literal notranslate"><span class="pre">randomInt()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealTypev"><code class="docutils literal notranslate"><span class="pre">randomReal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType8RealType"><code class="docutils literal notranslate"><span class="pre">randomReal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType8RealType"><code class="docutils literal notranslate"><span class="pre">randomNormal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng13randomPoissonE7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomPoisson()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng14randomBinomialE7IntType7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomBinomial()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng11randomIndexEN6detail9size_typeI1REERK1R"><code class="docutils literal notranslate"><span class="pre">randomIndex()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter4Iter"><code class="docutils literal notranslate"><span class="pre">randomElement()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementENSt6ranges17range_reference_tI5RangeEERR5RangeRR4Dist"><code class="docutils literal notranslate"><span class="pre">randomElement()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng12sampleUniqueE12small_vectorI7IntTypeE7IntType7IntType6size_t"><code class="docutils literal notranslate"><span class="pre">sampleUnique()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng9sampleCdfE6size_tRK5Range"><code class="docutils literal notranslate"><span class="pre">sampleCdf()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng26randomBinomialApproxNormalE7IntType7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomBinomialApproxNormal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng27randomBinomialApproxPoissonE7IntType7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomBinomialApproxPoisson()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng19randomBinomialExactE7IntType7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomBinomialExact()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng15sampleUniqueSetE12small_vectorI7IntTypeE7IntType7IntType6size_t"><code class="docutils literal notranslate"><span class="pre">sampleUniqueSet()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng4prngE"><code class="docutils literal notranslate"><span class="pre">prng</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128pE"><code class="docutils literal notranslate"><span class="pre">gapp::rng::ConcurrentXoroshiro128p</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p11result_typeE"><code class="docutils literal notranslate"><span class="pre">result_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p10state_typeE"><code class="docutils literal notranslate"><span class="pre">state_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp3rng23ConcurrentXoroshiro128pclEv"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p4seedENSt8uint64_tE"><code class="docutils literal notranslate"><span class="pre">seed()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p3minEv"><code class="docutils literal notranslate"><span class="pre">min()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p3maxEv"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p9generatorEv"><code class="docutils literal notranslate"><span class="pre">generator()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE"><code class="docutils literal notranslate"><span class="pre">gapp::rng::QuasiRandom</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom11result_typeE"><code class="docutils literal notranslate"><span class="pre">result_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom10state_typeE"><code class="docutils literal notranslate"><span class="pre">state_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom9size_typeE"><code class="docutils literal notranslate"><span class="pre">size_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom11QuasiRandomE9size_type11NonNegativeI8RealTypeE"><code class="docutils literal notranslate"><span class="pre">QuasiRandom()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandomclEv"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom7discardE9size_type"><code class="docutils literal notranslate"><span class="pre">discard()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom5resetE11NonNegativeI8RealTypeE"><code class="docutils literal notranslate"><span class="pre">reset()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp3rng11QuasiRandom3dimEv"><code class="docutils literal notranslate"><span class="pre">dim()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix64E"><code class="docutils literal notranslate"><span class="pre">gapp::rng::Splitmix64</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix6411result_typeE"><code class="docutils literal notranslate"><span class="pre">result_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix6410state_typeE"><code class="docutils literal notranslate"><span class="pre">state_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix6410Splitmix64E10state_type"><code class="docutils literal notranslate"><span class="pre">Splitmix64()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix64clEv"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix644seedE10state_type"><code class="docutils literal notranslate"><span class="pre">seed()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix643minEv"><code class="docutils literal notranslate"><span class="pre">min()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix643maxEv"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix64eqERK10Splitmix64RK10Splitmix64"><code class="docutils literal notranslate"><span class="pre">operator==</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128pE"><code class="docutils literal notranslate"><span class="pre">gapp::rng::Xoroshiro128p</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p11result_typeE"><code class="docutils literal notranslate"><span class="pre">result_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p10state_typeE"><code class="docutils literal notranslate"><span class="pre">state_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p13Xoroshiro128pENSt8uint64_tE"><code class="docutils literal notranslate"><span class="pre">Xoroshiro128p()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128pclEv"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p4jumpEv"><code class="docutils literal notranslate"><span class="pre">jump()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p4seedENSt8uint64_tE"><code class="docutils literal notranslate"><span class="pre">seed()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p3minEv"><code class="docutils literal notranslate"><span class="pre">min()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p3maxEv"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128peqERK13Xoroshiro128pRK13Xoroshiro128p"><code class="docutils literal notranslate"><span class="pre">operator==</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#floating-point-comparison-tolerances">Floating-point comparison tolerances</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp4math16ScopedTolerancesE"><code class="docutils literal notranslate"><span class="pre">gapp::math::ScopedTolerances</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp4math16ScopedTolerances16ScopedTolerancesE11NonNegativeIdE11NonNegativeIdE"><code class="docutils literal notranslate"><span class="pre">ScopedTolerances()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp4math16ScopedTolerancesD0Ev"><code class="docutils literal notranslate"><span class="pre">~ScopedTolerances()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp4math10TolerancesE"><code class="docutils literal notranslate"><span class="pre">gapp::math::Tolerances</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3absE1Tv"><code class="docutils literal notranslate"><span class="pre">abs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3relE1T1T"><code class="docutils literal notranslate"><span class="pre">rel()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#execution">Execution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp17execution_threadsE6size_t"><code class="docutils literal notranslate"><span class="pre">execution_threads()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp17execution_threadsEv"><code class="docutils literal notranslate"><span class="pre">execution_threads()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bounded-value-types">Bounded value types</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE"><code class="docutils literal notranslate"><span class="pre">BoundedValue</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp11NonNegativeE"><code class="docutils literal notranslate"><span class="pre">NonNegative</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp8NegativeE"><code class="docutils literal notranslate"><span class="pre">Negative</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp8PositiveE"><code class="docutils literal notranslate"><span class="pre">Positive</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11ProbabilityE"><code class="docutils literal notranslate"><span class="pre">Probability</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp10NormalizedE"><code class="docutils literal notranslate"><span class="pre">Normalized</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="utility-classes-and-functions">
+<h1>Utility classes and functions<a class="headerlink" href="#utility-classes-and-functions" title="Link to this heading">#</a></h1>
+<section id="random-number-generation">
+<h2>Random number generation<a class="headerlink" href="#random-number-generation" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;utility/rng.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rngE">
+<span id="_CPPv3N4gapp3rngE"></span><span id="_CPPv2N4gapp3rngE"></span><span id="gapp::rng"></span><span class="target" id="namespacegapp_1_1rng"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rng</span></span></span><a class="headerlink" href="#_CPPv4N4gapp3rngE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Contains the PRNG classes and functions used for generating random numbers. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10randomBoolEv">
+<span id="_CPPv3N4gapp3rng10randomBoolEv"></span><span id="_CPPv2N4gapp3rng10randomBoolEv"></span><span id="gapp::rng::randomBool"></span><span class="target" id="namespacegapp_1_1rng_1aee2bef508ae4aca34ae7b78a0de7d880"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomBool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10randomBoolEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a random boolean value from a uniform distribution. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType7IntType">
+<span id="_CPPv3I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType"></span><span id="_CPPv2I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">integral</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a468f095f92da0e2e546e43761e73dcc5"></span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType7IntType" title="gapp::rng::randomInt::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomInt</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType7IntType" title="gapp::rng::randomInt::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">lbound</span></span>, <a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType7IntType" title="gapp::rng::randomInt::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">ubound</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType7IntType" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a random integer from a uniform distribution on the closed interval [lbound, ubound]. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealTypev">
+<span id="_CPPv3I_NSt14floating_pointEEN4gapp3rng10randomRealEv"></span><span id="_CPPv2I_NSt14floating_pointEEN4gapp3rng10randomRealEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">floating_point</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RealType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1aebcb33aeebe67bacaa49c2626618cf65"></span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealTypev" title="gapp::rng::randomReal::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomReal</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealTypev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a random floating-point value from a uniform distribution on the half-open interval [0.0, 1.0). </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType8RealType">
+<span id="_CPPv3I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType"></span><span id="_CPPv2I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">floating_point</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RealType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1af344b248f76014bd93e9d76a5ed1e371"></span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType8RealType" title="gapp::rng::randomReal::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomReal</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType8RealType" title="gapp::rng::randomReal::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">lbound</span></span>, <a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType8RealType" title="gapp::rng::randomReal::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">ubound</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType8RealType" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a random floating-point value of from a uniform distribution on the half-open interval [lbound, ubound). </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType8RealType">
+<span id="_CPPv3I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType"></span><span id="_CPPv2I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">floating_point</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RealType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a4ea813ba8b31e64db104d94da54000a3"></span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType8RealType" title="gapp::rng::randomNormal::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomNormal</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType8RealType" title="gapp::rng::randomNormal::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">mean</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.0</span></span>, <a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType8RealType" title="gapp::rng::randomNormal::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">std_dev</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1.0</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType8RealType" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a random floating-point value from a normal distribution with the specified mean and std deviation. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt8integralEEN4gapp3rng13randomPoissonE7IntTyped">
+<span id="_CPPv3I_NSt8integralEEN4gapp3rng13randomPoissonEd"></span><span id="_CPPv2I_NSt8integralEEN4gapp3rng13randomPoissonEd"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">integral</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a4d1433ec7be5248129db6b66bfab9aba"></span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng13randomPoissonE7IntTyped" title="gapp::rng::randomPoisson::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomPoisson</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mean</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt8integralEEN4gapp3rng13randomPoissonE7IntTyped" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a random integer value from a poisson distribution with the specified mean. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt8integralEEN4gapp3rng14randomBinomialE7IntType7IntTyped">
+<span id="_CPPv3I_NSt8integralEEN4gapp3rng14randomBinomialE7IntTyped"></span><span id="_CPPv2I_NSt8integralEEN4gapp3rng14randomBinomialE7IntTyped"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">integral</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a839a23fafb305728383a2ef9e850d041"></span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng14randomBinomialE7IntType7IntTyped" title="gapp::rng::randomBinomial::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomBinomial</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng14randomBinomialE7IntType7IntTyped" title="gapp::rng::randomBinomial::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt8integralEEN4gapp3rng14randomBinomialE7IntType7IntTyped" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a random integer value from an approximate binomial distribution with the parameters n and p. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng11randomIndexEN6detail9size_typeI1REERK1R">
+<span id="_CPPv3I_NSt6ranges19random_access_rangeEEN4gapp3rng11randomIndexERK1R"></span><span id="_CPPv2I_NSt6ranges19random_access_rangeEEN4gapp3rng11randomIndexERK1R"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">random_access_range</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">R</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a13f456f1022e81153fc905598aa81eee"></span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_type</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng11randomIndexEN6detail9size_typeI1REERK1R" title="gapp::rng::randomIndex::R"><span class="n"><span class="pre">R</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomIndex</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng11randomIndexEN6detail9size_typeI1REERK1R" title="gapp::rng::randomIndex::R"><span class="n"><span class="pre">R</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">range</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng11randomIndexEN6detail9size_typeI1REERK1R" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a random index for a range (from a uniform distribution over the valid indices). </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter4Iter">
+<span id="_CPPv3I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter"></span><span id="_CPPv2I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">forward_iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Iter</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1aabbb5565d73c9a4c00e1f862e664fd94"></span><a class="reference internal" href="#_CPPv4I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter4Iter" title="gapp::rng::randomElement::Iter"><span class="n"><span class="pre">Iter</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomElement</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter4Iter" title="gapp::rng::randomElement::Iter"><span class="n"><span class="pre">Iter</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">first</span></span>, <a class="reference internal" href="#_CPPv4I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter4Iter" title="gapp::rng::randomElement::Iter"><span class="n"><span class="pre">Iter</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">last</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter4Iter" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pick a random element from a range (from a uniform distribution over the elements). </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementENSt6ranges17range_reference_tI5RangeEERR5RangeRR4Dist">
+<span id="_CPPv3I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementERR5RangeRR4Dist"></span><span id="_CPPv2I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementERR5RangeRR4Dist"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">random_access_range</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Range</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">random_access_range</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Dist</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a61a03fcbffe20852be910ba84b8063fc"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">range_reference_t</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementENSt6ranges17range_reference_tI5RangeEERR5RangeRR4Dist" title="gapp::rng::randomElement::Range"><span class="n"><span class="pre">Range</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomElement</span></span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><a class="reference internal" href="#_CPPv4I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementENSt6ranges17range_reference_tI5RangeEERR5RangeRR4Dist" title="gapp::rng::randomElement::Range"><span class="n"><span class="pre">Range</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">range</span></span>,</dd>
+<dd><a class="reference internal" href="#_CPPv4I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementENSt6ranges17range_reference_tI5RangeEERR5RangeRR4Dist" title="gapp::rng::randomElement::Dist"><span class="n"><span class="pre">Dist</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">cdf</span></span></dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementENSt6ranges17range_reference_tI5RangeEERR5RangeRR4Dist" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pick a random element from a range using the specified cumulative distribution function. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt8integralEEN4gapp3rng12sampleUniqueE12small_vectorI7IntTypeE7IntType7IntType6size_t">
+<span id="_CPPv3I_NSt8integralEEN4gapp3rng12sampleUniqueE7IntType7IntType6size_t"></span><span id="_CPPv2I_NSt8integralEEN4gapp3rng12sampleUniqueE7IntType7IntType6size_t"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">integral</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1add027a10015eb1980912cb4a7b41e1e8"></span><span class="n"><span class="pre">small_vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng12sampleUniqueE12small_vectorI7IntTypeE7IntType7IntType6size_t" title="gapp::rng::sampleUnique::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sampleUnique</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng12sampleUniqueE12small_vectorI7IntTypeE7IntType7IntType6size_t" title="gapp::rng::sampleUnique::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">lbound</span></span>, <a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng12sampleUniqueE12small_vectorI7IntTypeE7IntType7IntType6size_t" title="gapp::rng::sampleUnique::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">ubound</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt8integralEEN4gapp3rng12sampleUniqueE12small_vectorI7IntTypeE7IntType7IntType6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate <code class="docutils literal notranslate"><span class="pre">count</span></code> unique integers from the half-open range [<code class="docutils literal notranslate"><span class="pre">lbound</span></code>, <code class="docutils literal notranslate"><span class="pre">ubound</span></code>). </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng9sampleCdfE6size_tRK5Range">
+<span id="_CPPv3I_NSt6ranges19random_access_rangeEEN4gapp3rng9sampleCdfERK5Range"></span><span id="_CPPv2I_NSt6ranges19random_access_rangeEEN4gapp3rng9sampleCdfERK5Range"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">random_access_range</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Range</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a766b902acdfc81c17243e9194078fdbc"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sampleCdf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng9sampleCdfE6size_tRK5Range" title="gapp::rng::sampleCdf::Range"><span class="n"><span class="pre">Range</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">cdf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng9sampleCdfE6size_tRK5Range" title="Link to this definition">#</a><br /></dt>
+<dd><p>Select an index based on a discrete CDF. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt8integralEEN4gapp3rng26randomBinomialApproxNormalE7IntType7IntTyped">
+<span id="_CPPv3I_NSt8integralEEN4gapp3rng26randomBinomialApproxNormalE7IntTyped"></span><span id="_CPPv2I_NSt8integralEEN4gapp3rng26randomBinomialApproxNormalE7IntTyped"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">integral</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a6842690d2b70c30c51427098fe66011d"></span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng26randomBinomialApproxNormalE7IntType7IntTyped" title="gapp::rng::randomBinomialApproxNormal::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomBinomialApproxNormal</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng26randomBinomialApproxNormalE7IntType7IntTyped" title="gapp::rng::randomBinomialApproxNormal::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt8integralEEN4gapp3rng26randomBinomialApproxNormalE7IntType7IntTyped" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt8integralEEN4gapp3rng27randomBinomialApproxPoissonE7IntType7IntTyped">
+<span id="_CPPv3I_NSt8integralEEN4gapp3rng27randomBinomialApproxPoissonE7IntTyped"></span><span id="_CPPv2I_NSt8integralEEN4gapp3rng27randomBinomialApproxPoissonE7IntTyped"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">integral</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a848ec23a4b769d0ae29448c23084be9b"></span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng27randomBinomialApproxPoissonE7IntType7IntTyped" title="gapp::rng::randomBinomialApproxPoisson::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomBinomialApproxPoisson</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng27randomBinomialApproxPoissonE7IntType7IntTyped" title="gapp::rng::randomBinomialApproxPoisson::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt8integralEEN4gapp3rng27randomBinomialApproxPoissonE7IntType7IntTyped" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt8integralEEN4gapp3rng19randomBinomialExactE7IntType7IntTyped">
+<span id="_CPPv3I_NSt8integralEEN4gapp3rng19randomBinomialExactE7IntTyped"></span><span id="_CPPv2I_NSt8integralEEN4gapp3rng19randomBinomialExactE7IntTyped"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">integral</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1aa67c85e76ccab6ddd162676f340f3be4"></span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng19randomBinomialExactE7IntType7IntTyped" title="gapp::rng::randomBinomialExact::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomBinomialExact</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng19randomBinomialExactE7IntType7IntTyped" title="gapp::rng::randomBinomialExact::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt8integralEEN4gapp3rng19randomBinomialExactE7IntType7IntTyped" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt8integralEEN4gapp3rng15sampleUniqueSetE12small_vectorI7IntTypeE7IntType7IntType6size_t">
+<span id="_CPPv3I_NSt8integralEEN4gapp3rng15sampleUniqueSetE7IntType7IntType6size_t"></span><span id="_CPPv2I_NSt8integralEEN4gapp3rng15sampleUniqueSetE7IntType7IntType6size_t"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">integral</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IntType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="namespacegapp_1_1rng_1a9eef7e5deae51169b7bd64eb4bf24498"></span><span class="n"><span class="pre">small_vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng15sampleUniqueSetE12small_vectorI7IntTypeE7IntType7IntType6size_t" title="gapp::rng::sampleUniqueSet::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sampleUniqueSet</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng15sampleUniqueSetE12small_vectorI7IntTypeE7IntType7IntType6size_t" title="gapp::rng::sampleUniqueSet::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">lbound</span></span>, <a class="reference internal" href="#_CPPv4I_NSt8integralEEN4gapp3rng15sampleUniqueSetE12small_vectorI7IntTypeE7IntType7IntType6size_t" title="gapp::rng::sampleUniqueSet::IntType"><span class="n"><span class="pre">IntType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">ubound</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_NSt8integralEEN4gapp3rng15sampleUniqueSetE12small_vectorI7IntTypeE7IntType7IntType6size_t" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng4prngE">
+<span id="_CPPv3N4gapp3rng4prngE"></span><span id="_CPPv2N4gapp3rng4prngE"></span><span id="gapp::rng::prng__ConcurrentXoroshiro128p"></span><span class="target" id="namespacegapp_1_1rng_1afac41e95e0a4023a9a2d16b7e39a4f3d"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128pE" title="gapp::rng::ConcurrentXoroshiro128p"><span class="n"><span class="pre">ConcurrentXoroshiro128p</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">prng</span></span></span><a class="headerlink" href="#_CPPv4N4gapp3rng4prngE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The global pseudo-random number generator instance used in the algorithms. </p>
+</dd></dl>
+
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng23ConcurrentXoroshiro128pE">
+<span id="_CPPv3N4gapp3rng23ConcurrentXoroshiro128pE"></span><span id="_CPPv2N4gapp3rng23ConcurrentXoroshiro128pE"></span><span id="gapp::rng::ConcurrentXoroshiro128p"></span><span class="target" id="classgapp_1_1rng_1_1ConcurrentXoroshiro128p"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ConcurrentXoroshiro128p</span></span></span><a class="headerlink" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128pE" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;rng.hpp&gt;</em></div>
+<p>The pseudo-random number generator class used in the library. This class is a simple wrapper around the <a class="reference internal" href="#classgapp_1_1rng_1_1Xoroshiro128p"><span class="std std-ref">Xoroshiro128p</span></a> generator to make operator() thread-safe.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The global prng instance should be used instead of creating new instances of this generator. </p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng23ConcurrentXoroshiro128p11result_typeE">
+<span id="_CPPv3N4gapp3rng23ConcurrentXoroshiro128p11result_typeE"></span><span id="_CPPv2N4gapp3rng23ConcurrentXoroshiro128p11result_typeE"></span><span class="target" id="classgapp_1_1rng_1_1ConcurrentXoroshiro128p_1a50da2530a5482e13f3c134e1e4695482"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">result_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128pE" title="gapp::rng::Xoroshiro128p"><span class="n"><span class="pre">Xoroshiro128p</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128p11result_typeE" title="gapp::rng::Xoroshiro128p::result_type"><span class="n"><span class="pre">result_type</span></span></a><a class="headerlink" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p11result_typeE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng23ConcurrentXoroshiro128p10state_typeE">
+<span id="_CPPv3N4gapp3rng23ConcurrentXoroshiro128p10state_typeE"></span><span id="_CPPv2N4gapp3rng23ConcurrentXoroshiro128p10state_typeE"></span><span class="target" id="classgapp_1_1rng_1_1ConcurrentXoroshiro128p_1a5fce409930cab988a7816ef4ee2d9b2c"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">state_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128pE" title="gapp::rng::Xoroshiro128p"><span class="n"><span class="pre">Xoroshiro128p</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128p10state_typeE" title="gapp::rng::Xoroshiro128p::state_type"><span class="n"><span class="pre">state_type</span></span></a><a class="headerlink" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p10state_typeE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp3rng23ConcurrentXoroshiro128pclEv">
+<span id="_CPPv3NK4gapp3rng23ConcurrentXoroshiro128pclEv"></span><span id="_CPPv2NK4gapp3rng23ConcurrentXoroshiro128pclEv"></span><span id="gapp::rng::ConcurrentXoroshiro128p::call-operatorC"></span><span class="target" id="classgapp_1_1rng_1_1ConcurrentXoroshiro128p_1a3a9b447c11f2a4206be7d0728a6a64f5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p11result_typeE" title="gapp::rng::ConcurrentXoroshiro128p::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp3rng23ConcurrentXoroshiro128pclEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The next number of the sequence. Thread-safe. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng23ConcurrentXoroshiro128p4seedENSt8uint64_tE">
+<span id="_CPPv3N4gapp3rng23ConcurrentXoroshiro128p4seedENSt8uint64_tE"></span><span id="_CPPv2N4gapp3rng23ConcurrentXoroshiro128p4seedENSt8uint64_tE"></span><span id="gapp::rng::ConcurrentXoroshiro128p::seed__std::uint64_t"></span><span class="target" id="classgapp_1_1rng_1_1ConcurrentXoroshiro128p_1ab293c7199b616212fe38dfe9fbb4a40b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">seed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seed</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p4seedENSt8uint64_tE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set a new seed for the generator. This function is not thread-safe and shouldn’t be called concurrently with the random number generation functions (e.g. while a <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a> is running). </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng23ConcurrentXoroshiro128p3minEv">
+<span id="_CPPv3N4gapp3rng23ConcurrentXoroshiro128p3minEv"></span><span id="_CPPv2N4gapp3rng23ConcurrentXoroshiro128p3minEv"></span><span id="gapp::rng::ConcurrentXoroshiro128p::minCE"></span><span class="target" id="classgapp_1_1rng_1_1ConcurrentXoroshiro128p_1ad7ab7983857b56e9f2039bc7cece8543"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p11result_typeE" title="gapp::rng::ConcurrentXoroshiro128p::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">min</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p3minEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The smallest possible value that can be generated. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng23ConcurrentXoroshiro128p3maxEv">
+<span id="_CPPv3N4gapp3rng23ConcurrentXoroshiro128p3maxEv"></span><span id="_CPPv2N4gapp3rng23ConcurrentXoroshiro128p3maxEv"></span><span id="gapp::rng::ConcurrentXoroshiro128p::maxCE"></span><span class="target" id="classgapp_1_1rng_1_1ConcurrentXoroshiro128p_1a21e40d03c8a0f6ad3358c55fb8a011f2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p11result_typeE" title="gapp::rng::ConcurrentXoroshiro128p::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p3maxEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The largest possible value that can be generated. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng23ConcurrentXoroshiro128p9generatorEv">
+<span id="_CPPv3N4gapp3rng23ConcurrentXoroshiro128p9generatorEv"></span><span id="_CPPv2N4gapp3rng23ConcurrentXoroshiro128p9generatorEv"></span><span id="gapp::rng::ConcurrentXoroshiro128p::generator"></span><span class="target" id="classgapp_1_1rng_1_1ConcurrentXoroshiro128p_1ac9dfca708353330b6db8659a2b5ec18b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">generator</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p9generatorEv" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE">
+<span id="_CPPv3I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE"></span><span id="_CPPv2I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">floating_point</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RealType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classgapp_1_1rng_1_1QuasiRandom"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">QuasiRandom</span></span></span><a class="headerlink" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;qrng.hpp&gt;</em></div>
+<p>Quasi-random number generator based on: <a class="reference external" href="http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/">http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/</a>. Generates points in the unit hypercube in dim dimensions. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng11QuasiRandom11result_typeE">
+<span id="_CPPv3N4gapp3rng11QuasiRandom11result_typeE"></span><span id="_CPPv2N4gapp3rng11QuasiRandom11result_typeE"></span><span class="target" id="classgapp_1_1rng_1_1QuasiRandom_1afbbfafbc4eb9e4afae9fa966b9fd12f4"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">result_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">small_vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE" title="gapp::rng::QuasiRandom::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng11QuasiRandom11result_typeE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng11QuasiRandom10state_typeE">
+<span id="_CPPv3N4gapp3rng11QuasiRandom10state_typeE"></span><span id="_CPPv2N4gapp3rng11QuasiRandom10state_typeE"></span><span class="target" id="classgapp_1_1rng_1_1QuasiRandom_1a05da5203570ec30939a3e85d28d363ac"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">state_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">small_vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE" title="gapp::rng::QuasiRandom::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng11QuasiRandom10state_typeE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng11QuasiRandom9size_typeE">
+<span id="_CPPv3N4gapp3rng11QuasiRandom9size_typeE"></span><span id="_CPPv2N4gapp3rng11QuasiRandom9size_typeE"></span><span class="target" id="classgapp_1_1rng_1_1QuasiRandom_1a92d9fbd532bb0e4380e2326495e5d3ac"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng11QuasiRandom9size_typeE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng11QuasiRandom11QuasiRandomE9size_type11NonNegativeI8RealTypeE">
+<span id="_CPPv3N4gapp3rng11QuasiRandom11QuasiRandomE9size_type11NonNegativeI8RealTypeE"></span><span id="_CPPv2N4gapp3rng11QuasiRandom11QuasiRandomE9size_type11NonNegativeI8RealTypeE"></span><span id="gapp::rng::QuasiRandom::QuasiRandom__size_type.NonNegative:RealType:"></span><span class="target" id="classgapp_1_1rng_1_1QuasiRandom_1abfb4fd1cf24d98ee50b9a6222004f63d"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">QuasiRandom</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp3rng11QuasiRandom9size_typeE" title="gapp::rng::QuasiRandom::size_type"><span class="n"><span class="pre">size_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">dim</span></span>, <a class="reference internal" href="#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE" title="gapp::rng::QuasiRandom::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seed</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.5</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp3rng11QuasiRandom11QuasiRandomE9size_type11NonNegativeI8RealTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a quasi-random number generator in <code class="docutils literal notranslate"><span class="pre">dim</span></code> dimensions. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng11QuasiRandomclEv">
+<span id="_CPPv3N4gapp3rng11QuasiRandomclEv"></span><span id="_CPPv2N4gapp3rng11QuasiRandomclEv"></span><span id="gapp::rng::QuasiRandom::call-operator"></span><span class="target" id="classgapp_1_1rng_1_1QuasiRandom_1a60cf1143a3b386b83e4079a1c6af8b5a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng11QuasiRandom11result_typeE" title="gapp::rng::QuasiRandom::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp3rng11QuasiRandomclEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate the next quasi-random point of the sequence. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng11QuasiRandom7discardE9size_type">
+<span id="_CPPv3N4gapp3rng11QuasiRandom7discardE9size_type"></span><span id="_CPPv2N4gapp3rng11QuasiRandom7discardE9size_type"></span><span id="gapp::rng::QuasiRandom::discard__size_type"></span><span class="target" id="classgapp_1_1rng_1_1QuasiRandom_1ad00b22f5a0d5757513aceb8d9c4abfe2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">discard</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp3rng11QuasiRandom9size_typeE" title="gapp::rng::QuasiRandom::size_type"><span class="n"><span class="pre">size_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp3rng11QuasiRandom7discardE9size_type" title="Link to this definition">#</a><br /></dt>
+<dd><p>Discard the next <code class="docutils literal notranslate"><span class="pre">n</span></code> points of the sequence. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng11QuasiRandom5resetE11NonNegativeI8RealTypeE">
+<span id="_CPPv3N4gapp3rng11QuasiRandom5resetE11NonNegativeI8RealTypeE"></span><span id="_CPPv2N4gapp3rng11QuasiRandom5resetE11NonNegativeI8RealTypeE"></span><span id="gapp::rng::QuasiRandom::reset__NonNegative:RealType:"></span><span class="target" id="classgapp_1_1rng_1_1QuasiRandom_1a3e078766860a771ebd74b13773bf91c8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reset</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE" title="gapp::rng::QuasiRandom::RealType"><span class="n"><span class="pre">RealType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">new_seed</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.5</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp3rng11QuasiRandom5resetE11NonNegativeI8RealTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Reset the generator’s state using a specified seed. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp3rng11QuasiRandom3dimEv">
+<span id="_CPPv3NK4gapp3rng11QuasiRandom3dimEv"></span><span id="_CPPv2NK4gapp3rng11QuasiRandom3dimEv"></span><span id="gapp::rng::QuasiRandom::dimC"></span><span class="target" id="classgapp_1_1rng_1_1QuasiRandom_1a48dcd94a86c7be02d8648eaf238a8e45"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng11QuasiRandom9size_typeE" title="gapp::rng::QuasiRandom::size_type"><span class="n"><span class="pre">size_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp3rng11QuasiRandom3dimEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The generator’s number of dimensions. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix64E">
+<span id="_CPPv3N4gapp3rng10Splitmix64E"></span><span id="_CPPv2N4gapp3rng10Splitmix64E"></span><span id="gapp::rng::Splitmix64"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Splitmix64</span></span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix64E" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;rng.hpp&gt;</em></div>
+<p><a class="reference internal" href="#classgapp_1_1rng_1_1Splitmix64"><span class="std std-ref">Splitmix64</span></a> pseudo-random number generator based on <a class="reference external" href="https://prng.di.unimi.it/splitmix64.c">https://prng.di.unimi.it/splitmix64.c</a>. This generator is only used for seeding the Xoroshiro generators. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix6411result_typeE">
+<span id="_CPPv3N4gapp3rng10Splitmix6411result_typeE"></span><span id="_CPPv2N4gapp3rng10Splitmix6411result_typeE"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64_1afc7f54c8ec77a168c49abcef85d09c7d"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">result_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint64_t</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix6411result_typeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The generator generates 64 bit integers. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix6410state_typeE">
+<span id="_CPPv3N4gapp3rng10Splitmix6410state_typeE"></span><span id="_CPPv2N4gapp3rng10Splitmix6410state_typeE"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64_1aeb1c50677dda33345f28427f2031aa56"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">state_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint64_t</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix6410state_typeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The generator has a 64 bit state. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix6410Splitmix64E10state_type">
+<span id="_CPPv3N4gapp3rng10Splitmix6410Splitmix64E10state_type"></span><span id="_CPPv2N4gapp3rng10Splitmix6410Splitmix64E10state_type"></span><span id="gapp::rng::Splitmix64::Splitmix64__state_typeCE"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64_1ad5d370525b6cb70b821cc961f8c67e23"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Splitmix64</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp3rng10Splitmix6410state_typeE" title="gapp::rng::Splitmix64::state_type"><span class="n"><span class="pre">state_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">seed</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix6410Splitmix64E10state_type" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a new <a class="reference internal" href="#classgapp_1_1rng_1_1Splitmix64"><span class="std std-ref">Splitmix64</span></a> generator initialized from a 64 bit seed value.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The global prng instance should be used instead of creating new instances of this generator.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> – The seed used to initialize the state of the generator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix64clEv">
+<span id="_CPPv3N4gapp3rng10Splitmix64clEv"></span><span id="_CPPv2N4gapp3rng10Splitmix64clEv"></span><span id="gapp::rng::Splitmix64::call-operatorCE"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64_1a7e3cd80e591bba7417bddf9303b2154b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng10Splitmix6411result_typeE" title="gapp::rng::Splitmix64::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix64clEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The next number of the sequence. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix644seedE10state_type">
+<span id="_CPPv3N4gapp3rng10Splitmix644seedE10state_type"></span><span id="_CPPv2N4gapp3rng10Splitmix644seedE10state_type"></span><span id="gapp::rng::Splitmix64::seed__state_typeCE"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64_1a12317bf1bc579e9ce6d02495c7876dc2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">seed</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp3rng10Splitmix6410state_typeE" title="gapp::rng::Splitmix64::state_type"><span class="n"><span class="pre">state_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">seed</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix644seedE10state_type" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set a new seed for the generator. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix643minEv">
+<span id="_CPPv3N4gapp3rng10Splitmix643minEv"></span><span id="_CPPv2N4gapp3rng10Splitmix643minEv"></span><span id="gapp::rng::Splitmix64::minCE"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64_1acfb5cd3ce6a8aaa59deca2e54c5b587d"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng10Splitmix6411result_typeE" title="gapp::rng::Splitmix64::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">min</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix643minEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The smallest possible value that can be generated. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix643maxEv">
+<span id="_CPPv3N4gapp3rng10Splitmix643maxEv"></span><span id="_CPPv2N4gapp3rng10Splitmix643maxEv"></span><span id="gapp::rng::Splitmix64::maxCE"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64_1abb369e4d21ae2ca99b2de63a9ebfdeec"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng10Splitmix6411result_typeE" title="gapp::rng::Splitmix64::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix643maxEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The largest possible value that can be generated. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-friends">Friends</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng10Splitmix64eqERK10Splitmix64RK10Splitmix64">
+<span id="_CPPv3N4gapp3rng10Splitmix64eqERK10Splitmix64RK10Splitmix64"></span><span id="_CPPv2N4gapp3rng10Splitmix64eqERK10Splitmix64RK10Splitmix64"></span><span id="gapp::rng::Splitmix64::eq-operator__Splitmix64CR.Splitmix64CRCE"></span><span class="target" id="classgapp_1_1rng_1_1Splitmix64_1a276ea3e4c9ef63ab5ad2d3e02ad5f463"></span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">==</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng10Splitmix64E" title="gapp::rng::Splitmix64"><span class="n"><span class="pre">Splitmix64</span></span></a><span class="p"><span class="pre">&amp;</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng10Splitmix64E" title="gapp::rng::Splitmix64"><span class="n"><span class="pre">Splitmix64</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng10Splitmix64eqERK10Splitmix64RK10Splitmix64" title="Link to this definition">#</a><br /></dt>
+<dd><p>Compare the internal state of 2 generators. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>true if they are the same. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128pE">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128pE"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128pE"></span><span id="gapp::rng::Xoroshiro128p"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Xoroshiro128p</span></span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128pE" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;rng.hpp&gt;</em></div>
+<p>Xoroshiro128+ pseudo-random number generator based on <a class="reference external" href="https://prng.di.unimi.it/xoroshiro128plus.c">https://prng.di.unimi.it/xoroshiro128plus.c</a></p>
+<p><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>David Blackman and Sebastiano Vigna. “Scrambled linear pseudorandom number generators.” ACM Transactions on Mathematical Software 47, no. 4 (2021): 1-32. </p>
+</div>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128p11result_typeE">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128p11result_typeE"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128p11result_typeE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1a7063ae4f3b1831a21b96e6e9e8414e1c"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">result_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint64_t</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128p11result_typeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The generator generates 64 bit integers. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128p10state_typeE">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128p10state_typeE"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128p10state_typeE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1ac6ac52e2038e62b44cabcf3e7cbf0209"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">state_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">uint64_t</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128p10state_typeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The generator has 128 bits of state. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128p13Xoroshiro128pENSt8uint64_tE">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128p13Xoroshiro128pENSt8uint64_tE"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128p13Xoroshiro128pENSt8uint64_tE"></span><span id="gapp::rng::Xoroshiro128p::Xoroshiro128p__std::uint64_tCE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1aeec76b6699be97df2b5da1241a3cc2cf"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Xoroshiro128p</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seed</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128p13Xoroshiro128pENSt8uint64_tE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a Xoroshiro128+ generator initialized from a 64 bit seed value.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The global prng instance should be used instead of creating new instances of this generator.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> – The seed used to initialize the state of the generator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128pclEv">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128pclEv"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128pclEv"></span><span id="gapp::rng::Xoroshiro128p::call-operatorCE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1ae48c03d2c64efb861edee2e793aaa86d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128p11result_typeE" title="gapp::rng::Xoroshiro128p::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128pclEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The next number of the sequence. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128p4jumpEv">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128p4jumpEv"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128p4jumpEv"></span><span id="gapp::rng::Xoroshiro128p::jumpCE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1a444dcbc61a9150f7a6bb835eee241799"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128pE" title="gapp::rng::Xoroshiro128p"><span class="n"><span class="pre">Xoroshiro128p</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">jump</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128p4jumpEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Advance the state of the generator by 2^96 steps. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128p4seedENSt8uint64_tE">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128p4seedENSt8uint64_tE"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128p4seedENSt8uint64_tE"></span><span id="gapp::rng::Xoroshiro128p::seed__std::uint64_tCE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1a8d74e8179cd2706f6d7ee20574227514"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">seed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seed</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128p4seedENSt8uint64_tE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set a new seed for the generator. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128p3minEv">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128p3minEv"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128p3minEv"></span><span id="gapp::rng::Xoroshiro128p::minCE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1a7347e6b1f1f9854c56f2f55e4ac89da5"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128p11result_typeE" title="gapp::rng::Xoroshiro128p::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">min</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128p3minEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The smallest possible value that can be generated. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128p3maxEv">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128p3maxEv"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128p3maxEv"></span><span id="gapp::rng::Xoroshiro128p::maxCE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1ac11909667d2bf8c7d7f9e069d1642934"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128p11result_typeE" title="gapp::rng::Xoroshiro128p::result_type"><span class="n"><span class="pre">result_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128p3maxEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The largest possible value that can be generated. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-friends">Friends</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp3rng13Xoroshiro128peqERK13Xoroshiro128pRK13Xoroshiro128p">
+<span id="_CPPv3N4gapp3rng13Xoroshiro128peqERK13Xoroshiro128pRK13Xoroshiro128p"></span><span id="_CPPv2N4gapp3rng13Xoroshiro128peqERK13Xoroshiro128pRK13Xoroshiro128p"></span><span id="gapp::rng::Xoroshiro128p::eq-operator__Xoroshiro128pCR.Xoroshiro128pCRCE"></span><span class="target" id="classgapp_1_1rng_1_1Xoroshiro128p_1afe01d460b5106f103546ee6e32b08934"></span><span class="k"><span class="pre">friend</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">==</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128pE" title="gapp::rng::Xoroshiro128p"><span class="n"><span class="pre">Xoroshiro128p</span></span></a><span class="p"><span class="pre">&amp;</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp3rng13Xoroshiro128pE" title="gapp::rng::Xoroshiro128p"><span class="n"><span class="pre">Xoroshiro128p</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp3rng13Xoroshiro128peqERK13Xoroshiro128pRK13Xoroshiro128p" title="Link to this definition">#</a><br /></dt>
+<dd><p>Compare the internal state of 2 generators. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if they are the same. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="floating-point-comparison-tolerances">
+<h2>Floating-point comparison tolerances<a class="headerlink" href="#floating-point-comparison-tolerances" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;utility/math.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp4math16ScopedTolerancesE">
+<span id="_CPPv3N4gapp4math16ScopedTolerancesE"></span><span id="_CPPv2N4gapp4math16ScopedTolerancesE"></span><span id="gapp::math::ScopedTolerances"></span><span class="target" id="classgapp_1_1math_1_1ScopedTolerances"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ScopedTolerances</span></span></span><a class="headerlink" href="#_CPPv4N4gapp4math16ScopedTolerancesE" title="Link to this definition">#</a><br /></dt>
+<dd><p>This class can be used to set the absolute and relative tolerances used for comparing floating-point values in the GAs.</p>
+<p>When an instance of the class is created, the tolerance values are set to the values specified by the parameters of the constructor, and these new tolerance values will be used for floating-point comparisons until the instance of the class is destroyed. The tolerances are reset to their old values when the instance is destroyed.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Creating an instance of this class modifies the global floating point tolerance values. This means that this class shouldn’t be instantiated on multiple threads at once. </p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp4math16ScopedTolerances16ScopedTolerancesE11NonNegativeIdE11NonNegativeIdE">
+<span id="_CPPv3N4gapp4math16ScopedTolerances16ScopedTolerancesE11NonNegativeIdE11NonNegativeIdE"></span><span id="_CPPv2N4gapp4math16ScopedTolerances16ScopedTolerancesE11NonNegativeIdE11NonNegativeIdE"></span><span id="gapp::math::ScopedTolerances::ScopedTolerances__NonNegative:double:.NonNegative:double:"></span><span class="target" id="classgapp_1_1math_1_1ScopedTolerances_1a853b62555801b7097e6124825c68a95f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ScopedTolerances</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">abs</span></span>, <a class="reference internal" href="#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rel</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp4math16ScopedTolerances16ScopedTolerancesE11NonNegativeIdE11NonNegativeIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an instance of the class, setting new values for the tolerances used for floating-point comparisons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>abs</strong> – The absolute tolerance value that will be used for the comparisons. Can’t be negative. </p></li>
+<li><p><strong>rel</strong> – The relative tolerance value around 1.0 that will be used for the comparisons. Can’t be negative. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp4math16ScopedTolerancesD0Ev">
+<span id="_CPPv3N4gapp4math16ScopedTolerancesD0Ev"></span><span id="_CPPv2N4gapp4math16ScopedTolerancesD0Ev"></span><span id="gapp::math::ScopedTolerances::~ScopedTolerances"></span><span class="target" id="classgapp_1_1math_1_1ScopedTolerances_1a929d5d49177156b397f78b4b2c38411c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~ScopedTolerances</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp4math16ScopedTolerancesD0Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Reset the tolerances to their previous values. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;utility/math.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp4math10TolerancesE">
+<span id="_CPPv3N4gapp4math10TolerancesE"></span><span id="_CPPv2N4gapp4math10TolerancesE"></span><span id="gapp::math::Tolerances"></span><span class="target" id="classgapp_1_1math_1_1Tolerances"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Tolerances</span></span></span><a class="headerlink" href="#_CPPv4N4gapp4math10TolerancesE" title="Link to this definition">#</a><br /></dt>
+<dd><p>This class contains the global absolute and relative tolerance values used for comparing floating-point values in the GAs.</p>
+<p>New tolerances can be set using the <a class="reference internal" href="#classgapp_1_1math_1_1ScopedTolerances"><span class="std std-ref">ScopedTolerances</span></a> class. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3absE1Tv">
+<span id="_CPPv3I_NSt14floating_pointEEN4gapp4math10Tolerances3absEv"></span><span id="_CPPv2I_NSt14floating_pointEEN4gapp4math10Tolerances3absEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">floating_point</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classgapp_1_1math_1_1Tolerances_1a5876a621d0fa304dcd35831293ea5642"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3absE1Tv" title="gapp::math::Tolerances::abs::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">abs</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3absE1Tv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current absolute tolerance used for floating-point comparisons. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3relE1T1T">
+<span id="_CPPv3I_NSt14floating_pointEEN4gapp4math10Tolerances3relE1T"></span><span id="_CPPv2I_NSt14floating_pointEEN4gapp4math10Tolerances3relE1T"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">floating_point</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classgapp_1_1math_1_1Tolerances_1a2e08a8d1f3e6f64aa6664989f30e953b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3relE1T1T" title="gapp::math::Tolerances::rel::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rel</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3relE1T1T" title="gapp::math::Tolerances::rel::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">at</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3relE1T1T" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current relative tolerance used for floating-point comparisons around <code class="docutils literal notranslate"><span class="pre">at</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="execution">
+<h2>Execution<a class="headerlink" href="#execution" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;utility/thread_pool.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp17execution_threadsE6size_t">
+<span id="_CPPv3N4gapp17execution_threadsE6size_t"></span><span id="_CPPv2N4gapp17execution_threadsE6size_t"></span><span id="gapp::execution_threads__s"></span><span class="target" id="thread__pool_8hpp_1a858f0360816080ffb07255f5fe053829"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">execution_threads</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp17execution_threadsE6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the number of threads that will be used by the library to run the genetic algorithms.</p>
+<p>The value should be between 1 and the number of hardware threads. The default number of threads used will be the value returned by std::thread::hardware_concurrency.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function is not thread-safe and shouldn’t be called while a genetic algorithm is running.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>count</strong> – The desired number of threads. Must be at least 1. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp17execution_threadsEv">
+<span id="_CPPv3N4gapp17execution_threadsEv"></span><span id="_CPPv2N4gapp17execution_threadsEv"></span><span id="gapp::execution_threads"></span><span class="target" id="thread__pool_8hpp_1a2c656ff19e3ec9331f915b0feea5d571"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">execution_threads</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp17execution_threadsEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of threads used by the library. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="bounded-value-types">
+<h2>Bounded value types<a class="headerlink" href="#bounded-value-types" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;utility/bounded_value.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0_1T_1TEN4gapp12BoundedValueE">
+<span id="_CPPv3I0_1T_1TEN4gapp12BoundedValueE"></span><span id="_CPPv2I0_1T_1TEN4gapp12BoundedValueE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE" title="gapp::BoundedValue::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Low</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE" title="gapp::BoundedValue::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">High</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="bounded__value_8hpp_1addeb3f7c4a106ca5f43fee930352753b"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">BoundedValue</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">BoundedValue</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE" title="gapp::BoundedValue::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Interval</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE" title="gapp::BoundedValue::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">{</span></span><a class="reference internal" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE" title="gapp::BoundedValue::Low"><span class="n"><span class="pre">Low</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE" title="gapp::BoundedValue::High"><span class="n"><span class="pre">High</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">}</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Type representing values in the closed interval [Low, High]. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp11NonNegativeE">
+<span id="_CPPv3I0EN4gapp11NonNegativeE"></span><span id="_CPPv2I0EN4gapp11NonNegativeE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="bounded__value_8hpp_1aa223050a312dbaa250a53eb90d944dbc"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">NonNegative</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">BoundedValue</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Interval</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">{</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">numeric_limits</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">max</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">}</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp11NonNegativeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Type representing values in the closed interval [0, Tmax]. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp8NegativeE">
+<span id="_CPPv3I0EN4gapp8NegativeE"></span><span id="_CPPv2I0EN4gapp8NegativeE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="bounded__value_8hpp_1a7b6fdb6a22e4f07cc80b757d6ed04666"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Negative</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">BoundedValue</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp8NegativeE" title="gapp::Negative::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Interval</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp8NegativeE" title="gapp::Negative::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">{</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">numeric_limits</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp8NegativeE" title="gapp::Negative::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">lowest</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp8NegativeE" title="gapp::Negative::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">}</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp8NegativeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Type representing values in the half-closed interval [Tmin, 0). </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp8PositiveE">
+<span id="_CPPv3I0EN4gapp8PositiveE"></span><span id="_CPPv2I0EN4gapp8PositiveE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="bounded__value_8hpp_1abe076a0644d08a42a4fcf8d71d3a617f"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Positive</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">BoundedValue</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Interval</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">{</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">(</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">numeric_limits</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">max</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">}</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp8PositiveE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Type representing values in the half-closed interval (0, Tmax]. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11ProbabilityE">
+<span id="_CPPv3N4gapp11ProbabilityE"></span><span id="_CPPv2N4gapp11ProbabilityE"></span><span class="target" id="bounded__value_8hpp_1a5c3d792f98f4862ad37688e3dbb34929"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Probability</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">BoundedValue</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Interval</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">}</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp11ProbabilityE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Type representing a probability value in the closed interval [0.0, 1.0]. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp10NormalizedE">
+<span id="_CPPv3I0EN4gapp10NormalizedE"></span><span id="_CPPv2I0EN4gapp10NormalizedE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="bounded__value_8hpp_1a9f74fa641df6b7a149954fbbe77d3619"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Normalized</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">BoundedValue</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp10NormalizedE" title="gapp::Normalized::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Interval</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp10NormalizedE" title="gapp::Normalized::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1.0</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">}</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp10NormalizedE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Type representing a value in the closed interval of [0.0, 1.0]. </p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#random-number-generation">Random number generation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rngE"><code class="docutils literal notranslate"><span class="pre">gapp::rng</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10randomBoolEv"><code class="docutils literal notranslate"><span class="pre">randomBool()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng9randomIntE7IntType7IntType7IntType"><code class="docutils literal notranslate"><span class="pre">randomInt()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealTypev"><code class="docutils literal notranslate"><span class="pre">randomReal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng10randomRealE8RealType8RealType8RealType"><code class="docutils literal notranslate"><span class="pre">randomReal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng12randomNormalE8RealType8RealType8RealType"><code class="docutils literal notranslate"><span class="pre">randomNormal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng13randomPoissonE7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomPoisson()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng14randomBinomialE7IntType7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomBinomial()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng11randomIndexEN6detail9size_typeI1REERK1R"><code class="docutils literal notranslate"><span class="pre">randomIndex()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt16forward_iteratorEEN4gapp3rng13randomElementE4Iter4Iter4Iter"><code class="docutils literal notranslate"><span class="pre">randomElement()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt6ranges19random_access_rangeE_NSt6ranges19random_access_rangeEEN4gapp3rng13randomElementENSt6ranges17range_reference_tI5RangeEERR5RangeRR4Dist"><code class="docutils literal notranslate"><span class="pre">randomElement()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng12sampleUniqueE12small_vectorI7IntTypeE7IntType7IntType6size_t"><code class="docutils literal notranslate"><span class="pre">sampleUnique()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt6ranges19random_access_rangeEEN4gapp3rng9sampleCdfE6size_tRK5Range"><code class="docutils literal notranslate"><span class="pre">sampleCdf()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng26randomBinomialApproxNormalE7IntType7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomBinomialApproxNormal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng27randomBinomialApproxPoissonE7IntType7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomBinomialApproxPoisson()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng19randomBinomialExactE7IntType7IntTyped"><code class="docutils literal notranslate"><span class="pre">randomBinomialExact()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt8integralEEN4gapp3rng15sampleUniqueSetE12small_vectorI7IntTypeE7IntType7IntType6size_t"><code class="docutils literal notranslate"><span class="pre">sampleUniqueSet()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng4prngE"><code class="docutils literal notranslate"><span class="pre">prng</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128pE"><code class="docutils literal notranslate"><span class="pre">gapp::rng::ConcurrentXoroshiro128p</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p11result_typeE"><code class="docutils literal notranslate"><span class="pre">result_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p10state_typeE"><code class="docutils literal notranslate"><span class="pre">state_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp3rng23ConcurrentXoroshiro128pclEv"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p4seedENSt8uint64_tE"><code class="docutils literal notranslate"><span class="pre">seed()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p3minEv"><code class="docutils literal notranslate"><span class="pre">min()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p3maxEv"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng23ConcurrentXoroshiro128p9generatorEv"><code class="docutils literal notranslate"><span class="pre">generator()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp3rng11QuasiRandomE"><code class="docutils literal notranslate"><span class="pre">gapp::rng::QuasiRandom</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom11result_typeE"><code class="docutils literal notranslate"><span class="pre">result_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom10state_typeE"><code class="docutils literal notranslate"><span class="pre">state_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom9size_typeE"><code class="docutils literal notranslate"><span class="pre">size_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom11QuasiRandomE9size_type11NonNegativeI8RealTypeE"><code class="docutils literal notranslate"><span class="pre">QuasiRandom()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandomclEv"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom7discardE9size_type"><code class="docutils literal notranslate"><span class="pre">discard()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng11QuasiRandom5resetE11NonNegativeI8RealTypeE"><code class="docutils literal notranslate"><span class="pre">reset()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp3rng11QuasiRandom3dimEv"><code class="docutils literal notranslate"><span class="pre">dim()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix64E"><code class="docutils literal notranslate"><span class="pre">gapp::rng::Splitmix64</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix6411result_typeE"><code class="docutils literal notranslate"><span class="pre">result_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix6410state_typeE"><code class="docutils literal notranslate"><span class="pre">state_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix6410Splitmix64E10state_type"><code class="docutils literal notranslate"><span class="pre">Splitmix64()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix64clEv"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix644seedE10state_type"><code class="docutils literal notranslate"><span class="pre">seed()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix643minEv"><code class="docutils literal notranslate"><span class="pre">min()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix643maxEv"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng10Splitmix64eqERK10Splitmix64RK10Splitmix64"><code class="docutils literal notranslate"><span class="pre">operator==</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128pE"><code class="docutils literal notranslate"><span class="pre">gapp::rng::Xoroshiro128p</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p11result_typeE"><code class="docutils literal notranslate"><span class="pre">result_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p10state_typeE"><code class="docutils literal notranslate"><span class="pre">state_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p13Xoroshiro128pENSt8uint64_tE"><code class="docutils literal notranslate"><span class="pre">Xoroshiro128p()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128pclEv"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p4jumpEv"><code class="docutils literal notranslate"><span class="pre">jump()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p4seedENSt8uint64_tE"><code class="docutils literal notranslate"><span class="pre">seed()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p3minEv"><code class="docutils literal notranslate"><span class="pre">min()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128p3maxEv"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp3rng13Xoroshiro128peqERK13Xoroshiro128pRK13Xoroshiro128p"><code class="docutils literal notranslate"><span class="pre">operator==</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#floating-point-comparison-tolerances">Floating-point comparison tolerances</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp4math16ScopedTolerancesE"><code class="docutils literal notranslate"><span class="pre">gapp::math::ScopedTolerances</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp4math16ScopedTolerances16ScopedTolerancesE11NonNegativeIdE11NonNegativeIdE"><code class="docutils literal notranslate"><span class="pre">ScopedTolerances()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp4math16ScopedTolerancesD0Ev"><code class="docutils literal notranslate"><span class="pre">~ScopedTolerances()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp4math10TolerancesE"><code class="docutils literal notranslate"><span class="pre">gapp::math::Tolerances</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3absE1Tv"><code class="docutils literal notranslate"><span class="pre">abs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I_NSt14floating_pointEEN4gapp4math10Tolerances3relE1T1T"><code class="docutils literal notranslate"><span class="pre">rel()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#execution">Execution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp17execution_threadsE6size_t"><code class="docutils literal notranslate"><span class="pre">execution_threads()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp17execution_threadsEv"><code class="docutils literal notranslate"><span class="pre">execution_threads()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bounded-value-types">Bounded value types</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0_1T_1TEN4gapp12BoundedValueE"><code class="docutils literal notranslate"><span class="pre">BoundedValue</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp11NonNegativeE"><code class="docutils literal notranslate"><span class="pre">NonNegative</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp8NegativeE"><code class="docutils literal notranslate"><span class="pre">Negative</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp8PositiveE"><code class="docutils literal notranslate"><span class="pre">Positive</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11ProbabilityE"><code class="docutils literal notranslate"><span class="pre">Probability</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp10NormalizedE"><code class="docutils literal notranslate"><span class="pre">Normalized</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
