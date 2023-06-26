@@ -1,0 +1,807 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Permutation encoded mutations &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'mutation/mutation_permutation';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Integer encoded mutations" href="mutation_integer.html" />
+    <link rel="prev" title="Binary encoded mutations" href="mutation_binary.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../algorithm/algorithm.html">Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../algorithm/algorithm_soga.html">Single-objective algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../algorithm/algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="mutation.html">Mutations</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Permutation encoded mutations</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4permE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-inversion">class Inversion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm9InversionE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Inversion</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm9Inversion9InversionEv"><code class="docutils literal notranslate"><span class="pre">Inversion()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm9Inversion9InversionE11Probability10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">Inversion()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm9Inversion9range_maxE10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm9Inversion9range_maxEv"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm9Inversion27allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-swap2">class Swap2</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap2E"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Swap2</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm5Swap227allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap28MutationEv"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap28MutationE11Probability"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-swap3">class Swap3</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap3E"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Swap3</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm5Swap327allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap38MutationEv"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap38MutationE11Probability"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-shuffle">class Shuffle</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm7ShuffleE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Shuffle</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm7Shuffle7ShuffleEv"><code class="docutils literal notranslate"><span class="pre">Shuffle()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm7Shuffle7ShuffleE11Probability10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">Shuffle()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm7Shuffle9range_maxE10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm7Shuffle9range_maxEv"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm7Shuffle27allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-shift">class Shift</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5ShiftE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Shift</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Shift5ShiftEv"><code class="docutils literal notranslate"><span class="pre">Shift()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Shift5ShiftE11Probability10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">Shift()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Shift9range_maxE10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm5Shift9range_maxEv"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm5Shift27allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="permutation-encoded-mutations">
+<h1>Permutation encoded mutations<a class="headerlink" href="#permutation-encoded-mutations" title="Link to this heading">#</a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4permE">
+<span id="_CPPv3N4gapp8mutation4permE"></span><span id="_CPPv2N4gapp8mutation4permE"></span><span id="gapp::mutation::perm"></span><span class="target" id="namespacegapp_1_1mutation_1_1perm"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">perm</span></span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4permE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Predefined mutation operators for the permutation encoded genetic algorithm. </p>
+</dd></dl>
+
+<section id="class-inversion">
+<h2>class Inversion<a class="headerlink" href="#class-inversion" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/permutation.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm9InversionE">
+<span id="_CPPv3N4gapp8mutation4perm9InversionE"></span><span id="_CPPv2N4gapp8mutation4perm9InversionE"></span><span id="gapp::mutation::perm::Inversion"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Inversion"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Inversion</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_permutation.html#_CPPv4N4gapp15PermutationGeneE" title="gapp::PermutationGene"><span class="n"><span class="pre">PermutationGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm9InversionE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Inversion mutation operator for the permutation encoded GA.</p>
+<p>Each individual is mutated with the specified mutation probability. In the mutated individuals, a randomly selected range of genes are reversed.</p>
+<p>The operator has a single parameter (<code class="docutils literal notranslate"><span class="pre">range_max</span></code>) that specifies the maximum length of the reversed ranges relative to the chromosome length. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm9Inversion9InversionEv">
+<span id="_CPPv3N4gapp8mutation4perm9Inversion9InversionEv"></span><span id="_CPPv2N4gapp8mutation4perm9Inversion9InversionEv"></span><span id="gapp::mutation::perm::Inversion::InversionCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Inversion_1a2dd14eaedb89953f3d50b83c53c03c35"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Inversion</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm9Inversion9InversionEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an inversion mutation operator that will use the default mutation rate of the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm9Inversion9InversionE11Probability10NormalizedIdE">
+<span id="_CPPv3N4gapp8mutation4perm9Inversion9InversionE11Probability10NormalizedIdE"></span><span id="_CPPv2N4gapp8mutation4perm9Inversion9InversionE11Probability10NormalizedIdE"></span><span id="gapp::mutation::perm::Inversion::Inversion__Probability.Normalized:double:CE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Inversion_1af47a813f56a49c569e590b89be104d87"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Inversion</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span>, <a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp10NormalizedE" title="gapp::Normalized"><span class="n"><span class="pre">Normalized</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">range_max</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.75</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm9Inversion9InversionE11Probability10NormalizedIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an inversion mutation operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pm</strong> – The mutation probability. Must be in the closed interval [0.0, 1.0]. </p></li>
+<li><p><strong>range_max</strong> – The maximum length of the reversed ranges. Must be in the closed interval [0.0, 1.0]. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm9Inversion9range_maxE10NormalizedIdE">
+<span id="_CPPv3N4gapp8mutation4perm9Inversion9range_maxE10NormalizedIdE"></span><span id="_CPPv2N4gapp8mutation4perm9Inversion9range_maxE10NormalizedIdE"></span><span id="gapp::mutation::perm::Inversion::range_max__Normalized:double:CE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Inversion_1a7d105ac1c8b533342d69201fffa56e5f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">range_max</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp10NormalizedE" title="gapp::Normalized"><span class="n"><span class="pre">Normalized</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rm</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm9Inversion9range_maxE10NormalizedIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the maximum length of the ranges that can be selected to be reversed by the operator. The parameter specifies the maximum range length relative to the overall chromosome length of a candidate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rm</strong> – The maximum length of the reversed ranges. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4perm9Inversion9range_maxEv">
+<span id="_CPPv3NK4gapp8mutation4perm9Inversion9range_maxEv"></span><span id="_CPPv2NK4gapp8mutation4perm9Inversion9range_maxEv"></span><span id="gapp::mutation::perm::Inversion::range_maxCCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Inversion_1ad0117647c5a78a934944a6e8d7f61acf"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">range_max</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4perm9Inversion9range_maxEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum length of the reversed ranges. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4perm9Inversion27allow_variable_chrom_lengthEv">
+<span id="_CPPv3NK4gapp8mutation4perm9Inversion27allow_variable_chrom_lengthEv"></span><span id="_CPPv2NK4gapp8mutation4perm9Inversion27allow_variable_chrom_lengthEv"></span><span id="gapp::mutation::perm::Inversion::allow_variable_chrom_lengthCCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Inversion_1a2de807cf575aa70a05018a1bf7810bb7"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allow_variable_chrom_length</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4perm9Inversion27allow_variable_chrom_lengthEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>This method specifies whether the mutation operator supports variable chromosome lengths or not. If variable chromosome lengths are supported, the Candidates passed to the mutation operator are allowed to have chromosome lengths that are different from the chromosome length specified for the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a> that the operator is used in. Otherwise the chromosome length of the given gene type must be the same for every <a class="reference internal" href="../core/population.html#structgapp_1_1Candidate"><span class="std std-ref">Candidate</span></a>.</p>
+<p>This method will return false by default. If a particular mutation method allows variable chromosome lengths, it should override this method to return true.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the mutation operator support variable chromosome lengths. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-swap2">
+<h2>class Swap2<a class="headerlink" href="#class-swap2" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/permutation.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Swap2E">
+<span id="_CPPv3N4gapp8mutation4perm5Swap2E"></span><span id="_CPPv2N4gapp8mutation4perm5Swap2E"></span><span id="gapp::mutation::perm::Swap2"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Swap2"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Swap2</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_permutation.html#_CPPv4N4gapp15PermutationGeneE" title="gapp::PermutationGene"><span class="n"><span class="pre">PermutationGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Swap2E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Single swap/swap2 mutation operator for the permutation encoded GA.</p>
+<p>Each candidate solution is mutated with the set mutation probability. In the mutated candidates, two distinct genes are randomly selected and then swapped. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4perm5Swap227allow_variable_chrom_lengthEv">
+<span id="_CPPv3NK4gapp8mutation4perm5Swap227allow_variable_chrom_lengthEv"></span><span id="_CPPv2NK4gapp8mutation4perm5Swap227allow_variable_chrom_lengthEv"></span><span id="gapp::mutation::perm::Swap2::allow_variable_chrom_lengthCCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Swap2_1a273124ed2efb1bd105c3df883d5cf5ce"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allow_variable_chrom_length</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4perm5Swap227allow_variable_chrom_lengthEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>This method specifies whether the mutation operator supports variable chromosome lengths or not. If variable chromosome lengths are supported, the Candidates passed to the mutation operator are allowed to have chromosome lengths that are different from the chromosome length specified for the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a> that the operator is used in. Otherwise the chromosome length of the given gene type must be the same for every <a class="reference internal" href="../core/population.html#structgapp_1_1Candidate"><span class="std std-ref">Candidate</span></a>.</p>
+<p>This method will return false by default. If a particular mutation method allows variable chromosome lengths, it should override this method to return true.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the mutation operator support variable chromosome lengths. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Swap28MutationEv">
+<span id="_CPPv3N4gapp8mutation4perm5Swap28MutationEv"></span><span id="_CPPv2N4gapp8mutation4perm5Swap28MutationEv"></span><span id="gapp::mutation::perm::Swap2::MutationCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Swap2_1aa461e4856f480b21c7b4c50b78a2371a"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mutation</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Swap28MutationEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a mutation operator that will use the default mutation probability. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Swap28MutationE11Probability">
+<span id="_CPPv3N4gapp8mutation4perm5Swap28MutationE11Probability"></span><span id="_CPPv2N4gapp8mutation4perm5Swap28MutationE11Probability"></span><span id="gapp::mutation::perm::Swap2::Mutation__ProbabilityCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Swap2_1a58dd908701a44c11035a5670977dbf09"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mutation</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Swap28MutationE11Probability" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a mutation operator with the specified mutation probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pm</strong> – The mutation probability. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-swap3">
+<h2>class Swap3<a class="headerlink" href="#class-swap3" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/permutation.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Swap3E">
+<span id="_CPPv3N4gapp8mutation4perm5Swap3E"></span><span id="_CPPv2N4gapp8mutation4perm5Swap3E"></span><span id="gapp::mutation::perm::Swap3"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Swap3"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Swap3</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_permutation.html#_CPPv4N4gapp15PermutationGeneE" title="gapp::PermutationGene"><span class="n"><span class="pre">PermutationGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Swap3E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Swap-3 mutation operator for the permutation encoded GA.</p>
+<p>Each candidate solution is mutated with the set mutation probability. In the mutated candidates, 3 distinct genes are randomly selected and then reordered as: (a-b-c) -&gt; (c-a-b). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4perm5Swap327allow_variable_chrom_lengthEv">
+<span id="_CPPv3NK4gapp8mutation4perm5Swap327allow_variable_chrom_lengthEv"></span><span id="_CPPv2NK4gapp8mutation4perm5Swap327allow_variable_chrom_lengthEv"></span><span id="gapp::mutation::perm::Swap3::allow_variable_chrom_lengthCCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Swap3_1a5a10a359b196de52b799557aba12e115"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allow_variable_chrom_length</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4perm5Swap327allow_variable_chrom_lengthEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>This method specifies whether the mutation operator supports variable chromosome lengths or not. If variable chromosome lengths are supported, the Candidates passed to the mutation operator are allowed to have chromosome lengths that are different from the chromosome length specified for the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a> that the operator is used in. Otherwise the chromosome length of the given gene type must be the same for every <a class="reference internal" href="../core/population.html#structgapp_1_1Candidate"><span class="std std-ref">Candidate</span></a>.</p>
+<p>This method will return false by default. If a particular mutation method allows variable chromosome lengths, it should override this method to return true.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the mutation operator support variable chromosome lengths. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Swap38MutationEv">
+<span id="_CPPv3N4gapp8mutation4perm5Swap38MutationEv"></span><span id="_CPPv2N4gapp8mutation4perm5Swap38MutationEv"></span><span id="gapp::mutation::perm::Swap3::MutationCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Swap3_1aa461e4856f480b21c7b4c50b78a2371a"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mutation</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Swap38MutationEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a mutation operator that will use the default mutation probability. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Swap38MutationE11Probability">
+<span id="_CPPv3N4gapp8mutation4perm5Swap38MutationE11Probability"></span><span id="_CPPv2N4gapp8mutation4perm5Swap38MutationE11Probability"></span><span id="gapp::mutation::perm::Swap3::Mutation__ProbabilityCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Swap3_1a58dd908701a44c11035a5670977dbf09"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mutation</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Swap38MutationE11Probability" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a mutation operator with the specified mutation probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pm</strong> – The mutation probability. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-shuffle">
+<h2>class Shuffle<a class="headerlink" href="#class-shuffle" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/permutation.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm7ShuffleE">
+<span id="_CPPv3N4gapp8mutation4perm7ShuffleE"></span><span id="_CPPv2N4gapp8mutation4perm7ShuffleE"></span><span id="gapp::mutation::perm::Shuffle"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shuffle"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Shuffle</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_permutation.html#_CPPv4N4gapp15PermutationGeneE" title="gapp::PermutationGene"><span class="n"><span class="pre">PermutationGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm7ShuffleE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Shuffle/scramble mutation operator for the permutation encoded GA.</p>
+<p>Each candidate solution is mutated with the set mutation probability. In the mutated candidates, a random range of genes is selected and then randomly shuffled.</p>
+<p>The operator has a single parameter (<code class="docutils literal notranslate"><span class="pre">range_max</span></code>) that specifies the maximum length of the shuffled ranges relative to the chromosome length.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is a possbility that the shuffled chromosome will be the same as the original chromosome, so the probability of a chromosome being changed won’t be exactly equal to the set mutation probability (it will be slightly lower). </p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm7Shuffle7ShuffleEv">
+<span id="_CPPv3N4gapp8mutation4perm7Shuffle7ShuffleEv"></span><span id="_CPPv2N4gapp8mutation4perm7Shuffle7ShuffleEv"></span><span id="gapp::mutation::perm::Shuffle::ShuffleCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shuffle_1a830d67178bebde3bc684e95ef9416fc0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Shuffle</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm7Shuffle7ShuffleEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a shuffle mutation operator that will use the default mutation rate of the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm7Shuffle7ShuffleE11Probability10NormalizedIdE">
+<span id="_CPPv3N4gapp8mutation4perm7Shuffle7ShuffleE11Probability10NormalizedIdE"></span><span id="_CPPv2N4gapp8mutation4perm7Shuffle7ShuffleE11Probability10NormalizedIdE"></span><span id="gapp::mutation::perm::Shuffle::Shuffle__Probability.Normalized:double:CE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shuffle_1a0405f912c53416c592795a8a01832695"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Shuffle</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span>, <a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp10NormalizedE" title="gapp::Normalized"><span class="n"><span class="pre">Normalized</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">range_max</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.5</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm7Shuffle7ShuffleE11Probability10NormalizedIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a shuffle mutation operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pm</strong> – The mutation probability. Must be in the closed interval [0.0, 1.0]. </p></li>
+<li><p><strong>range_max</strong> – The maximum length of the shuffled ranges. Must be in the closed interval [0.0, 1.0]. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm7Shuffle9range_maxE10NormalizedIdE">
+<span id="_CPPv3N4gapp8mutation4perm7Shuffle9range_maxE10NormalizedIdE"></span><span id="_CPPv2N4gapp8mutation4perm7Shuffle9range_maxE10NormalizedIdE"></span><span id="gapp::mutation::perm::Shuffle::range_max__Normalized:double:CE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shuffle_1ab358b1f3d2dd7a2cda1f1a2368c99d7a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">range_max</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp10NormalizedE" title="gapp::Normalized"><span class="n"><span class="pre">Normalized</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rm</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm7Shuffle9range_maxE10NormalizedIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the maximum length of the ranges that can be selected to be shuffled by the operator. The parameter specifies the maximum range length relative to the overall chromosome length of a candidate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rm</strong> – The maximum length of the shuffled ranges. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4perm7Shuffle9range_maxEv">
+<span id="_CPPv3NK4gapp8mutation4perm7Shuffle9range_maxEv"></span><span id="_CPPv2NK4gapp8mutation4perm7Shuffle9range_maxEv"></span><span id="gapp::mutation::perm::Shuffle::range_maxCCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shuffle_1ae446a5b461658cec6ade00d86f963dc5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">range_max</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4perm7Shuffle9range_maxEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum length of the shuffled ranges. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4perm7Shuffle27allow_variable_chrom_lengthEv">
+<span id="_CPPv3NK4gapp8mutation4perm7Shuffle27allow_variable_chrom_lengthEv"></span><span id="_CPPv2NK4gapp8mutation4perm7Shuffle27allow_variable_chrom_lengthEv"></span><span id="gapp::mutation::perm::Shuffle::allow_variable_chrom_lengthCCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shuffle_1a70988452599998d3b62103cf14c215c4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allow_variable_chrom_length</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4perm7Shuffle27allow_variable_chrom_lengthEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>This method specifies whether the mutation operator supports variable chromosome lengths or not. If variable chromosome lengths are supported, the Candidates passed to the mutation operator are allowed to have chromosome lengths that are different from the chromosome length specified for the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a> that the operator is used in. Otherwise the chromosome length of the given gene type must be the same for every <a class="reference internal" href="../core/population.html#structgapp_1_1Candidate"><span class="std std-ref">Candidate</span></a>.</p>
+<p>This method will return false by default. If a particular mutation method allows variable chromosome lengths, it should override this method to return true.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the mutation operator support variable chromosome lengths. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-shift">
+<h2>class Shift<a class="headerlink" href="#class-shift" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/permutation.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5ShiftE">
+<span id="_CPPv3N4gapp8mutation4perm5ShiftE"></span><span id="_CPPv2N4gapp8mutation4perm5ShiftE"></span><span id="gapp::mutation::perm::Shift"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shift"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Shift</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_permutation.html#_CPPv4N4gapp15PermutationGeneE" title="gapp::PermutationGene"><span class="n"><span class="pre">PermutationGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5ShiftE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Shift/slide mutation operator for the permutation encoded GA.</p>
+<p>Each candidate solution is mutated with the set mutation proability. In the mutated candidates, a random range of genes is selected and then moved to a different position in the chromosome.</p>
+<p>The operator has a single parameter (<code class="docutils literal notranslate"><span class="pre">range_max</span></code>) that specifies the maximum length of the moved ranges relative to the chromosome length. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Shift5ShiftEv">
+<span id="_CPPv3N4gapp8mutation4perm5Shift5ShiftEv"></span><span id="_CPPv2N4gapp8mutation4perm5Shift5ShiftEv"></span><span id="gapp::mutation::perm::Shift::ShiftCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shift_1a9d5bbb2cac36fbe2607c4b8e0707d393"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Shift</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Shift5ShiftEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a shift mutation operator that will use the default mutation rate of the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Shift5ShiftE11Probability10NormalizedIdE">
+<span id="_CPPv3N4gapp8mutation4perm5Shift5ShiftE11Probability10NormalizedIdE"></span><span id="_CPPv2N4gapp8mutation4perm5Shift5ShiftE11Probability10NormalizedIdE"></span><span id="gapp::mutation::perm::Shift::Shift__Probability.Normalized:double:CE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shift_1a853318d48a93414d2323b8d82c6b11a7"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Shift</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span>, <a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp10NormalizedE" title="gapp::Normalized"><span class="n"><span class="pre">Normalized</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">range_max</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.75</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Shift5ShiftE11Probability10NormalizedIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a shift mutation operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pm</strong> – The mutation probability. Must be in the closed interval [0.0, 1.0]. </p></li>
+<li><p><strong>range_max</strong> – The maximum length of the moved ranges. Must be in the closed interval [0.0, 1.0]. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4perm5Shift9range_maxE10NormalizedIdE">
+<span id="_CPPv3N4gapp8mutation4perm5Shift9range_maxE10NormalizedIdE"></span><span id="_CPPv2N4gapp8mutation4perm5Shift9range_maxE10NormalizedIdE"></span><span id="gapp::mutation::perm::Shift::range_max__Normalized:double:CE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shift_1a31723cbe648c413a752bc7f28df1ca59"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">range_max</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp10NormalizedE" title="gapp::Normalized"><span class="n"><span class="pre">Normalized</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rm</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4perm5Shift9range_maxE10NormalizedIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the maximum length of the ranges that can be selected to be moved by the operator. The parameter specifies the maximum range length relative to the overall chromosome length of a candidate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rm</strong> – The maximum length of the moved ranges. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4perm5Shift9range_maxEv">
+<span id="_CPPv3NK4gapp8mutation4perm5Shift9range_maxEv"></span><span id="_CPPv2NK4gapp8mutation4perm5Shift9range_maxEv"></span><span id="gapp::mutation::perm::Shift::range_maxCCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shift_1a4cbd1d22e9d02845ccf092790e56149f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">range_max</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4perm5Shift9range_maxEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum length of the moved ranges. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4perm5Shift27allow_variable_chrom_lengthEv">
+<span id="_CPPv3NK4gapp8mutation4perm5Shift27allow_variable_chrom_lengthEv"></span><span id="_CPPv2NK4gapp8mutation4perm5Shift27allow_variable_chrom_lengthEv"></span><span id="gapp::mutation::perm::Shift::allow_variable_chrom_lengthCCE"></span><span class="target" id="classgapp_1_1mutation_1_1perm_1_1Shift_1a51e2305b2db1e3c8d2ada1caaf5d8ebf"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allow_variable_chrom_length</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4perm5Shift27allow_variable_chrom_lengthEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>This method specifies whether the mutation operator supports variable chromosome lengths or not. If variable chromosome lengths are supported, the Candidates passed to the mutation operator are allowed to have chromosome lengths that are different from the chromosome length specified for the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a> that the operator is used in. Otherwise the chromosome length of the given gene type must be the same for every <a class="reference internal" href="../core/population.html#structgapp_1_1Candidate"><span class="std std-ref">Candidate</span></a>.</p>
+<p>This method will return false by default. If a particular mutation method allows variable chromosome lengths, it should override this method to return true.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the mutation operator support variable chromosome lengths. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4permE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-inversion">class Inversion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm9InversionE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Inversion</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm9Inversion9InversionEv"><code class="docutils literal notranslate"><span class="pre">Inversion()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm9Inversion9InversionE11Probability10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">Inversion()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm9Inversion9range_maxE10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm9Inversion9range_maxEv"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm9Inversion27allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-swap2">class Swap2</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap2E"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Swap2</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm5Swap227allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap28MutationEv"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap28MutationE11Probability"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-swap3">class Swap3</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap3E"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Swap3</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm5Swap327allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap38MutationEv"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Swap38MutationE11Probability"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-shuffle">class Shuffle</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm7ShuffleE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Shuffle</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm7Shuffle7ShuffleEv"><code class="docutils literal notranslate"><span class="pre">Shuffle()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm7Shuffle7ShuffleE11Probability10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">Shuffle()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm7Shuffle9range_maxE10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm7Shuffle9range_maxEv"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm7Shuffle27allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-shift">class Shift</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5ShiftE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::perm::Shift</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Shift5ShiftEv"><code class="docutils literal notranslate"><span class="pre">Shift()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Shift5ShiftE11Probability10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">Shift()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4perm5Shift9range_maxE10NormalizedIdE"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm5Shift9range_maxEv"><code class="docutils literal notranslate"><span class="pre">range_max()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4perm5Shift27allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

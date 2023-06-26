@@ -1,0 +1,745 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Real encoded mutations &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'mutation/mutation_real';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Binary encoded mutations" href="mutation_binary.html" />
+    <link rel="prev" title="Mutations" href="mutation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../algorithm/algorithm.html">Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../algorithm/algorithm_soga.html">Single-objective algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../algorithm/algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="mutation.html">Mutations</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Real encoded mutations</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4realE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-uniform">class Uniform</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real7UniformE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::Uniform</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real7Uniform8MutationEv"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real7Uniform8MutationE11Probability"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-nonuniform">class NonUniform</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10NonUniformE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::NonUniform</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10NonUniform10NonUniformEv"><code class="docutils literal notranslate"><span class="pre">NonUniform()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10NonUniform10NonUniformE11Probability11NonNegativeI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">NonUniform()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10NonUniform4betaE11NonNegativeI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">beta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4real10NonUniform4betaEv"><code class="docutils literal notranslate"><span class="pre">beta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-gauss">class Gauss</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real5GaussE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::Gauss</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real5Gauss5GaussEv"><code class="docutils literal notranslate"><span class="pre">Gauss()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real5Gauss5GaussE11Probability8PositiveI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">Gauss()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real5Gauss5sigmaE8PositiveI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">sigma()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4real5Gauss5sigmaEv"><code class="docutils literal notranslate"><span class="pre">sigma()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-polynomial">class Polynomial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10PolynomialE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::Polynomial</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10Polynomial10PolynomialEv"><code class="docutils literal notranslate"><span class="pre">Polynomial()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10Polynomial10PolynomialE11Probability11NonNegativeI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">Polynomial()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10Polynomial3etaE11NonNegativeI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">eta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4real10Polynomial3etaEv"><code class="docutils literal notranslate"><span class="pre">eta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-boundary">class Boundary</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real8BoundaryE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::Boundary</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real8Boundary8MutationEv"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real8Boundary8MutationE11Probability"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="real-encoded-mutations">
+<h1>Real encoded mutations<a class="headerlink" href="#real-encoded-mutations" title="Link to this heading">#</a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4realE">
+<span id="_CPPv3N4gapp8mutation4realE"></span><span id="_CPPv2N4gapp8mutation4realE"></span><span id="gapp::mutation::real"></span><span class="target" id="namespacegapp_1_1mutation_1_1real"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">real</span></span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4realE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Predefined mutation operators for the real encoded genetic algorithm. </p>
+</dd></dl>
+
+<section id="class-uniform">
+<h2>class Uniform<a class="headerlink" href="#class-uniform" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/real.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real7UniformE">
+<span id="_CPPv3N4gapp8mutation4real7UniformE"></span><span id="_CPPv2N4gapp8mutation4real7UniformE"></span><span id="gapp::mutation::real::Uniform"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Uniform"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Uniform</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_real.html#_CPPv4N4gapp8RealGeneE" title="gapp::RealGene"><span class="n"><span class="pre">RealGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real7UniformE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Uniform mutation operator for the real encoded GA.</p>
+<p>Each gene of a candidate solution is mutated with the specified probability, and the values of the mutated genes are randomly generated from a uniform distribution within the gene bounds. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real7Uniform8MutationEv">
+<span id="_CPPv3N4gapp8mutation4real7Uniform8MutationEv"></span><span id="_CPPv2N4gapp8mutation4real7Uniform8MutationEv"></span><span id="gapp::mutation::real::Uniform::MutationCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Uniform_1aa461e4856f480b21c7b4c50b78a2371a"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mutation</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real7Uniform8MutationEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a mutation operator that will use the default mutation probability. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real7Uniform8MutationE11Probability">
+<span id="_CPPv3N4gapp8mutation4real7Uniform8MutationE11Probability"></span><span id="_CPPv2N4gapp8mutation4real7Uniform8MutationE11Probability"></span><span id="gapp::mutation::real::Uniform::Mutation__ProbabilityCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Uniform_1a58dd908701a44c11035a5670977dbf09"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mutation</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real7Uniform8MutationE11Probability" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a mutation operator with the specified mutation probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pm</strong> – The mutation probability. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-nonuniform">
+<h2>class NonUniform<a class="headerlink" href="#class-nonuniform" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/real.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real10NonUniformE">
+<span id="_CPPv3N4gapp8mutation4real10NonUniformE"></span><span id="_CPPv2N4gapp8mutation4real10NonUniformE"></span><span id="gapp::mutation::real::NonUniform"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1NonUniform"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NonUniform</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_real.html#_CPPv4N4gapp8RealGeneE" title="gapp::RealGene"><span class="n"><span class="pre">RealGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real10NonUniformE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Michalewicz’s non-uniform mutation operator for the real encoded GA.</p>
+<p>Each gene of a candidate solution is mutated with the specified probability, and the values of the mutated genes are randomly selected from a non-uniform distribution that changes over time. In the early generations the distribution is close to being uniform, while in the later generations the mutated values tend to be closer to the original values.</p>
+<p>The operator has one parameter (<code class="docutils literal notranslate"><span class="pre">beta</span></code>), which controls how quickly the shape of the probability distribution changes over the generations. For smaller values, the distribution is more uniform and changes less over time, while for larger values it will change faster and the mutated genes will tend to be closer to the original ones.</p>
+<p>The value of this parameter must be &gt;= 0.0. If the value is 0, the distribution is uniform and won’t change at all over the generations. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real10NonUniform10NonUniformEv">
+<span id="_CPPv3N4gapp8mutation4real10NonUniform10NonUniformEv"></span><span id="_CPPv2N4gapp8mutation4real10NonUniform10NonUniformEv"></span><span id="gapp::mutation::real::NonUniform::NonUniformCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1NonUniform_1a586a296dbd9bebbf1e46b543ba956bf3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NonUniform</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real10NonUniform10NonUniformEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a non-uniform mutation operator that will use the default mutation rate of the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real10NonUniform10NonUniformE11Probability11NonNegativeI8GeneTypeE">
+<span id="_CPPv3N4gapp8mutation4real10NonUniform10NonUniformE11Probability11NonNegativeI8GeneTypeE"></span><span id="_CPPv2N4gapp8mutation4real10NonUniform10NonUniformE11Probability11NonNegativeI8GeneTypeE"></span><span id="gapp::mutation::real::NonUniform::NonUniform__Probability.NonNegative:GeneType:CE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1NonUniform_1a55bce2309f3870482a7814361d10f59d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NonUniform</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span>, <a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">GeneType</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">beta</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">2.0</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real10NonUniform10NonUniformE11Probability11NonNegativeI8GeneTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a non-uniform mutation operator with the specified parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pm</strong> – The mutation probability used. Must be in the closed range [0.0, 1.0]. </p></li>
+<li><p><strong>beta</strong> – The beta parameter of the mutation. Must be a finite non-negative value. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real10NonUniform4betaE11NonNegativeI8GeneTypeE">
+<span id="_CPPv3N4gapp8mutation4real10NonUniform4betaE11NonNegativeI8GeneTypeE"></span><span id="_CPPv2N4gapp8mutation4real10NonUniform4betaE11NonNegativeI8GeneTypeE"></span><span id="gapp::mutation::real::NonUniform::beta__NonNegative:GeneType:CE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1NonUniform_1a5459f8780a2bbe6acd0e91097f55db94"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">beta</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">GeneType</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">beta</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real10NonUniform4betaE11NonNegativeI8GeneTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the beta parameter of the mutation.</p>
+<p>The value of this parameter controls how quickly the shape of the probability distribution changes over the generations. For smaller values, the distribution is more uniform and changes less over time, while for larger values it will change faster and the mutated genes will tend to be closer to the original ones.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>beta</strong> – The beta parameter of the mutation. Must be a finite non-negative value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4real10NonUniform4betaEv">
+<span id="_CPPv3NK4gapp8mutation4real10NonUniform4betaEv"></span><span id="_CPPv2NK4gapp8mutation4real10NonUniform4betaEv"></span><span id="gapp::mutation::real::NonUniform::betaCCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1NonUniform_1a13cb68c3db7953bed8dd254ffd689579"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">GeneType</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">beta</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4real10NonUniform4betaEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The beta parameter of the operator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-gauss">
+<h2>class Gauss<a class="headerlink" href="#class-gauss" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/real.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real5GaussE">
+<span id="_CPPv3N4gapp8mutation4real5GaussE"></span><span id="_CPPv2N4gapp8mutation4real5GaussE"></span><span id="gapp::mutation::real::Gauss"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Gauss"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Gauss</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_real.html#_CPPv4N4gapp8RealGeneE" title="gapp::RealGene"><span class="n"><span class="pre">RealGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real5GaussE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Gauss mutation operator for the real encoded GA.</p>
+<p>Each gene of a candidate solution is mutated with the specified probability, and the values of the mutated genes are randomly generated from a normal distribution around the current value of the gene.</p>
+<p>The operator has one parameter (<code class="docutils literal notranslate"><span class="pre">sigma</span></code>), which controls the standard deviation of the normal distribution used (but isn’t the actual standard deviation). The standard deviation of the normal distribution used for the i-th gene is calculated as: <div class="math notranslate nohighlight">
+\[ SD_i = \frac{ bound_i^{upper} - bound_i^{lower} }{ sigma } \]</div>
+</p>
+<p>Larger sigma values will lead to the values of the mutated gene to be closer to their original values. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real5Gauss5GaussEv">
+<span id="_CPPv3N4gapp8mutation4real5Gauss5GaussEv"></span><span id="_CPPv2N4gapp8mutation4real5Gauss5GaussEv"></span><span id="gapp::mutation::real::Gauss::GaussCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Gauss_1ade8b8f13841b22fe6ad0eb69b1b873ed"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Gauss</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real5Gauss5GaussEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a Gauss mutation operator that will use the default mutation rate of the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real5Gauss5GaussE11Probability8PositiveI8GeneTypeE">
+<span id="_CPPv3N4gapp8mutation4real5Gauss5GaussE11Probability8PositiveI8GeneTypeE"></span><span id="_CPPv2N4gapp8mutation4real5Gauss5GaussE11Probability8PositiveI8GeneTypeE"></span><span id="gapp::mutation::real::Gauss::Gauss__Probability.Positive:GeneType:CE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Gauss_1aaf71b00f07e287e7d35a90ff3e184e9e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Gauss</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span>, <a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive"><span class="n"><span class="pre">Positive</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">GeneType</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">sigma</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">6.0</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real5Gauss5GaussE11Probability8PositiveI8GeneTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a Gauss mutation operator with the specified parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pm</strong> – The mutation probability used. Must be in the closed range [0.0, 1.0]. </p></li>
+<li><p><strong>sigma</strong> – The sigma parameter of the crossover. Must be a finite value greater than 0.0. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real5Gauss5sigmaE8PositiveI8GeneTypeE">
+<span id="_CPPv3N4gapp8mutation4real5Gauss5sigmaE8PositiveI8GeneTypeE"></span><span id="_CPPv2N4gapp8mutation4real5Gauss5sigmaE8PositiveI8GeneTypeE"></span><span id="gapp::mutation::real::Gauss::sigma__Positive:GeneType:CE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Gauss_1a3f465904673e79ec2a1152f4b51fb90d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sigma</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive"><span class="n"><span class="pre">Positive</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">GeneType</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">sigma</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real5Gauss5sigmaE8PositiveI8GeneTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the sigma parameter of the mutation.</p>
+<p>The value of this parameter controls the standard deviation of the normal distribution the mutated gene values are selected from. The standard deviations are calculated from the value of the parameter as: <div class="math notranslate nohighlight">
+\[ SD_i = \frac{ bound_i^{upper} - bound_i^{lower} }{ sigma } \]</div>
+</p>
+<p>Larger sigma values will lead to the values of the mutated genes to be closer to their original values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sigma</strong> – The sigma parameter of the gauss crossover. Must be a finite value greater than 0.0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4real5Gauss5sigmaEv">
+<span id="_CPPv3NK4gapp8mutation4real5Gauss5sigmaEv"></span><span id="_CPPv2NK4gapp8mutation4real5Gauss5sigmaEv"></span><span id="gapp::mutation::real::Gauss::sigmaCCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Gauss_1a7aef6dd1de24700983aa70a6a1a435d9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">GeneType</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sigma</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4real5Gauss5sigmaEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The sigma parameter of the operator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-polynomial">
+<h2>class Polynomial<a class="headerlink" href="#class-polynomial" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/real.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real10PolynomialE">
+<span id="_CPPv3N4gapp8mutation4real10PolynomialE"></span><span id="_CPPv2N4gapp8mutation4real10PolynomialE"></span><span id="gapp::mutation::real::Polynomial"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Polynomial"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Polynomial</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_real.html#_CPPv4N4gapp8RealGeneE" title="gapp::RealGene"><span class="n"><span class="pre">RealGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real10PolynomialE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Polynomial mutation operator for the real encoded GA. Each gene of a candidate solution is mutated with the specified probability, and the values of the mutated genes are randomly generated from a non-uniform distribution.</p>
+<p>This mutation operator has one parameter (<code class="docutils literal notranslate"><span class="pre">eta</span></code>), which controls shape of the probability distribution the mutated genes are picked from. Larger values will lead to the mutated genes being closer to their original values, while smaller ones will have the opposite effect.</p>
+<p>The value of the parameter must be a finite, non-negative value. Typical values are in the range [20.0, 100.0]. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real10Polynomial10PolynomialEv">
+<span id="_CPPv3N4gapp8mutation4real10Polynomial10PolynomialEv"></span><span id="_CPPv2N4gapp8mutation4real10Polynomial10PolynomialEv"></span><span id="gapp::mutation::real::Polynomial::PolynomialCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Polynomial_1a543abbe2cba049ca09a9ff8cbb70762d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Polynomial</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real10Polynomial10PolynomialEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a polynomial mutation operator that will use the default mutation rate of the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real10Polynomial10PolynomialE11Probability11NonNegativeI8GeneTypeE">
+<span id="_CPPv3N4gapp8mutation4real10Polynomial10PolynomialE11Probability11NonNegativeI8GeneTypeE"></span><span id="_CPPv2N4gapp8mutation4real10Polynomial10PolynomialE11Probability11NonNegativeI8GeneTypeE"></span><span id="gapp::mutation::real::Polynomial::Polynomial__Probability.NonNegative:GeneType:CE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Polynomial_1a0eb6fbb975a9a791b4a55d982c8164b1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Polynomial</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span>, <a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">GeneType</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">eta</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">40.0</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real10Polynomial10PolynomialE11Probability11NonNegativeI8GeneTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a polynomial mutation operator with the specified parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pm</strong> – The mutation probability used. Must be in the closed range [0.0, 1.0]. </p></li>
+<li><p><strong>eta</strong> – The eta parameter of the mutation. Must be a finite non-negative value. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real10Polynomial3etaE11NonNegativeI8GeneTypeE">
+<span id="_CPPv3N4gapp8mutation4real10Polynomial3etaE11NonNegativeI8GeneTypeE"></span><span id="_CPPv2N4gapp8mutation4real10Polynomial3etaE11NonNegativeI8GeneTypeE"></span><span id="gapp::mutation::real::Polynomial::eta__NonNegative:GeneType:CE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Polynomial_1a36a075c7aadba60705a0419807ee1d84"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">eta</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">GeneType</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">eta</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real10Polynomial3etaE11NonNegativeI8GeneTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the eta parameter for the crossover.</p>
+<p>The value of this parameter controls the shape of the probability distribution the mutated genes are picked from. Larger values will lead to the mutated genes being closer to their original values, while using smaller values for the parameter will have the opposite effect.</p>
+<p>Typical values are in the range [20.0, 100.0].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>eta</strong> – The eta parameter of the mutation. Must be a finite non-negative value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8mutation4real10Polynomial3etaEv">
+<span id="_CPPv3NK4gapp8mutation4real10Polynomial3etaEv"></span><span id="_CPPv2NK4gapp8mutation4real10Polynomial3etaEv"></span><span id="gapp::mutation::real::Polynomial::etaCCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Polynomial_1a512b9961d766b283ab70c8ee5d1bbade"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">GeneType</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">eta</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8mutation4real10Polynomial3etaEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The eta parameter of the operator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-boundary">
+<h2>class Boundary<a class="headerlink" href="#class-boundary" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutation/real.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real8BoundaryE">
+<span id="_CPPv3N4gapp8mutation4real8BoundaryE"></span><span id="_CPPv2N4gapp8mutation4real8BoundaryE"></span><span id="gapp::mutation::real::Boundary"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Boundary"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Boundary</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4N4gapp8mutationE" title="gapp::mutation"><span class="n"><span class="pre">mutation</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="mutation.html#_CPPv4I0EN4gapp8mutation8MutationE" title="gapp::mutation::Mutation"><span class="n"><span class="pre">Mutation</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_real.html#_CPPv4N4gapp8RealGeneE" title="gapp::RealGene"><span class="n"><span class="pre">RealGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real8BoundaryE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Boundary mutation operator for the real encoded GA.</p>
+<p>Each gene of a candidate solution is mutated with the specified probability, and the values of the mutated genes are either the lower or upper bounds of the gene (with equal probability). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real8Boundary8MutationEv">
+<span id="_CPPv3N4gapp8mutation4real8Boundary8MutationEv"></span><span id="_CPPv2N4gapp8mutation4real8Boundary8MutationEv"></span><span id="gapp::mutation::real::Boundary::MutationCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Boundary_1aa461e4856f480b21c7b4c50b78a2371a"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mutation</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real8Boundary8MutationEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a mutation operator that will use the default mutation probability. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8mutation4real8Boundary8MutationE11Probability">
+<span id="_CPPv3N4gapp8mutation4real8Boundary8MutationE11Probability"></span><span id="_CPPv2N4gapp8mutation4real8Boundary8MutationE11Probability"></span><span id="gapp::mutation::real::Boundary::Mutation__ProbabilityCE"></span><span class="target" id="classgapp_1_1mutation_1_1real_1_1Boundary_1a58dd908701a44c11035a5670977dbf09"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Mutation</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pm</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8mutation4real8Boundary8MutationE11Probability" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a mutation operator with the specified mutation probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pm</strong> – The mutation probability. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4realE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-uniform">class Uniform</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real7UniformE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::Uniform</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real7Uniform8MutationEv"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real7Uniform8MutationE11Probability"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-nonuniform">class NonUniform</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10NonUniformE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::NonUniform</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10NonUniform10NonUniformEv"><code class="docutils literal notranslate"><span class="pre">NonUniform()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10NonUniform10NonUniformE11Probability11NonNegativeI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">NonUniform()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10NonUniform4betaE11NonNegativeI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">beta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4real10NonUniform4betaEv"><code class="docutils literal notranslate"><span class="pre">beta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-gauss">class Gauss</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real5GaussE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::Gauss</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real5Gauss5GaussEv"><code class="docutils literal notranslate"><span class="pre">Gauss()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real5Gauss5GaussE11Probability8PositiveI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">Gauss()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real5Gauss5sigmaE8PositiveI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">sigma()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4real5Gauss5sigmaEv"><code class="docutils literal notranslate"><span class="pre">sigma()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-polynomial">class Polynomial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10PolynomialE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::Polynomial</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10Polynomial10PolynomialEv"><code class="docutils literal notranslate"><span class="pre">Polynomial()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10Polynomial10PolynomialE11Probability11NonNegativeI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">Polynomial()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real10Polynomial3etaE11NonNegativeI8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">eta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8mutation4real10Polynomial3etaEv"><code class="docutils literal notranslate"><span class="pre">eta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-boundary">class Boundary</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real8BoundaryE"><code class="docutils literal notranslate"><span class="pre">gapp::mutation::real::Boundary</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real8Boundary8MutationEv"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8mutation4real8Boundary8MutationE11Probability"><code class="docutils literal notranslate"><span class="pre">Mutation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

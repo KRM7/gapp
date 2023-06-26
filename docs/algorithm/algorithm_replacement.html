@@ -1,0 +1,510 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Replacement methods &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'algorithm/algorithm_replacement';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multi-objective algorithms" href="algorithm_moga.html" />
+    <link rel="prev" title="Selection methods" href="algorithm_selection.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="algorithm.html">Algorithms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="algorithm_soga.html">Single-objective algorithms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mutation/mutation.html">Mutations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Replacement methods</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacementE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-keepchildren">class KeepChildren</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement12KeepChildrenE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement::KeepChildren</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-elitism">class Elitism</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement7ElitismE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement::Elitism</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement7Elitism7ElitismE6size_t"><code class="docutils literal notranslate"><span class="pre">Elitism()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement7Elitism9elite_numE6size_t"><code class="docutils literal notranslate"><span class="pre">elite_num()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp11replacement7Elitism9elite_numEv"><code class="docutils literal notranslate"><span class="pre">elite_num()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-keepbest">class KeepBest</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement8KeepBestE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement::KeepBest</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="replacement-methods">
+<h1>Replacement methods<a class="headerlink" href="#replacement-methods" title="Link to this heading">#</a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacementE">
+<span id="_CPPv3N4gapp11replacementE"></span><span id="_CPPv2N4gapp11replacementE"></span><span id="gapp::replacement"></span><span class="target" id="namespacegapp_1_1replacement"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">replacement</span></span></span><a class="headerlink" href="#_CPPv4N4gapp11replacementE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Population replacement policies for the single-objective algorithms. </p>
+</dd></dl>
+
+<section id="class-keepchildren">
+<h2>class KeepChildren<a class="headerlink" href="#class-keepchildren" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/soga_replacement.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacement12KeepChildrenE">
+<span id="_CPPv3N4gapp11replacement12KeepChildrenE"></span><span id="_CPPv2N4gapp11replacement12KeepChildrenE"></span><span id="gapp::replacement::KeepChildren"></span><span class="target" id="classgapp_1_1replacement_1_1KeepChildren"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">KeepChildren</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp11replacementE" title="gapp::replacement"><span class="n"><span class="pre">replacement</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_soga.html#_CPPv4N4gapp11replacement11ReplacementE" title="gapp::replacement::Replacement"><span class="n"><span class="pre">Replacement</span></span></a><a class="headerlink" href="#_CPPv4N4gapp11replacement12KeepChildrenE" title="Link to this definition">#</a><br /></dt>
+<dd><p>A population update method that selects only the child candidates from the combined parent and child populations, and uses these as the population of the next generation of the GA.</p>
+<p>If the number of children is greater than the population size used in the algorithm, only the first <code class="docutils literal notranslate"><span class="pre">population_size</span></code> children will be selected. </p>
+</dd></dl>
+
+</section>
+<section id="class-elitism">
+<h2>class Elitism<a class="headerlink" href="#class-elitism" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/soga_replacement.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacement7ElitismE">
+<span id="_CPPv3N4gapp11replacement7ElitismE"></span><span id="_CPPv2N4gapp11replacement7ElitismE"></span><span id="gapp::replacement::Elitism"></span><span class="target" id="classgapp_1_1replacement_1_1Elitism"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Elitism</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp11replacementE" title="gapp::replacement"><span class="n"><span class="pre">replacement</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_soga.html#_CPPv4N4gapp11replacement11ReplacementE" title="gapp::replacement::Replacement"><span class="n"><span class="pre">Replacement</span></span></a><a class="headerlink" href="#_CPPv4N4gapp11replacement7ElitismE" title="Link to this definition">#</a><br /></dt>
+<dd><p>A population update method that selects the candidates of the next generation using elitism.</p>
+<p>The operator has a single parameter <code class="docutils literal notranslate"><span class="pre">N</span></code>, which determines the number of candidates that will be selected from the parent population. Of the combined parent and child populations, the N best candidates of the parent population will be copied over to the next population, while the remaining (pop_size - N) slots are filled by the first (pop_size - N) child solutions.</p>
+<p>If N is equal to 0, this is equivalent to only keeping the children for the next generation (i.e. <a class="reference internal" href="#classgapp_1_1replacement_1_1KeepChildren"><span class="std std-ref">KeepChildren</span></a>). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacement7Elitism7ElitismE6size_t">
+<span id="_CPPv3N4gapp11replacement7Elitism7ElitismE6size_t"></span><span id="_CPPv2N4gapp11replacement7Elitism7ElitismE6size_t"></span><span id="gapp::replacement::Elitism::Elitism__sCE"></span><span class="target" id="classgapp_1_1replacement_1_1Elitism_1ab4c940bd949b1c9e7d1f552fb745a13a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Elitism</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp11replacement7Elitism7ElitismE6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an elitist population update operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> – The number of solutions from the parent population that will be copied to the next generation of the algorithm. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacement7Elitism9elite_numE6size_t">
+<span id="_CPPv3N4gapp11replacement7Elitism9elite_numE6size_t"></span><span id="_CPPv2N4gapp11replacement7Elitism9elite_numE6size_t"></span><span id="gapp::replacement::Elitism::elite_num__sCE"></span><span class="target" id="classgapp_1_1replacement_1_1Elitism_1af4baf7629a1055c3391c03f1aecc75ab"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">elite_num</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp11replacement7Elitism9elite_numE6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the number of elite solutions used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> – The number of solutions from the parent population that will be copied to the next generation of the algorithm. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp11replacement7Elitism9elite_numEv">
+<span id="_CPPv3NK4gapp11replacement7Elitism9elite_numEv"></span><span id="_CPPv2NK4gapp11replacement7Elitism9elite_numEv"></span><span id="gapp::replacement::Elitism::elite_numCCE"></span><span class="target" id="classgapp_1_1replacement_1_1Elitism_1aaf82bd9c8b6f3f80bf2a7369d99505ad"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">elite_num</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp11replacement7Elitism9elite_numEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of elite solutions used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-keepbest">
+<h2>class KeepBest<a class="headerlink" href="#class-keepbest" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/soga_replacement.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacement8KeepBestE">
+<span id="_CPPv3N4gapp11replacement8KeepBestE"></span><span id="_CPPv2N4gapp11replacement8KeepBestE"></span><span id="gapp::replacement::KeepBest"></span><span class="target" id="classgapp_1_1replacement_1_1KeepBest"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">KeepBest</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp11replacementE" title="gapp::replacement"><span class="n"><span class="pre">replacement</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_soga.html#_CPPv4N4gapp11replacement11ReplacementE" title="gapp::replacement::Replacement"><span class="n"><span class="pre">Replacement</span></span></a><a class="headerlink" href="#_CPPv4N4gapp11replacement8KeepBestE" title="Link to this definition">#</a><br /></dt>
+<dd><p>A population update method that selects the best <code class="docutils literal notranslate"><span class="pre">pop_size</span></code> candidates of the combined parent and child populations, and uses these as the candidates of the next generation of the algorithm.</p>
+<p>The operator assumes fitness maximization. </p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacementE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-keepchildren">class KeepChildren</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement12KeepChildrenE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement::KeepChildren</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-elitism">class Elitism</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement7ElitismE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement::Elitism</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement7Elitism7ElitismE6size_t"><code class="docutils literal notranslate"><span class="pre">Elitism()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement7Elitism9elite_numE6size_t"><code class="docutils literal notranslate"><span class="pre">elite_num()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp11replacement7Elitism9elite_numEv"><code class="docutils literal notranslate"><span class="pre">elite_num()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-keepbest">class KeepBest</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement8KeepBestE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement::KeepBest</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

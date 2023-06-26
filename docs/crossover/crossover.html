@@ -1,0 +1,595 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Crossovers &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'crossover/crossover';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Real encoded crossovers" href="crossover_real.html" />
+    <link rel="prev" title="Multi-objective algorithms" href="../algorithm/algorithm_moga.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../algorithm/algorithm.html">Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../algorithm/algorithm_soga.html">Single-objective algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../algorithm/algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Crossovers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mutation/mutation.html">Mutations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Crossovers</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossoverE"><code class="docutils literal notranslate"><span class="pre">gapp::crossover</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-crossover">class Crossover</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp9crossover9CrossoverE"><code class="docutils literal notranslate"><span class="pre">gapp::crossover::Crossover</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">GeneType</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover9CrossoverEv"><code class="docutils literal notranslate"><span class="pre">Crossover()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover9CrossoverE11Probability"><code class="docutils literal notranslate"><span class="pre">Crossover()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover14crossover_rateE11Probability"><code class="docutils literal notranslate"><span class="pre">crossover_rate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9crossover9Crossover14crossover_rateEv"><code class="docutils literal notranslate"><span class="pre">crossover_rate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9crossover9Crossover27allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9crossover9CrossoverclERK6GaInfoRK9CandidateI1TERK9CandidateI1TE"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover10initializeERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9CrossoverD0Ev"><code class="docutils literal notranslate"><span class="pre">~Crossover()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9crossover9Crossover9crossoverERK6GaInfoRK9CandidateI1TERK9CandidateI1TE"><code class="docutils literal notranslate"><span class="pre">crossover()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="crossovers">
+<h1>Crossovers<a class="headerlink" href="#crossovers" title="Link to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9crossoverE">
+<span id="_CPPv3N4gapp9crossoverE"></span><span id="_CPPv2N4gapp9crossoverE"></span><span id="gapp::crossover"></span><span class="target" id="namespacegapp_1_1crossover"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">crossover</span></span></span><a class="headerlink" href="#_CPPv4N4gapp9crossoverE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Crossover operators used in the GAs. </p>
+</dd></dl>
+
+<section id="class-crossover">
+<h2>class Crossover<a class="headerlink" href="#class-crossover" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;crossover/crossover_base.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp9crossover9CrossoverE">
+<span id="_CPPv3I0EN4gapp9crossover9CrossoverE"></span><span id="_CPPv2I0EN4gapp9crossover9CrossoverE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classgapp_1_1crossover_1_1Crossover"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Crossover</span></span></span><a class="headerlink" href="#_CPPv4I0EN4gapp9crossover9CrossoverE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The base class used for the crossover operators of the GAs.</p>
+<p>Crossover operators take 2 candidate solutions (the parents), and create 2 new candidates (children) based on the the parent candidates. The crossover operation is only performed on the 2 parents with a set probability only, the rest of the time the returned children will be the same as the parents.</p>
+<p>New crossover operators should be derived from this class, and they should implement the following virtual methods:</p>
+<p><ul class="simple">
+<li><p>initialize (optional) : Initialize the crossover operator at the start of a run. Does nothing by default.</p></li>
+<li><p>crossover : Perform the crossover on 2 candidate solutions.</p></li>
+</ul>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> – The gene type the crossover operator is defined for. </p>
+</dd>
+</dl>
+<p>Subclassed by gapp::crossover::Lambda&lt; T &gt;</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9crossover9Crossover8GeneTypeE">
+<span id="_CPPv3N4gapp9crossover9Crossover8GeneTypeE"></span><span id="_CPPv2N4gapp9crossover9Crossover8GeneTypeE"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1a6e9fd31459bebe5c64d5b14ef6a59c5f"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp9crossover9CrossoverE" title="gapp::crossover::Crossover::T"><span class="n"><span class="pre">T</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9crossover9Crossover8GeneTypeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The gene type the crossover operator is defined for. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9crossover9Crossover9CrossoverEv">
+<span id="_CPPv3N4gapp9crossover9Crossover9CrossoverEv"></span><span id="_CPPv2N4gapp9crossover9Crossover9CrossoverEv"></span><span id="gapp::crossover::Crossover::CrossoverCE"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1a55d24cd2ee0ab63050e972cd7d20b196"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Crossover</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9crossover9Crossover9CrossoverEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a crossover operator using the default crossover probability. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9crossover9Crossover9CrossoverE11Probability">
+<span id="_CPPv3N4gapp9crossover9Crossover9CrossoverE11Probability"></span><span id="_CPPv2N4gapp9crossover9Crossover9CrossoverE11Probability"></span><span id="gapp::crossover::Crossover::Crossover__ProbabilityCE"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1a1fef97a47fde2c25b72c92b1c4d01ca6"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Crossover</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pc</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9crossover9Crossover9CrossoverE11Probability" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a crossover operator with the specified crossover probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pc</strong> – The crossover probability. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9crossover9Crossover14crossover_rateE11Probability">
+<span id="_CPPv3N4gapp9crossover9Crossover14crossover_rateE11Probability"></span><span id="_CPPv2N4gapp9crossover9Crossover14crossover_rateE11Probability"></span><span id="gapp::crossover::Crossover::crossover_rate__ProbabilityCE"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1a51cd83e979183d217d20ea702b91b1ca"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">crossover_rate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pc</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9crossover9Crossover14crossover_rateE11Probability" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the crossover probability used for the crossovers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pc</strong> – The crossover probability. Must be in the closed interval [0.0, 1.0]. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9crossover9Crossover14crossover_rateEv">
+<span id="_CPPv3NK4gapp9crossover9Crossover14crossover_rateEv"></span><span id="_CPPv2NK4gapp9crossover9Crossover14crossover_rateEv"></span><span id="gapp::crossover::Crossover::crossover_rateCCE"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1a53c139407af34e746a54250d03b95589"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="../utility/utilities.html#_CPPv4N4gapp11ProbabilityE" title="gapp::Probability"><span class="n"><span class="pre">Probability</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">crossover_rate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp9crossover9Crossover14crossover_rateEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The crossover rate set for the operator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9crossover9Crossover27allow_variable_chrom_lengthEv">
+<span id="_CPPv3NK4gapp9crossover9Crossover27allow_variable_chrom_lengthEv"></span><span id="_CPPv2NK4gapp9crossover9Crossover27allow_variable_chrom_lengthEv"></span><span id="gapp::crossover::Crossover::allow_variable_chrom_lengthCCE"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1aeaf8652f40575cd28df49cb3626b20c8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">allow_variable_chrom_length</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp9crossover9Crossover27allow_variable_chrom_lengthEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>This method specifies whether the crossover operator supports variable chromosome lengths or not. If variable chromosome lengths are supported, the Candidates passed to the crossover operator are allowed to have chromosome lengths different from each other, and from the chromosome length specified for the <a class="reference internal" href="../core/encodings.html#classgapp_1_1GA"><span class="std std-ref">GA</span></a> the operator is used in. Otherwise the chromosome length of every <a class="reference internal" href="../core/population.html#structgapp_1_1Candidate"><span class="std std-ref">Candidate</span></a> must be the same.</p>
+<p>This method will return false by default. If a particular crossover method allows variable chromosome lengths, it should override this method to return true.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the crossover operator supports variable chromosome lengths. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9crossover9CrossoverclERK6GaInfoRK9CandidateI1TERK9CandidateI1TE">
+<span id="_CPPv3NK4gapp9crossover9CrossoverclERK6GaInfoRK9CandidateI1TERK9CandidateI1TE"></span><span id="_CPPv2NK4gapp9crossover9CrossoverclERK6GaInfoRK9CandidateI1TERK9CandidateI1TE"></span><span id="gapp::crossover::Crossover::call-operator__GaInfoCR.Candidate:T:CR.Candidate:T:CRC"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1a93d7c76d796bde87f55aa7c56d852b9e"></span><a class="reference internal" href="../core/population.html#_CPPv4I0EN4gapp13CandidatePairE" title="gapp::CandidatePair"><span class="n"><span class="pre">CandidatePair</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9crossover9CrossoverE" title="gapp::crossover::Crossover::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ga</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9crossover9CrossoverE" title="gapp::crossover::Crossover::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">parent1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9crossover9CrossoverE" title="gapp::crossover::Crossover::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">parent2</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4gapp9crossover9CrossoverclERK6GaInfoRK9CandidateI1TERK9CandidateI1TE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Perform the crossover operation on 2 candidate solutions with the set probability. This function is implemented by crossover().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ga</strong> – The genetic algorithm the crossover operator is being used in. </p></li>
+<li><p><strong>parent1</strong> – The first parent solution. </p></li>
+<li><p><strong>parent2</strong> – The second parent solution. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The pair of children resulting from the crossover. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9crossover9Crossover10initializeERK6GaInfo">
+<span id="_CPPv3N4gapp9crossover9Crossover10initializeERK6GaInfo"></span><span id="_CPPv2N4gapp9crossover9Crossover10initializeERK6GaInfo"></span><span id="gapp::crossover::Crossover::initialize__GaInfoCR"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1a36cce512fa54d060cd9c0abbd6a53b96"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9crossover9Crossover10initializeERK6GaInfo" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize the crossover operator. This method will be called exactly once at the start of each run. The default implementation does nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ga</strong> – The genetic algorithm the crossover operator is used in. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9crossover9CrossoverD0Ev">
+<span id="_CPPv3N4gapp9crossover9CrossoverD0Ev"></span><span id="_CPPv2N4gapp9crossover9CrossoverD0Ev"></span><span id="gapp::crossover::Crossover::~Crossover"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1a3c366348adfd545d998333d9a95affd7"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~Crossover</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp9crossover9CrossoverD0Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-functions">Private Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9crossover9Crossover9crossoverERK6GaInfoRK9CandidateI1TERK9CandidateI1TE">
+<span id="_CPPv3NK4gapp9crossover9Crossover9crossoverERK6GaInfoRK9CandidateI1TERK9CandidateI1TE"></span><span id="_CPPv2NK4gapp9crossover9Crossover9crossoverERK6GaInfoRK9CandidateI1TERK9CandidateI1TE"></span><span id="gapp::crossover::Crossover::crossover__GaInfoCR.Candidate:T:CR.Candidate:T:CRC"></span><span class="target" id="classgapp_1_1crossover_1_1Crossover_1aa38d6e0274071b21278bcf2a902d1d75"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4I0EN4gapp13CandidatePairE" title="gapp::CandidatePair"><span class="n"><span class="pre">CandidatePair</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9crossover9CrossoverE" title="gapp::crossover::Crossover::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">crossover</span></span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ga</span></span>,</dd>
+<dd><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9crossover9CrossoverE" title="gapp::crossover::Crossover::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">parent1</span></span>,</dd>
+<dd><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9crossover9CrossoverE" title="gapp::crossover::Crossover::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">parent2</span></span></dd>
+</dl>
+
+<span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4NK4gapp9crossover9Crossover9crossoverERK6GaInfoRK9CandidateI1TERK9CandidateI1TE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The implementation of the crossover operator. Performs the crossover operation on 2 parent solutions to generate 2 child solutions from them. The implementation of this function shouldn’t handle the crossover probability, instead it should just perform the crossover operation unconditionally. The chromosomes of the returned children should be valid solutions for the given problem and GA, but the rest of their properties (eg. fitness) are irrelevant.</p>
+<p>This method will be called once for every 2 children that need to be generated (ie. population_size/2 number of times, rounded up if the population size is odd) in every generation.</p>
+<p>The implementation of this function must be thread-safe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ga</strong> – The genetic algorithm the crossover operator is being used in. </p></li>
+<li><p><strong>parent1</strong> – The first parent solution. </p></li>
+<li><p><strong>parent2</strong> – The second parent solution. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The pair of children resulting from the crossover. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossoverE"><code class="docutils literal notranslate"><span class="pre">gapp::crossover</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-crossover">class Crossover</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp9crossover9CrossoverE"><code class="docutils literal notranslate"><span class="pre">gapp::crossover::Crossover</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover8GeneTypeE"><code class="docutils literal notranslate"><span class="pre">GeneType</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover9CrossoverEv"><code class="docutils literal notranslate"><span class="pre">Crossover()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover9CrossoverE11Probability"><code class="docutils literal notranslate"><span class="pre">Crossover()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover14crossover_rateE11Probability"><code class="docutils literal notranslate"><span class="pre">crossover_rate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9crossover9Crossover14crossover_rateEv"><code class="docutils literal notranslate"><span class="pre">crossover_rate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9crossover9Crossover27allow_variable_chrom_lengthEv"><code class="docutils literal notranslate"><span class="pre">allow_variable_chrom_length()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9crossover9CrossoverclERK6GaInfoRK9CandidateI1TERK9CandidateI1TE"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9Crossover10initializeERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9crossover9CrossoverD0Ev"><code class="docutils literal notranslate"><span class="pre">~Crossover()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9crossover9Crossover9crossoverERK6GaInfoRK9CandidateI1TERK9CandidateI1TE"><code class="docutils literal notranslate"><span class="pre">crossover()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

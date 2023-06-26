@@ -1,0 +1,888 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Stop conditions &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'stop_condition/stop_condition';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Metrics" href="../metrics/metrics.html" />
+    <link rel="prev" title="Mixed mutations" href="../mutation/mutation_mixed.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../algorithm/algorithm.html">Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../algorithm/algorithm_soga.html">Single-objective algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../algorithm/algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mutation/mutation.html">Mutations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Stop conditions</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stoppingE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-stopcondition">class StopCondition</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopConditionE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::StopCondition</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopCondition10initializeERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopConditionclERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopConditionD0Ev"><code class="docutils literal notranslate"><span class="pre">~StopCondition()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopCondition14stop_conditionERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">stop_condition()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessevals">class FitnessEvals</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessEvalsE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::FitnessEvals</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessEvals12FitnessEvalsE6size_t"><code class="docutils literal notranslate"><span class="pre">FitnessEvals()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessEvals17max_fitness_evalsE6size_t"><code class="docutils literal notranslate"><span class="pre">max_fitness_evals()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping12FitnessEvals17max_fitness_evalsEv"><code class="docutils literal notranslate"><span class="pre">max_fitness_evals()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessvalue">class FitnessValue</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessValueE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::FitnessValue</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessValue12FitnessValueE13FitnessVector"><code class="docutils literal notranslate"><span class="pre">FitnessValue()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessValue17fitness_thresholdE13FitnessVector"><code class="docutils literal notranslate"><span class="pre">fitness_threshold()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NKR4gapp8stopping12FitnessValue17fitness_thresholdEv"><code class="docutils literal notranslate"><span class="pre">fitness_threshold()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessmeanstall">class FitnessMeanStall</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStallE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::FitnessMeanStall</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall16FitnessMeanStallEv"><code class="docutils literal notranslate"><span class="pre">FitnessMeanStall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall16FitnessMeanStallE6size_td"><code class="docutils literal notranslate"><span class="pre">FitnessMeanStall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall8patienceE6size_t"><code class="docutils literal notranslate"><span class="pre">patience()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping16FitnessMeanStall8patienceEv"><code class="docutils literal notranslate"><span class="pre">patience()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall5deltaEd"><code class="docutils literal notranslate"><span class="pre">delta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping16FitnessMeanStall5deltaEv"><code class="docutils literal notranslate"><span class="pre">delta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall10initializeERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessbeststall">class FitnessBestStall</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStallE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::FitnessBestStall</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall16FitnessBestStallEv"><code class="docutils literal notranslate"><span class="pre">FitnessBestStall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall16FitnessBestStallE6size_td"><code class="docutils literal notranslate"><span class="pre">FitnessBestStall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall8patienceE6size_t"><code class="docutils literal notranslate"><span class="pre">patience()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping16FitnessBestStall8patienceEv"><code class="docutils literal notranslate"><span class="pre">patience()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall5deltaEd"><code class="docutils literal notranslate"><span class="pre">delta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping16FitnessBestStall5deltaEv"><code class="docutils literal notranslate"><span class="pre">delta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall10initializeERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-noearlystop">class NoEarlyStop</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping11NoEarlyStopE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::NoEarlyStop</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="stop-conditions">
+<h1>Stop conditions<a class="headerlink" href="#stop-conditions" title="Link to this heading">#</a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stoppingE">
+<span id="_CPPv3N4gapp8stoppingE"></span><span id="_CPPv2N4gapp8stoppingE"></span><span id="gapp::stopping"></span><span class="target" id="namespacegapp_1_1stopping"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stopping</span></span></span><a class="headerlink" href="#_CPPv4N4gapp8stoppingE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Early-stop conditions that can be used to control when the GA stops. </p>
+</dd></dl>
+
+<section id="class-stopcondition">
+<h2>class StopCondition<a class="headerlink" href="#class-stopcondition" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stopping/stop_condition_base.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping13StopConditionE">
+<span id="_CPPv3N4gapp8stopping13StopConditionE"></span><span id="_CPPv2N4gapp8stopping13StopConditionE"></span><span id="gapp::stopping::StopCondition"></span><span class="target" id="classgapp_1_1stopping_1_1StopCondition"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">StopCondition</span></span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping13StopConditionE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The base class used for all of the early-stop conditions. The stop condition will be evaluated once at the end of every generation, and it should return true when the GA should stop running.</p>
+<p>New stop conditions should be derived from this class, and there are 2 virtual methods that should be implemented by them:</p>
+<p><ul class="simple">
+<li><p>initialize (optional) : Initialize the stop condition at the start of a run. Does nothing by default.</p></li>
+<li><p>stop_condition : Evaluate the stop condition and return true when the GA should stop running. </p></li>
+</ul>
+</p>
+<p>Subclassed by <a class="reference internal" href="#classgapp_1_1stopping_1_1FitnessBestStall"><span class="std std-ref">gapp::stopping::FitnessBestStall</span></a>, <a class="reference internal" href="#classgapp_1_1stopping_1_1FitnessEvals"><span class="std std-ref">gapp::stopping::FitnessEvals</span></a>, <a class="reference internal" href="#classgapp_1_1stopping_1_1FitnessMeanStall"><span class="std std-ref">gapp::stopping::FitnessMeanStall</span></a>, <a class="reference internal" href="#classgapp_1_1stopping_1_1FitnessValue"><span class="std std-ref">gapp::stopping::FitnessValue</span></a>, gapp::stopping::Lambda, <a class="reference internal" href="#classgapp_1_1stopping_1_1NoEarlyStop"><span class="std std-ref">gapp::stopping::NoEarlyStop</span></a>, gapp::stopping::dtl::AND&lt; Left, Right &gt;, gapp::stopping::dtl::NOT&lt; Base &gt;, gapp::stopping::dtl::OR&lt; Left, Right &gt;</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping13StopCondition10initializeERK6GaInfo">
+<span id="_CPPv3N4gapp8stopping13StopCondition10initializeERK6GaInfo"></span><span id="_CPPv2N4gapp8stopping13StopCondition10initializeERK6GaInfo"></span><span id="gapp::stopping::StopCondition::initialize__GaInfoCR"></span><span class="target" id="classgapp_1_1stopping_1_1StopCondition_1a57c908c1668de269adacae938f5720b9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8stopping13StopCondition10initializeERK6GaInfo" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize the stop condition. This method will be called exactly once at the start of each run. The default implementation does nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ga</strong> – The genetic algorithm the stop condition is used in. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping13StopConditionclERK6GaInfo">
+<span id="_CPPv3N4gapp8stopping13StopConditionclERK6GaInfo"></span><span id="_CPPv2N4gapp8stopping13StopConditionclERK6GaInfo"></span><span id="gapp::stopping::StopCondition::call-operator__GaInfoCR"></span><span class="target" id="classgapp_1_1stopping_1_1StopCondition_1a725a96c322c6314f275feaf7671c4812"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ga</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8stopping13StopConditionclERK6GaInfo" title="Link to this definition">#</a><br /></dt>
+<dd><p>Evaluate the stop condition and return true if the GA should be stopped. This method will be called exactly once at the end of each generation of a run.</p>
+<p>Implemented by <a class="reference internal" href="#classgapp_1_1stopping_1_1StopCondition_1a44b46df183e8cbcd5c5fc02f7c7dfbff"><span class="std std-ref">stop_condition()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ga</strong> – The genetic algorithm the stop condition is used in. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True when the genetic algorithm should stop running. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping13StopConditionD0Ev">
+<span id="_CPPv3N4gapp8stopping13StopConditionD0Ev"></span><span id="_CPPv2N4gapp8stopping13StopConditionD0Ev"></span><span id="gapp::stopping::StopCondition::~StopCondition"></span><span class="target" id="classgapp_1_1stopping_1_1StopCondition_1a16639629e6cb147c294e9923bafc4879"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~StopCondition</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping13StopConditionD0Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-functions">Private Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping13StopCondition14stop_conditionERK6GaInfo">
+<span id="_CPPv3N4gapp8stopping13StopCondition14stop_conditionERK6GaInfo"></span><span id="_CPPv2N4gapp8stopping13StopCondition14stop_conditionERK6GaInfo"></span><span id="gapp::stopping::StopCondition::stop_condition__GaInfoCR"></span><span class="target" id="classgapp_1_1stopping_1_1StopCondition_1a44b46df183e8cbcd5c5fc02f7c7dfbff"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop_condition</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ga</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping13StopCondition14stop_conditionERK6GaInfo" title="Link to this definition">#</a><br /></dt>
+<dd><p>The implementation of the early-stop condition. This method will be called exactly once at the end of each generation of a run, and it should return true when the GA should be stopped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ga</strong> – The genetic algorithm the stop condition is used in. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True when genetic algorithm should stop running. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-fitnessevals">
+<h2>class FitnessEvals<a class="headerlink" href="#class-fitnessevals" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stopping/stop_condition.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping12FitnessEvalsE">
+<span id="_CPPv3N4gapp8stopping12FitnessEvalsE"></span><span id="_CPPv2N4gapp8stopping12FitnessEvalsE"></span><span id="gapp::stopping::FitnessEvals"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessEvals"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessEvals</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stoppingE" title="gapp::stopping"><span class="n"><span class="pre">stopping</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stopping13StopConditionE" title="gapp::stopping::StopCondition"><span class="n"><span class="pre">StopCondition</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8stopping12FitnessEvalsE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Early stop condition based on the number of fitness function evaluations performed.</p>
+<p>The GA will stop early if a set maximum number of objective function evaluations have been performed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The stop condition is only checked once at the end of each generation, so the actual number objective function evaluations might be higher than the limit that was set for this stop condition. </p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping12FitnessEvals12FitnessEvalsE6size_t">
+<span id="_CPPv3N4gapp8stopping12FitnessEvals12FitnessEvalsE6size_t"></span><span id="_CPPv2N4gapp8stopping12FitnessEvals12FitnessEvalsE6size_t"></span><span id="gapp::stopping::FitnessEvals::FitnessEvals__sCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessEvals_1a2dcb056128b963d21c901ef208f94222"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessEvals</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max_fitness_evals</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping12FitnessEvals12FitnessEvalsE6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an early-stop condition based on the number of objective function evaluations performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>max_fitness_evals</strong> – The maximum number of fitness function evaluations that should be performed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping12FitnessEvals17max_fitness_evalsE6size_t">
+<span id="_CPPv3N4gapp8stopping12FitnessEvals17max_fitness_evalsE6size_t"></span><span id="_CPPv2N4gapp8stopping12FitnessEvals17max_fitness_evalsE6size_t"></span><span id="gapp::stopping::FitnessEvals::max_fitness_evals__sCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessEvals_1a6cbc30bd12ffc61ae74d1eadd2f98684"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max_fitness_evals</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max_fitness_evals</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping12FitnessEvals17max_fitness_evalsE6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the maximum number of fitness function evaluations allowed in the GA. The actual number of evaluations might be somewhat higher, as the stop condition is only checked once at the end of each generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>max_fitness_evals</strong> – The maximum number of objective function evaluations that should be performed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8stopping12FitnessEvals17max_fitness_evalsEv">
+<span id="_CPPv3NK4gapp8stopping12FitnessEvals17max_fitness_evalsEv"></span><span id="_CPPv2NK4gapp8stopping12FitnessEvals17max_fitness_evalsEv"></span><span id="gapp::stopping::FitnessEvals::max_fitness_evalsCCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessEvals_1a689a7a35cb6da3191a3eaf4b9b6eec62"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max_fitness_evals</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8stopping12FitnessEvals17max_fitness_evalsEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum number of fitness function evaluations allowed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-fitnessvalue">
+<h2>class FitnessValue<a class="headerlink" href="#class-fitnessvalue" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stopping/stop_condition.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping12FitnessValueE">
+<span id="_CPPv3N4gapp8stopping12FitnessValueE"></span><span id="_CPPv2N4gapp8stopping12FitnessValueE"></span><span id="gapp::stopping::FitnessValue"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessValue"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessValue</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stoppingE" title="gapp::stopping"><span class="n"><span class="pre">stopping</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stopping13StopConditionE" title="gapp::stopping::StopCondition"><span class="n"><span class="pre">StopCondition</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8stopping12FitnessValueE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Early stop condition based on the fitness of the best solution discovered so far.</p>
+<p>The GA will stop early if a solution is found that is equal to or better than a fitness threshold vector (assuming maximization). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping12FitnessValue12FitnessValueE13FitnessVector">
+<span id="_CPPv3N4gapp8stopping12FitnessValue12FitnessValueE13FitnessVector"></span><span id="_CPPv2N4gapp8stopping12FitnessValue12FitnessValueE13FitnessVector"></span><span id="gapp::stopping::FitnessValue::FitnessValue__FitnessVector"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessValue_1ab7db815836f38596b5d874ce24f583eb"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../core/population.html#_CPPv4N4gapp13FitnessVectorE" title="gapp::FitnessVector"><span class="n"><span class="pre">FitnessVector</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">fitness_threshold</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping12FitnessValue12FitnessValueE13FitnessVector" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an early-stop condition that is based on reaching a fitness threshold. Assumes fitness maximization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fitness_threshold</strong> – The fitness threshold vector used. The size of this vector should be the same as the size of the fitness vectors of the population (ie. the number of objectives should match). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping12FitnessValue17fitness_thresholdE13FitnessVector">
+<span id="_CPPv3N4gapp8stopping12FitnessValue17fitness_thresholdE13FitnessVector"></span><span id="_CPPv2N4gapp8stopping12FitnessValue17fitness_thresholdE13FitnessVector"></span><span id="gapp::stopping::FitnessValue::fitness_threshold__FitnessVector"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessValue_1ad7409dd5cb0589e62af7c27c2c30d4cd"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fitness_threshold</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../core/population.html#_CPPv4N4gapp13FitnessVectorE" title="gapp::FitnessVector"><span class="n"><span class="pre">FitnessVector</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">threshold</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping12FitnessValue17fitness_thresholdE13FitnessVector" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the fitness threshold vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>threshold</strong> – The fitness threshold vector used. The size of this vector should be the same as the size of the fitness vectors of the population (ie. the number of objectives should match). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKR4gapp8stopping12FitnessValue17fitness_thresholdEv">
+<span id="_CPPv3NKR4gapp8stopping12FitnessValue17fitness_thresholdEv"></span><span id="_CPPv2NKR4gapp8stopping12FitnessValue17fitness_thresholdEv"></span><span id="gapp::stopping::FitnessValue::fitness_thresholdCR"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessValue_1ab081a7299a9064b42f114b4285aca74c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4N4gapp13FitnessVectorE" title="gapp::FitnessVector"><span class="n"><span class="pre">FitnessVector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">fitness_threshold</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKR4gapp8stopping12FitnessValue17fitness_thresholdEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The fitness threshold vector used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-fitnessmeanstall">
+<h2>class FitnessMeanStall<a class="headerlink" href="#class-fitnessmeanstall" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stopping/stop_condition.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessMeanStallE">
+<span id="_CPPv3N4gapp8stopping16FitnessMeanStallE"></span><span id="_CPPv2N4gapp8stopping16FitnessMeanStallE"></span><span id="gapp::stopping::FitnessMeanStall"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessMeanStall"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessMeanStall</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stoppingE" title="gapp::stopping"><span class="n"><span class="pre">stopping</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stopping13StopConditionE" title="gapp::stopping::StopCondition"><span class="n"><span class="pre">StopCondition</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessMeanStallE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Early stop condition based on the mean fitness vector of the population.</p>
+<p>The mean fitness values of the population are calculated separately for each objective, and the GA is stopped if the value hasn’t improved in any of the objectives for a certain number of generations.</p>
+<p>For multi-objective problems, the mean fitness vector is considered improved if it’s better in at least one objective than the old one (assuming fitness maximization). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessMeanStall16FitnessMeanStallEv">
+<span id="_CPPv3N4gapp8stopping16FitnessMeanStall16FitnessMeanStallEv"></span><span id="_CPPv2N4gapp8stopping16FitnessMeanStall16FitnessMeanStallEv"></span><span id="gapp::stopping::FitnessMeanStall::FitnessMeanStall"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessMeanStall_1a6c6af33c40fe2c8a457b5249ef0aecc0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessMeanStall</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessMeanStall16FitnessMeanStallEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an early-stop condition based on the mean fitness values of the population. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessMeanStall16FitnessMeanStallE6size_td">
+<span id="_CPPv3N4gapp8stopping16FitnessMeanStall16FitnessMeanStallE6size_td"></span><span id="_CPPv2N4gapp8stopping16FitnessMeanStall16FitnessMeanStallE6size_td"></span><span id="gapp::stopping::FitnessMeanStall::FitnessMeanStall__s.double"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessMeanStall_1a5c9e60a5d59daf56d0f2ea0a55981cb5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessMeanStall</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">patience</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delta</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1E-6</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessMeanStall16FitnessMeanStallE6size_td" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an early-stop condition based on the mean fitness values of the population.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patience</strong> – The number of generations to wait without stopping even if there is no improvement. </p></li>
+<li><p><strong>delta</strong> – The minimum fitness difference considered an improvement. Negative values may also be used. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessMeanStall8patienceE6size_t">
+<span id="_CPPv3N4gapp8stopping16FitnessMeanStall8patienceE6size_t"></span><span id="_CPPv2N4gapp8stopping16FitnessMeanStall8patienceE6size_t"></span><span id="gapp::stopping::FitnessMeanStall::patience__sCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessMeanStall_1a7f86e0b606f8ec8dffa9b223968d5ae3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">patience</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">patience</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessMeanStall8patienceE6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the patience value used for the stop condition.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The patiance counter is reset every time there is an improvement in the mean fitness vector.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>patience</strong> – The number of generations to wait without stopping if there is no improvement. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8stopping16FitnessMeanStall8patienceEv">
+<span id="_CPPv3NK4gapp8stopping16FitnessMeanStall8patienceEv"></span><span id="_CPPv2NK4gapp8stopping16FitnessMeanStall8patienceEv"></span><span id="gapp::stopping::FitnessMeanStall::patienceCCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessMeanStall_1a0ad5b21cd0467e6916fdad70acaaf38d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">patience</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8stopping16FitnessMeanStall8patienceEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current patience value of the stop condition. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessMeanStall5deltaEd">
+<span id="_CPPv3N4gapp8stopping16FitnessMeanStall5deltaEd"></span><span id="_CPPv2N4gapp8stopping16FitnessMeanStall5deltaEd"></span><span id="gapp::stopping::FitnessMeanStall::delta__doubleCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessMeanStall_1a6439a4e8c993559afecaa6a1a35b42d7"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">delta</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delta</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessMeanStall5deltaEd" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the delta parameter of the stop condition. The same delta value is used for every objective in the case of multi-objective problems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delta</strong> – The minimum fitness difference considered an improvement. Negative values may also be used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8stopping16FitnessMeanStall5deltaEv">
+<span id="_CPPv3NK4gapp8stopping16FitnessMeanStall5deltaEv"></span><span id="_CPPv2NK4gapp8stopping16FitnessMeanStall5deltaEv"></span><span id="gapp::stopping::FitnessMeanStall::deltaCCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessMeanStall_1ac436b8803cead791c741c5b018414ce8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">delta</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8stopping16FitnessMeanStall5deltaEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The value of the delta parameter. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessMeanStall10initializeERK6GaInfo">
+<span id="_CPPv3N4gapp8stopping16FitnessMeanStall10initializeERK6GaInfo"></span><span id="_CPPv2N4gapp8stopping16FitnessMeanStall10initializeERK6GaInfo"></span><span id="gapp::stopping::FitnessMeanStall::initialize__GaInfoCR"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessMeanStall_1a1f61bb169f4e899feb56fa19d0f373af"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ga</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessMeanStall10initializeERK6GaInfo" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize the stop condition. This method will be called exactly once at the start of each run. The default implementation does nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ga</strong> – The genetic algorithm the stop condition is used in. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-fitnessbeststall">
+<h2>class FitnessBestStall<a class="headerlink" href="#class-fitnessbeststall" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stopping/stop_condition.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessBestStallE">
+<span id="_CPPv3N4gapp8stopping16FitnessBestStallE"></span><span id="_CPPv2N4gapp8stopping16FitnessBestStallE"></span><span id="gapp::stopping::FitnessBestStall"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessBestStall"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessBestStall</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stoppingE" title="gapp::stopping"><span class="n"><span class="pre">stopping</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stopping13StopConditionE" title="gapp::stopping::StopCondition"><span class="n"><span class="pre">StopCondition</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessBestStallE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Early stop condition based on the best fitness vector of the population.</p>
+<p>The best fitness values of the population are calculated separately for each objective, and the GA is stopped if the best fitness value hasn’t improved in any of the objectives for a certain number of generations.</p>
+<p>For multi-objective problems, the best fitness vector is considered improved if it’s better in at least one coordinate than the previous best (assuming fitness maximization). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessBestStall16FitnessBestStallEv">
+<span id="_CPPv3N4gapp8stopping16FitnessBestStall16FitnessBestStallEv"></span><span id="_CPPv2N4gapp8stopping16FitnessBestStall16FitnessBestStallEv"></span><span id="gapp::stopping::FitnessBestStall::FitnessBestStall"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessBestStall_1a357fc41141405a1308367be5b8417801"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessBestStall</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessBestStall16FitnessBestStallEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an early-stop condition based on the best fitness values of the population. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessBestStall16FitnessBestStallE6size_td">
+<span id="_CPPv3N4gapp8stopping16FitnessBestStall16FitnessBestStallE6size_td"></span><span id="_CPPv2N4gapp8stopping16FitnessBestStall16FitnessBestStallE6size_td"></span><span id="gapp::stopping::FitnessBestStall::FitnessBestStall__s.double"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessBestStall_1a70e3ed43b7bdfb7238d402c63d060ed2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FitnessBestStall</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">patience</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delta</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1E-6</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessBestStall16FitnessBestStallE6size_td" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create an early-stop condition based on the best fitness values of the population.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patience</strong> – The number of generations to wait before stopping even if there is no improvement. </p></li>
+<li><p><strong>delta</strong> – The minimum fitness difference considered an improvement. Negative values may also be used. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessBestStall8patienceE6size_t">
+<span id="_CPPv3N4gapp8stopping16FitnessBestStall8patienceE6size_t"></span><span id="_CPPv2N4gapp8stopping16FitnessBestStall8patienceE6size_t"></span><span id="gapp::stopping::FitnessBestStall::patience__sCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessBestStall_1aa3cd89428e3dbdfa84579bfba4876c29"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">patience</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">patience</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessBestStall8patienceE6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the patience value used for the stop condition.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The patiance counter is reset every time there is an improvement in the mean fitness vector.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>patience</strong> – The number of generations to wait before stopping if there is no improvement. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8stopping16FitnessBestStall8patienceEv">
+<span id="_CPPv3NK4gapp8stopping16FitnessBestStall8patienceEv"></span><span id="_CPPv2NK4gapp8stopping16FitnessBestStall8patienceEv"></span><span id="gapp::stopping::FitnessBestStall::patienceCCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessBestStall_1af0f9cd0c8ad4acba16fd9ef1f54f30c3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">patience</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8stopping16FitnessBestStall8patienceEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current patience value of the stop condition. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessBestStall5deltaEd">
+<span id="_CPPv3N4gapp8stopping16FitnessBestStall5deltaEd"></span><span id="_CPPv2N4gapp8stopping16FitnessBestStall5deltaEd"></span><span id="gapp::stopping::FitnessBestStall::delta__doubleCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessBestStall_1a9a8dbdc3186be443c1fcc4a4215026f5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">delta</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delta</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessBestStall5deltaEd" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the delta parameter of the stop condition. The same delta is used for every objective in the case of multi-objective problems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delta</strong> – The minimum fitness difference considered an improvement. Negative values may also be used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp8stopping16FitnessBestStall5deltaEv">
+<span id="_CPPv3NK4gapp8stopping16FitnessBestStall5deltaEv"></span><span id="_CPPv2NK4gapp8stopping16FitnessBestStall5deltaEv"></span><span id="gapp::stopping::FitnessBestStall::deltaCCE"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessBestStall_1ac4bf24c25c141ee88c98c361f1e97579"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">delta</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp8stopping16FitnessBestStall5deltaEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The value of the delta parameter. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping16FitnessBestStall10initializeERK6GaInfo">
+<span id="_CPPv3N4gapp8stopping16FitnessBestStall10initializeERK6GaInfo"></span><span id="_CPPv2N4gapp8stopping16FitnessBestStall10initializeERK6GaInfo"></span><span id="gapp::stopping::FitnessBestStall::initialize__GaInfoCR"></span><span class="target" id="classgapp_1_1stopping_1_1FitnessBestStall_1a96f4ce56198959550d08ba4d6a0dde0e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialize</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ga</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N4gapp8stopping16FitnessBestStall10initializeERK6GaInfo" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize the stop condition. This method will be called exactly once at the start of each run. The default implementation does nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ga</strong> – The genetic algorithm the stop condition is used in. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-noearlystop">
+<h2>class NoEarlyStop<a class="headerlink" href="#class-noearlystop" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stopping/stop_condition.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8stopping11NoEarlyStopE">
+<span id="_CPPv3N4gapp8stopping11NoEarlyStopE"></span><span id="_CPPv2N4gapp8stopping11NoEarlyStopE"></span><span id="gapp::stopping::NoEarlyStop"></span><span class="target" id="classgapp_1_1stopping_1_1NoEarlyStop"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NoEarlyStop</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stoppingE" title="gapp::stopping"><span class="n"><span class="pre">stopping</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8stopping13StopConditionE" title="gapp::stopping::StopCondition"><span class="n"><span class="pre">StopCondition</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8stopping11NoEarlyStopE" title="Link to this definition">#</a><br /></dt>
+<dd><p>This early-stop condition will always evaluate to false, so no early stopping will be used by the GA. This can be used to ensure that the GA will only stop upon reaching the maximum number of generations set for it. </p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stoppingE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-stopcondition">class StopCondition</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopConditionE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::StopCondition</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopCondition10initializeERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopConditionclERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">operator()()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopConditionD0Ev"><code class="docutils literal notranslate"><span class="pre">~StopCondition()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping13StopCondition14stop_conditionERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">stop_condition()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessevals">class FitnessEvals</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessEvalsE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::FitnessEvals</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessEvals12FitnessEvalsE6size_t"><code class="docutils literal notranslate"><span class="pre">FitnessEvals()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessEvals17max_fitness_evalsE6size_t"><code class="docutils literal notranslate"><span class="pre">max_fitness_evals()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping12FitnessEvals17max_fitness_evalsEv"><code class="docutils literal notranslate"><span class="pre">max_fitness_evals()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessvalue">class FitnessValue</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessValueE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::FitnessValue</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessValue12FitnessValueE13FitnessVector"><code class="docutils literal notranslate"><span class="pre">FitnessValue()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping12FitnessValue17fitness_thresholdE13FitnessVector"><code class="docutils literal notranslate"><span class="pre">fitness_threshold()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NKR4gapp8stopping12FitnessValue17fitness_thresholdEv"><code class="docutils literal notranslate"><span class="pre">fitness_threshold()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessmeanstall">class FitnessMeanStall</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStallE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::FitnessMeanStall</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall16FitnessMeanStallEv"><code class="docutils literal notranslate"><span class="pre">FitnessMeanStall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall16FitnessMeanStallE6size_td"><code class="docutils literal notranslate"><span class="pre">FitnessMeanStall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall8patienceE6size_t"><code class="docutils literal notranslate"><span class="pre">patience()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping16FitnessMeanStall8patienceEv"><code class="docutils literal notranslate"><span class="pre">patience()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall5deltaEd"><code class="docutils literal notranslate"><span class="pre">delta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping16FitnessMeanStall5deltaEv"><code class="docutils literal notranslate"><span class="pre">delta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessMeanStall10initializeERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessbeststall">class FitnessBestStall</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStallE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::FitnessBestStall</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall16FitnessBestStallEv"><code class="docutils literal notranslate"><span class="pre">FitnessBestStall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall16FitnessBestStallE6size_td"><code class="docutils literal notranslate"><span class="pre">FitnessBestStall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall8patienceE6size_t"><code class="docutils literal notranslate"><span class="pre">patience()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping16FitnessBestStall8patienceEv"><code class="docutils literal notranslate"><span class="pre">patience()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall5deltaEd"><code class="docutils literal notranslate"><span class="pre">delta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp8stopping16FitnessBestStall5deltaEv"><code class="docutils literal notranslate"><span class="pre">delta()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping16FitnessBestStall10initializeERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-noearlystop">class NoEarlyStop</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8stopping11NoEarlyStopE"><code class="docutils literal notranslate"><span class="pre">gapp::stopping::NoEarlyStop</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

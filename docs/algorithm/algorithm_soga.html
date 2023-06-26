@@ -1,0 +1,856 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Single-objective algorithms &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'algorithm/algorithm_soga';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Selection methods" href="algorithm_selection.html" />
+    <link rel="prev" title="Algorithms" href="algorithm.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="algorithm.html">Algorithms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Single-objective algorithms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mutation/mutation.html">Mutations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Single-objective algorithms</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-singleobjective">class SingleObjective</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithmE"><code class="docutils literal notranslate"><span class="pre">gapp::algorithm</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjectiveE"><code class="docutils literal notranslate"><span class="pre">gapp::algorithm::SingleObjective</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective16DefaultSelectionE"><code class="docutils literal notranslate"><span class="pre">DefaultSelection</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective18DefaultReplacementE"><code class="docutils literal notranslate"><span class="pre">DefaultReplacement</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective17SelectionCallableE"><code class="docutils literal notranslate"><span class="pre">SelectionCallable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective19ReplacementCallableE"><code class="docutils literal notranslate"><span class="pre">ReplacementCallable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R"><code class="docutils literal notranslate"><span class="pre">SingleObjective()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveENSt10unique_ptrIN9selection9SelectionEEENSt10unique_ptrIN11replacement11ReplacementEEE"><code class="docutils literal notranslate"><span class="pre">SingleObjective()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable"><code class="docutils literal notranslate"><span class="pre">SingleObjective()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable19ReplacementCallable"><code class="docutils literal notranslate"><span class="pre">SingleObjective()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp9algorithm15SingleObjective16selection_methodEv1S"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective16selection_methodENSt10unique_ptrIN9selection9SelectionEEE"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective16selection_methodE17SelectionCallable"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NR4gapp9algorithm15SingleObjective16selection_methodEv"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NKR4gapp9algorithm15SingleObjective16selection_methodEv"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp9algorithm15SingleObjective18replacement_methodEv1R"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodENSt10unique_ptrIN11replacement11ReplacementEEE"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodE19ReplacementCallable"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NR4gapp9algorithm15SingleObjective18replacement_methodEv"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NKR4gapp9algorithm15SingleObjective18replacement_methodEv"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-selection">class Selection</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selectionE"><code class="docutils literal notranslate"><span class="pre">gapp::selection</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9SelectionE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Selection</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9Selection14initializeImplERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initializeImpl()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9Selection21prepareSelectionsImplERK6GaInfoRK14PopulationView"><code class="docutils literal notranslate"><span class="pre">prepareSelectionsImpl()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection9Selection10selectImplERK6GaInfoRK14PopulationView"><code class="docutils literal notranslate"><span class="pre">selectImpl()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9SelectionD0Ev"><code class="docutils literal notranslate"><span class="pre">~Selection()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-replacement">class Replacement</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacementE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement11ReplacementE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement::Replacement</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement11Replacement18nextPopulationImplERK6GaInfoRK14PopulationView"><code class="docutils literal notranslate"><span class="pre">nextPopulationImpl()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement11ReplacementD0Ev"><code class="docutils literal notranslate"><span class="pre">~Replacement()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="single-objective-algorithms">
+<h1>Single-objective algorithms<a class="headerlink" href="#single-objective-algorithms" title="Link to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</div>
+<section id="class-singleobjective">
+<h2>class SingleObjective<a class="headerlink" href="#class-singleobjective" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/single_objective.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithmE">
+<span id="_CPPv3N4gapp9algorithmE"></span><span id="_CPPv2N4gapp9algorithmE"></span><span id="gapp::algorithm"></span><span class="target" id="namespacegapp_1_1algorithm"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">algorithm</span></span></span><br /></dt>
+<dd><p>Single- and multi-objective algorithms that can be used in the GAs. </p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjectiveE">
+<span id="_CPPv3N4gapp9algorithm15SingleObjectiveE"></span><span id="_CPPv2N4gapp9algorithm15SingleObjectiveE"></span><span id="gapp::algorithm::SingleObjective"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SingleObjective</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm.html#_CPPv4N4gapp9algorithmE" title="gapp::algorithm"><span class="n"><span class="pre">algorithm</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm.html#_CPPv4N4gapp9algorithm9AlgorithmE" title="gapp::algorithm::Algorithm"><span class="n"><span class="pre">Algorithm</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjectiveE" title="Link to this definition">#</a><br /></dt>
+<dd><p>A generic algorithm for single-objective optimization.</p>
+<p>The algorithm combines a selection method and a population replacement method. The selection method is used to select candidates from the populations for crossover, while the population replacement method is used to create the population for the next generation of the algorithm from the combined parent and child populations.</p>
+<p>Move-only. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective16DefaultSelectionE">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective16DefaultSelectionE"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective16DefaultSelectionE"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1af688e1c8aaacbd3ea177c10842c4d4c2"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DefaultSelection</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="algorithm_selection.html#_CPPv4N4gapp9selectionE" title="gapp::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_selection.html#_CPPv4N4gapp9selection10TournamentE" title="gapp::selection::Tournament"><span class="n"><span class="pre">Tournament</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective16DefaultSelectionE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The selection method used when not specified explicitly. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective18DefaultReplacementE">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective18DefaultReplacementE"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective18DefaultReplacementE"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1ae2814c6f2f3710d8a82d09eef4df2348"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DefaultReplacement</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="algorithm_replacement.html#_CPPv4N4gapp11replacementE" title="gapp::replacement"><span class="n"><span class="pre">replacement</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_replacement.html#_CPPv4N4gapp11replacement8KeepBestE" title="gapp::replacement::KeepBest"><span class="n"><span class="pre">KeepBest</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective18DefaultReplacementE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The population update method used when not specified explicitly. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective17SelectionCallableE">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective17SelectionCallableE"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective17SelectionCallableE"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a809ba165eab59c6e1cfa71d4620318b6"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SelectionCallable</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4N4gapp14PopulationViewE" title="gapp::PopulationView"><span class="n"><span class="pre">PopulationView</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective17SelectionCallableE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The general callable type that can be used as a selection method, when not using a selection method derived from <a class="reference internal" href="#classgapp_1_1selection_1_1Selection"><span class="std std-ref">selection::Selection</span></a>. <div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#classgapp_1_1algorithm_1_1SingleObjective_1a2af889d0c4a0d3b38407be81aac71487"><span class="std std-ref">selection_method()</span></a></p>
+</div>
+</p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective19ReplacementCallableE">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective19ReplacementCallableE"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective19ReplacementCallableE"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a5b518a08df6a867acc9b8722024a968f"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ReplacementCallable</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">small_vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4N4gapp14PopulationViewE" title="gapp::PopulationView"><span class="n"><span class="pre">PopulationView</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective19ReplacementCallableE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The general callable type that can be used as a population replacement policy, when not using a replacement policy derived from <a class="reference internal" href="#classgapp_1_1replacement_1_1Replacement"><span class="std std-ref">replacement::Replacement</span></a>. <div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#classgapp_1_1algorithm_1_1SingleObjective_1ac218406ce7893fdf778f22b449d04270"><span class="std std-ref">replacement_method()</span></a></p>
+</div>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R">
+<span id="_CPPv3I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R"></span><span id="_CPPv2I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">S</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective16DefaultSelectionE" title="gapp::algorithm::SingleObjective::DefaultSelection"><span class="n"><span class="pre">DefaultSelection</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">R</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective18DefaultReplacementE" title="gapp::algorithm::SingleObjective::DefaultReplacement"><span class="n"><span class="pre">DefaultReplacement</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a429291856505c51e96aafba6311fd648"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SingleObjective</span></span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><a class="reference internal" href="#_CPPv4I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R" title="gapp::algorithm::SingleObjective::SingleObjective::S"><span class="n"><span class="pre">S</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">selection</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R" title="gapp::algorithm::SingleObjective::SingleObjective::S"><span class="n"><span class="pre">S</span></span></a><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span>,</dd>
+<dd><a class="reference internal" href="#_CPPv4I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R" title="gapp::algorithm::SingleObjective::SingleObjective::R"><span class="n"><span class="pre">R</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">replacement</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R" title="gapp::algorithm::SingleObjective::SingleObjective::R"><span class="n"><span class="pre">R</span></span></a><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span></dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a single-objective algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> – The selection method to use. </p></li>
+<li><p><strong>replacement</strong> – The replacement policy to use. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveENSt10unique_ptrIN9selection9SelectionEEENSt10unique_ptrIN11replacement11ReplacementEEE">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective15SingleObjectiveENSt10unique_ptrIN9selection9SelectionEEENSt10unique_ptrIN11replacement11ReplacementEEE"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective15SingleObjectiveENSt10unique_ptrIN9selection9SelectionEEENSt10unique_ptrIN11replacement11ReplacementEEE"></span><span id="gapp::algorithm::SingleObjective::SingleObjective__std::unique_ptr:selection::Selection:.std::unique_ptr:replacement::Replacement:"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a3a23022db12eacb5d44e963e4db4de15"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SingleObjective</span></span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveENSt10unique_ptrIN9selection9SelectionEEENSt10unique_ptrIN11replacement11ReplacementEEE" title="gapp::algorithm::SingleObjective::SingleObjective::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Selection</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">selection</span></span>,</dd>
+<dd><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveENSt10unique_ptrIN9selection9SelectionEEENSt10unique_ptrIN11replacement11ReplacementEEE" title="gapp::algorithm::SingleObjective::SingleObjective::replacement"><span class="n"><span class="pre">replacement</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Replacement</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">replacement</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">make_unique</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective18DefaultReplacementE" title="gapp::algorithm::SingleObjective::DefaultReplacement"><span class="n"><span class="pre">DefaultReplacement</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span></dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveENSt10unique_ptrIN9selection9SelectionEEENSt10unique_ptrIN11replacement11ReplacementEEE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a single-objective algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> – The selection method to use. Can’t be a nullptr. </p></li>
+<li><p><strong>replacement</strong> – The replacement policy to use. Can’t be a nullptr. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable"></span><span id="gapp::algorithm::SingleObjective::SingleObjective__SelectionCallable"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1afb5cefec478bb2cf8c141288d321b590"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SingleObjective</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective17SelectionCallableE" title="gapp::algorithm::SingleObjective::SelectionCallable"><span class="n"><span class="pre">SelectionCallable</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">selection</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a single-objective algorithm using the default replacement method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>selection</strong> – The selection method to use. Can’t be a nullptr. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable19ReplacementCallable">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable19ReplacementCallable"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable19ReplacementCallable"></span><span id="gapp::algorithm::SingleObjective::SingleObjective__SelectionCallable.ReplacementCallable"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1aeece886143296309a6bb87bb22847ddb"></span><span class="sig-name descname"><span class="n"><span class="pre">SingleObjective</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective17SelectionCallableE" title="gapp::algorithm::SingleObjective::SelectionCallable"><span class="n"><span class="pre">SelectionCallable</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">selection</span></span>, <a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective19ReplacementCallableE" title="gapp::algorithm::SingleObjective::ReplacementCallable"><span class="n"><span class="pre">ReplacementCallable</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">replacement</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable19ReplacementCallable" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a single-objective algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> – The selection method to use. Can’t be a nullptr. </p></li>
+<li><p><strong>replacement</strong> – The replacement policy to use. Can’t be a nullptr. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp9algorithm15SingleObjective16selection_methodEv1S">
+<span id="_CPPv3I0EN4gapp9algorithm15SingleObjective16selection_methodE1S"></span><span id="_CPPv2I0EN4gapp9algorithm15SingleObjective16selection_methodE1S"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">S</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a2af889d0c4a0d3b38407be81aac71487"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">selection_method</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4gapp9algorithm15SingleObjective16selection_methodEv1S" title="gapp::algorithm::SingleObjective::selection_method::S"><span class="n"><span class="pre">S</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">selection</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4gapp9algorithm15SingleObjective16selection_methodEv1S" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the selection method used by the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>selection</strong> – The selection method to use. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective16selection_methodENSt10unique_ptrIN9selection9SelectionEEE">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective16selection_methodENSt10unique_ptrIN9selection9SelectionEEE"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective16selection_methodENSt10unique_ptrIN9selection9SelectionEEE"></span><span id="gapp::algorithm::SingleObjective::selection_method__std::unique_ptr:selection::Selection:"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a39f6080d3341b7b2755938596f1b6519"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">selection_method</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective16selection_methodENSt10unique_ptrIN9selection9SelectionEEE" title="gapp::algorithm::SingleObjective::selection_method::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Selection</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">selection</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective16selection_methodENSt10unique_ptrIN9selection9SelectionEEE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the selection method used by the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>selection</strong> – The selection method to use. Can’t be a nullptr. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective16selection_methodE17SelectionCallable">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective16selection_methodE17SelectionCallable"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective16selection_methodE17SelectionCallable"></span><span id="gapp::algorithm::SingleObjective::selection_method__SelectionCallable"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a1a611a24a8e5adf2dba8e90276aaaa7d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">selection_method</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective17SelectionCallableE" title="gapp::algorithm::SingleObjective::SelectionCallable"><span class="n"><span class="pre">SelectionCallable</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">f</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective16selection_methodE17SelectionCallable" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the selection method used by the algorithm. The function used should be thread-safe if parallel execution is enabled (which is true by default).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>f</strong> – The selection method to use. Can’t be a nullptr. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NR4gapp9algorithm15SingleObjective16selection_methodEv">
+<span id="_CPPv3NR4gapp9algorithm15SingleObjective16selection_methodEv"></span><span id="_CPPv2NR4gapp9algorithm15SingleObjective16selection_methodEv"></span><span id="gapp::algorithm::SingleObjective::selection_methodR"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1ae7036a444f4a0f044724d7b79934d561"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="algorithm_selection.html#_CPPv4N4gapp9selectionE" title="gapp::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp9selection9SelectionE" title="gapp::selection::Selection"><span class="n"><span class="pre">Selection</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">selection_method</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NR4gapp9algorithm15SingleObjective16selection_methodEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The selection operator used by the algorithm. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKR4gapp9algorithm15SingleObjective16selection_methodEv">
+<span id="_CPPv3NKR4gapp9algorithm15SingleObjective16selection_methodEv"></span><span id="_CPPv2NKR4gapp9algorithm15SingleObjective16selection_methodEv"></span><span id="gapp::algorithm::SingleObjective::selection_methodCR"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a17dcff0a63d8636d9d4ba35220d9d24d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="algorithm_selection.html#_CPPv4N4gapp9selectionE" title="gapp::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp9selection9SelectionE" title="gapp::selection::Selection"><span class="n"><span class="pre">Selection</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">selection_method</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKR4gapp9algorithm15SingleObjective16selection_methodEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The selection operator used by the algorithm. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp9algorithm15SingleObjective18replacement_methodEv1R">
+<span id="_CPPv3I0EN4gapp9algorithm15SingleObjective18replacement_methodE1R"></span><span id="_CPPv2I0EN4gapp9algorithm15SingleObjective18replacement_methodE1R"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">R</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1ac218406ce7893fdf778f22b449d04270"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">replacement_method</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4gapp9algorithm15SingleObjective18replacement_methodEv1R" title="gapp::algorithm::SingleObjective::replacement_method::R"><span class="n"><span class="pre">R</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">replacement</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4gapp9algorithm15SingleObjective18replacement_methodEv1R" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the population replacement policy used by the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>replacement</strong> – The replacement policy to use. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodENSt10unique_ptrIN11replacement11ReplacementEEE">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective18replacement_methodENSt10unique_ptrIN11replacement11ReplacementEEE"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective18replacement_methodENSt10unique_ptrIN11replacement11ReplacementEEE"></span><span id="gapp::algorithm::SingleObjective::replacement_method__std::unique_ptr:replacement::Replacement:"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a17cdc02197ba3355a778400d5dd3c34e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">replacement_method</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodENSt10unique_ptrIN11replacement11ReplacementEEE" title="gapp::algorithm::SingleObjective::replacement_method::replacement"><span class="n"><span class="pre">replacement</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Replacement</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">replacement</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodENSt10unique_ptrIN11replacement11ReplacementEEE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the population replacement policy used by the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>replacement</strong> – The replacement policy to use. Can’t be a nullptr. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodE19ReplacementCallable">
+<span id="_CPPv3N4gapp9algorithm15SingleObjective18replacement_methodE19ReplacementCallable"></span><span id="_CPPv2N4gapp9algorithm15SingleObjective18replacement_methodE19ReplacementCallable"></span><span id="gapp::algorithm::SingleObjective::replacement_method__ReplacementCallable"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1afa5f852b4f25c5b7bde3bb867be2a7e9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">replacement_method</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp9algorithm15SingleObjective19ReplacementCallableE" title="gapp::algorithm::SingleObjective::ReplacementCallable"><span class="n"><span class="pre">ReplacementCallable</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">f</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodE19ReplacementCallable" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the population replacement policy used by the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>f</strong> – The replacement policy to use. Can’t be a nullptr. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NR4gapp9algorithm15SingleObjective18replacement_methodEv">
+<span id="_CPPv3NR4gapp9algorithm15SingleObjective18replacement_methodEv"></span><span id="_CPPv2NR4gapp9algorithm15SingleObjective18replacement_methodEv"></span><span id="gapp::algorithm::SingleObjective::replacement_methodR"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1ae5c11899ac5ed70d0e7e15311de6c5e2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="algorithm_replacement.html#_CPPv4N4gapp11replacementE" title="gapp::replacement"><span class="n"><span class="pre">replacement</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp11replacement11ReplacementE" title="gapp::replacement::Replacement"><span class="n"><span class="pre">Replacement</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">replacement_method</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NR4gapp9algorithm15SingleObjective18replacement_methodEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The population replacement policy used by the algorithm. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NKR4gapp9algorithm15SingleObjective18replacement_methodEv">
+<span id="_CPPv3NKR4gapp9algorithm15SingleObjective18replacement_methodEv"></span><span id="_CPPv2NKR4gapp9algorithm15SingleObjective18replacement_methodEv"></span><span id="gapp::algorithm::SingleObjective::replacement_methodCR"></span><span class="target" id="classgapp_1_1algorithm_1_1SingleObjective_1a1f88b0a479a50a4ea20a56d8b725be9f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="algorithm_replacement.html#_CPPv4N4gapp11replacementE" title="gapp::replacement"><span class="n"><span class="pre">replacement</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp11replacement11ReplacementE" title="gapp::replacement::Replacement"><span class="n"><span class="pre">Replacement</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">replacement_method</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NKR4gapp9algorithm15SingleObjective18replacement_methodEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The population replacement policy used by the algorithm. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-selection">
+<h2>class Selection<a class="headerlink" href="#class-selection" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/selection_base.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selectionE">
+<span id="_CPPv3N4gapp9selectionE"></span><span id="_CPPv2N4gapp9selectionE"></span><span id="gapp::selection"></span><span class="target" id="namespacegapp_1_1selection"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">selection</span></span></span><br /></dt>
+<dd><p>Selection operators for the single-objective algorithm. </p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection9SelectionE">
+<span id="_CPPv3N4gapp9selection9SelectionE"></span><span id="_CPPv2N4gapp9selection9SelectionE"></span><span id="gapp::selection::Selection"></span><span class="target" id="classgapp_1_1selection_1_1Selection"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Selection</span></span></span><a class="headerlink" href="#_CPPv4N4gapp9selection9SelectionE" title="Link to this definition">#</a><br /></dt>
+<dd><p>This is the base class used for all of the single-objective selection operators. The selection operator is used to select candidates from the population for the crossovers.</p>
+<p>New selection methods for the single-objective algorithm should be derived from this class and there are 3 methods that should be implemented by them:</p>
+<p><ul class="simple">
+<li><p>initializeImpl (optional) : Initializes the selection method at the start of a run.</p></li>
+<li><p>prepareSelectionsImpl (optional) : Prepare the operator for the selections if necessary.</p></li>
+<li><p>selectImpl : Select a candidate from the population for crossover. </p></li>
+</ul>
+</p>
+<p>Subclassed by <a class="reference internal" href="algorithm.html#classgapp_1_1algorithm_1_1Algorithm"><span class="std std-ref">gapp::algorithm::Algorithm</span></a>, <a class="reference internal" href="algorithm_selection.html#classgapp_1_1selection_1_1Boltzmann"><span class="std std-ref">gapp::selection::Boltzmann</span></a>, gapp::selection::Lambda, <a class="reference internal" href="algorithm_selection.html#classgapp_1_1selection_1_1Rank"><span class="std std-ref">gapp::selection::Rank</span></a>, <a class="reference internal" href="algorithm_selection.html#classgapp_1_1selection_1_1Roulette"><span class="std std-ref">gapp::selection::Roulette</span></a>, <a class="reference internal" href="algorithm_selection.html#classgapp_1_1selection_1_1Sigma"><span class="std std-ref">gapp::selection::Sigma</span></a>, <a class="reference internal" href="algorithm_selection.html#classgapp_1_1selection_1_1Tournament"><span class="std std-ref">gapp::selection::Tournament</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection9Selection14initializeImplERK6GaInfo">
+<span id="_CPPv3N4gapp9selection9Selection14initializeImplERK6GaInfo"></span><span id="_CPPv2N4gapp9selection9Selection14initializeImplERK6GaInfo"></span><span id="gapp::selection::Selection::initializeImpl__GaInfoCR"></span><span class="target" id="classgapp_1_1selection_1_1Selection_1ab0a96389d6f9b5d8f19a51689b83a884"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initializeImpl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9selection9Selection14initializeImplERK6GaInfo" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize the selection operator if necessary.</p>
+<p>This method will be called exactly once at start of the run, after the initial population of the GA has already been created.</p>
+<p>The default implementation does nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ga</strong> – The GA that uses the algorithm. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection9Selection21prepareSelectionsImplERK6GaInfoRK14PopulationView">
+<span id="_CPPv3N4gapp9selection9Selection21prepareSelectionsImplERK6GaInfoRK14PopulationView"></span><span id="_CPPv2N4gapp9selection9Selection21prepareSelectionsImplERK6GaInfoRK14PopulationView"></span><span id="gapp::selection::Selection::prepareSelectionsImpl__GaInfoCR.PopulationViewCR"></span><span class="target" id="classgapp_1_1selection_1_1Selection_1a18af7ba8bc8f71de0289f4c7dcfe0a01"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">prepareSelectionsImpl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="p"><span class="pre">&amp;</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4N4gapp14PopulationViewE" title="gapp::PopulationView"><span class="n"><span class="pre">PopulationView</span></span></a><span class="p"><span class="pre">&amp;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9selection9Selection21prepareSelectionsImplERK6GaInfoRK14PopulationView" title="Link to this definition">#</a><br /></dt>
+<dd><p>Prepare the operator for the selections if necessary.</p>
+<p>This method will be called exactly once every generation right before the selections are performed.</p>
+<p>The default implementation does nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ga</strong> – The GA that uses the algorithm. </p></li>
+<li><p><strong>pop</strong> – A view of the population without the encoding dependent parts of the candidates. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9selection9Selection10selectImplERK6GaInfoRK14PopulationView">
+<span id="_CPPv3NK4gapp9selection9Selection10selectImplERK6GaInfoRK14PopulationView"></span><span id="_CPPv2NK4gapp9selection9Selection10selectImplERK6GaInfoRK14PopulationView"></span><span id="gapp::selection::Selection::selectImpl__GaInfoCR.PopulationViewCRC"></span><span class="target" id="classgapp_1_1selection_1_1Selection_1a17346fd0198c0322a29575f7ab36ba51"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">selectImpl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ga</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4N4gapp14PopulationViewE" title="gapp::PopulationView"><span class="n"><span class="pre">PopulationView</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">pop</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4NK4gapp9selection9Selection10selectImplERK6GaInfoRK14PopulationView" title="Link to this definition">#</a><br /></dt>
+<dd><p>Select a single candidate for crossover from the population.</p>
+<p>This method will be called exactly (population_size) or (population_size + 1) times in every generation (depending on which number is even).</p>
+<p>The method should return the index of the selected candidate from the current population <code class="docutils literal notranslate"><span class="pre">pop</span></code>.</p>
+<p>The implementation should be thread-safe if parallel execution is enabled for the GAs (which is true by default).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ga</strong> – The GA that uses the algorithm. </p></li>
+<li><p><strong>pop</strong> – A view of the population without the encoding dependent parts of the candidates. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The index of the candidate selected from the population <code class="docutils literal notranslate"><span class="pre">pop</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection9SelectionD0Ev">
+<span id="_CPPv3N4gapp9selection9SelectionD0Ev"></span><span id="_CPPv2N4gapp9selection9SelectionD0Ev"></span><span id="gapp::selection::Selection::~Selection"></span><span class="target" id="classgapp_1_1selection_1_1Selection_1aa61fbe050db3764970adc63d37a4aa48"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~Selection</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection9SelectionD0Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-replacement">
+<h2>class Replacement<a class="headerlink" href="#class-replacement" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/replacement_base.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacementE">
+<span id="_CPPv3N4gapp11replacementE"></span><span id="_CPPv2N4gapp11replacementE"></span><span id="gapp::replacement"></span><span class="target" id="namespacegapp_1_1replacement"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">replacement</span></span></span><br /></dt>
+<dd><p>Population replacement policies for the single-objective algorithms. </p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacement11ReplacementE">
+<span id="_CPPv3N4gapp11replacement11ReplacementE"></span><span id="_CPPv2N4gapp11replacement11ReplacementE"></span><span id="gapp::replacement::Replacement"></span><span class="target" id="classgapp_1_1replacement_1_1Replacement"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Replacement</span></span></span><a class="headerlink" href="#_CPPv4N4gapp11replacement11ReplacementE" title="Link to this definition">#</a><br /></dt>
+<dd><p>This is the base class used for all of the single-objective population replacement policies. The replacement operator is used to select the candidates of the next population from the combined parent and child populations.</p>
+<p>New replacement policies for the single-objective algorithm should be derived from this class, and there is a single method that should be implemented in the derived classes:</p>
+<p><ul class="simple">
+<li><p>nextPopulationImpl : Selects the candidates for the next population. </p></li>
+</ul>
+</p>
+<p>Subclassed by <a class="reference internal" href="algorithm.html#classgapp_1_1algorithm_1_1Algorithm"><span class="std std-ref">gapp::algorithm::Algorithm</span></a>, <a class="reference internal" href="algorithm_replacement.html#classgapp_1_1replacement_1_1Elitism"><span class="std std-ref">gapp::replacement::Elitism</span></a>, <a class="reference internal" href="algorithm_replacement.html#classgapp_1_1replacement_1_1KeepBest"><span class="std std-ref">gapp::replacement::KeepBest</span></a>, <a class="reference internal" href="algorithm_replacement.html#classgapp_1_1replacement_1_1KeepChildren"><span class="std std-ref">gapp::replacement::KeepChildren</span></a>, gapp::replacement::Lambda</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacement11Replacement18nextPopulationImplERK6GaInfoRK14PopulationView">
+<span id="_CPPv3N4gapp11replacement11Replacement18nextPopulationImplERK6GaInfoRK14PopulationView"></span><span id="_CPPv2N4gapp11replacement11Replacement18nextPopulationImplERK6GaInfoRK14PopulationView"></span><span id="gapp::replacement::Replacement::nextPopulationImpl__GaInfoCR.PopulationViewCR"></span><span class="target" id="classgapp_1_1replacement_1_1Replacement_1a15b1091f9c339b235f6ca959550dcee6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">small_vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nextPopulationImpl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/encodings.html#_CPPv4N4gapp6GaInfoE" title="gapp::GaInfo"><span class="n"><span class="pre">GaInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ga</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../core/population.html#_CPPv4N4gapp14PopulationViewE" title="gapp::PopulationView"><span class="n"><span class="pre">PopulationView</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">pop</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N4gapp11replacement11Replacement18nextPopulationImplERK6GaInfoRK14PopulationView" title="Link to this definition">#</a><br /></dt>
+<dd><p>Select the candidates of the next generation from the candidates of the combined current and child populations.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pop</span></code> parameter describes the combined parent and child populations. The top half (first population_size elements) corresponds to the parent population, while the rest (another population_size elements) corresponds to the child population.</p>
+<p>The method should return population_size number of unique indices into the population <code class="docutils literal notranslate"><span class="pre">pop</span></code>. The candidates at these indices will comprise the next generation’s population.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ga</strong> – The GA that uses the replacement method. </p></li>
+<li><p><strong>pop</strong> – A view of the combined parent and child population. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The indices of the candidates selected from the population <code class="docutils literal notranslate"><span class="pre">pop</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp11replacement11ReplacementD0Ev">
+<span id="_CPPv3N4gapp11replacement11ReplacementD0Ev"></span><span id="_CPPv2N4gapp11replacement11ReplacementD0Ev"></span><span id="gapp::replacement::Replacement::~Replacement"></span><span class="target" id="classgapp_1_1replacement_1_1Replacement_1abda875195054059420c1929369eb6436"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~Replacement</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp11replacement11ReplacementD0Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-singleobjective">class SingleObjective</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithmE"><code class="docutils literal notranslate"><span class="pre">gapp::algorithm</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjectiveE"><code class="docutils literal notranslate"><span class="pre">gapp::algorithm::SingleObjective</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective16DefaultSelectionE"><code class="docutils literal notranslate"><span class="pre">DefaultSelection</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective18DefaultReplacementE"><code class="docutils literal notranslate"><span class="pre">DefaultReplacement</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective17SelectionCallableE"><code class="docutils literal notranslate"><span class="pre">SelectionCallable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective19ReplacementCallableE"><code class="docutils literal notranslate"><span class="pre">ReplacementCallable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I00EN4gapp9algorithm15SingleObjective15SingleObjectiveE1S1R"><code class="docutils literal notranslate"><span class="pre">SingleObjective()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveENSt10unique_ptrIN9selection9SelectionEEENSt10unique_ptrIN11replacement11ReplacementEEE"><code class="docutils literal notranslate"><span class="pre">SingleObjective()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable"><code class="docutils literal notranslate"><span class="pre">SingleObjective()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective15SingleObjectiveE17SelectionCallable19ReplacementCallable"><code class="docutils literal notranslate"><span class="pre">SingleObjective()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp9algorithm15SingleObjective16selection_methodEv1S"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective16selection_methodENSt10unique_ptrIN9selection9SelectionEEE"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective16selection_methodE17SelectionCallable"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NR4gapp9algorithm15SingleObjective16selection_methodEv"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NKR4gapp9algorithm15SingleObjective16selection_methodEv"><code class="docutils literal notranslate"><span class="pre">selection_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp9algorithm15SingleObjective18replacement_methodEv1R"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodENSt10unique_ptrIN11replacement11ReplacementEEE"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9algorithm15SingleObjective18replacement_methodE19ReplacementCallable"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NR4gapp9algorithm15SingleObjective18replacement_methodEv"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NKR4gapp9algorithm15SingleObjective18replacement_methodEv"><code class="docutils literal notranslate"><span class="pre">replacement_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-selection">class Selection</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selectionE"><code class="docutils literal notranslate"><span class="pre">gapp::selection</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9SelectionE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Selection</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9Selection14initializeImplERK6GaInfo"><code class="docutils literal notranslate"><span class="pre">initializeImpl()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9Selection21prepareSelectionsImplERK6GaInfoRK14PopulationView"><code class="docutils literal notranslate"><span class="pre">prepareSelectionsImpl()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection9Selection10selectImplERK6GaInfoRK14PopulationView"><code class="docutils literal notranslate"><span class="pre">selectImpl()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9SelectionD0Ev"><code class="docutils literal notranslate"><span class="pre">~Selection()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-replacement">class Replacement</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacementE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement11ReplacementE"><code class="docutils literal notranslate"><span class="pre">gapp::replacement::Replacement</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement11Replacement18nextPopulationImplERK6GaInfoRK14PopulationView"><code class="docutils literal notranslate"><span class="pre">nextPopulationImpl()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp11replacement11ReplacementD0Ev"><code class="docutils literal notranslate"><span class="pre">~Replacement()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

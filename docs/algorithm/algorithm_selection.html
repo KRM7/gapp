@@ -1,0 +1,721 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Selection methods &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'algorithm/algorithm_selection';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Replacement methods" href="algorithm_replacement.html" />
+    <link rel="prev" title="Single-objective algorithms" href="algorithm_soga.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="algorithm.html">Algorithms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="algorithm_soga.html">Single-objective algorithms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mutation/mutation.html">Mutations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Selection methods</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selectionE"><code class="docutils literal notranslate"><span class="pre">gapp::selection</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-roulette">class Roulette</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection8RouletteE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Roulette</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tournament">class Tournament</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection10TournamentE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Tournament</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection10Tournament10TournamentE8PositiveI6size_tE"><code class="docutils literal notranslate"><span class="pre">Tournament()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection10Tournament4sizeE8PositiveI6size_tE"><code class="docutils literal notranslate"><span class="pre">size()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection10Tournament4sizeEv"><code class="docutils literal notranslate"><span class="pre">size()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-rank">class Rank</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection4RankE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Rank</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection4Rank4RankE11NonNegativeIdE11NonNegativeIdE"><code class="docutils literal notranslate"><span class="pre">Rank()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection4Rank7weightsE11NonNegativeIdE11NonNegativeIdE"><code class="docutils literal notranslate"><span class="pre">weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection4Rank7weightsEv"><code class="docutils literal notranslate"><span class="pre">weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection4Rank10min_weightEv"><code class="docutils literal notranslate"><span class="pre">min_weight()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection4Rank10max_weightEv"><code class="docutils literal notranslate"><span class="pre">max_weight()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-sigma">class Sigma</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection5SigmaE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Sigma</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection5Sigma5SigmaE8PositiveIdE"><code class="docutils literal notranslate"><span class="pre">Sigma()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection5Sigma5scaleE8PositiveIdE"><code class="docutils literal notranslate"><span class="pre">scale()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection5Sigma5scaleEv"><code class="docutils literal notranslate"><span class="pre">scale()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-boltzmann">class Boltzmann</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9BoltzmannE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Boltzmann</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9Boltzmann19TemperatureFunctionE"><code class="docutils literal notranslate"><span class="pre">TemperatureFunction</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9Boltzmann9BoltzmannE19TemperatureFunction"><code class="docutils literal notranslate"><span class="pre">Boltzmann()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="selection-methods">
+<h1>Selection methods<a class="headerlink" href="#selection-methods" title="Link to this heading">#</a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selectionE">
+<span id="_CPPv3N4gapp9selectionE"></span><span id="_CPPv2N4gapp9selectionE"></span><span id="gapp::selection"></span><span class="target" id="namespacegapp_1_1selection"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">selection</span></span></span><a class="headerlink" href="#_CPPv4N4gapp9selectionE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Selection operators for the single-objective algorithm. </p>
+</dd></dl>
+
+<section id="class-roulette">
+<h2>class Roulette<a class="headerlink" href="#class-roulette" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/soga_selection.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection8RouletteE">
+<span id="_CPPv3N4gapp9selection8RouletteE"></span><span id="_CPPv2N4gapp9selection8RouletteE"></span><span id="gapp::selection::Roulette"></span><span class="target" id="classgapp_1_1selection_1_1Roulette"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Roulette</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp9selectionE" title="gapp::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_soga.html#_CPPv4N4gapp9selection9SelectionE" title="gapp::selection::Selection"><span class="n"><span class="pre">Selection</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9selection8RouletteE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Roulette selection operator for the single-objective algorithm.</p>
+<p>The probability of selecting a candidate from the population is proportional to it’s fitness value. The operator assumes maximization, so candidates with higher fitness values will have a higher probability of being selected.</p>
+<p><div class="math notranslate nohighlight">
+\[ p_i = \frac{f_i}{\sum_i f_i} \]</div>
+</p>
+<p>This operator is a modified version of the standard roulette-selection method, so it also works if there are negative fitness values in the population, but all of the fitness must be finite for the operator to work correctly. </p>
+</dd></dl>
+
+</section>
+<section id="class-tournament">
+<h2>class Tournament<a class="headerlink" href="#class-tournament" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/soga_selection.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection10TournamentE">
+<span id="_CPPv3N4gapp9selection10TournamentE"></span><span id="_CPPv2N4gapp9selection10TournamentE"></span><span id="gapp::selection::Tournament"></span><span class="target" id="classgapp_1_1selection_1_1Tournament"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Tournament</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp9selectionE" title="gapp::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_soga.html#_CPPv4N4gapp9selection9SelectionE" title="gapp::selection::Selection"><span class="n"><span class="pre">Selection</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9selection10TournamentE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Tournament selection operator for the single-objective algorithm.</p>
+<p>When performing a selection, the operator selects a set number of candidate solutions randomly from the population using a uniform distribution, and then the best one is selected from these. The number of candidates initially picked is controlled by the <code class="docutils literal notranslate"><span class="pre">size</span></code> parameter of the operator.</p>
+<p>The operator assumes fitness maximization, and works with arbitrary fitness values, including infinite fitness values. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection10Tournament10TournamentE8PositiveI6size_tE">
+<span id="_CPPv3N4gapp9selection10Tournament10TournamentE8PositiveI6size_tE"></span><span id="_CPPv2N4gapp9selection10Tournament10TournamentE8PositiveI6size_tE"></span><span id="gapp::selection::Tournament::Tournament__Positive:s:CE"></span><span class="target" id="classgapp_1_1selection_1_1Tournament_1a73f7d015be2fae3bae44f6beb30c5844"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Tournament</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive"><span class="n"><span class="pre">Positive</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection10Tournament10TournamentE8PositiveI6size_tE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a tournament selection operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – The tournament size to use. Must be at least 1. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection10Tournament4sizeE8PositiveI6size_tE">
+<span id="_CPPv3N4gapp9selection10Tournament4sizeE8PositiveI6size_tE"></span><span id="_CPPv2N4gapp9selection10Tournament4sizeE8PositiveI6size_tE"></span><span id="gapp::selection::Tournament::size__Positive:s:CE"></span><span class="target" id="classgapp_1_1selection_1_1Tournament_1a1dbcd0e7f563e254a4c053f5c52d4efe"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive"><span class="n"><span class="pre">Positive</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection10Tournament4sizeE8PositiveI6size_tE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the number of candidates that will be picked for a tournament.</p>
+<p>If the tourney size is 1, the selection operator is equivalent to randomly selecting a candidate from a uniform distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – The size of the tournaments during tournament selection. Must be at least 1. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9selection10Tournament4sizeEv">
+<span id="_CPPv3NK4gapp9selection10Tournament4sizeEv"></span><span id="_CPPv2NK4gapp9selection10Tournament4sizeEv"></span><span id="gapp::selection::Tournament::sizeCCE"></span><span class="target" id="classgapp_1_1selection_1_1Tournament_1a5b6695a7337d451cf823df349e52bff2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp9selection10Tournament4sizeEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The tournament size used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-rank">
+<h2>class Rank<a class="headerlink" href="#class-rank" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/soga_selection.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection4RankE">
+<span id="_CPPv3N4gapp9selection4RankE"></span><span id="_CPPv2N4gapp9selection4RankE"></span><span id="gapp::selection::Rank"></span><span class="target" id="classgapp_1_1selection_1_1Rank"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Rank</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp9selectionE" title="gapp::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_soga.html#_CPPv4N4gapp9selection9SelectionE" title="gapp::selection::Selection"><span class="n"><span class="pre">Selection</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9selection4RankE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Rank selection operator for the single-objective algorithm.</p>
+<p>The individuals of the population are assigned selection weights between a minimum and maximum value based on their rank in the population relative to other individuals, assuming fitness maximization. The selection probabilities are then determined based on these weights.</p>
+<p>The operator works with arbitrary fitness values, infinite values are also allowed to be present in the fitness matrix of the population. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection4Rank4RankE11NonNegativeIdE11NonNegativeIdE">
+<span id="_CPPv3N4gapp9selection4Rank4RankE11NonNegativeIdE11NonNegativeIdE"></span><span id="_CPPv2N4gapp9selection4Rank4RankE11NonNegativeIdE11NonNegativeIdE"></span><span id="gapp::selection::Rank::Rank__NonNegative:double:.NonNegative:double:"></span><span class="target" id="classgapp_1_1selection_1_1Rank_1a16d61ab401a6e4a6b3f31c338e1dd51d"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Rank</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">min_weight</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0.1</span></span>, <a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max_weight</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1.1</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection4Rank4RankE11NonNegativeIdE11NonNegativeIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a rank selection operator using the specified weight limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_weight</strong> – The selection weight assigned to the worst individual of the population. Must be in the closed interval [0.0, <code class="docutils literal notranslate"><span class="pre">max_weight</span></code>]. </p></li>
+<li><p><strong>max_weight</strong> – The selection weight assigned to the best individual of the population. Must be greater than <code class="docutils literal notranslate"><span class="pre">min_weight</span></code>. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection4Rank7weightsE11NonNegativeIdE11NonNegativeIdE">
+<span id="_CPPv3N4gapp9selection4Rank7weightsE11NonNegativeIdE11NonNegativeIdE"></span><span id="_CPPv2N4gapp9selection4Rank7weightsE11NonNegativeIdE11NonNegativeIdE"></span><span id="gapp::selection::Rank::weights__NonNegative:double:.NonNegative:double:"></span><span class="target" id="classgapp_1_1selection_1_1Rank_1a9d8c1ee1a4d9946ab829a5806cdfcbea"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">weights</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">min_weight</span></span>, <a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp11NonNegativeE" title="gapp::NonNegative"><span class="n"><span class="pre">NonNegative</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max_weight</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection4Rank7weightsE11NonNegativeIdE11NonNegativeIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sets the minimum and maximum selection weights used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_weight</strong> – The selection weight assigned to the worst individual of the population. Must be in the closed interval [0.0, <code class="docutils literal notranslate"><span class="pre">max_weight</span></code>]. </p></li>
+<li><p><strong>max_weight</strong> – The selection weight assigned to the best individual of the population. Must be greater than <code class="docutils literal notranslate"><span class="pre">min_weight</span></code>. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9selection4Rank7weightsEv">
+<span id="_CPPv3NK4gapp9selection4Rank7weightsEv"></span><span id="_CPPv2NK4gapp9selection4Rank7weightsEv"></span><span id="gapp::selection::Rank::weightsC"></span><span class="target" id="classgapp_1_1selection_1_1Rank_1a2449983f2e05642134cb7f984ad364b2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">weights</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp9selection4Rank7weightsEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The minimum and maximum selection weights used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9selection4Rank10min_weightEv">
+<span id="_CPPv3NK4gapp9selection4Rank10min_weightEv"></span><span id="_CPPv2NK4gapp9selection4Rank10min_weightEv"></span><span id="gapp::selection::Rank::min_weightC"></span><span class="target" id="classgapp_1_1selection_1_1Rank_1a333aff6dbf8bd90955024435367e3a2e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">min_weight</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp9selection4Rank10min_weightEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The minimum selection weight used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9selection4Rank10max_weightEv">
+<span id="_CPPv3NK4gapp9selection4Rank10max_weightEv"></span><span id="_CPPv2NK4gapp9selection4Rank10max_weightEv"></span><span id="gapp::selection::Rank::max_weightC"></span><span class="target" id="classgapp_1_1selection_1_1Rank_1a395e122c216f464fdb4d4d79cfb7d962"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max_weight</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp9selection4Rank10max_weightEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum selection weight used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-sigma">
+<h2>class Sigma<a class="headerlink" href="#class-sigma" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/soga_selection.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection5SigmaE">
+<span id="_CPPv3N4gapp9selection5SigmaE"></span><span id="_CPPv2N4gapp9selection5SigmaE"></span><span id="gapp::selection::Sigma"></span><span class="target" id="classgapp_1_1selection_1_1Sigma"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Sigma</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp9selectionE" title="gapp::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_soga.html#_CPPv4N4gapp9selection9SelectionE" title="gapp::selection::Selection"><span class="n"><span class="pre">Selection</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9selection5SigmaE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sigma scaling selection operator for the single-objective algorithm.</p>
+<p>The fitness values of the population are scaled based on the mean and the standard deviation of the fitness values in the population, and the probability of selecting a candidate will be proportional to its scaled fitness value. The operator has a parameter (scale, or S) that controls how the values are scaled. Smaller values of the parameter will emphasize the differences between the fitness values of the candidates.</p>
+<p><div class="math notranslate nohighlight">
+\[ f_i' = \frac{ f_i - f_{\textrm{mean}} }{ S\ f_{\textrm{sd}} } \]</div>
+</p>
+<p>The operator assumes fitness maximization, and all of the fitness values of the population must be finite. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection5Sigma5SigmaE8PositiveIdE">
+<span id="_CPPv3N4gapp9selection5Sigma5SigmaE8PositiveIdE"></span><span id="_CPPv2N4gapp9selection5Sigma5SigmaE8PositiveIdE"></span><span id="gapp::selection::Sigma::Sigma__Positive:double:"></span><span class="target" id="classgapp_1_1selection_1_1Sigma_1abf5ba9d09d0d2e3015d0868fdc5f04ae"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Sigma</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive"><span class="n"><span class="pre">Positive</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">scale</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">3.0</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection5Sigma5SigmaE8PositiveIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a sigma scaling selection operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scale</strong> – The scaling parameter to use. Must be greater than 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection5Sigma5scaleE8PositiveIdE">
+<span id="_CPPv3N4gapp9selection5Sigma5scaleE8PositiveIdE"></span><span id="_CPPv2N4gapp9selection5Sigma5scaleE8PositiveIdE"></span><span id="gapp::selection::Sigma::scale__Positive:double:"></span><span class="target" id="classgapp_1_1selection_1_1Sigma_1aaaafd0d1a4089739b04d97b45287b090"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">scale</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../utility/utilities.html#_CPPv4I0EN4gapp8PositiveE" title="gapp::Positive"><span class="n"><span class="pre">Positive</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">scale</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection5Sigma5scaleE8PositiveIdE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the scaling parameter used.</p>
+<p>The value of this parameter determines how the fitness values are scaled. Smaller values of the parameter will emphasize the differences between the candidates, meaning that even candidates with small differences in their fitnesses can have large differences in their selection probabilities. Larger values will lead to the candidates having a more equal probability of being selected regardless of the differences in fitnesses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scale</strong> – The scaling parameter to use. Must be greater than 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp9selection5Sigma5scaleEv">
+<span id="_CPPv3NK4gapp9selection5Sigma5scaleEv"></span><span id="_CPPv2NK4gapp9selection5Sigma5scaleEv"></span><span id="gapp::selection::Sigma::scaleC"></span><span class="target" id="classgapp_1_1selection_1_1Sigma_1aad41bb6f1ccb2432a92f0a0222056415"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">scale</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp9selection5Sigma5scaleEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The scaling parameter used. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-boltzmann">
+<h2>class Boltzmann<a class="headerlink" href="#class-boltzmann" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm/soga_selection.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection9BoltzmannE">
+<span id="_CPPv3N4gapp9selection9BoltzmannE"></span><span id="_CPPv2N4gapp9selection9BoltzmannE"></span><span id="gapp::selection::Boltzmann"></span><span class="target" id="classgapp_1_1selection_1_1Boltzmann"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Boltzmann</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp9selectionE" title="gapp::selection"><span class="n"><span class="pre">selection</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="algorithm_soga.html#_CPPv4N4gapp9selection9SelectionE" title="gapp::selection::Selection"><span class="n"><span class="pre">Selection</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9selection9BoltzmannE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Boltzmann selection operator for the single-objective algorithm.</p>
+<p>The fitness values of the candidates are scaled based on the overall fitness values of the population, and the probability of selecting a candidate will be proportional to its scaled fitness value. How the fitness values are scaled changes over time in a run (from generation to generation) based on a temperature function. In the early generations this temperature value will be high, leading to the candidates having close to equal probabilities of being selected. The temperature value will decrease over the generations, and in the later generations even small differences in the fitness values of the candidates will lead to large differences in their selection probabilities.</p>
+<p><div class="math notranslate nohighlight">
+\[ p_i = \frac{ e^{\frac{f_i}{T(t)}} }{ \sum_i e^{\frac{f_i}{T(t)}} } \]</div>
+</p>
+<p>The operator assumes fitness maximization, and all of the fitness values of the population must be finite. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection9Boltzmann19TemperatureFunctionE">
+<span id="_CPPv3N4gapp9selection9Boltzmann19TemperatureFunctionE"></span><span id="_CPPv2N4gapp9selection9Boltzmann19TemperatureFunctionE"></span><span class="target" id="classgapp_1_1selection_1_1Boltzmann_1a1efa0e2a10e0081676f27d85c17de93f"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TemperatureFunction</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection9Boltzmann19TemperatureFunctionE" title="Link to this definition">#</a><br /></dt>
+<dd><p><p>The general callable type that can be used as a temperature function. The function should return the temperature in the given generation, with its signature being:</p>
+<p>\t double f(size_t current_generation, size_t max_generation)</p>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9selection9Boltzmann9BoltzmannE19TemperatureFunction">
+<span id="_CPPv3N4gapp9selection9Boltzmann9BoltzmannE19TemperatureFunction"></span><span id="_CPPv2N4gapp9selection9Boltzmann9BoltzmannE19TemperatureFunction"></span><span id="gapp::selection::Boltzmann::Boltzmann__TemperatureFunction"></span><span class="target" id="classgapp_1_1selection_1_1Boltzmann_1ad1908d04db5f17e9f524096ee48dec9a"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Boltzmann</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4gapp9selection9Boltzmann19TemperatureFunctionE" title="gapp::selection::Boltzmann::TemperatureFunction"><span class="n"><span class="pre">TemperatureFunction</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">f</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">boltzmannDefaultTemp</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9selection9Boltzmann9BoltzmannE19TemperatureFunction" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a <a class="reference internal" href="#classgapp_1_1selection_1_1Boltzmann"><span class="std std-ref">Boltzmann</span></a> selection operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>f</strong> – The temperature function to use. Can’t be a nullptr. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selectionE"><code class="docutils literal notranslate"><span class="pre">gapp::selection</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-roulette">class Roulette</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection8RouletteE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Roulette</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tournament">class Tournament</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection10TournamentE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Tournament</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection10Tournament10TournamentE8PositiveI6size_tE"><code class="docutils literal notranslate"><span class="pre">Tournament()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection10Tournament4sizeE8PositiveI6size_tE"><code class="docutils literal notranslate"><span class="pre">size()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection10Tournament4sizeEv"><code class="docutils literal notranslate"><span class="pre">size()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-rank">class Rank</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection4RankE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Rank</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection4Rank4RankE11NonNegativeIdE11NonNegativeIdE"><code class="docutils literal notranslate"><span class="pre">Rank()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection4Rank7weightsE11NonNegativeIdE11NonNegativeIdE"><code class="docutils literal notranslate"><span class="pre">weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection4Rank7weightsEv"><code class="docutils literal notranslate"><span class="pre">weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection4Rank10min_weightEv"><code class="docutils literal notranslate"><span class="pre">min_weight()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection4Rank10max_weightEv"><code class="docutils literal notranslate"><span class="pre">max_weight()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-sigma">class Sigma</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection5SigmaE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Sigma</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection5Sigma5SigmaE8PositiveIdE"><code class="docutils literal notranslate"><span class="pre">Sigma()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection5Sigma5scaleE8PositiveIdE"><code class="docutils literal notranslate"><span class="pre">scale()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp9selection5Sigma5scaleEv"><code class="docutils literal notranslate"><span class="pre">scale()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-boltzmann">class Boltzmann</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9BoltzmannE"><code class="docutils literal notranslate"><span class="pre">gapp::selection::Boltzmann</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9Boltzmann19TemperatureFunctionE"><code class="docutils literal notranslate"><span class="pre">TemperatureFunction</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9selection9Boltzmann9BoltzmannE19TemperatureFunction"><code class="docutils literal notranslate"><span class="pre">Boltzmann()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

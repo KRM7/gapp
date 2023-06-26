@@ -1,0 +1,668 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Travelling salesman problems &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'problems/problems_tsp';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Integer encoded problems" href="problems_integer.html" />
+    <link rel="prev" title="Many-objective benchmark problems" href="problems_many_objective.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../core/fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core/population.html">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../algorithm/algorithm.html">Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../algorithm/algorithm_soga.html">Single-objective algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../algorithm/algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mutation/mutation.html">Mutations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="problems.html">Problems</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Travelling salesman problems</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problemsE"><code class="docutils literal notranslate"><span class="pre">gapp::problems</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp">class TSP</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems3TSPE"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp52">class TSP52</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems5TSP52E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP52</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems5TSP525TSP52Ev"><code class="docutils literal notranslate"><span class="pre">TSP52()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp76">class TSP76</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems5TSP76E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP76</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems5TSP765TSP76Ev"><code class="docutils literal notranslate"><span class="pre">TSP76()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp124">class TSP124</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP124E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP124</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP1246TSP124Ev"><code class="docutils literal notranslate"><span class="pre">TSP124()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp152">class TSP152</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP152E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP152</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP1526TSP152Ev"><code class="docutils literal notranslate"><span class="pre">TSP152()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp226">class TSP226</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP226E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP226</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP2266TSP226Ev"><code class="docutils literal notranslate"><span class="pre">TSP226()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp299">class TSP299</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP299E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP299</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP2996TSP299Ev"><code class="docutils literal notranslate"><span class="pre">TSP299()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp439">class TSP439</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP439E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP439</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP4396TSP439Ev"><code class="docutils literal notranslate"><span class="pre">TSP439()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="travelling-salesman-problems">
+<h1>Travelling salesman problems<a class="headerlink" href="#travelling-salesman-problems" title="Link to this heading">#</a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problemsE">
+<span id="_CPPv3N4gapp8problemsE"></span><span id="_CPPv2N4gapp8problemsE"></span><span id="gapp::problems"></span><span class="target" id="namespacegapp_1_1problems"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">problems</span></span></span><br /></dt>
+<dd><p>Implementations of some benchmark functions that can be used to test the genetic algorithms. There are some benchmark problems implemented for every encoding type, and the real-encoded problems can also be used for the binary-encoded GAs.</p>
+<p>All of the problems are implemented for maximization. </p>
+</dd></dl>
+
+<section id="class-tsp">
+<h2>class TSP<a class="headerlink" href="#class-tsp" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;problems/travelling_salesman.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems3TSPE">
+<span id="_CPPv3N4gapp8problems3TSPE"></span><span id="_CPPv2N4gapp8problems3TSPE"></span><span id="gapp::problems::TSP"></span><span class="target" id="classgapp_1_1problems_1_1TSP"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4N4gapp8problemsE" title="gapp::problems"><span class="n"><span class="pre">problems</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4I0EN4gapp8problems17BenchmarkFunctionE" title="gapp::problems::BenchmarkFunction"><span class="n"><span class="pre">BenchmarkFunction</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../core/encoding_permutation.html#_CPPv4N4gapp15PermutationGeneE" title="gapp::PermutationGene"><span class="n"><span class="pre">PermutationGene</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8problems3TSPE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The base class used for the travelling salesman benchmark functions. The last node is fixed to be the last node of the city list supplied in the ctor. The travelling salesman problems are modified for maximization, so they will always return negative distance values. </p>
+<p>Subclassed by <a class="reference internal" href="#classgapp_1_1problems_1_1TSP124"><span class="std std-ref">gapp::problems::TSP124</span></a>, <a class="reference internal" href="#classgapp_1_1problems_1_1TSP152"><span class="std std-ref">gapp::problems::TSP152</span></a>, <a class="reference internal" href="#classgapp_1_1problems_1_1TSP226"><span class="std std-ref">gapp::problems::TSP226</span></a>, <a class="reference internal" href="#classgapp_1_1problems_1_1TSP299"><span class="std std-ref">gapp::problems::TSP299</span></a>, <a class="reference internal" href="#classgapp_1_1problems_1_1TSP439"><span class="std std-ref">gapp::problems::TSP439</span></a>, <a class="reference internal" href="#classgapp_1_1problems_1_1TSP52"><span class="std std-ref">gapp::problems::TSP52</span></a>, <a class="reference internal" href="#classgapp_1_1problems_1_1TSP76"><span class="std std-ref">gapp::problems::TSP76</span></a></p>
+</dd></dl>
+
+</section>
+<section id="class-tsp52">
+<h2>class TSP52<a class="headerlink" href="#class-tsp52" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;problems/travelling_salesman.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems5TSP52E">
+<span id="_CPPv3N4gapp8problems5TSP52E"></span><span id="_CPPv2N4gapp8problems5TSP52E"></span><span id="gapp::problems::TSP52"></span><span class="target" id="classgapp_1_1problems_1_1TSP52"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP52</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4N4gapp8problemsE" title="gapp::problems"><span class="n"><span class="pre">problems</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8problems3TSPE" title="gapp::problems::TSP"><span class="n"><span class="pre">TSP</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8problems5TSP52E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Travelling salesman problem with 52 nodes (Berlin52) for the <a class="reference internal" href="../core/encoding_permutation.html#classgapp_1_1PermutationGA"><span class="std std-ref">PermutationGA</span></a>. The problem is modified for maximization, so it always returns negative distances. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems5TSP525TSP52Ev">
+<span id="_CPPv3N4gapp8problems5TSP525TSP52Ev"></span><span id="_CPPv2N4gapp8problems5TSP525TSP52Ev"></span><span id="gapp::problems::TSP52::TSP52"></span><span class="target" id="classgapp_1_1problems_1_1TSP52_1a17ad7ff0e701b4e8240d56e91a5fc1c8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP52</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8problems5TSP525TSP52Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-tsp76">
+<h2>class TSP76<a class="headerlink" href="#class-tsp76" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;problems/travelling_salesman.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems5TSP76E">
+<span id="_CPPv3N4gapp8problems5TSP76E"></span><span id="_CPPv2N4gapp8problems5TSP76E"></span><span id="gapp::problems::TSP76"></span><span class="target" id="classgapp_1_1problems_1_1TSP76"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP76</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4N4gapp8problemsE" title="gapp::problems"><span class="n"><span class="pre">problems</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8problems3TSPE" title="gapp::problems::TSP"><span class="n"><span class="pre">TSP</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8problems5TSP76E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Travelling salesman problem with 76 nodes (Padberg/Rinaldi’s 76 city problem) for the <a class="reference internal" href="../core/encoding_permutation.html#classgapp_1_1PermutationGA"><span class="std std-ref">PermutationGA</span></a>. The problem is modified for maximization, so it always returns negative distances. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems5TSP765TSP76Ev">
+<span id="_CPPv3N4gapp8problems5TSP765TSP76Ev"></span><span id="_CPPv2N4gapp8problems5TSP765TSP76Ev"></span><span id="gapp::problems::TSP76::TSP76"></span><span class="target" id="classgapp_1_1problems_1_1TSP76_1a6eb50f52d4ec2fafb5283d6a089e926a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP76</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8problems5TSP765TSP76Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-tsp124">
+<h2>class TSP124<a class="headerlink" href="#class-tsp124" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;problems/travelling_salesman.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP124E">
+<span id="_CPPv3N4gapp8problems6TSP124E"></span><span id="_CPPv2N4gapp8problems6TSP124E"></span><span id="gapp::problems::TSP124"></span><span class="target" id="classgapp_1_1problems_1_1TSP124"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP124</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4N4gapp8problemsE" title="gapp::problems"><span class="n"><span class="pre">problems</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8problems3TSPE" title="gapp::problems::TSP"><span class="n"><span class="pre">TSP</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP124E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Travelling salesman problem with 124 nodes (Padberg/Rinaldi’s 124 city problem) for the <a class="reference internal" href="../core/encoding_permutation.html#classgapp_1_1PermutationGA"><span class="std std-ref">PermutationGA</span></a>. The problem is modified for maximization, so it always returns negative distances. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP1246TSP124Ev">
+<span id="_CPPv3N4gapp8problems6TSP1246TSP124Ev"></span><span id="_CPPv2N4gapp8problems6TSP1246TSP124Ev"></span><span id="gapp::problems::TSP124::TSP124"></span><span class="target" id="classgapp_1_1problems_1_1TSP124_1a79475ddf71a01d016efd135555fefbc2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP124</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP1246TSP124Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-tsp152">
+<h2>class TSP152<a class="headerlink" href="#class-tsp152" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;problems/travelling_salesman.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP152E">
+<span id="_CPPv3N4gapp8problems6TSP152E"></span><span id="_CPPv2N4gapp8problems6TSP152E"></span><span id="gapp::problems::TSP152"></span><span class="target" id="classgapp_1_1problems_1_1TSP152"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP152</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4N4gapp8problemsE" title="gapp::problems"><span class="n"><span class="pre">problems</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8problems3TSPE" title="gapp::problems::TSP"><span class="n"><span class="pre">TSP</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP152E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Travelling salesman problem with 152 nodes (Padberg/Rinaldi’s 152 city problem) for the <a class="reference internal" href="../core/encoding_permutation.html#classgapp_1_1PermutationGA"><span class="std std-ref">PermutationGA</span></a>. The problem is modified for maximization, so it always returns negative distances. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP1526TSP152Ev">
+<span id="_CPPv3N4gapp8problems6TSP1526TSP152Ev"></span><span id="_CPPv2N4gapp8problems6TSP1526TSP152Ev"></span><span id="gapp::problems::TSP152::TSP152"></span><span class="target" id="classgapp_1_1problems_1_1TSP152_1a022ea2215c082b0ed1b26524f1fefbdb"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP152</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP1526TSP152Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-tsp226">
+<h2>class TSP226<a class="headerlink" href="#class-tsp226" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;problems/travelling_salesman.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP226E">
+<span id="_CPPv3N4gapp8problems6TSP226E"></span><span id="_CPPv2N4gapp8problems6TSP226E"></span><span id="gapp::problems::TSP226"></span><span class="target" id="classgapp_1_1problems_1_1TSP226"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP226</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4N4gapp8problemsE" title="gapp::problems"><span class="n"><span class="pre">problems</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8problems3TSPE" title="gapp::problems::TSP"><span class="n"><span class="pre">TSP</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP226E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Travelling salesman problem with 226 nodes (Padberg/Rinaldi’s 226 city problem) for the <a class="reference internal" href="../core/encoding_permutation.html#classgapp_1_1PermutationGA"><span class="std std-ref">PermutationGA</span></a>. The problem is modified for maximization, so it always returns negative distances. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP2266TSP226Ev">
+<span id="_CPPv3N4gapp8problems6TSP2266TSP226Ev"></span><span id="_CPPv2N4gapp8problems6TSP2266TSP226Ev"></span><span id="gapp::problems::TSP226::TSP226"></span><span class="target" id="classgapp_1_1problems_1_1TSP226_1a1dea979982a870f5126845932f9624d3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP226</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP2266TSP226Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-tsp299">
+<h2>class TSP299<a class="headerlink" href="#class-tsp299" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;problems/travelling_salesman.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP299E">
+<span id="_CPPv3N4gapp8problems6TSP299E"></span><span id="_CPPv2N4gapp8problems6TSP299E"></span><span id="gapp::problems::TSP299"></span><span class="target" id="classgapp_1_1problems_1_1TSP299"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP299</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4N4gapp8problemsE" title="gapp::problems"><span class="n"><span class="pre">problems</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8problems3TSPE" title="gapp::problems::TSP"><span class="n"><span class="pre">TSP</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP299E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Travelling salesman problem with 299 nodes (Padberg/Rinaldi’s 299 city problem) for the <a class="reference internal" href="../core/encoding_permutation.html#classgapp_1_1PermutationGA"><span class="std std-ref">PermutationGA</span></a>. The problem is modified for maximization, so it always returns negative distances. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP2996TSP299Ev">
+<span id="_CPPv3N4gapp8problems6TSP2996TSP299Ev"></span><span id="_CPPv2N4gapp8problems6TSP2996TSP299Ev"></span><span id="gapp::problems::TSP299::TSP299"></span><span class="target" id="classgapp_1_1problems_1_1TSP299_1a60b995ffe2a4a0a56a354b6497326d04"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP299</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP2996TSP299Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-tsp439">
+<h2>class TSP439<a class="headerlink" href="#class-tsp439" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;problems/travelling_salesman.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP439E">
+<span id="_CPPv3N4gapp8problems6TSP439E"></span><span id="_CPPv2N4gapp8problems6TSP439E"></span><span id="gapp::problems::TSP439"></span><span class="target" id="classgapp_1_1problems_1_1TSP439"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP439</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../core/encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="problems.html#_CPPv4N4gapp8problemsE" title="gapp::problems"><span class="n"><span class="pre">problems</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp8problems3TSPE" title="gapp::problems::TSP"><span class="n"><span class="pre">TSP</span></span></a><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP439E" title="Link to this definition">#</a><br /></dt>
+<dd><p>Travelling salesman problem with 439 nodes (Padberg/Rinaldi’s 439 city problem) for the <a class="reference internal" href="../core/encoding_permutation.html#classgapp_1_1PermutationGA"><span class="std std-ref">PermutationGA</span></a>. The problem is modified for maximization, so it always returns negative distances. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8problems6TSP4396TSP439Ev">
+<span id="_CPPv3N4gapp8problems6TSP4396TSP439Ev"></span><span id="_CPPv2N4gapp8problems6TSP4396TSP439Ev"></span><span id="gapp::problems::TSP439::TSP439"></span><span class="target" id="classgapp_1_1problems_1_1TSP439_1a74d356d2b283064a53431bd73968fea0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TSP439</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp8problems6TSP4396TSP439Ev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problemsE"><code class="docutils literal notranslate"><span class="pre">gapp::problems</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp">class TSP</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems3TSPE"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp52">class TSP52</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems5TSP52E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP52</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems5TSP525TSP52Ev"><code class="docutils literal notranslate"><span class="pre">TSP52()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp76">class TSP76</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems5TSP76E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP76</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems5TSP765TSP76Ev"><code class="docutils literal notranslate"><span class="pre">TSP76()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp124">class TSP124</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP124E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP124</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP1246TSP124Ev"><code class="docutils literal notranslate"><span class="pre">TSP124()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp152">class TSP152</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP152E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP152</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP1526TSP152Ev"><code class="docutils literal notranslate"><span class="pre">TSP152()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp226">class TSP226</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP226E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP226</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP2266TSP226Ev"><code class="docutils literal notranslate"><span class="pre">TSP226()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp299">class TSP299</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP299E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP299</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP2996TSP299Ev"><code class="docutils literal notranslate"><span class="pre">TSP299()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-tsp439">class TSP439</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP439E"><code class="docutils literal notranslate"><span class="pre">gapp::problems::TSP439</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8problems6TSP4396TSP439Ev"><code class="docutils literal notranslate"><span class="pre">TSP439()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

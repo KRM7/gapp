@@ -1,0 +1,1130 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Candidates &amp; Populations &#8212; gapp 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c3c276" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'core/population';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Encodings" href="encodings.html" />
+    <link rel="prev" title="Fitness functions" href="fitness_function.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">gapp 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="fitness_function.html">Fitness functions</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Candidates &amp; Populations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="encodings.html">Encodings</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="encoding_real.html">Real-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encoding_binary.html">Binary-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encoding_permutation.html">Permutation-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encoding_integer.html">Integer-encoded genetic algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encoding_mixed.html">Mixed-encoded genetic algorithm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../algorithm/algorithm.html">Algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../algorithm/algorithm_soga.html">Single-objective algorithms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_selection.html">Selection methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../algorithm/algorithm_replacement.html">Replacement methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../algorithm/algorithm_moga.html">Multi-objective algorithms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../crossover/crossover.html">Crossovers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_real.html">Real encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_binary.html">Binary encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_permutation.html">Permutation encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_integer.html">Integer encoded crossovers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../crossover/crossover_mixed.html">Mixed crossovers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mutation/mutation.html">Mutations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_real.html">Real encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_binary.html">Binary encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_permutation.html">Permutation encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_integer.html">Integer encoded mutations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mutation/mutation_mixed.html">Mixed mutations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../stop_condition/stop_condition.html">Stop conditions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../metrics/metrics.html">Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_fitness.html">Fitness metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_distribution.html">Distribution metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../metrics/metrics_misc.html">Other metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../problems/problems.html">Problems</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_single_objective.html">Single-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_multi_objective.html">Multi-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_many_objective.html">Many-objective benchmark problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_tsp.html">Travelling salesman problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../problems/problems_integer.html">Integer encoded problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility/utilities.html">Utility classes and functions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/KRM7/gapp" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Candidates & Populations</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv44gapp"><code class="docutils literal notranslate"><span class="pre">gapp</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessvector">class FitnessVector</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13FitnessVectorE"><code class="docutils literal notranslate"><span class="pre">FitnessVector</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessmatrix">class FitnessMatrix</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13FitnessMatrixE"><code class="docutils literal notranslate"><span class="pre">FitnessMatrix</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-cvvector">class CVVector</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8CVVectorE"><code class="docutils literal notranslate"><span class="pre">CVVector</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-chromosome">class Chromosome</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp10ChromosomeE"><code class="docutils literal notranslate"><span class="pre">Chromosome</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidateinfo">class CandidateInfo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13CandidateInfoE"><code class="docutils literal notranslate"><span class="pre">gapp::CandidateInfo</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp13CandidateInfo14num_objectivesEv"><code class="docutils literal notranslate"><span class="pre">num_objectives()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp13CandidateInfo12is_evaluatedEv"><code class="docutils literal notranslate"><span class="pre">is_evaluated()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp13CandidateInfo15num_constraintsEv"><code class="docutils literal notranslate"><span class="pre">num_constraints()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp13CandidateInfo24has_constraint_violationEv"><code class="docutils literal notranslate"><span class="pre">has_constraint_violation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13CandidateInfo7fitnessE"><code class="docutils literal notranslate"><span class="pre">fitness</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13CandidateInfo20constraint_violationE"><code class="docutils literal notranslate"><span class="pre">constraint_violation</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidate">class Candidate</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp9CandidateE"><code class="docutils literal notranslate"><span class="pre">gapp::Candidate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate4GeneE"><code class="docutils literal notranslate"><span class="pre">Gene</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9CandidateEv"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9CandidateE10BoundsViewI1TE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9CandidateE10ChromosomeI1TE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9CandidateE10ChromosomeI1TE10BoundsViewI1TE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate5beginEv"><code class="docutils literal notranslate"><span class="pre">begin()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate3endEv"><code class="docutils literal notranslate"><span class="pre">end()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENK4gapp9Candidate9chrom_lenE6size_tv"><code class="docutils literal notranslate"><span class="pre">chrom_len()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENR4gapp9Candidate5chromER10ChromosomeI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">chrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENKR4gapp9Candidate5chromERK10ChromosomeI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">chrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENK4gapp9Candidate6boundsE10BoundsViewI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate10chromosomeE"><code class="docutils literal notranslate"><span class="pre">chromosome</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9NumChromsE"><code class="docutils literal notranslate"><span class="pre">NumChroms</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidate-mixedgene">class Candidate&lt;MixedGene&gt;</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE"><code class="docutils literal notranslate"><span class="pre">gapp::Candidate&lt;</span> <span class="pre">MixedGene&lt;</span> <span class="pre">Ts...</span> <span class="pre">&gt;</span> <span class="pre">&gt;</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE4GeneE"><code class="docutils literal notranslate"><span class="pre">Gene</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateEv"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEEN6detail11map_types_tI10BoundsViewN6detail14filter_types_tI15is_bounded_geneDp2TsEEEE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp9CandidateI2TsEEE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE9chrom_lenE6size_tv"><code class="docutils literal notranslate"><span class="pre">chrom_len()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENR4gapp9CandidateI9MixedGeneIDp2TsEE5chromER10ChromosomeI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">chrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENKR4gapp9CandidateI9MixedGeneIDp2TsEE5chromERK10ChromosomeI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">chrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE6boundsE10BoundsViewI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9NumChromsE"><code class="docutils literal notranslate"><span class="pre">NumChroms</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4IEN4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateI9MixedGeneIDp2TsEE17constructor_tag_tE"><code class="docutils literal notranslate"><span class="pre">gapp::Candidate&lt;</span> <span class="pre">MixedGene&lt;</span> <span class="pre">Ts...</span> <span class="pre">&gt;</span> <span class="pre">&gt;::constructor_tag_t</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidatepair">class CandidatePair</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp13CandidatePairE"><code class="docutils literal notranslate"><span class="pre">gapp::CandidatePair</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidates">class Candidates</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp10CandidatesE"><code class="docutils literal notranslate"><span class="pre">Candidates</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-population">class Population</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp10PopulationE"><code class="docutils literal notranslate"><span class="pre">Population</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-populationview">class PopulationView</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp14PopulationViewE"><code class="docutils literal notranslate"><span class="pre">PopulationView</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-bounds">class Bounds</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp6BoundsE"><code class="docutils literal notranslate"><span class="pre">gapp::Bounds</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp6Bounds4GeneE"><code class="docutils literal notranslate"><span class="pre">Gene</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp6Bounds6BoundsERK1TRK1T"><code class="docutils literal notranslate"><span class="pre">Bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp6Bounds5lowerEv"><code class="docutils literal notranslate"><span class="pre">lower()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp6Bounds5upperEv"><code class="docutils literal notranslate"><span class="pre">upper()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp12BoundsVectorE"><code class="docutils literal notranslate"><span class="pre">BoundsVector</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="candidates-populations">
+<h1>Candidates &amp; Populations<a class="headerlink" href="#candidates-populations" title="Link to this heading">#</a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv44gapp">
+<span id="_CPPv34gapp"></span><span id="_CPPv24gapp"></span><span id="gapp"></span><span class="target" id="namespacegapp"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gapp</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<section id="class-fitnessvector">
+<h2>class FitnessVector<a class="headerlink" href="#class-fitnessvector" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp13FitnessVectorE">
+<span id="_CPPv3N4gapp13FitnessVectorE"></span><span id="_CPPv2N4gapp13FitnessVectorE"></span><span class="target" id="candidate_8hpp_1a7b4523b6b34e4334d343eb8d79bbfeee"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FitnessVector</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">small_vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp13FitnessVectorE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The class used to represent the fitness of the candidates. Contains a fitness value for each objective. </p>
+</dd></dl>
+
+</section>
+<section id="class-fitnessmatrix">
+<h2>class FitnessMatrix<a class="headerlink" href="#class-fitnessmatrix" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp13FitnessMatrixE">
+<span id="_CPPv3N4gapp13FitnessMatrixE"></span><span id="_CPPv2N4gapp13FitnessMatrixE"></span><span class="target" id="candidate_8hpp_1acb726011ba218a93a16d0abb5680c623"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FitnessMatrix</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Matrix</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp13FitnessMatrixE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The class used to represent the fitness values of multiple candidates. Each row of the matrix is the fitness vector of a candidate.</p>
+<p>The size of a fitness matrix is: [ number_of_candidates x number_of_objectives ]. </p>
+</dd></dl>
+
+</section>
+<section id="class-cvvector">
+<h2>class CVVector<a class="headerlink" href="#class-cvvector" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp8CVVectorE">
+<span id="_CPPv3N4gapp8CVVectorE"></span><span id="_CPPv2N4gapp8CVVectorE"></span><span class="target" id="candidate_8hpp_1a808c41c184269bfef2758ceb0a8b9fa4"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">CVVector</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">small_vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp8CVVectorE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The class used to represent the constraint violations of a candidate. It contains the degree of constraint violation for each constraint separately. Higher values mean greater degrees of constraint violation, while 0 or lower values mean no constraint violation for a given constraint.</p>
+<p>The size of a constraint violation vector is equal to the number of constraints. </p>
+</dd></dl>
+
+</section>
+<section id="class-chromosome">
+<h2>class Chromosome<a class="headerlink" href="#class-chromosome" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp10ChromosomeE">
+<span id="_CPPv3I0EN4gapp10ChromosomeE"></span><span id="_CPPv2I0EN4gapp10ChromosomeE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="candidate_8hpp_1ab00ad34a95e1831ccbf2f8ce59e6abef"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Chromosome</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp10ChromosomeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The type used to represent the chromosome of a candidate solution. Every gene of a chromosome is the same type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> – The gene type. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="class-candidateinfo">
+<h2>class CandidateInfo<a class="headerlink" href="#class-candidateinfo" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp13CandidateInfoE">
+<span id="_CPPv3N4gapp13CandidateInfoE"></span><span id="_CPPv2N4gapp13CandidateInfoE"></span><span id="gapp::CandidateInfo"></span><span class="target" id="structgapp_1_1CandidateInfo"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CandidateInfo</span></span></span><a class="headerlink" href="#_CPPv4N4gapp13CandidateInfoE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The base class used for the representation of candidate solutions in all of the GAs. This class contains the parts of the candidates that are independent of the encoding type. The derived <a class="reference internal" href="#structgapp_1_1Candidate"><span class="std std-ref">Candidate</span></a> class contains the encoding dependent parts in addition to these.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> – The gene type used in the candidate’s chromosome. </p>
+</dd>
+</dl>
+<p>Subclassed by <a class="reference internal" href="#structgapp_1_1Candidate"><span class="std std-ref">gapp::Candidate&lt; Ts &gt;</span></a>, <a class="reference internal" href="#structgapp_1_1Candidate"><span class="std std-ref">gapp::Candidate&lt; RealGene &gt;</span></a>, <a class="reference internal" href="#structgapp_1_1Candidate"><span class="std std-ref">gapp::Candidate&lt; IntegerGene &gt;</span></a>, <a class="reference internal" href="#structgapp_1_1Candidate"><span class="std std-ref">gapp::Candidate&lt; PermutationGene &gt;</span></a>, <a class="reference internal" href="#structgapp_1_1Candidate"><span class="std std-ref">gapp::Candidate&lt; BinaryGene &gt;</span></a>, <a class="reference internal" href="#structgapp_1_1Candidate"><span class="std std-ref">gapp::Candidate&lt; T &gt;</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp13CandidateInfo14num_objectivesEv">
+<span id="_CPPv3NK4gapp13CandidateInfo14num_objectivesEv"></span><span id="_CPPv2NK4gapp13CandidateInfo14num_objectivesEv"></span><span id="gapp::CandidateInfo::num_objectivesC"></span><span class="target" id="structgapp_1_1CandidateInfo_1a6aedda1ad203c68e5fe8ed297666d23d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">num_objectives</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp13CandidateInfo14num_objectivesEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of objectives associated with the candidate. The return value will be 0 if called before the candidate has been evaluated. Equivalent to calling fitness.size(). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp13CandidateInfo12is_evaluatedEv">
+<span id="_CPPv3NK4gapp13CandidateInfo12is_evaluatedEv"></span><span id="_CPPv2NK4gapp13CandidateInfo12is_evaluatedEv"></span><span id="gapp::CandidateInfo::is_evaluatedC"></span><span class="target" id="structgapp_1_1CandidateInfo_1ac47e344f8becbbe140a8f1baa45aa58a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_evaluated</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp13CandidateInfo12is_evaluatedEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the candidate has a valid fitness vector associated with it. Equivalent to calling !fitness.empty(). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp13CandidateInfo15num_constraintsEv">
+<span id="_CPPv3NK4gapp13CandidateInfo15num_constraintsEv"></span><span id="_CPPv2NK4gapp13CandidateInfo15num_constraintsEv"></span><span id="gapp::CandidateInfo::num_constraintsC"></span><span class="target" id="structgapp_1_1CandidateInfo_1a6ae7a7c9b4140ac0197d5ae1c1779ecb"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">num_constraints</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp13CandidateInfo15num_constraintsEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of constraints associated with the candidate. The return value will be 0 if called before the constraints have been evaluated. Equivalent to calling constraint_violation.size(). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp13CandidateInfo24has_constraint_violationEv">
+<span id="_CPPv3NK4gapp13CandidateInfo24has_constraint_violationEv"></span><span id="_CPPv2NK4gapp13CandidateInfo24has_constraint_violationEv"></span><span id="gapp::CandidateInfo::has_constraint_violationC"></span><span class="target" id="structgapp_1_1CandidateInfo_1a7df338fa7ed831d933a4330728c3ebca"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">has_constraint_violation</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp13CandidateInfo24has_constraint_violationEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the candidate violates any of its constraints. If there are no constraints associated with the candidate, it will also return false. Returns false if called before the constraints have been evaluated. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp13CandidateInfo7fitnessE">
+<span id="_CPPv3N4gapp13CandidateInfo7fitnessE"></span><span id="_CPPv2N4gapp13CandidateInfo7fitnessE"></span><span id="gapp::CandidateInfo::fitness__FitnessVector"></span><span class="target" id="structgapp_1_1CandidateInfo_1a6d6749b0f32f6403466c2c8a89b9f93c"></span><a class="reference internal" href="#_CPPv4N4gapp13FitnessVectorE" title="gapp::FitnessVector"><span class="n"><span class="pre">FitnessVector</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fitness</span></span></span><a class="headerlink" href="#_CPPv4N4gapp13CandidateInfo7fitnessE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The solution’s fitness value for each objective. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp13CandidateInfo20constraint_violationE">
+<span id="_CPPv3N4gapp13CandidateInfo20constraint_violationE"></span><span id="_CPPv2N4gapp13CandidateInfo20constraint_violationE"></span><span id="gapp::CandidateInfo::constraint_violation__CVVector"></span><span class="target" id="structgapp_1_1CandidateInfo_1a0b0b3b9fdd996b8def3c38a553f7abe5"></span><a class="reference internal" href="#_CPPv4N4gapp8CVVectorE" title="gapp::CVVector"><span class="n"><span class="pre">CVVector</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">constraint_violation</span></span></span><a class="headerlink" href="#_CPPv4N4gapp13CandidateInfo20constraint_violationE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The solution’s degree of constraint violation for each constraint. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-candidate">
+<h2>class Candidate<a class="headerlink" href="#class-candidate" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp9CandidateE">
+<span id="_CPPv3I0EN4gapp9CandidateE"></span><span id="_CPPv2I0EN4gapp9CandidateE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4gapp13CandidateInfoE" title="gapp::CandidateInfo"><span class="n"><span class="pre">CandidateInfo</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CandidateBounds</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">container_interface</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp9CandidateE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The class that is used to represent candidate solutions in the genetic algorithms.</p>
+<p>Contains several helper methods to access the chromosome directly, such as iterator methods. The behaviour of all these helper functions is equivalent to calling the matching functions on the chromosome member.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> – The gene type used in the candidate’s chromosome. </p>
+</dd>
+</dl>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate4GeneE">
+<span id="_CPPv3N4gapp9Candidate4GeneE"></span><span id="_CPPv2N4gapp9Candidate4GeneE"></span><span class="target" id="structgapp_1_1Candidate_1a8c8e8cf56c89206e2119743691d4c39a"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Gene</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><a class="headerlink" href="#_CPPv4N4gapp9Candidate4GeneE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The type of the candidate’s genes. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate9CandidateEv">
+<span id="_CPPv3N4gapp9Candidate9CandidateEv"></span><span id="_CPPv2N4gapp9Candidate9CandidateEv"></span><span id="gapp::Candidate::Candidate"></span><span class="target" id="structgapp_1_1Candidate_1a7d811714dc3fdca1ae991b46d76479ef"></span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp9Candidate9CandidateEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a candidate with an empty fitness vector and chromosome. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate9CandidateE10BoundsViewI1TE">
+<span id="_CPPv3N4gapp9Candidate9CandidateE10BoundsViewI1TE"></span><span id="_CPPv2N4gapp9Candidate9CandidateE10BoundsViewI1TE"></span><span id="gapp::Candidate::Candidate__BoundsView:T:"></span><span class="target" id="structgapp_1_1Candidate_1a5344eaced063170677323db616fa6118"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">BoundsView</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bounds</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9Candidate9CandidateE10BoundsViewI1TE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a candidate with an empty fitness vector, empty constraints vector, and the specified gene bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bounds</strong> – The lower and upper bounds of each gene of the chromosome. The size of the bounds should match the size of the chromosome later. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate9CandidateE10ChromosomeI1TE">
+<span id="_CPPv3N4gapp9Candidate9CandidateE10ChromosomeI1TE"></span><span id="_CPPv2N4gapp9Candidate9CandidateE10ChromosomeI1TE"></span><span id="gapp::Candidate::Candidate__Chromosome:T:"></span><span class="target" id="structgapp_1_1Candidate_1ae8912d3d3c20cd1f2d42c3d111f6423f"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chrom</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9Candidate9CandidateE10ChromosomeI1TE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a candidate with an empty fitness vector and a given chromosome.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chrom</strong> – The chromosome of the candidate. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate9CandidateE10ChromosomeI1TE10BoundsViewI1TE">
+<span id="_CPPv3N4gapp9Candidate9CandidateE10ChromosomeI1TE10BoundsViewI1TE"></span><span id="_CPPv2N4gapp9Candidate9CandidateE10ChromosomeI1TE10BoundsViewI1TE"></span><span id="gapp::Candidate::Candidate__Chromosome:T:.BoundsView:T:"></span><span class="target" id="structgapp_1_1Candidate_1a94df9f703086f35b520ff0ff09e1dee2"></span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chrom</span></span>, <span class="n"><span class="pre">BoundsView</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bounds</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9Candidate9CandidateE10ChromosomeI1TE10BoundsViewI1TE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a candidate with an empty fitness vector, using the given chromosome and bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chrom</strong> – The chromosome of the candidate. </p></li>
+<li><p><strong>bounds</strong> – The bounds of each gene of the chromosome. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate5beginEv">
+<span id="_CPPv3N4gapp9Candidate5beginEv"></span><span id="_CPPv2N4gapp9Candidate5beginEv"></span><span id="gapp::Candidate::begin"></span><span class="target" id="structgapp_1_1Candidate_1a3b4ebff86edf6de12f8cd2e3a26e4c19"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9Candidate5beginEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An iterator to the first element of the candidate’s chromosome. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate3endEv">
+<span id="_CPPv3N4gapp9Candidate3endEv"></span><span id="_CPPv2N4gapp9Candidate3endEv"></span><span id="gapp::Candidate::end"></span><span class="target" id="structgapp_1_1Candidate_1a8343608f31c0a5eece3cf4e478ea6bce"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">auto</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp9Candidate3endEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An iterator to the end of the candidate’s chromosome. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENK4gapp9Candidate9chrom_lenE6size_tv">
+<span id="_CPPv3I0ENK4gapp9Candidate9chrom_lenEv"></span><span id="_CPPv2I0ENK4gapp9Candidate9chrom_lenEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_1a0998d3bb22647b08b3206fba0cd2b5bf"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chrom_len</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENK4gapp9Candidate9chrom_lenE6size_tv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The length of the chromosome. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENR4gapp9Candidate5chromER10ChromosomeI8GeneTypeEv">
+<span id="_CPPv3I0ENR4gapp9Candidate5chromEv"></span><span id="_CPPv2I0ENR4gapp9Candidate5chromEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_1aa63590d905af8deaaadc0550bf55503d"></span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENR4gapp9Candidate5chromER10ChromosomeI8GeneTypeEv" title="gapp::Candidate::chrom::GeneType"><span class="n"><span class="pre">GeneType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">chrom</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENR4gapp9Candidate5chromER10ChromosomeI8GeneTypeEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The chromosome of the candidate. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENKR4gapp9Candidate5chromERK10ChromosomeI8GeneTypeEv">
+<span id="_CPPv3I0ENKR4gapp9Candidate5chromEv"></span><span id="_CPPv2I0ENKR4gapp9Candidate5chromEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_1a8d4a34ddd2ea2720641d939527ec9ae5"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENKR4gapp9Candidate5chromERK10ChromosomeI8GeneTypeEv" title="gapp::Candidate::chrom::GeneType"><span class="n"><span class="pre">GeneType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">chrom</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENKR4gapp9Candidate5chromERK10ChromosomeI8GeneTypeEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The chromosome of the candidate. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENK4gapp9Candidate6boundsE10BoundsViewI8GeneTypeEv">
+<span id="_CPPv3I0ENK4gapp9Candidate6boundsEv"></span><span id="_CPPv2I0ENK4gapp9Candidate6boundsEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_1ab1ac8e07a244d00bc236467daa320351"></span><span class="n"><span class="pre">BoundsView</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENK4gapp9Candidate6boundsE10BoundsViewI8GeneTypeEv" title="gapp::Candidate::bounds::GeneType"><span class="n"><span class="pre">GeneType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bounds</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENK4gapp9Candidate6boundsE10BoundsViewI8GeneTypeEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The lower and upper bounds of each gene of the chromosome. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate10chromosomeE">
+<span id="_CPPv3N4gapp9Candidate10chromosomeE"></span><span id="_CPPv2N4gapp9Candidate10chromosomeE"></span><span id="gapp::Candidate::chromosome__Chromosome:T:"></span><span class="target" id="structgapp_1_1Candidate_1a3b391458fbcc1e4b78fc2b192fbee0b3"></span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chromosome</span></span></span><a class="headerlink" href="#_CPPv4N4gapp9Candidate10chromosomeE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The chromosome encoding the solution. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-attributes">Public Static Attributes</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9Candidate9NumChromsE">
+<span id="_CPPv3N4gapp9Candidate9NumChromsE"></span><span id="_CPPv2N4gapp9Candidate9NumChromsE"></span><span id="gapp::Candidate::NumChroms__std::s"></span><span class="target" id="structgapp_1_1Candidate_1a060f4c4c0b06417f0ca4bfdf77f63dc4"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NumChroms</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N4gapp9Candidate9NumChromsE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The number of chromosomes the candidate has. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="class-candidate-mixedgene">
+<h2>class Candidate&lt;MixedGene&gt;<a class="headerlink" href="#class-candidate-mixedgene" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE">
+<span id="_CPPv3IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE"></span><span id="_CPPv2IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="sig-name descname"><span class="n"><span class="pre">Ts</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="encoding_mixed.html#_CPPv4IDpEN4gapp9MixedGeneE" title="gapp::MixedGene"><span class="n"><span class="pre">MixedGene</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Ts"><span class="n"><span class="pre">Ts</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Ts"><span class="n"><span class="pre">Ts</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The class used to represent candidate solutions in the mixed encoded genetic algorithms. It contains a separate chromosome for each component gene type of the mixed gene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Ts</strong> – The component gene types of the mixed gene. </p>
+</dd>
+</dl>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE4GeneE">
+<span id="_CPPv3N4gapp9CandidateI9MixedGeneIDp2TsEE4GeneE"></span><span id="_CPPv2N4gapp9CandidateI9MixedGeneIDp2TsEE4GeneE"></span><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1a4252375296e318c59a2f6ea9c9a7d0ee"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Gene</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="encoding_mixed.html#_CPPv4IDpEN4gapp9MixedGeneE" title="gapp::MixedGene"><span class="n"><span class="pre">MixedGene</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Ts"><span class="n"><span class="pre">Ts</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE4GeneE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The type of the candidate’s genes. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateEv">
+<span id="_CPPv3N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateEv"></span><span id="_CPPv2N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateEv"></span><span id="gapp::Candidate:MixedGene:TsDp::::Candidate"></span><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1a5eb4cc1533964dd5877de053e734e2ea"></span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateEv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a candidate with an empty fitness vector and chromosomes. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEE">
+<span id="_CPPv3N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEE"></span><span id="_CPPv2N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEE"></span><span id="gapp::Candidate:MixedGene:TsDp::::Candidate__std::tuple:Chromosome:Ts:Dp:"></span><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1a22945743d1a55ffe8f4004f94eb69ca8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Ts"><span class="n"><span class="pre">Ts</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chroms</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a candidate with the specified chromosomes. The fitness and constraint vectors of the candidate will be empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chroms</strong> – The chromosomes of the candidate solution. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEEN6detail11map_types_tI10BoundsViewN6detail14filter_types_tI15is_bounded_geneDp2TsEEEE">
+<span id="_CPPv3N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEEN6detail11map_types_tI10BoundsViewN6detail14filter_types_tI15is_bounded_geneDp2TsEEEE"></span><span id="_CPPv2N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEEN6detail11map_types_tI10BoundsViewN6detail14filter_types_tI15is_bounded_geneDp2TsEEEE"></span><span id="gapp::Candidate:MixedGene:TsDp::::Candidate__std::tuple:Chromosome:Ts:Dp:.detail::map_types_t:BoundsView.detail::filter_types_t:is_bounded_gene.TsDp::"></span><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1a511d4d1b41fc439b6c816eb440d52159"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Ts"><span class="n"><span class="pre">Ts</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chroms</span></span>,</dd>
+<dd><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">map_types_t</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">BoundsView</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">filter_types_t</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="encodings.html#_CPPv4I0EN4gapp15is_bounded_geneE" title="gapp::is_bounded_gene"><span class="n"><span class="pre">is_bounded_gene</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Ts"><span class="n"><span class="pre">Ts</span></span></a><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bounds</span></span></dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEEN6detail11map_types_tI10BoundsViewN6detail14filter_types_tI15is_bounded_geneDp2TsEEEE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a candidate with the specified chromosomes and bounds for each bounded component gene type. The bounds are only specified for the bounded component genes. The fitness and constraint vectors of the candidate will be empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chroms</strong> – The chromosomes of the candidate solution. </p></li>
+<li><p><strong>bounds</strong> – The bounds vectors for each of the bounded chromosomes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp9CandidateI2TsEEE">
+<span id="_CPPv3N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp9CandidateI2TsEEE"></span><span id="_CPPv2N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp9CandidateI2TsEEE"></span><span id="gapp::Candidate:MixedGene:TsDp::::Candidate__std::tuple:Candidate:Ts:Dp:"></span><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1ae78268a655f0f17d8ec1d82279ff6df7"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Candidate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">tuple</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp9CandidateI2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Ts"><span class="n"><span class="pre">Ts</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">parts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp9CandidateI2TsEEE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a candidate from a set of candidates for each of the component genes. The chromosomes and the bounds will be copied from the associated candidates, while the fitness and constraint vectors of the candidate will be empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parts</strong> – The component candidates to create this candidate from. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE9chrom_lenE6size_tv">
+<span id="_CPPv3I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE9chrom_lenEv"></span><span id="_CPPv2I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE9chrom_lenEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1a382e2b9266e62549e54c1137b685b814"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chrom_len</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE9chrom_lenE6size_tv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The length of the chromosome associated with the specified gene type. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENR4gapp9CandidateI9MixedGeneIDp2TsEE5chromER10ChromosomeI8GeneTypeEv">
+<span id="_CPPv3I0ENR4gapp9CandidateI9MixedGeneIDp2TsEE5chromEv"></span><span id="_CPPv2I0ENR4gapp9CandidateI9MixedGeneIDp2TsEE5chromEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1a1d7a6c2f253abbf26a6438e9c4c4a47d"></span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENR4gapp9CandidateI9MixedGeneIDp2TsEE5chromER10ChromosomeI8GeneTypeEv" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::chrom::GeneType"><span class="n"><span class="pre">GeneType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">chrom</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENR4gapp9CandidateI9MixedGeneIDp2TsEE5chromER10ChromosomeI8GeneTypeEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The candidate’s chromosome associated with the specified gene type. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENKR4gapp9CandidateI9MixedGeneIDp2TsEE5chromERK10ChromosomeI8GeneTypeEv">
+<span id="_CPPv3I0ENKR4gapp9CandidateI9MixedGeneIDp2TsEE5chromEv"></span><span id="_CPPv2I0ENKR4gapp9CandidateI9MixedGeneIDp2TsEE5chromEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1acabf44065b3e5b44205c6411ec571f43"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp10ChromosomeE" title="gapp::Chromosome"><span class="n"><span class="pre">Chromosome</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENKR4gapp9CandidateI9MixedGeneIDp2TsEE5chromERK10ChromosomeI8GeneTypeEv" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::chrom::GeneType"><span class="n"><span class="pre">GeneType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">chrom</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENKR4gapp9CandidateI9MixedGeneIDp2TsEE5chromERK10ChromosomeI8GeneTypeEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The candidate’s chromosome associated with the specified gene type. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE6boundsE10BoundsViewI8GeneTypeEv">
+<span id="_CPPv3I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE6boundsEv"></span><span id="_CPPv2I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE6boundsEv"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GeneType</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1a3aeaf5d327e94117270e98c3ed932270"></span><span class="n"><span class="pre">BoundsView</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE6boundsE10BoundsViewI8GeneTypeEv" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::bounds::GeneType"><span class="n"><span class="pre">GeneType</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bounds</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE6boundsE10BoundsViewI8GeneTypeEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The bounds of the chromosome associated with the specified gene type. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-attributes">Public Static Attributes</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9NumChromsE">
+<span id="_CPPv3N4gapp9CandidateI9MixedGeneIDp2TsEE9NumChromsE"></span><span id="_CPPv2N4gapp9CandidateI9MixedGeneIDp2TsEE9NumChromsE"></span><span id="gapp::Candidate:MixedGene:TsDp::::NumChroms__std::s"></span><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1adc17bed592e7408480c46862f1192580"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NumChroms</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">sizeof</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE" title="gapp::Candidate&lt;MixedGene&lt;Ts...&gt;&gt;::Ts"><span class="n"><span class="pre">Ts</span></span></a><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9NumChromsE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The number of chromosomes the candidate has. Equal to the number of component genes. </p>
+</dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4IEN4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateI9MixedGeneIDp2TsEE17constructor_tag_tE">
+<span id="_CPPv3IEN4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateI9MixedGeneIDp2TsEE17constructor_tag_tE"></span><span id="_CPPv2IEN4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateI9MixedGeneIDp2TsEE17constructor_tag_tE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1Candidate_3_01MixedGene_3_01Ts_8_8_8_01_4_01_4_1_1constructor__tag__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">constructor_tag_t</span></span></span><a class="headerlink" href="#_CPPv4IEN4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateI9MixedGeneIDp2TsEE17constructor_tag_tE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="class-candidatepair">
+<h2>class CandidatePair<a class="headerlink" href="#class-candidatepair" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp13CandidatePairE">
+<span id="_CPPv3I0EN4gapp13CandidatePairE"></span><span id="_CPPv2I0EN4gapp13CandidatePairE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="structgapp_1_1CandidatePair"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CandidatePair</span></span></span><a class="headerlink" href="#_CPPv4I0EN4gapp13CandidatePairE" title="Link to this definition">#</a><br /></dt>
+<dd><p>A pair of candidates. </p>
+</dd></dl>
+
+</section>
+<section id="class-candidates">
+<h2>class Candidates<a class="headerlink" href="#class-candidates" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/population.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp10CandidatesE">
+<span id="_CPPv3I0EN4gapp10CandidatesE"></span><span id="_CPPv2I0EN4gapp10CandidatesE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Gene</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="population_8hpp_1ae548f811852b72f03b7360d425c3be5d"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Candidates</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp10CandidatesE" title="gapp::Candidates::Gene"><span class="n"><span class="pre">Gene</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp10CandidatesE" title="Link to this definition">#</a><br /></dt>
+<dd><p>A vector of candidates, same as the population type. </p>
+</dd></dl>
+
+</section>
+<section id="class-population">
+<h2>class Population<a class="headerlink" href="#class-population" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/population.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp10PopulationE">
+<span id="_CPPv3I0EN4gapp10PopulationE"></span><span id="_CPPv2I0EN4gapp10PopulationE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Gene</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="population_8hpp_1a21b17ff1e0acea0db68f4ee7eb8f6ce2"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Population</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp9CandidateE" title="gapp::Candidate"><span class="n"><span class="pre">Candidate</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp10PopulationE" title="gapp::Population::Gene"><span class="n"><span class="pre">Gene</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp10PopulationE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The population type used in all of the algorithms. </p>
+</dd></dl>
+
+</section>
+<section id="class-populationview">
+<h2>class PopulationView<a class="headerlink" href="#class-populationview" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/population.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp14PopulationViewE">
+<span id="_CPPv3N4gapp14PopulationViewE"></span><span id="_CPPv2N4gapp14PopulationViewE"></span><span class="target" id="population_8hpp_1a80a3906ee9234cc598608aa7e6cf1cb7"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">PopulationView</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">base_view</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4gapp13CandidateInfoE" title="gapp::CandidateInfo"><span class="n"><span class="pre">CandidateInfo</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N4gapp14PopulationViewE" title="Link to this definition">#</a><br /></dt>
+<dd><p>A view of a population without the encoding specific parts (i.e. without the chromosomes). </p>
+</dd></dl>
+
+</section>
+<section id="class-bounds">
+<h2>class Bounds<a class="headerlink" href="#class-bounds" title="Link to this heading">#</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;population/candidate.hpp&gt;</span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp6BoundsE">
+<span id="_CPPv3I0EN4gapp6BoundsE"></span><span id="_CPPv2I0EN4gapp6BoundsE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classgapp_1_1Bounds"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bounds</span></span></span><a class="headerlink" href="#_CPPv4I0EN4gapp6BoundsE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The class used to represent the lower and upper bounds of a gene.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> – The gene type. The lower and upper bounds will also be this type. </p>
+</dd>
+</dl>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp6Bounds4GeneE">
+<span id="_CPPv3N4gapp6Bounds4GeneE"></span><span id="_CPPv2N4gapp6Bounds4GeneE"></span><span class="target" id="classgapp_1_1Bounds_1a9f761fdae55b609e9557ca0e6fb02b48"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Gene</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp6BoundsE" title="gapp::Bounds::T"><span class="n"><span class="pre">T</span></span></a><a class="headerlink" href="#_CPPv4N4gapp6Bounds4GeneE" title="Link to this definition">#</a><br /></dt>
+<dd><p>The type of the gene. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4gapp6Bounds6BoundsERK1TRK1T">
+<span id="_CPPv3N4gapp6Bounds6BoundsERK1TRK1T"></span><span id="_CPPv2N4gapp6Bounds6BoundsERK1TRK1T"></span><span id="gapp::Bounds::Bounds__TCR.TCRCE"></span><span class="target" id="classgapp_1_1Bounds_1a1e1c41967b4150c4c31a6f8e8e14e350"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bounds</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp6BoundsE" title="gapp::Bounds::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">lower</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp6BoundsE" title="gapp::Bounds::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">upper</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N4gapp6Bounds6BoundsERK1TRK1T" title="Link to this definition">#</a><br /></dt>
+<dd><p>Constructor for the closed range [<code class="docutils literal notranslate"><span class="pre">lower</span></code>, <code class="docutils literal notranslate"><span class="pre">upper</span></code>].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lower</strong> – The lower bound (inclusive). </p></li>
+<li><p><strong>upper</strong> – The upper bound (inclusive). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp6Bounds5lowerEv">
+<span id="_CPPv3NK4gapp6Bounds5lowerEv"></span><span id="_CPPv2NK4gapp6Bounds5lowerEv"></span><span id="gapp::Bounds::lowerCCE"></span><span class="target" id="classgapp_1_1Bounds_1a8ad58010a09fe052ba5f9f6c29f68dfa"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp6BoundsE" title="gapp::Bounds::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">lower</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp6Bounds5lowerEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The lower bound (inclusive). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4gapp6Bounds5upperEv">
+<span id="_CPPv3NK4gapp6Bounds5upperEv"></span><span id="_CPPv2NK4gapp6Bounds5upperEv"></span><span id="gapp::Bounds::upperCCE"></span><span class="target" id="classgapp_1_1Bounds_1a59adbd4b1f142cae2420d0b0f68fb17c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4gapp6BoundsE" title="gapp::Bounds::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">upper</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4NK4gapp6Bounds5upperEv" title="Link to this definition">#</a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The upper bound (inclusive). </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-friends">Friends</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp">
+<span class="target" id="classgapp_1_1Bounds_1a83e98410fdc2cfa0d06bc50a4de6f545"></span><span class="sig-name descname"><span class="pre">friend</span> <span class="pre">constexpr</span> <span class="pre">friend</span> <span class="pre">bool</span> <span class="pre">operator==</span> <span class="pre">(const</span> <span class="pre">Bounds</span> <span class="pre">&amp;,</span> <span class="pre">const</span> <span class="pre">Bounds</span> <span class="pre">&amp;)=default</span></span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>true if the bounds are the same. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4gapp12BoundsVectorE">
+<span id="_CPPv3I0EN4gapp12BoundsVectorE"></span><span id="_CPPv2I0EN4gapp12BoundsVectorE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="candidate_8hpp_1a2f7996b4f3b25f02573c27cda7a25ed4"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="encoding_binary.html#_CPPv44gapp" title="gapp"><span class="n"><span class="pre">gapp</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">BoundsVector</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp6BoundsE" title="gapp::Bounds"><span class="n"><span class="pre">Bounds</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4gapp12BoundsVectorE" title="gapp::BoundsVector::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4I0EN4gapp12BoundsVectorE" title="Link to this definition">#</a><br /></dt>
+<dd><p>A vector of lower and upper gene bounds, containing the bounds for each gene of a chromosome.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> – The gene type. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv44gapp"><code class="docutils literal notranslate"><span class="pre">gapp</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessvector">class FitnessVector</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13FitnessVectorE"><code class="docutils literal notranslate"><span class="pre">FitnessVector</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-fitnessmatrix">class FitnessMatrix</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13FitnessMatrixE"><code class="docutils literal notranslate"><span class="pre">FitnessMatrix</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-cvvector">class CVVector</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp8CVVectorE"><code class="docutils literal notranslate"><span class="pre">CVVector</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-chromosome">class Chromosome</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp10ChromosomeE"><code class="docutils literal notranslate"><span class="pre">Chromosome</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidateinfo">class CandidateInfo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13CandidateInfoE"><code class="docutils literal notranslate"><span class="pre">gapp::CandidateInfo</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp13CandidateInfo14num_objectivesEv"><code class="docutils literal notranslate"><span class="pre">num_objectives()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp13CandidateInfo12is_evaluatedEv"><code class="docutils literal notranslate"><span class="pre">is_evaluated()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp13CandidateInfo15num_constraintsEv"><code class="docutils literal notranslate"><span class="pre">num_constraints()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp13CandidateInfo24has_constraint_violationEv"><code class="docutils literal notranslate"><span class="pre">has_constraint_violation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13CandidateInfo7fitnessE"><code class="docutils literal notranslate"><span class="pre">fitness</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp13CandidateInfo20constraint_violationE"><code class="docutils literal notranslate"><span class="pre">constraint_violation</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidate">class Candidate</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp9CandidateE"><code class="docutils literal notranslate"><span class="pre">gapp::Candidate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate4GeneE"><code class="docutils literal notranslate"><span class="pre">Gene</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9CandidateEv"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9CandidateE10BoundsViewI1TE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9CandidateE10ChromosomeI1TE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9CandidateE10ChromosomeI1TE10BoundsViewI1TE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate5beginEv"><code class="docutils literal notranslate"><span class="pre">begin()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate3endEv"><code class="docutils literal notranslate"><span class="pre">end()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENK4gapp9Candidate9chrom_lenE6size_tv"><code class="docutils literal notranslate"><span class="pre">chrom_len()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENR4gapp9Candidate5chromER10ChromosomeI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">chrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENKR4gapp9Candidate5chromERK10ChromosomeI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">chrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENK4gapp9Candidate6boundsE10BoundsViewI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate10chromosomeE"><code class="docutils literal notranslate"><span class="pre">chromosome</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9Candidate9NumChromsE"><code class="docutils literal notranslate"><span class="pre">NumChroms</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidate-mixedgene">class Candidate&lt;MixedGene&gt;</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4IDpEN4gapp9CandidateI9MixedGeneIDp2TsEEE"><code class="docutils literal notranslate"><span class="pre">gapp::Candidate&lt;</span> <span class="pre">MixedGene&lt;</span> <span class="pre">Ts...</span> <span class="pre">&gt;</span> <span class="pre">&gt;</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE4GeneE"><code class="docutils literal notranslate"><span class="pre">Gene</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateEv"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp10ChromosomeI2TsEEEN6detail11map_types_tI10BoundsViewN6detail14filter_types_tI15is_bounded_geneDp2TsEEEE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateENSt5tupleIDp9CandidateI2TsEEE"><code class="docutils literal notranslate"><span class="pre">Candidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE9chrom_lenE6size_tv"><code class="docutils literal notranslate"><span class="pre">chrom_len()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENR4gapp9CandidateI9MixedGeneIDp2TsEE5chromER10ChromosomeI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">chrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENKR4gapp9CandidateI9MixedGeneIDp2TsEE5chromERK10ChromosomeI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">chrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0ENK4gapp9CandidateI9MixedGeneIDp2TsEE6boundsE10BoundsViewI8GeneTypeEv"><code class="docutils literal notranslate"><span class="pre">bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp9CandidateI9MixedGeneIDp2TsEE9NumChromsE"><code class="docutils literal notranslate"><span class="pre">NumChroms</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4IEN4gapp9CandidateI9MixedGeneIDp2TsEE9CandidateI9MixedGeneIDp2TsEE17constructor_tag_tE"><code class="docutils literal notranslate"><span class="pre">gapp::Candidate&lt;</span> <span class="pre">MixedGene&lt;</span> <span class="pre">Ts...</span> <span class="pre">&gt;</span> <span class="pre">&gt;::constructor_tag_t</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidatepair">class CandidatePair</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp13CandidatePairE"><code class="docutils literal notranslate"><span class="pre">gapp::CandidatePair</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-candidates">class Candidates</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp10CandidatesE"><code class="docutils literal notranslate"><span class="pre">Candidates</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-population">class Population</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp10PopulationE"><code class="docutils literal notranslate"><span class="pre">Population</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-populationview">class PopulationView</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp14PopulationViewE"><code class="docutils literal notranslate"><span class="pre">PopulationView</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-bounds">class Bounds</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp6BoundsE"><code class="docutils literal notranslate"><span class="pre">gapp::Bounds</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp6Bounds4GeneE"><code class="docutils literal notranslate"><span class="pre">Gene</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N4gapp6Bounds6BoundsERK1TRK1T"><code class="docutils literal notranslate"><span class="pre">Bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp6Bounds5lowerEv"><code class="docutils literal notranslate"><span class="pre">lower()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4NK4gapp6Bounds5upperEv"><code class="docutils literal notranslate"><span class="pre">upper()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4I0EN4gapp12BoundsVectorE"><code class="docutils literal notranslate"><span class="pre">BoundsVector</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Krisztián Rugási
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Krisztián Rugási.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
