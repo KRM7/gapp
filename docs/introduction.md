@@ -134,7 +134,7 @@ population replacement method that should be used:
 GA.algorithm(algorithm::SingleObjective{ selection::Tournament{}, replacement::Elitism{} });
 ```
 
-The crossover and mutation methods can also be selected, but these must be appropriate for
+The crossover and mutation methods can also be changed, but these must be appropriate for
 the encoding method that is used:
 
 ```cpp
@@ -197,10 +197,11 @@ auto fmax = GA.get_metric<metrics::FitnessMax>();
 // fmean[0][0] -> The mean value of the first fitness function in the first generation.
 ```
 
-In this case the metrics are returned as a matrix, each row representing a generation,
-and the number of columns in the matrix will be 1 since we only have a single objective function.
+These metrics are returned as a matrix, each row representing a generation,
+and each column representing an objective. In this case the matrix only has a single column
+since we are solving a single-objective problem.
 
-Instead of just looking at the stats after the run finished, we can also print it out
+Instead of looking at the metrics after the run has finished, we can also print them out
 in each generation using a callback function:
 
 ```cpp
