@@ -139,6 +139,7 @@ target_include_directories(gapp SYSTEM INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURR
 
 target_compile_features(gapp PUBLIC "cxx_std_20")
 target_compile_definitions(gapp PUBLIC "$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:GAPP_BUILD_STATIC>")
+target_compile_definitions(gapp PUBLIC "$<$<BOOL:${GAPP_DISABLE_EXCEPTIONS}>:GAPP_NO_EXCEPTIONS>")
 target_compile_options(gapp PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:-Zc:preprocessor>")
 
 find_package(TBB)

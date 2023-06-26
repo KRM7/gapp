@@ -11,8 +11,15 @@
 #include <cstddef>
 
 
-#define GAPP_ASSERT(condition, ...) assert( (condition) __VA_OPT__(&& (__VA_ARGS__)) )
-#define GAPP_THROW(exception_type, msg) throw exception_type(msg)
+#if __has_cpp_attribute(assume)
+#   define GAPP_ASSUME(expr) [[assume(expr)]]
+#elif defined(_MSC_VER) && !defined(__clang__)
+#   define GAPP_ASSUME(expr) //__assume(expr)
+#elif defined(__clang__)
+#   define GAPP_ASSUME(expr) //__builtin_assume(expr)
+#else
+#   define GAPP_ASSUME(expr)
+#endif
 
 
 #ifdef __GNUC__
@@ -82,6 +89,20 @@
 #   endif
 #else
 #   define GAPP_API
+#endif
+
+
+#ifndef NDEBUG
+#   define GAPP_ASSERT(condition, ...) assert( (condition) __VA_OPT__(&& (__VA_ARGS__)) )
+#else
+#   define GAPP_ASSERT(condition, ...) GAPP_ASSUME(condition)
+#endif
+
+
+#ifndef GAPP_NO_EXCEPTIONS
+#   define GAPP_THROW(exception_type, msg) throw exception_type(msg)
+#else
+#   define GAPP_THROW(exception_type, msg) GAPP_UNREACHABLE()
 #endif
 
 
