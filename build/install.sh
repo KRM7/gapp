@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo -e "Installing GeneticAlgorithms...\n"
+echo -e "Installing gapp...\n"
 
 cmake --version
 
