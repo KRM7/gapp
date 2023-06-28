@@ -1,5 +1,8 @@
-add_executable(example1 "${CMAKE_SOURCE_DIR}/examples/1_intro_minimal.cpp")
-add_executable(example2 "${CMAKE_SOURCE_DIR}/examples/2_intro_detailed.cpp")
 
-target_link_libraries(example1 PRIVATE gapp)
-target_link_libraries(example2 PRIVATE gapp)
+file(GLOB SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+
+foreach(SOURCE ${SOURCES})
+    string(REPLACE ".cpp" "" EXAMPLE ${SOURCE})
+    add_executable(${EXAMPLE} ${SOURCE})
+    target_link_libraries(${EXAMPLE} PRIVATE gapp::gapp)
+endforeach()
