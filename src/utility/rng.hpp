@@ -290,7 +290,7 @@ namespace gapp::rng
         GAPP_ASSERT(range_len >= count);
 
         const bool select_many = (count > 0.6 * range_len);
-        const bool huge_range  = range_len >= (1ull << 32);
+        const bool huge_range  = range_len >= (1ull << 20);
 
         if (huge_range) [[unlikely]] return rng::sampleUniqueSet(lbound, ubound, count);
 
