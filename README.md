@@ -97,7 +97,7 @@ The [examples](./examples) directory contains several examples for using the lib
 
 ## Documentation
 
-The API documentation is available [here](https://krm7.github.io/genetic-algorithms/).
+The API documentation is available [here](https://krm7.github.io/gapp/).
 
 Additional documentation for the library can be found in the [docs](./docs) directory.
 
