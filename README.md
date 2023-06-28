@@ -36,8 +36,10 @@ int main()
     std::cout << "The maximum of sin(x) in [0.0, 3.14] is at x = " << solutions[0].chromosome[0];
 }
 ```
-Console output:
-```shell
+
+Possible console output:
+
+```text
 The maximum of sin(x) in [0.0, 3.14] is at x = 1.57079
 ```
 
@@ -89,7 +91,8 @@ target_link_libraries(YourTarget PRIVATE gapp::gapp)
 The [examples](./examples) directory contains several examples for using the library.
 
 * [Minimal example](./examples/1_minimal_example.cpp)
-* [Single-objective optimization](./examples/3_basic_single_objective.cpp)
+* [Single-objective optimization](./examples/2_basic_single_objective.cpp)
+* [Multi-objective optimization](./examples/3_basic_multi_objective.cpp)
 
 
 ## Documentation
