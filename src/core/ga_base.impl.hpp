@@ -618,7 +618,7 @@ namespace gapp
     requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, Bounds<T> bounds, Population<T> initial_population)
     {
-        const size_t chrom_len = fitness_function.chrom_len();
+        const size_t chrom_len = fitness_function.FitnessFunctionBase<T>::chrom_len();
 
         return solve(std::make_unique<F>(std::move(fitness_function)), BoundsVector<T>(chrom_len, bounds), max_gen(), std::move(initial_population));
     }
@@ -636,7 +636,7 @@ namespace gapp
     requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population)
     {
-        const size_t chrom_len = fitness_function.chrom_len();
+        const size_t chrom_len = fitness_function.FitnessFunctionBase<T>::chrom_len();
 
         return solve(std::make_unique<F>(std::move(fitness_function)), BoundsVector<T>(chrom_len, bounds), generations, std::move(initial_population));
     }
