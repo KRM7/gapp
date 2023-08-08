@@ -17,6 +17,7 @@
 #include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
+#include "../utility/scope_exit.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <functional>
@@ -529,6 +530,8 @@ namespace gapp
     {
         GAPP_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
 
+        detail::RestoreOnExit scope_exit{ max_gen_ };
+
         fitness_function_ = std::move(fitness_function);
         max_gen(generations);
 
@@ -547,6 +550,8 @@ namespace gapp
     {
         GAPP_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
         GAPP_ASSERT(bounds.size() == fitness_function->chrom_len(), "The length of the bounds vector must match the chromosome length.");
+
+        detail::RestoreOnExit scope_exit{ max_gen_, std::move(bounds_) };
 
         fitness_function_ = std::move(fitness_function);
         max_gen(generations);
