@@ -41,6 +41,11 @@ namespace gapp
         stop_condition_ = f ? std::move(f) : std::make_unique<stopping::NoEarlyStop>();
     }
 
+    void GaInfo::stop_condition(std::nullptr_t)
+    {
+        stop_condition_ = std::make_unique<stopping::NoEarlyStop>();
+    }
+
     void GaInfo::stop_condition(StopConditionCallable f)
     {
         stop_condition_ = std::make_unique<stopping::Lambda>(std::move(f));

@@ -208,6 +208,13 @@ namespace gapp
         void stop_condition(std::unique_ptr<stopping::StopCondition> f);
 
         /**
+        * Clear the early-stop condition currently set for the GA. \n
+        * The GA will run for the maximum number of generations set without
+        * the possibility of stopping earlier.
+        */
+        void stop_condition(std::nullptr_t);
+
+        /**
         * Set an early-stop condition for the algorithm. \n
         * This is an optional early-stop condition that can be used to stop the run
         * before the maximum number of generations is reached, but the algorithm will
