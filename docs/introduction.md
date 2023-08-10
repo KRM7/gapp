@@ -1,4 +1,16 @@
-﻿# Introduction
+﻿
+1. **Introduction**  
+2. [Fitness functions](fitness-functions.md)  
+3. [Encodings](encodings.md)  
+4. [Algorithms](algorithms.md)  
+5. [Genetic operators](genetic-operators.md)  
+6. [Stop conditions](stop-conditions.md)  
+7. [Metrics](metrics.md)  
+8. [Miscellaneous](miscellaneous.md)  
+
+------------------------------------------------------------------------------------------------
+
+# Introduction
 
 This short introduction will present the basic usage of the library through an example
 of solving a simple single-objective optimization problem.
