@@ -3,7 +3,6 @@
 #include "gapp.hpp"
 #include <algorithm>
 #include <iostream>
-#include <cassert>
 
 using namespace gapp;
 
