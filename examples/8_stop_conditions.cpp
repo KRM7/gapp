@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 #include <format>
-#include <cassert>
 
 using namespace gapp;
 
