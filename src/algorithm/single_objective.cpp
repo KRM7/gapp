@@ -12,10 +12,6 @@
 
 namespace gapp::algorithm
 {
-    SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection) :
-        SingleObjective(std::move(selection), std::make_unique<DefaultReplacement>())
-    {}
-
     SingleObjective::SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<replacement::Replacement> replacement) :
         selection_(std::move(selection)), replacement_(std::move(replacement))
     {
