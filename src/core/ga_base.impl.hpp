@@ -38,10 +38,8 @@ namespace gapp
               std::unique_ptr<typename stopping::StopCondition> stop_condition) :
         GaInfo(population_size, std::move(algorithm), std::move(stop_condition)), crossover_(std::move(crossover)), mutation_(std::move(mutation))
     {
-        GAPP_ASSERT(algorithm_, "The algorithm can't be a nullptr.");
         GAPP_ASSERT(crossover_, "The crossover method can't be a nullptr.");
         GAPP_ASSERT(mutation_, "The mutation method can't be a nullptr.");
-        GAPP_ASSERT(stop_condition_, "The stop condition can't be a nullptr.");
     }
 
     template<typename T>
