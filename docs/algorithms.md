@@ -31,7 +31,7 @@ There are 3 algorithms provided by the library:
 
  All of these algorithms are in the `gapp::algorithm` namespace.
 
-# Selecting the algorithm
+## Selecting the algorithm
 
 By default, if no algorithm is specified for the GA, one will automatically
 be selected based on the number of objectives of the fitness function being used.
@@ -67,7 +67,7 @@ ga.algorithm(nullptr);
 ga.solve(f); // uses the default algorithm
 ```
 
-# The single-objective algorithm
+## The single-objective algorithm
 
 The `SingleObjective` algorithm is not a concrete algorithm implementation
 like the NSGA-II and NSGA-III algorithms are. It is simply a wrapper that
@@ -88,7 +88,7 @@ ga.algorithm(algorithm::SingleObjective{ selection::Tournament{}, replacement::E
 ga.solve(f);
 ```
 
-# Custom algorithms
+## Custom algorithms
 
 In addition to the algorithms provided by the library, it is also possible to
 use user-defined algorithms in the GAs. These must be implemented as a class
@@ -104,7 +104,7 @@ public:
 };
 ```
 
-# Custom selection and replacement methods (single-objective)
+## Custom selection and replacement methods (single-objective)
 
 For the `SingleObjective` algorithms, it's possible to define additional selection
 and replacement methods separately without having to define a completely new
