@@ -47,20 +47,6 @@ namespace gapp::algorithm
         */
         using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
 
-        /**
-        * Create a single-objective algorithm using the default selection
-        * and replacement methods.
-        */
-        SingleObjective();
-
-        /**
-        * Create a single-objective algorithm using the default replacement method.
-        *
-        * @param selection The selection method to use.
-        */
-        template<typename S>
-        requires std::derived_from<S, selection::Selection>
-        explicit SingleObjective(S selection);
 
         /**
         * Create a single-objective algorithm.
@@ -68,16 +54,9 @@ namespace gapp::algorithm
         * @param selection The selection method to use.
         * @param replacement The replacement policy to use.
         */
-        template<typename S, typename R>
+        template<typename S = DefaultSelection, typename R = DefaultReplacement>
         requires std::derived_from<S, selection::Selection> && std::derived_from<R, replacement::Replacement>
-        SingleObjective(S selection, R replacement);
-
-        /**
-        * Create a single-objective algorithm using the default replacement method.
-        *
-        * @param selection The selection method to use. Can't be a nullptr.
-        */
-        explicit SingleObjective(std::unique_ptr<selection::Selection> selection);
+        explicit SingleObjective(S selection = S{}, R replacement = R{});
 
         /**
         * Create a single-objective algorithm.
@@ -85,7 +64,7 @@ namespace gapp::algorithm
         * @param selection The selection method to use. Can't be a nullptr.
         * @param replacement The replacement policy to use. Can't be a nullptr.
         */
-        SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<replacement::Replacement> replacement);
+        explicit SingleObjective(std::unique_ptr<selection::Selection> selection, std::unique_ptr<replacement::Replacement> replacement = std::make_unique<DefaultReplacement>());
 
         /**
         * Create a single-objective algorithm using the default replacement method.
@@ -189,16 +168,6 @@ namespace gapp::algorithm
 
 namespace gapp::algorithm
 {
-    inline SingleObjective::SingleObjective() :
-        selection_(std::make_unique<DefaultSelection>()), replacement_(std::make_unique<DefaultReplacement>())
-    {}
-
-    template<typename S>
-    requires std::derived_from<S, selection::Selection>
-    inline SingleObjective::SingleObjective(S selection) :
-        SingleObjective(std::move(selection), DefaultReplacement{})
-    {}
-
     template<typename S, typename R>
     requires std::derived_from<S, selection::Selection> && std::derived_from<R, replacement::Replacement>
     inline SingleObjective::SingleObjective(S selection, R replacement) :
