@@ -176,9 +176,17 @@ namespace gapp
         * be a single-objective algorithm for single-objective problems, and a multi-objective
         * algorithm for multi-objective problems).
         *
-        * @param f The algorithm used by the %GA. Can't be a nullptr.
+        * @param f The algorithm used by the %GA. The default algorithm will be used if it's a
+        *   nullptr.
         */
         void algorithm(std::unique_ptr<algorithm::Algorithm> f);
+
+        /**
+        * Clear the algorithm currently set for the GA. \n
+        * The GA will use the default algorithm that is selected based on the number of
+        * objectives of the fitness functions.
+        */
+        void algorithm(std::nullptr_t);
 
         /** @returns The algorithm used by the %GA. */
         [[nodiscard]]

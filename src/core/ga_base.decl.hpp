@@ -105,7 +105,8 @@ namespace gapp
         * The mutation probability used will be deduced from the chromosome length.
         *
         * @param population_size The number of candidates in the population. Must be at least 1.
-        * @param algorithm The algorithm to use. Can't be a nullptr.
+        * @param algorithm The algorithm to use. The default algorithm will be used if it's a
+        *   nullptr.
         */
         GA(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm);
 
@@ -117,7 +118,8 @@ namespace gapp
         * @param population_size The number of candidates in the population. Must be at least 1.
         * @param crossover The crossover operator to use. Can't be a nullptr.
         * @param mutation The mutation operator to use. Can't be a nullptr.
-        * @param stop_condition The early-stop condition to use. Can't be a nullptr.
+        * @param stop_condition The early-stop condition to use. No early-stopping will be used
+        *   if it's a nullptr.
         */
         GA(Positive<size_t> population_size,
            std::unique_ptr<crossover::Crossover<T>> crossover,
@@ -128,10 +130,12 @@ namespace gapp
         * Create a genetic algorithm using the specified algorithm and operators.
         *
         * @param population_size The number of candidates in the population. Must be at least 1.
-        * @param algorithm The algorithm to use. Can't be a nullptr.
+        * @param algorithm The algorithm to use. The default algorithm will be used if it's a
+        *   nullptr.
         * @param crossover The crossover operator to use. Can't be a nullptr.
         * @param mutation The mutation operator to use. Can't be a nullptr.
-        * @param stop_condition The early-stop condition to use. Can't be a nullptr.
+        * @param stop_condition The early-stop condition to use. No early-stopping will be used
+        *   if it's a nullptr.
         */
         GA(Positive<size_t> population_size,
            std::unique_ptr<algorithm::Algorithm> algorithm,
