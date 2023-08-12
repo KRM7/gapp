@@ -77,6 +77,11 @@ template<typename GeneType, size_t ChromLen>
 class FitnessFunction;
 ```
 
+By default, the chromosome length is assumed to be constant -
+ie. all of the solutions will have the same chromosome length
+which will not change throughout the run - but there is also a
+way to use variable chromosome lengths.
+
 ### Number of objectives
 
 The number of objectives is another important property of the
