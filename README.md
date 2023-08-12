@@ -86,6 +86,22 @@ target_link_libraries(YourTarget PRIVATE gapp::gapp)
 ```
 
 
+## Documentation
+
+The API documentation is available [here](https://krm7.github.io/gapp/).
+
+Additional documentation for the library can be found in the [docs](./docs) directory:
+
+* [Introduction](./docs/introduction.md)
+* [Fitness functions](./docs/fitness-functions.md) 
+* [Encodings](./docs/encodings.md)  
+* [Algorithms](./docs/algorithms.md)  
+* [Genetic operators](./docs/genetic-operators.md)  
+* [Stop conditions](./docs/stop-conditions.md)  
+* [Metrics](./docs/metrics.md)    
+* [Miscellaneous](./docs/miscellaneous.md)
+
+
 ## Examples
 
 The [examples](./examples) directory contains several examples for using the library.
@@ -93,15 +109,6 @@ The [examples](./examples) directory contains several examples for using the lib
 * [Minimal example](./examples/1_minimal_example.cpp)
 * [Single-objective optimization](./examples/2_basic_single_objective.cpp)
 * [Multi-objective optimization](./examples/3_basic_multi_objective.cpp)
-
-
-## Documentation
-
-The API documentation is available [here](https://krm7.github.io/gapp/).
-
-Additional documentation for the library can be found in the [docs](./docs) directory.
-
-* [Introduction](./docs/introduction.md)
 
 -------------------------------------------------------------------------------------------------
 
