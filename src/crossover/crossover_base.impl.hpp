@@ -54,22 +54,22 @@ namespace gapp::crossover
         * evaluation for that child can be skipped (if the fitness function is the same) by assigning
         * it the same fitness as the parent.
         */
-        if (child1.chromosome == parent1.chromosome)
+        if (child1 == parent1)
         {
             child1.fitness = parent1.fitness;
             child1.is_evaluated = parent1.is_evaluated;
         }
-        else if (child1.chromosome == parent2.chromosome)
+        else if (child1 == parent2)
         {
             child1.fitness = parent2.fitness;
             child1.is_evaluated = parent2.is_evaluated;
         }
-        if (child2.chromosome == parent1.chromosome)
+        if (child2 == parent1)
         {
             child2.fitness = parent1.fitness;
             child2.is_evaluated = parent1.is_evaluated;
         }
-        else if (child2.chromosome == parent2.chromosome)
+        else if (child2 == parent2)
         {
             child2.fitness = parent2.fitness;
             child2.is_evaluated = parent2.is_evaluated;

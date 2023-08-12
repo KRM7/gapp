@@ -26,10 +26,10 @@ namespace gapp::mutation
             /* If the candidate is already evaluated (happens when the crossover didn't change the candidate),
                its current fitness vector is valid, and we can save a fitness function call when the mutation
                doesn't change the chromosome. */
-            thread_local Chromosome<T> old_chromosome; old_chromosome = candidate.chromosome;
+            thread_local Candidate<T> old_candidate; old_candidate = candidate;
 
             mutate(ga, candidate, candidate.chromosome);
-            candidate.is_evaluated = (candidate.chromosome == old_chromosome);
+            candidate.is_evaluated = (candidate == old_candidate);
         }
 
         GAPP_ASSERT(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len(),
