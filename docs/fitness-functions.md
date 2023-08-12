@@ -77,17 +77,12 @@ template<typename GeneType, size_t ChromLen>
 class FitnessFunction;
 ```
 
-By default, the chromosome length is assumed to be constant -
-ie. all of the solutions will have the same chromosome length
-which will not change throughout the run - but there is also a
-way to use variable chromosome lengths.
-
 ### Number of objectives
 
 The number of objectives is another important property of the
 fitness functions, but it doesn't have to be specified explicitly
 in the definition of the fitness function. Instead, it will be
-deduced from the legth of the fitness vector returned by it.
+deduced from the legth of the fitness vectors returned by it.
 Note that the fitness function always returns a fitness vector,
 even for single-objective problems. In the single-objective case
 the length of the fitness vectors will be 1.
@@ -105,9 +100,9 @@ See [algorithms.md](algorithms.md) for more information.
 
 The genetic algorithms in the library will try to find the maximum
 of the fitness function, which means that the fitness functions
-always have to be implemented for maximization. If we are trying
-to find the minimum of some function, it can easily be transformed
-to a minimization problem by multiplying the function by -1.
+always have to be implemented for maximization. When trying to find
+the minimum of some function, the problem can easily be transformed
+into a maximization problem by multiplying the function by -1.
 
 ### Example
 
@@ -149,10 +144,11 @@ has to be set to `true`.
 
 ### Variable chromosome lengths
 
-By default, the chromosome length is assumed to be constant. If
-different candidates may have chromosomes of different lengths,
-the `variable_len` parameter in the constructor of `FitnessFunctionBase`
-has to be set to `true`.
+By default, the chromosome length is assumed to be constant, meaning
+that all of the solutions will have the same chromosome length
+which will not change throughout the run. If different candidates may
+have chromosomes of different lengths, the `variable_len` parameter
+in the constructor of `FitnessFunctionBase` has to be set to `true`.
 
 The chromosome length still has to be specified for the fitness
 function, but in this case it will only be used to generate
