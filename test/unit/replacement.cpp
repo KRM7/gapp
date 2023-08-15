@@ -41,7 +41,7 @@ static const FitnessMatrix fitness_mat = {
 
 TEST_CASE("replacement_best", "[replacement][single-objective]")
 {
-    math::ScopedTolerances _(0, 0.0);
+    math::ScopedTolerances _(0.0, 0.0);
 
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepBest>();
     const auto indices = replacement->nextPopulationImpl(context, fitness_mat.begin(), fitness_mat.begin() + POPSIZE, fitness_mat.end());
