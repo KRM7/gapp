@@ -30,13 +30,13 @@ namespace gapp::math
         template<std::floating_point T = double>
         static T abs() noexcept { return T(absolute_tolerance.load(std::memory_order_acquire)); }
 
-        /** @returns The current relative tolerance used for floating-point comparisons. */
+        /** @returns The current relative tolerance used for floating-point comparisons around @p at. */
         template<std::floating_point T = double>
-        static T eps() noexcept { return relative_tolerance_epsilons.load(std::memory_order_acquire) * std::numeric_limits<T>::epsilon(); }
+        static T rel(T at) noexcept { return relative_tolerance.load(std::memory_order_acquire) * at; }
 
     private:
-        GAPP_API static std::atomic<double> absolute_tolerance;
-        GAPP_API static std::atomic<unsigned> relative_tolerance_epsilons;
+        GAPP_API inline constinit static std::atomic<double> absolute_tolerance = 1E-12;
+        GAPP_API inline constinit static std::atomic<double> relative_tolerance = 10 * std::numeric_limits<double>::epsilon();
 
         friend class ScopedTolerances;
     };
@@ -57,19 +57,22 @@ namespace gapp::math
         * Create an instance of the class, setting new values for the tolerances
         * used for floating-point comparisons.
         * 
-        * @param num_epsilons The number of epsilons to use as the relative tolerance in the comparisons.
-        * @param abs The absolute tolerance value used for the comparisons.
+        * @param abs The absolute tolerance value that will be used for the comparisons. Can't be negative.
+        * @param rel The relative tolerance value around 1.0 that will be used for the comparisons. Can't be negative.
         */
-        ScopedTolerances(unsigned num_epsilons, double abs) noexcept :
-            old_abs_tol(Tolerances::absolute_tolerance.exchange(abs, std::memory_order_acq_rel)),
-            old_eps_tol(Tolerances::relative_tolerance_epsilons.exchange(num_epsilons, std::memory_order_acq_rel))
-        {}
+        ScopedTolerances(double abs, double rel) noexcept :
+            old_absolute_tolerance(Tolerances::absolute_tolerance.exchange(abs, std::memory_order_acq_rel)),
+            old_relative_tolerance(Tolerances::relative_tolerance.exchange(rel, std::memory_order_acq_rel))
+        {
+            GAPP_ASSERT(abs >= 0.0, "The absolute tolerance value can't be negative.");
+            GAPP_ASSERT(rel >= 0.0, "The relative tolerance value can't be negative.");
+        }
 
         /** Reset the tolerances to their previous values. */
         ~ScopedTolerances() noexcept
         {
-            Tolerances::absolute_tolerance.store(old_abs_tol, std::memory_order_release);
-            Tolerances::relative_tolerance_epsilons.store(old_eps_tol, std::memory_order_release);
+            Tolerances::absolute_tolerance.store(old_absolute_tolerance, std::memory_order_release);
+            Tolerances::relative_tolerance.store(old_relative_tolerance, std::memory_order_release);
         }
 
         ScopedTolerances(const ScopedTolerances&)            = delete;
@@ -78,13 +81,16 @@ namespace gapp::math
         ScopedTolerances& operator=(ScopedTolerances&&)      = delete;
 
     private:
-        double old_abs_tol;
-        unsigned old_eps_tol;
+        double old_absolute_tolerance;
+        double old_relative_tolerance;
     };
     
 
     template<typename T>
     inline constexpr T inf = std::numeric_limits<T>::infinity();
+
+    template<typename T>
+    inline constexpr T eps = std::numeric_limits<T>::epsilon();
 
     template<typename T>
     inline constexpr T small = std::numeric_limits<T>::min();
@@ -182,9 +188,8 @@ namespace gapp::math
         GAPP_ASSERT(!std::isnan(lhs) && !std::isnan(rhs));
 
         const T diff = lhs - rhs;
-        const T scale = std::max(std::abs(lhs), std::abs(rhs));
-        const T rel_tol = std::min(scale, std::numeric_limits<T>::max()) * Tolerances::eps<T>();
-        const T tol = std::max(rel_tol, Tolerances::abs<T>());
+        const T scale = std::min(std::max(std::abs(lhs), std::abs(rhs)), std::numeric_limits<T>::max());
+        const T tol = std::max(Tolerances::rel<T>(scale), Tolerances::abs<T>());
 
         if (diff >  tol) return  1;  // lhs < rhs
         if (diff < -tol) return -1;  // lhs > rhs
@@ -198,7 +203,7 @@ namespace gapp::math
 
         if (scale == inf<T>) return lhs == rhs; // for infinities
 
-        return std::abs(lhs - rhs) <= std::max(scale * Tolerances::eps<T>(), Tolerances::abs<T>());
+        return std::abs(lhs - rhs) <= std::max(Tolerances::rel<T>(scale), Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
@@ -208,7 +213,7 @@ namespace gapp::math
 
         if (scale == inf<T>) return lhs < rhs; // for infinities
 
-        return (rhs - lhs) > std::max(scale * Tolerances::eps<T>(), Tolerances::abs<T>());
+        return (rhs - lhs) > std::max(Tolerances::rel<T>(scale), Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
@@ -218,7 +223,7 @@ namespace gapp::math
 
         if (scale == inf<T>) return lhs < rhs; // for infinities
 
-        return (rhs - lhs) > std::max(scale * Tolerances::eps<T>(), Tolerances::abs<T>());
+        return (rhs - lhs) > std::max(Tolerances::rel<T>(scale), Tolerances::abs<T>());
     }
 
     template<std::floating_point T>
@@ -228,7 +233,7 @@ namespace gapp::math
 
         if (scale == inf<T>) return lhs > rhs; // for infinities
 
-        return (lhs - rhs) > std::max(scale * Tolerances::eps<T>(), Tolerances::abs<T>());
+        return (lhs - rhs) > std::max(Tolerances::rel<T>(scale), Tolerances::abs<T>());
     }
 
     template<std::floating_point T>

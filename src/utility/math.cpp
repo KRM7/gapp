@@ -14,10 +14,6 @@
 
 namespace gapp::math
 {
-    constinit std::atomic<double> Tolerances::absolute_tolerance = 1E-12;
-    constinit std::atomic<unsigned> Tolerances::relative_tolerance_epsilons = 10;
-
-
     bool paretoCompareLess(std::span<const double> lhs, std::span<const double> rhs) noexcept
     {
         GAPP_ASSERT(lhs.size() == rhs.size());

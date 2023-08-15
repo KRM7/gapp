@@ -27,7 +27,7 @@ TEST_CASE("find_pareto_front_1D", "[pareto_front]")
 
     SECTION("multiple optimum")
     {
-        ScopedTolerances _(0, 0.0);
+        ScopedTolerances _(0.0, 0.0);
 
         auto optimal_indices = findParetoFront1D(fmat);
 
@@ -36,7 +36,7 @@ TEST_CASE("find_pareto_front_1D", "[pareto_front]")
 
     SECTION("multiple optimum approx")
     {
-        ScopedTolerances _(0, 0.1);
+        ScopedTolerances _(0.1, 0.0);
 
         auto optimal_indices = findParetoFront1D(fmat);
 
@@ -75,7 +75,7 @@ TEMPLATE_TEST_CASE_SIG("find_pareto_front_nd", "[pareto_front]", ((auto F), F), 
 
     SECTION("multiple optimum")
     {
-        ScopedTolerances _(0, 0.0);
+        ScopedTolerances _(0.0, 0.0);
 
         auto optimal_indices = F(fmat);
 
@@ -84,7 +84,7 @@ TEMPLATE_TEST_CASE_SIG("find_pareto_front_nd", "[pareto_front]", ((auto F), F), 
 
     SECTION("multiple optimum approx")
     {
-        ScopedTolerances _(0, 0.1);
+        ScopedTolerances _(0.1, 0.0);
 
         auto optimal_indices = F(fmat);
 
