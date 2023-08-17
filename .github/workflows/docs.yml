@@ -1,0 +1,44 @@
+﻿name: docs
+
+on: 
+  push:
+    branches: [master, dev]
+  
+jobs:
+  update-docs:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
+
+    steps:
+    - name: install-doxygen
+      run: sudo apt update && sudo apt install -y doxygen
+
+    - name: git-config
+      run: |
+        git config user.name ${{ github.repository_owner }}
+        git config user.email ${{ github.repository_owner }}@users.noreply.github.com
+
+    - name: update-api-docs
+      uses: actions/checkout@v3
+      with:
+        ref: gh-pages
+    - run: |
+        git rebase origin/master
+        sudo ./docs/api/generate_api_docs.sh
+        mv docs/api/sphinx-out/* docs/
+        git commit --all --amend --no-edit
+        git push --force-with-lease
+     
+    - name: update-wiki-pages
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.repository }}.wiki
+        path: wiki
+    - run: |
+        rm -f wiki/*.md
+        cp docs/*.md wiki/
+        cd wiki
+        git commit --all --amend --no-edit
+        git push --force-with-lease
