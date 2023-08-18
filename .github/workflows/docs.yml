@@ -2,7 +2,7 @@
 
 on: 
   push:
-    branches: [master, dev]
+    branches: [master]
   
 jobs:
   update-docs:
