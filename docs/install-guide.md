@@ -147,7 +147,7 @@ Include(FetchContent)
 FetchContent_Declare(
     gapp
     GIT_REPOSITORY https://github.com/KRM7/gapp.git
-    GIT_TAG        v0.1
+    GIT_TAG        v0.1.0
 )
 FetchContent_MakeAvailable(gapp)
 
