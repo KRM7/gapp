@@ -12,7 +12,7 @@ breathe_default_project = "gapp"
 
 html_theme = "sphinx_book_theme"
 html_theme_options = {
-    "repository_url": "https://github.com/KRM7/genetic-algorithms",
+    "repository_url": "https://github.com/KRM7/gapp",
     "use_repository_button": True,
     "use_fullscreen_button": False,
     "use_download_button": False,

@@ -22,9 +22,9 @@ TEST_CASE("fp_compare", "[math]")
 
     SECTION("is_equal")
     {
-        auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+        auto [abs, rel] = GENERATE(std::pair{ 0.0, 0.0 }, std::pair{ 1E-12, 10 * eps<double> });
 
-        ScopedTolerances _(rel, abs);
+        ScopedTolerances _(abs, rel);
         INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
         REQUIRE(floatIsEqual(0.0, 0.0));
@@ -69,7 +69,7 @@ TEST_CASE("fp_compare", "[math]")
 
     SECTION("approx is_equal")
     {
-        ScopedTolerances _(10, 1E-12);
+        ScopedTolerances _(1E-12, 10 * eps<double>);
 
         REQUIRE(floatIsEqual(0.0, 1E-13));
         REQUIRE(!floatIsEqual(0.0, 1E-11));
@@ -80,9 +80,9 @@ TEST_CASE("fp_compare", "[math]")
 
     SECTION("is_less")
     {
-        auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+        auto [abs, rel] = GENERATE(std::pair{ 0.0, 0.0 }, std::pair{ 1E-12, 10 * eps<double> });
 
-        ScopedTolerances _(rel, abs);
+        ScopedTolerances _(abs, rel);
         INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
         REQUIRE(!floatIsLess(0.0, 0.0));
@@ -134,7 +134,7 @@ TEST_CASE("fp_compare", "[math]")
 
     SECTION("approx is_less")
     {
-        ScopedTolerances _(10, 1E-12);
+        ScopedTolerances _(1E-12, 10 * eps<double>);
 
         REQUIRE(!floatIsLess(0.0, 1E-13));
         REQUIRE(floatIsLess(0.0, 1E-11));
@@ -145,9 +145,9 @@ TEST_CASE("fp_compare", "[math]")
 
     SECTION("three-way comparison")
     {
-        auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+        auto [abs, rel] = GENERATE(std::pair{ 0.0, 0.0 }, std::pair{ 1E-12, 10 * eps<double> });
 
-        ScopedTolerances _(rel, abs);
+        ScopedTolerances _(abs, rel);
         INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
         REQUIRE(floatCompare(0.0, 0.0) == 0);
@@ -186,9 +186,9 @@ TEST_CASE("fp_compare", "[math]")
 
     SECTION("is_less_not_greater")
     {
-        auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+        auto [abs, rel] = GENERATE(std::pair{ 0.0, 0.0 }, std::pair{ 1E-12, 10 * eps<double> });
 
-        ScopedTolerances _(rel, abs);
+        ScopedTolerances _(abs, rel);
         INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
         REQUIRE(!floatIsLessAssumeNotGreater(0.0, 0.0));
@@ -230,9 +230,9 @@ TEST_CASE("fp_compare", "[math]")
 
 TEST_CASE("pareto_compare_less", "[math]")
 {
-    auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+    auto [abs, rel] = GENERATE(std::pair{ 0.0, 0.0 }, std::pair{ 1E-12, 10 * eps<double> });
 
-    ScopedTolerances _(rel, abs);
+    ScopedTolerances _(abs, rel);
     INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
     const std::vector vec = { 3.0, 2.0, 1.0 };
@@ -274,9 +274,9 @@ TEST_CASE("pareto_compare_less", "[math]")
 
 TEST_CASE("pareto_compare_three_way", "[math]")
 {
-    auto [rel, abs] = GENERATE(std::pair{ 0, 0.0 }, std::pair{ 10, 1E-12 });
+    auto [abs, rel] = GENERATE(std::pair{ 0.0, 0.0 }, std::pair{ 1E-12, 10 * eps<double> });
 
-    ScopedTolerances _(rel, abs);
+    ScopedTolerances _(abs, rel);
     INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
     const std::vector vec = { 3.0, 2.0, 1.0 };

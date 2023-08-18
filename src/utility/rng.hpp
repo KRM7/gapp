@@ -49,6 +49,9 @@ namespace gapp::rng
         /** Generate the next pseudo-random number of the sequence. Thread-safe. */
         result_type operator()() noexcept;
 
+        /** Set a new seed for the generator. */
+        void seed(state_type seed) noexcept;
+
         /** @returns The smallest value that can be generated. */
         static constexpr result_type min() noexcept;
 
@@ -127,11 +130,16 @@ namespace gapp::rng
 {
     inline AtomicSplitmix64::result_type AtomicSplitmix64::operator()() noexcept
     {
-        result_type z = state_.fetch_add(0x9e3779b97f4a7c15, std::memory_order_relaxed) + 0x9e3779b97f4a7c15;
+        result_type z = state_.fetch_add(0x9e3779b97f4a7c15, std::memory_order_acq_rel) + 0x9e3779b97f4a7c15;
         z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
         z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
 
         return z ^ (z >> 31);
+    }
+
+    inline void AtomicSplitmix64::seed(state_type seed) noexcept
+    {
+        state_.store(seed, std::memory_order_release);
     }
 
     inline constexpr AtomicSplitmix64::result_type AtomicSplitmix64::min() noexcept

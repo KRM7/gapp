@@ -76,7 +76,7 @@ TEMPLATE_TEST_CASE_SIG("nd_sort", "[pareto_front]", ((auto F), F), fastNonDomina
     REQUIRE(std::adjacent_find(pareto_fronts.begin(), pareto_fronts.end(), [](auto lhs, auto rhs) { return (rhs.rank - lhs.rank) > 1; }) == pareto_fronts.end());
 
 
-    math::ScopedTolerances _(0, 0.11);
+    math::ScopedTolerances _(0.11, 0.0);
 
     ParetoFronts pareto_fronts_approx = F(fmat.begin(), fmat.end());
     expected_fronts[18].rank = 3;

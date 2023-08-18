@@ -2,7 +2,7 @@
 
 on: 
   push:
-    branches: [master, dev]
+    branches: [master]
   
 jobs:
   update-docs:
@@ -17,17 +17,18 @@ jobs:
 
     - name: git-config
       run: |
-        git config user.name ${{ github.repository_owner }}
-        git config user.email ${{ github.repository_owner }}@users.noreply.github.com
+        git config --global user.name ${{ github.repository_owner }}
+        git config --global user.email ${{ github.repository_owner }}@users.noreply.github.com
 
     - name: update-api-docs
       uses: actions/checkout@v3
       with:
         ref: gh-pages
+        fetch-depth: 0
     - run: |
         git rebase origin/master
-        sudo ./docs/api/generate_api_docs.sh
-        mv docs/api/sphinx-out/* docs/
+        sudo bash ./docs/api/generate_api_docs.sh
+        sudo rsync -a docs/api/sphinx-out/ docs/
         git commit --all --amend --no-edit
         git push --force-with-lease
      
@@ -40,5 +41,6 @@ jobs:
         rm -f wiki/*.md
         cp docs/*.md wiki/
         cd wiki
-        git commit --all --amend --no-edit
+        git add .
+        git commit --amend --no-edit
         git push --force-with-lease
