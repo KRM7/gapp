@@ -15,6 +15,21 @@
 /** Math utility classes and functions. */
 namespace gapp::math
 {
+    template<typename T>
+    inline constexpr T inf = std::numeric_limits<T>::infinity();
+
+    template<typename T>
+    inline constexpr T eps = std::numeric_limits<T>::epsilon();
+
+    template<typename T>
+    inline constexpr T small = std::numeric_limits<T>::min();
+
+    template<typename T>
+    inline constexpr T large = std::numeric_limits<T>::max();
+
+    using Point = std::vector<double>;
+
+
     /**
     * This class contains the global absolute and relative tolerance values used
     * for comparing floating-point values in the GAs.
@@ -36,7 +51,7 @@ namespace gapp::math
 
     private:
         GAPP_API inline constinit static std::atomic<double> absolute_tolerance = 1E-12;
-        GAPP_API inline constinit static std::atomic<double> relative_tolerance = 10 * std::numeric_limits<double>::epsilon();
+        GAPP_API inline constinit static std::atomic<double> relative_tolerance = 10 * eps<double>;
 
         friend class ScopedTolerances;
     };
@@ -84,22 +99,6 @@ namespace gapp::math
         double old_absolute_tolerance;
         double old_relative_tolerance;
     };
-    
-
-    template<typename T>
-    inline constexpr T inf = std::numeric_limits<T>::infinity();
-
-    template<typename T>
-    inline constexpr T eps = std::numeric_limits<T>::epsilon();
-
-    template<typename T>
-    inline constexpr T small = std::numeric_limits<T>::min();
-
-    template<typename T>
-    inline constexpr T large = std::numeric_limits<T>::max();
-
-
-    using Point = std::vector<double>;
 
 
     /* Comparison function for floating point numbers. Returns -1 if (lhs < rhs), +1 if (lhs > rhs), and 0 if (lhs == rhs). */

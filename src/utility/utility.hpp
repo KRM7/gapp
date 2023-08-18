@@ -99,7 +99,7 @@
 #endif
 
 
-#ifndef GAPP_NO_EXCEPTIONS
+#if defined(__cpp_exceptions)
 #   define GAPP_THROW(exception_type, msg) throw exception_type(msg)
 #else
 #   define GAPP_THROW(exception_type, msg) GAPP_UNREACHABLE()
@@ -157,13 +157,9 @@ namespace gapp::detail
         {
             return high - low;
         }
-        else if (same_sign(low, high))
-        {
-            return high - low;
-        }
         else
         {
-            return static_cast<size_t>(-(low + 1)) + high + 1;
+            return same_sign(low, high) ? high - low : -(low + 1) + high + 1;
         }
     }
 
