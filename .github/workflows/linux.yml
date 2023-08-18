@@ -10,21 +10,17 @@ jobs:
       matrix:
         build-type: [ Release, RelWithDebInfo ]
         compiler: [
-            { cxx: g++-11, pkgs: gcc-11 libtbb-dev },
-            #{ cxx: g++-12, pkgs: gcc-12 libtbb-dev }, # disabled because of warnings in the std library
+            { cxx: g++-11, pkgs: g++-11 libtbb-dev },
+            { cxx: g++-12, pkgs: g++-12 libtbb-dev },
             { cxx: clang++-14, pkgs: clang-14 libtbb-dev },
             { cxx: clang++-15, pkgs: clang-15 libtbb-dev },
-        ]
-        lib-type: [
-            { name: Static, cmake-flag: "OFF" },
-            { name: Shared, cmake-flag: "ON"  },
         ]
         
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.compiler.cxx }}, ${{ matrix.build-type }}, ${{ matrix.lib-type.name }}
+    name: ${{ matrix.compiler.cxx }}, ${{ matrix.build-type }}
 
     steps:
     - name: checkout-repo
@@ -41,7 +37,7 @@ jobs:
     - name: setup-build
       env:
         CXX: ${{ matrix.compiler.cxx }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_LINK_TBB=ON -DBUILD_SHARED_LIBS=${{ matrix.lib-type.cmake-flag }}
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_LINK_TBB=ON -DBUILD_SHARED_LIBS=OFF
 
     - name: build
       run: cmake --build . --parallel

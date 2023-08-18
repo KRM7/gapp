@@ -101,7 +101,8 @@ else() # GNU style compiler interface
 
     # gcc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op")
+        # https://gcc.gnu.org/bugzilla//show_bug.cgi?id=71434 with gcc 12 even though it's a system header + pragma diagnostic doesn't work
+	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op -Wno-maybe-uninitialized")
     endif()
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
