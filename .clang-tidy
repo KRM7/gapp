@@ -29,6 +29,7 @@
   -readability-container-data-pointer,
   -readability-suspicious-call-argument,
   -readability-implicit-bool-conversion,
+  -readability-uppercase-literal-suffix,
   -bugprone-easily-swappable-parameters,
   -bugprone-exception-escape,
   -cppcoreguidelines-special-member-functions,

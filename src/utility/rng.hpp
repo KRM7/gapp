@@ -87,13 +87,9 @@ namespace gapp::rng
     template<std::floating_point RealType = double>
     inline RealType randomReal(RealType lbound, RealType ubound);
 
-    /** Generate a random floating-point value from a standard normal distribution. */
-    template<std::floating_point RealType = double>
-    inline RealType randomNormal();
-
     /** Generate a random floating-point value from a normal distribution with the specified mean and std deviation. */
     template<std::floating_point RealType = double>
-    inline RealType randomNormal(RealType mean, RealType SD);
+    inline RealType randomNormal(RealType mean = 0.0, RealType SD = 1.0);
 
     /** Generate a random integer value from a binomial distribution with the parameters n and p. */
     template<std::integral IntType = int>
@@ -193,20 +189,14 @@ namespace gapp::rng
     }
 
     template<std::floating_point RealType>
-    RealType randomNormal()
-    {
-        // keep the distribution for the state
-        thread_local std::normal_distribution<RealType> dist{ 0.0, 1.0 };
-
-        return dist(rng::prng);
-    }
-
-    template<std::floating_point RealType>
     RealType randomNormal(RealType mean, RealType SD)
     {
         GAPP_ASSERT(SD >= 0.0);
 
-        return (SD == 0.0) ? mean : std::normal_distribution{ mean, SD }(rng::prng);
+        // keep the distribution for the state
+        thread_local std::normal_distribution<RealType> dist;
+
+        return SD * dist(rng::prng) + mean;
     }
 
     template<std::integral IntType>
@@ -298,7 +288,7 @@ namespace gapp::rng
         GAPP_ASSERT(range_len >= count);
 
         const bool select_many = (count > 0.6 * range_len);
-        const bool huge_range  = range_len >= (1ull << 20);
+        const bool huge_range  = (range_len >= 65536);
 
         if (huge_range) [[unlikely]] return rng::sampleUniqueSet(lbound, ubound, count);
 

@@ -84,25 +84,16 @@ namespace gapp::detail
 
 
 
-    namespace _
-    {
-        template<typename Derived, template<typename...> class BaseTempl>
-        struct is_derived_from_spec_impl
-        {
-        private:
-            template<typename... TArgs>
-            static std::true_type f(BaseTempl<TArgs...>*);
-
-            static std::false_type f(...);
-
-        public:
-            using type = decltype(f(static_cast<Derived*>(nullptr)));
-        };
-
-    } // namespace _
-
     template<typename Derived, template<typename...> class BaseTempl>
-    using is_derived_from_spec_of = typename _::is_derived_from_spec_impl<Derived, BaseTempl>::type;
+    struct is_derived_from_spec_of
+    {
+    private:
+        template<typename... TArgs>
+        static std::true_type f(BaseTempl<TArgs...>*);
+        static std::false_type f(...);
+    public:
+        inline constexpr static bool value = decltype( f(static_cast<Derived*>(nullptr)) )::value;
+    };
 
     template<typename Derived, template<typename...> class BaseTempl>
     inline constexpr bool is_derived_from_spec_of_v = is_derived_from_spec_of<Derived, BaseTempl>::value;

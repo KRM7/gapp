@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required(VERSION 3.21)
 
-project(gapp VERSION 0.1 LANGUAGES CXX)
+project(gapp VERSION 0.1.0 LANGUAGES CXX)
 
 include(CheckIPOSupported)
 include(CTest)
@@ -86,7 +86,7 @@ else() # GNU style compiler interface
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
 
-    set(GAPP_OPT_FLAGS "-O3 -fno-math-errno -fno-signed-zeros -fno-trapping-math -freciprocal-math -fno-rounding-math")
+    set(GAPP_OPT_FLAGS "-O3 -fno-math-errno -fno-trapping-math -freciprocal-math -fno-signed-zeros -fno-associative-math -fno-finite-math-only")
     if(GAPP_USE_MARCH_NATIVE)
         set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native")
     endif()
@@ -101,7 +101,8 @@ else() # GNU style compiler interface
 
     # gcc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op")
+        # https://gcc.gnu.org/bugzilla//show_bug.cgi?id=71434 with gcc 12 even though it's a system header + pragma diagnostic doesn't work
+	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op -Wno-maybe-uninitialized")
     endif()
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -139,9 +140,9 @@ target_include_directories(gapp SYSTEM INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURR
 
 target_compile_features(gapp PUBLIC "cxx_std_20")
 target_compile_definitions(gapp PUBLIC "$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:GAPP_BUILD_STATIC>")
-target_compile_definitions(gapp PUBLIC "$<$<BOOL:${GAPP_DISABLE_EXCEPTIONS}>:GAPP_NO_EXCEPTIONS>")
 target_compile_options(gapp PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:-Zc:preprocessor>")
 
+# Dependencies
 find_package(TBB)
 if(TBB_FOUND AND GAPP_LINK_TBB AND NOT MSVC)
     target_link_libraries(gapp PUBLIC "TBB::tbb")
