@@ -64,20 +64,14 @@ are intended to be used for multi-objective optimization problems.
 
 If you want to track something that doesn't have a metric already implemented 
 for it, it's possible to implement your own metrics. Metrics must be derived
-from the `Monitor` class, and implement 3 methods: `initialize`, `update`, and
-`value_at`:
+from the `Monitor` class, and implement the `initialize`, and `update` methods:
 
 ```cpp
 // The second type parameter of Monitor is the type used to store the
 // gathered metrics. This will be used as the type of the data_ field.
 class MyMetric : public metrics::Monitor<MyMetric, std::vector<double>>
 {
-public:
-    // Returns the value of the metric in the given generation.
-    // Note that this method is not virtual.
-    double value_at(size_t generation) const noexcept { return data_[generation]; }
-private:
-    // Initialize the metric. Called at the start of a run.
+    // (optional) Initialize the metric. Called at the start of a run.
     void initialize(const GaInfo& ga) override { data_.clear(); }
 
     // Update the metric with a new value from the current generation.

@@ -31,9 +31,9 @@ TEMPLATE_TEST_CASE("fitness_metrics", "[metrics]", FitnessMin, FitnessMax, Fitne
     REQUIRE(metric.data().size() == num_gen);
 
     REQUIRE(std::all_of(metric.begin(), metric.end(), detail::is_size(num_obj)));
-    REQUIRE(metric.value_at(4).size() == num_obj);
+    REQUIRE(metric[4].size() == num_obj);
 
-    const auto& val = metric.value_at(7);
+    const auto& val = metric[7];
     REQUIRE(std::all_of(val.begin(), val.end(), detail::equal_to(0.0)));
 }
 
@@ -48,7 +48,7 @@ TEST_CASE("nadir_point_metric", "[metrics]")
     REQUIRE(metric.size() == num_gen);
     REQUIRE(std::all_of(metric.begin(), metric.end(), detail::is_size(num_obj)));
 
-    const auto& val = metric.value_at(5);
+    const auto& val = metric[5];
     REQUIRE(std::all_of(val.begin(), val.end(), detail::equal_to(0.0)));
 }
 

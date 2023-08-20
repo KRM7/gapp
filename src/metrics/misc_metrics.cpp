@@ -22,11 +22,4 @@ namespace gapp::metrics
         data_.push_back(sum_ - old_sum);
     }
 
-    size_t FitnessEvaluations::value_at(size_t generation) const noexcept
-    {
-        GAPP_ASSERT(generation < data_.size());
-
-        return data_[generation];
-    }
-
 } // namespace gapp::metrics

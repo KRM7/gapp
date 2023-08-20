@@ -16,13 +16,6 @@ namespace gapp::metrics
     template<typename Derived>
     class FitnessMonitor : public Monitor<Derived, FitnessMatrix>
     {
-    public:
-        std::span<const double> value_at(size_t generation) const noexcept
-        {
-            GAPP_ASSERT(generation < this->data_.size());
-
-            return this->data_[generation];
-        }
     private:
         void initialize(const GaInfo& ga) override
         {
