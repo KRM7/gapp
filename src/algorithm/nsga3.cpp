@@ -421,8 +421,7 @@ namespace gapp::algorithm
 
     std::vector<size_t> NSGA3::optimalSolutionsImpl(const GaInfo&) const
     {
-        return detail::find_indices(pimpl_->sol_info_,
-                                    detail::compose(&Impl::CandidateInfo::rank, detail::equal_to(0_sz)));
+        return detail::find_indices(pimpl_->sol_info_, [](const Impl::CandidateInfo& sol) { return sol.rank == 0; });
     }
 
 } // namespace gapp::algorithm

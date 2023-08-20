@@ -35,7 +35,7 @@ namespace gapp::algorithm::dtl
     {
         GAPP_ASSERT(std::distance(current, last) >= 0);
 
-        return std::find_if(current, last, compose(&FrontInfo::rank, detail::not_equal_to(current->rank)));
+        return std::ranges::find_if(current, last, detail::not_equal_to(current->rank), &FrontInfo::rank);
     }
 
     std::vector<ParetoFrontsRange> paretoFrontBounds(ParetoFronts& pareto_fronts)
@@ -65,8 +65,7 @@ namespace gapp::algorithm::dtl
         auto last_in = first + popsize;
 
         if (last_in == last) return { last, last };
-
-        auto partial_front_first = std::find_if(first, last_in, compose(&FrontInfo::rank, detail::equal_to(last_in->rank)));
+        auto partial_front_first = std::ranges::find_if(first, last_in, detail::equal_to(last_in->rank), &FrontInfo::rank);
         auto partial_front_last = nextFrontBegin(std::prev(last_in), last);
 
         return { partial_front_first, partial_front_last };

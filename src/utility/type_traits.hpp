@@ -42,31 +42,6 @@ namespace gapp::detail
 
 
 
-    namespace _
-    {
-        template<size_t N, typename... Ts>
-        struct number_of_types_impl : std::integral_constant<size_t, N> {};
-
-        template<size_t N, typename T, typename... Ts>
-        struct number_of_types_impl<N, T, Ts...>
-            : std::integral_constant<size_t, number_of_types_impl<N + 1, Ts...>::value>
-        {};
-
-    } // namespace _
-
-    template<typename... Ts>
-    struct number_of_types : std::integral_constant<size_t, 0> {};
-
-    template<typename T, typename... Ts>
-    struct number_of_types<T, Ts...>
-        : std::integral_constant<size_t, _::number_of_types_impl<1, Ts...>::value>
-    {};
-
-    template<typename... Ts>
-    inline constexpr size_t number_of_types_v = number_of_types<Ts...>::value;
-
-
-
     template<size_t N, typename... Args>
     struct nth_type {};
 
