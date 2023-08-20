@@ -29,6 +29,6 @@ int main()
         std::cout << std::format("Generation {}\t| {:.6f}\n", gen + 1, metric[gen]);
     }
 
-    const auto* hypervol = GA.get_metric_if<metrics::AutoHypervolume>(); // untracked metric
+    [[maybe_unused]] const auto* hypervol = GA.get_metric_if<metrics::AutoHypervolume>(); // untracked metric
     assert(hypervol == nullptr);
 }
