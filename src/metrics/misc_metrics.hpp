@@ -12,9 +12,6 @@ namespace gapp::metrics
     /** Record the number of fitness function evaluations performed in each generation. */
     class FitnessEvaluations final : public Monitor<FitnessEvaluations, std::vector<size_t>>
     {
-    public:
-        size_t value_at(size_t generation) const noexcept;
-    private:
         void initialize(const GaInfo& ga) override;
         void update(const GaInfo& ga) override;
 

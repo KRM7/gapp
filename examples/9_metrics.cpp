@@ -10,8 +10,6 @@ using namespace gapp;
 
 struct MyMetric : public metrics::Monitor<MyMetric, std::vector<double>>
 {
-    double value_at(size_t generation) const noexcept { return data_[generation]; }
-    void initialize(const GaInfo&) override { data_.clear(); }
     void update(const GaInfo& ga) override { data_.push_back(ga.fitness_matrix()[0][0]); }
 };
 

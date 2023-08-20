@@ -51,7 +51,7 @@ namespace gapp::detail
     MetricSet::MetricSet(Metrics... metrics)
     {
         metrics_.reserve(sizeof...(metrics));
-        (metrics_.push_back(std::make_unique<Metrics>(std::move(metrics))), ...);
+        ( metrics_.push_back(std::make_unique<Metrics>(std::move(metrics))), ... );
     }
 
     template<typename Metric>
@@ -60,8 +60,7 @@ namespace gapp::detail
     {
         auto found = std::find_if(metrics_.begin(), metrics_.end(), [](const auto& metric) { return metric->type_id() == detail::type_id<Metric>; });
 
-        if (found == metrics_.end()) return nullptr;
-        return static_cast<const Metric*>(found->get());
+        return found != metrics_.end() ? static_cast<Metric*>(found->get()) : nullptr;
     }
 
 } // namespace gapp::detail

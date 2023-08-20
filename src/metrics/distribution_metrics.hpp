@@ -16,9 +16,6 @@ namespace gapp::metrics
     */
     class NadirPoint final : public Monitor<NadirPoint, FitnessMatrix>
     {
-    public:
-        std::span<const double> value_at(size_t generation) const noexcept;
-    private:
         void initialize(const GaInfo& ga) override;
         void update(const GaInfo& ga) override;
     };
@@ -50,8 +47,6 @@ namespace gapp::metrics
         /** @returns The reference point used for computing the hypervolumes. */
         const FitnessVector& ref_point() const noexcept { return ref_point_; }
 
-        double value_at(size_t generation) const noexcept;
-
     private:
         void initialize(const GaInfo& ga) override;
         void update(const GaInfo& ga) override;
@@ -79,7 +74,6 @@ namespace gapp::metrics
         /** @returns The reference point used for computing the hypervolumes. */
         const FitnessVector& ref_point() const noexcept { return worst_point_; }
 
-        double value_at(size_t generation) const noexcept;
     private:
         void initialize(const GaInfo& ga) override;
         void update(const GaInfo& ga) override;
