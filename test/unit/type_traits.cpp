@@ -26,14 +26,6 @@ TEST_CASE("is_one_of_templates", "[type_traits]")
     STATIC_REQUIRE(!is_one_of_templates_v<std::vector>);
 }
 
-TEST_CASE("number_of_types", "[type_traits]")
-{
-    STATIC_REQUIRE(number_of_types_v<> == 0);
-    STATIC_REQUIRE(number_of_types_v<void> == 1);
-    STATIC_REQUIRE(number_of_types_v<int, int> == 2);
-    STATIC_REQUIRE(number_of_types_v<void, int, void*, double> == 4);
-}
-
 TEST_CASE("nth_type", "[type_traits]")
 {
     STATIC_REQUIRE(std::is_same_v<nth_type_t<1, int, void>, void>);
