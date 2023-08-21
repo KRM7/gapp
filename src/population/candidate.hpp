@@ -137,27 +137,14 @@ namespace gapp
     template<typename T>
     using CandidatePair = std::pair<Candidate<T>, Candidate<T>>;
 
-    /* Candidates are considered equal if their chromosomes are the same. */
 
+    /**
+    * Comparison operators based on the chromosomes of the candidates.
+    * The comparisons are not transitive if T is a floating-point type. 
+    */
     template<typename T>
     bool operator==(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
-    template<typename T>
-    bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
-
-    /* Lexicographical comparison operators based on the chromosomes of the candidates. */
-
-    template<typename T>
-    bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
-
-    template<typename T>
-    bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
-
-    template<typename T>
-    bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
-
-    template<typename T>
-    bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept;
 
     /* Hash function for the candidates. */
     template<detail::Hashable T>
@@ -196,45 +183,6 @@ namespace gapp
         {
             return lhs.chromosome == rhs.chromosome;
         }
-    }
-
-    template<typename T>
-    bool operator!=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
-    {
-        return !(lhs == rhs);
-    }
-
-    template<typename T>
-    bool operator<(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
-    {
-        if constexpr (std::is_floating_point_v<T>)
-        {
-            return std::lexicographical_compare(lhs.chromosome.begin(), lhs.chromosome.end(),
-                                                rhs.chromosome.begin(), rhs.chromosome.end(), 
-                                                math::floatIsLess<T>);
-        }
-        else
-        {
-            return lhs.chromosome < rhs.chromosome;
-        }
-    }
-
-    template<typename T>
-    bool operator>=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
-    {
-        return !(lhs < rhs);
-    }
-
-    template<typename T>
-    bool operator>(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
-    {
-        return rhs < lhs;
-    }
-
-    template<typename T>
-    bool operator<=(const Candidate<T>& lhs, const Candidate<T>& rhs) noexcept
-    {
-        return !(rhs < lhs);
     }
 
     template<detail::Hashable T>

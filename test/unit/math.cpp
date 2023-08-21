@@ -150,38 +150,38 @@ TEST_CASE("fp_compare", "[math]")
         ScopedTolerances _(abs, rel);
         INFO("Relative tolerance eps: " << rel << ", absolute tolerance: " << abs);
 
-        REQUIRE(floatCompare(0.0, 0.0) == 0);
-        REQUIRE(floatCompare(0.0, -0.0) == 0);
-        REQUIRE(floatCompare(-0.0, 0.0) == 0);
-        REQUIRE(floatCompare(-0.0, -0.0) == 0);
+        REQUIRE((floatCompare(0.0, 0.0) == 0));
+        REQUIRE((floatCompare(0.0, -0.0) == 0));
+        REQUIRE((floatCompare(-0.0, 0.0) == 0));
+        REQUIRE((floatCompare(-0.0, -0.0) == 0));
 
-        REQUIRE(floatCompare(4.0, 4.0) == 0);
-        REQUIRE(floatCompare(0.0, 4.0) < 0);
-        REQUIRE(floatCompare(4.0, 0.0) > 0);
+        REQUIRE((floatCompare(4.0, 4.0) == 0));
+        REQUIRE((floatCompare(0.0, 4.0) < 0));
+        REQUIRE((floatCompare(4.0, 0.0) > 0));
 
-        REQUIRE(floatCompare(SMALL, SMALL) == 0);
-        REQUIRE(floatCompare(BIG, BIG) == 0);
-        REQUIRE(floatCompare(INF, INF) == 0);
+        REQUIRE((floatCompare(SMALL, SMALL) == 0));
+        REQUIRE((floatCompare(BIG, BIG) == 0));
+        REQUIRE((floatCompare(INF, INF) == 0));
 
-        REQUIRE(floatCompare(-INF, INF) < 0);
-        REQUIRE(floatCompare(INF, -INF) > 0);
-        REQUIRE(floatCompare(INF, INF) == 0);
-        REQUIRE(floatCompare(-INF, -INF) == 0);
+        REQUIRE((floatCompare(-INF, INF) < 0));
+        REQUIRE((floatCompare(INF, -INF) > 0));
+        REQUIRE((floatCompare(INF, INF) == 0));
+        REQUIRE((floatCompare(-INF, -INF) == 0));
 
-        REQUIRE(floatCompare(0.0, INF) < 0);
-        REQUIRE(floatCompare(INF, 0.0) > 0);
+        REQUIRE((floatCompare(0.0, INF) < 0));
+        REQUIRE((floatCompare(INF, 0.0) > 0));
 
-        REQUIRE(floatCompare(0.0, BIG) < 0);
-        REQUIRE(floatCompare(BIG, 0.0) > 0);
+        REQUIRE((floatCompare(0.0, BIG) < 0));
+        REQUIRE((floatCompare(BIG, 0.0) > 0));
 
-        REQUIRE(floatCompare(SMALL, BIG) < 0);
-        REQUIRE(floatCompare(BIG, SMALL) > 0);
+        REQUIRE((floatCompare(SMALL, BIG) < 0));
+        REQUIRE((floatCompare(BIG, SMALL) > 0));
 
-        REQUIRE(floatCompare(SMALL, INF) < 0);
-        REQUIRE(floatCompare(INF, SMALL) > 0);
+        REQUIRE((floatCompare(SMALL, INF) < 0));
+        REQUIRE((floatCompare(INF, SMALL) > 0));
 
-        REQUIRE(floatCompare(BIG, INF) < 0);
-        REQUIRE(floatCompare(INF, BIG) > 0);
+        REQUIRE((floatCompare(BIG, INF) < 0));
+        REQUIRE((floatCompare(INF, BIG) > 0));
     }
 
     SECTION("is_less_not_greater")
