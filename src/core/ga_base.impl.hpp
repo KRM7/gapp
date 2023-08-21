@@ -481,7 +481,16 @@ namespace gapp
         auto optimal_pop = algorithm_->optimalSolutions(*this, pop);
 
         optimal_sols = detail::mergeParetoSets(std::move(optimal_sols), std::move(optimal_pop));
-        detail::erase_duplicates(optimal_sols);
+
+        /* Duplicate elements are removed from optimal_sols using exact comparison
+        *  of the chromosomes in order to avoid issues with using a non-transitive
+        *  comparison function for std::sort and std::unique. */
+        auto chrom_eq = [](const auto& lhs, const auto& rhs) { return lhs.chromosome == rhs.chromosome; };
+        auto chrom_less = [](const auto& lhs, const auto& rhs) { return lhs.chromosome < rhs.chromosome; };
+
+        std::sort(optimal_sols.begin(), optimal_sols.end(), chrom_less);
+        auto last = std::unique(optimal_sols.begin(), optimal_sols.end(), chrom_eq);
+        optimal_sols.erase(last, optimal_sols.end());
     }
 
     template<typename T>

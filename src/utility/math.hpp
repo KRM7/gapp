@@ -7,6 +7,7 @@
 #include <vector>
 #include <span>
 #include <atomic>
+#include <compare>
 #include <concepts>
 #include <limits>
 #include <cstdint>
@@ -101,33 +102,33 @@ namespace gapp::math
     };
 
 
-    /* Comparison function for floating point numbers. Returns -1 if (lhs < rhs), +1 if (lhs > rhs), and 0 if (lhs == rhs). */
+    /* Three-way comparison function for floating point numbers. */
     template<std::floating_point T>
-    constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept;
+    std::weak_ordering floatCompare(T lhs, T rhs) noexcept;
 
     /* Equality comparison for floating point numbers. Returns true if lhs is approximately equal to rhs. */
     template<std::floating_point T>
-    constexpr bool floatIsEqual(T lhs, T rhs) noexcept;
+    bool floatIsEqual(T lhs, T rhs) noexcept;
 
     /* Less than comparison for floating point numbers. Returns true if lhs is definitely less than rhs. */
     template<std::floating_point T>
-    constexpr bool floatIsLess(T lhs, T rhs) noexcept;
+    bool floatIsLess(T lhs, T rhs) noexcept;
 
     /* Less than comparison for fp numbers. Assumes that lhs is not greater than rhs. */
     template<std::floating_point T>
-    constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept;
+    bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept;
 
     /* Greater than comparison for floating point numbers. Returns true if lhs is definitely greater than rhs. */
     template<std::floating_point T>
-    constexpr bool floatIsGreater(T lhs, T rhs) noexcept;
+    bool floatIsGreater(T lhs, T rhs) noexcept;
 
     /* Less than or equal to comparison for floating point numbers. Returns true if lhs is less than or approximately equal to rhs. */
     template<std::floating_point T>
-    constexpr bool floatIsLessEq(T lhs, T rhs) noexcept;
+    bool floatIsLessEq(T lhs, T rhs) noexcept;
 
     /* Greater than or equal to comparison for floating point numbers. Returns true if lhs is greater than or approximately equal to rhs. */
     template<std::floating_point T>
-    constexpr bool floatIsGreaterEq(T lhs, T rhs) noexcept;
+    bool floatIsGreaterEq(T lhs, T rhs) noexcept;
 
     /* Equality comparison for fp vectors. Returns true if the elements of the ranges are approximately equal. */
     template<std::floating_point T>
@@ -182,7 +183,7 @@ namespace gapp::math
 namespace gapp::math
 {
     template<std::floating_point T>
-    constexpr std::int8_t floatCompare(T lhs, T rhs) noexcept
+    std::weak_ordering floatCompare(T lhs, T rhs) noexcept
     {
         GAPP_ASSERT(!std::isnan(lhs) && !std::isnan(rhs));
 
@@ -190,13 +191,13 @@ namespace gapp::math
         const T scale = std::min(std::max(std::abs(lhs), std::abs(rhs)), std::numeric_limits<T>::max());
         const T tol = std::max(Tolerances::rel<T>(scale), Tolerances::abs<T>());
 
-        if (diff >  tol) return  1;  // lhs < rhs
-        if (diff < -tol) return -1;  // lhs > rhs
-        return 0;                    // lhs == rhs
+        if (diff >  tol) return std::weak_ordering::greater;
+        if (diff < -tol) return std::weak_ordering::less;
+        return std::weak_ordering::equivalent;
     }
 
     template<std::floating_point T>
-    constexpr bool floatIsEqual(T lhs, T rhs) noexcept
+    bool floatIsEqual(T lhs, T rhs) noexcept
     {
         const T scale = std::max(std::abs(lhs), std::abs(rhs));
 
@@ -206,7 +207,7 @@ namespace gapp::math
     }
 
     template<std::floating_point T>
-    constexpr bool floatIsLess(T lhs, T rhs) noexcept
+    bool floatIsLess(T lhs, T rhs) noexcept
     {
         const T scale = std::max(std::abs(lhs), std::abs(rhs));
 
@@ -216,7 +217,7 @@ namespace gapp::math
     }
 
     template<std::floating_point T>
-    constexpr bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
+    bool floatIsLessAssumeNotGreater(T lhs, T rhs) noexcept
     {
         const T scale = std::abs(rhs);
 
@@ -226,7 +227,7 @@ namespace gapp::math
     }
 
     template<std::floating_point T>
-    constexpr bool floatIsGreater(T lhs, T rhs) noexcept
+    bool floatIsGreater(T lhs, T rhs) noexcept
     {
         const T scale = std::max(std::abs(lhs), std::abs(rhs));
 
@@ -236,13 +237,13 @@ namespace gapp::math
     }
 
     template<std::floating_point T>
-    constexpr bool floatIsLessEq(T lhs, T rhs) noexcept
+    bool floatIsLessEq(T lhs, T rhs) noexcept
     {
         return !floatIsGreater(lhs, rhs);
     }
 
     template<std::floating_point T>
-    constexpr bool floatIsGreaterEq(T lhs, T rhs) noexcept
+    bool floatIsGreaterEq(T lhs, T rhs) noexcept
     {
         return !floatIsLess(lhs, rhs);
     }
