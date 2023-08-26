@@ -102,6 +102,30 @@ TEST_CASE("partial_argsort", "[algorithm]")
     }
 }
 
+TEST_CASE("max_element", "[algorithm]")
+{
+    const std::vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+
+    REQUIRE(*detail::max_element(nums.begin(), nums.end()) == 5.0);
+    REQUIRE(*detail::max_element(nums.rbegin(), nums.rend()) == 5.0);
+
+    REQUIRE(detail::max_element(nums.begin(), nums.begin()) == nums.begin());
+
+    REQUIRE(*detail::max_element(nums.begin(), nums.end(), std::negate{}) == 0.0);
+}
+
+TEST_CASE("min_element", "[algorithm]")
+{
+    const std::vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+
+    REQUIRE(*detail::min_element(nums.begin(), nums.end()) == 0.0);
+    REQUIRE(*detail::min_element(nums.rbegin(), nums.rend()) == 0.0);
+
+    REQUIRE(detail::min_element(nums.begin(), nums.begin()) == nums.begin());
+
+    REQUIRE(*detail::min_element(nums.begin(), nums.end(), std::negate{}) == 5.0);
+}
+
 TEST_CASE("argmax", "[algorithm]")
 {
     const std::vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
@@ -109,7 +133,7 @@ TEST_CASE("argmax", "[algorithm]")
     REQUIRE(detail::argmax(nums.begin(), nums.end()) == 3);
     REQUIRE(detail::argmax(nums.rbegin(), nums.rend()) == 3);
 
-    REQUIRE(detail::argmax(nums.begin(), nums.end(), std::greater<>{}) == 1);
+    REQUIRE(detail::argmax(nums.begin(), nums.end(), std::negate{}) == 1);
 
     REQUIRE(detail::argmax(nums.begin(), nums.begin() + 3) == 0);
     REQUIRE(detail::argmax(nums.begin() + 1, nums.end()) == 2);
@@ -122,7 +146,7 @@ TEST_CASE("argmin", "[algorithm]")
     REQUIRE(detail::argmin(nums.begin(), nums.end()) == 1);
     REQUIRE(detail::argmin(nums.rbegin(), nums.rend()) == 1);
 
-    REQUIRE(detail::argmin(nums.begin(), nums.end(), std::greater<>{}) == 3);
+    REQUIRE(detail::argmin(nums.begin(), nums.end(), std::negate{}) == 3);
 
     REQUIRE(detail::argmin(nums.begin() + 2, nums.end()) == 2);
 }
@@ -166,27 +190,13 @@ TEST_CASE("find_all", "[algorithm]")
     const std::vector nums = { 4, 0, 2, 5, 1 };
 
     const auto odd_nums = detail::find_all(nums.begin(), nums.end(), is_odd);
-    REQUIRE(odd_nums == std::vector{ nums.end() - 2, nums.end() - 1 });
+    REQUIRE(odd_nums == std::vector{ 5, 1 });
 
     const auto big_nums = detail::find_all(nums.begin(), nums.end(), is_big);
     REQUIRE(big_nums.empty());
 
     REQUIRE(detail::find_all(nums.begin(), nums.end(), always_true).size()  == nums.size());
     REQUIRE(detail::find_all(nums.begin(), nums.end(), always_false).size() == 0);
-}
-
-TEST_CASE("find_all_v", "[algorithm]")
-{
-    const std::vector nums = { 4, 0, 2, 5, 1 };
-
-    const auto odd_nums = detail::find_all_v(nums.begin(), nums.end(), is_odd);
-    REQUIRE(odd_nums == std::vector{ 5, 1 });
-
-    const auto big_nums = detail::find_all_v(nums.begin(), nums.end(), is_big);
-    REQUIRE(big_nums.empty());
-
-    REQUIRE(detail::find_all_v(nums.begin(), nums.end(), always_true).size()  == nums.size());
-    REQUIRE(detail::find_all_v(nums.begin(), nums.end(), always_false).size() == 0);
 }
 
 TEST_CASE("find_indices", "[algorithm]")

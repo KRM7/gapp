@@ -204,7 +204,10 @@ namespace gapp::algorithm::dtl
 
                 std::for_each(last_idx, indices.rend(), [&](size_t col) noexcept
                 {
-                    if (dmat(row, col).load(std::memory_order_relaxed) == MAXIMAL) dmat(row, col).store(NONMAXIMAL, std::memory_order_relaxed);
+                    if (dmat(row, col).load(std::memory_order_relaxed) == MAXIMAL)
+                    {
+                        dmat(row, col).store(NONMAXIMAL, std::memory_order_relaxed);
+                    }
                 });
             });
         });
