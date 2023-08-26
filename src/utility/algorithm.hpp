@@ -144,6 +144,50 @@ namespace gapp::detail
         }
     }
 
+    template<std::forward_iterator Iter, typename F>
+    requires std::invocable<F&, std::iter_reference_t<Iter>>
+    constexpr Iter max_element(Iter first, Iter last, F&& transform)
+    {
+        GAPP_ASSERT(std::distance(first, last) > 0);
+
+        if (first == last) return first;
+
+        Iter max_elem = first;
+        auto&& max_value = std::invoke(transform, *first);
+
+        while (++first != last)
+        {
+            auto&& value = std::invoke(transform, *first);
+            if (value <= max_value) continue;
+            max_value = std::forward<decltype(value)>(value);
+            max_elem = first;
+        }
+
+        return max_elem;
+    }
+
+    template<std::forward_iterator Iter, typename F>
+    requires std::invocable<F&, std::iter_reference_t<Iter>>
+    constexpr Iter min_element(Iter first, Iter last, F&& transform)
+    {
+        GAPP_ASSERT(std::distance(first, last) > 0);
+
+        if (first == last) return first;
+
+        Iter min_elem = first;
+        auto&& min_value = std::invoke(transform, *first);
+
+        while (++first != last)
+        {
+            auto&& value = std::invoke(transform, *first);
+            if (value >= min_value) continue;
+            min_value = std::forward<decltype(value)>(value);
+            min_elem = first;
+        }
+
+        return min_elem;
+    }
+
     template<std::random_access_iterator Iter, typename URBG>
     constexpr void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)
     {
