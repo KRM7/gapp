@@ -358,6 +358,8 @@ namespace gapp
 
         metrics_.initialize(*this);
         metrics_.update(*this);
+
+        if (end_of_generation_callback_) end_of_generation_callback_(*this);
     }
 
     template<typename T>
