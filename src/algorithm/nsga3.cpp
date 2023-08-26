@@ -11,7 +11,6 @@
 #include "../utility/math.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
-#include "../utility/cone_tree.hpp"
 #include <algorithm>
 #include <execution>
 #include <functional>
@@ -98,7 +97,7 @@ namespace gapp::algorithm
         };
 
         RefLineGenerator ref_generator_;
-        detail::ConeTree ref_lines_;
+        std::vector<Point> ref_lines_;
 
         std::vector<CandidateInfo> sol_info_;
         std::vector<size_t> niche_counts_;
@@ -200,7 +199,7 @@ namespace gapp::algorithm
         for (size_t dim = 0; dim < ideal_point_.size(); dim++)
         {
             auto weights = weightVector(ideal_point_.size(), dim);
-            auto ASFi = [&](const auto& fvec) noexcept { return ASF(ideal_point_, weights, fvec); };
+            auto ASFi = [&](const auto& fvec) { return ASF(ideal_point_, weights, fvec); };
             
             std::vector<double> chebysev_distances(popsize + extreme_points_.size());
 
@@ -244,10 +243,12 @@ namespace gapp::algorithm
         {
             const FitnessVector fnorm = normalizeFitnessVec(first[sol.idx], ideal_point_, nadir_point_);
 
-            const auto best = ref_lines_.findBestMatch(fnorm);
+            auto idistance = [&](const auto& line) { return std::inner_product(fnorm.begin(), fnorm.end(), line.begin(), 0.0); };
 
-            sol_info_[sol.idx].ref_idx = size_t(best.elem - ref_lines_.begin());
-            sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(*best.elem, fnorm);
+            auto closest = detail::max_element(ref_lines_.begin(), ref_lines_.end(), idistance);
+
+            sol_info_[sol.idx].ref_idx  = std::distance(ref_lines_.begin(), closest);
+            sol_info_[sol.idx].ref_dist = math::perpendicularDistanceSq(*closest, fnorm);
         });
     }
 
@@ -349,8 +350,7 @@ namespace gapp::algorithm
         pimpl_->ideal_point_ = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
         pimpl_->extreme_points_ = {};
 
-        auto ref_lines = pimpl_->generateReferencePoints(ga.num_objectives(), ga.population_size());
-        pimpl_->ref_lines_ = detail::ConeTree{ ref_lines };
+        pimpl_->ref_lines_ = pimpl_->generateReferencePoints(ga.num_objectives(), ga.population_size());
         pimpl_->niche_counts_.resize(pimpl_->ref_lines_.size());
 
         auto pfronts = nonDominatedSort(fitness_matrix.begin(), fitness_matrix.end());

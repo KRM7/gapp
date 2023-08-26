@@ -1,6 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "cone_tree.hpp"
+#include "algorithm.hpp"
 #include "functional.hpp"
 #include "math.hpp"
 #include "matrix.hpp"
@@ -40,23 +41,7 @@ namespace gapp::detail
     /* Find the point in the range [first, last) furthest from a point (using Euclidean distances). */
     static inline const_iterator findFurthestElement(const_iterator first, const_iterator last, const_iterator from)
     {
-        GAPP_ASSERT(std::distance(first, last) > 0);
-
-        const_iterator furthest;
-        double max_distance = -math::inf<double>;
-
-        for (; first != last; ++first)
-        {
-            const double distance = math::euclideanDistanceSq(*first, *from);
-
-            if (distance > max_distance)
-            {
-                furthest = first;
-                max_distance = distance;
-            }
-        }
-
-        return furthest;
+        return detail::max_element(first, last, std::bind_front(math::euclideanDistanceSq, *from));
     }
 
     /* Find the 2 partition points that will be used to split the range [first, last) into 2 parts. */
@@ -94,23 +79,16 @@ namespace gapp::detail
     /* Find the Euclidean distance between the center point and the point in the range [first, last) furthest from it. */
     static inline double findRadius(const_iterator first, const_iterator last, const Point& center)
     {
-        GAPP_ASSERT(std::distance(first, last) > 0);
+        auto distance = std::bind_front(math::euclideanDistanceSq, center);
+        auto furthest = detail::max_element(first, last, distance);
 
-        double max_distance = -math::inf<double>;
-
-        for (; first != last; ++first)
-        {
-            const double distance = math::euclideanDistanceSq(*first, center);
-            max_distance = std::max(max_distance, distance);
-        }
-
-        return std::sqrt(max_distance);
+        return std::sqrt(distance(*furthest));
     }
 
     /* Returns true if the node is a leaf node. */
     static inline bool isLeafNode(const Node& node) noexcept
     {
-        return !static_cast<bool>(node.left & node.right);
+        return (node.left == 0) && (node.right == 0);
     }
 
     /* Return the max possible inner product between the point and a point inside the node. */
@@ -223,6 +201,8 @@ namespace gapp::detail
             }
             else
             {
+                GAPP_ASSERT(node->left && node->right);
+
                 if (innerProductUpperBound(left_child(*node), query_point, query_norm) <
                     innerProductUpperBound(right_child(*node), query_point, query_norm))
                 {

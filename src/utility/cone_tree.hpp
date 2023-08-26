@@ -63,7 +63,7 @@ namespace gapp::detail
         Matrix<double> points_;
         std::vector<Node> nodes_;
 
-        inline static constexpr size_t MAX_LEAF_ELEMENTS = 22;  /* The maximum number of points in a leaf node. */
+        inline static constexpr size_t MAX_LEAF_ELEMENTS = 8;  /* The maximum number of points in a leaf node. */
 
         void buildTree();
 
