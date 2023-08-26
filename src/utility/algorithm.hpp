@@ -43,7 +43,7 @@ namespace gapp::detail
     }
 
     template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
-    requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
+    requires std::strict_weak_order<Comp&, std::iter_reference_t<Iter>, std::iter_reference_t<Iter>>
     std::vector<size_t> argsort(Iter first, Iter last, Comp&& comp = {})
     {
         GAPP_ASSERT(std::distance(first, last) >= 0);
@@ -70,7 +70,7 @@ namespace gapp::detail
     }
 
     template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
-    requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
+    requires std::strict_weak_order<Comp&, std::iter_reference_t<Iter>, std::iter_reference_t<Iter>>
     std::vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = {})
     {
         GAPP_ASSERT(std::distance(first, middle) >= 0);
@@ -104,91 +104,92 @@ namespace gapp::detail
         return indices;
     }
 
-    template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
-    requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
-    constexpr size_t argmax(Iter first, Iter last, Comp&& comp = {})
-    {
-        GAPP_ASSERT(std::distance(first, last) > 0);
-
-        const auto it = std::max_element(first, last, std::forward<Comp>(comp));
-        const size_t idx = std::distance(first, it);
-
-        if constexpr (detail::is_reverse_iterator_v<Iter>)
-        {
-            const size_t last_idx = std::distance(first, last) - 1;
-            return last_idx - idx;
-        }
-        else
-        {
-            return idx;
-        }
-    }
-
-    template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
-    requires std::strict_weak_order<Comp, std::iter_value_t<Iter>, std::iter_value_t<Iter>>
-    constexpr size_t argmin(Iter first, Iter last, Comp&& comp = {})
-    {
-        GAPP_ASSERT(std::distance(first, last) > 0);
-
-        const auto it = std::min_element(first, last, std::forward<Comp>(comp));
-        const size_t idx = std::distance(first, it);
-
-        if constexpr (detail::is_reverse_iterator_v<Iter>)
-        {
-            const size_t last_idx = std::distance(first, last) - 1;
-            return last_idx - idx;
-        }
-        else
-        {
-            return idx;
-        }
-    }
-
-    template<std::forward_iterator Iter, typename F>
+    template<std::forward_iterator Iter, typename F = std::identity>
     requires std::invocable<F&, std::iter_reference_t<Iter>>
-    constexpr Iter max_element(Iter first, Iter last, F&& transform)
+    constexpr Iter max_element(Iter first, Iter last, F&& transform = {})
     {
-        GAPP_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) >= 0);
 
         if (first == last) return first;
 
         Iter max_elem = first;
-        auto&& max_value = std::invoke(transform, *first);
+        auto max_value = std::invoke(transform, *first);
 
-        while (++first != last)
+        for (++first; first != last; ++first)
         {
-            auto&& value = std::invoke(transform, *first);
-            if (value <= max_value) continue;
-            max_value = std::forward<decltype(value)>(value);
+            auto value = std::invoke(transform, *first);
+            if (!(max_value < value)) continue;
+            max_value = std::move(value);
             max_elem = first;
         }
 
         return max_elem;
     }
 
-    template<std::forward_iterator Iter, typename F>
+    template<std::forward_iterator Iter, typename F = std::identity>
     requires std::invocable<F&, std::iter_reference_t<Iter>>
-    constexpr Iter min_element(Iter first, Iter last, F&& transform)
+    constexpr Iter min_element(Iter first, Iter last, F&& transform = {})
     {
-        GAPP_ASSERT(std::distance(first, last) > 0);
+        GAPP_ASSERT(std::distance(first, last) >= 0);
 
         if (first == last) return first;
 
         Iter min_elem = first;
-        auto&& min_value = std::invoke(transform, *first);
+        auto min_value = std::invoke(transform, *first);
 
-        while (++first != last)
+        for (++first; first != last; ++first)
         {
-            auto&& value = std::invoke(transform, *first);
-            if (value >= min_value) continue;
-            min_value = std::forward<decltype(value)>(value);
+            auto value = std::invoke(transform, *first);
+            if (!(value < min_value)) continue;
+            min_value = std::move(value);
             min_elem = first;
         }
 
         return min_elem;
     }
 
+    template<std::random_access_iterator Iter, typename F = std::identity>
+    requires std::invocable<F&, std::iter_reference_t<Iter>>
+    constexpr size_t argmax(Iter first, Iter last, F&& transform = {})
+    {
+        GAPP_ASSERT(std::distance(first, last) > 0);
+        
+        const auto it = detail::max_element(first, last, std::forward<F>(transform));
+        const size_t idx = std::distance(first, it);
+
+        if constexpr (detail::is_reverse_iterator_v<Iter>)
+        {
+            const size_t last_idx = std::distance(first, last) - 1;
+            return last_idx - idx;
+        }
+        else
+        {
+            return idx;
+        }
+    }
+
+    template<std::random_access_iterator Iter, typename F = std::identity>
+    requires std::invocable<F&, std::iter_reference_t<Iter>>
+    constexpr size_t argmin(Iter first, Iter last, F&& transform = {})
+    {
+        GAPP_ASSERT(std::distance(first, last) > 0);
+
+        const auto it = detail::min_element(first, last, std::forward<F>(transform));
+        const size_t idx = std::distance(first, it);
+
+        if constexpr (detail::is_reverse_iterator_v<Iter>)
+        {
+            const size_t last_idx = std::distance(first, last) - 1;
+            return last_idx - idx;
+        }
+        else
+        {
+            return idx;
+        }
+    }
+
     template<std::random_access_iterator Iter, typename URBG>
+    requires std::uniform_random_bit_generator<std::remove_cvref_t<URBG>>
     constexpr void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)
     {
         GAPP_ASSERT(std::distance(first, middle) >= 0);
@@ -204,30 +205,15 @@ namespace gapp::detail
         }
     }
 
-    template<std::input_iterator Iter>
-    constexpr bool contains(Iter first, Iter last, const std::iter_value_t<Iter>& val)
+    template<std::input_iterator Iter, typename T>
+    constexpr bool contains(Iter first, Iter last, const T& val)
     {
         return std::find(first, last, val) != last;
     }
 
-    template<std::forward_iterator Iter, std::predicate<std::iter_value_t<Iter>> Pred>
-    std::vector<Iter> find_all(Iter first, Iter last, Pred&& pred)
-    {
-        GAPP_ASSERT(std::distance(first, last) >= 0);
-
-        std::vector<Iter> result;
-        result.reserve(last - first);
-
-        for (; first != last; ++first)
-        {
-            if (std::invoke(pred, *first)) result.push_back(first);
-        }
-
-        return result;
-    }
-
-    template<std::forward_iterator Iter, std::predicate<std::iter_value_t<Iter>> Pred>
-    auto find_all_v(Iter first, Iter last, Pred&& pred)
+    template<std::forward_iterator Iter, typename Pred>
+    requires std::predicate<Pred&, std::iter_reference_t<Iter>>
+    auto find_all(Iter first, Iter last, Pred&& pred)
     {
         GAPP_ASSERT(std::distance(first, last) >= 0);
 
@@ -244,8 +230,26 @@ namespace gapp::detail
         return result;
     }
 
+    template<detail::IndexableContainer Container, typename T>
+    constexpr std::optional<size_t> index_of(const Container& container, const T& val)
+    {
+        const auto found = std::find(container.begin(), container.end(), val);
+        const size_t idx = std::distance(container.begin(), found);
+
+        return (found != container.end()) ? idx : std::optional<size_t>{};
+    }
 
     template<detail::IndexableContainer Container, std::predicate<typename Container::value_type> Pred>
+    constexpr std::optional<size_t> find_index(const Container& container, Pred&& pred)
+    {
+        const auto found = std::find_if(container.begin(), container.end(), std::forward<Pred>(pred));
+        const size_t idx = std::distance(container.begin(), found);
+
+        return (found != container.end()) ? idx : std::optional<size_t>{};
+    }
+
+    template<detail::IndexableContainer Container, typename Pred>
+    requires std::predicate<Pred&, typename Container::reference>
     std::vector<size_t> find_indices(const Container& container, Pred&& pred)
     {
         std::vector<size_t> indices;
@@ -257,24 +261,6 @@ namespace gapp::detail
         }
 
         return indices;
-    }
-
-    template<detail::IndexableContainer Container>
-    constexpr std::optional<size_t> index_of(const Container& container, const typename Container::value_type& val)
-    {
-        const auto found = std::find(container.begin(), container.end(), val);
-        const size_t idx = std::distance(container.begin(), found);
-        
-        return (found == container.end()) ? std::optional<size_t>{} : idx;
-    }
-
-    template<detail::IndexableContainer Container, std::predicate<typename Container::value_type> Pred>
-    constexpr std::optional<size_t> find_index(const Container& container, Pred&& pred)
-    {
-        const auto found = std::find_if(container.begin(), container.end(), std::forward<Pred>(pred));
-        const size_t idx = std::distance(container.begin(), found);
-
-        return (found == container.end()) ? std::optional<size_t>{} : idx;
     }
 
     template<typename T>
@@ -305,11 +291,11 @@ namespace gapp::detail
         return left;
     }
 
-    template<detail::Container T>
-    constexpr bool erase_first_stable(T& container, const typename T::value_type& value)
+    template<detail::Container Container, typename T>
+    constexpr bool erase_first_stable(Container& container, const T& value)
     {
-        const auto found = std::find(container.cbegin(), container.cend(), value);
-        if (found != container.cend())
+        const auto found = std::find(container.begin(), container.end(), value);
+        if (found != container.end())
         {
             container.erase(found);
             return true;
@@ -321,8 +307,6 @@ namespace gapp::detail
     requires detail::IndexableContainer<std::remove_cvref_t<Container>>
     auto select(Container&& container, const std::vector<size_t>& indices)
     {
-        GAPP_ASSERT(std::all_of(indices.begin(), indices.end(), [&](size_t idx) { return idx < container.size(); }));
-
         using ValueType = typename std::remove_cvref_t<Container>::value_type;
 
         std::vector<ValueType> selected;

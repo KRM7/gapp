@@ -28,7 +28,7 @@ namespace gapp::detail
     template<typename ValueType, std::invocable<ValueType&> F>
     auto map(const std::vector<ValueType>& cont, F&& f)
     {
-        using MappedType = std::invoke_result_t<std::remove_reference_t<F>, ValueType>;
+        using MappedType = std::invoke_result_t<F&, ValueType>;
         using ResultType = std::vector<std::decay_t<MappedType>>;
 
         ResultType result;
@@ -44,7 +44,7 @@ namespace gapp::detail
     template<typename ValueType, std::invocable<ValueType&> F>
     auto map(const std::vector<ValueType>& cont, F&& f) requires std::is_scalar_v<ValueType>
     {
-        using MappedType = std::invoke_result_t<std::remove_reference_t<F>, ValueType>;
+        using MappedType = std::invoke_result_t<F&, ValueType>;
         using ResultType = std::vector<std::decay_t<MappedType>>;
 
         ResultType result(cont.size());
@@ -57,10 +57,10 @@ namespace gapp::detail
     }
 
     template<typename ValueType, size_t N, typename F>
-    requires std::invocable<std::remove_reference_t<F>, ValueType&>
+    requires std::invocable<F&, ValueType&>
     constexpr auto map(const std::array<ValueType, N>& cont, F&& f)
     {
-        using MappedType = std::invoke_result_t<std::remove_reference_t<F>, ValueType>;
+        using MappedType = std::invoke_result_t<F&, ValueType>;
         using ResultType = std::array<std::decay_t<MappedType>, N>;
 
         ResultType result;
