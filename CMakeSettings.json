@@ -9,7 +9,7 @@
       "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=/analyze:WX- -DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
-      "enableMicrosoftCodeAnalysis": false,
+      "enableMicrosoftCodeAnalysis": true,
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {

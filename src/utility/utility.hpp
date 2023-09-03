@@ -147,7 +147,7 @@ namespace gapp::detail
         return (left ^ right) >= 0;
     }
 
-    // returns the length of the range [low, high)
+    // returns the length of the range [low, high) without overflow
     template<std::integral T>
     constexpr size_t range_length(T low, T high) noexcept
     {
