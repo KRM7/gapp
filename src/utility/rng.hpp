@@ -6,70 +6,237 @@
 #include "utility.hpp"
 #include "type_traits.hpp"
 #include "concepts.hpp"
+#include "bit.hpp"
+#include "rcu.hpp"
 #include <algorithm>
+#include <functional>
+#include <array>
 #include <vector>
 #include <span>
 #include <unordered_set>
+#include <bit>
 #include <random>
 #include <limits>
+#include <memory>
+#include <mutex>
 #include <cstdint>
 #include <cstddef>
 #include <concepts>
-#include <atomic>
+
 
 #ifndef GAPP_SEED
 #   define GAPP_SEED 0x3da99432ab975d26LL
 #endif
 
+
 /** Contains the PRNG classes and functions used for generating random numbers. */
 namespace gapp::rng
 {
     /**
-    * Splitmix64 pseudo-random number generator based on https://prng.di.unimi.it/splitmix64.c \n
-    * All of the member functions are thread-safe.
+    * Splitmix64 pseudo-random number generator based on
+    * https://prng.di.unimi.it/splitmix64.c. This generator
+    * is only used for seeding the Xoroshiro generators.
     */
-    class AtomicSplitmix64
+    class Splitmix64
     {
     public:
         using result_type = std::uint64_t;  /**< The generator generates 64 bit integers. */
         using state_type  = std::uint64_t;  /**< The generator has a 64 bit state. */
 
         /**
-        * Create a new generator initialized from a 64 bit seed value.
+        * Create a new Splitmix64 generator initialized from a 64 bit seed value.
         * 
-        * Instead of creating new instances of this generator, the global prng
-        * instance should be used.
+        * @note
+        *  The global prng instance should be used instead of creating
+        *  new instances of this generator.
         * 
         * @param seed The seed used to initialize the state of the generator.
         */
-        explicit constexpr AtomicSplitmix64(state_type seed) noexcept :
+        explicit constexpr Splitmix64(state_type seed) noexcept :
             state_(seed)
         {}
 
-        /** Generate the next pseudo-random number of the sequence. Thread-safe. */
-        result_type operator()() noexcept;
+        /** @returns The next number of the sequence. */
+        constexpr result_type operator()() noexcept
+        {
+            result_type z = (state_ += 0x9e3779b97f4a7c15);
+            z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
+            z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
+
+            return z ^ (z >> 31);
+        }
 
         /** Set a new seed for the generator. */
-        void seed(state_type seed) noexcept;
+        constexpr void seed(state_type seed) noexcept { state_ = seed; }
 
-        /** @returns The smallest value that can be generated. */
-        static constexpr result_type min() noexcept;
+        /** @returns The smallest possible value that can be generated. */
+        static constexpr result_type min() noexcept { return std::numeric_limits<result_type>::min(); }
 
-        /** @returns The largest value that can be generated. */
-        static constexpr result_type max() noexcept;
+        /** @returns The largest possible value that can be generated. */
+        static constexpr result_type max() noexcept { return std::numeric_limits<result_type>::max(); }
 
-        /** Compare the internal state of 2 generators. @returns True if they are the same. */
-        friend constexpr bool operator==(const AtomicSplitmix64&, const AtomicSplitmix64&) = default;
+        /** Compare the internal state of 2 generators. @returns true if they are the same. */
+        friend constexpr bool operator==(const Splitmix64&, const Splitmix64&) = default;
 
     private:
-        std::atomic<state_type> state_;
+        state_type state_;
     };
 
-    /** The pseudo-random number generator class used in the algorithms. */
-    using PRNG = AtomicSplitmix64;
+
+    /**
+    * Xoroshiro128+ pseudo-random number generator based on
+    * https://prng.di.unimi.it/xoroshiro128plus.c
+    * 
+    * @see
+    *   David Blackman and Sebastiano Vigna. "Scrambled linear pseudorandom number generators."
+    *   ACM Transactions on Mathematical Software 47, no. 4 (2021): 1-32.
+    */
+    class Xoroshiro128p
+    {
+    public:
+        using result_type = std::uint64_t;           /**< The generator generates 64 bit integers. */
+        using state_type  = std::array<uint64_t, 2>; /**< The generator has 128 bits of state. */
+
+        /**
+        * Create a Xoroshiro128+ generator initialized from a 64 bit seed
+        * value.
+        *
+        * @note
+        *  The global prng instance should be used instead of creating
+        *  new instances of this generator.
+        *
+        * @param seed The seed used to initialize the state of the generator.
+        */
+        explicit constexpr Xoroshiro128p(std::uint64_t seed) noexcept :
+            state_(seed_sequence(seed))
+        {}
+
+        /** @returns The next number of the sequence. */
+        constexpr result_type operator()() noexcept
+        {
+            const auto result = state_[0] + state_[1];
+            const auto xstate = state_[0] ^ state_[1];
+
+            state_[0] = std::rotl(state_[0], 24) ^ xstate ^ (xstate << 16);
+            state_[1] = std::rotl(xstate, 37);
+
+            return result;
+        }
+
+        /** Advance the state of the generator by 2^96 steps. */
+        constexpr Xoroshiro128p& jump() noexcept
+        {
+            state_type new_state{ 0, 0 };
+
+            for (std::uint64_t JUMP : { 0xd2a98b26625eee7bULL, 0xdddf9b1090aa7ac1ULL })
+            {
+                for (std::size_t n = 0; n < 64; n++)
+                {
+                    if (detail::is_nth_bit_set(JUMP, n))
+                    {
+                        new_state[0] ^= state_[0];
+                        new_state[1] ^= state_[1];
+                    }
+                    std::invoke(*this);
+                }
+            }
+            state_ = new_state;
+
+            return *this;
+        }
+
+        /** Set a new seed for the generator. */
+        constexpr void seed(std::uint64_t seed) noexcept { state_ = seed_sequence(seed); }
+
+        /** @returns The smallest possible value that can be generated. */
+        static constexpr result_type min() noexcept { return std::numeric_limits<result_type>::min(); }
+
+        /** @returns The largest possible value that can be generated. */
+        static constexpr result_type max() noexcept { return std::numeric_limits<result_type>::max(); }
+
+        /** Compare the internal state of 2 generators. @returns True if they are the same. */
+        friend constexpr bool operator==(const Xoroshiro128p&, const Xoroshiro128p&) = default;
+
+    private:
+        static constexpr state_type seed_sequence(std::uint64_t seed) noexcept
+        {
+            Splitmix64 seed_seq_gen(seed);
+            return { seed_seq_gen(), seed_seq_gen() };
+        }
+
+        alignas(128) state_type state_;
+    };
+
+
+    /**
+     * The pseudo-random number generator class used in the library.
+     * This class is a simple wrapper around the Xoroshiro128p generator
+     * to make it thread-safe.
+     * 
+     * @note
+     *  The global prng instance should be used instead of creating
+     *  new instances of this generator.
+     */
+    class ConcurrentXoroshiro128p
+    {
+    public:
+        using result_type = Xoroshiro128p::result_type;
+        using state_type  = Xoroshiro128p::state_type;
+
+        /** @return The next number of the sequence. Thread-safe. */
+        result_type operator()() const noexcept
+        {
+            std::scoped_lock _{ generator_.instance };
+            return std::invoke(*generator_.instance);
+        }
+
+        /** Set a new seed for the generator. Thread-safe. */
+        static void seed(std::uint64_t seed)
+        {
+            std::scoped_lock _{ generator_list_mtx_ };
+            global_generator.seed(seed);
+            for (Generator* generator : generator_list)
+            {
+                *generator = global_generator.jump();
+            }
+        }
+
+        /** @returns The smallest possible value that can be generated. */
+        static constexpr result_type min() noexcept { return Xoroshiro128p::min(); }
+
+        /** @returns The largest possible value that can be generated. */
+        static constexpr result_type max() noexcept { return Xoroshiro128p::max(); }
+
+    private:
+        using Generator = detail::rcu_obj<Xoroshiro128p>;
+
+        struct RegisteredGenerator
+        {
+            RegisteredGenerator()
+            {
+                std::scoped_lock _{ generator_list_mtx_ };
+                instance = global_generator.jump();
+                generator_list.push_back(std::addressof(instance));
+            }
+
+            ~RegisteredGenerator() noexcept
+            {
+                std::scoped_lock _{ generator_list_mtx_ };
+                std::erase(generator_list, std::addressof(instance));
+            }
+
+            Generator instance{ 0 };
+        };
+
+        GAPP_API inline static constinit Xoroshiro128p global_generator{ GAPP_SEED };
+        GAPP_API inline static std::vector<Generator*> generator_list;
+        GAPP_API inline static std::mutex generator_list_mtx_;
+        alignas(128) inline static thread_local RegisteredGenerator generator_;
+    };
+
 
     /** The global pseudo-random number generator instance used in the algorithms. */
-    inline constinit PRNG prng{ GAPP_SEED };
+    inline constinit ConcurrentXoroshiro128p prng;
 
 
     /** Generate a random boolean value from a uniform distribution. */
@@ -77,39 +244,42 @@ namespace gapp::rng
 
     /** Generate a random integer from a uniform distribution on the closed interval [lbound, ubound]. */
     template<std::integral IntType = int>
-    inline IntType randomInt(IntType lbound, IntType ubound);
+    IntType randomInt(IntType lbound, IntType ubound);
 
     /** Generate a random floating-point value from a uniform distribution on the closed interval [0.0, 1.0]. */
     template<std::floating_point RealType = double>
-    inline RealType randomReal();
+    RealType randomReal();
 
     /** Generate a random floating-point value of from a uniform distribution on the closed interval [lbound, ubound]. */
     template<std::floating_point RealType = double>
-    inline RealType randomReal(RealType lbound, RealType ubound);
+    RealType randomReal(RealType lbound, RealType ubound);
 
     /** Generate a random floating-point value from a normal distribution with the specified mean and std deviation. */
     template<std::floating_point RealType = double>
-    inline RealType randomNormal(RealType mean = 0.0, RealType SD = 1.0);
+    RealType randomNormal(RealType mean = 0.0, RealType std_dev = 1.0);
 
     /** Generate a random integer value from a binomial distribution with the parameters n and p. */
     template<std::integral IntType = int>
-    inline IntType randomBinomial(IntType n, double p);
+    IntType randomBinomial(IntType n, double p);
+
 
     /** Generate a random index for a container. */
     template<detail::IndexableContainer T>
-    inline size_t randomIdx(const T& cont);
+    size_t randomIdx(const T& cont);
 
     /** Pick a random element from a range. */
     template<std::forward_iterator Iter>
-    inline Iter randomElement(Iter first, Iter last);
+    Iter randomElement(Iter first, Iter last);
+
 
     /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). */
     template<std::integral IntType>
     std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
 
+
     /** Select an index based on a discrete CDF. */
     template<std::floating_point T>
-    inline size_t sampleCdf(std::span<const T> cdf);
+    size_t sampleCdf(std::span<const T> cdf);
 
 } // namespace gapp::rng
 
@@ -124,36 +294,19 @@ namespace gapp::rng
 
 namespace gapp::rng
 {
-    inline AtomicSplitmix64::result_type AtomicSplitmix64::operator()() noexcept
-    {
-        result_type z = state_.fetch_add(0x9e3779b97f4a7c15, std::memory_order_acq_rel) + 0x9e3779b97f4a7c15;
-        z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
-        z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
-
-        return z ^ (z >> 31);
-    }
-
-    inline void AtomicSplitmix64::seed(state_type seed) noexcept
-    {
-        state_.store(seed, std::memory_order_release);
-    }
-
-    inline constexpr AtomicSplitmix64::result_type AtomicSplitmix64::min() noexcept
-    {
-        return std::numeric_limits<result_type>::min();
-    }
-
-    inline constexpr AtomicSplitmix64::result_type AtomicSplitmix64::max() noexcept
-    {
-        return std::numeric_limits<result_type>::max();
-    }
-
     bool randomBool() noexcept
     {
-        static constexpr size_t nbits = CHAR_BIT * sizeof(PRNG::result_type);
-        static constexpr auto msb_mask = PRNG::result_type{ 1 } << (nbits - 1);
+        constinit thread_local uint64_t bit_pool = 1;
 
-        return static_cast<bool>(rng::prng() & msb_mask);
+        if (bit_pool == detail::lsb_mask<uint64_t>)
+        {
+            bit_pool = prng() | detail::msb_mask<uint64_t>;
+        }
+
+        const bool bit = bit_pool & detail::lsb_mask<uint64_t>;
+        bit_pool >>= 1;
+
+        return bit;
     }
 
     template<std::integral IntType>
@@ -161,15 +314,12 @@ namespace gapp::rng
     {
         GAPP_ASSERT(lbound <= ubound);
 
-        // std::uniform_int_distribution doesnt support char
-        if constexpr (sizeof(IntType) == 1)
-        {
-            return static_cast<IntType>(std::uniform_int_distribution<int>{ lbound, ubound }(rng::prng));
-        }
-        else
-        {
-            return std::uniform_int_distribution{ lbound, ubound }(rng::prng);
-        }
+        // std::uniform_int_distribution doesnt support char and other 8 bit types
+        using NonCharInt = std::conditional_t<std::is_signed_v<IntType>, int64_t, uint64_t>;
+
+        std::uniform_int_distribution<NonCharInt> dist{ lbound, ubound };
+
+        return dist(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -189,14 +339,14 @@ namespace gapp::rng
     }
 
     template<std::floating_point RealType>
-    RealType randomNormal(RealType mean, RealType SD)
+    RealType randomNormal(RealType mean, RealType std_dev)
     {
-        GAPP_ASSERT(SD >= 0.0);
+        GAPP_ASSERT(std_dev >= 0.0);
 
         // keep the distribution for the state
         thread_local std::normal_distribution<RealType> dist;
 
-        return SD * dist(rng::prng) + mean;
+        return std_dev * dist(rng::prng) + mean;
     }
 
     template<std::integral IntType>
