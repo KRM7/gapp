@@ -10,14 +10,14 @@ using namespace gapp::detail;
 using namespace std::chrono_literals;
 
 
-rcu_obj<size_t> number = 0;
+rcu_obj<int> number = 0;
 
 static const auto reader_func = []
 {
     while (true)
     {
         std::scoped_lock _{ number };
-        const size_t& n = number.get();
+        [[maybe_unused]] const int& n = number.get();
         std::this_thread::sleep_for(2ms);
         assert(0 <= n && n <= 100);
     }

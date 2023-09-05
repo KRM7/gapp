@@ -40,7 +40,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Compiler / linker setup
 if(MSVC) # MSVC style compiler interface
-    set(GAPP_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471 -w44820 -w44986 -w45024 -w45025 -w45038 -w45204 -w45233 -w45258 -w45262 -w45263 -w45264 -external:W0")
+    set(GAPP_WARN_FLAGS "-permissive- -W4 -w44263 -w44265 -w44388 -w44471 -w44986 -w45024 -w45025 -w45038 -w45204 -w45233 -w45258 -w45262 -w45263 -w45264 -external:W0")
     if(GAPP_USE_WERROR)
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -WX")
     endif()
@@ -184,6 +184,7 @@ if(GAPP_BUILD_TESTS AND BUILD_TESTING AND PROJECT_IS_TOP_LEVEL)
     enable_testing()
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test/unit")
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test/integration")
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test/misc")
 endif()
 
 if(GAPP_BUILD_BENCHMARKS AND BUILD_TESTING AND PROJECT_IS_TOP_LEVEL)
