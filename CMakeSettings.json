@@ -9,7 +9,7 @@
       "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=/analyze:WX- -DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
-      "enableMicrosoftCodeAnalysis": true,
+      "enableMicrosoftCodeAnalysis": false,
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
@@ -44,6 +44,7 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "-DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "enableClangTidyCodeAnalysis": false,
       "inheritEnvironments": [ "clang_cl_x64_x64" ]
     },
     {
@@ -77,6 +78,37 @@
       "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
       "enableMicrosoftCodeAnalysis": false,
       "inheritEnvironments": [ "msvc_x64_x64" ]
+    },
+    {
+      "name": "clang-tidy",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DGAPP_BUILD_TESTS=ON",
+      "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "disableExternalAnalysis": true,
+      "inheritEnvironments": [ "clang_cl_x64_x64" ],
+      "variables": [
+        {
+          "name": "CMAKE_CXX_CLANG_TIDY",
+          "value": "clang-tidy"
+        }
+      ]
+    },
+    {
+      "name": "core-guidelines-check",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DGAPP_CXX_FLAGS=/analyze:WX- -DGAPP_BUILD_TESTS=ON",
+      "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
+      "enableMicrosoftCodeAnalysis": true,
+      "disableExternalAnalysis": true,
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "environments": [ { "CAExcludePath": "${projectDir}\\src\\algorithm\\reference_lines.cpp" } ]
     }
   ]
 }

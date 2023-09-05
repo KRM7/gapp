@@ -330,7 +330,7 @@ TEST_CASE("normalize", "[math]")
     REQUIRE_THAT(normalizeVector(vec), Matchers::Approx(normalized_vec).margin(0.01));  
     REQUIRE_THAT(normalizeVector(normalized_vec), Matchers::Approx(normalized_vec).margin(0.01));
 
-    REQUIRE(normalizeVector({}) == std::vector<double>{});
+    REQUIRE(normalizeVector({}).empty());
 }
 
 TEST_CASE("euclidean_distance", "[math]")

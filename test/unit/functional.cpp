@@ -23,21 +23,15 @@ TEST_CASE("map", "[functional]")
     const auto res = map(nums, [](double n) { return n + 1.5; });
     REQUIRE(res == std::vector{ 1.5, 2.7, 6.5, 4.0 });
 
-    REQUIRE(map(std::vector<int>{}, std::identity{}) == std::vector<int>{});
+    REQUIRE(map(std::vector<int>{}, std::identity{}).empty());
 }
 
 TEST_CASE("flatten", "[functional]")
 {
     std::vector<std::pair<int, int>> num_pairs = { { 0, 1 }, { 1, 3 }, { 5, 2 }};
 
-    SECTION("lvalue")
-    {
-        REQUIRE(flatten(num_pairs) == std::vector{ 0, 1, 1, 3, 5, 2 });
-    }
-    SECTION("rvalue")
-    {
-        REQUIRE(flatten(std::move(num_pairs)) == std::vector{ 0, 1, 1, 3, 5, 2 });
-    }
+    REQUIRE(flatten(num_pairs) == std::vector{ 0, 1, 1, 3, 5, 2 });
+    REQUIRE(flatten(std::move(num_pairs)) == std::vector{ 0, 1, 1, 3, 5, 2 });
 }
 
 TEST_CASE("arithmetic_funcs", "[functional]")

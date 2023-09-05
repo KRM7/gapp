@@ -195,8 +195,8 @@ TEST_CASE("find_all", "[algorithm]")
     const auto big_nums = detail::find_all(nums.begin(), nums.end(), is_big);
     REQUIRE(big_nums.empty());
 
-    REQUIRE(detail::find_all(nums.begin(), nums.end(), always_true).size()  == nums.size());
-    REQUIRE(detail::find_all(nums.begin(), nums.end(), always_false).size() == 0);
+    REQUIRE(detail::find_all(nums.begin(), nums.end(), always_true).size() == nums.size());
+    REQUIRE(detail::find_all(nums.begin(), nums.end(), always_false).empty());
 }
 
 TEST_CASE("find_indices", "[algorithm]")
