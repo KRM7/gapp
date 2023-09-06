@@ -4,11 +4,13 @@
 #define GA_UTILITY_RCU_HPP
 
 #include "utility.hpp"
+#include "shared_spinlock.hpp"
+#include "indestructible.hpp"
 #include <atomic>
+#include <memory>
 #include <mutex>
 #include <shared_mutex>
 #include <vector>
-#include <tuple>
 #include <cstdint>
 #include <cstddef>
 
@@ -37,11 +39,11 @@ namespace gapp::detail
             uint64_t target  = current + 1;
             writer_epoch.compare_exchange_strong(current, target, std::memory_order_acq_rel);
 
-            std::shared_lock _{ reader_list_mtx };
+            std::shared_lock _{ tls_readers->lock };
 
-            for (const registered_reader* reader_ : reader_list)
+            for (const registered_reader* tls_reader : tls_readers->list)
             {
-                while (reader_->epoch.load(std::memory_order_acquire) < target) { GAPP_PAUSE(); }
+                while (tls_reader->epoch.load(std::memory_order_acquire) < target) GAPP_PAUSE();
             }
         }
 
@@ -50,25 +52,29 @@ namespace gapp::detail
         {
             registered_reader() noexcept
             {
-                std::unique_lock _{ reader_list_mtx };
-                reader_list.push_back(this);
+                std::unique_lock _{ tls_readers->lock };
+                tls_readers->list.push_back(this);
             }
 
             ~registered_reader() noexcept
             {
-                std::unique_lock _{ reader_list_mtx };
-                std::erase(reader_list, this);
+                std::unique_lock _{ tls_readers->lock };
+                std::erase(tls_readers->list, this);
             }
 
             std::atomic<uint64_t> epoch = NOT_READING;
         };
 
+        struct tls_reader_list
+        {
+            detail::shared_spinlock lock;
+            std::vector<registered_reader*> list;
+        };
+
         inline static constexpr uint64_t NOT_READING = std::numeric_limits<uint64_t>::max();
 
-        GAPP_API inline static std::vector<registered_reader*> reader_list;
-        GAPP_API inline static std::shared_mutex reader_list_mtx;
-
-        alignas(128) GAPP_API inline static constinit std::atomic<uint64_t> writer_epoch = 0;
+        GAPP_API inline static detail::Indestructible<tls_reader_list> tls_readers;
+        GAPP_API inline static constinit std::atomic<uint64_t> writer_epoch = 0;
         alignas(128) inline static thread_local registered_reader reader;
     };
 
@@ -84,9 +90,7 @@ namespace gapp::detail
 
         ~rcu_obj() noexcept
         {
-            T* ptr = data_.load(std::memory_order_consume);
-            rcu_domain<D>::synchronize();
-            delete ptr;
+            delete data_.load(std::memory_order_consume);
         }
 
         template<typename U>
@@ -100,16 +104,20 @@ namespace gapp::detail
             return *this;
         }
 
-        T& get() const noexcept
-        {
-            return *data_.load(std::memory_order_consume);
-        }
+        T& get() noexcept { return *data_.load(std::memory_order_consume); }
+        const T& get() const noexcept { return *data_.load(std::memory_order_consume); }
 
-        T& operator*() const noexcept { return get(); }
-        T* operator->() const noexcept { return std::addressof(get()); }
+        T& operator*() noexcept { return get(); }
+        const T& operator*() const noexcept { return get(); }
 
-        void lock() const noexcept { rcu_domain<D>::read_lock(); }
-        void unlock() const noexcept { rcu_domain<D>::read_unlock(); }
+        T* operator->() noexcept { return std::addressof(get()); }
+        const T* operator->() const noexcept { return std::addressof(get()); }
+
+        void lock_shared() const noexcept { rcu_domain<D>::read_lock(); }
+        void unlock_shared() const noexcept { rcu_domain<D>::read_unlock(); }
+        bool try_lock_shared() const noexcept { rcu_domain<D>::read_lock(); return true; }
+
+        void wait_for_readers() const noexcept { rcu_domain<D>::synchronize(); }
 
     private:
         std::atomic<T*> data_;

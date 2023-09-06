@@ -54,6 +54,7 @@ namespace gapp::detail
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/iterators.hpp"
+#include "../utility/parallel_for.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/math.hpp"
 #include <algorithm>
@@ -87,7 +88,6 @@ namespace gapp::detail
         GAPP_ASSERT(std::all_of(pop.begin(), pop.end(), [&](const Candidate<T>& sol) { return sol.fitness.size() == pop[0].fitness.size(); }));
 
         auto fitness_matrix = detail::toFitnessMatrix(pop);
-
         auto optimal_indices = detail::findParetoFront(fitness_matrix);
 
         return detail::select(pop, optimal_indices);
@@ -106,7 +106,7 @@ namespace gapp::detail
         std::vector<Dominance> lhs_state(lhs.size());
         std::vector<std::atomic<Dominance>> rhs_state(rhs.size());
 
-        std::for_each(GAPP_EXEC_UNSEQ, iota_iterator(0_sz), iota_iterator(lhs.size()), [&](size_t i) noexcept
+        detail::parallel_for(iota_iterator(0_sz), iota_iterator(lhs.size()), [&](size_t i) noexcept
         {
             for (size_t j = 0; j < rhs.size(); j++)
             {
@@ -152,11 +152,13 @@ namespace gapp::detail
 
         for (size_t i = 0; i < rhs.size(); i++)
         {
-            if (rhs_state[i].load(std::memory_order_relaxed) != DOMINATED) optimal_solutions.push_back(std::move(rhs[i]));
+            if (rhs_state[i].load(std::memory_order_relaxed) != DOMINATED)
+                optimal_solutions.push_back(std::move(rhs[i]));
         }
         for (size_t i = 0; i < lhs.size(); i++)
         {
-            if (lhs_state[i] != DOMINATED) optimal_solutions.push_back(std::move(lhs[i]));
+            if (lhs_state[i] != DOMINATED)
+                optimal_solutions.push_back(std::move(lhs[i]));
         }
 
         return optimal_solutions;

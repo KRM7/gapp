@@ -20,5 +20,5 @@ TEST_CASE("rcu_lock", "[benchmark]")
     BENCHMARK("read") { return number; };
     BENCHMARK("atomic_fetch_add") { return atomic_number.fetch_add(1); };
     BENCHMARK("rwlock_read") { std::shared_lock _{ rwlock }; return number; };
-    BENCHMARK("rcu_read") { std::scoped_lock _{ rcu_number }; return rcu_number.get(); };
+    BENCHMARK("rcu_read") { std::shared_lock _{ rcu_number }; return rcu_number.get(); };
 }

@@ -2,7 +2,7 @@
 
 #include "utility/rcu.hpp"
 #include <thread>
-#include <mutex>
+#include <shared_mutex>
 #include <chrono>
 #include <iostream>
 
@@ -16,7 +16,7 @@ static const auto reader_func = []
 {
     while (true)
     {
-        std::scoped_lock _{ number };
+        std::shared_lock _{ number };
         [[maybe_unused]] const int& n = number.get();
         std::this_thread::sleep_for(2ms);
         assert(0 <= n && n <= 100);

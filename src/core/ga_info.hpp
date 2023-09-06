@@ -341,7 +341,7 @@ namespace gapp
         GaInfo& operator=(const GaInfo&) = delete;
 
         /** Destructor. */
-        virtual ~GaInfo();
+        virtual ~GaInfo() noexcept;
 
     protected:
 

@@ -5,6 +5,7 @@
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/iterators.hpp"
+#include "../utility/parallel_for.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/matrix.hpp"
@@ -90,7 +91,7 @@ namespace gapp::algorithm::dtl
     {
         const size_t popsize = std::distance(first, last);
 
-        thread_local DominanceLists dom_lists;
+        static DominanceLists dom_lists;
 
         if (dom_lists.size() != popsize)
         {
@@ -188,7 +189,7 @@ namespace gapp::algorithm::dtl
         const size_t popsize = std::distance(first, last);
         DominanceMatrix dmat(popsize, popsize /*, MAXIMAL */);
 
-        std::for_each(GAPP_EXEC_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
+        detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
         {
             FitnessVector fvec(popsize);
             std::transform(first, last, fvec.begin(), detail::element_at(obj));
@@ -212,7 +213,7 @@ namespace gapp::algorithm::dtl
             });
         });
 
-        std::for_each(GAPP_EXEC_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
+        detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
         {
             dmat(row, row).store(NONMAXIMAL, std::memory_order_relaxed); // diagonal is all nonmax
 

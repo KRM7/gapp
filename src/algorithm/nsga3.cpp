@@ -8,6 +8,7 @@
 #include "../metrics/pop_stats.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
+#include "../utility/parallel_for.hpp"
 #include "../utility/math.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
@@ -239,7 +240,7 @@ namespace gapp::algorithm
 
         sol_info_.resize(last - first);
 
-        std::for_each(GAPP_EXEC_UNSEQ, pfirst, plast, [&](const FrontInfo& sol)
+        detail::parallel_for(pfirst, plast, [&](const FrontInfo& sol)
         {
             const FitnessVector fnorm = normalizeFitnessVec(first[sol.idx], ideal_point_, nadir_point_);
 

@@ -5,6 +5,7 @@
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/iterators.hpp"
+#include "../utility/parallel_for.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
 #include <span>
@@ -154,17 +155,18 @@ namespace gapp::detail
         const FitnessMatrix front = uniqueSortedParetoFront(fmat);
 
         std::atomic<double> hypervolume = 0.0;
-        std::for_each(GAPP_EXEC_UNSEQ, detail::iota_iterator(0_sz), detail::iota_iterator(front.size()), [&](size_t idx)
+
+        detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(front.size()), [&](size_t idx)
         {
             const auto point = front[idx];
             const FitnessMatrix rest = { front.begin() + idx + 1, front.end() };
 
             const double exclusive_hypervolume = exclusiveHypervolume(point, rest, ref_point);
 
-            hypervolume.fetch_add(exclusive_hypervolume, std::memory_order_acq_rel);
+            hypervolume.fetch_add(exclusive_hypervolume, std::memory_order_relaxed);
         });
 
-        return hypervolume.load(std::memory_order_acquire);
+        return hypervolume.load(std::memory_order_relaxed);
     }
 
     static inline double hypervolume(seq, const FitnessMatrix& fmat, std::span<const double> ref_point)
