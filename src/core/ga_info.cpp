@@ -13,7 +13,7 @@ namespace gapp
     GaInfo::GaInfo(GaInfo&&) noexcept            = default;
     GaInfo& GaInfo::operator=(GaInfo&&) noexcept = default;
 
-    GaInfo::~GaInfo()                            = default;
+    GaInfo::~GaInfo() noexcept                   = default;
 
 
     GaInfo::GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) noexcept :
@@ -26,8 +26,7 @@ namespace gapp
 
     size_t GaInfo::num_fitness_evals() const noexcept
     {
-        std::atomic_ref num_fitness_evals{ num_fitness_evals_ };
-        return num_fitness_evals.load(std::memory_order_acquire);
+        return std::atomic_ref{ num_fitness_evals_ }.load(std::memory_order_acquire);
     }
 
     void GaInfo::algorithm(std::unique_ptr<algorithm::Algorithm> f)

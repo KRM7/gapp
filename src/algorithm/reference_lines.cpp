@@ -183,12 +183,11 @@ namespace gapp::algorithm::reflines
             min_distances.pop_back();
 
             /* Calc the distance of each candidate to the closest ref point. */
-            std::transform(GAPP_EXEC_UNSEQ, candidate_points.begin(), candidate_points.end(), min_distances.begin(), min_distances.begin(),
-            [&](const Point& candidate, double current_min) noexcept
+            for (size_t i = 0; i < candidate_points.size(); i++)
             {
-                const double dist = math::euclideanDistanceSq(candidate, points.back());
-                return std::min(current_min, dist);
-            });
+                double dist = math::euclideanDistanceSq(candidate_points[i], points.back());
+                min_distances[i] = std::min(min_distances[i], dist);
+            }
         }
 
         return points;

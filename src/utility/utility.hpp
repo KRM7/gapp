@@ -11,18 +11,22 @@
 #include <cstddef>
 
 
-#if __has_cpp_attribute(assume)
-#   define GAPP_ASSUME(expr) [[assume(expr)]]
-#elif defined(_MSC_VER) && !defined(__clang__)
-#   define GAPP_ASSUME(expr) //__assume(expr)
+#define GAPP_GCC_COMPILER ( __GNUC__ && !__clang__ )
+#define GAPP_CLANG_COMPILER ( __GNUC__ && __clang__ )
+#define GAPP_MSVC_COMPILER ( _MSC_VER && !__clang__ )
+#define GAPP_CLANG_CL_COMPILER ( _MSC_VER && __clang__ )
+
+
+#if defined(_MSC_VER)
+#   define GAPP_ASSUME(expr) __assume(expr)
 #elif defined(__clang__)
-#   define GAPP_ASSUME(expr) //__builtin_assume(expr)
+#   define GAPP_ASSUME(expr) __builtin_assume(expr)
 #else
 #   define GAPP_ASSUME(expr)
 #endif
 
 
-#ifdef __GNUC__
+#if defined(__GNUC__)
 #   define GAPP_UNREACHABLE() __builtin_unreachable()
 #elif defined(_MSC_VER)
 #   define GAPP_UNREACHABLE() __assume(false)
@@ -31,10 +35,12 @@
 #endif
 
 
-#if defined(_MSC_VER) && !defined(__clang__)
-#   define GAPP_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
-#elif __has_cpp_attribute(no_unique_address)
-#   define GAPP_NO_UNIQUE_ADDRESS [[no_unique_address]]
+#if __has_cpp_attribute(no_unique_address)
+#   if GAPP_MSVC_COMPILER
+#       define GAPP_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
+#   else
+#       define GAPP_NO_UNIQUE_ADDRESS [[no_unique_address]]
+#   endif
 #else
 #   define GAPP_NO_UNIQUE_ADDRESS
 #endif
@@ -95,23 +101,18 @@
 #ifndef NDEBUG
 #   define GAPP_ASSERT(condition, ...) assert( (condition) __VA_OPT__(&& (__VA_ARGS__)) )
 #else
-#   define GAPP_ASSERT(condition, ...) GAPP_ASSUME(condition)
+#   define GAPP_ASSERT(condition, ...)
 #endif
 
 
-#if defined(__cpp_exceptions)
+#if ((__GNUC__ && __cpp_exceptions) || (_MSC_VER && _HAS_EXCEPTIONS))
 #   define GAPP_THROW(exception_type, msg) throw exception_type(msg)
+#   define GAPP_TRY try
+#   define GAPP_CATCH(exception) catch (exception)
 #else
 #   define GAPP_THROW(exception_type, msg) GAPP_UNREACHABLE()
-#endif
-
-
-#ifndef GAPP_EXCUTION_UNSEQ
-#   define GAPP_EXEC_UNSEQ std::execution::par_unseq
-#endif
-
-#ifndef GAPP_EXEC_SEQ
-#   define GAPP_EXEC_SEQ std::execution::par
+#   define GAPP_TRY if constexpr (true)
+#   define GAPP_CATCH(exception) if constexpr (false)
 #endif
 
 

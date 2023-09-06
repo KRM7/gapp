@@ -3,11 +3,12 @@
 #ifndef GA_UTILITY_RNG_HPP
 #define GA_UTILITY_RNG_HPP
 
-#include "utility.hpp"
 #include "type_traits.hpp"
 #include "concepts.hpp"
 #include "bit.hpp"
 #include "rcu.hpp"
+#include "indestructible.hpp"
+#include "utility.hpp"
 #include <algorithm>
 #include <functional>
 #include <array>
@@ -19,6 +20,7 @@
 #include <limits>
 #include <memory>
 #include <mutex>
+#include <shared_mutex>
 #include <cstdint>
 #include <cstddef>
 #include <concepts>
@@ -186,18 +188,18 @@ namespace gapp::rng
         /** @return The next number of the sequence. Thread-safe. */
         result_type operator()() const noexcept
         {
-            std::scoped_lock _{ generator_.instance };
+            std::shared_lock _{ generator_.instance };
             return std::invoke(*generator_.instance);
         }
 
         /** Set a new seed for the generator. Thread-safe. */
         static void seed(std::uint64_t seed)
         {
-            std::scoped_lock _{ generator_list_mtx_ };
-            global_generator.seed(seed);
-            for (Generator* generator : generator_list)
+            std::scoped_lock _{ tls_generators().lock };
+            global_generator().seed(seed);
+            for (Generator* generator : tls_generators().list)
             {
-                *generator = global_generator.jump();
+                *generator = global_generator().jump();
             }
         }
 
@@ -212,25 +214,40 @@ namespace gapp::rng
 
         struct RegisteredGenerator
         {
-            RegisteredGenerator()
+            RegisteredGenerator() noexcept
             {
-                std::scoped_lock _{ generator_list_mtx_ };
-                instance = global_generator.jump();
-                generator_list.push_back(std::addressof(instance));
+                std::scoped_lock _{ tls_generators().lock };
+                instance = global_generator().jump();
+                tls_generators().list.push_back(std::addressof(instance));
             }
 
             ~RegisteredGenerator() noexcept
             {
-                std::scoped_lock _{ generator_list_mtx_ };
-                std::erase(generator_list, std::addressof(instance));
+                std::scoped_lock _{ tls_generators().lock };
+                std::erase(tls_generators().list, std::addressof(instance));
             }
 
             Generator instance{ 0 };
         };
 
-        GAPP_API inline static constinit Xoroshiro128p global_generator{ GAPP_SEED };
-        GAPP_API inline static std::vector<Generator*> generator_list;
-        GAPP_API inline static std::mutex generator_list_mtx_;
+        struct GeneratorList
+        {
+            detail::spinlock lock;
+            std::vector<Generator*> list;
+        };
+
+        static GeneratorList& tls_generators() noexcept
+        {
+            static detail::Indestructible<GeneratorList> tls_generators;
+            return tls_generators;
+        }
+
+        static Xoroshiro128p& global_generator() noexcept
+        {
+            static Xoroshiro128p global_generator{ GAPP_SEED };
+            return global_generator;
+        }
+
         alignas(128) inline static thread_local RegisteredGenerator generator_;
     };
 
