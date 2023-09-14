@@ -57,7 +57,7 @@ namespace gapp::metrics
     protected:
         MetricData data_;
 
-        size_t type_id() const noexcept final { return detail::type_id<Derived>; }
+        size_t type_id() const noexcept final { return detail::type_id<Derived>(); }
     };
 
 } // namespace gapp::metrics
