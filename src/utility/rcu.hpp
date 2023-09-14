@@ -16,9 +16,6 @@
 
 namespace gapp::detail
 {
-    struct default_rcu_domain_tag {};
-
-    template<typename = default_rcu_domain_tag>
     class rcu_domain
     {
     public:
@@ -79,7 +76,7 @@ namespace gapp::detail
     };
 
 
-    template<typename T, typename D = default_rcu_domain_tag>
+    template<typename T>
     class rcu_obj
     {
     public:
@@ -98,7 +95,7 @@ namespace gapp::detail
         {
             T* new_ptr = new T(std::forward<U>(value));
             T* old_ptr = data_.exchange(new_ptr, std::memory_order_acq_rel);
-            rcu_domain<D>::synchronize();
+            rcu_domain::synchronize();
             delete old_ptr;
 
             return *this;
@@ -113,11 +110,11 @@ namespace gapp::detail
         T* operator->() noexcept { return std::addressof(get()); }
         const T* operator->() const noexcept { return std::addressof(get()); }
 
-        void lock_shared() const noexcept { rcu_domain<D>::read_lock(); }
-        void unlock_shared() const noexcept { rcu_domain<D>::read_unlock(); }
-        bool try_lock_shared() const noexcept { rcu_domain<D>::read_lock(); return true; }
+        void lock_shared() const noexcept { rcu_domain::read_lock(); }
+        void unlock_shared() const noexcept { rcu_domain::read_unlock(); }
+        bool try_lock_shared() const noexcept { rcu_domain::read_lock(); return true; }
 
-        void wait_for_readers() const noexcept { rcu_domain<D>::synchronize(); }
+        void wait_for_readers() const noexcept { rcu_domain::synchronize(); }
 
     private:
         std::atomic<T*> data_;
