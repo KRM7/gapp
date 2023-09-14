@@ -538,7 +538,7 @@ namespace gapp
     {
         GAPP_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
 
-        detail::RestoreOnExit scope_exit{ max_gen_ };
+        detail::restore_on_exit _{ max_gen_ };
 
         fitness_function_ = std::move(fitness_function);
         max_gen(generations);
@@ -559,7 +559,7 @@ namespace gapp
         GAPP_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
         GAPP_ASSERT(bounds.size() == fitness_function->chrom_len(), "The length of the bounds vector must match the chromosome length.");
 
-        detail::RestoreOnExit scope_exit{ max_gen_ };
+        detail::restore_on_exit _{ max_gen_ };
 
         fitness_function_ = std::move(fitness_function);
         max_gen(generations);

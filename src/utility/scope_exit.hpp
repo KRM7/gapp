@@ -11,20 +11,20 @@
 namespace gapp::detail
 {
     template<typename F>
-    class [[nodiscard]] ScopeExit
+    class [[nodiscard]] scope_exit
     {
     public:
-        constexpr explicit ScopeExit(F on_exit)
+        constexpr explicit scope_exit(F on_exit)
         noexcept(std::is_nothrow_move_constructible_v<F>) :
             on_exit_(std::move(on_exit))
         {}
 
-        ScopeExit(const ScopeExit&)            = delete;
-        ScopeExit(ScopeExit&&)                 = delete;
-        ScopeExit& operator=(const ScopeExit&) = delete;
-        ScopeExit& operator=(ScopeExit&&)      = delete;
+        scope_exit(const scope_exit&)            = delete;
+        scope_exit(scope_exit&&)                 = delete;
+        scope_exit& operator=(const scope_exit&) = delete;
+        scope_exit& operator=(scope_exit&&)      = delete;
 
-        constexpr ~ScopeExit() noexcept
+        constexpr ~scope_exit() noexcept
         {
             if (active_) std::invoke(std::move(on_exit_));
         }
@@ -37,16 +37,16 @@ namespace gapp::detail
     };
 
     template<typename... Ts>
-    class [[nodiscard]] RestoreOnExit
+    class [[nodiscard]] restore_on_exit
     {
     public:
         template<typename... Us>
-        constexpr explicit RestoreOnExit(Us&&... vars)
+        constexpr explicit restore_on_exit(Us&&... vars)
         noexcept(( std::is_nothrow_constructible_v<std::remove_reference_t<Us>, Us&&> && ... )) :
             vars_(vars...), old_values_(std::forward<Us>(vars)...)
         {}
 
-        constexpr ~RestoreOnExit() noexcept { vars_ = std::move(old_values_); }
+        constexpr ~restore_on_exit() noexcept { vars_ = std::move(old_values_); }
 
     private:
         std::tuple<Ts&...> vars_;
@@ -54,7 +54,7 @@ namespace gapp::detail
     };
 
     template<typename... Ts>
-    RestoreOnExit(Ts&&...) -> RestoreOnExit<std::remove_reference_t<Ts>...>;
+    restore_on_exit(Ts&&...) -> restore_on_exit<std::remove_reference_t<Ts>...>;
 
 } // namespace gapp::detail
 

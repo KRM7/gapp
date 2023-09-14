@@ -11,13 +11,13 @@ TEST_CASE("scope_exit", "[utility]")
     int n = 0;
 
     {
-        ScopeExit on_exit{ [&] { n = 2; } };
+        scope_exit on_exit{ [&] { n = 2; } };
         REQUIRE(n == 0);
     }
     REQUIRE(n == 2);
 
     {
-        ScopeExit on_exit{ [&] { n = 3; } };
+        scope_exit on_exit{ [&] { n = 3; } };
         on_exit.release();
     }   
     REQUIRE(n == 2);
@@ -29,7 +29,7 @@ TEST_CASE("restore_on_exit", "[utility]")
     double f = 2.5;
 
     {
-        RestoreOnExit on_exit(n, f);
+        restore_on_exit on_exit(n, f);
 
         n = 10;
         f = 0.2;
