@@ -3,13 +3,11 @@
 #ifndef GA_UTILITY_CONCEPTS_HPP
 #define GA_UTILITY_CONCEPTS_HPP
 
+#include "type_traits.hpp"
 #include <concepts>
 #include <functional>
 #include <type_traits>
 #include <limits>
-#include <iterator>
-#include <compare>
-#include "type_traits.hpp"
 
 namespace gapp::detail
 {
@@ -18,12 +16,6 @@ namespace gapp::detail
     {
         { std::hash<T>{}(arg) } -> std::convertible_to<size_t>;
     };
-
-    template<typename S, template<typename...> class Templ>
-    concept SpecializationOf = is_specialization_of_v<S, Templ>;
-
-    template<typename Derived, template<typename...> class BaseTempl>
-    concept DerivedFromSpecializationOf = is_derived_from_spec_of_v<Derived, BaseTempl>;
 
     template<typename C>
     concept Container = requires(C c, const C cc, C&& rc)

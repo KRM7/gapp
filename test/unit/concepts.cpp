@@ -23,24 +23,6 @@ TEST_CASE("hashable", "[concepts]")
     STATIC_REQUIRE(!detail::Hashable<std::vector<int>>);
 }
 
-TEST_CASE("specialization_of", "[concepts]")
-{
-    STATIC_REQUIRE(detail::SpecializationOf<std::vector<int>, std::vector>);
-    STATIC_REQUIRE(detail::SpecializationOf<A<double>, A>);
-
-    STATIC_REQUIRE(!detail::SpecializationOf<void, std::vector>);
-    STATIC_REQUIRE(!detail::SpecializationOf<int, std::vector>);
-}
-
-TEST_CASE("derived_from_specialization_of", "[concepts]")
-{
-    STATIC_REQUIRE(detail::DerivedFromSpecializationOf<B, A>);
-    STATIC_REQUIRE(detail::DerivedFromSpecializationOf<A<long>, A>);
-
-    STATIC_REQUIRE(!detail::DerivedFromSpecializationOf<void, A>);
-    STATIC_REQUIRE(!detail::DerivedFromSpecializationOf<int, std::vector>);
-}
-
 TEST_CASE("container", "[concepts]")
 {
     STATIC_REQUIRE(detail::Container<std::vector<int>>);
