@@ -58,7 +58,7 @@ namespace gapp::detail
     requires std::derived_from<Metric, metrics::MonitorBase>
     const Metric* MetricSet::get() const noexcept
     {
-        auto found = std::find_if(metrics_.begin(), metrics_.end(), [](const auto& metric) { return metric->type_id() == detail::type_id<Metric>; });
+        auto found = std::find_if(metrics_.begin(), metrics_.end(), [](const auto& metric) { return metric->type_id() == detail::type_id<Metric>(); });
 
         return found != metrics_.end() ? static_cast<Metric*>(found->get()) : nullptr;
     }

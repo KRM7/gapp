@@ -3,30 +3,19 @@
 #ifndef GA_UTILITY_TYPE_ID_HPP
 #define GA_UTILITY_TYPE_ID_HPP
 
+#include <bit>
 #include <cstddef>
 
 namespace gapp::detail
 {
-    class TypeIdGen final
-    {
-        static size_t next() noexcept
-        {
-            constinit static size_t id = 0;
-            return id++;
-        }
-
-        template<typename T>
-        friend struct TypeId;
-    };
+    template<typename T>
+    struct TypeIdHelper { constexpr static int var = 0; };
 
     template<typename T>
-    struct TypeId final
+    inline size_t type_id() noexcept
     {
-        inline static const size_t value = TypeIdGen::next();
-    };
-
-    template<typename T>
-    inline const size_t type_id = TypeId<T>::value;
+        return std::bit_cast<size_t>(&TypeIdHelper<T>::var);
+    }
 
 } // namespace gapp::detail
 
