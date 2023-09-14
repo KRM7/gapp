@@ -8,7 +8,7 @@ endif()
 file(GLOB SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 foreach(SOURCE ${SOURCES})
-    string(REPLACE ".cpp" "" BENCHMARK ${SOURCE})
+    string(REPLACE ".cpp" "_benchmark" BENCHMARK ${SOURCE})
     add_executable(${BENCHMARK} ${SOURCE})
     target_link_libraries(${BENCHMARK} PRIVATE Catch2::Catch2WithMain gapp::gapp)
     catch_discover_tests(${BENCHMARK})
