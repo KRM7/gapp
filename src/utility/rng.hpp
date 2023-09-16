@@ -275,7 +275,7 @@ namespace gapp::rng
     template<std::floating_point RealType = double>
     RealType randomNormal(RealType mean = 0.0, RealType std_dev = 1.0);
 
-    /** Generate a random integer value from a binomial distribution with the parameters n and p. */
+    /** Generate a random integer value from an approximate binomial distribution with the parameters n and p. */
     template<std::integral IntType = int>
     IntType randomBinomial(IntType n, double p);
 
@@ -367,24 +367,41 @@ namespace gapp::rng
     }
 
     template<std::integral IntType>
-    IntType randomBinomialApprox(IntType n, double p)
+    IntType randomBinomialApproxNormal(IntType n, double p)
     {
         GAPP_ASSERT(n >= 0);
         GAPP_ASSERT(0.0 <= p && p <= 1.0);
 
         const double mean = n * p;
-        const double SD = std::sqrt(mean * (1.0 - p));
+        const double std_dev = std::sqrt(mean * (1.0 - p));
 
         const double accept_min = -0.5;
         const double accept_max = n + 0.5;
 
-        double rand = rng::randomNormal(mean, SD);
+        double rand = rng::randomNormal(mean, std_dev);
         while (!(accept_min < rand && rand < accept_max))
         {
-            rand = rng::randomNormal(mean, SD);
+            rand = rng::randomNormal(mean, std_dev);
         }
 
         return static_cast<IntType>(std::round(rand));
+    }
+
+    template<std::integral IntType>
+    IntType randomBinomialApproxPoisson(IntType n, double p)
+    {
+        GAPP_ASSERT(n >= 0);
+        GAPP_ASSERT(0.0 <= p && p <= 1.0);
+        GAPP_ASSERT(n * p < 12.0); // required to avoid data race in std::poisson_distribution with stdlibc++
+        
+        if (p == 0.0) return 0;
+        if (p == 1.0) return n;
+
+        std::poisson_distribution<IntType> dist{ n * p };
+
+        IntType rand = dist(rng::prng);
+        while (rand > n) { rand = dist(rng::prng); }
+        return rand;
     }
 
     template<std::integral IntType>
@@ -393,7 +410,9 @@ namespace gapp::rng
         GAPP_ASSERT(n >= 0);
         GAPP_ASSERT(0.0 <= p && p <= 1.0);
 
-        return std::binomial_distribution{ n, p }(rng::prng);
+        IntType res = 0;
+        while (n--) { res += (randomReal() <= p); }
+        return res;
     }
 
     template<std::integral IntType>
@@ -402,11 +421,14 @@ namespace gapp::rng
         GAPP_ASSERT(n >= 0);
         GAPP_ASSERT(0.0 <= p && p <= 1.0);
 
-        const double mean = n * p;
+        const double mean = p * n;
 
-        return (mean >= 2.0) ?
-            rng::randomBinomialApprox(n, p) :
-            rng::randomBinomialExact(n, p);
+        const bool use_poisson = (n > 50 && mean < 10.0) || ((5 < n && n <= 50) && p < 0.2);
+        const bool use_normal = !use_poisson && (n > 5);
+
+        if (use_poisson) return rng::randomBinomialApproxPoisson(n, p);
+        if (use_normal)  return rng::randomBinomialApproxNormal(n, p);
+        return rng::randomBinomialExact(n, p);
     }
 
     template<detail::IndexableContainer T>
