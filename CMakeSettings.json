@@ -1,7 +1,7 @@
 ﻿{
   "configurations": [
     {
-      "name": "x64-Debug-msvc",
+      "name": "msvc-debug",
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -13,7 +13,7 @@
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
-      "name": "x64-Release-msvc",
+      "name": "msvc-release",
       "generator": "Ninja",
       "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -25,7 +25,7 @@
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
-      "name": "x64-RelWithDebInfo-msvc",
+      "name": "msvc-relWithDebInfo",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -37,7 +37,7 @@
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
-      "name": "x64-Debug-clang",
+      "name": "clang-debug",
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -48,7 +48,7 @@
       "inheritEnvironments": [ "clang_cl_x64_x64" ]
     },
     {
-      "name": "x64-Release-clang",
+      "name": "clang-release",
       "generator": "Ninja",
       "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -58,7 +58,7 @@
       "inheritEnvironments": [ "clang_cl_x64_x64" ]
     },
     {
-      "name": "x64-RelWithDebInfo-clang",
+      "name": "clang-relWithDebInfo",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -68,7 +68,7 @@
       "inheritEnvironments": [ "clang_cl_x64_x64" ]
     },
     {
-      "name": "x64-msvc-dll",
+      "name": "msvc-dll",
       "generator": "Ninja",
       "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -80,6 +80,18 @@
       "inheritEnvironments": [ "msvc_x64_x64" ]
     },
     {
+      "name": "clang-dll",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DBUILD_SHARED_LIBS=ON -DGAPP_BUILD_TESTS=ON -DGAPP_BUILD_BENCHMARKS=ON -DGAPP_BUILD_EXAMPLES=ON",
+      "ctestCommandArgs": "--output-on-failure --schedule-random",
+      "codeAnalysisRuleset": "${projectDir}\\core-guidelines.ruleset",
+      "enableMicrosoftCodeAnalysis": false,
+      "inheritEnvironments": [ "clang_cl_x64_x64" ]
+    },
+    {
       "name": "clang-tidy",
       "generator": "Ninja",
       "configurationType": "Debug",
@@ -87,7 +99,6 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "-DGAPP_BUILD_TESTS=ON",
       "ctestCommandArgs": "--output-on-failure --schedule-random",
-      "disableExternalAnalysis": true,
       "inheritEnvironments": [ "clang_cl_x64_x64" ],
       "variables": [
         {
