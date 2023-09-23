@@ -2,16 +2,18 @@
 #define GA_UTILITY_FUNCTIONAL_HPP
 
 #include "type_traits.hpp"
+#include "utility.hpp"
 #include <functional>
+#include <bit>
 #include <array>
 #include <vector>
-#include <cmath>
-#include <utility>
+#include <memory>
 #include <limits>
 #include <type_traits>
 #include <concepts>
+#include <utility>
+#include <cmath>
 #include <cassert>
-
 
 namespace gapp
 {
@@ -100,6 +102,7 @@ namespace gapp::detail
 
         return flat;
     }
+
 
     template<typename T>
     constexpr auto multiply_by(const T& multiplier)
@@ -236,6 +239,119 @@ namespace gapp::detail
             return container[idx];
         };
     }
+
+
+    template<typename...>
+    class function_ref;
+
+    template<typename Ret, typename... Args>
+    class function_ref<Ret(Args...)>
+    {
+    public:
+        template<typename Callable>
+        requires(!std::is_same_v<std::remove_const_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
+        function_ref(Callable& f) noexcept :
+            callable_(std::bit_cast<void*>(std::addressof(f))),
+            invoke_(invoke_fn<Callable>)
+        {}
+
+        template<typename Callable>
+        requires(!std::is_same_v<std::remove_const_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
+        function_ref& operator=(Callable& f) noexcept
+        {
+            callable_ = std::bit_cast<void*>(std::addressof(f));
+            invoke_ = invoke_fn<Callable>;
+            return *this;
+        }
+
+        Ret operator()(Args... args)
+        {
+            GAPP_ASSERT(callable_, "Attempting to invoke an empty function_ref.");
+            return invoke_(callable_, std::forward<Args>(args)...);
+        }
+
+        explicit operator bool() const noexcept { return bool(callable_); }
+
+    private:
+        using InvokeFn = Ret(void*, Args...);
+
+        template<typename Callable>
+        static Ret invoke_fn(void* f, Args... args)
+        {
+            return std::invoke(*std::bit_cast<Callable*>(f), std::forward<Args>(args)...);
+        }
+
+        void* callable_ = nullptr;
+        InvokeFn* invoke_ = nullptr;
+    };
+
+
+    template<typename...>
+    class move_only_function;
+
+    template<typename R, typename... Args>
+    class move_only_function<R(Args...)>
+    {
+    public:
+        constexpr move_only_function() noexcept :
+            fptr_(nullptr)
+        {}
+
+        template<typename F>
+        requires(!std::is_same_v<F, move_only_function> && std::is_invocable_r_v<R, F&, Args...>)
+        move_only_function(F f) :
+            fptr_(std::make_unique<Impl<F, R, Args...>>(std::move(f)))
+        {}
+
+        template<typename F>
+        requires(!std::is_same_v<F, move_only_function> && std::is_invocable_r_v<R, F&, Args...>)
+        move_only_function& operator=(F f)
+        {
+            fptr_ = std::make_unique<Impl<F, R, Args...>>(std::move(f));
+            return *this;
+        }
+
+        move_only_function(move_only_function&&)                  = default;
+        move_only_function& operator=(move_only_function&& other) = default;
+
+        R operator()(Args... args)
+        {
+            GAPP_ASSERT(fptr_, "Attempting to invoke an empty move_only_function.");
+            return fptr_->invoke(std::forward<Args>(args)...);
+        }
+
+        void swap(move_only_function& other) noexcept
+        {
+            fptr_.swap(other.fptr_);
+        }
+
+        explicit operator bool() const noexcept { return bool(fptr_); }
+
+    private:
+        template<typename Ret, typename... IArgs>
+        struct ImplBase
+        {
+            virtual Ret invoke(IArgs...) = 0;
+            virtual ~ImplBase() = default;
+        };
+
+        template<typename Callable, typename Ret, typename... IArgs>
+        struct Impl : public ImplBase<Ret, IArgs...>
+        {
+            constexpr explicit Impl(Callable func) :
+                func_(std::move(func))
+            {}
+
+            Ret invoke(Args... args) override
+            {
+                return std::invoke(func_, std::forward<Args>(args)...);
+            }
+
+            Callable func_;
+        };
+
+        std::unique_ptr<ImplBase<R, Args...>> fptr_;
+    };
     
 } // namespace gapp::detail
 

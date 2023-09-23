@@ -13,6 +13,20 @@
 
 namespace gapp::detail
 {
+    /* Increment an iterator by n or until it reaches the end of the range. */
+    template<typename Iter>
+    constexpr void advance_in_range(Iter& it, Iter last, size_t n)
+    {
+        if constexpr (std::random_access_iterator<Iter>)
+        {
+            it = (std::distance(it, last) <= ptrdiff_t(n)) ? last : it + n;
+        }
+        else
+        {
+            while (n-- && it != last) ++it;
+        }
+    }
+
     /*
     * The following should be implemented in Derived:
     *   begin(), end() with const overloads

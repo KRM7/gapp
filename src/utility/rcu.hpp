@@ -3,9 +3,9 @@
 #ifndef GA_UTILITY_RCU_HPP
 #define GA_UTILITY_RCU_HPP
 
-#include "utility.hpp"
 #include "shared_spinlock.hpp"
 #include "indestructible.hpp"
+#include "utility.hpp"
 #include <atomic>
 #include <memory>
 #include <mutex>

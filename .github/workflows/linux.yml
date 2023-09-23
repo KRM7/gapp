@@ -40,7 +40,7 @@ jobs:
       run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_LINK_TBB=ON -DBUILD_SHARED_LIBS=OFF
 
     - name: build
-      run: cmake --build . --parallel
+      run: cmake --build . --parallel 8
     
     - name: run-tests
       run: ctest --output-on-failure --schedule-random

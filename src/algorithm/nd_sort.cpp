@@ -5,7 +5,7 @@
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/iterators.hpp"
-#include "../utility/parallel_for.hpp"
+#include "../utility/thread_pool.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/matrix.hpp"

@@ -7,6 +7,7 @@
 #include <cstddef>
 #include "utility/algorithm.hpp"
 #include "utility/rng.hpp"
+#include "utility/utility.hpp"
 
 
 static constexpr auto is_odd = [](int n) { return n % 2; };

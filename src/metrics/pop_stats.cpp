@@ -5,7 +5,7 @@
 #include "../population/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/iterators.hpp"
-#include "../utility/parallel_for.hpp"
+#include "../utility/thread_pool.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
 #include <span>
