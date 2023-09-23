@@ -195,11 +195,11 @@ namespace gapp::rng
         /** Set a new seed for the generator. Thread-safe. */
         static void seed(std::uint64_t seed)
         {
-            std::scoped_lock _{ tls_generators().lock };
-            global_generator().seed(seed);
-            for (Generator* generator : tls_generators().list)
+            std::scoped_lock _{ tls_generators_->lock };
+            global_generator_.seed(seed);
+            for (Generator* generator : tls_generators_->list)
             {
-                *generator = global_generator().jump();
+                *generator = global_generator_.jump();
             }
         }
 
@@ -216,15 +216,15 @@ namespace gapp::rng
         {
             RegisteredGenerator() noexcept
             {
-                std::scoped_lock _{ tls_generators().lock };
-                instance = global_generator().jump();
-                tls_generators().list.push_back(std::addressof(instance));
+                std::scoped_lock _{ tls_generators_->lock };
+                instance = global_generator_.jump();
+                tls_generators_->list.push_back(std::addressof(instance));
             }
 
             ~RegisteredGenerator() noexcept
             {
-                std::scoped_lock _{ tls_generators().lock };
-                std::erase(tls_generators().list, std::addressof(instance));
+                std::scoped_lock _{ tls_generators_->lock };
+                std::erase(tls_generators_->list, std::addressof(instance));
             }
 
             Generator instance{ 0 };
@@ -236,24 +236,14 @@ namespace gapp::rng
             std::vector<Generator*> list;
         };
 
-        static GeneratorList& tls_generators() noexcept
-        {
-            static detail::Indestructible<GeneratorList> tls_generators;
-            return tls_generators;
-        }
-
-        static Xoroshiro128p& global_generator() noexcept
-        {
-            static Xoroshiro128p global_generator{ GAPP_SEED };
-            return global_generator;
-        }
-
+        GAPP_API inline static Xoroshiro128p global_generator_{ GAPP_SEED };
+        GAPP_API inline static detail::Indestructible<GeneratorList> tls_generators_;
         alignas(128) inline static thread_local RegisteredGenerator generator_;
     };
 
 
     /** The global pseudo-random number generator instance used in the algorithms. */
-    inline constinit ConcurrentXoroshiro128p prng;
+    inline constexpr ConcurrentXoroshiro128p prng;
 
 
     /** Generate a random boolean value from a uniform distribution. */
