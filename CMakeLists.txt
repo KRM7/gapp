@@ -105,7 +105,7 @@ else() # GNU style compiler interface
     endif()
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -fapprox-func")
+        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS}")
     endif()
 
     set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} ${GAPP_WARN_FLAGS}")

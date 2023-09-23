@@ -175,11 +175,6 @@ namespace gapp::detail
                     lhs.data_ == rhs.data_);
         }
 
-        friend constexpr bool operator!=(const Matrix& lhs, const Matrix& rhs)
-        {
-            return !(lhs == rhs);
-        }
-
         constexpr void swap(Matrix& other) noexcept
         {
             std::swap(data_, other.data_);
@@ -289,11 +284,6 @@ namespace gapp::detail
 
             return true;
         }
-
-        friend bool operator!=(const Derived& lhs, const Derived& rhs) noexcept                 { return !(lhs == rhs); }
-        friend bool operator!=(const Derived& lhs, const std::vector<value_type>& rhs) noexcept { return !(lhs == rhs); }
-        friend bool operator==(const std::vector<value_type>& lhs, const Derived& rhs) noexcept { return rhs == lhs; }
-        friend bool operator!=(const std::vector<value_type>& lhs, const Derived& rhs) noexcept { return rhs != lhs; }
 
     protected:
         MatrixType* mat_;

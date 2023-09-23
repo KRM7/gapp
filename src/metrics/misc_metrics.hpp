@@ -15,7 +15,7 @@ namespace gapp::metrics
         void initialize(const GaInfo& ga) override;
         void update(const GaInfo& ga) override;
 
-        size_t sum_;
+        size_t sum_ = 0;
     };
 
 } // namespace gapp::metrics

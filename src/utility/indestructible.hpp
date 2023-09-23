@@ -43,8 +43,8 @@ namespace gapp::detail
         /* implicit */ operator const T&() const& noexcept { return get(); }
 
     private:
-        using storage_type = unsigned char[sizeof(T)]; // NOLINT(modernize-avoid-c-arrays)
-        alignas(T) storage_type data_;
+        using storage_type = unsigned char[sizeof(T)]; // NOLINT(*avoid-c-arrays)
+        alignas(T) storage_type data_{};
     };
 
 } // namespace gapp::detail

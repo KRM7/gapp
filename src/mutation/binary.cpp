@@ -18,7 +18,7 @@ namespace gapp::mutation::binary
 
         for (const auto& idx : flipped_indices)
         {
-            chromosome[idx] = GeneType(!bool(chromosome[idx]));
+            chromosome[idx] ^= 1;
         }
     }
 

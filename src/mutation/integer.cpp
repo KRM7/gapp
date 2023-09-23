@@ -27,7 +27,7 @@ namespace gapp::mutation::integer
             {
                 new_gene = rng::randomInt(bounds[idx].lower(), bounds[idx].upper());
             }
-
+            
             chromosome[idx] = new_gene;
         }
     }
