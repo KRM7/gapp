@@ -6,6 +6,7 @@
 #include "utility.hpp"
 #include "spinlock.hpp"
 #include <atomic>
+#include <tuple>
 #include <cstdint>
 
 namespace gapp::detail
@@ -17,7 +18,7 @@ namespace gapp::detail
         {
             lock_.lock();
             while (read_cnt_.load(std::memory_order_relaxed)) GAPP_PAUSE();
-            std::atomic_thread_fence(std::memory_order_acquire);
+            std::ignore = read_cnt_.load(std::memory_order_acquire);
         }
 
         bool try_lock() noexcept
@@ -39,13 +40,10 @@ namespace gapp::detail
 
         bool try_lock_shared() noexcept
         {
-            if (lock_.try_lock())
-            {
-                read_cnt_.fetch_add(1, std::memory_order_relaxed);
-                lock_.unlock();
-                return true;
-            }
-            return false;
+            if (!lock_.try_lock()) return false;
+            read_cnt_.fetch_add(1, std::memory_order_relaxed);
+            lock_.unlock();
+            return true;
         }
 
         void unlock_shared() noexcept

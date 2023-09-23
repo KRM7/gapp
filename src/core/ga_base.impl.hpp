@@ -17,7 +17,7 @@
 #include "../stop_condition/stop_condition_base.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
-#include "../utility/parallel_for.hpp"
+#include "../utility/thread_pool.hpp"
 #include "../utility/scope_exit.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>

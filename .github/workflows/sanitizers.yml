@@ -16,7 +16,7 @@ jobs:
     env:
       ASAN_OPTIONS: check_initialization_order=1:strict_init_order=1:detect_stack_use_after_return=1:detect_leaks=1
       UBSAN_OPTIONS: print_stacktrace=1:print_summary=1
-      TSAN_OPTIONS: suppressions=../.tsan-supressions:external_symbolizer_path=/usr/lib/llvm-15/bin/llvm-symbolizer:verbosity=2:force_seq_cst_atomics=0
+      TSAN_OPTIONS: suppressions=../.tsan-supressions:external_symbolizer_path=/usr/lib/llvm-15/bin/llvm-symbolizer:verbosity=1:force_seq_cst_atomics=0
       
     defaults:
       run:

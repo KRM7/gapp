@@ -328,15 +328,6 @@ namespace gapp::detail
         container.erase(last, container.end());
     }
 
-    template<std::integral T>
-    constexpr void increment_mod(T& value, T mod)
-    {
-        GAPP_ASSERT(mod > 0);
-        GAPP_ASSERT(0 <= value && value < mod);
-
-        value = (value + 1 == mod) ? T(0) : value + 1;
-    }
-
 } // namespace gapp::detail
 
 #endif // !GA_UTILITY_ALGORITHM_HPP

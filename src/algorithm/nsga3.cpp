@@ -8,7 +8,7 @@
 #include "../metrics/pop_stats.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
-#include "../utility/parallel_for.hpp"
+#include "../utility/thread_pool.hpp"
 #include "../utility/math.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"

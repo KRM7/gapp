@@ -177,3 +177,23 @@ TEST_CASE("iota_iterator", "[iterators]")
         REQUIRE(last - first == 4);
     }
 }
+
+TEST_CASE("advance_in_range", "[iterators]")
+{
+    iota_iterator first(0), last(5);
+
+    advance_in_range(first, last, 0);
+    REQUIRE(*first == 0);
+
+    advance_in_range(first, last, 1);
+    REQUIRE(*first == 1);
+
+    advance_in_range(first, last, 2);
+    REQUIRE(*first == 3);
+
+    advance_in_range(first, last, 12);
+    REQUIRE(*first == 5);
+
+    advance_in_range(first, last, 3);
+    REQUIRE(*first == 5);
+}

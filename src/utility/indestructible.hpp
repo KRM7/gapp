@@ -16,10 +16,9 @@ namespace gapp::detail
     {
     public:
         template<typename... Args>
-        constexpr Indestructible(Args&&... args)
-        noexcept(std::is_nothrow_constructible_v<T, Args...>)
+        Indestructible(Args&&... args) noexcept(std::is_nothrow_constructible_v<T, Args...>)
         {
-            ::new(std::addressof(data_)) T(std::forward<Args>(args)...);
+            std::construct_at(std::addressof(get()), std::forward<Args>(args)...);
         }
 
         Indestructible(const Indestructible&)            = delete;
@@ -29,7 +28,6 @@ namespace gapp::detail
 
         ~Indestructible() = default;
 
-        // These can't be constexpr because bit_cast between ptr types isn't constexpr
         T& get() noexcept { return *std::bit_cast<T*>(std::addressof(data_)); }
         const T& get() const noexcept { return *std::bit_cast<const T*>(std::addressof(data_)); }
 
