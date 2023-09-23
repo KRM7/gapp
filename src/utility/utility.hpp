@@ -99,9 +99,12 @@
 
 
 #ifndef NDEBUG
-#   define GAPP_ASSERT(condition, ...) assert( (condition) __VA_OPT__(&& (__VA_ARGS__)) )
+#   define GAPP_ASSERT_1(condition) assert(condition)
+#   define GAPP_ASSERT_2(condition, msg) assert( (condition) && (msg) )
+#   define GAPP_ASSERT_(_1, _2, NAME, ...) NAME
+#   define GAPP_ASSERT(...) GAPP_ASSERT_(__VA_ARGS__, GAPP_ASSERT_2, GAPP_ASSERT_1, _0)(__VA_ARGS__)
 #else
-#   define GAPP_ASSERT(condition, ...)
+#   define GAPP_ASSERT(...)
 #endif
 
 

@@ -6,6 +6,8 @@
   bugprone-*,
   portability-*,
   readability-*,
+  cppcoreguidelines-*,
+  concurrency-*,
   misc-*,
 
   google-default-arguments,
@@ -14,8 +16,6 @@
   hicpp-multiway-paths-covered,
   hicpp-signed-bitwise,
   llvm-namespace-comment,
-  cppcoreguidelines-virtual-class-destructor,
-  cppcoreguidelines-special-member-functions,
 
   -modernize-use-nodiscard,
   -modernize-use-auto,
@@ -33,8 +33,15 @@
   -bugprone-easily-swappable-parameters,
   -bugprone-exception-escape,
   -cppcoreguidelines-special-member-functions,
-  -misc-unconventional-assign-operator,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -cppcoreguidelines-prefer-member-initializer,
+  -cppcoreguidelines-narrowing-conversions,
+  -cppcoreguidelines-c-copy-assignment-signature,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-owning-memory,
   -misc-non-private-member-variables-in-classes,
+  -misc-unconventional-assign-operator,
   -misc-no-recursion,
   -misc-const-correctness,
   -misc-use-anonymous-namespace
@@ -66,6 +73,11 @@ WarningsAsErrors: >
   readability-deleted-default,
   readability-misleading-indentation,
   readability-static-definition-in-anonymous-namespace,
+  cppcoreguidelines-interfaces-global-init,
+  cppcoreguidelines-init-variables,
+  cppcoreguidelines-pro-type-member-init,
+  cppcoreguidelines-virtual-class-destructor,
+  cppcoreguidelines-missing-std-forward,
   misc-definitions-in-headers,
   misc-throw-by-value-catch-by-reference
 
@@ -79,3 +91,4 @@ CheckOptions:
   - { key: bugprone-easily-swappable-parameters.ModelImplicitConversions,	value: false }
   - { key: performance-unnecessary-value-param.AllowedTypes,                value: iterator* }
   - { key: readability-simplify-boolean-expr.SimplifyDeMorgan,              value: false }
+  - { key: cppcoreguidelines-macro-usage.AllowedRegexp,						value: GAPP_* }

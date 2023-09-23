@@ -40,12 +40,12 @@ namespace gapp::math
         for (size_t i = 0; i < lhs.size(); i++)
         {
             const auto comp = floatCompare(lhs[i], rhs[i]);
-            if (comp < 0)
+            if (comp < 0)       // NOLINT(*use-nullptr)
             {
                 if (rhs_has_lower) return 0;
                 lhs_has_lower = 1;
             }
-            else if (comp > 0)
+            else if (comp > 0)  // NOLINT(*use-nullptr)
             {
                 if (lhs_has_lower) return 0;
                 rhs_has_lower = 1;

@@ -9,7 +9,7 @@
 namespace gapp
 {
     /** The gene type used in the binary-encoded genetic algorithm. @see BinaryGA */
-    using BinaryGene = std::int8_t;
+    using BinaryGene = std::uint8_t;
 
     /** The gene type used in the real-encoded genetic algorithm. @see RCGA */
     using RealGene = double;

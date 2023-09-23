@@ -173,7 +173,7 @@ namespace gapp::problems
         GAPP_ASSERT(vars.size() >= FIRST_BITS);
         GAPP_ASSERT(vars.size() % REST_BITS == 0);
 
-        double f1 = 1.0 + std::count(vars.begin(), vars.begin() + FIRST_BITS, GeneType{ 1 });
+        double f1 = 1.0 + double(std::count(vars.begin(), vars.begin() + FIRST_BITS, GeneType{ 1 }));
 
         double g = 0.0;
         for (auto first = vars.begin() + FIRST_BITS; first <= vars.end() - REST_BITS; first += REST_BITS)

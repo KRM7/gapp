@@ -6,8 +6,8 @@ jobs:
   core-guidelines:
     name: core-guidelines-check
     runs-on: windows-2022
-    # Allow failures because of the internal compiler error with reference_lines.cpp
-    continue-on-error: true
+    # Disabled because of an internal compiler error in reference_lines.cpp
+    if: false
 
     defaults:
       run:
