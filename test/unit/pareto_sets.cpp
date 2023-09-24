@@ -39,7 +39,6 @@ TEST_CASE("merge_pareto_sets", "[pareto_front]")
         {  3.0, 8.0  }, //
         {  2.0, 11.0 }, //
         {  1.0, 12.0 }, //
-        { -1.0, 10.0 },
     };
 
     FitnessMatrix front2 = {

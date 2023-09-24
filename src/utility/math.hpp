@@ -3,10 +3,10 @@
 #ifndef GA_UTILITY_MATH_HPP
 #define GA_UTILITY_MATH_HPP
 
+#include "bounded_value.hpp"
 #include "utility.hpp"
 #include <vector>
 #include <span>
-#include <atomic>
 #include <compare>
 #include <concepts>
 #include <limits>
@@ -44,15 +44,15 @@ namespace gapp::math
 
         /** @returns The current absolute tolerance used for floating-point comparisons. */
         template<std::floating_point T = double>
-        static T abs() noexcept { return T(absolute_tolerance.load(std::memory_order_acquire)); }
+        static T abs() noexcept { return T(absolute_tolerance); }
 
         /** @returns The current relative tolerance used for floating-point comparisons around @p at. */
         template<std::floating_point T = double>
-        static T rel(T at) noexcept { return relative_tolerance.load(std::memory_order_acquire) * at; }
+        static T rel(T at) noexcept { return relative_tolerance * at; }
 
     private:
-        GAPP_API inline constinit static std::atomic<double> absolute_tolerance = 1E-12;
-        GAPP_API inline constinit static std::atomic<double> relative_tolerance = 10 * eps<double>;
+        GAPP_API inline constinit static double absolute_tolerance = 1E-12;
+        GAPP_API inline constinit static double relative_tolerance = 10 * eps<double>;
 
         friend class ScopedTolerances;
     };
@@ -65,6 +65,11 @@ namespace gapp::math
     * values specified by the parameters of the constructor, and these new tolerance
     * values will be used for floating-point comparisons until the instance of the class is destroyed.
     * The tolerances are reset to their old values when the instance is destroyed.
+    * 
+    * @warning
+    *   Creating an instance of this class modifies the global floating point tolerance
+    *   values. This means that this class shouldn't be instantiated on multiple threads
+    *   at once.
     */
     class [[nodiscard]] ScopedTolerances
     {
@@ -76,19 +81,16 @@ namespace gapp::math
         * @param abs The absolute tolerance value that will be used for the comparisons. Can't be negative.
         * @param rel The relative tolerance value around 1.0 that will be used for the comparisons. Can't be negative.
         */
-        ScopedTolerances(double abs, double rel) noexcept :
-            old_absolute_tolerance(Tolerances::absolute_tolerance.exchange(abs, std::memory_order_acq_rel)),
-            old_relative_tolerance(Tolerances::relative_tolerance.exchange(rel, std::memory_order_acq_rel))
-        {
-            GAPP_ASSERT(abs >= 0.0, "The absolute tolerance value can't be negative.");
-            GAPP_ASSERT(rel >= 0.0, "The relative tolerance value can't be negative.");
-        }
+        ScopedTolerances(NonNegative<double> abs, NonNegative<double> rel) noexcept :
+            old_absolute_tolerance(std::exchange(Tolerances::absolute_tolerance, abs)),
+            old_relative_tolerance(std::exchange(Tolerances::relative_tolerance, rel))
+        {}
 
         /** Reset the tolerances to their previous values. */
         ~ScopedTolerances() noexcept
         {
-            Tolerances::absolute_tolerance.store(old_absolute_tolerance, std::memory_order_release);
-            Tolerances::relative_tolerance.store(old_relative_tolerance, std::memory_order_release);
+            Tolerances::absolute_tolerance = old_absolute_tolerance;
+            Tolerances::relative_tolerance = old_relative_tolerance;
         }
 
         ScopedTolerances(const ScopedTolerances&)            = delete;

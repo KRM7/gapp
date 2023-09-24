@@ -19,7 +19,7 @@ namespace gapp
     * 
     * The following gene types are reserved for the GAs already implemented in the library
     * and can't be used as the gene type of new encodings:
-    *   - std::int8_t
+    *   - std::uint8_t
     *   - std::size_t
     *   - int
     *   - double
