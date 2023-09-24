@@ -10,30 +10,17 @@
 ## Requirements
 
 You will need a C++20 compiler and CMake to build and use the library.  
-There are no additional required dependencies, but there is an optional dependency
-on [Intel's TBB](https://github.com/oneapi-src/oneTBB) library depending on your standard library
-implementation, and [Catch2](https://github.com/catchorg/Catch2) is needed to build the tests.
+There are no additional required dependencies, but [Catch2](https://github.com/catchorg/Catch2)
+is needed to build the tests.
 
 The full list of requirements are:
 
 - C++20 compiler (gcc 11.0, clang 14.0, msvc 14.30 or later)
 - CMake 3.21 or later
-- Intel TBB (optional, depending on the standard library implementation)
 - Catch2 3.3 or later (optional, only needed for the tests)
 
-Intel's TBB library is needed depending on your standard library implementation
-for the parallel algorithms that were introduced in C++17. The library depends on these
-algorithms to parallelize certain operations, and without standard library support for these,
-everything will run sequentially.
-
-Specifically, for the 3 major standard library implementations:
-
-- Microsoft's STL: Doesn't need TBB, the parallel algorithms are supported even without it
-- libstdc++: Needs TBB for the algorithms to actually run in parallel
-- libc++: Doesn't support C++17's parallel algorithms yet, so everything will be sequential either way
-
 The library works on both Windows and Linux. Both of these platforms and all compilers mentioned
-above are tested (gcc and clang on Linux, and msvc and clang-cl on Windows).
+above are tested (gcc and clang on Linux, msvc and clang-cl on Windows).
 
 
 ## Install with CMake
@@ -192,9 +179,6 @@ target_link_libraries(example_project PRIVATE gapp::gapp)
 - `GAPP_DISABLE_RTTI` - When this option is `ON`, the library will be built without run-time type information.
     The default value is `OFF`.
 
-- `GAPP_LINK_TBB` - When this option is `ON`, the project will attempt to link Intel's TBB library to the
-    library during the build. This option has no effect if TBB is not installed on the system, or if
-    CMake can't find it. The default value is `OFF`.
 
 The options are specified during the configuration step of CMake, for example:
 

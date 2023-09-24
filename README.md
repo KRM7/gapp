@@ -50,7 +50,6 @@ The following are needed for building and using the library:
 
 - C++20 compiler (gcc 11.0, clang 14.0, msvc 14.30 or later)
 - CMake 3.21 or later
-- Intel TBB (optional, depending on the standard library implementation)
 - Catch2 3.3 or later (optional, only needed for the tests)
 
 

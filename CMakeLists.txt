@@ -15,7 +15,6 @@ option(GAPP_USE_LTO "Use link time optimizations for the library." ON)
 option(GAPP_USE_MARCH_NATIVE "Optimize for the host architecture in release builds (only used for gcc and clang)." OFF)
 option(GAPP_DISABLE_EXCEPTIONS "Disable exception support when building the library." OFF)
 option(GAPP_DISABLE_RTTI "Disable run-time type information when building the library." OFF)
-option(GAPP_LINK_TBB "Link Intel's TBB library (needed for the parallel stl algorithms when using gcc/clang)." OFF)
 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
@@ -140,12 +139,6 @@ target_include_directories(gapp SYSTEM INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURR
 target_compile_features(gapp PUBLIC "cxx_std_20")
 target_compile_definitions(gapp PUBLIC "$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:GAPP_BUILD_STATIC>")
 target_compile_options(gapp PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:-Zc:preprocessor>")
-
-# Dependencies
-find_package(TBB)
-if(TBB_FOUND AND GAPP_LINK_TBB AND NOT MSVC)
-    target_link_libraries(gapp PUBLIC "TBB::tbb")
-endif()
 
 
 # Install
