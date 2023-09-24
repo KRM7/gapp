@@ -48,6 +48,11 @@ Exact comparisons can be used by setting both tolerance values to 0.
 math::ScopedTolerances _(0.0, 0.0);
 ```
 
+Note that the tolerance values are global variables which will be used for
+the comparisons on every thread, so they should not be modified on multiple
+threads concurrently. This means that instances of the `ScopedTolerances`
+class should not exist on multiple threads at once.
+
 
 ## Random number generation
 
