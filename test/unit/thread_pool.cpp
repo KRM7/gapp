@@ -6,7 +6,6 @@
 #include "utility/iterators.hpp"
 #include <atomic>
 #include <vector>
-#include <functional>
 #include <numeric>
 #include <thread>
 #include <tuple>
@@ -64,9 +63,29 @@ TEST_CASE("thread_pool", "[thread-pool]")
 TEST_CASE("parallel_for", "[thread-pool]")
 {
     std::atomic<int> n = 0;
-    auto increment_n = [&] (int) { n++; };
+    auto increment_n = [&](int) { n++; };
 
-    parallel_for(iota_iterator(0), iota_iterator(1000), increment_n);
+    parallel_for(iota_iterator(0), iota_iterator(100), increment_n);
+    REQUIRE(n == 100);
 
-    REQUIRE(n == 1000);
+    parallel_for(iota_iterator(0), iota_iterator(100), increment_n);
+    REQUIRE(n == 200);
+}
+
+TEST_CASE("nested_parallel_for", "[thread-pool]")
+{
+    std::atomic<int> n = 0;
+
+    parallel_for(iota_iterator(0), iota_iterator(10), [&](int)
+    {
+        parallel_for(iota_iterator(0), iota_iterator(10), [&](int)
+        {
+            parallel_for(iota_iterator(0), iota_iterator(100), [&](int)
+            {
+                n.fetch_add(1, std::memory_order_relaxed);
+            });
+        });
+    });
+
+    REQUIRE(n == 10000);
 }

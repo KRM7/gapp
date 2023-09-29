@@ -240,7 +240,7 @@ namespace gapp::algorithm
 
         sol_info_.resize(last - first);
 
-        detail::parallel_for(pfirst, plast, [&](const FrontInfo& sol)
+        detail::parallel_for(pfirst, plast, 200, [&](const FrontInfo& sol)
         {
             const FitnessVector fnorm = normalizeFitnessVec(first[sol.idx], ideal_point_, nadir_point_);
 

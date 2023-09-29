@@ -3,7 +3,6 @@
 #ifndef GA_UTILITY_CONCURRENT_QUEUE_HPP
 #define GA_UTILITY_CONCURRENT_QUEUE_HPP
 
-#include "spinlock.hpp"
 #include <condition_variable>
 #include <mutex>
 #include <deque>
@@ -29,7 +28,7 @@ namespace gapp::detail
         [[nodiscard]] std::optional<T> take() noexcept(std::is_nothrow_move_constructible_v<T>)
         {
             std::unique_lock lock{ queue_lock_ };
-            queue_cv_.wait(lock, [&]() noexcept { return !queue_.empty() || is_closed_; });
+            queue_cv_.wait(lock, [&] { return !queue_.empty() || is_closed_; });
 
             if (is_closed_ && queue_.empty()) return {};
 
@@ -51,10 +50,16 @@ namespace gapp::detail
             return is_closed_;
         }
 
+        [[nodiscard]] bool empty() const noexcept
+        {
+            std::scoped_lock lock{ queue_lock_ };
+            return queue_.empty();
+        }
+
     private:
         std::deque<T> queue_;
-        mutable detail::spinlock queue_lock_;
-        std::condition_variable_any queue_cv_;
+        mutable std::mutex queue_lock_;
+        std::condition_variable queue_cv_;
         bool is_closed_ = false;
     };
 

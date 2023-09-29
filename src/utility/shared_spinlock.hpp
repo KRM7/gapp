@@ -23,7 +23,9 @@ namespace gapp::detail
 
         bool try_lock() noexcept
         {
-            return lock_.try_lock() && !read_cnt_.load(std::memory_order_acquire);
+            if (!lock_.try_lock()) return false;
+            if (!read_cnt_.load(std::memory_order_acquire)) return true;
+            return lock_.unlock(), false;
         }
 
         void unlock() noexcept
