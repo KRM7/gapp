@@ -5,6 +5,7 @@
 
 #include "utility.hpp"
 #include <atomic>
+#include <thread>
 
 namespace gapp::detail
 {
@@ -15,8 +16,9 @@ namespace gapp::detail
         {
             while (true)
             {
-                if (!locked_.test_and_set(std::memory_order_acquire)) break;
                 while (locked_.test(std::memory_order_relaxed)) GAPP_PAUSE();
+                if (!locked_.test_and_set(std::memory_order_acquire)) break;
+                std::this_thread::yield();
             }
         }
 

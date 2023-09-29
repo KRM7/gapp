@@ -188,6 +188,20 @@ namespace gapp::detail
         }
     }
 
+    template<typename T1, typename T2, typename... Ts>
+    constexpr auto max(const T1& first, const T2& second, const Ts&... rest) -> const std::common_type_t<T1, T2, Ts...>&
+    {
+        using std::max;
+        return max(std::max<std::common_type_t<T1, T2>>(first, second), rest...);
+    }
+
+    template<typename T1, typename T2, typename... Ts>
+    constexpr auto min(const T1& first, const T2& second, const Ts&... rest) -> const std::common_type_t<T1, T2, Ts...>&
+    {
+        using std::min;
+        return min(std::min<std::common_type_t<T1, T2>>(first, second), rest...);
+    }
+
     template<std::random_access_iterator Iter, typename URBG>
     requires std::uniform_random_bit_generator<std::remove_cvref_t<URBG>>
     constexpr void partial_shuffle(Iter first, Iter middle, Iter last, URBG&& gen)

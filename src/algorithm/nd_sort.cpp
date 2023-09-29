@@ -179,15 +179,15 @@ namespace gapp::algorithm::dtl
      *  Proceedings of the 2020 Genetic and Evolutionary Computation Conference Companion, pp. 169-170. 2020.
      */
 
-    using DominanceMatrix = detail::Matrix<std::atomic_bool>;
-    enum : bool { MAXIMAL = false, NONMAXIMAL = true };
+    using DominanceMatrix = detail::Matrix<char>;
+    enum : char { MAXIMAL = 0, NONMAXIMAL = 1 };
 
     struct Col { size_t idx; size_t sum; }; /* Index and colwise sum of a column in the dominance matrix. */
 
     static DominanceMatrix constructDominanceMatrix(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         const size_t popsize = std::distance(first, last);
-        DominanceMatrix dmat(popsize, popsize /*, MAXIMAL */);
+        DominanceMatrix dmat(popsize, popsize, MAXIMAL);
 
         detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(first->size()), [&](size_t obj)
         {
@@ -205,24 +205,26 @@ namespace gapp::algorithm::dtl
 
                 std::for_each(last_idx, indices.rend(), [&](size_t col) noexcept
                 {
-                    if (dmat(row, col).load(std::memory_order_relaxed) == MAXIMAL)
+                    std::atomic_ref elem{ dmat(row, col) };
+
+                    if (elem.load(std::memory_order_relaxed) == MAXIMAL)
                     {
-                        dmat(row, col).store(NONMAXIMAL, std::memory_order_relaxed);
+                        elem.store(NONMAXIMAL, std::memory_order_relaxed);
                     }
                 });
             });
         });
 
-        detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
+        std::for_each(detail::iota_iterator(0_sz), detail::iota_iterator(popsize), [&](size_t row) noexcept
         {
-            dmat(row, row).store(NONMAXIMAL, std::memory_order_relaxed); // diagonal is all nonmax
+            dmat(row, row) = NONMAXIMAL; // diagonal is all nonmax
 
             for (size_t col = row + 1; col < popsize; col++)
             {
-                if (dmat(row, col).load(std::memory_order_relaxed) == MAXIMAL && dmat(col, row).load(std::memory_order_relaxed) == MAXIMAL)
+                if (dmat(row, col) == MAXIMAL && dmat(col, row) == MAXIMAL)
                 {
-                    dmat(row, col).store(NONMAXIMAL, std::memory_order_relaxed);
-                    dmat(col, row).store(NONMAXIMAL, std::memory_order_relaxed);
+                    dmat(row, col) = NONMAXIMAL;
+                    dmat(col, row) = NONMAXIMAL;
                 }
             }
         });
@@ -243,7 +245,7 @@ namespace gapp::algorithm::dtl
         {
             for (size_t col = 0; col < dmat.ncols(); col++)
             {
-                cols[col].sum -= dmat(row, col).load(std::memory_order_relaxed);
+                cols[col].sum -= dmat(row, col);
             }
         }
 
@@ -283,9 +285,9 @@ namespace gapp::algorithm::dtl
             {
                 for (auto& [col, sum] : cols)
                 {
-                    if (dmat(row, col).load(std::memory_order_relaxed) == MAXIMAL)
+                    if (dmat(row, col) == MAXIMAL)
                     {
-                        dmat(row, col).store(NONMAXIMAL, std::memory_order_relaxed);
+                        dmat(row, col) = NONMAXIMAL;
                         sum--;
                     }
                 }

@@ -30,6 +30,7 @@
   -readability-suspicious-call-argument,
   -readability-implicit-bool-conversion,
   -readability-uppercase-literal-suffix,
+  -readability-braces-around-statements,
   -bugprone-easily-swappable-parameters,
   -bugprone-exception-escape,
   -cppcoreguidelines-special-member-functions,

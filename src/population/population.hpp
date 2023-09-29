@@ -104,13 +104,13 @@ namespace gapp::detail
         enum Dominance : unsigned char { UNKNOWN = 0, OPTIMAL = 1, DOMINATED = 2 };
 
         std::vector<Dominance> lhs_state(lhs.size());
-        std::vector<std::atomic<Dominance>> rhs_state(rhs.size());
+        std::vector<Dominance> rhs_state(rhs.size());
 
         detail::parallel_for(iota_iterator(0_sz), iota_iterator(lhs.size()), [&](size_t i) noexcept
         {
             for (size_t j = 0; j < rhs.size(); j++)
             {
-                const Dominance rhs_state_j = rhs_state[j].load(std::memory_order_acquire);
+                const Dominance rhs_state_j = std::atomic_ref{ rhs_state[j] }.load(std::memory_order_relaxed);
 
                 if (lhs_state[i] == DOMINATED) continue;
                 if (rhs_state_j  == DOMINATED) continue;
@@ -119,7 +119,7 @@ namespace gapp::detail
                 {
                     if (rhs_state_j == UNKNOWN && math::paretoCompareLess(rhs[j].fitness, lhs[i].fitness))
                     {
-                        rhs_state[j].store(DOMINATED, std::memory_order_release);
+                        std::atomic_ref{ rhs_state[j] }.store(DOMINATED, std::memory_order_relaxed);
                     }
                     continue;
                 }
@@ -136,12 +136,12 @@ namespace gapp::detail
                 if (comp < 0)
                 {
                     lhs_state[i] = DOMINATED;
-                    rhs_state[j].store(OPTIMAL, std::memory_order_release);
+                    std::atomic_ref{ rhs_state[j] }.store(OPTIMAL, std::memory_order_relaxed);
                 }
                 else if (comp > 0)
                 {
                     lhs_state[i] = OPTIMAL;
-                    rhs_state[j].store(DOMINATED, std::memory_order_release);
+                    std::atomic_ref{ rhs_state[j] }.store(DOMINATED, std::memory_order_relaxed);
                 }
                 // comp == 0 --> both are OPTIMAL or DOMINATED, can't know
             }
@@ -150,15 +150,13 @@ namespace gapp::detail
         Candidates<T> optimal_solutions;
         optimal_solutions.reserve(lhs.size() + rhs.size());
 
-        for (size_t i = 0; i < rhs.size(); i++)
-        {
-            if (rhs_state[i].load(std::memory_order_relaxed) != DOMINATED)
-                optimal_solutions.push_back(std::move(rhs[i]));
-        }
         for (size_t i = 0; i < lhs.size(); i++)
         {
-            if (lhs_state[i] != DOMINATED)
-                optimal_solutions.push_back(std::move(lhs[i]));
+            if (lhs_state[i] != DOMINATED) optimal_solutions.push_back(std::move(lhs[i]));
+        }
+        for (size_t i = 0; i < rhs.size(); i++)
+        {
+            if (rhs_state[i] != DOMINATED) optimal_solutions.push_back(std::move(rhs[i]));
         }
 
         return optimal_solutions;
