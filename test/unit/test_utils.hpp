@@ -4,7 +4,7 @@
 #define GA_TEST_UTILS_HPP
 
 #include "core/fitness_function.hpp"
-#include "population/candidate.hpp"
+#include "core/candidate.hpp"
 #include <vector>
 #include <cstddef>
 

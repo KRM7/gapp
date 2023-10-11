@@ -3,7 +3,7 @@
 #ifndef GA_CROSSOVER_DTL_HPP
 #define GA_CROSSOVER_DTL_HPP
 
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include <vector>
 #include <unordered_map>
 #include <type_traits>

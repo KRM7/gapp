@@ -3,7 +3,7 @@
 #ifndef GA_ALGORITHM_SOGA_SELECTION_BASE_HPP
 #define GA_ALGORITHM_SOGA_SELECTION_BASE_HPP
 
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include <type_traits>
 #include <cstddef>
 

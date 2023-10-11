@@ -5,8 +5,8 @@
 
 #include "ga_base.decl.hpp"
 #include "ga_traits.hpp"
+#include "population.hpp"
 #include "fitness_function.hpp"
-#include "../population/population.hpp"
 #include "../algorithm/algorithm_base.hpp"
 #include "../algorithm/single_objective.hpp"
 #include "../algorithm/nsga3.hpp"
@@ -23,7 +23,6 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
-#include <execution>
 #include <type_traits>
 #include <memory>
 #include <atomic>

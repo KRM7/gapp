@@ -4,7 +4,7 @@
 #define GA_CROSSOVER_PERMUTATION_HPP
 
 #include "crossover_base.decl.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../encoding/gene_types.hpp"
 
 /** Predefined crossover operators for the permutation encoded %GA. */

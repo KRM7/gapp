@@ -4,7 +4,7 @@
 #define GA_CROSSOVER_LAMBDA_HPP
 
 #include "crossover_base.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../utility/utility.hpp"
 #include <functional>
 #include <utility>

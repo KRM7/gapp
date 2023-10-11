@@ -4,7 +4,7 @@
 #define GA_METRICS_DISTRIBUTION_METRICS_HPP
 
 #include "monitor.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include <span>
 
 namespace gapp::metrics

@@ -3,7 +3,7 @@
 #ifndef GA_ALGORITHM_NDSORT_HPP
 #define GA_ALGORITHM_NDSORT_HPP
 
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include <vector>
 #include <utility>
 #include <cstddef>

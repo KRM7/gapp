@@ -24,11 +24,11 @@ namespace gapp
     */
     using FitnessMatrix = detail::Matrix<double>;
 
-     /**
-     * The class used to represent the lower and upper bounds of a gene.
-     * 
-     * @tparam T The gene type. The lower and upper bounds will also be this type.
-     */
+    /**
+    * The class used to represent the lower and upper bounds of a gene.
+    * 
+    * @tparam T The gene type. The lower and upper bounds will also be this type.
+    */
     template<typename T>
     class Bounds
     {

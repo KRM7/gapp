@@ -5,7 +5,7 @@
 
 #include "monitor.hpp"
 #include "../core/ga_info.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../utility/utility.hpp"
 #include <span>
 #include <cstddef>

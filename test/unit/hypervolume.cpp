@@ -3,7 +3,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
 #include "metrics/pop_stats.hpp"
-#include "population/candidate.hpp"
+#include "core/candidate.hpp"
 
 using namespace gapp;
 using namespace gapp::detail;

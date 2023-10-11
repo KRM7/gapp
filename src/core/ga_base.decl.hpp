@@ -5,9 +5,9 @@
 
 #include "ga_info.hpp"
 #include "ga_traits.hpp"
+#include "candidate.hpp"
 #include "fitness_function.hpp"
 #include "../encoding/gene_types.hpp"
-#include "../population/candidate.hpp"
 #include "../stop_condition/stop_condition.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/type_traits.hpp"

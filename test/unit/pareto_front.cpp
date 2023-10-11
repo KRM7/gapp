@@ -3,7 +3,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_all.hpp>
-#include "population/population.hpp"
+#include "core/population.hpp"
 #include "utility/utility.hpp"
 #include <vector>
 

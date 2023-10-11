@@ -3,7 +3,7 @@
 #ifndef GA_METRICS_POP_STATS_HPP
 #define GA_METRICS_POP_STATS_HPP
 
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include <span>
 
 namespace gapp::detail

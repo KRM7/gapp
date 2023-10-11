@@ -4,7 +4,7 @@
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include "algorithm/reference_lines.hpp"
-#include "population/population.hpp"
+#include "core/population.hpp"
 #include "metrics/pop_stats.hpp"
 #include "utility/math.hpp"
 

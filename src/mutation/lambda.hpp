@@ -4,7 +4,7 @@
 #define GA_MUTATION_LAMBDA_HPP
 
 #include "mutation_base.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../utility/utility.hpp"
 #include <functional>
 #include <utility>

@@ -4,7 +4,7 @@
 #include "nd_sort.hpp"
 #include "reference_lines.hpp"
 #include "../core/ga_info.hpp"
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include "../metrics/pop_stats.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
@@ -13,7 +13,6 @@
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
-#include <execution>
 #include <functional>
 #include <iterator>
 #include <vector>

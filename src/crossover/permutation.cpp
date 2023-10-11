@@ -3,7 +3,7 @@
 #include "permutation.hpp"
 #include "crossover_base.hpp"
 #include "crossover_dtl.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
