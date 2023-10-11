@@ -64,8 +64,8 @@ if(MSVC) # MSVC style compiler interface
         set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -fp:contract")
     endif()
     # clang-cl specific options
-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS}")
+    if(GAPP_USE_MARCH_NATIVE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native")
     endif()
 
     set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} -Z7 -diagnostics:caret ${GAPP_WARN_FLAGS}")
