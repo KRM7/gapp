@@ -13,7 +13,6 @@
 #include <numeric>
 #include <vector>
 #include <span>
-#include <limits>
 #include <cmath>
 
 namespace gapp::selection
