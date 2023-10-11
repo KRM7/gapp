@@ -19,22 +19,22 @@ namespace gapp::detail
     class rcu_domain
     {
     public:
-        inline static void read_lock() noexcept
+        static void read_lock() noexcept
         {
             reader.epoch.store(writer_epoch.load(std::memory_order_relaxed), std::memory_order_release);
             std::ignore = reader.epoch.load(std::memory_order_acquire);
         }
 
-        inline static void read_unlock() noexcept
+        static void read_unlock() noexcept
         {
             reader.epoch.store(NOT_READING, std::memory_order_release);
         }
 
-        inline static void synchronize() noexcept
+        static void synchronize() noexcept
         {
             uint64_t current = writer_epoch.load(std::memory_order_acquire);
             uint64_t target  = current + 1;
-            writer_epoch.compare_exchange_strong(current, target, std::memory_order_acq_rel);
+            writer_epoch.compare_exchange_strong(current, target, std::memory_order_release);
 
             std::shared_lock _{ tls_readers->lock };
 
