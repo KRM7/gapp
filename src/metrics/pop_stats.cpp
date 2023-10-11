@@ -1,8 +1,8 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #include "pop_stats.hpp"
-#include "../population/candidate.hpp"
-#include "../population/population.hpp"
+#include "../core/candidate.hpp"
+#include "../core/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/iterators.hpp"
 #include "../utility/thread_pool.hpp"

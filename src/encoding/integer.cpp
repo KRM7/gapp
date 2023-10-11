@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
 #include <vector>
 

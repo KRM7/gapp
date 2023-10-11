@@ -3,7 +3,7 @@
 #include "distribution_metrics.hpp"
 #include "pop_stats.hpp"
 #include "../core/ga_info.hpp"
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>

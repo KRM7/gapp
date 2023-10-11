@@ -3,7 +3,7 @@
 #ifndef GA_CORE_GA_INFO_HPP
 #define GA_CORE_GA_INFO_HPP
 
-#include "../population/population.hpp"
+#include "population.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include "../metrics/metric_set.hpp"

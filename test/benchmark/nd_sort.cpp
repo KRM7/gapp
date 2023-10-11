@@ -4,7 +4,7 @@
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include "algorithm/nd_sort.hpp"
-#include "population/population.hpp"
+#include "core/population.hpp"
 #include "utility/rng.hpp"
 
 using namespace gapp;

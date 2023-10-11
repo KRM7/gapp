@@ -5,7 +5,7 @@
 
 #include "gene_types.hpp"
 #include "../core/ga_base.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../crossover/integer.hpp"
 #include "../mutation/integer.hpp"
 #include <cstddef>

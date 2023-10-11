@@ -6,7 +6,7 @@
 #include "algorithm_base.decl.hpp"
 #include "../core/ga_info.hpp"
 #include "../core/ga_base.decl.hpp"
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/utility.hpp"

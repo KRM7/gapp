@@ -2,7 +2,7 @@
 
 #include "permutation.hpp"
 #include "../core/ga_base.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"

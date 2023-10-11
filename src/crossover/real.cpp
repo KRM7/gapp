@@ -2,7 +2,7 @@
 
 #include "real.hpp"
 #include "crossover_base.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/math.hpp"

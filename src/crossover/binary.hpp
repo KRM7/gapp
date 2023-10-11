@@ -4,7 +4,7 @@
 #define GA_CROSSOVER_BINARY_HPP
 
 #include "crossover_base.decl.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../encoding/gene_types.hpp"
 #include "../utility/bounded_value.hpp"
 #include <cstddef>

@@ -4,7 +4,7 @@
 #define GA_ALGORITHM_SOGA_REPLACEMENT_HPP
 
 #include "replacement_base.hpp"
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include <vector>
 #include <functional>
 #include <cstddef>

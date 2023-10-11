@@ -5,8 +5,8 @@
 
 #include "../core/ga_base.decl.hpp"
 #include "../core/fitness_function.hpp"
+#include "../core/candidate.hpp"
 #include "../encoding/gene_types.hpp"
-#include "../population/candidate.hpp"
 #include "../utility/math.hpp"
 #include <vector>
 #include <string>

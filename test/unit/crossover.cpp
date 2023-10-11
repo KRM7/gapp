@@ -2,7 +2,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
-#include "population/candidate.hpp"
+#include "core/candidate.hpp"
 #include "encoding/encoding.hpp"
 #include "crossover/crossover.hpp"
 #include "crossover/crossover_dtl.hpp"

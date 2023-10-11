@@ -5,10 +5,9 @@
 
 #include "selection_base.hpp"
 #include "replacement_base.hpp"
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include <vector>
 #include <cstddef>
-#include <optional>
 
 namespace gapp
 {

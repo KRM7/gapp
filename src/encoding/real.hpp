@@ -6,7 +6,7 @@
 #include "gene_types.hpp"
 #include "../core/ga_base.hpp"
 #include "../core/ga_traits.hpp"
-#include "../population/candidate.hpp"
+#include "../core/candidate.hpp"
 #include "../crossover/real.hpp"
 #include "../mutation/real.hpp"
 #include <cstddef>

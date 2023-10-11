@@ -3,10 +3,9 @@
 #ifndef GA_CORE_FITNESS_FUNCTION_HPP
 #define GA_CORE_FITNESS_FUNCTION_HPP
 
-#include "../population/population.hpp"
+#include "population.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
-#include <concepts>
 #include <functional>
 #include <utility>
 #include <cstddef>

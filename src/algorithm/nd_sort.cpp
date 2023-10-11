@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "nd_sort.hpp"
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/iterators.hpp"
@@ -11,7 +11,6 @@
 #include "../utility/matrix.hpp"
 #include <algorithm>
 #include <functional>
-#include <execution>
 #include <iterator>
 #include <atomic>
 #include <vector>

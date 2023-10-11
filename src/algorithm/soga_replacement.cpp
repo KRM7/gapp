@@ -2,7 +2,7 @@
 
 #include "soga_replacement.hpp"
 #include "../core/ga_info.hpp"
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"

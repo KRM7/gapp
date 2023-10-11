@@ -4,7 +4,7 @@
 #define GA_ALGORITHM_SOGA_SELECTION_HPP
 
 #include "selection_base.hpp"
-#include "../population/population.hpp"
+#include "../core/population.hpp"
 #include "../utility/bounded_value.hpp"
 #include <vector>
 #include <utility>
