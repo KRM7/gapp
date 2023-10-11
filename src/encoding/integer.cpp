@@ -1,10 +1,8 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
-#include "../core/ga_base.hpp"
 #include "../population/candidate.hpp"
 #include "../utility/rng.hpp"
-#include <algorithm>
 #include <vector>
 
 namespace gapp

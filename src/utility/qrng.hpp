@@ -3,10 +3,10 @@
 #ifndef GA_UTILITY_QRNG_HPP
 #define GA_UTILITY_QRNG_HPP
 
+#include "bounded_value.hpp"
 #include <vector>
 #include <concepts>
 #include <cstddef>
-#include "bounded_value.hpp"
 
 namespace gapp::rng
 {

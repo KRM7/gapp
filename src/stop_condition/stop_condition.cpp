@@ -17,6 +17,7 @@ namespace gapp::stopping
         GAPP_ASSERT(best_so_far.size() == new_val.size());
 
         bool improved = false;
+
         for (size_t i = 0; i < new_val.size(); i++)
         {
             if (new_val[i] >= (best_so_far[i] + delta))

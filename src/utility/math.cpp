@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
 
 namespace gapp::math
 {
