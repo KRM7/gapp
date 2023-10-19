@@ -68,7 +68,7 @@ namespace gapp::metrics
         FitnessVector ideal_point = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
 
         FitnessVector prev_worst_point = worst_point_;
-        worst_point_ = detail::elementwise_min(std::move(worst_point_), worst_point);
+        detail::elementwise_min(worst_point_, worst_point, detail::inplace_t{});
 
         if (worst_point_ != prev_worst_point)
         {

@@ -246,20 +246,20 @@ TEST_CASE("find_index", "[algorithm]")
 
 TEST_CASE("elementwise_min", "[algorithm]")
 {
-    const std::vector nums1 = { 4, 0, 2, 5, 1 };
-    const std::vector nums2 = { 2, 3, 1, 6, 0 };
+    std::vector nums1 = { 4, 0, 2, 5, 1 };
+    std::vector nums2 = { 2, 3, 1, 6, 0 };
 
-    const auto min = detail::elementwise_min(nums1, nums2);
-    REQUIRE(min == std::vector{ 2, 0, 1, 5, 0 });
+    detail::elementwise_min(nums1, nums2, detail::inplace_t{});
+    REQUIRE(nums1 == std::vector{ 2, 0, 1, 5, 0 });
 }
 
 TEST_CASE("elementwise_max", "[algorithm]")
 {
-    const std::vector nums1 = { 4, 0, 2, 5, 1 };
-    const std::vector nums2 = { 2, 3, 1, 6, 0 };
+    std::vector nums1 = { 4, 0, 2, 5, 1 };
+    std::vector nums2 = { 2, 3, 1, 6, 0 };
 
-    const auto max = detail::elementwise_max(nums1, nums2);
-    REQUIRE(max == std::vector{ 4, 3, 2, 6, 1 });
+    detail::elementwise_max(nums1, nums2, detail::inplace_t{});
+    REQUIRE(nums1 == std::vector{ 4, 3, 2, 6, 1 });
 }
 
 TEST_CASE("erase_first_stable", "[algorithm]")

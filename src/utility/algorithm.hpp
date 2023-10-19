@@ -189,14 +189,14 @@ namespace gapp::detail
     }
 
     template<typename T1, typename T2, typename... Ts>
-    constexpr auto max(const T1& first, const T2& second, const Ts&... rest) -> const std::common_type_t<T1, T2, Ts...>&
+    constexpr auto max(const T1& first, const T2& second, const Ts&... rest) -> std::common_type_t<T1, T2, Ts...>
     {
         using std::max;
         return max(std::max<std::common_type_t<T1, T2>>(first, second), rest...);
     }
 
     template<typename T1, typename T2, typename... Ts>
-    constexpr auto min(const T1& first, const T2& second, const Ts&... rest) -> const std::common_type_t<T1, T2, Ts...>&
+    constexpr auto min(const T1& first, const T2& second, const Ts&... rest) -> std::common_type_t<T1, T2, Ts...>
     {
         using std::min;
         return min(std::min<std::common_type_t<T1, T2>>(first, second), rest...);
@@ -277,32 +277,26 @@ namespace gapp::detail
         return indices;
     }
 
-    template<typename T>
-    std::vector<T> elementwise_min(std::vector<T> left, std::span<const std::type_identity_t<T>> right)
+    template<typename Left, typename Right>
+    void elementwise_min(Left& left, const Right& right, detail::inplace_t)
     {
         GAPP_ASSERT(left.size() == right.size());
 
-        std::transform(left.begin(), left.end(), right.begin(), left.begin(),
-        [](const T& lhs, const T& rhs)
+        for (size_t i = 0; i < left.size(); i++)
         {
-            return lhs < rhs ? lhs : rhs;
-        });
-
-        return left;
+            left[i] = std::min(left[i], right[i]);
+        }
     }
 
-    template<typename T>
-    std::vector<T> elementwise_max(std::vector<T> left, std::span<const std::type_identity_t<T>> right)
+    template<typename Left, typename Right>
+    void elementwise_max(Left& left, const Right& right, detail::inplace_t)
     {
         GAPP_ASSERT(left.size() == right.size());
 
-        std::transform(left.begin(), left.end(), right.begin(), left.begin(),
-        [](const T& lhs, const T& rhs)
+        for (size_t i = 0; i < left.size(); i++)
         {
-            return lhs < rhs ? rhs : lhs;
-        });
-
-        return left;
+            left[i] = std::max(left[i], right[i]);
+        }
     }
 
     template<detail::Container Container, typename T>

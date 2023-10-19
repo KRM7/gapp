@@ -62,7 +62,7 @@ namespace gapp::algorithm
         Point nadir = extreme_points[0];
         for (size_t i = 1; i < extreme_points.size(); i++)
         {
-            nadir = detail::elementwise_min(std::move(nadir), extreme_points[i]);
+            detail::elementwise_min(nadir, extreme_points[i], detail::inplace_t{});
         }
 
         return nadir;
@@ -183,7 +183,7 @@ namespace gapp::algorithm
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
-        ideal_point_ = detail::elementwise_max(std::move(ideal_point_), detail::maxFitness(first, last));
+        detail::elementwise_max(ideal_point_, detail::maxFitness(first, last), detail::inplace_t{});
     }
 
     void NSGA3::Impl::updateExtremePoints(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
