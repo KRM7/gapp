@@ -10,6 +10,8 @@ namespace gapp::detail
 {
     struct empty_t {};
 
+    struct inplace_t {};
+
 
     template<typename T>
     inline constexpr bool always_false = false;

@@ -23,14 +23,28 @@ namespace gapp::detail
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
-        return std::accumulate(std::next(first), last, FitnessVector(*first), detail::elementwise_min<double>);
+        FitnessVector min_fitness = FitnessVector(*first);
+
+        while (++first != last)
+        {
+            detail::elementwise_min(min_fitness, *first, detail::inplace_t{});
+        }
+
+        return min_fitness;
     }
 
     FitnessVector maxFitness(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
-        return std::accumulate(std::next(first), last, FitnessVector(*first), detail::elementwise_max<double>);
+        FitnessVector max_fitness = FitnessVector(*first);
+
+        while (++first != last)
+        {
+            detail::elementwise_max(max_fitness, *first, detail::inplace_t{});
+        }
+
+        return max_fitness;
     }
 
     FitnessVector fitnessMean(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)

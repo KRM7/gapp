@@ -178,11 +178,11 @@ namespace gapp::detail
         if (fitness_matrix.empty()) return {};
 
         const auto& front_indices = detail::findParetoFront(fitness_matrix);
+        math::Point nadir_point{ fitness_matrix[front_indices[0]] };
 
-        auto nadir_point = math::Point(fitness_matrix[front_indices[0]]);
         for (size_t i = 1; i < front_indices.size(); i++)
         {
-            nadir_point = detail::elementwise_min(std::move(nadir_point), fitness_matrix[front_indices[i]]);
+            detail::elementwise_min(nadir_point, fitness_matrix[front_indices[i]], detail::inplace_t{});
         }
 
         return nadir_point;

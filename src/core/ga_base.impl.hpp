@@ -525,6 +525,7 @@ namespace gapp
         });
 
         updatePopulation(std::move(children));
+
         if (keep_all_optimal_sols_) updateOptimalSolutions(solutions_, population_);
         metrics_.update(*this);
 
