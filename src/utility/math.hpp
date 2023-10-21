@@ -146,10 +146,7 @@ namespace gapp::math
     double euclideanNorm(std::span<const double> vec) noexcept;
 
     /* Normalize the vector vec (divide by magnitude). */
-    std::vector<double> normalizeVector(const std::vector<double>& vec);
-
-    /* Normalize the vector vec (divide by magnitude). */
-    std::vector<double> normalizeVector(std::vector<double>&& vec) noexcept;
+    void normalizeVector(std::span<double> vec) noexcept;
 
     /* Calculate the square of the Euclidean distance between the vectors v1 and v2. */
     double euclideanDistanceSq(std::span<const double> v1, std::span<const double> v2) noexcept;

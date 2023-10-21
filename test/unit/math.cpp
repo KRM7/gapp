@@ -324,13 +324,11 @@ TEST_CASE("euclidean_norm", "[math]")
 
 TEST_CASE("normalize", "[math]")
 {
-    const std::vector vec            = { 1.0,  4.5,  3.2,  0.3 };
-    const std::vector normalized_vec = { 0.18, 0.80, 0.57, 0.05 }; // not exact
+    std::vector vec            = { 1.0,  4.5,  3.2,  0.3 };
+    std::vector normalized_vec = { 0.18, 0.80, 0.57, 0.05 }; // not exact
 
-    REQUIRE_THAT(normalizeVector(vec), Matchers::Approx(normalized_vec).margin(0.01));  
-    REQUIRE_THAT(normalizeVector(normalized_vec), Matchers::Approx(normalized_vec).margin(0.01));
-
-    REQUIRE(normalizeVector({}).empty());
+    normalizeVector(vec);
+    REQUIRE_THAT(vec, Matchers::Approx(normalized_vec).margin(0.01));
 }
 
 TEST_CASE("euclidean_distance", "[math]")

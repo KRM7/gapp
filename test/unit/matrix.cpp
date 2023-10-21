@@ -111,7 +111,7 @@ TEST_CASE("matrix", "[matrix]")
         REQUIRE(mat2.nrows() == 3);
         REQUIRE(mat2 == Matrix{ { 1, 2, 3 }, { 4, 5, 6 }, { 1, 1, 1 } });
 
-        mat2.append_row({ 2, 2, 2 });
+        mat2.append_row(std::vector{ 2, 2, 2 });
 
         REQUIRE(mat2.nrows() == 4);
         REQUIRE(mat2 == Matrix{ { 1, 2, 3 }, { 4, 5, 6 }, { 1, 1, 1 }, { 2, 2, 2 } });
@@ -123,7 +123,7 @@ TEST_CASE("matrix", "[matrix]")
         REQUIRE(mat2 == Matrix{ { 1, 2, 3 }, { 4, 5, 6 }, { 1, 1, 1 }, { 2, 2, 2 }, { 1, 1, 1 } });
 
         // append to empty matrix 
-        mat1.append_row({ 2, 3, 4, 1 });
+        mat1.append_row(std::vector{ 2, 3, 4, 1 });
 
         REQUIRE(mat1.ncols() == 4);
         REQUIRE(mat1.nrows() == 1);

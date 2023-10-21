@@ -3,6 +3,7 @@
 #ifndef GA_UTILITY_RNG_HPP
 #define GA_UTILITY_RNG_HPP
 
+#include "small_vector.hpp"
 #include "type_traits.hpp"
 #include "concepts.hpp"
 #include "bit.hpp"
@@ -217,7 +218,7 @@ namespace gapp::rng
             RegisteredGenerator() noexcept
             {
                 std::scoped_lock _{ tls_generators_->lock };
-                instance = global_generator_.jump();
+                instance.get() = global_generator_.jump();
                 tls_generators_->list.push_back(std::addressof(instance));
             }
 
@@ -253,11 +254,11 @@ namespace gapp::rng
     template<std::integral IntType = int>
     IntType randomInt(IntType lbound, IntType ubound);
 
-    /** Generate a random floating-point value from a uniform distribution on the closed interval [0.0, 1.0]. */
+    /** Generate a random floating-point value from a uniform distribution on the half-open interval [0.0, 1.0). */
     template<std::floating_point RealType = double>
     RealType randomReal();
 
-    /** Generate a random floating-point value of from a uniform distribution on the closed interval [lbound, ubound]. */
+    /** Generate a random floating-point value of from a uniform distribution on the half-open interval [lbound, ubound). */
     template<std::floating_point RealType = double>
     RealType randomReal(RealType lbound, RealType ubound);
 
@@ -281,7 +282,7 @@ namespace gapp::rng
 
     /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). */
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
+    small_vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
 
 
     /** Select an index based on a discrete CDF. */
@@ -332,7 +333,7 @@ namespace gapp::rng
     template<std::floating_point RealType>
     RealType randomReal()
     {
-        return std::uniform_real_distribution<RealType>{ 0.0, std::nextafter(1.0, 2.0) }(rng::prng);
+        return std::uniform_real_distribution<RealType>{ 0.0, 1.0 }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -340,9 +341,7 @@ namespace gapp::rng
     {
         GAPP_ASSERT(lbound <= ubound);
 
-        ubound = std::nextafter(ubound, std::numeric_limits<RealType>::max());
-
-        return std::uniform_real_distribution{ lbound, ubound }(rng::prng);
+        return lbound + (ubound - lbound) * std::uniform_real_distribution{ 0.0, 1.0 }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -387,7 +386,12 @@ namespace gapp::rng
         if (p == 0.0) return 0;
         if (p == 1.0) return n;
 
-        std::poisson_distribution<IntType> dist{ n * p };
+        thread_local std::poisson_distribution<IntType> dist;
+
+        if (dist.mean() != n * p)
+        {
+            dist = std::poisson_distribution<IntType>{ n * p };
+        }
 
         IntType rand = dist(rng::prng);
         while (rand > n) { rand = dist(rng::prng); }
@@ -441,10 +445,10 @@ namespace gapp::rng
     }
 
     template<std::integral IntType>
-    GAPP_NOINLINE std::vector<IntType> sampleUniqueSet(IntType lbound, IntType ubound, size_t count)
+    GAPP_NOINLINE small_vector<IntType> sampleUniqueSet(IntType lbound, IntType ubound, size_t count)
     {
         std::unordered_set<IntType> selected(count);
-        std::vector<IntType> numbers(count);
+        small_vector<IntType> numbers(count);
 
         IntType limit = ubound - detail::promoted_t<IntType>(count);
 
@@ -459,7 +463,7 @@ namespace gapp::rng
     }
 
     template<std::integral IntType>
-    std::vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count)
+    small_vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count)
     {
         const size_t range_len = detail::range_length(lbound, ubound);
 
@@ -471,7 +475,7 @@ namespace gapp::rng
 
         if (huge_range) [[unlikely]] return rng::sampleUniqueSet(lbound, ubound, count);
 
-        std::vector<IntType> numbers(count);
+        small_vector<IntType> numbers(count);
 
         thread_local std::vector<bool> is_selected;
         is_selected.resize(range_len);

@@ -4,7 +4,9 @@
 #define GA_CROSSOVER_DTL_HPP
 
 #include "../core/candidate.hpp"
+#include "../utility/small_vector.hpp"
 #include <vector>
+#include <span>
 #include <unordered_map>
 #include <type_traits>
 #include <concepts>
@@ -14,7 +16,7 @@ namespace gapp::crossover::dtl
 {
     /* General n-point crossover implementation for any gene type. */
     template<typename T>
-    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::vector<size_t> crossover_points);
+    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, small_vector<size_t> crossover_points);
 
     /* Simpler single-point crossover function for any gene type. */
     template<typename T>
@@ -45,11 +47,11 @@ namespace gapp::crossover::dtl
 
     /* Implementation of the position crossover for any gene type, only generates a single child. */
     template<typename T>
-    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices);
+    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::span<const size_t> indices);
 
     /* Implementation of the position crossover for unsigned integer genes, only generates a single child. */
     template<std::unsigned_integral T>
-    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices);
+    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::span<const size_t> indices);
 
 
     /* Find the indices of genes in the chromosomes chrom1 and chrom2 which belong to odd cycles. Used in the cycle crossover operator. */
@@ -95,7 +97,6 @@ namespace gapp::crossover::dtl
 
 /* IMPLEMENTATION */
 
-#include "../utility/rng.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
 #include "../utility/iterators.hpp"
@@ -103,12 +104,11 @@ namespace gapp::crossover::dtl
 #include <array>
 #include <unordered_set>
 #include <algorithm>
-#include <stdexcept>
 
 namespace gapp::crossover::dtl
 {
     template<typename T>
-    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::vector<size_t> crossover_points)
+    CandidatePair<T> nPointCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, small_vector<size_t> crossover_points)
     {
         const size_t chrom_len = parent1.chromosome.size();
 
@@ -294,7 +294,7 @@ namespace gapp::crossover::dtl
 
 
     template<typename T>
-    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
+    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::span<const size_t> indices)
     {
         GAPP_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
@@ -317,7 +317,7 @@ namespace gapp::crossover::dtl
     }
 
     template<std::unsigned_integral T>
-    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, const std::vector<size_t>& indices)
+    Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::span<const size_t> indices)
     {
         const size_t chrom_len = parent1.chromosome.size();
 
