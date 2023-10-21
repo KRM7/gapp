@@ -61,20 +61,11 @@ namespace gapp::math
         return std::sqrt(std::inner_product(vec.begin(), vec.end(), vec.begin(), 0.0));
     }
 
-    std::vector<double> normalizeVector(const std::vector<double>& vec)
-    {
-        const double norm = euclideanNorm(vec);
-
-        return detail::map(vec, detail::divide_by(norm));
-    }
-
-    std::vector<double> normalizeVector(std::vector<double>&& vec) noexcept
+    void normalizeVector(std::span<double> vec) noexcept
     {
         const double norm = euclideanNorm(vec);
 
         std::transform(vec.begin(), vec.end(), vec.begin(), detail::divide_by(norm));
-
-        return vec;
     }
 
     double euclideanDistanceSq(std::span<const double> v1, std::span<const double> v2) noexcept

@@ -5,7 +5,7 @@
 #include "core/candidate.hpp"
 #include "encoding/encoding.hpp"
 #include "crossover/crossover.hpp"
-#include "crossover/crossover_dtl.hpp"
+#include "crossover/crossover_impl.hpp"
 #include "test_utils.hpp"
 
 using namespace gapp;
@@ -42,9 +42,7 @@ TEST_CASE("npoint_crossover", "[crossover]")
     Candidate<char> parent2{ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } };
                                  //    //          //          //
 
-    std::vector<size_t> cx_points{ 1, 3, 7, 11 };
-
-    auto [child1, child2] = nPointCrossoverImpl(parent1, parent2, cx_points);
+    auto [child1, child2] = nPointCrossoverImpl(parent1, parent2, { 1, 3, 7, 11 });
 
     REQUIRE(child1.chromosome == Chromosome<char>{ { 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1 } });
     REQUIRE(child2.chromosome == Chromosome<char>{ { 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0 } });
@@ -80,8 +78,8 @@ TEMPLATE_TEST_CASE("position_crossover", "[crossover]", int, unsigned)
     Candidate<TestType> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
     Candidate<TestType> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
 
-    auto child1 = positionCrossoverImpl(parent1, parent2, { 0, 3, 4, 7 });
-    auto child2 = positionCrossoverImpl(parent2, parent1, { 0, 3, 4, 7 });
+    auto child1 = positionCrossoverImpl(parent1, parent2, { { 0, 3, 4, 7 } });
+    auto child2 = positionCrossoverImpl(parent2, parent1, { { 0, 3, 4, 7 } });
 
     REQUIRE(child1.chromosome == Chromosome<TestType>{ { 0, 5, 6, 3, 4, 1, 2, 7, 8, 9 } });
     REQUIRE(child2.chromosome == Chromosome<TestType>{ { 4, 0, 2, 6, 1, 5, 7, 3, 8, 9 } });

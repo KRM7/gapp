@@ -3,7 +3,6 @@
 #ifndef GA_UTILITY_UTILITY_HPP
 #define GA_UTILITY_UTILITY_HPP
 
-#include <execution>
 #include <vector>
 #include <concepts>
 #include <type_traits>

@@ -171,10 +171,7 @@ namespace gapp::algorithm
     inline std::vector<Point> NSGA3::Impl::generateReferencePoints(size_t dim, size_t num_points) const
     {
         auto ref_lines = ref_generator_(dim, num_points);
-        for (auto& ref_line : ref_lines)
-        {
-            ref_line = math::normalizeVector(std::move(ref_line));
-        }
+        std::for_each(ref_lines.begin(), ref_lines.end(), math::normalizeVector);
 
         return ref_lines;
     }

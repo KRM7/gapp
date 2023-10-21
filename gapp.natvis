@@ -16,4 +16,14 @@
   </Expand>
 </Type>
 
+<Type Name="gapp::small_vector&lt;*,*,*&gt;">
+	<DisplayString>{{ small_vector&lt;{"$T1",sb}, {"$T2",sb}&gt;{{ size = { last_ - first_ }, capacity = { last_alloc_ - first_ } }} }}</DisplayString>
+	<Expand>
+		<ArrayItems>
+			<Size>last_ - first_</Size>
+			<ValuePointer>first_</ValuePointer>
+		</ArrayItems>
+	</Expand>
+</Type>
+
 </AutoVisualizer>

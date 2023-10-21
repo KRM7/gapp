@@ -7,6 +7,7 @@
 #include "functional.hpp"
 #include "utility.hpp"
 #include <vector>
+#include <span>
 #include <memory>
 #include <initializer_list>
 #include <type_traits>
@@ -137,9 +138,7 @@ namespace gapp::detail
 
         /* Modifiers (for rows) */
 
-        constexpr void append_row(const std::vector<T, A>& row);
-        constexpr void append_row(std::vector<T, A>&& row);
-        constexpr void append_row(ConstRowRef row);
+        constexpr void append_row(std::span<const T> row);
 
         constexpr iterator erase(const_iterator row);
         constexpr iterator erase(const_iterator first, const_iterator last);
@@ -438,27 +437,7 @@ namespace gapp::detail
     }
 
     template<typename T, typename A>
-    constexpr void Matrix<T, A>::append_row(const std::vector<T, A>& row)
-    {
-        GAPP_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
-
-        data_.insert(data_.end(), row.begin(), row.end());
-        if (nrows_ == 0) ncols_ = row.size();
-        nrows_++;
-    }
-
-    template<typename T, typename A>
-    constexpr void Matrix<T, A>::append_row(std::vector<T, A>&& row)
-    {
-        GAPP_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
-
-        data_.insert(data_.end(), std::make_move_iterator(row.begin()), std::make_move_iterator(row.end()));
-        if (nrows_ == 0) ncols_ = row.size();
-        nrows_++;
-    }
-
-    template<typename T, typename A>
-    constexpr void Matrix<T, A>::append_row(ConstRowRef row)
+    constexpr void Matrix<T, A>::append_row(std::span<const T> row)
     {
         GAPP_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
 

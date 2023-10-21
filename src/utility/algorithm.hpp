@@ -277,7 +277,7 @@ namespace gapp::detail
         return indices;
     }
 
-    template<typename Left, typename Right>
+    template<detail::IndexableContainer Left, detail::IndexableContainer Right>
     void elementwise_min(Left& left, const Right& right, detail::inplace_t)
     {
         GAPP_ASSERT(left.size() == right.size());
@@ -288,7 +288,7 @@ namespace gapp::detail
         }
     }
 
-    template<typename Left, typename Right>
+    template<detail::IndexableContainer Left, detail::IndexableContainer Right>
     void elementwise_max(Left& left, const Right& right, detail::inplace_t)
     {
         GAPP_ASSERT(left.size() == right.size());

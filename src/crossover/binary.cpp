@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "binary.hpp"
-#include "crossover_dtl.hpp"
+#include "crossover_impl.hpp"
 #include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
