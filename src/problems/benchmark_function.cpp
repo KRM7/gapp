@@ -3,7 +3,6 @@
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
 #include "../utility/utility.hpp"
-#include <vector>
 #include <numeric>
 #include <cmath>
 #include <cstddef>
@@ -14,7 +13,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(bchrom.size() == var_bits * bounds.size());
 
-        std::vector<RealGene> vars(bounds.size());
+        Chromosome<RealGene> vars(bounds.size());
 
         for (size_t i = 0; i < vars.size(); i++)
         {

@@ -3,12 +3,9 @@
 #ifndef GA_PROBLEMS_BENCHMARK_FUNCTION_HPP
 #define GA_PROBLEMS_BENCHMARK_FUNCTION_HPP
 
-#include "../core/ga_base.decl.hpp"
 #include "../core/fitness_function.hpp"
 #include "../core/candidate.hpp"
 #include "../encoding/gene_types.hpp"
-#include "../utility/math.hpp"
-#include <vector>
 #include <string>
 #include <utility>
 #include <cstddef>
@@ -30,23 +27,23 @@ namespace gapp::problems
 
         /** @returns The lower and upper bounds of each variable of the benchmark function. */
         [[nodiscard]]
-        const std::vector<Bounds<T>>& bounds() const noexcept { return bounds_; }
+        const BoundsVector<T>& bounds() const noexcept { return bounds_; }
 
         /** @returns The optimal value of the benchmark function. */
         [[nodiscard]]
-        const math::Point& optimal_value() const noexcept { return optimal_value_; }
+        const FitnessVector& optimal_value() const noexcept { return optimal_value_; }
 
         /** @returns The maximum of the benchmark function. */
         [[nodiscard]]
-        const std::vector<T>& optimum() const noexcept { return optimum_; }
+        const Chromosome<T>& optimum() const noexcept { return optimum_; }
 
         /** @returns The ideal point of the pareto front. Same as the optimal value for single objective benchmarks. */
         [[nodiscard]]
-        const math::Point& ideal_point() const noexcept { return ideal_point_; }
+        const FitnessVector& ideal_point() const noexcept { return ideal_point_; }
 
         /** @returns The nadir point of the pareto front. Same as the optimal value for single objective benchmarks. */
         [[nodiscard]]
-        const math::Point& nadir_point() const noexcept { return nadir_point_; }
+        const FitnessVector& nadir_point() const noexcept { return nadir_point_; }
 
         /** Destructor. */
         virtual ~BenchmarkFunctionTraits() = default;
@@ -54,20 +51,20 @@ namespace gapp::problems
     protected:
 
         /* Single-objective, uniform bounds. */
-        BenchmarkFunctionTraits(std::string name, Bounds<T> bounds, std::vector<T> optimum, double optimal_value) :
-            name_(std::move(name)), num_objectives_(1), bounds_(std::vector(optimum.size(), bounds)), optimum_(std::move(optimum)),
-            optimal_value_(math::Point(1, optimal_value)), ideal_point_(optimal_value_), nadir_point_(optimal_value_)
+        BenchmarkFunctionTraits(std::string name, Bounds<T> bounds, Chromosome<T> optimum, double optimal_value) :
+            name_(std::move(name)), num_objectives_(1), bounds_(BoundsVector<T>(optimum.size(), bounds)), optimum_(std::move(optimum)),
+            optimal_value_(FitnessVector(1, optimal_value)), ideal_point_(optimal_value_), nadir_point_(optimal_value_)
         {}
 
         /* Multi-objective, uniform bounds. */
-        BenchmarkFunctionTraits(std::string name, Bounds<T> bounds, std::vector<T> optimum, math::Point optimal_value) :
-            name_(std::move(name)), num_objectives_(optimal_value.size()), bounds_(std::vector(optimum.size(), bounds)),
+        BenchmarkFunctionTraits(std::string name, Bounds<T> bounds, Chromosome<T> optimum, FitnessVector optimal_value) :
+            name_(std::move(name)), num_objectives_(optimal_value.size()), bounds_(BoundsVector<T>(optimum.size(), bounds)),
             optimum_(std::move(optimum)), optimal_value_(std::move(optimal_value))
         {}
 
         /* General ctor, uniform bounds. */
         BenchmarkFunctionTraits(std::string name, size_t num_objectives, size_t num_vars, Bounds<T> bounds) :
-            name_(std::move(name)), num_objectives_(num_objectives), bounds_(std::vector(num_vars, bounds))
+            name_(std::move(name)), num_objectives_(num_objectives), bounds_(BoundsVector<T>(num_vars, bounds))
         {}
 
         BenchmarkFunctionTraits(const BenchmarkFunctionTraits&)             = default;
@@ -77,11 +74,11 @@ namespace gapp::problems
 
         std::string name_;
         size_t num_objectives_;
-        std::vector<Bounds<T>> bounds_;
-        std::vector<T> optimum_;
-        math::Point optimal_value_;
-        math::Point ideal_point_;
-        math::Point nadir_point_;
+        BoundsVector<T> bounds_;
+        Chromosome<T> optimum_;
+        FitnessVector optimal_value_;
+        FitnessVector ideal_point_;
+        FitnessVector nadir_point_;
     };
 
     /**
@@ -102,13 +99,13 @@ namespace gapp::problems
     protected:
 
         /* Single-objective, uniform bounds. */
-        BenchmarkFunction(std::string name, Bounds<T> bounds, std::vector<T> optimum, double optimal_value) :
+        BenchmarkFunction(std::string name, Bounds<T> bounds, Chromosome<T> optimum, double optimal_value) :
             FitnessFunctionBase<T>(optimum.size(), 1),
             BenchmarkFunctionTraits<T>(std::move(name), bounds, std::move(optimum), optimal_value)
         {}
 
         /* Multi-objective, uniform bounds. */
-        BenchmarkFunction(std::string name, Bounds<T> bounds, std::vector<T> optimum, math::Point optimal_value) :
+        BenchmarkFunction(std::string name, Bounds<T> bounds, Chromosome<T> optimum, FitnessVector optimal_value) :
             FitnessFunctionBase<T>(optimum.size(), optimal_value.size()),
             BenchmarkFunctionTraits<T>(std::move(name), bounds, std::move(optimum), std::move(optimal_value))
         {}
@@ -146,14 +143,14 @@ namespace gapp::problems
     protected:
 
         /* Single-objective, uniform bounds. */
-        BenchmarkFunction(std::string name, Bounds<RealGene> bounds, std::vector<RealGene> optimum, double optimal_value, size_t var_bits) :
+        BenchmarkFunction(std::string name, Bounds<RealGene> bounds, Chromosome<RealGene> optimum, double optimal_value, size_t var_bits) :
             FitnessFunctionBase<RealGene>(optimum.size()),
             FitnessFunctionBase<BinaryGene>(optimum.size() * var_bits),
             BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), optimal_value)
         {}
 
        /* Multi-objective, uniform bounds. */
-        BenchmarkFunction(std::string name, Bounds<RealGene> bounds, std::vector<RealGene> optimum, math::Point optimal_value, size_t var_bits) :
+        BenchmarkFunction(std::string name, Bounds<RealGene> bounds, Chromosome<RealGene> optimum, FitnessVector optimal_value, size_t var_bits) :
             FitnessFunctionBase<RealGene>(optimum.size()),
             FitnessFunctionBase<BinaryGene>(optimum.size() * var_bits),
             BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), std::move(optimal_value))

@@ -3,7 +3,6 @@
 #ifndef GA_UTILITY_CONE_TREE_HPP
 #define GA_UTILITY_CONE_TREE_HPP
 
-#include "math.hpp"
 #include "matrix.hpp"
 #include <vector>
 #include <span>
@@ -25,7 +24,7 @@ namespace gapp::detail
         using iterator       = Matrix<double>::iterator;
         using const_iterator = Matrix<double>::const_iterator;
 
-        using Point = math::Point;
+        using Point = std::vector<double>;
 
         struct FindResult
         {

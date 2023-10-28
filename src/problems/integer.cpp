@@ -2,7 +2,6 @@
 
 #include "integer.hpp"
 #include "../utility/utility.hpp"
-#include <vector>
 #include <string>
 #include <utility>
 #include <cstddef>
@@ -18,7 +17,7 @@ namespace gapp::problems
         nadir_point_ = optimal_value_;
     }
 
-    auto StringFinder::invoke(const std::vector<IntegerGene>& chrom) const -> FitnessVector
+    auto StringFinder::invoke(const Chromosome<IntegerGene>& chrom) const -> FitnessVector
     {
         GAPP_ASSERT(chrom.size() == num_vars());
 

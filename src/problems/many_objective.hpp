@@ -5,7 +5,6 @@
 
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
-#include <vector>
 #include <cstddef>
 
 namespace gapp::problems
@@ -47,7 +46,7 @@ namespace gapp::problems
         explicit DTLZ1(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
 
         static constexpr size_t K = 5;
     };
@@ -89,7 +88,7 @@ namespace gapp::problems
         explicit DTLZ2(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -132,7 +131,7 @@ namespace gapp::problems
         explicit DTLZ3(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -175,7 +174,7 @@ namespace gapp::problems
         explicit DTLZ4(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -221,7 +220,7 @@ namespace gapp::problems
         explicit DTLZ5(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -267,7 +266,7 @@ namespace gapp::problems
         explicit DTLZ6(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
 
         static constexpr size_t K = 10;
     };
@@ -308,7 +307,7 @@ namespace gapp::problems
         explicit DTLZ7(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
 
         static constexpr size_t K = 20;
     };

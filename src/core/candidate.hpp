@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CANDIDATE_H
-#define GA_CANDIDATE_H
+#ifndef GA_CORE_CANDIDATE_HPP
+#define GA_CORE_CANDIDATE_HPP
 
 #include "../utility/math.hpp"
 #include "../utility/matrix.hpp"
@@ -198,4 +198,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_CANDIDATE_H
+#endif // !GA_CORE_CANDIDATE_HPP

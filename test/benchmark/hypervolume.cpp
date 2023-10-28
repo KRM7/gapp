@@ -4,8 +4,7 @@
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include "metrics/pop_stats.hpp"
-#include "core/population.hpp"
-#include "utility/math.hpp"
+#include "core/candidate.hpp"
 #include "utility/rng.hpp"
 
 using namespace gapp;
@@ -36,7 +35,7 @@ TEST_CASE("hypervolume_size", "[benchmark]")
     BENCHMARK_ADVANCED("small")(Benchmark::Chronometer meter)
     {
         FitnessMatrix fmat = randomFitnessMatrix(small_size, ndim);
-        math::Point ref_point = math::Point(ndim, 0.0);
+        FitnessVector ref_point(ndim, 0.0);
 
         meter.measure([&] { return hypervolume(fmat, ref_point); });
     };
@@ -44,7 +43,7 @@ TEST_CASE("hypervolume_size", "[benchmark]")
     BENCHMARK_ADVANCED("medium")(Benchmark::Chronometer meter)
     {
         FitnessMatrix fmat = randomFitnessMatrix(medium_size, ndim);
-        math::Point ref_point = math::Point(ndim, 0.0);
+        FitnessVector ref_point(ndim, 0.0);
 
         meter.measure([&] { return hypervolume(fmat, ref_point); });
     };
@@ -52,7 +51,7 @@ TEST_CASE("hypervolume_size", "[benchmark]")
     BENCHMARK_ADVANCED("large")(Benchmark::Chronometer meter)
     {
         FitnessMatrix fmat = randomFitnessMatrix(large_size, ndim);
-        math::Point ref_point = math::Point(ndim, 0.0);
+        FitnessVector ref_point(ndim, 0.0);
 
         meter.measure([&] { return hypervolume(fmat, ref_point); });
     };
@@ -69,7 +68,7 @@ TEST_CASE("hypervolume_dimensions", "[benchmark]")
     BENCHMARK_ADVANCED("small")(Benchmark::Chronometer meter)
     {
         FitnessMatrix fmat = randomFitnessMatrix(popsize, small_dim);
-        math::Point ref_point = math::Point(small_dim, 0.0);
+        FitnessVector ref_point(small_dim, 0.0);
 
         meter.measure([&] { return hypervolume(fmat, ref_point); });
     };
@@ -77,7 +76,7 @@ TEST_CASE("hypervolume_dimensions", "[benchmark]")
     BENCHMARK_ADVANCED("medium")(Benchmark::Chronometer meter)
     {
         FitnessMatrix fmat = randomFitnessMatrix(popsize, medium_dim);
-        math::Point ref_point = math::Point(medium_dim, 0.0);
+        FitnessVector ref_point(medium_dim, 0.0);
 
         meter.measure([&] { return hypervolume(fmat, ref_point); });
     };
@@ -85,7 +84,7 @@ TEST_CASE("hypervolume_dimensions", "[benchmark]")
     BENCHMARK_ADVANCED("large")(Benchmark::Chronometer meter)
     {
         FitnessMatrix fmat = randomFitnessMatrix(popsize, large_dim);
-        math::Point ref_point = math::Point(large_dim, 0.0);
+        FitnessVector ref_point(large_dim, 0.0);
 
         meter.measure([&] { return hypervolume(fmat, ref_point); });
     };

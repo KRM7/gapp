@@ -5,7 +5,6 @@
 
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
-#include <vector>
 #include <string>
 
 namespace gapp::problems
@@ -30,7 +29,7 @@ namespace gapp::problems
         explicit StringFinder(std::string target);
 
     private:
-        FitnessVector invoke(const std::vector<IntegerGene>& chrom) const override;
+        FitnessVector invoke(const Chromosome<IntegerGene>& chrom) const override;
 
         std::string target_;
     };

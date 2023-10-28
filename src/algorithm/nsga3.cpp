@@ -23,7 +23,6 @@
 namespace gapp::algorithm
 {
     using namespace dtl;
-    using math::Point;
 
     /* Achievement scalarization function. */
     static constexpr double ASF(std::span<const double> ideal_point, std::span<const double> weights, std::span<const double> fitness) noexcept
@@ -51,21 +50,6 @@ namespace gapp::algorithm
         weights[axis] = 1.0;
 
         return weights;
-    }
-
-    /* Find an approximation of the pareto front's nadir point using the minimum of the extreme points. */
-    static inline Point findNadirPoint(const std::vector<Point>& extreme_points)
-    {
-        GAPP_ASSERT(!extreme_points.empty());
-
-        /* Nadir point estimate = minimum of extreme points along each objective axis. */
-        Point nadir = extreme_points[0];
-        for (size_t i = 1; i < extreme_points.size(); i++)
-        {
-            detail::elementwise_min(nadir, extreme_points[i], detail::inplace_t{});
-        }
-
-        return nadir;
     }
 
     /* Normalize a fitness vector using the ideal and nadir points. */
@@ -97,17 +81,17 @@ namespace gapp::algorithm
         };
 
         RefLineGenerator ref_generator_;
-        std::vector<Point> ref_lines_;
+        FitnessMatrix ref_lines_;
 
         std::vector<CandidateInfo> sol_info_;
         std::vector<size_t> niche_counts_;
 
-        Point ideal_point_;
-        Point nadir_point_;
-        std::vector<Point> extreme_points_;
+        FitnessVector ideal_point_;
+        FitnessVector nadir_point_;
+        FitnessMatrix extreme_points_;
 
         /* Generate n reference points in dim dimensions. */
-        std::vector<Point> generateReferencePoints(size_t dim, size_t num_points) const;
+        FitnessMatrix generateReferencePoints(size_t dim, size_t num_points) const;
 
         /* Update the ideal point approximation using the new points in fmat, assuming maximization. */
         void updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
@@ -168,15 +152,15 @@ namespace gapp::algorithm
     NSGA3::~NSGA3()                           = default;
 
 
-    inline std::vector<Point> NSGA3::Impl::generateReferencePoints(size_t dim, size_t num_points) const
+    FitnessMatrix NSGA3::Impl::generateReferencePoints(size_t dim, size_t num_points) const
     {
-        auto ref_lines = ref_generator_(dim, num_points);
-        std::for_each(ref_lines.begin(), ref_lines.end(), math::normalizeVector);
+        FitnessMatrix ref_points = ref_generator_(dim, num_points);
+        std::for_each(ref_points.begin(), ref_points.end(), math::normalizeVector);
 
-        return ref_lines;
+        return ref_points;
     }
 
-    inline void NSGA3::Impl::updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    void NSGA3::Impl::updateIdealPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
@@ -190,8 +174,8 @@ namespace gapp::algorithm
 
         const auto popsize = size_t(last - first);
 
-        std::vector<Point> new_extreme_points;
-        new_extreme_points.reserve(extreme_points_.size());
+        FitnessMatrix new_extreme_points;
+        new_extreme_points.reserve(extreme_points_.nrows(), extreme_points_.ncols());
 
         for (size_t dim = 0; dim < ideal_point_.size(); dim++)
         {
@@ -206,20 +190,20 @@ namespace gapp::algorithm
             size_t idx = detail::argmin(chebysev_distances.begin(), chebysev_distances.end());
 
             (idx >= popsize) ?
-                new_extreme_points.push_back(extreme_points_[idx - popsize]) :
-                new_extreme_points.push_back(FitnessVector(first[idx]));
+                new_extreme_points.append_row(extreme_points_[idx - popsize]) :
+                new_extreme_points.append_row(first[idx]);
         }
 
         extreme_points_ = std::move(new_extreme_points);
     }
 
-    inline void NSGA3::Impl::updateNadirPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    void NSGA3::Impl::updateNadirPoint(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         updateExtremePoints(first, last);
-        nadir_point_ = findNadirPoint(extreme_points_);
+        nadir_point_ = findFrontNadirPoint(extreme_points_);
     }
 
-    inline void NSGA3::Impl::recalcNicheCounts(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
+    void NSGA3::Impl::recalcNicheCounts(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
     {
         std::fill(niche_counts_.begin(), niche_counts_.end(), 0_sz);
         std::for_each(first, last, [&](const FrontInfo& sol) { niche_counts_[refIndexOf(sol)]++; });
@@ -249,7 +233,7 @@ namespace gapp::algorithm
         });
     }
 
-    inline bool NSGA3::Impl::nichedCompare(size_t lhs, size_t rhs) const noexcept
+    bool NSGA3::Impl::nichedCompare(size_t lhs, size_t rhs) const noexcept
     {
         /* This version of the compare implementation is from the U-NSGA-III algorithm. */
         if (sol_info_[lhs].ref_idx == sol_info_[rhs].ref_idx)
@@ -265,17 +249,17 @@ namespace gapp::algorithm
         return rng::randomBool();
     }
 
-    inline size_t NSGA3::Impl::refIndexOf(const FrontInfo& sol) const noexcept
+    size_t NSGA3::Impl::refIndexOf(const FrontInfo& sol) const noexcept
     {
         return sol_info_[sol.idx].ref_idx;
     }
 
-    inline double NSGA3::Impl::refDistOf(const FrontInfo& sol) const noexcept
+    double NSGA3::Impl::refDistOf(const FrontInfo& sol) const noexcept
     {
         return sol_info_[sol.idx].ref_dist;
     }
 
-    inline std::vector<size_t> NSGA3::Impl::referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
+    std::vector<size_t> NSGA3::Impl::referenceSetOf(ParetoFronts::const_iterator first, ParetoFronts::const_iterator last)
     {
         std::vector<size_t> refs(last - first);
         std::transform(first, last, refs.begin(), [this](const FrontInfo& sol) { return refIndexOf(sol); });
@@ -289,7 +273,7 @@ namespace gapp::algorithm
         return refs;
     }
 
-    inline ParetoFronts::iterator NSGA3::Impl::findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t ref) const noexcept
+    ParetoFronts::iterator NSGA3::Impl::findClosestAssociated(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t ref) const noexcept
     {
         auto closest = first;
         auto min_dist = math::inf<double>;
@@ -306,7 +290,7 @@ namespace gapp::algorithm
         return closest;
     }
 
-    inline void NSGA3::Impl::incrementNicheCount(std::vector<size_t>& refs, size_t ref)
+    void NSGA3::Impl::incrementNicheCount(std::vector<size_t>& refs, size_t ref)
     {
         niche_counts_[ref]++;
 

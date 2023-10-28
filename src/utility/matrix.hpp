@@ -5,7 +5,9 @@
 
 #include "iterators.hpp"
 #include "functional.hpp"
+#include "type_traits.hpp"
 #include "utility.hpp"
+#include <algorithm>
 #include <vector>
 #include <span>
 #include <memory>
@@ -139,6 +141,7 @@ namespace gapp::detail
         /* Modifiers (for rows) */
 
         constexpr void append_row(std::span<const T> row);
+        constexpr void pop_back() noexcept { resize(nrows() - 1, ncols()); }
 
         constexpr iterator erase(const_iterator row);
         constexpr iterator erase(const_iterator first, const_iterator last);
@@ -254,8 +257,11 @@ namespace gapp::detail
         constexpr size_type ncols() const noexcept { return mat_->ncols(); }
 
         constexpr bool empty() const noexcept { return size() == 0_sz; }
+        
+        template<typename alloc_type>
+        explicit operator std::vector<value_type, alloc_type>() const { return std::vector<value_type, alloc_type>(begin(), end()); }
 
-        explicit operator std::vector<value_type>() { return std::vector(begin(), end()); }
+        /* implicit */ operator std::span<copy_const_t<MatrixType, value_type>>() const { return {begin(), end()}; }
 
         /* Comparison operators */
 
@@ -272,7 +278,8 @@ namespace gapp::detail
             return true;
         }
 
-        friend bool operator==(const Derived& lhs, const std::vector<value_type>& rhs) noexcept
+        template<typename alloc_type>
+        friend bool operator==(const Derived& lhs, const std::vector<value_type, alloc_type>& rhs) noexcept
         {
             if (lhs.size() != rhs.size()) return false;
 
@@ -314,13 +321,43 @@ namespace gapp::detail
             return cbegin() + this->ncols();
         }
 
-        constexpr const MatrixRowRef& operator=(const std::vector<T>& rhs) const;
-        constexpr const MatrixRowRef& operator=(std::vector<T>&& rhs) const;
-        constexpr const MatrixRowRef& operator=(ConstMatrixRowRef<T, A> rhs) const;
-        constexpr const MatrixRowRef& operator=(MatrixRowRef<T, A> rhs) const { return *this = ConstMatrixRowRef(rhs); }
+        constexpr const MatrixRowRef& operator=(MatrixRowRef<T, A> rhs) const
+        {
+            return *this = std::span{ rhs.begin(), rhs.end() };
+        }
 
-        constexpr void swap(MatrixRowRef other) const;
-        constexpr void swap(std::vector<T>& other) const;
+        constexpr const MatrixRowRef& operator=(ConstMatrixRowRef<T, A> rhs) const
+        {
+            return *this = std::span{ rhs.begin(), rhs.end() };
+        }
+
+        constexpr const MatrixRowRef& operator=(std::initializer_list<T> rhs) const
+        {
+            return *this = std::span{ rhs.begin(), rhs.end() };
+        }
+
+        constexpr const MatrixRowRef& operator=(std::span<const T> rhs) const
+        {
+            GAPP_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
+
+            for (size_t col = 0; col < rhs.size(); col++)
+            {
+                (*this->mat_)(this->row_, col) = rhs[col];
+            }
+
+            return *this;
+        }
+
+        constexpr void swap(std::span<T> other) const
+        {
+            GAPP_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
+
+            for (size_t col = 0; col < other.size(); col++)
+            {
+                using std::swap;
+                swap((*this->mat_)(this->row_, col), other[col]);
+            }
+        }
     };
 
     template<typename T, typename A>
@@ -330,13 +367,13 @@ namespace gapp::detail
     }
 
     template<typename T, typename A>
-    constexpr void swap(MatrixRowRef<T, A> lhs, std::vector<T, A>& rhs)
+    constexpr void swap(MatrixRowRef<T, A> lhs, std::span<std::type_identity_t<T>> rhs)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
-    constexpr void swap(std::vector<T, A>& lhs, MatrixRowRef<T, A> rhs)
+    constexpr void swap(std::span<std::type_identity_t<T>> lhs, MatrixRowRef<T, A> rhs)
     {
         rhs.swap(lhs);
     }
@@ -464,77 +501,6 @@ namespace gapp::detail
         nrows_ -= std::distance(first, last);
 
         return begin() + std::distance(data_.begin(), last_removed) / ncols_;
-    }
-
-
-    /* MATRIX ROW PROXY IMPLEMENTATIONS */
-
-    template<typename T, typename A>
-    constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(ConstMatrixRowRef<T, A> rhs) const
-    {
-        GAPP_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
-
-        if (rhs.mat_ == this->mat_ && rhs.row_ == this->row_)
-        {
-            return *this;
-        }
-
-        for (size_t col = 0; col < rhs.size(); col++)
-        {
-            (*this->mat_)(this->row_, col) = rhs[col];
-        }
-
-        return *this;
-    }
-
-    template<typename T, typename A>
-    constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(const std::vector<T>& rhs) const
-    {
-        GAPP_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
-
-        for (size_t col = 0; col < rhs.size(); col++)
-        {
-            (*this->mat_)(this->row_, col) = rhs[col];
-        }
-
-        return *this;
-    }
-
-    template<typename T, typename A>
-    constexpr const MatrixRowRef<T, A>& MatrixRowRef<T, A>::operator=(std::vector<T>&& rhs) const
-    {
-        GAPP_ASSERT(rhs.size() == this->size(), "Can't assign row with different length.");
-
-        for (size_t col = 0; col < rhs.size(); col++)
-        {
-            (*this->mat_)(this->row_, col) = std::move(rhs[col]);
-        }
-
-        return *this;
-    }
-
-    template<typename T, typename A>
-    constexpr void MatrixRowRef<T, A>::swap(MatrixRowRef other) const
-    {
-        GAPP_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
-
-        for (size_t col = 0; col < other.size(); col++)
-        {
-            using std::swap;
-            swap((*this->mat_)(this->row_, col), other[col]);
-        }
-    }
-
-    template<typename T, typename A>
-    constexpr void MatrixRowRef<T, A>::swap(std::vector<T>& other) const
-    {
-        GAPP_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
-
-        for (size_t col = 0; col < other.size(); col++)
-        {
-            using std::swap;
-            swap((*this->mat_)(this->row_, col), other[col]);
-        }
     }
 
 } // namespace gapp::detail

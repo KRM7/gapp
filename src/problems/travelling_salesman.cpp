@@ -1,9 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "travelling_salesman.hpp"
-#include <vector>
 #include <span>
-#include <string>
 #include <cmath>
 #include <cstddef>
 
@@ -29,7 +27,7 @@ namespace gapp::problems
         }
     }
 
-    auto TSP::invoke(const std::vector<PermutationGene>& chrom) const -> FitnessVector
+    auto TSP::invoke(const Chromosome<PermutationGene>& chrom) const -> FitnessVector
     {
         const size_t ncities = distance_matrix_.size();
 

@@ -12,6 +12,7 @@
 #include <cstddef>
 
 using Catch::Approx;
+using namespace gapp;
 using namespace gapp::detail;
 using namespace gapp::math;
 using namespace gapp::algorithm::reflines;
@@ -24,14 +25,14 @@ TEMPLATE_TEST_CASE_SIG("reference_lines", "[pareto_front]", ((auto F), F), quasi
 
     INFO("Dimensions: " << dim);
 
-    std::vector<Point> points = F(dim, num_points);
+    FitnessMatrix points = F(dim, num_points);
 
     REQUIRE(points.size() == num_points);
     REQUIRE(std::all_of(points.begin(), points.end(), is_size(dim)));
 
     if (dim == 0) return;
 
-    for (const Point& point : points)
+    for (const auto& point : points)
     {
         CAPTURE(point);
         REQUIRE(std::accumulate(point.begin(), point.end(), 0.0) == Approx(1.0).margin(1E-4));
@@ -46,14 +47,14 @@ TEMPLATE_TEST_CASE_SIG("reference_lines_subset", "[pareto_front]", ((auto F), F)
 
     INFO("Dimensions: " << dim);
 
-    std::vector<Point> points = pickSparseSubset(dim, num_points, F);
+    FitnessMatrix points = pickSparseSubset(dim, num_points, F);
 
     REQUIRE(points.size() == num_points);
     REQUIRE(std::all_of(points.begin(), points.end(), is_size(dim)));
 
     if (dim == 0) return;
 
-    for (const Point& point : points)
+    for (const auto& point : points)
     {
         CAPTURE(point);
         REQUIRE(std::accumulate(point.begin(), point.end(), 0.0) == Approx(1.0).margin(1E-4));

@@ -177,12 +177,27 @@ namespace gapp::detail
     {
         if (fitness_matrix.empty()) return {};
 
+        /* Nadir point estimate = minimum of extreme points along each objective axis. */
         const auto& front_indices = detail::findParetoFront(fitness_matrix);
-        math::Point nadir_point{ fitness_matrix[front_indices[0]] };
+        FitnessVector nadir_point{ fitness_matrix[front_indices[0]] };
 
         for (size_t i = 1; i < front_indices.size(); i++)
         {
             detail::elementwise_min(nadir_point, fitness_matrix[front_indices[i]], detail::inplace_t{});
+        }
+
+        return nadir_point;
+    }
+
+    FitnessVector findFrontNadirPoint(const FitnessMatrix& optimal_points)
+    {
+        if (optimal_points.empty()) return {};
+
+        /* Nadir point estimate = minimum of extreme points along each objective axis. */
+        FitnessVector nadir_point{ optimal_points[0] };
+        for (size_t i = 1; i < optimal_points.size(); i++)
+        {
+            detail::elementwise_min(nadir_point, optimal_points[i], detail::inplace_t{});
         }
 
         return nadir_point;
