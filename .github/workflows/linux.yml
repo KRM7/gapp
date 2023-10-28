@@ -12,7 +12,8 @@ jobs:
         compiler: [
             { cxx: g++-11, pkgs: g++-11 },
             { cxx: g++-12, pkgs: g++-12 },
-            { cxx: clang++-14, pkgs: clang-14 },
+            { cxx: g++-13, pkgs: g++-13 },
+            { cxx: clang++-14, pkgs: clang-14 libstdc++6=12.3.0-1ubuntu1~22.04 libgcc-s1=12.3.0-1ubuntu1~22.04 },
             { cxx: clang++-15, pkgs: clang-15 },
         ]
         
@@ -27,7 +28,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: setup-compiler
-      run: sudo apt update && sudo apt install -y ${{ matrix.compiler.pkgs }}
+      run: sudo apt update && sudo apt install --allow-downgrades -y ${{ matrix.compiler.pkgs }}
 
     - name: setup-catch
       env:
