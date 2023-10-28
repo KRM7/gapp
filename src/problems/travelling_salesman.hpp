@@ -7,7 +7,6 @@
 #include "tsp_data/tsp_data.hpp"
 #include "../encoding/gene_types.hpp"
 #include "../utility/matrix.hpp"
-#include <vector>
 #include <array>
 #include <span>
 
@@ -28,7 +27,7 @@ namespace gapp::problems
         TSP(std::span<const Coords> cities, double optimal_value);
 
     private:
-        FitnessVector invoke(const std::vector<PermutationGene>& chrom) const override;
+        FitnessVector invoke(const Chromosome<PermutationGene>& chrom) const override;
 
         DistanceMatrix distance_matrix_;
     };

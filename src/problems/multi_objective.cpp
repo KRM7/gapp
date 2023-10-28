@@ -19,14 +19,14 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = std::vector(num_vars, 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars, 0.0);
         optimal_value_ = { 10.0 * double(num_vars - 1), 0.0 };
 
         ideal_point_ = { 10.0 * double(num_vars - 1), 3.85 * double(num_vars - 1) + 4.0 };
         nadir_point_ = { 7.25 * double(num_vars - 1), 0.0};
     }
 
-    auto Kursawe::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto Kursawe::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(vars.size() >= 2);
 
@@ -49,14 +49,14 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = std::vector(num_vars, 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars, 0.0);
         optimal_value_ = { 0.0, -1.0 };
 
         ideal_point_ = {  0.0,  0.0 };
         nadir_point_ = { -1.0, -1.0 };
     }
 
-    auto ZDT1::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto ZDT1::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(vars.size() >= 2);
 
@@ -76,14 +76,14 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = std::vector(num_vars, 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars, 0.0);
         optimal_value_ = { 0.0, -1.0 };
 
         ideal_point_ = {  0.0,  0.0 };
         nadir_point_ = { -1.0, -1.0 };
     }
 
-    auto ZDT2::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto ZDT2::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(vars.size() >= 2);
 
@@ -103,14 +103,14 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = std::vector(num_vars, 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars, 0.0);
         optimal_value_ = { 0.0, -1.0 };
 
         ideal_point_ = {  0.0,   0.8 };
         nadir_point_ = { -0.85, -1.0 };
     }
 
-    auto ZDT3::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto ZDT3::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(vars.size() >= 2);
 
@@ -132,14 +132,14 @@ namespace gapp::problems
 
         bounds_[0] = { 0.0, 1.0 };
 
-        optimum_ = std::vector(num_vars, 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars, 0.0);
         optimal_value_ = { 0.0, -1.0 };
 
         ideal_point_ = {  0.0,  0.0 };
         nadir_point_ = { -1.0, -1.0 };
     }
 
-    auto ZDT4::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto ZDT4::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(vars.size() >= 2);
 
@@ -161,14 +161,14 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = std::vector(this->num_vars(), GeneType{ 1 });
+        optimum_ = Chromosome<GeneType>(this->num_vars(), GeneType{ 1 });
         optimal_value_ = { -(FIRST_BITS + 1.0), -(num_vars - 1.0) / (FIRST_BITS + 1.0) };
 
         ideal_point_ = { -1.0, -(num_vars - 1.0) / (FIRST_BITS + 1.0) };
         nadir_point_ = { -(FIRST_BITS + 1.0), -(num_vars - 1.0) };
     }
 
-    auto ZDT5::invoke(const std::vector<BinaryGene>& vars) const -> FitnessVector
+    auto ZDT5::invoke(const Chromosome<BinaryGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(vars.size() >= FIRST_BITS);
         GAPP_ASSERT(vars.size() % REST_BITS == 0);
@@ -193,14 +193,14 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = std::vector(num_vars, 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars, 0.0);
         optimal_value_ = { -1.0, 0.0 };
 
         ideal_point_ = {  0.0,  0.0 };
         nadir_point_ = { -1.0, -0.92 };
     }
 
-    auto ZDT6::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto ZDT6::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(vars.size() >= 2);
 

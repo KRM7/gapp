@@ -28,8 +28,6 @@ namespace gapp::math
     template<typename T>
     inline constexpr T large = std::numeric_limits<T>::max();
 
-    using Point = std::vector<double>;
-
 
     /**
     * This class contains the global absolute and relative tolerance values used

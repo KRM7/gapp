@@ -5,8 +5,6 @@
 
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
-#include <vector>
-#include <string>
 #include <cstddef>
 
 namespace gapp::problems
@@ -33,11 +31,11 @@ namespace gapp::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded %GA.
         */
         explicit Sphere(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction("Sphere", Bounds{ -5.12, 5.12 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
+            BenchmarkFunction("Sphere", Bounds{ -5.12, 5.12 }, Chromosome<RealGene>(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -67,11 +65,11 @@ namespace gapp::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded %GA.
         */
         explicit Rastrigin(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction("Rastrigin", Bounds{ -5.12, 5.12 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
+            BenchmarkFunction("Rastrigin", Bounds{ -5.12, 5.12 }, Chromosome<RealGene>(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -103,11 +101,11 @@ namespace gapp::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded %GA.
         */
         explicit Rosenbrock(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction("Rosenbrock", Bounds{ -2.048, 2.048 }, std::vector(num_vars, 1.0), 0.0, bits_per_var)
+            BenchmarkFunction("Rosenbrock", Bounds{ -2.048, 2.048 }, Chromosome<RealGene>(num_vars, 1.0), 0.0, bits_per_var)
         {}
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -135,11 +133,11 @@ namespace gapp::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded %GA.
         */
         explicit Schwefel(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction("Schwefel", Bounds{ -500.0, 500.0 }, std::vector(num_vars, 420.9687), 0.0, bits_per_var)
+            BenchmarkFunction("Schwefel", Bounds{ -500.0, 500.0 }, Chromosome<RealGene>(num_vars, 420.9687), 0.0, bits_per_var)
         {}
 
     private:
-        FitnessVector invoke(const std::vector<double>& vars) const override;
+        FitnessVector invoke(const Chromosome<double>& vars) const override;
     };
 
 
@@ -175,11 +173,11 @@ namespace gapp::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded %GA.
         */
         explicit Griewank(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction("Griewank", Bounds{ -600.0, 600.0 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
+            BenchmarkFunction("Griewank", Bounds{ -600.0, 600.0 }, Chromosome<RealGene>(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -211,11 +209,11 @@ namespace gapp::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded %GA.
         */
         explicit Ackley(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction("Ackley", Bounds{ -32.768, 32.768 }, std::vector(num_vars, 0.0), 0.0, bits_per_var)
+            BenchmarkFunction("Ackley", Bounds{ -32.768, 32.768 }, Chromosome<RealGene>(num_vars, 0.0), 0.0, bits_per_var)
         {}
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -242,11 +240,11 @@ namespace gapp::problems
         * @param bits_per_var The number of bits representing a variable when used with the binary-encoded %GA.
         */
         explicit Levy(size_t num_vars, size_t bits_per_var = 32) :
-            BenchmarkFunction("Levy", Bounds{ -10.0, 10.0 }, std::vector(num_vars, 1.0), 0.0, bits_per_var)
+            BenchmarkFunction("Levy", Bounds{ -10.0, 10.0 }, Chromosome<RealGene>(num_vars, 1.0), 0.0, bits_per_var)
         {}
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 } // namespace gapp::problems

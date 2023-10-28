@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_POPULATION_HPP
-#define GA_POPULATION_HPP
+#ifndef GA_CORE_POPULATION_HPP
+#define GA_CORE_POPULATION_HPP
 
 #include "candidate.hpp"
 #include <vector>
@@ -45,6 +45,9 @@ namespace gapp::detail
 
     /* Find the nadir point of a fitness matrix assuming fitness maximization. */
     FitnessVector findNadirPoint(const FitnessMatrix& fitness_matrix);
+
+    /* Find the nadir point of a pareto front assuming fitness maximization. */
+    FitnessVector findFrontNadirPoint(const FitnessMatrix& optimal_points);
 
 } // namespace gapp::detail
 
@@ -164,4 +167,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_POPULATION_HPP
+#endif // !GA_CORE_POPULATION_HPP

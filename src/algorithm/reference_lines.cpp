@@ -3,6 +3,7 @@
 #include "reference_lines.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
+#include "../utility/matrix.hpp"
 #include "../utility/qrng.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
@@ -16,7 +17,7 @@
 
 namespace gapp::algorithm::reflines
 {
-    using SimplexMapping = Point(*)(Point&&);
+    using SimplexMapping = FitnessVector(*)(FitnessVector&&);
 
     /*
     * The unit-hypercube -> unit-simplex transformations used for the quasirandom points are based on:
@@ -26,7 +27,7 @@ namespace gapp::algorithm::reflines
     */
 
     /* Transform a point from the n-dimensional unit hypercube to the n-dimensional unit simplex. */
-    static inline Point simplexMappingLog(Point&& point)
+    static inline FitnessVector simplexMappingLog(FitnessVector&& point)
     {
         GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
@@ -38,7 +39,7 @@ namespace gapp::algorithm::reflines
     }
 
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
-    static inline Point simplexMappingSort(Point&& point)
+    static inline FitnessVector simplexMappingSort(FitnessVector&& point)
     {
         GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
@@ -50,7 +51,7 @@ namespace gapp::algorithm::reflines
     }
 
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
-    static inline Point simplexMappingRoot(Point&& point)
+    static inline FitnessVector simplexMappingRoot(FitnessVector&& point)
     {
         GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
@@ -70,7 +71,7 @@ namespace gapp::algorithm::reflines
     }
 
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
-    static inline Point simplexMappingMirror(Point&& point)
+    static inline FitnessVector simplexMappingMirror(FitnessVector&& point)
     {
         GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
@@ -116,9 +117,9 @@ namespace gapp::algorithm::reflines
 
 
     template<SimplexMapping F>
-    static std::vector<Point> quasirandomSimplexPoints(size_t dim, size_t num_points)
+    static FitnessMatrix quasirandomSimplexPoints(size_t dim, size_t num_points)
     {
-        std::vector<Point> points(num_points);
+        FitnessMatrix points(num_points, dim);
         size_t input_dim = SimplexMappingTraits<F>::input_dim(dim);
 
         if (dim == 0) return points;
@@ -127,8 +128,8 @@ namespace gapp::algorithm::reflines
 
         for (size_t i = 0; i < num_points; i++)
         {
-            Point hypercubePoint = qrng();
-            Point simplexPoint = F(std::move(hypercubePoint));
+            auto hypercubePoint = qrng();
+            FitnessVector simplexPoint = F({ hypercubePoint.begin(), hypercubePoint.end() });
 
             points[i] = std::move(simplexPoint);
         }
@@ -137,49 +138,51 @@ namespace gapp::algorithm::reflines
     }
 
 
-    std::vector<Point> quasirandomSimplexPointsSort(size_t dim, size_t num_points)
+    FitnessMatrix quasirandomSimplexPointsSort(size_t dim, size_t num_points)
     {
         return quasirandomSimplexPoints<simplexMappingSort>(dim, num_points);
     }
 
-    std::vector<Point> quasirandomSimplexPointsRoot(size_t dim, size_t num_points)
+    FitnessMatrix quasirandomSimplexPointsRoot(size_t dim, size_t num_points)
     {
         return quasirandomSimplexPoints<simplexMappingRoot>(dim, num_points);
     }
 
-    std::vector<Point> quasirandomSimplexPointsMirror(size_t dim, size_t num_points)
+    FitnessMatrix quasirandomSimplexPointsMirror(size_t dim, size_t num_points)
     {
         return quasirandomSimplexPoints<simplexMappingMirror>(dim, num_points);
     }
 
-    std::vector<Point> quasirandomSimplexPointsLog(size_t dim, size_t num_points)
+    FitnessMatrix quasirandomSimplexPointsLog(size_t dim, size_t num_points)
     {
         return quasirandomSimplexPoints<simplexMappingLog>(dim, num_points);
     }
 
 
-    std::vector<Point> pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, Positive<size_t> k)
+    FitnessMatrix pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, Positive<size_t> k)
     {
         if (num_points == 0) return {};
 
-        std::vector<Point> candidate_points = generator(dim, k * num_points);
+        FitnessMatrix candidate_points = generator(dim, k * num_points);
 
-        std::vector<Point> points;
-        points.reserve(num_points);
-        points.push_back(candidate_points.back());
+        FitnessMatrix points;
+        points.reserve(num_points, dim);
+        points.append_row(candidate_points.back());
         candidate_points.pop_back();
 
-        std::vector<double> min_distances = detail::map(candidate_points, std::bind_front(math::euclideanDistanceSq, points.back()));
+        std::vector<double> min_distances(candidate_points.size());
+        std::transform(candidate_points.begin(), candidate_points.end(), min_distances.begin(), std::bind_front(math::euclideanDistanceSq, points.back()));
         
         while (points.size() < num_points)
         {
             const size_t idx = detail::argmax(min_distances.begin(), min_distances.end());
-            points.push_back(std::move(candidate_points[idx]));
+            points.append_row(candidate_points[idx]);
 
             /* Remove the added candidate and the corresponding min_distance. */
-            std::swap(candidate_points[idx], candidate_points.back());
+            using std::swap;
+            swap(candidate_points[idx], candidate_points.back());
             candidate_points.pop_back();
-            std::swap(min_distances[idx], min_distances.back());
+            swap(min_distances[idx], min_distances.back());
             min_distances.pop_back();
 
             /* Calc the distance of each candidate to the closest ref point. */

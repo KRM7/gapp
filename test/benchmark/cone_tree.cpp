@@ -9,25 +9,24 @@
 
 using namespace gapp;
 using namespace gapp::detail;
-using namespace gapp::math;
 using namespace Catch;
 
 
-static Point randomPoint(size_t dim)
+static ConeTree::Point randomPoint(size_t dim)
 {
-    Point point(dim);
+    ConeTree::Point point(dim);
     for (double& elem : point) elem = rng::randomReal();
     return point;
 }
 
-static std::vector<Point> randomPoints(size_t n, size_t dim)
+static std::vector<ConeTree::Point> randomPoints(size_t n, size_t dim)
 {
-    std::vector<Point> points(n);
-    for (Point& point : points) point = randomPoint(dim);
+    std::vector<ConeTree::Point> points(n);
+    for (auto& point : points) point = randomPoint(dim);
     return points;
 }
 
-static auto linearFind(const std::vector<Point>& lines, const Point& point)
+static auto linearFind(const std::vector<ConeTree::Point>& lines, const ConeTree::Point& point)
 {
     auto idistance = [&](const auto& line) { return std::inner_product(point.begin(), point.end(), line.begin(), 0.0); };
 

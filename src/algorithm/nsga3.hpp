@@ -44,7 +44,7 @@ namespace gapp::algorithm
     {
     public:
         /** The type of the reference line generator function. */
-        using RefLineGenerator = std::function<std::vector<math::Point>(size_t, size_t)>;
+        using RefLineGenerator = std::function<FitnessMatrix(size_t, size_t)>;
 
         /**
         * Create an NSGA-III algorithm.

@@ -3,7 +3,6 @@
 #include "single_objective.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/functional.hpp"
-#include <vector>
 #include <numeric>
 #include <numbers>
 #include <cmath>
@@ -14,12 +13,12 @@ namespace gapp::problems
     using std::numbers::pi;
     using std::numbers::e;
 
-    auto Sphere::invoke(const std::vector<double>& vars) const -> FitnessVector
+    auto Sphere::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         return { -std::inner_product(vars.begin(), vars.end(), vars.begin(), 0.0) };
     }
 
-    auto Rastrigin::invoke(const std::vector<double>& vars) const -> FitnessVector
+    auto Rastrigin::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         double fx = 10.0 * vars.size();
         for (double var : vars)
@@ -30,7 +29,7 @@ namespace gapp::problems
         return { -fx };
     }
 
-    auto Rosenbrock::invoke(const std::vector<double>& vars) const -> FitnessVector
+    auto Rosenbrock::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(!vars.empty());
 
@@ -43,7 +42,7 @@ namespace gapp::problems
         return { -fx };
     }
 
-    auto Schwefel::invoke(const std::vector<double>& vars) const -> FitnessVector
+    auto Schwefel::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         double fx = 418.98288727215591 * vars.size();
         for (double var : vars)
@@ -54,7 +53,7 @@ namespace gapp::problems
         return { -fx };
     }
 
-    auto Griewank::invoke(const std::vector<double>& vars) const -> FitnessVector
+    auto Griewank::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         double fx = 4000.0;
         double fm = 1.0;
@@ -67,7 +66,7 @@ namespace gapp::problems
         return { -fx / 4000.0 + fm };
     }
 
-    auto Ackley::invoke(const std::vector<double>& vars) const -> FitnessVector
+    auto Ackley::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(!vars.empty());
 
@@ -86,7 +85,7 @@ namespace gapp::problems
         return { -fx };
     }
 
-    auto Levy::invoke(const std::vector<double>& vars) const -> FitnessVector
+    auto Levy::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         GAPP_ASSERT(!vars.empty());
 

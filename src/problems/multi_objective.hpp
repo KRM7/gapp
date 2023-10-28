@@ -39,7 +39,7 @@ namespace gapp::problems
         explicit Kursawe(size_t num_vars = 3, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -74,7 +74,7 @@ namespace gapp::problems
         explicit ZDT1(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -109,7 +109,7 @@ namespace gapp::problems
         explicit ZDT2(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -145,7 +145,7 @@ namespace gapp::problems
         explicit ZDT3(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -182,7 +182,7 @@ namespace gapp::problems
         explicit ZDT4(size_t num_vars = 10, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 
@@ -216,7 +216,7 @@ namespace gapp::problems
         explicit ZDT5(size_t num_vars = 11);
 
     private:
-        FitnessVector invoke(const std::vector<BinaryGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<BinaryGene>& vars) const override;
 
         static constexpr size_t FIRST_BITS = 30;
         static constexpr size_t REST_BITS = 5;
@@ -255,7 +255,7 @@ namespace gapp::problems
         explicit ZDT6(size_t num_vars = 10, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const std::vector<RealGene>& vars) const override;
+        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
     };
 
 } // namespace gapp::problems

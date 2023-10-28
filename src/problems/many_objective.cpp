@@ -1,9 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "many_objective.hpp"
-#include "../utility/math.hpp"
 #include "../utility/utility.hpp"
-#include <vector>
 #include <algorithm>
 #include <numeric>
 #include <iterator>
@@ -14,7 +12,7 @@
 namespace gapp::problems
 {
     using std::numbers::pi;
-    using const_iterator = std::vector<double>::const_iterator;
+    using const_iterator = Chromosome<RealGene>::const_iterator;
 
 
     /* DTLZ SUITE G FUNCTIONS */
@@ -74,11 +72,11 @@ namespace gapp::problems
 
     /* DTLZ SUITE F FUNCTIONS */
 
-    static inline std::vector<double> dtlz1_f(const_iterator first, const_iterator last, double)
+    static inline FitnessVector dtlz1_f(const_iterator first, const_iterator last, double)
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
-        std::vector fx(last - first + 1, 0.5);
+        FitnessVector fx(last - first + 1, 0.5);
 
         for (auto fxi = fx.rbegin(); fxi != fx.rend() - 1; ++first, ++fxi)
         {
@@ -89,11 +87,11 @@ namespace gapp::problems
         return fx;
     }
 
-    static inline std::vector<double> dtlz2_f(const_iterator first, const_iterator last, double)
+    static inline FitnessVector dtlz2_f(const_iterator first, const_iterator last, double)
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
-        std::vector fx(last - first + 1, 1.0);
+        FitnessVector fx(last - first + 1, 1.0);
 
         for (auto fxi = fx.rbegin(); fxi != fx.rend() - 1; ++first, ++fxi)
         {
@@ -106,11 +104,11 @@ namespace gapp::problems
 
     static constexpr auto dtlz3_f = dtlz2_f;
 
-    static inline std::vector<double> dtlz4_f(const_iterator first, const_iterator last, double)
+    static inline FitnessVector dtlz4_f(const_iterator first, const_iterator last, double)
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
-        std::vector fx(last - first + 1, 1.0);
+        FitnessVector fx(last - first + 1, 1.0);
 
         for (auto fxi = fx.rbegin(); fxi != fx.rend() - 1; ++first, ++fxi)
         {
@@ -121,11 +119,11 @@ namespace gapp::problems
         return fx;
     }
 
-    static inline std::vector<double> dtlz5_f(const_iterator first, const_iterator last, double g)
+    static inline FitnessVector dtlz5_f(const_iterator first, const_iterator last, double g)
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
-        std::vector fx(last - first + 1, 1.0);
+        FitnessVector fx(last - first + 1, 1.0);
 
         const auto theta = [g](double x) { return (g * x + 0.5) / (1.0 + g); };
 
@@ -144,11 +142,11 @@ namespace gapp::problems
 
     static constexpr auto dtlz6_f = dtlz5_f;
 
-    static inline std::vector<double> dtlz7_f(const_iterator first, const_iterator last, double g)
+    static inline FitnessVector dtlz7_f(const_iterator first, const_iterator last, double g)
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
-        std::vector fx(last - first + 1, 0.0);
+        FitnessVector fx(last - first + 1, 0.0);
 
         fx.back() = (1.0 + g) * fx.size();
         for (auto fxi = fx.begin(); fxi != fx.end() - 1; ++first, ++fxi)
@@ -165,12 +163,12 @@ namespace gapp::problems
     /* DTLZ SUITE FUNCTIONS */
 
     template<auto F, auto G>
-    static inline std::vector<double> dtlz(const std::vector<double>& vars, size_t num_obj)
+    static inline FitnessVector dtlz(const Chromosome<RealGene>& vars, size_t num_obj)
     {
         const auto middle = vars.begin() + num_obj - 1;
 
         const double g = G(middle, vars.end());
-        std::vector fx = F(vars.begin(), middle, g);
+        FitnessVector fx = F(vars.begin(), middle, g);
 
         /* Maximization. */
         for (double& val : fx) { val *= -(1.0 + g); }
@@ -192,16 +190,16 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
-        ideal_point_ = math::Point(num_obj, 0.0);
-        nadir_point_ = math::Point(num_obj, -0.5);
+        ideal_point_ = FitnessVector(num_obj, 0.0);
+        nadir_point_ = FitnessVector(num_obj, -0.5);
 
-        optimum_ = std::vector(num_vars(), 0.5);
+        optimum_ = Chromosome<RealGene>(num_vars(), 0.5);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
-        optimal_value_ = math::Point(num_obj, 0.0);
+        optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_.back() = -0.5;
     }
 
-    auto DTLZ1::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto DTLZ1::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         return dtlz1(vars, num_objectives());
     }
@@ -212,16 +210,16 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
-        ideal_point_ = math::Point(num_obj, 0.0);
-        nadir_point_ = math::Point(num_obj, -1.0);
+        ideal_point_ = FitnessVector(num_obj, 0.0);
+        nadir_point_ = FitnessVector(num_obj, -1.0);
 
-        optimum_ = std::vector(num_vars(), 0.5);
+        optimum_ = Chromosome<RealGene>(num_vars(), 0.5);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
-        optimal_value_ = math::Point(num_obj, 0.0);
+        optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_[0] = -1.0;
     }
 
-    auto DTLZ2::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto DTLZ2::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         return dtlz2(vars, num_objectives());
     }
@@ -232,16 +230,16 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
-        ideal_point_ = math::Point(num_obj, 0.0);
-        nadir_point_ = math::Point(num_obj, -1.0);
+        ideal_point_ = FitnessVector(num_obj, 0.0);
+        nadir_point_ = FitnessVector(num_obj, -1.0);
 
-        optimum_ = std::vector(num_vars(), 0.5);
+        optimum_ = Chromosome<RealGene>(num_vars(), 0.5);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
-        optimal_value_ = math::Point(num_obj, 0.0);
+        optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_[0] = -1.0;
     }
 
-    auto DTLZ3::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto DTLZ3::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         return dtlz3(vars, num_objectives());
     }
@@ -252,15 +250,15 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
-        ideal_point_ = math::Point(num_obj, 0.0);
-        nadir_point_ = math::Point(num_obj, -1.0);
+        ideal_point_ = FitnessVector(num_obj, 0.0);
+        nadir_point_ = FitnessVector(num_obj, -1.0);
 
-        optimum_ = std::vector(num_vars(), 0.5);
-        optimal_value_ = math::Point(num_obj, 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars(), 0.5);
+        optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_[0] = -1.0;
     }
 
-    auto DTLZ4::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto DTLZ4::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         return dtlz4(vars, num_objectives());
     }
@@ -271,21 +269,21 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
-        ideal_point_ = math::Point(num_obj, 0.0);
-        nadir_point_ = math::Point(num_obj, 0.0);
+        ideal_point_ = FitnessVector(num_obj, 0.0);
+        nadir_point_ = FitnessVector(num_obj, 0.0);
         for (size_t i = 0; i < num_obj; i++)
         {
             nadir_point_[i] = -1.0 / std::pow(std::sqrt(2), num_obj - 1 - i);
         }
         nadir_point_[0] = nadir_point_[1];
 
-        optimum_ = std::vector(num_vars(), 0.5);
+        optimum_ = Chromosome<RealGene>(num_vars(), 0.5);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
         optimal_value_ = nadir_point_;
         optimal_value_.back() = 0.0;
     }
 
-    auto DTLZ5::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto DTLZ5::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         return dtlz5(vars, num_objectives());
     }
@@ -296,20 +294,20 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
-        ideal_point_ = math::Point(num_obj, 0.0);
-        nadir_point_ = math::Point(num_obj, 0.0);
+        ideal_point_ = FitnessVector(num_obj, 0.0);
+        nadir_point_ = FitnessVector(num_obj, 0.0);
         for (size_t i = 0; i < num_obj; i++)
         {
             nadir_point_[i] = -1.0 / std::pow(std::sqrt(2), num_obj - 1 - i);
         }
         nadir_point_[0] = nadir_point_[1];
 
-        optimum_ = std::vector(num_vars(), 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars(), 0.0);
         optimal_value_ = nadir_point_;
         optimal_value_.back() = 0.0;
     }
 
-    auto DTLZ6::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto DTLZ6::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         return dtlz6(vars, num_objectives());
     }
@@ -320,17 +318,17 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
-        optimum_ = std::vector(num_vars(), 0.0);
-        optimal_value_ = math::Point(num_obj, 0.0);
+        optimum_ = Chromosome<RealGene>(num_vars(), 0.0);
+        optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_.back() = -2.0 * num_obj;
 
-        ideal_point_ = math::Point(num_obj, 0.0);
+        ideal_point_ = FitnessVector(num_obj, 0.0);
         ideal_point_.back() = -0.307004 * num_obj - 1.692996;
-        nadir_point_ = math::Point(num_obj, -1.0);
+        nadir_point_ = FitnessVector(num_obj, -1.0);
         nadir_point_.back() = -2.0 * num_obj;
     }
 
-    auto DTLZ7::invoke(const std::vector<RealGene>& vars) const -> FitnessVector
+    auto DTLZ7::invoke(const Chromosome<RealGene>& vars) const -> FitnessVector
     {
         return dtlz7(vars, num_objectives());
     }

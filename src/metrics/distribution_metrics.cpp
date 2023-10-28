@@ -6,13 +6,10 @@
 #include "../core/population.hpp"
 #include "../utility/math.hpp"
 #include "../utility/utility.hpp"
-#include <algorithm>
-#include <functional>
+#include <utility>
 
 namespace gapp::metrics
 {
-    using math::Point;
-
     void NadirPoint::initialize(const GaInfo& ga)
     {
         data_.clear();

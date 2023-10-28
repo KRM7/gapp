@@ -118,8 +118,8 @@ namespace gapp::detail
 
 
     
-    template<typename T, typename U>
-    using copy_const_t = std::conditional_t<std::is_const_v<std::remove_reference_t<T>>, const U, U>;
+    template<typename From, typename To>
+    using copy_const_t = std::conditional_t<std::is_const_v<std::remove_reference_t<From>>, const To, To>;
 
 
 
