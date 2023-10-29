@@ -322,7 +322,7 @@ namespace gapp::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
 
         /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
-        GAPP_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, parent1.chromosome.size() - 1)));
+        GAPP_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, chrom_len - 1)));
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
         GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
         GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
