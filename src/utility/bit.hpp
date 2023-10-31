@@ -4,6 +4,8 @@
 #define GA_UTILITY_BIT_HPP
 
 #include "utility.hpp"
+#include <concepts>
+#include <limits>
 #include <climits>
 
 namespace gapp::detail
@@ -16,6 +18,13 @@ namespace gapp::detail
 
     template<typename T>
     inline constexpr T msb_mask = T{ 1 } << (bitsizeof<T> - 1);
+
+
+    template<std::floating_point T>
+    inline constexpr size_t mantissa_bits = std::numeric_limits<T>::digits - 1;
+
+    template<std::floating_point T>
+    inline constexpr size_t exponent_bits = bitsizeof<T> - mantissa_bits<T> - 1;
 
 
     template<typename T>
