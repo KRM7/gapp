@@ -333,7 +333,7 @@ namespace gapp::rng
     template<std::floating_point RealType>
     RealType randomReal()
     {
-        return std::uniform_real_distribution<RealType>{ 0.0, 1.0 }(rng::prng);
+        return (rng::prng() >> detail::exponent_bits<RealType>) * (std::numeric_limits<RealType>::epsilon() / 2.0);
     }
 
     template<std::floating_point RealType>
@@ -341,7 +341,7 @@ namespace gapp::rng
     {
         GAPP_ASSERT(lbound <= ubound);
 
-        return lbound + (ubound - lbound) * std::uniform_real_distribution{ 0.0, 1.0 }(rng::prng);
+        return lbound + (ubound - lbound) * rng::randomReal();
     }
 
     template<std::floating_point RealType>

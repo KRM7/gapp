@@ -18,7 +18,7 @@ TEST_CASE("random_int", "[rng]")
 {
     REQUIRE(randomInt(-1, -1) == -1);
 
-    for (size_t i = 0; i < 100; i++)
+    for (size_t i = 0; i < 10'000; i++)
     {
         int n = randomInt(-1, 1);
         REQUIRE((-1 <= n && n <= 1));
@@ -29,7 +29,7 @@ TEST_CASE("random_real", "[rng]")
 {
     REQUIRE(randomReal(1.0, 1.0) == Catch::Approx(1.0));
 
-    for (size_t i = 0; i < 100; i++)
+    for (size_t i = 0; i < 10'000; i++)
     {
         double n1 = randomReal();
         REQUIRE((0.0 <= n1 && n1 <= 1.0));
@@ -47,7 +47,7 @@ TEST_CASE("random_binomial", "[rng]")
     REQUIRE(randomBinomial(0u, 0.0) == 0);
     REQUIRE(randomBinomial(0u, 1.0) == 0);
 
-    for (size_t i = 0; i < 100; i++)
+    for (size_t i = 0; i < 10'000; i++)
     {
         REQUIRE(randomBinomial(1u, 0.5) <= 1);
         REQUIRE(randomBinomial(5u, 0.8) <= 5);
