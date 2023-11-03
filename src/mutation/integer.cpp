@@ -4,7 +4,6 @@
 #include "../core/candidate.hpp"
 #include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
-#include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
 #include <cstddef>
@@ -13,6 +12,8 @@ namespace gapp::mutation::integer
 {
     void Uniform::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
+        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+
         const auto& bounds = ga.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());

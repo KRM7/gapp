@@ -54,7 +54,7 @@ See [encodings.md](encodings.md) for more information regarding the encodings.
 
 ### Chromosome length
 
-The length of the chromosomes is another thing that has to be
+The length of the chromosomes is another parameter that has to be
 considered, and has to be specified for the fitness function.
 Generally, the chromosome length is going to be equal to the
 number of variables in the problem, but this isn't always true.
@@ -144,28 +144,17 @@ has to be set to `true`.
 
 ### Variable chromosome lengths
 
-By default, the chromosome length is assumed to be constant, meaning
-that all of the solutions will have the same chromosome length
-which will not change throughout the run. If different candidates may
-have chromosomes of different lengths, the `variable_len` parameter
-in the constructor of `FitnessFunctionBase` has to be set to `true`.
-
-The chromosome length still has to be specified for the fitness
-function, but in this case it will only be used to generate
-the solutions of the initial population.
-
-Note that if variable chromosome lengths are used, the crossover
-and mutation operators will also have to be able to handle these.
-This means also implementing your own versions of these operators,
-as the ones provided by the library don't support variable chromosome
-lengths.
+The chromosome length parameter of the fitness function has to be
+specified even if variable length chromosomes are used to represent
+the solutions. In this case the value of this parameter will only be
+used to generate the solutions of the initial population.
 
 ### Example
 
 ```cpp
 class MyFitnessFunction : public FitnessFunction<RealGene, 1>
 {
-    MyFitnessFunction() : FitnessFunction(/* variable_len = */ true, /* dynamic = */ true) {}
+    MyFitnessFunction() : FitnessFunction(/* dynamic = */ true) {}
 
     FitnessVector invoke(const Chromosome<RealGene>& x) const override;
 };
@@ -179,7 +168,7 @@ The library in general only assumes that the fitness values returned
 by the fitness function are valid numbers (ie. no `NaN` values will
 be returned).
 
-Wether infinite fitness values are allowed or not depends on the
+Whether infinite fitness values are allowed or not depends on the
 selection method used in the GA. If the fitness function can return
 fitness vectors that contain infinite values, the selection method
 (or the algorithm) will have to be chosen accordingly.
@@ -188,7 +177,7 @@ fitness vectors that contain infinite values, the selection method
 
 The candidate solutions in the population are evaluated in parallel
 in each generation of a run. As a result of this, the implementation
-of the `invoke` method in the derived fitness function class must be
+of the `invoke` method in the derived fitness function classes must be
 thread-safe.
 
 ------------------------------------------------------------------------------------------------

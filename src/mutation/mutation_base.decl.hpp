@@ -24,7 +24,7 @@ namespace gapp::mutation
     * per-gene depending on how the particular operator is defined.
     * 
     * New mutation operators should be derived from this class, and they should
-    * implement the following virtual methods:
+    * implement the following virtual method:
     * 
     *   - mutate : Perform the mutation on a single candidate's chromosome.
     * 
@@ -56,6 +56,20 @@ namespace gapp::mutation
         /** @returns The mutation rate set for the operator. */
         [[nodiscard]]
         constexpr Probability mutation_rate() const noexcept { return pm_; }
+
+        /**
+        * This method specifies whether the mutation operator supports variable
+        * chromosome lengths or not. If variable chromosome lengths are supported,
+        * the Candidates passed to the mutation operator are allowed to have
+        * chromosome lengths that are different from the chromosome length specified
+        * for the GA that the operator is used in.
+        *
+        * This method will return false by default. If a particular mutation method allows
+        * variable chromosome lengths, it should override this method to return true.
+        *
+        * @returns True if the mutation operator support variable chromosome lengths.
+        */
+        constexpr virtual bool allow_variable_chrom_length() const noexcept { return false; }
 
         /**
         * Perform mutation on a candidate using the set mutation probability.

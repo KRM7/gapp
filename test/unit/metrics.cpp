@@ -87,7 +87,7 @@ TEST_CASE("fitness_evaluations", "[metrics]")
     REQUIRE(metric1.size() == num_gen);
     REQUIRE(std::all_of(metric1.begin(), metric1.end(), detail::between(0_sz, popsize)));
 
-    GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj, false, true }, num_gen);
+    GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj, true }, num_gen);
 
     const auto& metric2 = GA.get_metric<FitnessEvaluations>();
 

@@ -66,6 +66,23 @@ independent of the gene type.
 The population is then made up of several candidates encoded in
 this way.
 
+### Variable chromosome lengths
+
+The length of the chromosomes is specified as part of the fitness function.
+Normally, this will be a constant value, meaning that all the solutions
+will have the same chromosome lengths throughout a run. However, using a
+constant chromosome length is not a requirement as long as all parts of the
+GA can handle changing lengths. The parts which must be able to do this are
+the:
+ - crossover operator
+ - mutation operator
+ - repair function
+ - fitness function
+
+The crossover and mutation operators both provide a method called
+`allow_variable_chrom_length()` that can be used to check if they support
+this or not.
+
 ## Custom encodings
 
 It is also possible to use a different encoding type by defining a

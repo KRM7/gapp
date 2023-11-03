@@ -15,9 +15,10 @@ namespace gapp::crossover
     CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         GAPP_ASSERT(parent1.is_evaluated && parent2.is_evaluated);
-        GAPP_ASSERT(parent1.fitness.size() == ga.num_objectives() && parent2.fitness.size() == ga.num_objectives());
-        GAPP_ASSERT(ga.variable_chrom_len() || (parent1.chromosome.size() == ga.chrom_len() &&
-                                              parent2.chromosome.size() == ga.chrom_len()));
+        GAPP_ASSERT(parent1.fitness.size() == parent2.fitness.size());
+        GAPP_ASSERT(parent1.fitness.size() == ga.num_objectives());
+        GAPP_ASSERT(allow_variable_chrom_length() || (parent1.chromosome.size() == ga.chrom_len() &&
+                                                      parent2.chromosome.size() == ga.chrom_len()));
 
         /* Only need to perform the crossover with the set pc probability. Return early with (1 - pc) probability. */
         if (rng::randomReal() >= pc_)
@@ -39,9 +40,9 @@ namespace gapp::crossover
         /* Perform the actual crossover. */
         auto [child1, child2] = crossover(ga, parent1, parent2);
 
-        GAPP_ASSERT(ga.variable_chrom_len() || child1.chromosome.size() == ga.chrom_len(),
+        GAPP_ASSERT(allow_variable_chrom_length() || child1.chromosome.size() == ga.chrom_len(),
                   "The crossover returned a candidate with incorrect chromosome length.");
-        GAPP_ASSERT(ga.variable_chrom_len() || child2.chromosome.size() == ga.chrom_len(),
+        GAPP_ASSERT(allow_variable_chrom_length() || child2.chromosome.size() == ga.chrom_len(),
                   "The crossover returned a candidate with incorrect chromosome length.");
 
         child1.is_evaluated = false;

@@ -4,11 +4,9 @@
 #include "../core/candidate.hpp"
 #include "../core/ga_base.hpp"
 #include "../utility/rng.hpp"
-#include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <vector>
-#include <limits>
 #include <cmath>
 #include <cstddef>
 
