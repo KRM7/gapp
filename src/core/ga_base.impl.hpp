@@ -119,12 +119,6 @@ namespace gapp
     }
 
     template<typename T>
-    inline bool GA<T>::variable_chrom_len() const noexcept
-    {
-        return fitness_function().variable_chrom_len();
-    }
-
-    template<typename T>
     inline bool GA<T>::dynamic_fitness() const noexcept
     {
         return fitness_function().dynamic();
@@ -286,7 +280,8 @@ namespace gapp
     template<typename T>
     inline bool GA<T>::hasValidChromosome(const Candidate<T>& sol) const noexcept
     {
-        return variable_chrom_len() || (sol.chromosome.size() == chrom_len());
+        return (crossover_->allow_variable_chrom_length() && mutation_->allow_variable_chrom_length()) ||
+               (sol.chromosome.size() == chrom_len());
     }
 
     template<typename T>

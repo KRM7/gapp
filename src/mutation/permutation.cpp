@@ -4,10 +4,8 @@
 #include "../core/ga_base.hpp"
 #include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
-#include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
-#include <iterator>
 #include <vector>
 #include <tuple>
 #include <utility>

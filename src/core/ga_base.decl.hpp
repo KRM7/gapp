@@ -195,10 +195,6 @@ namespace gapp
         [[nodiscard]]
         size_t chrom_len() const noexcept final;
 
-        /** @returns True if variable chromosome lengths are allowed and used. */
-        [[nodiscard]]
-        bool variable_chrom_len() const noexcept final;
-
         /** @returns True if a dynamic fitness function is used. */
         [[nodiscard]]
         bool dynamic_fitness() const noexcept final;

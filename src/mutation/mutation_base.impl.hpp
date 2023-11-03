@@ -15,7 +15,7 @@ namespace gapp::mutation
     void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
     {
         GAPP_ASSERT(!candidate.is_evaluated || candidate.fitness.size() == ga.num_objectives());
-        GAPP_ASSERT(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len());
+        GAPP_ASSERT(allow_variable_chrom_length() || candidate.chromosome.size() == ga.chrom_len());
 
         if (!candidate.is_evaluated)
         {
@@ -32,7 +32,7 @@ namespace gapp::mutation
             candidate.is_evaluated = (candidate == old_candidate);
         }
 
-        GAPP_ASSERT(ga.variable_chrom_len() || candidate.chromosome.size() == ga.chrom_len(),
+        GAPP_ASSERT(allow_variable_chrom_length() || candidate.chromosome.size() == ga.chrom_len(),
                   "The mutation resulted in a candidate with incorrect chromosome length.");
     }
 

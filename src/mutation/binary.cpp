@@ -4,7 +4,6 @@
 #include "../core/ga_base.hpp"
 #include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
-#include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <vector>
 #include <cstddef>

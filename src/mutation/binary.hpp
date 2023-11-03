@@ -18,6 +18,7 @@ namespace gapp::mutation::binary
     {
     public:
         using Mutation::Mutation;
+        constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
     private:
         void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
     };

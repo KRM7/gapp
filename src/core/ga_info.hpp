@@ -99,10 +99,6 @@ namespace gapp
         [[nodiscard]]
         virtual size_t chrom_len() const noexcept = 0;
 
-        /** @returns True if variable chromosome lengths are used. */
-        [[nodiscard]]
-        virtual bool variable_chrom_len() const noexcept = 0;
-
         /** @returns The number of objectives of the fitness function. */
         [[nodiscard]]
         size_t num_objectives() const noexcept { GAPP_ASSERT(num_objectives_); return num_objectives_; }

@@ -6,6 +6,7 @@
 #include "integer_soga.hpp"
 #include "nsga2.hpp"
 #include "nsga3.hpp"
+#include "variable_length.hpp"
 
 int main()
 {
@@ -43,5 +44,7 @@ int main()
 
         benchmark_nsga3_zdt();
         benchmark_nsga3_dtlz();
+
+        variable_chrom_length();
     }
 }

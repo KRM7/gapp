@@ -37,24 +37,16 @@ namespace gapp
         *   and will be used for the candidate solutions in the algorithm. \n
         *   Must be at least 1, and a value must be given even if the chromosome lengths are variable,
         *   as it will be used to generate the initial population.
-        * @param variable_len Should be true if the fitness function supports and will be used with
-        *   variable chromosome lengths. \n 
-        *   The other genetic operators (crossover, mutation, repair) must also support
-        *   variable length chromosomes if this is enabled.
         * @param dynamic Should be true if the fitness vector returned for a chromosome will not
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
-        constexpr FitnessFunctionBase(Positive<size_t> chrom_len, bool variable_len = false, bool dynamic = false) noexcept :
-            chrom_len_(chrom_len), variable_chrom_len_(variable_len), dynamic_(dynamic)
+        constexpr FitnessFunctionBase(Positive<size_t> chrom_len, bool dynamic = false) noexcept :
+            chrom_len_(chrom_len), dynamic_(dynamic)
         {}
 
         /** @returns The chromosome length the fitness function expects. */
         [[nodiscard]]
         constexpr size_t chrom_len() const noexcept { return chrom_len_; }
-
-        /** @returns True if the fitness function can handle variable chromosome lengths. */
-        [[nodiscard]]
-        constexpr bool variable_chrom_len() const noexcept { return variable_chrom_len_; }
 
         /** @returns True if the fitness function is dynamic. */
         [[nodiscard]]
@@ -69,12 +61,7 @@ namespace gapp
         * @param chrom The chromosome to evaluate.
         * @returns The fitness vector of the chromosome, with a size equal to the number of objectives.
         */
-        FitnessVector operator()(const Chromosome<T>& chrom) const
-        {
-            GAPP_ASSERT(chrom.size() == chrom_len() || variable_chrom_len(), "A chromosome of incorrect size was passed to the fitness function.");
-
-            return invoke(chrom);
-        }
+        FitnessVector operator()(const Chromosome<T>& chrom) const { return invoke(chrom); }
 
 
         /** Destructor. */
@@ -92,8 +79,7 @@ namespace gapp
         virtual FitnessVector invoke(const Chromosome<T>& chrom) const = 0;
 
         Positive<size_t> chrom_len_;
-        bool variable_chrom_len_ = false;
-        bool dynamic_            = false;
+        bool dynamic_ = false;
     };
 
     /**
@@ -107,6 +93,8 @@ namespace gapp
     *
     * @tparam T The gene type expected by the fitness function.
     * @tparam ChromLen The length of the chromosomes expected by the fitness function. Must be at least 1.
+    *   For variable chromosome length problems, this value will only be used during the generation of the
+    *   initial population.
     */
     template<typename T, size_t ChromLen>
     class FitnessFunction : public FitnessFunctionBase<T>
@@ -115,15 +103,11 @@ namespace gapp
         /**
         * Create a fitness function.
         *
-        * @param variable_len Should be true if the fitness function supports and will be used with
-        *   variable chromosome lengths. \n
-        *   The other genetic operators (crossover, mutation, repair) must also support
-        *   variable length chromosomes if this is enabled.
         * @param dynamic Should be true if the fitness vector returned for a chromosome will not
         *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
         */
-        constexpr FitnessFunction(bool variable_len = false, bool dynamic = false) noexcept :
-            FitnessFunctionBase<T>(ChromLen, variable_len, dynamic)
+        constexpr FitnessFunction(bool dynamic = false) noexcept :
+            FitnessFunctionBase<T>(ChromLen, dynamic)
         {}
 
     protected:

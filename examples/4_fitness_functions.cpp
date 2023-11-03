@@ -32,7 +32,7 @@ public:
 class XSquareDynamic : public FitnessFunction< RealGene, 1>
 {
 public:
-    XSquareDynamic() : FitnessFunction(/* variable_len = */ false, /* dynamic = */ true) {}
+    XSquareDynamic() : FitnessFunction(/* dynamic = */ true) {}
 
     FitnessVector invoke(const Chromosome<RealGene>& x) const override
     {

@@ -116,6 +116,7 @@ namespace gapp::crossover::real
     {
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         GAPP_ASSERT(ga.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent1.fitness.size() == parent2.fitness.size(), "Mismatching parent fitness vector lengths.");
 
         const auto& bounds = ga.gene_bounds();
         const size_t chrom_len = parent1.chromosome.size();

@@ -14,8 +14,8 @@ template<typename T>
 class DummyFitnessFunction final : public FitnessFunctionBase<T>
 {
 public:
-    explicit DummyFitnessFunction(size_t chrom_len, size_t nobj = 1, bool var_len = false, bool dynamic = false) :
-        FitnessFunctionBase<T>(chrom_len, var_len, dynamic), nobj_(nobj) {}
+    explicit DummyFitnessFunction(size_t chrom_len, size_t nobj = 1, bool dynamic = false) :
+        FitnessFunctionBase<T>(chrom_len, dynamic), nobj_(nobj) {}
 private:
     FitnessVector invoke(const Chromosome<T>&) const override { return FitnessVector(nobj_, 0.0); } // NOLINT(*return-braced-init-list)
     size_t nobj_;

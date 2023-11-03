@@ -26,7 +26,7 @@ namespace gapp::crossover
     * the rest of the time the returned children will be the same as the parents.
     * 
     * New crossover operators should be derived from this class, and they must implement the
-    * following virtual methods:
+    * following virtual method:
     * 
     *   - crossover : Perform the crossover on 2 candidate solutions.
     * 
@@ -63,6 +63,21 @@ namespace gapp::crossover
         constexpr Probability crossover_rate() const noexcept { return pc_; }
 
         /**
+        * This method specifies whether the crossover operator supports variable
+        * chromosome lengths or not. If variable chromosome lengths are supported,
+        * the Candidates passed to the crossover operator are allowed to have
+        * chromosome lengths different from eachother, and from the chromosome length
+        * specified for the GA the operator is used in. Otherwise the chromosome length
+        * of every Candidate must be the same.
+        *
+        * This method will return false by default. If a particular crossover method allows
+        * variable chromosome lengths, it should override this method to return true.
+        *
+        * @returns True if the crossover operator support variable chromosome lengths.
+        */
+        constexpr virtual bool allow_variable_chrom_length() const noexcept { return false; }
+
+        /**
         * Perform the crossover operation on 2 candidate solutions with the set probability.
         * This function is implemented by crossover().
         *
@@ -90,7 +105,7 @@ namespace gapp::crossover
         * The implementation of the crossover operator. Performs the crossover operation
         * on 2 parent solutions to generate 2 child solutions from them.
         * The implementation of this function shouldn't handle the crossover probability,
-        * but instead it should perform the crossover unconditionally.
+        * instead it should just perform the crossover operation unconditionally.
         * The chromosomes of the returned children should be valid solutions for the given
         * problem and %GA, but the rest of their properties (eg. fitness) are irrelevant.
         * 
@@ -98,8 +113,7 @@ namespace gapp::crossover
         * (ie. population_size/2 number of times, rounded up if the population size is odd)
         * in every generation.
         * 
-        * The function must be thread-safe if parallel execution is enabled for the
-        * GAs (which is true by default).
+        * The implementation of this function must be thread-safe.
         * 
         * @param ga The genetic algorithm the crossover operator is being used in.
         * @param parent1 The first parent solution.
