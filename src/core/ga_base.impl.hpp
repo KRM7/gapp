@@ -105,23 +105,15 @@ namespace gapp
 
     
     template<typename T>
-    inline const FitnessFunctionBase<T>& GA<T>::fitness_function() const& noexcept
+    inline const FitnessFunctionBase<T>* GA<T>::fitness_function() const& noexcept
     {
-        GAPP_ASSERT(fitness_function_, "No fitness function is set for the GA.");
-
-        return *fitness_function_;
+        return fitness_function_.get();
     }
 
     template<typename T>
     inline size_t GA<T>::chrom_len() const noexcept
     {
-        return fitness_function().chrom_len();
-    }
-
-    template<typename T>
-    inline bool GA<T>::dynamic_fitness() const noexcept
-    {
-        return fitness_function().dynamic();
+        return fitness_function() ? fitness_function()->chrom_len() : 0_sz;
     }
 
 
@@ -458,7 +450,7 @@ namespace gapp
         /* If the fitness function is static, and the solution has already
          * been evaluted sometime earlier (in an earlier generation), there
          * is no point doing it again. */
-        if (!sol.is_evaluated || fitness_function_->dynamic())
+        if (!sol.is_evaluated || fitness_function_->is_dynamic())
         {
             std::atomic_ref{ num_fitness_evals_ }.fetch_add(1, std::memory_order_release);
 

@@ -4,6 +4,7 @@
 #define GA_CORE_GA_INFO_HPP
 
 #include "population.hpp"
+#include "fitness_function.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include "../metrics/metric_set.hpp"
@@ -95,17 +96,17 @@ namespace gapp
         size_t max_gen() const noexcept { return max_gen_; }
 
 
-        /** @returns The chromosome length used for the candidates of the population. */
+        /** @returns The fitness function used. A nullptr is returned if no fitness function is set. */
+        [[nodiscard]]
+        virtual const FitnessFunctionInfo* fitness_function() const& noexcept = 0;
+
+        /** @returns The chromosome length used. Returns 0 if the chromosome length is unspecified (ie. no fitness function was set yet). */
         [[nodiscard]]
         virtual size_t chrom_len() const noexcept = 0;
 
         /** @returns The number of objectives of the fitness function. */
         [[nodiscard]]
         size_t num_objectives() const noexcept { GAPP_ASSERT(num_objectives_); return num_objectives_; }
-
-        /** @returns True if a dynamic fitness function is used. */
-        [[nodiscard]]
-        virtual bool dynamic_fitness() const noexcept = 0;
 
 
         /**

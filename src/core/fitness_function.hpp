@@ -3,7 +3,7 @@
 #ifndef GA_CORE_FITNESS_FUNCTION_HPP
 #define GA_CORE_FITNESS_FUNCTION_HPP
 
-#include "population.hpp"
+#include "candidate.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
 #include <functional>
@@ -13,7 +13,55 @@
 namespace gapp
 {
     /**
-    * The base class of the fitness functions used in the algorithms.
+    * The base class of the fitness functions used in the GAs.
+    * Contains all of the properties of a fitness function that are not dependent
+    * on the gene type.
+    * 
+    * Fitness function implementations should not be derived directly from this class,
+    * but instead from FitnessFunctionBase or FitnessFunction.
+    */
+    class FitnessFunctionInfo
+    {
+    public:
+        /**
+        * Create a fitness function.
+        *
+        * @param chrom_len The chromosome length that is expected by the fitness function,
+        *   and will be used for the candidate solutions in the GA. \n
+        *   Must be at least 1, and a value must be specified even if the chromosome lengths are variable,
+        *   as it will still be used to generate the initial population.
+        * @param is_dynamic Should be true if the fitness vector returned for a chromosome will not
+        *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
+        */
+        constexpr FitnessFunctionInfo(Positive<size_t> chrom_len, bool is_dynamic = false) noexcept :
+            chrom_len_(chrom_len), is_dynamic_(is_dynamic)
+        {}
+
+        /** @returns The chromosome length the fitness function expects. */
+        [[nodiscard]]
+        constexpr size_t chrom_len() const noexcept { return chrom_len_; }
+
+        /** @returns True if the fitness function is dynamic. */
+        [[nodiscard]]
+        constexpr bool is_dynamic() const noexcept { return is_dynamic_; }
+
+        /** Destructor. */
+        virtual ~FitnessFunctionInfo()                             = default;
+
+    protected:
+
+        FitnessFunctionInfo(const FitnessFunctionInfo&)            = default;
+        FitnessFunctionInfo(FitnessFunctionInfo&&)                 = default;
+        FitnessFunctionInfo& operator=(const FitnessFunctionInfo&) = default;
+        FitnessFunctionInfo& operator=(FitnessFunctionInfo&&)      = default;
+
+    private:
+        Positive<size_t> chrom_len_;
+        bool is_dynamic_ = false;
+    };
+
+    /**
+    * The base class of the fitness functions used in the GAs.
     * The fitness functions take a candidate solution (chromosome) as a parameter
     * and return a fitness vector after evaluating the chromosome.
     * 
@@ -24,33 +72,13 @@ namespace gapp
     * @tparam T The gene type expected by the fitness function.
     */
     template<typename T>
-    class FitnessFunctionBase
+    class FitnessFunctionBase : public FitnessFunctionInfo
     {
     public:
         /** The gene type of the chromosomes that can be evaluated by the fitness function. */
         using GeneType = T;
 
-        /**
-        * Create a fitness function.
-        *
-        * @param chrom_len The chromosome length that is expected by the fitness function,
-        *   and will be used for the candidate solutions in the algorithm. \n
-        *   Must be at least 1, and a value must be given even if the chromosome lengths are variable,
-        *   as it will be used to generate the initial population.
-        * @param dynamic Should be true if the fitness vector returned for a chromosome will not
-        *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
-        */
-        constexpr FitnessFunctionBase(Positive<size_t> chrom_len, bool dynamic = false) noexcept :
-            chrom_len_(chrom_len), dynamic_(dynamic)
-        {}
-
-        /** @returns The chromosome length the fitness function expects. */
-        [[nodiscard]]
-        constexpr size_t chrom_len() const noexcept { return chrom_len_; }
-
-        /** @returns True if the fitness function is dynamic. */
-        [[nodiscard]]
-        constexpr bool dynamic() const noexcept { return dynamic_; }
+        using FitnessFunctionInfo::FitnessFunctionInfo;
 
         /**
         * Compute the fitness value of a chromosome.
@@ -63,23 +91,9 @@ namespace gapp
         */
         FitnessVector operator()(const Chromosome<T>& chrom) const { return invoke(chrom); }
 
-
-        /** Destructor. */
-        virtual ~FitnessFunctionBase()                                      = default;
-
-    protected:
-
-        FitnessFunctionBase(const FitnessFunctionBase&) noexcept            = default;
-        FitnessFunctionBase(FitnessFunctionBase&&) noexcept                 = default;
-        FitnessFunctionBase& operator=(const FitnessFunctionBase&) noexcept = default;
-        FitnessFunctionBase& operator=(FitnessFunctionBase&&) noexcept      = default;
-
     private:
         /** The implementation of the fitness function. Should be thread-safe. */
         virtual FitnessVector invoke(const Chromosome<T>& chrom) const = 0;
-
-        Positive<size_t> chrom_len_;
-        bool dynamic_ = false;
     };
 
     /**
@@ -109,13 +123,6 @@ namespace gapp
         constexpr FitnessFunction(bool dynamic = false) noexcept :
             FitnessFunctionBase<T>(ChromLen, dynamic)
         {}
-
-    protected:
-
-        FitnessFunction(const FitnessFunction&) noexcept            = default;
-        FitnessFunction(FitnessFunction&&) noexcept                 = default;
-        FitnessFunction& operator=(const FitnessFunction&) noexcept = default;
-        FitnessFunction& operator=(FitnessFunction&&) noexcept      = default;
     };
 
 } // namespace gapp
