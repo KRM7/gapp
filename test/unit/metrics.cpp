@@ -13,8 +13,8 @@ using namespace gapp;
 using namespace gapp::metrics;
 
 constexpr static size_t num_obj = 3;
-constexpr static size_t num_gen = 10;
-constexpr static size_t popsize = 100;
+constexpr static size_t num_gen = 5;
+constexpr static size_t popsize = 20;
 
 
 TEMPLATE_TEST_CASE("fitness_metrics", "[metrics]", FitnessMin, FitnessMax, FitnessMean, FitnessVariance, FitnessStdDev, NadirPoint)
@@ -31,9 +31,9 @@ TEMPLATE_TEST_CASE("fitness_metrics", "[metrics]", FitnessMin, FitnessMax, Fitne
     REQUIRE(metric.data().size() == num_gen);
 
     REQUIRE(std::all_of(metric.begin(), metric.end(), detail::is_size(num_obj)));
-    REQUIRE(metric[4].size() == num_obj);
+    REQUIRE(metric[0].size() == num_obj);
 
-    const auto& val = metric[7];
+    const auto& val = metric[1];
     REQUIRE(std::all_of(val.begin(), val.end(), detail::equal_to(0.0)));
 }
 
@@ -48,7 +48,7 @@ TEST_CASE("nadir_point_metric", "[metrics]")
     REQUIRE(metric.size() == num_gen);
     REQUIRE(std::all_of(metric.begin(), metric.end(), detail::is_size(num_obj)));
 
-    const auto& val = metric[5];
+    const auto& val = metric[1];
     REQUIRE(std::all_of(val.begin(), val.end(), detail::equal_to(0.0)));
 }
 

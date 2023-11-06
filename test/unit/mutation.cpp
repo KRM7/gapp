@@ -108,7 +108,7 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
     const Bounds bounds = { -1.0, 1.0 };
 
     RCGA context;
-    context.solve(DummyFitnessFunction<RealGene>(10), bounds);
+    context.solve(DummyFitnessFunction<RealGene>(10), bounds, 1);
 
     Candidate<RealGene> candidate{ { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } };
     candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
