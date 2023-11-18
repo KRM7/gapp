@@ -173,6 +173,11 @@ selection method used in the GA. If the fitness function can return
 fitness vectors that contain infinite values, the selection method
 (or the algorithm) will have to be chosen accordingly.
 
+Similarly, whether negative fitness values are allowed depends
+on the selection method used, but all selection methods implemented
+as part of the library are able to handle negative values without
+any issues.
+
 ### Thread safety
 
 The candidate solutions in the population are evaluated in parallel
