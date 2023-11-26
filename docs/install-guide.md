@@ -29,7 +29,7 @@ The library uses CMake as its build system, and it's also installed using CMake:
 
 ```shell
 # Get the code by cloning the repo
-git clone https://github.com/KRM7/gapp.git
+git clone https://github.com/KRM7/gapp.git --branch v0.2.0
 # Go to the build directory of the library
 cd gapp/build
 # Configure cmake with the relevant options
@@ -134,7 +134,7 @@ Include(FetchContent)
 FetchContent_Declare(
     gapp
     GIT_REPOSITORY https://github.com/KRM7/gapp.git
-    GIT_TAG        v0.1.0
+    GIT_TAG        v0.2.0
 )
 FetchContent_MakeAvailable(gapp)
 
