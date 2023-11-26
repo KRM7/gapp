@@ -158,7 +158,7 @@ namespace gapp
 
 /* IMPLEMENTATION */
 
-#include "utility/utility.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <functional>
 #include <type_traits>
