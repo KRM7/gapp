@@ -40,12 +40,12 @@ cmake --build . --config Release
 sudo cmake --install . --config Release
 ```
 
-There is also a utility script provided with the project that can be used to install
-the library in fewer steps:
+Alternatively, there's a utility script provided that can be used to
+install the library in fewer steps:
 
 ```shell
-git clone https://github.com/KRM7/gapp.git
-sudo gapp/build/install.sh
+git clone https://github.com/KRM7/gapp.git --branch v0.2.0
+sudo bash gapp/build/install.sh
 ```
 
 The script will perform the installation steps detailed above for all 3 configurations of the library.
@@ -53,7 +53,7 @@ If you want to configure CMake differently from the default, you can pass argume
 install script as you would do to CMake, for example:
 
 ```shell
-sudo gapp/build/install.sh -DBUILD_TESTING=ON
+sudo bash gapp/build/install.sh -DBUILD_TESTING=ON
 ```
 
 ### Install location
@@ -102,7 +102,7 @@ look like:
 project("example_project")
 
 # Find the installed library
-find_package(gapp REQUIRED)
+find_package(gapp CONFIG REQUIRED)
 
 add_executable(example_project "example.cpp")
 # Link the library to the executable
