@@ -29,8 +29,7 @@ int main()
 
     auto solutions = GA.solve(Kursawe2{}, Bounds{ 0.0, 3.14 });
 
-    std::cout << "The optimal solutions of the Kursawe function in 2 dimensions are:\n";
-    std::cout << "x1\t|\tx2\n";
+    std::cout << "The optimal solutions of the Kursawe function in 2 dimensions are:\n x1\t|\tx2\n";
     for (const Candidate<RealGene>& sol : solutions)
     {
         std::cout << sol.chromosome[0] << "\t|\t" << sol.chromosome[1] << "\n";

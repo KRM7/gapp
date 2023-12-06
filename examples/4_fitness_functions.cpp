@@ -47,18 +47,18 @@ int main()
     // single-objective fitness function
     {
         auto solutions = ga.solve(XSquare{}, Bounds{ -100.0, 100.0 });
-        std::cout << "The maximum of x^2 in [-100.0, 100.0] is at x = " << solutions[0].chromosome[0] << "\n";
+        std::cout << "The minimum of x^2 in [-100.0, 100.0] is at x = " << solutions[0].chromosome[0] << "\n";
     }
 
     // multi-objective fitness function
     {
         auto solutions = ga.solve(XSquareMulti{}, Bounds{ -100.0, 100.0 });
-        std::cout << "The maximum of x^2 in [-100.0, 100.0] is at x = " << solutions[0].chromosome[0] << "\n";
+        std::cout << "The minimum of x^2 in [-100.0, 100.0] is at x = " << solutions[0].chromosome[0] << "\n";
     }
 
     // dynamic fitness function
     {
         auto solutions = ga.solve(XSquareDynamic{}, Bounds{ -100.0, 100.0 });
-        std::cout << "The maximum of x^2 in [-100.0, 100.0] is at x = " << solutions[0].chromosome[0] << "\n";
+        std::cout << "The minimum of x^2 in [-100.0, 100.0] is at x = " << solutions[0].chromosome[0] << "\n";
     }
 }

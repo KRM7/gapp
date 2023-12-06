@@ -21,22 +21,24 @@ int main()
 {
     BinaryGA GA;
 
-    GA.solve(problems::Sphere{ 10 });
+    // setting the maximum number of generations
+
+    GA.solve(problems::Sphere{ 10 }); // use the default value
     std::cout << std::format("The GA ran for {} generations.\n", GA.generation_cntr() + 1);
 
-    GA.solve(problems::Sphere{ 10 }, /* generations */ 375);
+    GA.solve(problems::Sphere{ 10 }, /* generations = */ 375);
     std::cout << std::format("The GA ran for {} generations.\n", GA.generation_cntr() + 1);
 
     GA.max_gen(755);
     GA.solve(problems::Sphere{ 10 });
     std::cout << std::format("The GA ran for {} generations.\n", GA.generation_cntr() + 1);
 
-    GA.solve(problems::Sphere{ 10 }, /* generations */ 175);
+    GA.solve(problems::Sphere{ 10 }, /* generations = */ 175);
     std::cout << std::format("The GA ran for {} generations.\n", GA.generation_cntr() + 1);
 
     // early-stop conditions
 
-    GA.stop_condition(stopping::FitnessBestStall{ 3 });
+    GA.stop_condition(stopping::FitnessBestStall{ /* patience = */ 3 });
     GA.solve(problems::Sphere{ 10 });
     std::cout << std::format("The GA ran for {} generations.\n", GA.generation_cntr() + 1);
 
