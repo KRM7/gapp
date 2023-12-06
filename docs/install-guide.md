@@ -1,7 +1,8 @@
 ﻿# Install guide
 
-[Requirements](#requirements)  
+[Requirements](#requirements)    
 [Install with CMake](#install-with-cmake)  
+[Install with vcpkg](#install-with-vcpkg)  
 [Usage with CMake](#usage-with-cmake)  
 [Using FetchContent](#using-fetchcontent)  
 [CMake project options](#cmake-project-options)  
@@ -25,7 +26,7 @@ above are tested (gcc and clang on Linux, msvc and clang-cl on Windows).
 
 ## Install with CMake
 
-The library uses CMake as its build system, and it's also installed using CMake:
+The library uses CMake as its build system, and it can also be installed using CMake:
 
 ```shell
 # Get the code by cloning the repo
@@ -88,6 +89,16 @@ If Catch2 is installed, you can build and run the tests of the project as:
 cmake .. -DBUILD_TESTING=ON
 cmake --build .
 ctest --output-on-failure --schedule-random
+```
+
+
+## Install with vcpkg
+
+The library can also be installed using Microsoft's
+[vcpkg](https://github.com/microsoft/vcpkg/#getting-started) package manager:
+
+```shell
+vcpkg install gapp
 ```
 
 

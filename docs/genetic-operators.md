@@ -13,20 +13,21 @@
 # Genetic operators
 
 The genetic operators are used to create new candidate solutions from the existing
-ones in the population, thus providing the basic search mechanism of the genetic
+ones in the population, providing the basic search mechanism of the genetic
 algorithms. The 2 main operators are the crossover and mutation, but the library
 also allows for specifying a repair function.
 
-The selection method is considered to be a part of the `Algorithm` in the library,
-so it will not be discussed here.
+The selection method is considered to be a part of the `algorithms` in the library,
+so it will not be discussed here. See [algorithms.md](algorithms.md) for more details
+about the selection methods.
 
 The library contains implementations of several crossover and mutation methods
 that can be used. These can be found in the `gapp::crossover` and
 `gapp::mutation` namespaces respectively.
 
-As the genetic operators operate on candidate solutions, their
-implementations depend on the encoding type used for the GA. A given crossover or
-mutation method can only be used with the encoding types it is implemented for.
+As the genetic operators operate on candidate solutions, their implementations depend
+on the encoding type used for the GA. A particular crossover or mutation method can only
+be used with the encoding type it is implemented for.
 Because of this, the implemented crossover and mutation methods are further broken
 up into multiple namespaces based on the encoding type they can be used with.
 For example, the crossover operators are in the following namespaces:
@@ -41,7 +42,8 @@ methods in the `real` namespace can only be used for the `RCGA`, and so on.
 The mutation methods are organized similarly.
 
 The library doesn't provide any repair functions since their use in the GAs
-is optional. These always have to be defined by the user when they are used.
+is optional, and their implementation is highly dependent on the problem itself.
+These always have to be defined by the user when they are needed.
 
 ## Crossover
 
@@ -73,11 +75,15 @@ the crossover probability for the current crossover operator used by the GA:
 ```cpp
 PermutationGA GA;
 GA.crossover_method(crossover::perm::Edge{});
-GA.crossover_rate(0.8);
+GA.crossover_rate(0.8); // same as GA.crossover_method().crossover_rate(0.8)
 ```
 
+Note that regardless of how you set the crossover probability, it is associated
+with a particular crossover operator, not the GA itself, so it will be changed
+when you change the crossover operator.
+
 Some crossover operators may also have additional parameters that are specific
-to the given operator.
+to that operator.
 
 ## Mutation
 
@@ -86,8 +92,8 @@ crossovers in order to promote diversity in the population. This help the GA
 with exploring more of the search space and avoiding convergence to local
 optima.
 
-The mutation operator used by the GAs can be set similar to the crossover operators,
-either in the constructor or by using the `mutation_method` method:
+The mutation operator used by the GAs can be chosen similar to the crossover
+operators, either in the constructor or by using the `mutation_method` method:
 
 ```cpp
 RCGA GA;
@@ -114,11 +120,15 @@ the mutation probability for the current mutation operator of the GA:
 ```cpp
 RCGA GA;
 GA.mutation_method(mutation::real::NonUniform{});
-GA.mutation_rate(0.1);
+GA.mutation_rate(0.1); // same as GA.mutation_method().mutation_rate(0.1)
 ```
 
+Note that just like for the crossovers, the mutation rate is associated with the
+mutation operator, not the GA itself, which means that it will be changed along
+with the mutation operator when that is changed.
+
 Similar to the crossovers, some mutation operators may have additional parameters
-that are specific to the particular operator.
+that are specific to that particular operator.
 
 ## Repair
 
@@ -126,7 +136,8 @@ The repair function is an additional operator that will be applied to each
 solution after the mutations. Using a repair function is optional, and they are
 not used in the GAs by default.
 
-Repair functions can be specified using the `repair_function` method of the GAs:
+The repair function can be specified as some callable object using the `repair_function`
+method of the GAs:
 
 ```cpp
 ga.repair_function([](const GA<RealGene>&, const Chromosome<RealGene>& chrom)
@@ -137,8 +148,7 @@ ga.repair_function([](const GA<RealGene>&, const Chromosome<RealGene>& chrom)
 });
 ```
 
-If a repair function has been set previously, it can be cleared by passing
-a nullptr to the setter:
+The repair function can be reset by passing a nullptr to the setter:
 
 ```cpp
 GA.repair_function(nullptr);
@@ -149,7 +159,7 @@ GA.repair_function(nullptr);
 In addition to the operators already implemented in the library,
 user defined crossover and mutation operators can also be used in the GAs.
 
-The simplest way to do this is to use a lambda function:
+The simplest way to do this is to use a lambda function (or some other callable):
 
 ```cpp
 RCGA ga;
@@ -207,14 +217,16 @@ public:
 };
 ```
 
-There are a few things that should be kept in mind for the implementations
-of these operators regardless of how they are defined:
+There are a couple of things that should be kept in mind when implementing these operators
+regardless of how they are defined:
 
- - The crossover implementation shouldn't take the crossover rate into account.
-   This is done elsewhere.
- - The mutation implementation must take the mutation rate into account, as how
-   the mutation rate is interpreted depends on the specific mutation method.
- - The mutation modifies the `chrom` parameter, and does not return anything.
- - The implementations should be thread-safe.
+ - The crossover implementation should just perform the crossover operation without
+   taking the crossover rate into account. Handling the crossover rate is done elsewhere.
+ - The mutation implementation must take the mutation rate into account, as the
+   interpretation of the mutation rate depends on the specific mutation method
+   (i.e. it could either be a per-gene or per-chromosome probability).
+ - The mutation modifies the `chromosome` parameter directly, and does not return anything.
+ - The implementations should be thread-safe. It can be assumed that the mutation operator
+   has exclusive access to its `chromosome` parameter.
 
 ------------------------------------------------------------------------------------------------

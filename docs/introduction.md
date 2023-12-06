@@ -51,17 +51,17 @@ in the genetic algorithm. There are a number of things to consider when defining
 * the length of the chromosomes
 * the number of objectives
 
-For this problem, we could either represent the solutions as binary strings and use the
+For this problem, we could either somehow represent the solutions as binary strings and use the
 binary-encoded genetic algorithm, or represent them directly using floating-point numbers
 and use the real-encoded GA. Since the second is a more natural representation
 of the problem, we will use that in this example.
 
-The only variable we have is *x*, so the number of variables will be 1, and the only objective
-function is *f(x)*, so the number of objectives will also be 1.
+The only variable we have is *x*, and our only objective function is *f(x)*,
+so the number of variables and the number of objectives are both 1 in this example.
 
-Because we will be using the real-encoded algorithm, there is no difference between
-the number of variables and the chromosome length, as each gene of the chromosome will represent
-a single variable.  
+Since we are going to be using the real-encoded GA, there is no difference between
+the number of variables and the chromosome length. Each real-encoded gene of the chromosome
+will represent a single variable of the problem.  
 (If we were using the binary-encoded GA, each variable would be represented
 by multiple binary genes in the chromosome, making the chromosome length different from the
 number of variables.)
@@ -90,16 +90,19 @@ class SinX : public FitnessFunction<RealGene, /* chrom_length = */ 1>
 
 After the objective function is defined, the next step is to create an instance of the
 appropriate genetic algorithm class. The main GA classes correspond to the available
-encoding types, and they are:
+encoding types:
 
 * BinaryGA (binary-encoded GA)
 * RCGA (real-encoded GA)
 * IntegerGA (integer-encoded GA)
 * PermutationGA (for combinatorial problems)
 
-Since the fitness function we defined uses real-encoding, we need to use the RCGA class.  
-All of the parameters of the GA classes have default values, which should be sufficient
-for this problem, but we will specify a population size to use:
+Since the fitness function we defined uses real-encoding, we need to use the RCGA class.
+
+The GA classes have a large number of parameters, but these parameters all have default
+which should be sufficient for this simple problem, so we will only specify the size of the
+population (note that this is also optional, there is also a default population size that
+could be used instead).
 
 ```cpp
 // create a real-encoded genetic algorithm
@@ -108,19 +111,22 @@ RCGA GA{ /* population_size = */ 100 };
 
 ## Running the algorithm
 
-Once we have the GA, we can use it to find the maximum of our fitness function by using its
+Once we have the GA, we can use it to find the maximum of our fitness function by using the
 `solve` method. The function expects an instance of the fitness function and the interval
-to look for the maximum on in the case of the real-encoded GA:
+in which to look for the maximum. (Whether this interval has to be specified or not depends
+on the encoding type used. In this case we need it because we are using the real-encoded
+GA. If we were using binary encoding for the problem, the bounds would be specified
+implicitly by the encoding, not explicitly in the solve method.)
 
 ```cpp
 // find the maximum of the SinX fitness function in the interval [-3.14, 0]
 auto solutions = GA.solve(SinX{}, Bounds{ -3.14, 0.0 });
 ```
 
-The method returns a `Population` containing the optimal solutions found by the GA.
-This population is guaranteed to contain at least one solution, but it may also have
-more.
-We can print the solution to verify it:
+The method returns a `Population` containing the optimal solutions found by running the GA.
+This population will contain one or more solutions for the problem. For single-objective
+problems it will most likely contain only a single solution.
+We can print this solution to verify it:
 
 ```cpp
 std::cout << "The minimum of sin(x) in [-3.14, 0.0] is at x = " << solutions[0].chromosome[0] << "\n";
@@ -131,23 +137,27 @@ Possible console output:
 
 ```text
 The minimum of sin(x) in [-3.14, 0.0] is at x = -1.57081
-The minimal value of sin(x) in [-3.14, 0.0] is f(x) = 1
+The minimal value of sin(x) in [-3.14, 0.0] is f(x) = -1
 ```
 
-## Customizing the algorithm
+## Customizing the genetic algorithms
 
-In a lot of cases, running the algorithm with the default parameters might not be
+In a lot of cases, running the GAs with the default parameters might not be
 what you want. You can customize all parts of the GAs, we will show some examples here.
 
 For the single-objective algorithms, you can specify both a selection method and a
-population replacement method that should be used:
+population replacement method independently that should be used:
+
+The single-objective algorithms are made up of a selection and a population-replacement
+strategy. These are independent of eachother, and the method used for them can be specified
+as such.
 
 ```cpp
 GA.algorithm(algorithm::SingleObjective{ selection::Tournament{}, replacement::Elitism{} });
 ```
 
-The crossover and mutation methods can also be changed, but these must be appropriate for
-the encoding method that is used:
+The crossover and mutation operators can also be changed, but these must match the encoding
+type of the GA class being used.
 
 ```cpp
 GA.crossover_method(crossover::real::Wright{ /* crossover_rate = */ 0.8 });
@@ -155,16 +165,16 @@ GA.mutation_method(mutation::real::Gauss{ /* mutation_rate = */ 0.1 });
 ```
 
 When you run the algorithm, you might also want to specify a different limit for
-how many generations it should run for. You can do this either in the `solve` method
-or just use the setter the GAs provide:
+the maximum number of generations that the GA can run for. You can do this either in the
+`solve` method, or by using the setter the GAs provide:
 
 ```cpp
 GA.max_gen(1000); // run the GA for 1000 generations at most
 ```
 
 In addition to specifying the maximum number of generations, you can also specify
-an early-stop condition that will stop the run early if some condition is met.
-For example we could stop the run if the best fitness value of the population hasn't
+an early-stop condition that will stop the run earlier, when some specific condition is met.
+For example, we could stop the algorithm if the best fitness value in the population hasn't
 improved significantly for over 10 consecutive generations, and the mean fitness of the
 population has also not improved for 2 generations:
 
@@ -192,16 +202,16 @@ The minimal value of sin(x) in [-3.14, 0.0] is f(x) = -1
 
 ## Tracking the evolution process
 
-In addition to simply running a genetic algorithm, you might also want to track some
+In addition to simply running a genetic algorithm, we might also want to track some
 properties of the population throughout the generations of a run. You can do this using
 the metrics provided by the library.  
-For example to track the mean and maximum fitness value of each generation:
+For example, to track the mean and maximum fitness values of each generation:
 
 ```cpp
 GA.track(metrics::FitnessMean{}, metrics::FitnessMax{});
 ```
 
-and then after the run you can access these metrics:
+These metrics can then be accessed after the run:
 
 ```cpp
 auto fmean = GA.get_metric<metrics::FitnessMean>();
@@ -209,7 +219,7 @@ auto fmax = GA.get_metric<metrics::FitnessMax>();
 // fmean[0][0] -> The mean value of the first fitness function in the first generation.
 ```
 
-These metrics are returned as a matrix, each row representing a generation,
+The fitness metrics are returned as a matrix, each row representing a generation,
 and each column representing an objective. In this case the matrix only has a single column
 since we are solving a single-objective problem.
 

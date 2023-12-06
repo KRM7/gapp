@@ -13,8 +13,8 @@
 # Stop conditions
 
 The stop condition of the GAs determine when the run will be terminated.
-By default, a run will stop when reaching the maximum number of generations
-specified in `solve()`, or in the case where no number was specified there,
+By default, a run will only stop when reaching the maximum number of generations
+specified in `solve()`, or in the case where no maximum was specified there,
 it will be the number of generations set using `max_gen()`, or the default
 value:
 
@@ -41,7 +41,7 @@ an early-stop condition in addition to the maximum number of generations.
 The early-stop condition can be used to terminate a run before it reaches the
 maximum number of generations set, when the early-stop condition is met. Note
 that even if such a stop condition is set, the GA will still respect the
-maximum number of generations set, and it will always stop when reaching that
+maximum number of generations set, and it will always stop when reaching that,
 regardless of the early-stop condition.
 
 ## Usage
@@ -71,8 +71,8 @@ GA.stop_condition(stopping::NoEarlyStop{});
 
 ## Composite early-stop conditions
 
-Stop conditions can be combined to create more complex stop conditions
-using `operator&&` and `operator||`. This allows for specifying more complex
+Early-stop conditions can be combined to create more complex stop conditions
+using `operator&&`, `operator||`, and `operator!`. This allows for specifying more complex
 stopping criterion without having to write your own custom stop conditions:
 
 ```cpp
@@ -84,7 +84,7 @@ GA.stop_condition(stopping::FitnessMeanStall{ 5 } && stopping::FitnessBestStall{
 If the stop conditions already implemented by the library are not enough,
 you can also define your own stop conditions.
 
-For simple stop conditions, you can use a lambda function:
+For simple stop conditions, you can use a lambda function (or any other callable):
 
 ```cpp
 GA.stop_condition([](const GaInfo& ga)
@@ -103,8 +103,8 @@ The class should be derived from `stopping::StopCondition`, and implement
 ```cpp
 class MyStopCondition : public stopping::StopCondition
 {
-    // Check if the stopping criterion is met,
-    // called once in every generation
+    // Check if the stopping criterion is met.
+    // Called once in every generation
     bool stop_condition(const GaInfo& ga) override
     {
         ...
@@ -112,7 +112,7 @@ class MyStopCondition : public stopping::StopCondition
         return false;
     }
 
-    // Initialize the stop condition, called once at the start
+    // Initialize the stop condition. Called once at the start
     // of a run. Implementing this is optional.
     void initialize(const GaInfo& ga) override { ... }
 };
