@@ -35,7 +35,7 @@ namespace gapp::algorithm
     *  - nextPopulationImpl               : Selects the candidates of the next population from the parent and the child populations.
     *  - optimalSolutionsImpl  (optional) : Selects the optimal solutions of the population.
     */
-    class Algorithm : protected selection::Selection, protected replacement::Replacement
+    class Algorithm : private selection::Selection, private replacement::Replacement
     {
     public:
         /**
@@ -48,7 +48,7 @@ namespace gapp::algorithm
         *
         * @param ga The %GA that uses the algorithm.
         */
-        void initialize(const GaInfo& ga) { initializeImpl(ga); };
+        void initialize(const GaInfo& ga) { initializeImpl(ga); }
 
         /**
         * Prepare the algorithm for the selections if neccesary.
