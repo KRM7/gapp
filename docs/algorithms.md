@@ -12,38 +12,40 @@
 
 # Algorithms
 
-The algorithms are used in the library to define different genetic algorithm
-variants. They consist of the selection and population replacement methods,
-which define the overall evolution process in combination with the genetic
-operators.
+The *algorithms* in the library refer to a part of the GAs, which are used
+to define different genetic algorithm variants. They consist of a selection and
+a population replacement strategy, which define the overall evolution process in
+combination with the genetic operators. For some algorithms, the selection and
+replacement methods may be specified independently of eachother, while other
+algorithms might not allow for this and simply use the methods defined as part
+of that algorithm.
 
-The algorithms in the library belong to 2 categories: single-, and
-multi-objective algorithms. These can only be used for single- and
-multi-objective optimization problems respectively. It is possible
-to implement general algorithms that work for any type of problem, but the
-library currently doesn't have such an algorithm.
+The algorithms implemented by the library generally belong to 2 categories:
+single-, and multi-objective algorithms. These can only be used for single-
+and multi-objective optimization problems respectively. It is also possible
+to implement more general algorithms that work for any type of problem, but
+the library currently doesn't include such an algorithm.
 
-There are 3 algorithms provided by the library:
+There are 3 algorithms implemented by the library, defined in the `gapp::algorithm` namespace:
 
  - SingleObjective (single-objective)
  - NSGA-II	(multi-objective)
  - NSGA-III	(multi-objective)
 
- All of these algorithms are in the `gapp::algorithm` namespace.
-
 ## Selecting the algorithm
 
-By default, if no algorithm is specified for the GA, one will automatically
-be selected based on the number of objectives of the fitness function being used.
-This means that the default algorithm used by the GA will always be compatible
-with the fitness functions regardless of the number of objectives.
+By default, if no algorithm is explicitly specified for the GA, a default one will
+automatically be selected based on the number of objectives of the fitness function
+being used.
+As a result of this, the default algorithm used by the GA will always be compatible
+with the fitness function regardless of the number of objectives.
 
 ```cpp
 BinaryGA ga;
 ga.solve(f); // run using the default algorithm
 ```
 
-It is also possible to select a different algorithm to be used by the GA.
+It is also possible to explicitly select the algorithm to be used by the GA.
 This can be done either in the constructor or by using the `algorithm` method:
 
 ```cpp
@@ -58,9 +60,9 @@ The single-objective algorithms can only be used for single-objective fitness
 functions, and the multi-objective algorithms can only be used with multi-objective
 fitness functions.
 
-If an algorithm was explicitly specified, it can be cleared by passing a `nullptr`
+If an algorithm was explicitly specified, it can be reset by passing a `nullptr`
 to the `algorithm` setter. This will result in the default algorithm being used,
-as in the case where no algorithm was explicitly set.
+the same as in the case where no algorithm was explicitly set.
 
 ```cpp
 ga.algorithm(nullptr);
@@ -71,11 +73,11 @@ ga.solve(f); // uses the default algorithm
 
 The `SingleObjective` algorithm is not a concrete algorithm implementation
 like the NSGA-II and NSGA-III algorithms are. It is simply a wrapper that
-combines a selection and a population replacement method. These methods
-can be selected independently of eachother in the `SingleObjective` algorithm.
+combines a selection and a population replacement method, which can be
+specified independently of eachother.
 
 The library implements several selection and population replacement methods
-that can be used. These are in the `gapp::selection` and `gapp::replacement`
+that can be used. These are defined in the `gapp::selection` and `gapp::replacement`
 namespaces respectively.
 
 ```cpp
@@ -92,9 +94,9 @@ ga.solve(f);
 
 In addition to the algorithms provided by the library, it is also possible to
 use user-defined algorithms in the GAs. These must be implemented as a class
-that is derived from `algorithm::Algorithm`. The class technically only has to implement
+derived from `algorithm::Algorithm`. The class technically only has to implement
 the `selectImpl` and `nextPopulationImpl` methods, but more complex, and efficient
-algorithm implementations will have to implement several additional methods.
+algorithm implementations will want to implement several additional methods.
 
 ```cpp
 class MyAlgorithm : public algorithm::Algorithm
@@ -106,16 +108,17 @@ public:
 
 ## Custom selection and replacement methods (single-objective)
 
-For the `SingleObjective` algorithms, it's possible to define additional selection
+For the `SingleObjective` algorithms, it is possible to define additional selection
 and replacement methods separately without having to define a completely new
 algorithm.
 
 Simple selection and population replacement methods can be defined using a lambda
-or some other callable type. As an example, a simple tournament selection method
-could be implemented this way:
+function or some other callable type. As an example, a simple tournament selection
+method could be implemented the following way:
 
 ```cpp
 algorithm::SingleObjective algorithm;
+
 algorithm.selection_method([](const GaInfo& context, const FitnessMatrix& fmat)
 {
     size_t first  = rng::randomIdx(fmat);
@@ -141,6 +144,14 @@ public:
         return (fmat[first][0] >= fmat[second][0]) ? first : second;
     }
 };
+```
+
+This selection method could then be set for the single-objective algorithm the same
+way as in the case of using a lambda function:
+
+```cpp
+algorithm::SingleObjective algorithm;
+algorithm.selection_method(MyTournamentSelection{});
 ```
 
 Note that a more general version of the tournament selection operator

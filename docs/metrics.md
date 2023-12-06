@@ -16,9 +16,9 @@ By default, when you run the GA, the `solve()` function returns a set
 of pareto optimal solutions, but you won't have any additional information
 about how the population evolved over the run.
 
-In order to get more insight about a run, you can set a number of metrics
-that will be tracked throughout the run. Each metric tracks a particular attribute of the population,
-and the value of the metric will be recorded in each generation.
+In order to get more insight about a run, you can specify a number of metrics
+that will be tracked throughout the run. Each metric tracks a particular attribute
+of the population, with the value of the metric being recorded in each generation.
 
 ## Usage
 
@@ -35,7 +35,8 @@ GA.solve(...);
 ```
 
 After the run, you can access the metrics using the `get_metric<Metric>()` method.
-This will return a reference to the given metric, which stores the values for each generation:
+This will return a reference to the given metric, which stores the values of that
+metric for every generation:
 
 ```cpp
 // Get the metric tracking the minimal fitness values
@@ -47,18 +48,17 @@ std::cout << fmin[3][0];
 
 ## Available metrics
 
-There are a number of metrics already implemented by the library in the
+There are a number of metrics implemented by the library in the
 `gapp::metrics` namespace, see:
 
   - `<metrics/fitness_metrics.hpp>` for fitness related metrics
-  - `<metrics/distribution_metrics.hpp>` for metrics tracking information about
+  - `<metrics/distribution_metrics.hpp>` for metrics tracking
     the distribution of the population in the objective space
-  - `<metrics/misc_metrics.hpp>` for other metrics
+  - `<metrics/misc_metrics.hpp>` for other types of metrics
 
 All of the metrics that are implemented in the library work for any objective
 function, regardless of the number of objectives, but the distribution metrics
 are intended to be used for multi-objective optimization problems.
-
 
 ## Custom metrics
 
@@ -86,7 +86,7 @@ class MyMetric : public metrics::Monitor<MyMetric, std::vector<double>>
 };
 ```
 
-You can use these custom metrics the same way as any other metric that is implemented
-by the library.
+These custom metrics can be used the same way as any other metric implemented
+in the library.
 
 ------------------------------------------------------------------------------------------------

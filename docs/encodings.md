@@ -29,11 +29,11 @@ they can be used for:
   | `PermutationGA` | PermutationGene |     Combinatorial      |
   |   `IntegerGA`   |   IntegerGene   |    Integer-encoded     |
 
-The encoding also determines what kind of crossover and mutation methods
+The encoding also determines which crossover and mutation methods
 can be used in the GA as these genetic operators also depend on the
-encoding, and are generally defined for a particular gene type.
+encoding, and are defined for a particular gene type.
 
-All of the GA classes are in the main `gapp` namespace.
+All of these GA classes are defined in the main `gapp` namespace.
 
 ```cpp
 // the fitness function uses permutation encoding
@@ -48,10 +48,10 @@ BinaryGA{}.solve(problems::Sphere{});
 
 ## Solution representation
 
-The gene type determines how the candidate solutions are encoded in
-the population. The representation of the solutions will be a vector
-of the gene type used in all cases. Currently there is no way to
-change this to use some other data structure. This should be taken
+The gene type determines how the candidate solutions to the problem
+are going be encoded in the population. The representation of the solutions
+will be a vector of the gene type used in all cases. Currently, there is no
+way to change this to use some other data structure, so this should be taken
 into account when defining new encodings.
 
 ```cpp
@@ -72,12 +72,12 @@ The length of the chromosomes is specified as part of the fitness function.
 Normally, this will be a constant value, meaning that all the solutions
 will have the same chromosome lengths throughout a run. However, using a
 constant chromosome length is not a requirement as long as all parts of the
-GA can handle changing lengths. The parts which must be able to do this are
+GA can handle different lengths. The parts which must be able to do this are
 the:
+ - fitness function
  - crossover operator
  - mutation operator
  - repair function
- - fitness function
 
 The crossover and mutation operators both provide a method called
 `allow_variable_chrom_length()` that can be used to check if they support
@@ -103,15 +103,16 @@ for the types that are already in use.
 using MyGeneType = std::variant<double, int>;
 ```
 
-The specialization of `GaTraits<T>` for the gene type is
-required to define some attributes of the GA. These are the
-default crossover and mutation operators that will be used
-by the GA if none are specified explicitly, and the default
-mutation probability for the mutation operators:
+The specialization of `GaTraits<T>` for the gene type is required
+in order to define some attributes of the GA. These are the default
+crossover and mutation operators that will be used by the GA if none
+are specified explicitly, and the default mutation probability used
+for the mutation operators:
 
 ```cpp
 namespace gapp
 {
+    template<>
     struct GaTraits<MyGeneType>
     {
         using DefaultCrossover = MyCrossover;
@@ -122,10 +123,11 @@ namespace gapp
 }; // namespace gapp
 ```
 
-Specializing the `is_bounded<T>` variable is only needed if
-the gene type used will have it's lower and upper bounds specified
+Specializing the `is_bounded<T>` variable template is only needed if
+the gene type used should have it's lower and upper bounds specified
 for each gene in the `solve` method. The value should be `true` in
-this case, and `false` otherwise.
+this case, and `false` otherwise (which is also the default value used
+in the primary template).
 
 ```cpp
 namespace gapp
@@ -156,7 +158,7 @@ public:
 };
 ```
 
-In addition to everything above, crossover and mutation operators will
+In addition to everything above, a crossover and a mutation operator will
 also have to be defined for this encoding type, as these operators depend
 on the encoding type, and the operators included in the library will not
 work for new encodings.

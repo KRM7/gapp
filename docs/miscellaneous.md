@@ -23,8 +23,8 @@ candidate solutions can also involve comparing floating point numbers.
 
 These comparisons are not done as exact comparisons, but instead use
 an absolute and a relative tolerance value. The actual tolerance used for
-a comparison will be the greater of the two tolerances. The values used
-for these can be found using the `math::Tolerances::abs()` and
+a comparison will be the greater of these two tolerances. The values used
+for them can be found using the `math::Tolerances::abs()` and
 `math::Tolerances::rel()` functions.
 
 ```cpp
@@ -61,7 +61,7 @@ implementations. These numbers are generated using a single
 global pseudo-random number generator instance. This PRNG
 instance can be accessed as `rng::prng`. There are also
 several utility functions for generating random numbers using
-the engine in the `rng` namespace, so the generator doesn't
+the engine in the `rng` namespace, so this generator doesn't
 have to be used directly.
 
 The methods of the PRNG and all of the random generation
@@ -74,7 +74,7 @@ by the value of the `GAPP_SEED` macro. The value of this
 can be changed by defining this macro on the command line
 while building and using the library.
 
-The PRNG can also be reseeded using its `seed` method.
+Alternatively, the PRNG can also be reseeded using its `seed` method.
 
 ```cpp
 rng::prng.seed(new_seed);
