@@ -28,7 +28,7 @@ namespace gapp::replacement
     class KeepChildren final : public Replacement
     {
     private:
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
     };
 
 
@@ -69,7 +69,7 @@ namespace gapp::replacement
         constexpr size_t elite_num() const noexcept { return n_; }
 
     private:
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
         size_t n_;
     };
@@ -85,7 +85,7 @@ namespace gapp::replacement
     class KeepBest final : public Replacement
     {
     private:
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
     };
 
 
@@ -96,12 +96,12 @@ namespace gapp::replacement
     class Lambda final : public Replacement
     {
     public:
-        using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
+        using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, const FitnessMatrix&)>;
 
         explicit Lambda(ReplacementCallable f) noexcept;
 
     private:
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
         ReplacementCallable replacement_;
     };

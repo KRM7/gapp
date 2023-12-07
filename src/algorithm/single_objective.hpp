@@ -45,7 +45,7 @@ namespace gapp::algorithm
         * when not using a replacement policy derived from replacement::Replacement.
         * @see replacement_method()
         */
-        using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)>;
+        using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, const FitnessMatrix&)>;
 
 
         /**
@@ -153,7 +153,7 @@ namespace gapp::algorithm
         void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last) override;
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
         std::unique_ptr<selection::Selection> selection_;
         std::unique_ptr<replacement::Replacement> replacement_;

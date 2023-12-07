@@ -343,24 +343,21 @@ namespace gapp::algorithm
         pimpl_->recalcNicheCounts(pfronts.begin(), pfronts.end());
     }
 
-    std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator parents_first,
-                                                                    FitnessMatrix::const_iterator /* parents_last */,
-                                                                    FitnessMatrix::const_iterator children_last)
+    std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         GAPP_ASSERT(ga.num_objectives() > 1);
-        GAPP_ASSERT(size_t(children_last - parents_first) >= ga.population_size());
-        GAPP_ASSERT(parents_first->size() == ga.num_objectives());
+        GAPP_ASSERT(fmat.ncols() == ga.num_objectives());
 
         const size_t popsize = ga.population_size();
 
-        auto pfronts = dtl::nonDominatedSort(parents_first, children_last);
+        auto pfronts = dtl::nonDominatedSort(fmat.begin(), fmat.end());
         auto [partial_first, partial_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);
 
-        pimpl_->sol_info_.resize(children_last - parents_first);
+        pimpl_->sol_info_.resize(fmat.size());
         std::for_each(pfronts.begin(), pfronts.end(), [this](const FrontInfo& sol) { pimpl_->sol_info_[sol.idx].rank = sol.rank; });
 
         /* The ref lines of the candidates after partial_last are irrelevant, as they can never be part of the next population. */
-        pimpl_->associatePopWithRefs(parents_first, children_last, pfronts.begin(), partial_last);
+        pimpl_->associatePopWithRefs(fmat.begin(), fmat.end(), pfronts.begin(), partial_last);
         /* The niche counts should be calculated excluding the partial front for now. */
         pimpl_->recalcNicheCounts(pfronts.begin(), partial_first);
 

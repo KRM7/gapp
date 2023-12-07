@@ -33,24 +33,18 @@ namespace gapp::replacement
         * Select the candidates of the next generation from the candidates of the
         * combined current and child populations.
         *
-        * The fitness matrix is given as the contiguous range [first, last), where
-        * the subrange [first, children_first) belongs to the current population,
-        * and the [children_first, last) subrange belongs to the child population.
+        * The fitness matrix is given as the combined fitness matrix of the parent
+        * and child populations' fitness matrices. The top half (first population_size elements)
+        * of the matrix corresponds to the parent population, while the rest (another population_size
+        * elements) is the fitness matrix of the child population.
         * 
-        * This method should return (population_size) number of unique indices from this fitness matrix,
-        * assuming the index of the first iterator is 0.
+        * The method should return (population_size) number of unique indices from this fitness matrix.
         * 
         * @param ga The %GA that uses the update method.
-        * @param first The first element of the fitness matrix (first parent).
-        * @param children_first The first element of the fitness matrix that belongs to a child.
-        * @param last The end iterator of the fitness matrix.
-        * 
+        * @param fmat The fitness matrix of the combined parent and child populations.
         * @returns The indices of the candidates selected from the fitness matrix.
         */
-        virtual std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
-                                                       FitnessMatrix::const_iterator first,
-                                                       FitnessMatrix::const_iterator children_first,
-                                                       FitnessMatrix::const_iterator last) = 0;
+        virtual std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) = 0;
         
 
         /** Destructor. */

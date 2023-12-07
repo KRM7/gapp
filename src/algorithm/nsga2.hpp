@@ -38,10 +38,7 @@ namespace gapp::algorithm
         void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) override {}
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga,
-                                               FitnessMatrix::const_iterator first,
-                                               FitnessMatrix::const_iterator children_first,
-                                               FitnessMatrix::const_iterator last) override;
+        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
         std::vector<size_t> optimalSolutionsImpl(const GaInfo& ga) const override;
 
