@@ -39,7 +39,7 @@ namespace gapp::algorithm
         std::move(children.begin(), children.end(), std::back_inserter(parents));
         const FitnessMatrix fmat = detail::toFitnessMatrix(parents);
 
-        const auto next_indices = nextPopulationImpl(ga, fmat.begin(), fmat.begin() + ga.population_size(), fmat.end());
+        const auto next_indices = nextPopulationImpl(ga, fmat);
 
         GAPP_ASSERT(std::all_of(next_indices.begin(), next_indices.end(), detail::less_than(parents.size())),
                   "An invalid index was returned by nextPopulationImpl().");

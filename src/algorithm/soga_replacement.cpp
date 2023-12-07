@@ -12,33 +12,35 @@
 
 namespace gapp::replacement
 {
-    std::vector<size_t> KeepChildren::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator, FitnessMatrix::const_iterator)
+    std::vector<size_t> KeepChildren::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix&)
     {
         return detail::index_vector(ga.population_size(), ga.population_size());
     }
 
-    std::vector<size_t> Elitism::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator)
+    std::vector<size_t> Elitism::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
-        const size_t n = std::min(n_, ga.population_size());
+        GAPP_ASSERT(fmat.size() >= 2 * ga.population_size());
 
-        const auto sorted_parent_indices = detail::partial_argsort(first, first + n, children_first,
+        const size_t elite_count = std::min(n_, ga.population_size());
+
+        const auto sorted_parent_indices = detail::partial_argsort(fmat.begin(), fmat.begin() + elite_count, fmat.begin() + ga.population_size(),
         [](const auto& lhs, const auto& rhs) noexcept
         {
             return math::paretoCompareLess(rhs, lhs); // descending
         });
 
         std::vector<size_t> indices(ga.population_size());
-        std::copy(sorted_parent_indices.begin(), sorted_parent_indices.begin() + n, indices.begin());
-        std::iota(indices.begin() + n, indices.end(), ga.population_size());
+        std::copy(sorted_parent_indices.begin(), sorted_parent_indices.begin() + elite_count, indices.begin());
+        std::iota(indices.begin() + elite_count, indices.end(), ga.population_size());
 
         return indices;
     }
 
-    std::vector<size_t> KeepBest::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
+    std::vector<size_t> KeepBest::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
-        GAPP_ASSERT(size_t(children_first - first) == ga.population_size());
+        GAPP_ASSERT(fmat.size() >= ga.population_size());
 
-        auto sorted_indices = detail::partial_argsort(first, children_first, last,
+        auto sorted_indices = detail::partial_argsort(fmat.begin(), fmat.begin() + ga.population_size(), fmat.end(),
         [](const auto& lhs, const auto& rhs) noexcept
         {
             return math::paretoCompareLess(rhs, lhs); // descending
@@ -56,11 +58,11 @@ namespace gapp::replacement
         replacement_ = std::move(f);
     }
 
-    std::vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator children_first, FitnessMatrix::const_iterator last)
+    std::vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         GAPP_ASSERT(replacement_);
 
-        return replacement_(ga, first, children_first, last);
+        return replacement_(ga, fmat);
     }
 
 } // namespace gapp::replacement
