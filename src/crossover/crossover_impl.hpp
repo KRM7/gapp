@@ -112,24 +112,20 @@ namespace gapp::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
+        GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
         GAPP_ASSERT(std::all_of(crossover_points.begin(), crossover_points.end(), detail::between(0_sz, chrom_len)));
 
         std::sort(crossover_points.begin(), crossover_points.end());
-        crossover_points.push_back(chrom_len);
+        if (crossover_points.size() % 2) crossover_points.push_back(chrom_len);
 
-        Candidate child1{ parent1 }, child2{ parent2 };
+        Candidate child1{ parent2 }, child2{ parent1 };
 
-        for (size_t i = 0, j = 0; j < crossover_points.size(); j++)
+        for (size_t i = 1; i < crossover_points.size(); i += 2)
         {
-            if (j % 2)
-            {
-                i = crossover_points[j];
-                continue;
-            }
-            for (; i < crossover_points[j]; i++)
+            for (size_t j = crossover_points[i - 1]; j < crossover_points[i]; j++)
             {
                 using std::swap;
-                swap(child1.chromosome[i], child2.chromosome[i]);
+                swap(child1.chromosome[j], child2.chromosome[j]);
             }
         }
 
