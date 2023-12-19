@@ -33,11 +33,9 @@ TEST_CASE("matrix", "[matrix]")
 
         STATIC_REQUIRE(std::is_same_v<Iterator::value_type, Row>);
         STATIC_REQUIRE(std::is_same_v<Iterator::reference, Row>);
-        STATIC_REQUIRE(std::is_same_v<Iterator::pointer, Row>);
 
         STATIC_REQUIRE(std::is_same_v<ConstIterator::value_type, ConstRow>);
         STATIC_REQUIRE(std::is_same_v<ConstIterator::reference, ConstRow>);
-        STATIC_REQUIRE(std::is_same_v<ConstIterator::pointer, ConstRow>);
     }
 
     Matrix<int> mat1;
@@ -279,9 +277,9 @@ TEST_CASE("matrix_algorithms", "[matrix]")
         }
     }
 
-    bool all_zero = std::all_of(mat1.cbegin(), mat1.cend(), [](auto row)
+    const bool all_zero = std::all_of(mat1.cbegin(), mat1.cend(), [](auto row)
     {
-        return std::all_of(row.begin(), row.end(), [](int entry) { return entry == 0; });
+        return std::all_of(row.begin(), row.end(), equal_to(0));
     });
 
     REQUIRE(all_zero);

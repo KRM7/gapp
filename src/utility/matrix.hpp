@@ -29,7 +29,7 @@ namespace gapp::detail
 
 
     template<typename T, typename A = std::allocator<T>>
-    class Matrix : public reverse_iterator_interface<Matrix<T, A>>
+    class Matrix : public iterator_interface<Matrix<T, A>>
     {
     public:
         using RowRef      = MatrixRowRef<T, A>;
@@ -38,28 +38,39 @@ namespace gapp::detail
         friend class MatrixRowBase<RowRef, Matrix>;
         friend class MatrixRowBase<ConstRowRef, const Matrix>;
 
-        class RowIterator;
-        class ConstRowIterator;
+        using value_type        = RowRef;
+        using allocator_type    = A;
+        using storage_type      = std::vector<T, A>;
 
-        using value_type      = RowRef;
-        using allocator_type  = A;
-        using storage_type    = std::vector<T, A>;
+        using size_type         = typename storage_type::size_type;
+        using difference_type   = typename storage_type::difference_type;
 
-        using size_type       = typename storage_type::size_type;
-        using difference_type = typename storage_type::difference_type;
+        using reference         = RowRef;
+        using const_reference   = ConstRowRef;
 
-        using reference       = RowRef;
-        using pointer         = RowIterator;
-        using const_reference = ConstRowRef;
-        using const_pointer   = ConstRowIterator;
-
-        using element_type            = T;
-        using element_reference       = typename storage_type::reference;
-        using const_element_reference = typename storage_type::const_reference;
-        using element_pointer         = typename storage_type::pointer;
-        using const_element_pointer   = typename storage_type::const_pointer;
+        using element_type              = T;
+        using element_reference         = typename storage_type::reference;
+        using const_element_reference   = typename storage_type::const_reference;
 
         /* Iterators */
+
+        class ConstRowIterator : public stable_iterator_base<ConstRowIterator, const Matrix, ConstRowRef, ConstRowRef, detail::proxy_ptr<RowRef>, difference_type>
+        {
+        public:
+            using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, ConstRowRef, ConstRowRef, detail::proxy_ptr<RowRef>, difference_type>;
+            using my_base_::my_base_;
+            using typename my_base_::iterator_category;
+        };
+
+        class RowIterator : public stable_iterator_base<RowIterator, Matrix, RowRef, RowRef, detail::proxy_ptr<RowRef>, difference_type>
+        {
+        public:
+            using my_base_ = stable_iterator_base<RowIterator, Matrix, RowRef, RowRef, detail::proxy_ptr<RowRef>, difference_type>;
+            using my_base_::my_base_;
+            using typename my_base_::iterator_category;
+
+            constexpr /* implicit */ operator ConstRowIterator() const noexcept { return { this->data_, this->idx_ }; }
+        };
 
         using iterator               = RowIterator;
         using const_iterator         = ConstRowIterator;
@@ -67,10 +78,10 @@ namespace gapp::detail
         using const_reverse_iterator = std::reverse_iterator<ConstRowIterator>;
 
         constexpr iterator begin() noexcept { return iterator(*this, 0); }
-        constexpr iterator end() noexcept   { return iterator(*this, this->size()); }
+        constexpr iterator end() noexcept   { return iterator(*this, nrows_); }
 
         constexpr const_iterator begin() const noexcept { return const_iterator(*this, 0); }
-        constexpr const_iterator end() const noexcept   { return const_iterator(*this, this->size()); }
+        constexpr const_iterator end() const noexcept   { return const_iterator(*this, nrows_); }
 
         /* Special member functions */
 
@@ -85,11 +96,11 @@ namespace gapp::detail
             data_(alloc), nrows_(0), ncols_(0)
         {}
 
-        constexpr Matrix(size_t nrows, size_t ncols) :
+        constexpr Matrix(size_type nrows, size_type ncols) :
             data_(nrows * ncols), nrows_(nrows), ncols_(ncols)
         {}
 
-        constexpr Matrix(size_t nrows, size_t ncols, const T& init, const A& alloc = A()) :
+        constexpr Matrix(size_type nrows, size_type ncols, const T& init, const A& alloc = A()) :
             data_(nrows * ncols, init, alloc), nrows_(nrows), ncols_(ncols)
         {}
 
@@ -99,18 +110,33 @@ namespace gapp::detail
 
         /* Member access */
 
-        constexpr RowRef operator[](size_t row) noexcept
+        constexpr RowRef operator[](size_type row) noexcept
         {
             GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
 
             return RowRef(*this, row);
         }
 
-        constexpr ConstRowRef operator[](size_t row) const noexcept
+        constexpr ConstRowRef operator[](size_type row) const noexcept
         {
             GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
 
             return ConstRowRef(*this, row);
+        }
+
+        constexpr storage_type column(size_type col_idx) const
+        {
+            GAPP_ASSERT(col_idx < ncols_, "Col index out of bounds.");
+
+            storage_type col;
+            col.reserve(nrows());
+
+            for (size_type row = 0; row < nrows(); row++)
+            {
+                col.push_back((*this)(row, col_idx));
+            }
+
+            return col;
         }
 
         constexpr element_reference operator()(size_type row, size_type col) noexcept
@@ -129,14 +155,14 @@ namespace gapp::detail
             return data_[row * ncols_ + col];
         }
 
-        constexpr RowRef front() noexcept { return operator[](0); }
-        constexpr ConstRowRef front() const noexcept { return operator[](0); }
+        constexpr RowRef front() noexcept { return *begin(); }
+        constexpr ConstRowRef front() const noexcept { return *begin(); }
 
-        constexpr RowRef back() noexcept { return operator[](nrows_ - 1); }
-        constexpr ConstRowRef back() const noexcept { return operator[](nrows_ - 1); }
+        constexpr RowRef back() noexcept { return *std::prev(end()); }
+        constexpr ConstRowRef back() const noexcept { return *std::prev(end()); }
 
-        constexpr element_pointer data() noexcept             { return data_.data(); }
-        constexpr const_element_pointer data() const noexcept { return data_.data(); }
+        constexpr auto data() noexcept { return data_.data(); }
+        constexpr auto data() const noexcept { return data_.data(); }
 
         /* Modifiers (for rows) */
 
@@ -188,15 +214,6 @@ namespace gapp::detail
         storage_type data_;
         size_type nrows_ = 0;
         size_type ncols_ = 0;
-
-        /* Helper struct for the iterators' operator-> */
-        template<typename U>
-        struct PtrHelper
-        {
-            /* implicit */ constexpr PtrHelper(const std::remove_cvref_t<U>& row) : row_(row) {}
-            constexpr U* operator->() noexcept { return &row_; }
-            U row_;
-        };
     };
 
     template<typename T, typename A>
@@ -209,7 +226,7 @@ namespace gapp::detail
     /* MATRIX ROW PROXY CLASSES */
 
     template<typename Derived, typename MatrixType>
-    class MatrixRowBase : public reverse_iterator_interface<Derived>
+    class MatrixRowBase : public container_interface<Derived>
     {
     public:
         using value_type      = typename MatrixType::storage_type::value_type;
@@ -246,26 +263,16 @@ namespace gapp::detail
             return begin() + mat_->ncols();
         }
 
-        constexpr reference operator[](size_type col) const noexcept
-        {
-            GAPP_ASSERT(mat_->ncols() > col, "Col index out of bounds.");
-
-            return (*mat_)(row_, col);
-        }
-
-        constexpr size_type size() const noexcept  { return mat_->ncols(); }
         constexpr size_type ncols() const noexcept { return mat_->ncols(); }
-
-        constexpr bool empty() const noexcept { return size() == 0_sz; }
         
         template<typename alloc_type>
         explicit operator std::vector<value_type, alloc_type>() const { return std::vector<value_type, alloc_type>(begin(), end()); }
 
-        /* implicit */ operator std::span<copy_const_t<MatrixType, value_type>>() const { return {begin(), end()}; }
+        /* implicit */ operator std::span<copy_const_t<MatrixType, value_type>>() const { return { begin(), end() }; }
 
         /* Comparison operators */
 
-        friend bool operator==(const Derived& lhs, const Derived& rhs) noexcept
+        constexpr friend bool operator==(const Derived& lhs, const Derived& rhs)
         {
             if (lhs.size() != rhs.size()) return false;
             if (lhs.mat_ == rhs.mat_ && lhs.row_ == rhs.row_) return true;
@@ -279,7 +286,7 @@ namespace gapp::detail
         }
 
         template<typename alloc_type>
-        friend bool operator==(const Derived& lhs, const std::vector<value_type, alloc_type>& rhs) noexcept
+        constexpr friend bool operator==(const Derived& lhs, const std::vector<value_type, alloc_type>& rhs)
         {
             if (lhs.size() != rhs.size()) return false;
 
@@ -310,16 +317,6 @@ namespace gapp::detail
 
         MatrixRowRef(const MatrixRowRef&) = default;
         MatrixRowRef(MatrixRowRef&&)      = default;
-
-        const_iterator cbegin() const noexcept
-        {
-            return this->mat_->cbegin() + this->row_ * this->ncols();
-        }
-
-        constexpr const_iterator cend() const noexcept
-        {
-            return cbegin() + this->ncols();
-        }
 
         constexpr const MatrixRowRef& operator=(MatrixRowRef<T, A> rhs) const
         {
@@ -398,47 +395,6 @@ namespace gapp::detail
         ConstMatrixRowRef& operator=(const ConstMatrixRowRef&) = delete;
         ConstMatrixRowRef& operator=(ConstMatrixRowRef&&)      = delete;
     };
-    
-
-    /* MATRIX ROW ITERATORS */
-
-    template<typename T, typename A>
-    class Matrix<T, A>::RowIterator :
-        public stable_iterator_base<typename Matrix<T, A>::RowIterator, Matrix<T, A>,
-                                    typename Matrix<T, A>::RowRef, typename Matrix<T, A>::RowRef, typename Matrix<T, A>::RowRef,
-                                    typename Matrix<T, A>::difference_type>
-    {
-    public:
-        using iterator_category = std::contiguous_iterator_tag;
-        using my_base_ = stable_iterator_base<RowIterator, Matrix, RowRef, RowRef, RowRef, difference_type>;
-        using my_base_::my_base_;
-
-        constexpr PtrHelper<RowRef> operator->() const { return **this; }
-
-        friend class ConstRowIterator;
-    };
-
-
-    template<typename T, typename A>
-    class Matrix<T, A>::ConstRowIterator :
-        public stable_iterator_base<typename Matrix<T, A>::ConstRowIterator, const Matrix<T, A>,
-                                    typename Matrix<T, A>::ConstRowRef, typename Matrix<T, A>::ConstRowRef, typename Matrix<T, A>::ConstRowRef,
-                                    typename Matrix<T, A>::difference_type>
-    {
-    public:
-        using iterator_category = std::contiguous_iterator_tag;
-        using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, ConstRowRef, ConstRowRef, ConstRowRef, difference_type>;
-        using my_base_::my_base_;
-
-        constexpr /* implicit */ ConstRowIterator(RowIterator it) noexcept
-        {
-            this->data_ = it.data_;
-            this->idx_  = it.idx_;
-        }
-
-        constexpr PtrHelper<ConstRowRef> operator->() const { return **this; }
-    };
-
 
 
     /* MATRIX IMPLEMENTATION */

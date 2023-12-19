@@ -16,6 +16,37 @@ namespace gapp::detail
     template<typename T>
     inline constexpr bool always_false = false;
 
+    template<typename T>
+    inline constexpr bool always_true = false;
+
+
+    template<typename T>
+    using iterator_t = typename T::iterator;
+
+    template<typename T>
+    using const_iterator_t = typename T::const_iterator;
+
+    template<typename T>
+    using value_t = typename T::value_type;
+
+    template<typename T>
+    using reference_t = typename T::reference;
+
+    template<typename T>
+    using const_reference_t = typename T::const_reference;
+
+    template<typename T>
+    using pointer_t = typename T::pointer;
+
+    template<typename T>
+    using const_pointer_t = typename T::const_pointer;
+
+    template<typename T>
+    using size_type = typename T::size_type;
+
+    template<typename T>
+    using difference_t = typename T::difference_type;
+
 
     template<template<typename...> class T1, template<typename...> class T2>
     struct is_same_template : std::false_type {};

@@ -9,8 +9,8 @@ class MyTournamentSelection : public selection::Selection
 public:
     size_t selectImpl(const GaInfo&, const FitnessMatrix& fmat) const override
     {
-        size_t first = rng::randomIdx(fmat);
-        size_t second = rng::randomIdx(fmat);
+        size_t first = rng::randomIndex(fmat);
+        size_t second = rng::randomIndex(fmat);
 
         return (fmat[first][0] >= fmat[second][0]) ? first : second;
     }
