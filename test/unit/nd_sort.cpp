@@ -18,33 +18,33 @@ using namespace Catch;
 
 static constexpr double inf = std::numeric_limits<double>::infinity();
 
+const FitnessMatrix fmat = {
+    {  3.0, 3.0  },  // p2 - 0
+    {  4.0, 4.0  },  // p1 - 1
+    {  5.0, 6.0  },  // p0 - 2
+    {  7.0, 2.0  },  // p0 - 3
+    {  4.0, 2.0  },  // p2 - 4
+    {  1.0, 4.0  },  // p2 - 5
+    {  1.0, 2.0  },  // p4 - 6
+    {  7.0, 0.0  },  // p1 - 7
+    {  2.0, 2.0  },  // p3 - 8
+    {  1.0, 6.0  },  // p1 - 9
+    {  6.0, 4.0  },  // p0 - 10
+    {  3.0, 1.0  },  // p3 - 11
+    {  3.0, 7.0  },  // p0 - 12
+    {  1.0, 1.0  },  // p5 - 13
+    {  2.0, 5.0  },  // p1 - 14
+    {  6.0, 1.0  },  // p1 - 15
+    { -1.0, 0.0  },  // p6 - 16
+    { -2.0, inf  },  // p0 - 17
+    {  2.9, 0.9  },  // p4 - 18 ~
+};
+
 TEMPLATE_TEST_CASE_SIG("nd_sort", "[pareto_front]", ((auto F), F), fastNonDominatedSort, dominanceDegreeSort)
 {
-    const FitnessMatrix fmat = {
-        {  3.0, 3.0  },  // p2 - 0
-        {  4.0, 4.0  },  // p1 - 1
-        {  5.0, 6.0  },  // p0 - 2
-        {  7.0, 2.0  },  // p0 - 3
-        {  4.0, 2.0  },  // p2 - 4
-        {  1.0, 4.0  },  // p2 - 5
-        {  1.0, 2.0  },  // p4 - 6
-        {  7.0, 0.0  },  // p1 - 7
-        {  2.0, 2.0  },  // p3 - 8
-        {  1.0, 6.0  },  // p1 - 9
-        {  6.0, 4.0  },  // p0 - 10
-        {  3.0, 1.0  },  // p3 - 11
-        {  3.0, 7.0  },  // p0 - 12
-        {  1.0, 1.0  },  // p5 - 13
-        {  2.0, 5.0  },  // p1 - 14
-        {  6.0, 1.0  },  // p1 - 15
-        { -1.0, 0.0  },  // p6 - 16
-        { -2.0, inf  },  // p0 - 17
-        {  2.9, 0.9  },  // p4 - 18 ~
-    };
+    std::vector<FrontElement> pareto_fronts = F(fmat.begin(), fmat.end());
 
-    ParetoFronts pareto_fronts = F(fmat.begin(), fmat.end());
-
-    ParetoFronts expected_fronts = {
+    std::vector<FrontElement> expected_fronts = {
         { 0,  2 },
         { 1,  1 },
         { 2,  0 },
@@ -78,8 +78,23 @@ TEMPLATE_TEST_CASE_SIG("nd_sort", "[pareto_front]", ((auto F), F), fastNonDomina
 
     math::ScopedTolerances _(0.11, 0.0);
 
-    ParetoFronts pareto_fronts_approx = F(fmat.begin(), fmat.end());
+    std::vector<FrontElement> pareto_fronts_approx = F(fmat.begin(), fmat.end());
     expected_fronts[18].rank = 3;
 
     REQUIRE_THAT(pareto_fronts_approx, Matchers::UnorderedEquals(expected_fronts));
+}
+
+TEST_CASE("pareto_fronts", "[pareto_front]")
+{
+    ParetoFronts pareto_fronts = nonDominatedSort(fmat.begin(), fmat.end());
+
+    REQUIRE_THAT(pareto_fronts.ranks(), Matchers::Equals(std::vector<size_t>{ 2, 1, 0, 0, 2, 2, 4, 1, 3, 1, 0, 3, 0, 5, 1, 1, 6, 0, 4 }));
+
+    REQUIRE(pareto_fronts.fronts().size() == 7);
+
+    const ParetoFrontsRange partial_front = pareto_fronts.partialFront(6);
+
+    REQUIRE(partial_front.size() == 5);
+    REQUIRE(partial_front.front().rank == 1);
+    REQUIRE(partial_front.back().rank == 1);
 }

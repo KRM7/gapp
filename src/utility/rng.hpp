@@ -5,13 +5,13 @@
 
 #include "small_vector.hpp"
 #include "type_traits.hpp"
-#include "concepts.hpp"
 #include "bit.hpp"
 #include "rcu.hpp"
 #include "indestructible.hpp"
 #include "utility.hpp"
 #include <algorithm>
 #include <functional>
+#include <ranges>
 #include <array>
 #include <vector>
 #include <span>
@@ -271,9 +271,9 @@ namespace gapp::rng
     IntType randomBinomial(IntType n, double p);
 
 
-    /** Generate a random index for a container. */
-    template<detail::IndexableContainer T>
-    size_t randomIdx(const T& cont);
+    /** Generate a random index for a range. */
+    template<std::ranges::random_access_range R>
+    detail::size_type<R> randomIndex(const R& range);
 
     /** Pick a random element from a range. */
     template<std::forward_iterator Iter>
@@ -425,12 +425,12 @@ namespace gapp::rng
         return rng::randomBinomialExact(n, p);
     }
 
-    template<detail::IndexableContainer T>
-    size_t randomIdx(const T& container)
+    template<std::ranges::random_access_range R>
+    detail::size_type<R> randomIndex(const R& range)
     {
-        GAPP_ASSERT(!container.empty());
+        GAPP_ASSERT(!range.empty());
 
-        return std::uniform_int_distribution{ 0_sz, container.size() - 1 }(rng::prng);
+        return std::uniform_int_distribution<detail::size_type<R>>{ 0, range.size() - 1 }(rng::prng);
     }
 
     template<std::forward_iterator Iter>

@@ -3,7 +3,6 @@
 #ifndef GA_UTILITY_ALGORITHM_HPP
 #define GA_UTILITY_ALGORITHM_HPP
 
-#include "concepts.hpp"
 #include "type_traits.hpp"
 #include "utility.hpp"
 #include <vector>
@@ -11,6 +10,7 @@
 #include <tuple>
 #include <optional>
 #include <algorithm>
+#include <ranges>
 #include <numeric>
 #include <functional>
 #include <iterator>
@@ -244,40 +244,40 @@ namespace gapp::detail
         return result;
     }
 
-    template<detail::IndexableContainer Container, typename T>
-    constexpr std::optional<size_t> index_of(const Container& container, const T& val)
+    template<std::ranges::random_access_range R, typename T>
+    constexpr std::optional<size_t> index_of(const R& range, const T& val)
     {
-        const auto found = std::find(container.begin(), container.end(), val);
-        const size_t idx = std::distance(container.begin(), found);
+        const auto found = std::find(range.begin(), range.end(), val);
+        const size_t idx = std::distance(range.begin(), found);
 
-        return (found != container.end()) ? idx : std::optional<size_t>{};
+        return (found != range.end()) ? idx : std::optional<size_t>{};
     }
 
-    template<detail::IndexableContainer Container, std::predicate<typename Container::value_type> Pred>
-    constexpr std::optional<size_t> find_index(const Container& container, Pred&& pred)
+    template<std::ranges::random_access_range R, typename Pred>
+    requires std::predicate<Pred&, detail::const_reference_t<R>>
+    constexpr std::optional<size_t> find_index(const R& range, Pred&& pred)
     {
-        const auto found = std::find_if(container.begin(), container.end(), std::forward<Pred>(pred));
-        const size_t idx = std::distance(container.begin(), found);
+        const auto found = std::find_if(range.begin(), range.end(), std::forward<Pred>(pred));
+        const size_t idx = std::distance(range.begin(), found);
 
-        return (found != container.end()) ? idx : std::optional<size_t>{};
+        return (found != range.end()) ? idx : std::optional<size_t>{};
     }
 
-    template<detail::IndexableContainer Container, typename Pred>
-    requires std::predicate<Pred&, typename Container::reference>
-    std::vector<size_t> find_indices(const Container& container, Pred&& pred)
+    template<std::ranges::random_access_range R, typename Pred>
+    requires std::predicate<Pred&, detail::const_reference_t<R>>
+    std::vector<size_t> find_indices(const R& range, Pred&& pred)
     {
         std::vector<size_t> indices;
-        indices.reserve(container.size() / 2);
 
-        for (size_t i = 0; i < container.size(); i++)
+        for (size_t i = 0; i < range.size(); i++)
         {
-            if (std::invoke(pred, container[i])) indices.push_back(i);
+            if (std::invoke(pred, range[i])) indices.push_back(i);
         }
 
         return indices;
     }
 
-    template<detail::IndexableContainer Left, detail::IndexableContainer Right>
+    template<std::ranges::random_access_range Left, std::ranges::random_access_range Right>
     void elementwise_min(Left& left, const Right& right, detail::inplace_t)
     {
         GAPP_ASSERT(left.size() == right.size());
@@ -288,7 +288,7 @@ namespace gapp::detail
         }
     }
 
-    template<detail::IndexableContainer Left, detail::IndexableContainer Right>
+    template<std::ranges::random_access_range Left, std::ranges::random_access_range Right>
     void elementwise_max(Left& left, const Right& right, detail::inplace_t)
     {
         GAPP_ASSERT(left.size() == right.size());
@@ -299,30 +299,29 @@ namespace gapp::detail
         }
     }
 
-    template<detail::Container Container, typename T>
-    constexpr bool erase_first_stable(Container& container, const T& value)
+    template<std::ranges::forward_range R, typename T>
+    constexpr bool erase_first_stable(R& range, const T& value)
     {
-        const auto found = std::find(container.begin(), container.end(), value);
-        if (found != container.end())
+        const auto found = std::find(range.begin(), range.end(), value);
+        if (found != range.end())
         {
-            container.erase(found);
+            range.erase(found);
             return true;
         }
         return false;
     }
 
-    template<typename Container>
-    requires detail::IndexableContainer<std::remove_cvref_t<Container>>
-    auto select(Container&& container, const std::vector<size_t>& indices)
+    template<std::ranges::random_access_range R>
+    auto select(R&& range, const std::vector<size_t>& indices)
     {
-        using ValueType = typename std::remove_cvref_t<Container>::value_type;
+        using ValueType = detail::value_t<std::remove_cvref_t<R>>;
 
         std::vector<ValueType> selected;
         selected.reserve(indices.size());
 
         for (size_t idx : indices)
         {
-            selected.push_back(detail::forward_like<Container>(container[idx]));
+            selected.push_back(detail::forward_like<R>(range[idx]));
         }
 
         return selected;

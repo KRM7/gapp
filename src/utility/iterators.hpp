@@ -8,7 +8,10 @@
 #include <iterator>
 #include <type_traits>
 #include <concepts>
+#include <compare>
 #include <limits>
+#include <memory>
+#include <stdexcept>
 #include <cstddef>
 
 namespace gapp::detail
@@ -21,8 +24,47 @@ namespace gapp::detail
     class iterator_interface
     {
     public:
-        constexpr auto cbegin() const noexcept { return derived().begin(); };
-        constexpr auto cend() const noexcept { return derived().end(); };
+        constexpr auto cbegin() const noexcept //requires(std::input_iterator<detail::iterator_t<Derived>>)
+        {
+            return derived().begin();
+        }
+
+        constexpr auto cend() const noexcept //requires(std::input_iterator<detail::iterator_t<Derived>>)
+        {
+            return derived().end();
+        }
+
+        constexpr auto rbegin() //requires(std::bidirectional_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::make_reverse_iterator(derived().end());
+        }
+
+        constexpr auto rbegin() const //requires(std::bidirectional_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::make_reverse_iterator(derived().end());
+        }
+
+        constexpr auto crbegin() const //requires(std::bidirectional_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::make_reverse_iterator(derived().end());
+        }
+
+        constexpr auto rend() //requires(std::bidirectional_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::make_reverse_iterator(derived().begin());
+        }
+
+        constexpr auto rend() const //requires(std::bidirectional_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::make_reverse_iterator(derived().begin());
+        }
+
+        constexpr auto crend() const //requires(std::bidirectional_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::make_reverse_iterator(derived().begin());
+        }
+
+        friend auto operator<=>(const iterator_interface&, const iterator_interface&) = default;
 
     private:
         constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
@@ -35,19 +77,98 @@ namespace gapp::detail
     *   begin(), end() with const overloads
     */
     template<typename Derived>
-    class reverse_iterator_interface : public iterator_interface<Derived>
+    class container_interface : public iterator_interface<Derived>
     {
     public:
-        constexpr auto rbegin()        { return std::make_reverse_iterator(derived().end()); }
-        constexpr auto rbegin() const  { return std::make_reverse_iterator(derived().end()); }
-        constexpr auto crbegin() const { return std::make_reverse_iterator(derived().cend()); }
-        constexpr auto rend()          { return std::make_reverse_iterator(derived().begin()); }
-        constexpr auto rend() const    { return std::make_reverse_iterator(derived().begin()); }
-        constexpr auto crend() const   { return std::make_reverse_iterator(derived().cbegin()); }
+        constexpr size_t size() const noexcept //requires(std::forward_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::distance(derived().begin(), derived().end());
+        }
+
+        constexpr bool empty() const noexcept //requires(std::input_iterator<detail::iterator_t<Derived>>)
+        {
+            return derived().begin() == derived().end();
+        }
+
+        constexpr decltype(auto) front() //requires(std::input_iterator<detail::iterator_t<Derived>>)
+        {
+            return *derived().begin();
+        }
+
+        constexpr decltype(auto) front() const //requires(std::input_iterator<detail::iterator_t<Derived>>)
+        {
+            return *derived().begin();
+        }
+
+        constexpr decltype(auto) back() //requires(std::bidirectional_iterator<detail::iterator_t<Derived>>)
+        {
+            return *std::prev(derived().end());
+        }
+
+        constexpr decltype(auto) back() const //requires(std::bidirectional_iterator<detail::iterator_t<Derived>>)
+        {
+            return *std::prev(derived().end());
+        }
+
+        constexpr decltype(auto) operator[](size_t idx) //requires(std::random_access_iterator<detail::iterator_t<Derived>>)
+        {
+            GAPP_ASSERT(idx < size(), "Index out of bounds.");
+
+            return *std::next(derived().begin(), idx);
+        }
+
+        constexpr decltype(auto) operator[](size_t idx) const //requires(std::random_access_iterator<detail::iterator_t<Derived>>)
+        {
+            GAPP_ASSERT(idx < size(), "Index out of bounds.");
+
+            return *std::next(derived().begin(), idx);
+        }
+
+        constexpr decltype(auto) at(size_t idx) //requires(std::random_access_iterator<detail::iterator_t<Derived>>)
+        {
+            if (idx >= size()) throw std::out_of_range{ "Index out of bounds." };
+
+            return *std::next(derived().begin(), idx);
+        }
+
+        constexpr decltype(auto) at(size_t idx) const //requires(std::random_access_iterator<detail::iterator_t<Derived>>)
+        {
+            if (idx >= size()) throw std::out_of_range{ "Index out of bounds." };
+
+            return *std::next(derived().begin(), idx);
+        }
+
+        constexpr auto data() noexcept //requires(std::contiguous_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::to_address(derived().begin());
+        }
+
+        constexpr auto data() const noexcept //requires(std::contiguous_iterator<detail::iterator_t<Derived>>)
+        {
+            return std::to_address(derived().begin());
+        }
+
+        friend auto operator<=>(const container_interface&, const container_interface&) = default;
 
     private:
         constexpr Derived& derived() noexcept { return static_cast<Derived&>(*this); }
         constexpr const Derived& derived() const noexcept { return static_cast<const Derived&>(*this); }
+    };
+
+
+    /* Helper class for the iterators' operator-> for when it doesn't return an lvalue reference. */
+    template<typename T>
+    class proxy_ptr
+    {
+    public:
+        constexpr proxy_ptr(T data) noexcept(std::is_nothrow_move_constructible_v<T>) :
+            data_(std::move(data))
+        {}
+
+        constexpr T* operator->() noexcept { return std::addressof(data_); }
+
+    private:
+        T data_;
     };
 
 
@@ -71,19 +192,14 @@ namespace gapp::detail
         constexpr Derived operator++(int)
         {
             Derived old_value(derived());
-            derived().increment();
+            std::ignore = derived().increment();
             return old_value;
         }
 
         constexpr auto operator->() const
         {
-            static_assert(std::is_lvalue_reference_v<dereference_t<Derived>>);
-            return &*derived();
-        }
-
-        friend constexpr bool operator!=(const Derived& lhs, const Derived& rhs)
-        {
-            return !(lhs == rhs);
+            if constexpr (std::is_lvalue_reference_v<dereference_t<Derived>>) return std::addressof(*derived());
+            else return detail::proxy_ptr{ *derived() };
         }
 
     private:
@@ -127,7 +243,7 @@ namespace gapp::detail
         constexpr Derived operator--(int)
         {
             Derived old_value(derived());
-            derived().decrement();
+            std::ignore = derived().decrement();
             return old_value;
         }
 
@@ -144,7 +260,7 @@ namespace gapp::detail
     *   operator<
     *   increment() function (equivalent to prefix operator++)
     *   decrement() function (equivalent to prefix operator--)
-    *   operator +=(n)
+    *   operator+=(n)
     *   operator-(it, it)
     */
     template<typename Derived, typename Distance = std::ptrdiff_t>
@@ -213,8 +329,12 @@ namespace gapp::detail
             data_(nullptr), idx_(0)
         {}
 
+        constexpr stable_iterator_base(Container* container, size_t idx) noexcept :
+            data_(container), idx_(idx)
+        {}
+
         constexpr stable_iterator_base(Container& container, size_t idx) noexcept :
-            data_(&container), idx_(idx)
+            data_(std::addressof(container)), idx_(idx)
         {
             GAPP_ASSERT(data_->size() >= idx_, "Iterator can't refer to element past the end of the range.");
         }
@@ -230,8 +350,8 @@ namespace gapp::detail
         friend constexpr bool operator==(const Derived& lhs, const Derived& rhs)
         {
             GAPP_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
-            GAPP_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
-            GAPP_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
+            GAPP_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid lhs iterator.");
+            GAPP_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid rhs iterator.");
 
             return lhs.idx_ == rhs.idx_;  /* Value-initialized iterators will have the same idx. */
         }
@@ -239,8 +359,8 @@ namespace gapp::detail
         friend constexpr bool operator<(const Derived& lhs, const Derived& rhs)
         {
             GAPP_ASSERT(lhs.data_ == rhs.data_, "Can't compare iterators of different ranges.");
-            GAPP_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid iterator.");
-            GAPP_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid iterator.");
+            GAPP_ASSERT(lhs.data_ == nullptr || lhs.data_->size() >= lhs.idx_, "Can't compare invalid lhs iterator.");
+            GAPP_ASSERT(rhs.data_ == nullptr || rhs.data_->size() >= rhs.idx_, "Can't compare invalid rhs iterator.");
 
             return lhs.idx_ < rhs.idx_;   /* Value-initialized iterators will have the same idx. */
         }
@@ -257,7 +377,7 @@ namespace gapp::detail
         constexpr Derived& decrement()
         {
             GAPP_ASSERT(data_ != nullptr, "Can't decrement value initialized iterator.");
-            GAPP_ASSERT(idx_ != 0, "Can't decremenet the begin iterator.");
+            GAPP_ASSERT(idx_ != 0, "Can't decrement the begin iterator.");
 
             --idx_;
             return static_cast<Derived&>(*this);
@@ -297,28 +417,9 @@ namespace gapp::detail
 
     template<typename Container,
              typename ValueType = typename Container::value_type,
-             typename Reference = typename Container::reference,
-             typename Pointer   = typename Container::pointer,
-             typename Distance  = typename Container::difference_type>
-    class stable_iterator :
-        public stable_iterator_base<stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
-                                    Container, ValueType, Reference, Pointer, Distance>
-    {
-    public:
-        using my_base_ = stable_iterator_base<stable_iterator, Container, ValueType, Reference, Pointer, Distance>;
-        using my_base_::my_base_;
-
-        template<typename, typename, typename, typename, typename, typename>
-        friend class const_stable_iterator;
-    };
-
-
-    template<typename Container,
-             typename ValueType = typename Container::value_type,
              typename Reference = typename Container::const_reference,
              typename Pointer   = typename Container::const_pointer,
-             typename Distance  = typename Container::difference_type,
-             typename Iterator  = stable_iterator<Container, ValueType, typename Container::reference, typename Container::pointer, Distance>>
+             typename Distance  = typename Container::difference_type>
     class const_stable_iterator :
         public stable_iterator_base<const_stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
                                     const Container, ValueType, Reference, Pointer, Distance>
@@ -326,12 +427,24 @@ namespace gapp::detail
     public:
         using my_base_ = stable_iterator_base<const_stable_iterator, const Container, ValueType, Reference, Pointer, Distance>;
         using my_base_::my_base_;
+    };
 
-        /* implicit */ constexpr const_stable_iterator(Iterator it) noexcept
-        {
-            this->data_ = it.data_;
-            this->idx_  = it.idx_;
-        }
+    template<typename Container,
+             typename ValueType = typename Container::value_type,
+             typename Reference = typename Container::reference,
+             typename Pointer   = typename Container::pointer,
+             typename Distance  = typename Container::difference_type,
+             typename CIterator = const_stable_iterator<Container, ValueType, typename Container::const_reference, typename Container::const_pointer, Distance>>
+    class stable_iterator :
+        public stable_iterator_base<stable_iterator<Container, ValueType, Reference, Pointer, Distance>,
+                                    Container, ValueType, Reference, Pointer, Distance>
+    {
+    public:
+        using my_base_ = stable_iterator_base<stable_iterator, Container, ValueType, Reference, Pointer, Distance>;
+        using my_base_::my_base_;
+        using const_iterator = CIterator;
+
+        constexpr /* implicit */ operator const_iterator() const noexcept { return { this->data_, this->idx_ }; }
     };
 
 
@@ -384,7 +497,7 @@ namespace gapp::detail
         using typename my_base_::difference_type;
         using value_type = T;
         using reference  = T;
-        using pointer    = T;
+        using pointer    = detail::proxy_ptr<T>;
 
         constexpr iota_iterator() noexcept :
             value_()
@@ -393,8 +506,6 @@ namespace gapp::detail
         explicit constexpr iota_iterator(T val) noexcept :
             value_(val)
         {}
-
-        pointer operator->() const = delete;
 
         constexpr reference operator*() const noexcept
         {

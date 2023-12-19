@@ -6,8 +6,8 @@
 #include "monitor_base.hpp"
 #include "../utility/type_id.hpp"
 #include "../utility/type_traits.hpp"
-#include "../utility/concepts.hpp"
 #include "../utility/utility.hpp"
+#include <ranges>
 #include <vector>
 #include <type_traits>
 #include <cstddef>
@@ -30,7 +30,7 @@ namespace gapp::metrics
     * @tparam Derived The type of the derived class.
     * @tparam MetricData The type of the container used to store the monitored metrics (eg. std::vector).
     */
-    template<typename Derived, detail::IndexableContainer MetricData>
+    template<typename Derived, std::ranges::random_access_range MetricData>
     class Monitor : public MonitorBase
     {
     public:

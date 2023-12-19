@@ -147,7 +147,7 @@ namespace gapp
 
 
     /* Hash function for the candidates. */
-    template<detail::Hashable T>
+    template<detail::hashable T>
     struct CandidateHasher
     {
         size_t operator()(const Candidate<T>& candidate) const noexcept;
@@ -185,7 +185,7 @@ namespace gapp
         }
     }
 
-    template<detail::Hashable T>
+    template<detail::hashable T>
     size_t CandidateHasher<T>::operator()(const Candidate<T>& candidate) const noexcept
     {
         size_t seed = candidate.chromosome.size();

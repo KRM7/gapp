@@ -399,9 +399,21 @@ namespace gapp::crossover::dtl
 
 
     template<typename T>
-    class NeighbourList : public detail::reverse_iterator_interface<NeighbourList<T>>
+    class NeighbourList : public detail::container_interface<NeighbourList<T>>
     {
     public:
+        using value_type      = T;
+        using reference       = T&;
+        using const_reference = const T&;
+
+        using size_type       = std::size_t;
+        using difference_type = std::ptrdiff_t;
+
+        using iterator               = typename std::vector<value_type>::iterator;
+        using const_iterator         = typename std::vector<value_type>::const_iterator;
+        using reverse_iterator       = typename std::vector<value_type>::reverse_iterator;
+        using const_reverse_iterator = typename std::vector<value_type>::const_reverse_iterator;
+
         NeighbourList() { neighbours_.reserve(4); }
 
         void add(const T& value)
@@ -414,20 +426,17 @@ namespace gapp::crossover::dtl
 
         void remove(const T& value) { detail::erase_first_stable(neighbours_, value); }
 
-        constexpr size_t size() const noexcept { return neighbours_.size(); }
-        constexpr bool empty() const noexcept  { return neighbours_.empty(); }
-
         constexpr auto begin() noexcept       { return neighbours_.begin(); }
         constexpr auto end() noexcept         { return neighbours_.end(); }
         constexpr auto begin() const noexcept { return neighbours_.begin(); }
         constexpr auto end() const noexcept   { return neighbours_.end(); }
 
     private:
-        std::vector<T> neighbours_;
+        small_vector<T> neighbours_;
     };
 
     template<std::unsigned_integral T>
-    class NeighbourList<T> : public detail::reverse_iterator_interface<NeighbourList<T>>
+    class NeighbourList<T> : public detail::iterator_interface<NeighbourList<T>>
     {
     public:
         void add(T value)

@@ -21,34 +21,33 @@ namespace gapp::algorithm
     using namespace dtl;
 
     /* Calculate the crowding distances of the solutions in pfronts. */
-    static std::vector<double> crowdingDistances(const FitnessMatrix& fmat, ParetoFronts pfronts)
+    static std::vector<double> crowdingDistances(const FitnessMatrix& fmat, const std::vector<ParetoFrontsRange>& pareto_fronts)
     {
         GAPP_ASSERT(!fmat.empty());
+        GAPP_ASSERT(std::none_of(pareto_fronts.begin(), pareto_fronts.end(), detail::is_size(0)));
 
         std::vector<double> crowding_distances(fmat.size(), 0.0);
-        const auto front_bounds = paretoFrontBounds(pfronts);
 
         for (size_t obj = 0; obj < fmat.ncols(); obj++)
         {
-            FitnessVector fvec(fmat.size(), 0.0);
-            std::transform(fmat.begin(), fmat.end(), fvec.begin(), detail::element_at(obj));
+            const FitnessVector fvec = fmat.column(obj);
 
-            for (auto [front_first, front_last] : front_bounds)
+            for (const auto& front : pareto_fronts)
             {
-                std::sort(front_first, front_last, [&](const FrontInfo& lhs, const FrontInfo& rhs) noexcept
+                std::sort(front.begin(), front.end(), [&](const FrontElement& lhs, const FrontElement& rhs) noexcept
                 {
                     return fvec[lhs.idx] < fvec[rhs.idx]; // ascending
                 });
 
-                const size_t first_idx = front_first->idx;
-                const size_t last_idx = (front_last - 1)->idx;
+                const size_t first = front.front().idx;
+                const size_t last  = front.back().idx;
 
-                const double finterval = std::max(fvec[last_idx] - fvec[first_idx], 1E-6);
+                const double finterval = std::max(fvec[last] - fvec[first], 1E-8);
 
-                crowding_distances[first_idx] = math::inf<double>;
-                crowding_distances[last_idx]  = math::inf<double>;
+                crowding_distances[first] = math::inf<double>;
+                crowding_distances[last]  = math::inf<double>;
 
-                for (auto it = front_first + 1; it < front_last - 1; ++it)
+                for (auto it = front.begin() + 1; it < front.end() - 1; ++it)
                 {
                     const size_t next = std::next(it)->idx;
                     const size_t prev = std::prev(it)->idx;
@@ -64,58 +63,51 @@ namespace gapp::algorithm
     {
         GAPP_ASSERT(ga.num_objectives() > 1, "The number of objectives must be greater than 1 for the NSGA-II algorithm.");
 
-        const auto& fmat = ga.fitness_matrix();
-        auto pfronts = nonDominatedSort(fmat.begin(), fmat.end());
+        ParetoFronts pareto_fronts = nonDominatedSort(ga.fitness_matrix());
 
-        ranks_ = paretoRanks(pfronts);
-        dists_ = crowdingDistances(fmat, std::move(pfronts));
+        ranks_ = pareto_fronts.ranks();
+        dists_ = crowdingDistances(ga.fitness_matrix(), pareto_fronts.fronts());
     }
 
     size_t NSGA2::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
     {
         GAPP_ASSERT(!fmat.empty() && fmat.size() == ranks_.size());
 
-        const size_t idx1 = rng::randomIdx(fmat);
-        const size_t idx2 = rng::randomIdx(fmat);
+        const size_t idx1 = rng::randomIndex(fmat);
+        const size_t idx2 = rng::randomIndex(fmat);
 
         // lower ranks and higher crowding distances are better
-        const bool first_is_better =
-            (ranks_[idx1] != ranks_[idx2]) ?
-                ranks_[idx1] < ranks_[idx2] :
-                dists_[idx1] > dists_[idx2];
-
-        return first_is_better ? idx1 : idx2;
+        if      (ranks_[idx1] < ranks_[idx2]) return idx1;
+        else if (ranks_[idx1] > ranks_[idx2]) return idx2;
+        else if (dists_[idx1] > dists_[idx2]) return idx1;
+        else                                  return idx2;
     }
 
     std::vector<size_t> NSGA2::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
-        const size_t popsize = ga.population_size();
-
         GAPP_ASSERT(ga.num_objectives() > 1);
         GAPP_ASSERT(fmat.ncols() == ga.num_objectives());
 
-        auto pfronts = nonDominatedSort(fmat.begin(), fmat.end());
-        auto [partial_front_first, partial_front_last] = findPartialFront(pfronts.begin(), pfronts.end(), popsize);
+        const size_t popsize = ga.population_size();
 
-        /* Crowding distances of just the partial front for sorting. */
-        dists_ = crowdingDistances(fmat, ParetoFronts(partial_front_first, partial_front_last));
+        auto pareto_fronts = nonDominatedSort(fmat);
+        auto partial_front = pareto_fronts.partialFront(popsize);
 
-        std::sort(partial_front_first, partial_front_last,
-        [this](const FrontInfo& lhs, const FrontInfo& rhs) noexcept
+        if (!partial_front.empty()) { dists_ = crowdingDistances(fmat, { partial_front }); }
+        std::sort(partial_front.begin(), partial_front.end(), [this](const FrontElement& lhs, const FrontElement& rhs)
         {
             return dists_[lhs.idx] > dists_[rhs.idx]; // descending
         });
 
-        /* Crowding distances of all of the solutions. */
-        dists_ = crowdingDistances(fmat, ParetoFronts(pfronts.begin(), pfronts.begin() + popsize));
+        pareto_fronts.resize(popsize);
+        dists_ = crowdingDistances(fmat, pareto_fronts.fronts());
         dists_.resize(popsize);
 
-        /* Add the first popsize elements from pfronts to the next pop. */
         std::vector<size_t> new_pop(popsize);
         for (size_t i = 0; i < popsize; i++)
         {
-            new_pop[i] = pfronts[i].idx;
-            ranks_[i] = pfronts[i].rank;
+            new_pop[i] = pareto_fronts[i].idx;
+            ranks_[i]  = pareto_fronts[i].rank;
         }
 
         return new_pop;

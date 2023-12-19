@@ -70,7 +70,7 @@ TEMPLATE_TEST_CASE_SIG("find_pareto_front_nd", "[pareto_front]", ((auto F), F), 
 
         auto optimal_indices = F(fmat);
 
-        REQUIRE(optimal_indices == std::vector{ 3_sz });
+        REQUIRE(optimal_indices == std::vector<size_t>{ 3 });
     }
 
     SECTION("multiple optimum")

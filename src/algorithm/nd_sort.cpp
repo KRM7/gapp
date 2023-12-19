@@ -7,8 +7,8 @@
 #include "../utility/iterators.hpp"
 #include "../utility/thread_pool.hpp"
 #include "../utility/math.hpp"
-#include "../utility/utility.hpp"
 #include "../utility/matrix.hpp"
+#include "../utility/utility.hpp"
 #include <algorithm>
 #include <functional>
 #include <iterator>
@@ -19,56 +19,71 @@
 
 namespace gapp::algorithm::dtl
 {
-    std::vector<size_t> paretoRanks(const ParetoFronts& pareto_fronts)
+    ParetoFronts::ParetoFronts(std::vector<FrontElement> fronts) :
+        elements_(std::move(fronts))
     {
-        std::vector<size_t> ranks(pareto_fronts.size());
+        GAPP_ASSERT(std::ranges::is_sorted(elements_, std::less{}, &FrontElement::rank));
+        GAPP_ASSERT(std::ranges::all_of(elements_, detail::between(0_sz, elements_.size()), &FrontElement::idx));
+    }
 
-        for (const auto& [idx, rank] : pareto_fronts)
+    void ParetoFronts::resize(size_type new_size) noexcept
+    {
+        GAPP_ASSERT(new_size <= elements_.size());
+
+        elements_.resize(new_size, { 0, 0 });
+    }
+
+    std::vector<size_t> ParetoFronts::ranks() const
+    {
+        GAPP_ASSERT(std::ranges::all_of(elements_, detail::between(0_sz, elements_.size()), &FrontElement::idx));
+
+        std::vector<size_t> ranks(elements_.size());
+
+        for (const FrontElement& elem : elements_)
         {
-            ranks[idx] = rank;
+            ranks[elem.idx] = elem.rank;
         }
 
         return ranks;
     }
 
-    ParetoFronts::iterator nextFrontBegin(ParetoFronts::iterator current, ParetoFronts::iterator last) noexcept
+    std::vector<ParetoFrontsRange> ParetoFronts::fronts()
     {
-        GAPP_ASSERT(std::distance(current, last) >= 0);
+        GAPP_ASSERT(!elements_.empty());
+        GAPP_ASSERT(std::ranges::is_sorted(elements_, std::less{}, &FrontElement::rank));
 
-        return std::ranges::find_if(current, last, detail::not_equal_to(current->rank), &FrontInfo::rank);
-    }
+        std::vector<ParetoFrontsRange> fronts;
+        fronts.reserve(elements_.back().rank + 1);
 
-    std::vector<ParetoFrontsRange> paretoFrontBounds(ParetoFronts& pareto_fronts)
-    {
-        using Iter = ParetoFronts::iterator;
-        using IterPair = std::pair<Iter, Iter>;
+        iterator front_first = elements_.begin();
 
-        if (pareto_fronts.empty()) return {};   /* No bounds exist. */
-
-        std::vector<IterPair> front_bounds;
-        front_bounds.reserve(pareto_fronts.back().rank + 1);
-
-        for (auto front_first = pareto_fronts.begin(); front_first != pareto_fronts.end(); )
+        for (iterator it = elements_.begin(); it != elements_.end(); ++it)
         {
-            auto front_last = nextFrontBegin(front_first, pareto_fronts.end());
-            front_bounds.emplace_back(front_first, front_last);
-            front_first = front_last;
+            if (it->rank != front_first->rank)
+            {
+                fronts.emplace_back(front_first, it);
+                front_first = it;
+            }
         }
+        fronts.emplace_back(front_first, elements_.end());
 
-        return front_bounds;
+        return fronts;
     }
 
-    ParetoFrontsRange findPartialFront(ParetoFronts::iterator first, ParetoFronts::iterator last, size_t popsize)
+    ParetoFrontsRange ParetoFronts::partialFront(size_type size)
     {
-        GAPP_ASSERT(0 < popsize && popsize <= size_t(last - first));
+        GAPP_ASSERT(0 < size && size <= elements_.size());
+        GAPP_ASSERT(std::ranges::is_sorted(elements_, std::less{}, &FrontElement::rank));
 
-        auto last_in = first + popsize;
+        if (size == elements_.size()) return {};
 
-        if (last_in == last) return { last, last };
-        auto partial_front_first = std::ranges::find_if(first, last_in, detail::equal_to(last_in->rank), &FrontInfo::rank);
-        auto partial_front_last = nextFrontBegin(std::prev(last_in), last);
+        auto middle_right = elements_.begin() + size;
+        auto middle_left = elements_.begin() + size - 1;
 
-        return { partial_front_first, partial_front_last };
+        auto first = std::ranges::find_if(elements_.begin(), middle_right, detail::equal_to(middle_right->rank), &FrontElement::rank);
+        auto last  = std::ranges::find_if(middle_left, elements_.end(), detail::not_equal_to(middle_left->rank), &FrontElement::rank);
+
+        return { first, last };
     }
 
 
@@ -84,6 +99,7 @@ namespace gapp::algorithm::dtl
         std::vector<size_t> worse_indices;  /* Indices of the solutions dominated by this one. */
         size_t better_count = 0;            /* Number of solutions dominating this one. */
     };
+
     using DominanceLists = std::vector<DominanceList>;
 
     static DominanceLists& constructDominanceLists(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
@@ -126,18 +142,18 @@ namespace gapp::algorithm::dtl
         return dom_lists;
     }
 
-    ParetoFronts fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    std::vector<FrontElement> fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         const size_t popsize = std::distance(first, last);
         auto& dom_lists = constructDominanceLists(first, last);
 
-        ParetoFronts pfronts;
+        std::vector<FrontElement> pfronts;
         pfronts.reserve(popsize);
 
         /* Find the indices of all non-dominated candidates (the first/best pareto front). */
         for (size_t i = 0; i < popsize; i++)
         {
-            if (dom_lists[i].better_count == 0) pfronts.push_back(FrontInfo{ i, 0 });
+            if (dom_lists[i].better_count == 0) pfronts.emplace_back(i, 0);
         }
 
         /* Find all the other pareto fronts. */
@@ -157,7 +173,7 @@ namespace gapp::algorithm::dtl
                 {
                     if (--dom_lists[worse_idx].better_count == 0)
                     {
-                        pfronts.push_back(FrontInfo{ worse_idx, next_front_rank });
+                        pfronts.emplace_back(worse_idx, next_front_rank);
                     }
                 }
             }
@@ -251,20 +267,20 @@ namespace gapp::algorithm::dtl
         return cols;
     }
 
-    ParetoFronts dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    std::vector<FrontElement> dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         const size_t popsize = std::distance(first, last);
         DominanceMatrix dmat = constructDominanceMatrix(first, last);
         std::vector<Col> cols = colwiseSums(dmat);
 
         /* Assign each solution to a pareto-front. */
-        ParetoFronts pfronts;
-        pfronts.reserve(popsize);
+        std::vector<FrontElement> pareto_fronts;
+        pareto_fronts.reserve(popsize);
 
         size_t current_rank = 0;
         std::vector<size_t> removed_rows;
 
-        while (pfronts.size() != popsize)
+        while (pareto_fronts.size() != popsize)
         {
             removed_rows.clear();
 
@@ -273,7 +289,7 @@ namespace gapp::algorithm::dtl
             {
                 if (col.sum == 0)
                 {
-                    pfronts.push_back(FrontInfo{ col.idx, current_rank });
+                    pareto_fronts.emplace_back(col.idx, current_rank);
                     removed_rows.push_back(col.idx);
                 }
             }
@@ -295,14 +311,20 @@ namespace gapp::algorithm::dtl
             current_rank++;
         }
 
-        return pfronts;
+        return pareto_fronts;
     }
+
 
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         GAPP_ASSERT(std::distance(first, last) >= 0);
 
         return dominanceDegreeSort(first, last);
+    }
+
+    ParetoFronts nonDominatedSort(const FitnessMatrix& fmat)
+    {
+        return nonDominatedSort(fmat.begin(), fmat.end());
     }
 
 } // namespace gapp::algorithm::dtl

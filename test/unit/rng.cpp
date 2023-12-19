@@ -54,10 +54,10 @@ TEST_CASE("random_binomial", "[rng]")
     }
 }
 
-TEST_CASE("random_idx", "[rng]")
+TEST_CASE("random_index", "[rng]")
 {
-    REQUIRE(randomIdx(std::vector{ true }) == 0);
-    REQUIRE(randomIdx(std::vector{ 0.12, 0.32 }) <= 1);
+    REQUIRE(randomIndex(std::vector{ true }) == 0);
+    REQUIRE(randomIndex(std::vector{ 0.12, 0.32 }) <= 1);
 }
 
 TEST_CASE("random_element", "[rng]")
