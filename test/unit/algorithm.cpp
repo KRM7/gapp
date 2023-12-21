@@ -152,6 +152,22 @@ TEST_CASE("argmin", "[algorithm]")
     REQUIRE(detail::argmin(nums.begin() + 2, nums.end()) == 2);
 }
 
+TEST_CASE("max", "[algorithm]")
+{
+    REQUIRE(detail::max(1, 2) == 2);
+    REQUIRE(detail::max(0, 6, -10) == 6);
+
+    REQUIRE(detail::max<int>(-1, 3u) == 3);
+}
+
+TEST_CASE("min", "[algorithm]")
+{
+    REQUIRE(detail::min(1, 2) == 1);
+    REQUIRE(detail::min(0, 6, -10) == -10);
+
+    REQUIRE(detail::min<int>(-1, 3u) == -1);
+}
+
 TEST_CASE("partial_shuffle", "[algorithm]")
 {
     std::vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };

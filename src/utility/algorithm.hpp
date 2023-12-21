@@ -188,18 +188,18 @@ namespace gapp::detail
         }
     }
 
-    template<typename T1, typename T2, typename... Ts>
-    constexpr auto max(const T1& first, const T2& second, const Ts&... rest) -> std::common_type_t<T1, T2, Ts...>
+    template<typename T, std::same_as<T>... Ts>
+    constexpr const T& max(const T& first, const T& second, const Ts&... rest) noexcept
     {
-        using std::max;
-        return max(std::max<std::common_type_t<T1, T2>>(first, second), rest...);
+        if constexpr (!sizeof...(Ts)) return std::max(first, second);
+        else return detail::max(detail::max(first, second), rest...);
     }
 
-    template<typename T1, typename T2, typename... Ts>
-    constexpr auto min(const T1& first, const T2& second, const Ts&... rest) -> std::common_type_t<T1, T2, Ts...>
+    template<typename T, std::same_as<T>... Ts>
+    constexpr const T& min(const T& first, const T& second, const Ts&... rest) noexcept
     {
-        using std::min;
-        return min(std::min<std::common_type_t<T1, T2>>(first, second), rest...);
+        if constexpr (!sizeof...(Ts)) return std::min(first, second);
+        else return detail::min(detail::min(first, second), rest...);
     }
 
     template<std::random_access_iterator Iter, typename URBG>
