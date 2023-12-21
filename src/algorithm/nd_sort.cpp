@@ -315,11 +315,60 @@ namespace gapp::algorithm::dtl
     }
 
 
+    /* Efficient non-dominated sorting algorithm (ENS).
+     * This implementation uses the linear search based variant of the algorithm (ENS-SS).
+     *
+     * See:
+     *  Zhang, Xingyi, Ye Tian, Ran Cheng, and Yaochu Jin. "An efficient approach to nondominated sorting for
+     *  evolutionary multiobjective optimization." IEEE Transactions on Evolutionary Computation 19, no. 2 (2014): 201-213.
+     */
+
+    std::vector<FrontElement> efficientNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
+    {
+        std::vector<FrontElement> pareto_fronts;
+        pareto_fronts.reserve(std::distance(first, last));
+
+        const auto indices = detail::argsort(first, last, [](const auto& lhs, const auto& rhs) noexcept
+        {
+            for (size_t i = 0; i < lhs.size(); i++)
+            {
+                if (lhs[i] != rhs[i]) return lhs[i] > rhs[i]; // descending
+            }
+            return false;
+        });
+
+        for (const size_t idx : indices)
+        {
+            size_t rank = 0;
+            auto front_first = pareto_fronts.begin();
+
+            while (front_first != pareto_fronts.end())
+            {
+                const auto front_last = std::ranges::find_if(front_first, pareto_fronts.end(), detail::not_equal_to(rank), &FrontElement::rank);    
+
+                const bool dominated = std::any_of(front_first, front_last, [&](const FrontElement& elem)
+                {
+                    return math::paretoCompareLess(first[idx], first[elem.idx]);
+                });
+
+                if (!dominated) break;
+
+                front_first = front_last;
+                rank++;
+            }
+
+            pareto_fronts.emplace(front_first, idx, rank);
+        }
+
+        return pareto_fronts;
+    }
+
+
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
-        GAPP_ASSERT(std::distance(first, last) >= 0);
+        GAPP_ASSERT(std::distance(first, last) > 0);
 
-        return dominanceDegreeSort(first, last);
+        return efficientNonDominatedSort(first, last);
     }
 
     ParetoFronts nonDominatedSort(const FitnessMatrix& fmat)
