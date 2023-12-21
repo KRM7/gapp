@@ -97,6 +97,7 @@ namespace gapp::algorithm::dtl
 
     std::vector<FrontElement> fastNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
     std::vector<FrontElement> dominanceDegreeSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
+    std::vector<FrontElement> efficientNonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
 
     ParetoFronts nonDominatedSort(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
     ParetoFronts nonDominatedSort(const FitnessMatrix& fmat);

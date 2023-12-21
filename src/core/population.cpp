@@ -43,8 +43,7 @@ namespace gapp::detail
 
     std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat)
     {
-        const auto indices = detail::argsort(fmat.begin(), fmat.end(),
-        [](const auto& lhs, const auto& rhs) noexcept
+        const auto indices = detail::argsort(fmat.begin(), fmat.end(), [](const auto& lhs, const auto& rhs) noexcept
         {
             for (size_t i = 0; i < lhs.size(); i++)
             {

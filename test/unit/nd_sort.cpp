@@ -40,7 +40,7 @@ const FitnessMatrix fmat = {
     {  2.9, 0.9  },  // p4 - 18 ~
 };
 
-TEMPLATE_TEST_CASE_SIG("nd_sort", "[pareto_front]", ((auto F), F), fastNonDominatedSort, dominanceDegreeSort)
+TEMPLATE_TEST_CASE_SIG("nd_sort", "[pareto_front]", ((auto F), F), fastNonDominatedSort, dominanceDegreeSort, efficientNonDominatedSort)
 {
     std::vector<FrontElement> pareto_fronts = F(fmat.begin(), fmat.end());
 
