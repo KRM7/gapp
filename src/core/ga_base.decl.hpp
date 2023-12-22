@@ -621,7 +621,7 @@ namespace gapp
         using GaInfo::algorithm_;
         using GaInfo::stop_condition_;
         using GaInfo::metrics_;
-        using GaInfo::end_of_generation_callback_;
+        using GaInfo::on_generation_end_;
         using GaInfo::population_size_;
         using GaInfo::max_gen_;
         using GaInfo::num_objectives_;

@@ -54,7 +54,7 @@ namespace gapp
         * The type of a generic callback function that can be provided for the algorithm.
         * @see on_generation_end
         */
-        using GaCallback = std::function<void(const GaInfo&)>;
+        using GaInfoCallback = std::function<void(const GaInfo&)>;
 
         /** 
         * Create a genetic algorithm.
@@ -331,7 +331,7 @@ namespace gapp
         * 
         * @param f The function that will be invoked at the end of each generation.
         */
-        void on_generation_end(GaCallback f) noexcept { end_of_generation_callback_ = std::move(f); }
+        void on_generation_end(GaInfoCallback f) noexcept { on_generation_end_ = std::move(f); }
 
 
         GaInfo(const GaInfo&)            = delete;
@@ -350,7 +350,7 @@ namespace gapp
         std::unique_ptr<algorithm::Algorithm> algorithm_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
         detail::MetricSet metrics_;
-        GaCallback end_of_generation_callback_ = nullptr;
+        GaInfoCallback on_generation_end_ = nullptr;
 
         Positive<size_t> population_size_ = DEFAULT_POPSIZE;
         Positive<size_t> max_gen_ = 500;

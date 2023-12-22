@@ -346,7 +346,7 @@ namespace gapp
         metrics_.initialize(*this);
         metrics_.update(*this);
 
-        if (end_of_generation_callback_) end_of_generation_callback_(*this);
+        if (on_generation_end_) on_generation_end_(*this);
     }
 
     template<typename T>
@@ -510,7 +510,7 @@ namespace gapp
         if (keep_all_optimal_sols_) updateOptimalSolutions(solutions_, population_);
         metrics_.update(*this);
 
-        if (end_of_generation_callback_) end_of_generation_callback_(*this);
+        if (on_generation_end_) on_generation_end_(*this);
         generation_cntr_++;
     }
 
