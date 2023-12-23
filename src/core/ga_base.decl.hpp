@@ -558,12 +558,12 @@ namespace gapp
         Population<T> population_;
         Candidates<T> solutions_;
 
-        GAPP_NO_UNIQUE_ADDRESS MaybeBoundsVector bounds_;
-
         std::unique_ptr<FitnessFunctionBase<T>> fitness_function_;
         std::unique_ptr<crossover::Crossover<T>> crossover_;
         std::unique_ptr<mutation::Mutation<T>> mutation_;
         RepairCallable repair_ = nullptr;
+
+        GAPP_NO_UNIQUE_ADDRESS MaybeBoundsVector bounds_;
 
         bool use_default_mutation_rate_ = false;
 
