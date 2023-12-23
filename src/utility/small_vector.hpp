@@ -229,7 +229,7 @@ namespace gapp::detail
 
     inline constexpr size_t cache_line_size = 64;
 
-    template<typename T, size_t Size, size_t Align = cache_line_size>
+    template<typename T, size_t Size>
     struct small_vector_buffer
     {
     public:
@@ -242,12 +242,11 @@ namespace gapp::detail
         constexpr size_t size() const noexcept { return Size; }
 
     private:
-        inline constexpr static size_t align_req = (alignof(T) > Align) ? alignof(T) : Align;
         inline constexpr static size_t buffer_size = sizeof(T) * Size;
 
         using storage_type = unsigned char[buffer_size]; // NOLINT(*avoid-c-arrays)
 
-        alignas(align_req) storage_type data_;
+        alignas(T) storage_type data_;
     };
 
     template<typename T>
