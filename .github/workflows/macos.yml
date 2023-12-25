@@ -1,0 +1,56 @@
+name: macos
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-13
+    strategy:
+      fail-fast: false
+      matrix:
+        build-type: [ Release, RelWithDebInfo ]
+        compiler: [
+            { cxx: g++-11, pkgs: gcc@11, extra-flags: "-undefined dynamic_lookup" },
+            { cxx: g++-12, pkgs: gcc@12, extra-flags: "-undefined dynamic_lookup" },
+            { cxx: g++-13, pkgs: gcc@13, extra-flags: "-undefined dynamic_lookup -Wno-array-bounds -Wno-stringop-overflow -Wno-stringop-overread" },
+            {
+              cxx: $(brew --prefix llvm@14)/bin/clang++,
+              pkgs: llvm@14 gcc@11,
+              extra-flags: "-femulated-tls -stdlib=libstdc++ -stdlib++-isystem $(brew --prefix gcc@11)/include/c++/11 -cxx-isystem $(brew --prefix gcc@11)/include/c++/11/x86_64-apple-darwin22",
+              linker-flags: "-L$(brew --prefix gcc@11)/lib/gcc/11"
+            },
+            {
+              cxx: $(brew --prefix llvm@15)/bin/clang++,
+              pkgs: llvm@15 gcc@12,
+              extra-flags: "-femulated-tls -stdlib=libstdc++ -stdlib++-isystem $(brew --prefix gcc@12)/include/c++/12 -cxx-isystem $(brew --prefix gcc@12)/include/c++/12/x86_64-apple-darwin22",
+              linker-flags: "-L$(brew --prefix gcc@12)/lib/gcc/12"
+            }
+        ]
+
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/build
+
+    name: ${{ matrix.compiler.pkgs }}, ${{ matrix.build-type }}
+
+    steps:
+    - name: checkout-repo
+      uses: actions/checkout@v3
+
+    - name: setup-compiler
+      run: brew update && brew install ${{ matrix.compiler.pkgs }}
+
+    - name: setup-catch
+      run: sudo bash ./install_catch.sh -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}"
+
+    - name: setup-build
+      run: cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}" -DGAPP_USE_LTO=OFF
+
+    - name: build
+      run: cmake --build . --parallel 8
+
+    - name: run-tests
+      run: ctest --output-on-failure --schedule-random
+
+    - name: install
+      run: sudo cmake --install .

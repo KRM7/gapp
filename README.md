@@ -3,6 +3,7 @@
 
 [![linux](https://github.com/KRM7/genetic-algorithms/actions/workflows/linux.yml/badge.svg?branch=master)](https://github.com/KRM7/genetic-algorithms/actions/workflows/linux.yml)
 [![windows](https://github.com/KRM7/genetic-algorithms/actions/workflows/windows.yml/badge.svg?branch=master)](https://github.com/KRM7/genetic-algorithms/actions/workflows/windows.yml)
+[![macos](https://github.com/KRM7/gapp/actions/workflows/macos.yml/badge.svg?branch=master)](https://github.com/KRM7/gapp/actions/workflows/macos.yml)
 [![sanitizers](https://github.com/KRM7/genetic-algorithms/actions/workflows/sanitizers.yml/badge.svg?branch=master)](https://github.com/KRM7/genetic-algorithms/actions/workflows/sanitizers.yml)
 [![code analysis](https://github.com/KRM7/genetic-algorithms/actions/workflows/analysis.yml/badge.svg?branch=master)](https://github.com/KRM7/genetic-algorithms/actions/workflows/analysis.yml)
 [![docs](https://github.com/KRM7/gapp/actions/workflows/docs.yml/badge.svg?branch=master)](https://github.com/KRM7/gapp/actions/workflows/docs.yml)
