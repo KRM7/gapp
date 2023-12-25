@@ -9,20 +9,21 @@ jobs:
       fail-fast: false
       matrix:
         build-type: [ Release, RelWithDebInfo ]
-        compiler: [
-            { cxx: cl, gen: "Visual Studio 17 2022", toolset: "v143" },
-            { cxx: clang++, gen: "Visual Studio 17 2022", toolset: "ClangCL" },
-        ]
-        lib-type: [
-            { name: Static, cmake-flag: "OFF" },
-            { name: Shared, cmake-flag: "ON" },
-        ]
+        platform: [ x64, Win32 ]
+        compiler: [ v143, ClangCL ]
+        generator: [ "Visual Studio 17 2022" ]
+        lib-type: [ { name: Static, cmake-shared-flag: "OFF" }, { name: Shared, cmake-shared-flag: "ON" } ]
+        exclude:
+          - platform: Win32
+            compiler: ClangCL
+          - platform: Win32
+            build-type: Release
 
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.compiler.cxx }}, ${{ matrix.build-type }}, ${{ matrix.lib-type.name }}
+    name: ${{ matrix.compiler }}-${{ matrix.platform }}, ${{ matrix.build-type }}, ${{ matrix.lib-type.name }}
 
 
     steps:
@@ -34,17 +35,17 @@ jobs:
 
     - name: setup-catch
       env:
-        CXX: ${{ matrix.compiler.cxx }}
-        CMAKE_GENERATOR: ${{ matrix.compiler.gen }}
-        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler.toolset }}
+        CMAKE_GENERATOR: ${{ matrix.generator }}
+        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler }}
+        CMAKE_GENERATOR_PLATFORM: ${{ matrix.platform }}
       run: bash ./install_catch.sh
 
     - name: setup-build
       env:
-        CXX: ${{ matrix.compiler.cxx }}
-        CMAKE_GENERATOR: ${{ matrix.compiler.gen }}
-        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler.toolset }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.lib-type.cmake-flag }}
+        CMAKE_GENERATOR: ${{ matrix.generator }}
+        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler }}
+        CMAKE_GENERATOR_PLATFORM: ${{ matrix.platform }}
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.lib-type.cmake-shared-flag }}
 
     - name: build
       run: cmake --build . --parallel --config ${{ matrix.build-type }}
