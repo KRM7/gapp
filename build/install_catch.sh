@@ -1,4 +1,4 @@
-﻿#!/bin/sh
+﻿#!/bin/bash
 
 echo -e "Installing Catch2...\n"
 

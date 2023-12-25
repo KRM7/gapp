@@ -20,18 +20,32 @@ The full list of requirements are:
 - CMake 3.21 or later
 - Catch2 3.3 or later (optional, only needed for the tests)
 
-The library works on both Windows and Linux. Both of these platforms and all compilers mentioned
-above are tested (gcc and clang on Linux, msvc and clang-cl on Windows).
+The library works on Windows, Linux, and macOS. The tested compilers for
+each of these platforms are:
+
+- gcc and clang on Linux
+- msvc and clang-cl on Windows
+- gcc and clang (not AppleClang) on macOS
+
+As the only real requirement for using the library is a compiler with C++20 support,
+and the library doesn't include any platform or compiler specific code, other platforms
+and compilers would probably also work, but only the ones listed above are tested.
+
+Note that the standard library used also needs to support C++20 features, which means
+that using libc\+\+ is not possible at this point. This is generally not a problem,
+but on macOS the default standard library used by clang is libc\+\+ instead of libstdc\+\+,
+which will cause build errors. In this case, the standard library should be manually
+specified to be libstdc\+\+ instead.
 
 
 ## Install with CMake
 
-The library uses CMake as its build system, and it can also be installed using CMake:
+The library uses CMake as its build system, which can also be used to install it:
 
 ```shell
-# Get the code by cloning the repo
+# Clone the repository
 git clone https://github.com/KRM7/gapp.git --branch v0.2.0
-# Go to the build directory of the library
+# Go to the library's build directory
 cd gapp/build
 # Configure cmake with the relevant options
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
@@ -41,7 +55,7 @@ cmake --build . --config Release
 sudo cmake --install . --config Release
 ```
 
-Alternatively, there's a utility script provided that can be used to
+Alternatively, there is a utility script provided that can be used to
 install the library in fewer steps:
 
 ```shell
@@ -153,6 +167,9 @@ add_executable(example_project "example.cpp")
 target_link_libraries(example_project PRIVATE gapp::gapp)
 ```
 
+Note that if you use FetchContent instead of installing the library, the include paths of the library's
+headers will be slightly different, ie. you will need to do `#include <gapp.hpp>` instead of the usual
+`#include <gapp/gapp.hpp>`.
 
 ## CMake project options
 
@@ -203,8 +220,8 @@ cmake --build .
 
 If you want to specify additional compiler flags when building the library, you should do it through
 the `GAPP_CXX_FLAGS` variable. The value of the `CMAKE_CXX_FLAGS` variable will be ignored by the project.
-All of the flags specified through `GAPP_CXX_FLAGS` will be in addition to the default flags,
-they will not overwrite the default compiler flags.
+All of the flags specified through `GAPP_CXX_FLAGS` are in addition to the default flags,
+they will not overwrite them.
 
 
 ## Building the API docs
