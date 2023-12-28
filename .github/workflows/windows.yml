@@ -12,7 +12,7 @@ jobs:
         platform: [ x64, Win32 ]
         compiler: [ v143, ClangCL ]
         generator: [ "Visual Studio 17 2022" ]
-        lib-type: [ { name: Static, cmake-shared-flag: "OFF" }, { name: Shared, cmake-shared-flag: "ON" } ]
+        build-shared: [ "ON", "OFF" ]
         exclude:
           - platform: Win32
             compiler: ClangCL
@@ -23,7 +23,7 @@ jobs:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.compiler }}-${{ matrix.platform }}, ${{ matrix.build-type }}, ${{ matrix.lib-type.name }}
+    name: ${{ matrix.compiler }}-${{ matrix.platform }}, ${{ matrix.build-type }}, Shared=${{ matrix.build-shared }}
 
 
     steps:
@@ -45,7 +45,7 @@ jobs:
         CMAKE_GENERATOR: ${{ matrix.generator }}
         CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler }}
         CMAKE_GENERATOR_PLATFORM: ${{ matrix.platform }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.lib-type.cmake-shared-flag }}
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.build-shared }} -DGAPP_USE_LTO=ON
 
     - name: build
       run: cmake --build . --parallel --config ${{ matrix.build-type }}
