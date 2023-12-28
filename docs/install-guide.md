@@ -194,8 +194,10 @@ headers will be slightly different, ie. you will need to do `#include <gapp.hpp>
 - `GAPP_USE_WERROR` - When this option is `ON`, all warnings will be treated as errors during the
     build. The default value is `ON`.
 
-- `GAPP_USE_LTO` - When this option is `ON`, the library will be built for using link-time optimization.
-    The default value is `ON`.
+- `GAPP_USE_LTO` - When this option is `ON`, the library will be built using link-time optimizations
+    in the optimized configurations (Release and RelWithDebInfo). This option has no effect on Debug
+    builds.
+    The default value is `OFF`.
 
 - `GAPP_USE_MARCH_NATIVE` - When this option is `ON`, the library will be optimized specifically for the
     host architecture in the optimized configurations (Release and RelWithDebInfo). This has no effect on
