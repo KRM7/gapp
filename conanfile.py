@@ -29,6 +29,7 @@ class GappRecipe(ConanFile):
         tc = CMakeToolchain(self)
         tc.variables["GAPP_BUILD_TESTS"] = False
         tc.variables["GAPP_USE_LTO"] = False
+        tc.variables["GAPP_USE_WERROR"] = False
         tc.generate()
 
     def build(self):
