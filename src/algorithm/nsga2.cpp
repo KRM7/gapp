@@ -77,10 +77,10 @@ namespace gapp::algorithm
         const size_t idx2 = rng::randomIndex(fmat);
 
         // lower ranks and higher crowding distances are better
-        if      (ranks_[idx1] < ranks_[idx2]) return idx1;
-        else if (ranks_[idx1] > ranks_[idx2]) return idx2;
-        else if (dists_[idx1] > dists_[idx2]) return idx1;
-        else                                  return idx2;
+        if (ranks_[idx1] < ranks_[idx2]) return idx1;
+        if (ranks_[idx1] > ranks_[idx2]) return idx2;
+        if (dists_[idx1] > dists_[idx2]) return idx1;
+        return idx2;
     }
 
     std::vector<size_t> NSGA2::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)

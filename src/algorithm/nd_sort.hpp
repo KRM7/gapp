@@ -40,12 +40,12 @@ namespace gapp::algorithm::dtl
 
         constexpr ParetoFrontsRange() = default;
 
-        constexpr ParetoFrontsRange(iterator first, iterator last) noexcept :
+        constexpr ParetoFrontsRange(const iterator& first, const iterator& last) noexcept :
             first_(first), last_(last)
         {}
 
         template<typename Range>
-        constexpr explicit ParetoFrontsRange(Range&& range) noexcept :
+        constexpr explicit ParetoFrontsRange(Range& range) noexcept :
             first_(range.begin()), last_(range.end())
         {}
 
@@ -84,7 +84,7 @@ namespace gapp::algorithm::dtl
         iterator end() noexcept { return elements_.end(); }
         const_iterator end() const noexcept { return elements_.end(); }
 
-        void resize(size_type new_size) noexcept;
+        void resize(size_type new_size);
 
         std::vector<size_t> ranks() const;
         std::vector<ParetoFrontsRange> fronts();

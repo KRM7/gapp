@@ -66,7 +66,7 @@ namespace gapp
         * @param stop_condition The early-stop condition to use for the algorithm. The algorithm will stop when
         *       reaching the maximum number of generations set regardless of the stop condition specified here.
         */
-        GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) noexcept;
+        GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition);
 
 
         /**

@@ -113,6 +113,10 @@ namespace gapp::algorithm
         template<typename T>
         Candidates<T> optimalSolutions(const GA<T>& ga, const Population<T>& pop) const;
 
+
+        /** Destructor. */
+        ~Algorithm() override                   = default;
+
     protected:
 
         Algorithm()                             = default;
