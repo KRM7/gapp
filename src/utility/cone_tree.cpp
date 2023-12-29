@@ -178,7 +178,7 @@ namespace gapp::detail
 
         thread_local std::vector<const Node*> node_stack(nodes_.size() / 2);
         node_stack.clear();
-        node_stack.push_back(&nodes_[0]);
+        node_stack.push_back(&nodes_.front());
 
         FindResult best{ {}, -math::inf<double> };
 

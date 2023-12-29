@@ -96,6 +96,14 @@ namespace gapp::detail
 
         ~thread_pool() noexcept { stop(); }
 
+        thread_pool() = default;
+
+        thread_pool(const thread_pool&)            = delete;
+        thread_pool(thread_pool&&)                 = delete;
+
+        thread_pool& operator=(const thread_pool&) = delete;
+        thread_pool& operator=(thread_pool&&)      = delete;
+
     private:
         using task_t = detail::move_only_function<void()>;
 

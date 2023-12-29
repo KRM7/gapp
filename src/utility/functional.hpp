@@ -311,8 +311,8 @@ namespace gapp::detail
             return *this;
         }
 
-        move_only_function(move_only_function&&)                  = default;
-        move_only_function& operator=(move_only_function&& other) = default;
+        move_only_function(move_only_function&&)            = default;
+        move_only_function& operator=(move_only_function&&) = default;
 
         R operator()(Args... args)
         {

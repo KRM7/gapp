@@ -47,7 +47,7 @@ namespace gapp::detail
     private:
         struct registered_reader
         {
-            registered_reader() noexcept
+            registered_reader() noexcept // NOLINT(*exception-escape)
             {
                 std::unique_lock _{ tls_readers->lock };
                 tls_readers->list.push_back(this);
@@ -75,6 +75,7 @@ namespace gapp::detail
         alignas(128) inline static thread_local registered_reader reader;
     };
 
+    // NOLINTBEGIN(*owning-memory)
 
     template<typename T>
     class rcu_obj
@@ -101,6 +102,12 @@ namespace gapp::detail
             return *this;
         }
 
+        rcu_obj(const rcu_obj&)            = delete;
+        rcu_obj(rcu_obj&&)                 = delete;
+
+        rcu_obj& operator=(const rcu_obj&) = delete;
+        rcu_obj& operator=(rcu_obj&&)      = delete;
+
         T& get() noexcept { return *data_.load(std::memory_order_consume); }
         const T& get() const noexcept { return *data_.load(std::memory_order_consume); }
 
@@ -119,6 +126,8 @@ namespace gapp::detail
     private:
         std::atomic<T*> data_;
     };
+
+    // NOLINTEND(*owning-memory)
 
 } // namespace gapp::detail
 

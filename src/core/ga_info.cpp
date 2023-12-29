@@ -16,10 +16,9 @@ namespace gapp
     GaInfo::~GaInfo() noexcept                   = default;
 
 
-    GaInfo::GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) noexcept :
-        algorithm_(std::move(algorithm)), stop_condition_(std::move(stop_condition)), population_size_(population_size)
+    GaInfo::GaInfo(Positive<size_t> population_size, std::unique_ptr<algorithm::Algorithm> algorithm, std::unique_ptr<stopping::StopCondition> stop_condition) :
+        algorithm_(std::move(algorithm)), stop_condition_(std::move(stop_condition)), population_size_(population_size), use_default_algorithm_(!algorithm_)
     {
-        use_default_algorithm_ = !algorithm;
         if (!algorithm_) algorithm_ = std::make_unique<algorithm::SingleObjective>();
         if (!stop_condition_) stop_condition_ = std::make_unique<stopping::NoEarlyStop>();
     }

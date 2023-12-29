@@ -35,6 +35,18 @@ namespace gapp::detail
         return value & (T{ 1 } << n);
     }
 
+    template<typename T>
+    constexpr bool first_bit(T value) noexcept
+    {
+        return value & detail::msb_mask<T>;
+    }
+
+    template<typename T>
+    constexpr bool last_bit(T value) noexcept
+    {
+        return value & detail::lsb_mask<T>;
+    }
+
 } // namespace gapp::detail
 
 #endif // !GA_UTILITY_BIT_HPP

@@ -141,9 +141,15 @@ namespace gapp::algorithm
         pimpl_(std::make_unique<Impl>(*rhs.pimpl_))
     {}
 
-    NSGA3& NSGA3::operator=(NSGA3 rhs) noexcept
+    NSGA3& NSGA3::operator=(const NSGA3& other)
     {
-        this->pimpl_.swap(rhs.pimpl_);
+        this->pimpl_ = std::make_unique<Impl>(*other.pimpl_);
+        return *this;
+    }
+
+    NSGA3& NSGA3::operator=(NSGA3&& other) noexcept
+    {
+        this->pimpl_ = std::move(other.pimpl_);
         return *this;
     }
 

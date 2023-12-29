@@ -26,7 +26,7 @@ namespace gapp::algorithm::dtl
         GAPP_ASSERT(std::ranges::all_of(elements_, detail::between(0_sz, elements_.size()), &FrontElement::idx));
     }
 
-    void ParetoFronts::resize(size_type new_size) noexcept
+    void ParetoFronts::resize(size_type new_size)
     {
         GAPP_ASSERT(new_size <= elements_.size());
 

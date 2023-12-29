@@ -46,6 +46,11 @@ namespace gapp::detail
             vars_(vars...), old_values_(std::forward<Us>(vars)...)
         {}
 
+        restore_on_exit(const restore_on_exit&)            = delete;
+        restore_on_exit(restore_on_exit&&)                 = delete;
+        restore_on_exit& operator=(const restore_on_exit&) = delete;
+        restore_on_exit& operator=(restore_on_exit&&)      = delete;
+
         constexpr ~restore_on_exit() noexcept { vars_ = std::move(old_values_); }
 
     private:

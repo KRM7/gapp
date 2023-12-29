@@ -65,7 +65,7 @@ namespace gapp::stopping
         const FitnessVector current_mean = detail::fitnessMean(fitness_matrix.begin(), fitness_matrix.end());
 
         const bool improved = metricImproved(best_fitness_mean_, current_mean, delta_);
-        improved ? reset() : (void) (cntr_ -= bool(cntr_));
+        improved ? reset() : (void) (cntr_ -= !!cntr_); // NOLINT(*conversion)
 
         return cntr_ == 0;
     }
@@ -83,7 +83,7 @@ namespace gapp::stopping
         const FitnessVector current_max = detail::maxFitness(fitness_matrix.begin(), fitness_matrix.end());
 
         const bool improved = metricImproved(fitness_max_, current_max, delta_);
-        improved ? reset() : (void) (cntr_ -= bool(cntr_));
+        improved ? reset() : (void) (cntr_ -= !!cntr_); // NOLINT(*conversion)
 
         return cntr_ == 0;
     }

@@ -215,7 +215,7 @@ namespace gapp::rng
 
         struct RegisteredGenerator
         {
-            RegisteredGenerator() noexcept
+            RegisteredGenerator() noexcept // NOLINT(*exception-escape)
             {
                 std::scoped_lock _{ tls_generators_->lock };
                 instance.get() = global_generator_.jump();
@@ -311,7 +311,7 @@ namespace gapp::rng
             bit_pool = prng() | detail::msb_mask<uint64_t>;
         }
 
-        const bool bit = bit_pool & detail::lsb_mask<uint64_t>;
+        const bool bit = detail::last_bit(bit_pool);
         bit_pool >>= 1;
 
         return bit;

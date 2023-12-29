@@ -167,7 +167,7 @@ namespace gapp::detail
         /* Modifiers (for rows) */
 
         constexpr void append_row(std::span<const T> row);
-        constexpr void pop_back() noexcept { resize(nrows() - 1, ncols()); }
+        constexpr void pop_back() noexcept { resize(nrows() - 1, ncols()); } // NOLINT(*exception-escape)
 
         constexpr iterator erase(const_iterator row);
         constexpr iterator erase(const_iterator first, const_iterator last);
@@ -177,7 +177,7 @@ namespace gapp::detail
         constexpr size_type size() const noexcept  { return nrows_; } /* For the bounds checking in stable_iterator */
         constexpr size_type nrows() const noexcept { return nrows_; }
         constexpr size_type ncols() const noexcept { return ncols_; }
-        constexpr size_type empty() const noexcept { return data_.empty(); }
+        constexpr bool empty() const noexcept { return data_.empty(); }
 
         constexpr void reserve(size_type nrows, size_type ncols) { data_.reserve(nrows * ncols); }
 
@@ -303,7 +303,6 @@ namespace gapp::detail
         size_type row_;
     };
 
-
     template<typename T, typename A>
     class MatrixRowRef : public MatrixRowBase<MatrixRowRef<T, A>, Matrix<T, A>>
     {
@@ -317,6 +316,8 @@ namespace gapp::detail
 
         MatrixRowRef(const MatrixRowRef&) = default;
         MatrixRowRef(MatrixRowRef&&)      = default;
+
+        // NOLINTBEGIN(*unconventional-assign-operator, *assignment-signature)
 
         constexpr const MatrixRowRef& operator=(MatrixRowRef<T, A> rhs) const
         {
@@ -345,7 +346,9 @@ namespace gapp::detail
             return *this;
         }
 
-        constexpr void swap(std::span<T> other) const
+        // NOLINTEND(*unconventional-assign-operator, *assignment-signature)
+
+        constexpr void swap(std::span<T> other) const noexcept(std::is_nothrow_swappable_v<T>)
         {
             GAPP_ASSERT(other.size() == this->size(), "Rows must be the same size to swap them.");
 
@@ -359,18 +362,21 @@ namespace gapp::detail
 
     template<typename T, typename A>
     constexpr void swap(MatrixRowRef<T, A> lhs, MatrixRowRef<T, A> rhs)
+    noexcept(std::is_nothrow_swappable_v<T>)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
     constexpr void swap(MatrixRowRef<T, A> lhs, std::span<std::type_identity_t<T>> rhs)
+    noexcept(std::is_nothrow_swappable_v<T>)
     {
         lhs.swap(rhs);
     }
 
     template<typename T, typename A>
     constexpr void swap(std::span<std::type_identity_t<T>> lhs, MatrixRowRef<T, A> rhs)
+    noexcept(std::is_nothrow_swappable_v<T>)
     {
         rhs.swap(lhs);
     }
