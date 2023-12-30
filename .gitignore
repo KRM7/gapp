@@ -6,16 +6,9 @@
 *.hint
 
 # Build results
-[Dd]ebug/
-[Rr]elease/
-x64/
-x86/
-out/
 build/*
-!build/*.sh
-!build/reflines/
-!build/mo_results/
-build/mo_results/*.txt
+out/
+install/
 *.exe
 
 # Doc outputs
@@ -26,7 +19,4 @@ docs/*.txt
 refs/
 
 # Test results
-test/mo_results/*.txt
-
-# Python
-__pycache__/
+tools/mo_results/*.txt

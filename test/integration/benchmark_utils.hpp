@@ -29,7 +29,7 @@ auto invoke_timed(F&& f, Args&&... args)
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbegin).count();
     double time_spent = duration / 1000.0;
 
-    return std::make_pair(result, time_spent);
+    return std::make_pair(std::move(result), time_spent);
 }
 
 template<typename T>
@@ -93,8 +93,8 @@ void benchmarkMoga(GA<T>& ga, size_t max_gen, const std::string& ga_name, F fitn
               << "\nTime taken: " << std::fixed << time_spent << "s\n\n";
 
     std::string name = problem.substr(0, problem.find(','));
-    std::string pop_file = "mo_results/" + ga_name + "_" + name + "_last.txt";
-    std::string sol_file = "mo_results/" + ga_name + "_" + name + "_sols.txt";
+    std::string pop_file = "../tools/mo_results/" + ga_name + "_" + name + "_last.txt";
+    std::string sol_file = "../tools/mo_results/" + ga_name + "_" + name + "_sols.txt";
 
     std::ofstream flast(pop_file);
     std::ofstream fsols(sol_file);

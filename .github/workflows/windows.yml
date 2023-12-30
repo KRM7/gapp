@@ -38,7 +38,7 @@ jobs:
         CMAKE_GENERATOR: ${{ matrix.generator }}
         CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler }}
         CMAKE_GENERATOR_PLATFORM: ${{ matrix.platform }}
-      run: bash ./install_catch.sh
+      run: bash ../tools/install_catch.sh
 
     - name: setup-build
       env:
