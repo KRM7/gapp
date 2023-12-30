@@ -60,7 +60,7 @@ install the library in fewer steps:
 
 ```shell
 git clone https://github.com/KRM7/gapp.git --branch v0.2.0
-sudo bash gapp/build/install.sh
+sudo bash gapp/tools/install.sh
 ```
 
 The script will perform the installation steps detailed above for all 3 configurations of the library.
@@ -68,7 +68,7 @@ If you want to configure CMake differently from the default, you can pass argume
 install script as you would do to CMake, for example:
 
 ```shell
-sudo bash gapp/build/install.sh -DBUILD_TESTING=ON
+sudo bash gapp/tools/install.sh -DBUILD_TESTING=ON
 ```
 
 ### Install location

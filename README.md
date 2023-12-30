@@ -74,7 +74,7 @@ will install all available configurations:
 
 ```shell
 git clone https://github.com/KRM7/gapp.git --branch v0.2.0
-sudo bash ./gapp/build/install.sh
+sudo bash ./gapp/tools/install.sh
 ```
 
 Once the library is installed, you can import it using `find_package` and then link

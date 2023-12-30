@@ -33,7 +33,7 @@ jobs:
     - name: setup-catch
       env:
         CXX: ${{ matrix.compiler.cxx }}
-      run: sudo bash ./install_catch.sh
+      run: sudo bash ../tools/install_catch.sh
 
     - name: setup-build
       env:
