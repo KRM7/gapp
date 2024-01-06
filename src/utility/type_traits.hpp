@@ -92,6 +92,17 @@ namespace gapp::detail
 
 
 
+    template<typename Base, typename Derived>
+    struct is_proper_base_of :
+        std::conjunction<std::is_base_of<std::remove_cv_t<Base>, std::remove_cv_t<Derived>>,
+                         std::negation<std::is_same<std::remove_cv_t<Base>, std::remove_cv_t<Derived>>>>
+    {};
+    
+    template<typename Base, typename Derived>
+    inline constexpr bool is_proper_base_of_v = is_proper_base_of<Base, Derived>::value;
+
+
+
     template<typename Derived, template<typename...> class BaseTempl>
     struct is_derived_from_spec_of
     {
@@ -160,6 +171,13 @@ namespace gapp::detail
     template<typename T>
     using promoted_t = typename promoted<T>::type;
 
+
+
+    template<typename T>
+    struct is_nothrow_dereferenceable : std::bool_constant<noexcept(*std::declval<T>())> {};
+
+    template<typename T>
+    inline constexpr bool is_nothrow_dereferenceable_v = is_nothrow_dereferenceable<T>::value;
 
 } // namespace gapp::detail
 

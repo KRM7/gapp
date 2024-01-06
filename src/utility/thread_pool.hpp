@@ -48,7 +48,7 @@ namespace gapp::detail
             std::exception_ptr exception;
             std::atomic<bool> has_exception;
 
-            [[maybe_unused]] auto thread_guard = [&]() noexcept
+            [[maybe_unused]] const auto thread_guard = [&]() noexcept
             {
                 if (!has_exception.exchange(true, std::memory_order_relaxed))
                     exception = std::current_exception();

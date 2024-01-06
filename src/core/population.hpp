@@ -96,24 +96,26 @@ namespace gapp::detail
         return detail::select(pop, optimal_indices);
     }
 
+    enum class ParetoDominance : char { UNKNOWN = 0, OPTIMAL = 1, DOMINATED = 2 };
+
     template<typename T>
     Candidates<T> mergeParetoSets(Candidates<T> lhs, Candidates<T> rhs)
     {
+        using enum ParetoDominance;
+
         if (lhs.empty()) return rhs;
         if (rhs.empty()) return lhs;
 
         if (rhs.size() > lhs.size()) std::swap(lhs, rhs);
 
-        enum Dominance : unsigned char { UNKNOWN = 0, OPTIMAL = 1, DOMINATED = 2 };
-
-        std::vector<Dominance> lhs_state(lhs.size());
-        std::vector<Dominance> rhs_state(rhs.size());
+        std::vector<ParetoDominance> lhs_state(lhs.size());
+        std::vector<ParetoDominance> rhs_state(rhs.size());
 
         detail::parallel_for(iota_iterator(0_sz), iota_iterator(lhs.size()), [&](size_t i) noexcept
         {
             for (size_t j = 0; j < rhs.size(); j++)
             {
-                const Dominance rhs_state_j = std::atomic_ref{ rhs_state[j] }.load(std::memory_order_relaxed);
+                const ParetoDominance rhs_state_j = std::atomic_ref{ rhs_state[j] }.load(std::memory_order_relaxed);
 
                 if (lhs_state[i] == DOMINATED) continue;
                 if (rhs_state_j  == DOMINATED) continue;

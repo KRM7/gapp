@@ -233,11 +233,11 @@ namespace gapp::detail
     struct small_vector_buffer
     {
     public:
-        auto begin() noexcept { return reinterpret_cast<T*>(&data_); }
-        auto begin() const noexcept { return reinterpret_cast<const T*>(&data_); }
+        auto begin() noexcept { return std::launder(reinterpret_cast<T*>(std::addressof(data_[0]))); }
+        auto begin() const noexcept { return std::launder(reinterpret_cast<const T*>(std::addressof(data_[0]))); }
 
-        auto end() noexcept { return reinterpret_cast<T*>(&data_) + Size; }
-        auto end() const noexcept { return reinterpret_cast<const T*>(&data_) + Size; }
+        auto end() noexcept { return reinterpret_cast<T*>(std::addressof(data_[0])) + Size; }
+        auto end() const noexcept { return reinterpret_cast<const T*>(std::addressof(data_[0])) + Size; }
 
         constexpr size_t size() const noexcept { return Size; }
 

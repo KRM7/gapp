@@ -381,11 +381,12 @@ namespace gapp::rng
     {
         GAPP_ASSERT(n >= 0);
         GAPP_ASSERT(0.0 <= p && p <= 1.0);
-        GAPP_ASSERT(n * p < 12.0); // required to avoid data race in std::poisson_distribution with stdlibc++
+        GAPP_ASSERT(n * p < 12.0); // required to avoid data race in std::poisson_distribution with libstdc++
         
         if (p == 0.0) return 0;
         if (p == 1.0) return n;
 
+        // keep the distribution to avoid expensive initialization
         thread_local std::poisson_distribution<IntType> dist;
 
         if (dist.mean() != n * p)
