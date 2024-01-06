@@ -1,10 +1,11 @@
-﻿#ifndef GA_UTILITY_FUNCTIONAL_HPP
+﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+
+#ifndef GA_UTILITY_FUNCTIONAL_HPP
 #define GA_UTILITY_FUNCTIONAL_HPP
 
 #include "type_traits.hpp"
 #include "utility.hpp"
 #include <functional>
-#include <bit>
 #include <array>
 #include <vector>
 #include <memory>
@@ -248,10 +249,13 @@ namespace gapp::detail
     class function_ref<Ret(Args...)>
     {
     public:
+        function_ref() = default;
+        function_ref(std::nullptr_t) noexcept {}
+
         template<typename Callable>
         requires(!std::is_same_v<std::remove_const_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
         function_ref(Callable& f) noexcept :
-            callable_(std::bit_cast<void*>(std::addressof(f))),
+            callable_(static_cast<void*>(std::addressof(f))),
             invoke_(invoke_fn<Callable>)
         {}
 
@@ -259,7 +263,7 @@ namespace gapp::detail
         requires(!std::is_same_v<std::remove_const_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
         function_ref& operator=(Callable& f) noexcept
         {
-            callable_ = std::bit_cast<void*>(std::addressof(f));
+            callable_ = static_cast<void*>(std::addressof(f));
             invoke_ = invoke_fn<Callable>;
             return *this;
         }
@@ -270,15 +274,15 @@ namespace gapp::detail
             return invoke_(callable_, std::forward<Args>(args)...);
         }
 
-        explicit operator bool() const noexcept { return bool(callable_); }
+        explicit operator bool() const noexcept { return static_cast<bool>(callable_); }
 
     private:
         using InvokeFn = Ret(void*, Args...);
 
         template<typename Callable>
-        static Ret invoke_fn(void* f, Args... args)
+        static Ret invoke_fn(void* f, Args... args) noexcept(std::is_nothrow_invocable_r_v<Ret, Callable&, Args...>)
         {
-            return std::invoke(*std::bit_cast<Callable*>(f), std::forward<Args>(args)...);
+            return std::invoke(*static_cast<Callable*>(f), std::forward<Args>(args)...);
         }
 
         void* callable_ = nullptr;
@@ -289,32 +293,31 @@ namespace gapp::detail
     template<typename...>
     class move_only_function;
 
-    template<typename R, typename... Args>
-    class move_only_function<R(Args...)>
+    template<typename Ret, typename... Args>
+    class move_only_function<Ret(Args...)>
     {
     public:
-        constexpr move_only_function() noexcept :
-            fptr_(nullptr)
-        {}
+        move_only_function() noexcept = default;
+        move_only_function(std::nullptr_t) noexcept {}
 
         template<typename F>
-        requires(!std::is_same_v<F, move_only_function> && std::is_invocable_r_v<R, F&, Args...>)
+        requires(!std::is_same_v<F, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
         move_only_function(F f) :
-            fptr_(std::make_unique<Impl<F, R, Args...>>(std::move(f)))
+            fptr_(std::make_unique<Impl<F>>(std::move(f)))
         {}
 
         template<typename F>
-        requires(!std::is_same_v<F, move_only_function> && std::is_invocable_r_v<R, F&, Args...>)
+        requires(!std::is_same_v<F, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
         move_only_function& operator=(F f)
         {
-            fptr_ = std::make_unique<Impl<F, R, Args...>>(std::move(f));
+            fptr_ = std::make_unique<Impl<F>>(std::move(f));
             return *this;
         }
 
         move_only_function(move_only_function&&)            = default;
         move_only_function& operator=(move_only_function&&) = default;
 
-        R operator()(Args... args)
+        Ret operator()(Args... args)
         {
             GAPP_ASSERT(fptr_, "Attempting to invoke an empty move_only_function.");
             return fptr_->invoke(std::forward<Args>(args)...);
@@ -328,17 +331,16 @@ namespace gapp::detail
         explicit operator bool() const noexcept { return bool(fptr_); }
 
     private:
-        template<typename Ret, typename... IArgs>
         struct ImplBase
         {
-            virtual Ret invoke(IArgs...) = 0;
+            virtual Ret invoke(Args...) = 0;
             virtual ~ImplBase() = default;
         };
 
-        template<typename Callable, typename Ret, typename... IArgs>
-        struct Impl : public ImplBase<Ret, IArgs...>
+        template<typename Callable>
+        struct Impl : public ImplBase
         {
-            constexpr explicit Impl(Callable func) :
+            Impl(Callable func) :
                 func_(std::move(func))
             {}
 
@@ -350,7 +352,7 @@ namespace gapp::detail
             Callable func_;
         };
 
-        std::unique_ptr<ImplBase<R, Args...>> fptr_;
+        std::unique_ptr<ImplBase> fptr_ = nullptr;
     };
     
 } // namespace gapp::detail

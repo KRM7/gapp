@@ -3,7 +3,6 @@
 #ifndef GA_UTILITY_INDESTRUCTIBLE_HPP
 #define GA_UTILITY_INDESTRUCTIBLE_HPP
 
-#include <bit>
 #include <new>
 #include <memory>
 #include <type_traits>
@@ -28,8 +27,8 @@ namespace gapp::detail
 
         ~Indestructible() = default;
 
-        T& get() noexcept { return *std::bit_cast<T*>(std::addressof(data_)); }
-        const T& get() const noexcept { return *std::bit_cast<const T*>(std::addressof(data_)); }
+        T& get() noexcept { return *std::launder(reinterpret_cast<T*>(std::addressof(data_[0]))); }
+        const T& get() const noexcept { return *std::launder(reinterpret_cast<const T*>(std::addressof(data_[0]))); }
 
         T& operator*() noexcept { return get(); }
         const T& operator*() const noexcept { return get(); }
