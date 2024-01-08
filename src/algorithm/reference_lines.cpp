@@ -161,7 +161,7 @@ namespace gapp::algorithm::reflines
 
     FitnessMatrix pickSparseSubset(size_t dim, size_t num_points, RefLineGenerator generator, Positive<size_t> k)
     {
-        if (num_points == 0) return {};
+        if (dim * num_points == 0) return {};
 
         FitnessMatrix candidate_points = generator(dim, k * num_points);
 

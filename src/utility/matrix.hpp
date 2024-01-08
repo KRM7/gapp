@@ -38,7 +38,7 @@ namespace gapp::detail
         friend class MatrixRowBase<RowRef, Matrix>;
         friend class MatrixRowBase<ConstRowRef, const Matrix>;
 
-        using value_type        = RowRef;
+        using value_type        = std::vector<T, A>;
         using allocator_type    = A;
         using storage_type      = std::vector<T, A>;
 
@@ -54,18 +54,18 @@ namespace gapp::detail
 
         /* Iterators */
 
-        class ConstRowIterator : public stable_iterator_base<ConstRowIterator, const Matrix, ConstRowRef, ConstRowRef, detail::proxy_ptr<RowRef>, difference_type>
+        class ConstRowIterator : public stable_iterator_base<ConstRowIterator, const Matrix, value_type, ConstRowRef, detail::proxy_ptr<ConstRowRef>, difference_type>
         {
         public:
-            using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, ConstRowRef, ConstRowRef, detail::proxy_ptr<RowRef>, difference_type>;
+            using my_base_ = stable_iterator_base<ConstRowIterator, const Matrix, value_type, ConstRowRef, detail::proxy_ptr<ConstRowRef>, difference_type>;
             using my_base_::my_base_;
             using typename my_base_::iterator_category;
         };
 
-        class RowIterator : public stable_iterator_base<RowIterator, Matrix, RowRef, RowRef, detail::proxy_ptr<RowRef>, difference_type>
+        class RowIterator : public stable_iterator_base<RowIterator, Matrix, value_type, RowRef, detail::proxy_ptr<RowRef>, difference_type>
         {
         public:
-            using my_base_ = stable_iterator_base<RowIterator, Matrix, RowRef, RowRef, detail::proxy_ptr<RowRef>, difference_type>;
+            using my_base_ = stable_iterator_base<RowIterator, Matrix, value_type, RowRef, detail::proxy_ptr<RowRef>, difference_type>;
             using my_base_::my_base_;
             using typename my_base_::iterator_category;
 
@@ -78,10 +78,10 @@ namespace gapp::detail
         using const_reverse_iterator = std::reverse_iterator<ConstRowIterator>;
 
         constexpr iterator begin() noexcept { return iterator(*this, 0); }
-        constexpr iterator end() noexcept   { return iterator(*this, nrows_); }
+        constexpr iterator end() noexcept   { return iterator(*this, nrows()); }
 
         constexpr const_iterator begin() const noexcept { return const_iterator(*this, 0); }
-        constexpr const_iterator end() const noexcept   { return const_iterator(*this, nrows_); }
+        constexpr const_iterator end() const noexcept   { return const_iterator(*this, nrows()); }
 
         /* Special member functions */
 
@@ -93,15 +93,15 @@ namespace gapp::detail
         ~Matrix()                        = default;
 
         constexpr explicit Matrix(const A& alloc) :
-            data_(alloc), nrows_(0), ncols_(0)
+            data_(alloc), ncols_(0)
         {}
 
         constexpr Matrix(size_type nrows, size_type ncols) :
-            data_(nrows * ncols), nrows_(nrows), ncols_(ncols)
+            data_(nrows * ncols), ncols_(ncols)
         {}
 
         constexpr Matrix(size_type nrows, size_type ncols, const T& init, const A& alloc = A()) :
-            data_(nrows * ncols, init, alloc), nrows_(nrows), ncols_(ncols)
+            data_(nrows * ncols, init, alloc), ncols_(ncols)
         {}
 
         constexpr Matrix(std::initializer_list<std::initializer_list<T>> mat);
@@ -112,21 +112,21 @@ namespace gapp::detail
 
         constexpr RowRef operator[](size_type row) noexcept
         {
-            GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
+            GAPP_ASSERT(row < nrows(), "Row index out of bounds.");
 
             return RowRef(*this, row);
         }
 
         constexpr ConstRowRef operator[](size_type row) const noexcept
         {
-            GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
+            GAPP_ASSERT(row < nrows(), "Row index out of bounds.");
 
             return ConstRowRef(*this, row);
         }
 
         constexpr storage_type column(size_type col_idx) const
         {
-            GAPP_ASSERT(col_idx < ncols_, "Col index out of bounds.");
+            GAPP_ASSERT(col_idx < ncols(), "Col index out of bounds.");
 
             storage_type col;
             col.reserve(nrows());
@@ -141,18 +141,18 @@ namespace gapp::detail
 
         constexpr element_reference operator()(size_type row, size_type col) noexcept
         {
-            GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
-            GAPP_ASSERT(col < ncols_, "Col index out of bounds.");
+            GAPP_ASSERT(row < nrows(), "Row index out of bounds.");
+            GAPP_ASSERT(col < ncols(), "Col index out of bounds.");
 
-            return data_[row * ncols_ + col];
+            return data_[row * ncols() + col];
         }
 
         constexpr const_element_reference operator()(size_type row, size_type col) const noexcept
         {
-            GAPP_ASSERT(row < nrows_, "Row index out of bounds.");
-            GAPP_ASSERT(col < ncols_, "Col index out of bounds.");
+            GAPP_ASSERT(row < nrows(), "Row index out of bounds.");
+            GAPP_ASSERT(col < ncols(), "Col index out of bounds.");
 
-            return data_[row * ncols_ + col];
+            return data_[row * ncols() + col];
         }
 
         constexpr RowRef front() noexcept { return *begin(); }
@@ -169,13 +169,10 @@ namespace gapp::detail
         constexpr void append_row(std::span<const T> row);
         constexpr void pop_back() noexcept { resize(nrows() - 1, ncols()); } // NOLINT(*exception-escape)
 
-        constexpr iterator erase(const_iterator row);
-        constexpr iterator erase(const_iterator first, const_iterator last);
-
         /* Size / capacity */
 
-        constexpr size_type size() const noexcept  { return nrows_; } /* For the bounds checking in stable_iterator */
-        constexpr size_type nrows() const noexcept { return nrows_; }
+        constexpr size_type size() const noexcept  { return nrows(); }
+        constexpr size_type nrows() const noexcept { return empty() ? 0 : (data_.size() / ncols_); }
         constexpr size_type ncols() const noexcept { return ncols_; }
         constexpr bool empty() const noexcept { return data_.empty(); }
 
@@ -184,14 +181,13 @@ namespace gapp::detail
         constexpr void resize(size_type nrows, size_type ncols, const T& val = {})
         {
             data_.resize(nrows * ncols, val);
-            nrows_ = nrows;
             ncols_ = ncols;
         }
 
         constexpr void clear() noexcept
         {
             data_.clear();
-            nrows_ = 0;
+            ncols_ = 0;
         }
 
         /* Other */
@@ -199,20 +195,18 @@ namespace gapp::detail
         friend constexpr bool operator==(const Matrix& lhs, const Matrix& rhs)
         {
             return (lhs.empty() && rhs.empty()) ||
-                   (lhs.nrows_ == rhs.nrows_ && lhs.ncols_ == rhs.ncols_ &&
+                   (lhs.nrows() == rhs.nrows() && lhs.ncols() == rhs.ncols() &&
                     lhs.data_ == rhs.data_);
         }
 
         constexpr void swap(Matrix& other) noexcept
         {
             std::swap(data_, other.data_);
-            std::swap(nrows_, other.nrows_);
             std::swap(ncols_, other.ncols_);
         }
 
     private:
         storage_type data_;
-        size_type nrows_ = 0;
         size_type ncols_ = 0;
     };
 
@@ -264,13 +258,11 @@ namespace gapp::detail
         }
 
         constexpr size_type ncols() const noexcept { return mat_->ncols(); }
-        
+
         template<typename alloc_type>
-        explicit operator std::vector<value_type, alloc_type>() const { return std::vector<value_type, alloc_type>(begin(), end()); }
+        operator std::vector<value_type, alloc_type>() const { return std::vector<value_type, alloc_type>(begin(), end()); }
 
-        /* implicit */ operator std::span<copy_const_t<MatrixType, value_type>>() const { return { begin(), end() }; }
-
-        /* Comparison operators */
+        operator std::span<copy_const_t<MatrixType, value_type>>() const { return { begin(), end() }; }
 
         constexpr friend bool operator==(const Derived& lhs, const Derived& rhs)
         {
@@ -406,8 +398,7 @@ namespace gapp::detail
     /* MATRIX IMPLEMENTATION */
 
     template<typename T, typename A>
-    constexpr Matrix<T, A>::Matrix(std::initializer_list<std::initializer_list<T>> mat) :
-        data_(), nrows_(mat.size()), ncols_(0)
+    constexpr Matrix<T, A>::Matrix(std::initializer_list<std::initializer_list<T>> mat)
     {
         if (mat.size() == 0) return;
 
@@ -415,7 +406,7 @@ namespace gapp::detail
 
         GAPP_ASSERT(std::all_of(mat.begin(), mat.end(), detail::is_size(ncols_)), "Unequal row sizes in the input matrix.");
 
-        data_.reserve(nrows_ * ncols_);
+        data_.reserve(mat.size() * ncols_);
         for (auto& row : mat)
         {
             for (auto& entry : row)
@@ -430,39 +421,17 @@ namespace gapp::detail
     {
         if (std::distance(first, last) <= 0) return;
 
-        nrows_ = std::distance(first, last);
         ncols_ = first->size();
-        data_ = storage_type(first->begin(), first->begin() + nrows_ * ncols_);
+        data_ = storage_type(first->begin(), first->begin() + std::distance(first, last) * ncols_);
     }
 
     template<typename T, typename A>
     constexpr void Matrix<T, A>::append_row(std::span<const T> row)
     {
-        GAPP_ASSERT(row.size() == ncols_ || nrows_ == 0, "Can't insert row with different column count.");
+        GAPP_ASSERT(row.size() == ncols() || nrows() == 0, "Can't insert row with different column count.");
 
         data_.insert(data_.end(), row.begin(), row.end());
-        if (nrows_ == 0) ncols_ = row.size();
-        nrows_++;
-    }
-
-    template<typename T, typename A>
-    constexpr auto Matrix<T, A>::erase(const_iterator row) -> iterator
-    {
-        const auto last_removed = data_.erase(row->begin(), row->end());
-        --nrows_;
-
-        return begin() + std::distance(data_.begin(), last_removed) / ncols_;
-    }
-
-    template<typename T, typename A>
-    constexpr auto Matrix<T, A>::erase(const_iterator first, const_iterator last) -> iterator
-    {
-        const auto data_last = last != end() ? last->begin() : data_.end(); // can't dereference last iter
-
-        const auto last_removed = data_.erase(first->begin(), data_last);
-        nrows_ -= std::distance(first, last);
-
-        return begin() + std::distance(data_.begin(), last_removed) / ncols_;
+        ncols_ = row.size();
     }
 
 } // namespace gapp::detail
