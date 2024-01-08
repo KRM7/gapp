@@ -25,17 +25,14 @@ TEST_CASE("matrix", "[matrix]")
 
     SECTION("iterator types")
     {
-        using Row = Matrix<double>::RowRef;
-        using ConstRow = Matrix<double>::ConstRowRef;
-
         using Iterator = Matrix<double>::iterator;
         using ConstIterator = Matrix<double>::const_iterator;
 
-        STATIC_REQUIRE(std::is_same_v<Iterator::value_type, Row>);
-        STATIC_REQUIRE(std::is_same_v<Iterator::reference, Row>);
+        STATIC_REQUIRE(std::is_same_v<Iterator::value_type, Matrix<double>::value_type>);
+        STATIC_REQUIRE(std::is_same_v<Iterator::reference, Matrix<double>::reference>);
 
-        STATIC_REQUIRE(std::is_same_v<ConstIterator::value_type, ConstRow>);
-        STATIC_REQUIRE(std::is_same_v<ConstIterator::reference, ConstRow>);
+        STATIC_REQUIRE(std::is_same_v<ConstIterator::value_type, Matrix<double>::value_type>);
+        STATIC_REQUIRE(std::is_same_v<ConstIterator::reference, Matrix<double>::const_reference>);
     }
 
     Matrix<int> mat1;
@@ -126,30 +123,6 @@ TEST_CASE("matrix", "[matrix]")
         REQUIRE(mat1.ncols() == 4);
         REQUIRE(mat1.nrows() == 1);
         REQUIRE(mat1 == Matrix{ { 2, 3, 4, 1 } });
-    }
-
-    SECTION("erase rows")
-    {
-        // erase single row
-        const auto last1 = mat2.erase(mat2.begin());
-
-        REQUIRE(mat2.nrows() == 1);
-        REQUIRE(mat2 == Matrix{ { 4, 5, 6 } });
-        REQUIRE(last1 == mat2.begin());
-
-        const auto last2 = mat2.erase(mat2.begin());
-
-        REQUIRE(mat2.nrows() == 0);
-        REQUIRE(mat2 == mat1);
-        REQUIRE(last2 == mat2.end());
-
-        // erase multiple rows
-        mat2 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-
-        const auto last3 = mat2.erase(mat2.begin() + 1, mat2.end());
-
-        REQUIRE(mat2 == Matrix{ { 1, 2, 3 } });
-        REQUIRE(last3 == mat2.end());
     }
 
     SECTION("swap")
@@ -262,6 +235,15 @@ TEST_CASE("matrix_rows", "[matrix]")
         REQUIRE(mat == Matrix{ { 1, 2, 3 }, { 1, 2, 3 }, { 7, 8, 9 } });
         REQUIRE(vec == std::vector{ 4, 5, 6 });
     }
+
+    SECTION("row swaps temp")
+    {
+        Matrix<int>::value_type temp = row1;
+        row1 = row2;
+        row2 = temp;
+
+        REQUIRE(mat == Matrix{ { 4, 5, 6 }, { 1, 2, 3 }, { 7, 8, 9 } });
+    }
 }
 
 TEST_CASE("matrix_algorithms", "[matrix]")
@@ -269,22 +251,12 @@ TEST_CASE("matrix_algorithms", "[matrix]")
     Matrix mat1 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
     Matrix mat2 = { { 37, 40, 13 }, { 14, 4, 0 }, { 8, -1, 9 } };
 
-    for (auto row : mat1)
-    {
-        for (int& entry : row)
-        {
-            entry = 0;
-        }
-    }
-
-    const bool all_zero = std::all_of(mat1.cbegin(), mat1.cend(), [](auto row)
-    {
-        return std::all_of(row.begin(), row.end(), equal_to(0));
-    });
-
-    REQUIRE(all_zero);
-
     std::copy(mat2.begin(), mat2.end(), mat1.begin());
-
     REQUIRE(std::equal(mat1.begin(), mat1.end(), mat2.cbegin(), mat2.cend()));
+
+    std::sort(mat1.begin(), mat1.end(), [](const auto& lhs, const auto& rhs) { return lhs[0] < rhs[0]; });
+    REQUIRE(mat1 == Matrix{ { 8, -1, 9 }, { 14, 4, 0 }, { 37, 40, 13 } });
+
+    std::reverse(mat1.begin(), mat1.end());
+    REQUIRE(mat1 == Matrix{ { 37, 40, 13 }, { 14, 4, 0 }, { 8, -1, 9 } });
 }
