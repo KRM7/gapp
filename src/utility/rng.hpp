@@ -189,7 +189,7 @@ namespace gapp::rng
         /** @return The next number of the sequence. Thread-safe. */
         result_type operator()() const noexcept
         {
-            std::shared_lock _{ generator_.instance };
+            //std::shared_lock _{ generator_.instance };
             return std::invoke(*generator_.instance);
         }
 

@@ -10,6 +10,8 @@
 
 int main()
 {
+    rng::prng.seed(0x123456789);
+
     //while (true)
     {
         binary_sphere();
@@ -20,6 +22,8 @@ int main()
         binary_ackley();
         binary_levy();
 
+        rng::prng.seed(0x123466789);
+
         real_sphere();
         real_rastrigin();
         real_rosenbrock();
@@ -27,6 +31,8 @@ int main()
         real_griewank();
         real_ackley();
         real_levy();
+
+        rng::prng.seed(0x121456789);
 
         perm_tsp52();
         perm_tsp76();
@@ -36,11 +42,15 @@ int main()
         perm_tsp299();
         perm_tsp439();
 
+        rng::prng.seed(0x123456789);
+
         integer_hello();
         integer_sentence();
 
         benchmark_nsga2_zdt();
         benchmark_nsga2_dtlz();
+
+        rng::prng.seed(0x123456789);
 
         benchmark_nsga3_zdt();
         benchmark_nsga3_dtlz();
