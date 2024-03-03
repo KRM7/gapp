@@ -61,15 +61,10 @@ implementations. These numbers are generated using a single
 global pseudo-random number generator instance. This PRNG
 instance can be accessed as `rng::prng`. There are also
 several utility functions for generating random numbers using
-the engine in the `rng` namespace, so this generator doesn't
+this engine in the `rng` namespace, so this generator doesn't
 have to be used directly.
 
-The methods of the PRNG and all of the random generation
-utilities are thread-safe, and can be used freely by the user
-if needed, for example in the implementation of custom
-genetic operators.
-
-The generator is seeded using a constant value determined
+The global generator is seeded using a constant value determined
 by the value of the `GAPP_SEED` macro. The value of this
 can be changed by defining this macro on the command line
 while building and using the library.
@@ -79,5 +74,13 @@ Alternatively, the PRNG can also be reseeded using its `seed` method.
 ```cpp
 rng::prng.seed(new_seed);
 ```
+
+The methods of the PRNG and all of the random generation
+utilities are thread-safe, and can be used freely by the user
+if needed, for example in the implementation of custom
+genetic operators. The only exception to this is the `seed()` method
+of the prng, which is not thread safe and shouldn't be called
+concurrently with the random number generation methods. In practice,
+this means that `seed()` sholdn't be called while a GA is running.
 
 ------------------------------------------------------------------------------------------------

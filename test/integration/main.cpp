@@ -12,6 +12,8 @@ int main()
 {
     //while (true)
     {
+        rng::prng.seed(0x123456789);
+
         binary_sphere();
         binary_rastrigin();
         binary_rosenbrock();

@@ -8,6 +8,7 @@
 #include "bit.hpp"
 #include "rcu.hpp"
 #include "indestructible.hpp"
+#include "spinlock.hpp"
 #include "utility.hpp"
 #include <algorithm>
 #include <functional>
@@ -21,7 +22,6 @@
 #include <limits>
 #include <memory>
 #include <mutex>
-#include <shared_mutex>
 #include <cstdint>
 #include <cstddef>
 #include <concepts>
@@ -174,7 +174,7 @@ namespace gapp::rng
     /**
      * The pseudo-random number generator class used in the library.
      * This class is a simple wrapper around the Xoroshiro128p generator
-     * to make it thread-safe.
+     * to make operator() thread-safe.
      * 
      * @note
      *  The global prng instance should be used instead of creating
@@ -189,16 +189,19 @@ namespace gapp::rng
         /** @return The next number of the sequence. Thread-safe. */
         result_type operator()() const noexcept
         {
-            std::shared_lock _{ generator_.instance };
-            return std::invoke(*generator_.instance);
+            return std::invoke(generator_.instance);
         }
 
-        /** Set a new seed for the generator. Thread-safe. */
+        /** 
+         * Set a new seed for the generator. This function is not thread-safe and shouldn't
+         * be called concurrently with the random number generation functions (e.g. while a GA
+         * is running).
+         */
         static void seed(std::uint64_t seed)
         {
             std::scoped_lock _{ tls_generators_->lock };
             global_generator_.seed(seed);
-            for (Generator* generator : tls_generators_->list)
+            for (Xoroshiro128p* generator : tls_generators_->list)
             {
                 *generator = global_generator_.jump();
             }
@@ -211,14 +214,12 @@ namespace gapp::rng
         static constexpr result_type max() noexcept { return Xoroshiro128p::max(); }
 
     private:
-        using Generator = detail::rcu_obj<Xoroshiro128p>;
-
         struct RegisteredGenerator
         {
             RegisteredGenerator() noexcept // NOLINT(*exception-escape)
             {
                 std::scoped_lock _{ tls_generators_->lock };
-                instance.get() = global_generator_.jump();
+                instance = global_generator_.jump();
                 tls_generators_->list.push_back(std::addressof(instance));
             }
 
@@ -228,13 +229,13 @@ namespace gapp::rng
                 std::erase(tls_generators_->list, std::addressof(instance));
             }
 
-            Generator instance{ 0 };
+            Xoroshiro128p instance{ 0 };
         };
 
         struct GeneratorList
         {
             detail::spinlock lock;
-            std::vector<Generator*> list;
+            std::vector<Xoroshiro128p*> list;
         };
 
         GAPP_API inline static Xoroshiro128p global_generator_{ GAPP_SEED };

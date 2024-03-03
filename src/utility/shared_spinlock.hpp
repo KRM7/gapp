@@ -6,7 +6,9 @@
 #include "utility.hpp"
 #include "spinlock.hpp"
 #include <atomic>
+#include <thread>
 #include <tuple>
+#include <limits>
 #include <cstdint>
 
 namespace gapp::detail
@@ -16,46 +18,48 @@ namespace gapp::detail
     public:
         void lock() noexcept
         {
-            lock_.lock();
-            while (read_cnt_.load(std::memory_order_relaxed)) GAPP_PAUSE();
-            std::ignore = read_cnt_.load(std::memory_order_acquire);
+            while (true)
+            {
+                while (cntr_.load(std::memory_order_relaxed)) GAPP_PAUSE();
+                if (try_lock()) break;
+                std::this_thread::yield();
+            }
         }
 
         bool try_lock() noexcept
         {
-            if (!lock_.try_lock()) return false;
-            if (!read_cnt_.load(std::memory_order_acquire)) return true;
-            return lock_.unlock(), false;
+            std::uint32_t expected = 0;
+            return cntr_.compare_exchange_strong(expected, WRITER, std::memory_order_acq_rel, std::memory_order_relaxed);
         }
 
         void unlock() noexcept
         {
-            lock_.unlock();
+            cntr_.fetch_sub(WRITER, std::memory_order_release);
         }
 
         void lock_shared() noexcept
         {
-            lock_.lock();
-            read_cnt_.fetch_add(1, std::memory_order_relaxed);
-            lock_.unlock();
+            cntr_.fetch_add(1, std::memory_order_release);
+            while (cntr_.load(std::memory_order_relaxed) >= WRITER) GAPP_PAUSE();
+            std::ignore = cntr_.load(std::memory_order_acquire);
         }
 
         bool try_lock_shared() noexcept
         {
-            if (!lock_.try_lock()) return false;
-            read_cnt_.fetch_add(1, std::memory_order_relaxed);
-            lock_.unlock();
-            return true;
+            cntr_.fetch_add(1, std::memory_order_release);
+            if (cntr_.load(std::memory_order_acquire) < WRITER) return true;
+            cntr_.fetch_sub(1, std::memory_order_relaxed);
+            return false;
         }
 
         void unlock_shared() noexcept
         {
-            read_cnt_.fetch_sub(1, std::memory_order_release);
+            cntr_.fetch_sub(1, std::memory_order_release);
         }
 
     private:
-        std::atomic<uint32_t> read_cnt_;
-        detail::spinlock lock_;
+        constexpr inline static std::uint32_t WRITER = std::numeric_limits<std::uint32_t>::max() >> 1;
+        std::atomic<std::uint32_t> cntr_;
     };
 
 } // namespace gapp::detail
