@@ -32,6 +32,9 @@ jobs:
     - name: setup-compiler
       run: sudo apt update && sudo apt install -y ${{ matrix.pkgs }}
 
+    - name: aslr-workaround
+      run: sudo sysctl vm.mmap_rnd_bits=28
+
     - name: setup-catch
       env:
         CXX: ${{ matrix.cxx }}

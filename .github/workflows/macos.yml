@@ -40,6 +40,9 @@ jobs:
     - name: setup-compiler
       run: brew update && brew install ${{ matrix.compiler.pkgs }}
 
+    - name: setup-xcode
+      run: sudo xcode-select -switch /Applications/Xcode_15.1.app
+
     - name: setup-catch
       run: sudo bash ../tools/install_catch.sh -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}"
 

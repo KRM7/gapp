@@ -3,46 +3,48 @@
 #ifndef GA_UTILITY_INDESTRUCTIBLE_HPP
 #define GA_UTILITY_INDESTRUCTIBLE_HPP
 
-#include <new>
 #include <memory>
 #include <type_traits>
 #include <utility>
 
 namespace gapp::detail
 {
+    // NOLINTBEGIN(*union-access)
+
     template<typename T>
     class Indestructible
     {
     public:
         template<typename... Args>
-        Indestructible(Args&&... args) noexcept(std::is_nothrow_constructible_v<T, Args...>)
+        constexpr Indestructible(Args&&... args) noexcept(std::is_nothrow_constructible_v<T, Args...>)
         {
-            std::construct_at(std::addressof(get()), std::forward<Args>(args)...);
+            std::construct_at(std::addressof(data_), std::forward<Args>(args)...);
         }
+
+        constexpr ~Indestructible() noexcept {} // NOLINT(*default)
 
         Indestructible(const Indestructible&)            = delete;
         Indestructible(Indestructible&&)                 = delete;
         Indestructible& operator=(const Indestructible&) = delete;
         Indestructible& operator=(Indestructible&&)      = delete;
 
-        ~Indestructible() = default;
+        constexpr T& get() noexcept { return data_; }
+        constexpr const T& get() const noexcept { return data_; }
 
-        T& get() noexcept { return *std::launder(reinterpret_cast<T*>(std::addressof(data_[0]))); }
-        const T& get() const noexcept { return *std::launder(reinterpret_cast<const T*>(std::addressof(data_[0]))); }
+        constexpr T& operator*() noexcept { return get(); }
+        constexpr const T& operator*() const noexcept { return get(); }
 
-        T& operator*() noexcept { return get(); }
-        const T& operator*() const noexcept { return get(); }
+        constexpr T* operator->() noexcept { return std::addressof(get()); }
+        constexpr const T* operator->() const noexcept { return std::addressof(get()); }
 
-        T* operator->() noexcept { return std::addressof(get()); }
-        const T* operator->() const noexcept { return std::addressof(get()); }
-
-        /* implicit */ operator T&() & noexcept { return get(); }
-        /* implicit */ operator const T&() const& noexcept { return get(); }
+        constexpr explicit(false) operator T&() & noexcept { return get(); }
+        constexpr explicit(false) operator const T&() const& noexcept { return get(); }
 
     private:
-        using storage_type = unsigned char[sizeof(T)]; // NOLINT(*avoid-c-arrays)
-        alignas(T) storage_type data_{};
+        union { T data_; };
     };
+    
+    // NOLINTEND(*union-access)
 
 } // namespace gapp::detail
 
