@@ -35,7 +35,7 @@ jobs:
 
     steps:
     - name: checkout-repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: setup-compiler
       run: brew update && brew install ${{ matrix.compiler.pkgs }}

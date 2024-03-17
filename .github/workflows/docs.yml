@@ -21,7 +21,7 @@ jobs:
         git config --global user.email ${{ github.repository_owner }}@users.noreply.github.com
 
     - name: update-api-docs
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: gh-pages
         fetch-depth: 0
@@ -33,7 +33,7 @@ jobs:
         git push --force-with-lease
      
     - name: update-wiki-pages
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ${{ github.repository }}.wiki
         path: wiki
