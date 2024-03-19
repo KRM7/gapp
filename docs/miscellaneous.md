@@ -16,27 +16,28 @@
 
 There are multiple places during the runs of the genetic algorithms
 where floating-point numbers are compared. First, the fitness vectors
-of the solutions need to be compared to determine which solutions
+of the solutions need to be compared with eachother to determine which solutions
 are better. Additionally, when the GA uses real-encoding, the chromosomes
 are also encoded as vectors of floating point numbers, so comparing the
-candidate solutions can also involve comparing floating point numbers.
+candidate solutions will also involve comparing floating point numbers in this
+case.
 
 These comparisons are not done as exact comparisons, but instead use
 an absolute and a relative tolerance value. The actual tolerance used for
 a comparison will be the greater of these two tolerances. The values used
-for them can be found using the `math::Tolerances::abs()` and
-`math::Tolerances::rel()` functions.
+for them can be found using the `math::Tolerances::abs` and
+`math::Tolerances::rel` functions.
 
 ```cpp
 std::cout << "The default absolute tolerance used is " << math::Tolerances::abs() << "\n";
 std::cout << "The default relative tolerance around 1.0 is " << math::Tolerances::rel(1.0) << "\n";
 ```
 
-The tolerance values can be changed using the `ScopedTolerances`
-class, which expects the new absolute and relative tolerance values
-in its constructor. These values will be used for the lifetime of
-the `ScopedTolerances` instance, and the destructor of the class
-will reset the tolerances to their old values.
+The tolerance values can be changed using the `ScopedTolerances` class,
+which expects the new absolute and relative tolerance values to be specified
+in its constructor. These values will be used for the lifetime of the
+`ScopedTolerances` instance, and the destructor of the class will reset the
+tolerances to their old values.
 
 ```cpp
 math::ScopedTolerances _(/* abs = */ 1e-10, /* rel = */ 1e-12);
@@ -48,10 +49,11 @@ Exact comparisons can be used by setting both tolerance values to 0.
 math::ScopedTolerances _(0.0, 0.0);
 ```
 
-Note that the tolerance values are global variables which will be used for
-the comparisons on every thread, so they should not be modified on multiple
-threads concurrently. This means that instances of the `ScopedTolerances`
-class should not exist on multiple threads at once.
+Note that these tolerance values are global values which will be used for
+the comparisons on every thread, and changing their values is not thread-safe.
+This means that instances of the `ScopedTolerances` class should not be created
+while a genetic algorithm is running, and instances of this class should also
+not exist on multiple threads at once.
 
 
 ## Random number generation
@@ -82,5 +84,27 @@ genetic operators. The only exception to this is the `seed()` method
 of the prng, which is not thread safe and shouldn't be called
 concurrently with the random number generation methods. In practice,
 this means that `seed()` sholdn't be called while a GA is running.
+
+
+## Execution
+
+By default, the library will use multiple threads for running the
+genetic algorithms, with the number of threads being the number of
+hardware threads available as indicated by `std::thread::hardware_concurrency`.
+
+This can be changed using the `execution_threads` function. The number of threads
+used will be the value specified as the argument to this function.
+
+```cpp
+execution_threads(1); // run everything on a single thread
+```
+
+The specified thread count should be between 1 and the number of hardware threads.
+Numbers larger than the number of hardware threads can be set, but they will likely
+lead to worse performance. If 0 is specified, it will be ignored and a single thread
+will be used instead.
+
+Note that this function is not thread-safe, and shouldn't be called while a genetic
+algorithm is running.
 
 ------------------------------------------------------------------------------------------------
