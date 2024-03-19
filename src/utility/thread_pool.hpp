@@ -8,6 +8,7 @@
 #include "functional.hpp"
 #include "iterators.hpp"
 #include "utility.hpp"
+#include <algorithm>
 #include <type_traits>
 #include <concepts>
 #include <thread>
@@ -94,6 +95,16 @@ namespace gapp::detail
             if (has_exception.load(std::memory_order_relaxed)) std::rethrow_exception(exception);
         }
 
+        void thread_count(size_t count)
+        {
+            turn_.store(0, std::memory_order_relaxed);
+            if (count == thread_count()) return;
+            stop();
+            workers_ = std::vector<worker_t>(count - 1);
+        }
+
+        size_t thread_count() const noexcept { return workers_.size() + 1; }
+
         ~thread_pool() noexcept { stop(); }
 
         thread_pool() = default;
@@ -170,5 +181,31 @@ namespace gapp::detail
     }
 
 } // namespace gapp::detail
+
+namespace gapp
+{
+    /**
+    * Set the number of threads that will be used by the library to run the genetic algorithms.
+    * 
+    * The value should be between 1 and the number of hardware threads. The default number of threads
+    * used will be the value returned by std::thread::hardware_concurrency.
+    * 
+    * @note This function is not thread-safe and shouldn't be called while a genetic algorithm
+    *   is running.
+    * 
+    * @count The desired number of threads. Must be at least 1.
+    */
+    inline void execution_threads(size_t count)
+    {
+        detail::execution_context::global_thread_pool.thread_count(std::max(count, 1_sz));
+    }
+
+    /** @returns The number of threads used by the library. */
+    inline size_t execution_threads() noexcept
+    {
+        return detail::execution_context::global_thread_pool.thread_count();
+    }
+
+} // namespace gapp
 
 #endif // !GA_UTILITY_THREAD_POOL_HPP

@@ -39,6 +39,20 @@ Floating-point comparison tolerances
    :private-members:
 
 
+Execution
+---------------------------------------------------
+
+.. code-block::
+
+   #include <utility/thread_pool.hpp>
+
+.. doxygenfunction:: gapp::execution_threads(size_t)
+   :project: gapp
+
+.. doxygenfunction:: gapp::execution_threads()
+   :project: gapp
+
+
 Bounded value types
 ---------------------------------------------------
 
