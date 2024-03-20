@@ -312,6 +312,8 @@ namespace gapp
         GAPP_ASSERT(algorithm_ && stop_condition_);
         GAPP_ASSERT(crossover_ && mutation_);
 
+        detail::execution_context::global_thread_pool.reset_scheduler();
+
         /* Reset state in case solve() has already been called before. */
         generation_cntr_ = 0;
         num_fitness_evals_ = 0;

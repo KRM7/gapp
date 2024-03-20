@@ -95,15 +95,23 @@ namespace gapp::detail
             if (has_exception.load(std::memory_order_relaxed)) std::rethrow_exception(exception);
         }
 
-        void thread_count(size_t count)
+        void reset_scheduler()
         {
             turn_.store(0, std::memory_order_relaxed);
+        }
+
+        void thread_count(size_t count)
+        {
+            reset_scheduler();
             if (count == thread_count()) return;
             stop();
             workers_ = std::vector<worker_t>(count - 1);
         }
 
-        size_t thread_count() const noexcept { return workers_.size() + 1; }
+        size_t thread_count() const noexcept
+        {
+            return workers_.size() + 1;
+        }
 
         ~thread_pool() noexcept { stop(); }
 
