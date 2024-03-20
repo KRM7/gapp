@@ -3,6 +3,7 @@
 #ifndef GA_UTILITY_RNG_HPP
 #define GA_UTILITY_RNG_HPP
 
+#include "distribution.hpp"
 #include "small_vector.hpp"
 #include "type_traits.hpp"
 #include "bit.hpp"
@@ -35,6 +36,52 @@
 /** Contains the PRNG classes and functions used for generating random numbers. */
 namespace gapp::rng
 {
+    /** Generate a random boolean value from a uniform distribution. */
+    inline bool randomBool() noexcept;
+
+    /** Generate a random integer from a uniform distribution on the closed interval [lbound, ubound]. */
+    template<std::integral IntType = int>
+    IntType randomInt(IntType lbound, IntType ubound);
+
+    /** Generate a random floating-point value from a uniform distribution on the half-open interval [0.0, 1.0). */
+    template<std::floating_point RealType = double>
+    RealType randomReal();
+
+    /** Generate a random floating-point value of from a uniform distribution on the half-open interval [lbound, ubound). */
+    template<std::floating_point RealType = double>
+    RealType randomReal(RealType lbound, RealType ubound);
+
+    /** Generate a random floating-point value from a normal distribution with the specified mean and std deviation. */
+    template<std::floating_point RealType = double>
+    RealType randomNormal(RealType mean = 0.0, RealType std_dev = 1.0);
+
+    /** Generate a random integer value from a poisson distribution with the specified mean. */
+    template<std::integral IntType = int>
+    IntType randomPoisson(double mean);
+
+    /** Generate a random integer value from an approximate binomial distribution with the parameters n and p. */
+    template<std::integral IntType = int>
+    IntType randomBinomial(IntType n, double p);
+
+
+    /** Generate a random index for a range. */
+    template<std::ranges::random_access_range R>
+    detail::size_type<R> randomIndex(const R& range);
+
+    /** Pick a random element from a range. */
+    template<std::forward_iterator Iter>
+    Iter randomElement(Iter first, Iter last);
+
+
+    /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). */
+    template<std::integral IntType>
+    small_vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
+
+    /** Select an index based on a discrete CDF. */
+    template<std::floating_point T>
+    size_t sampleCdf(std::span<const T> cdf);
+
+
     /**
     * Splitmix64 pseudo-random number generator based on
     * https://prng.di.unimi.it/splitmix64.c. This generator
@@ -167,7 +214,7 @@ namespace gapp::rng
             return { seed_seq_gen(), seed_seq_gen() };
         }
 
-        alignas(128) state_type state_;
+        state_type state_;
     };
 
 
@@ -201,9 +248,14 @@ namespace gapp::rng
         {
             std::scoped_lock _{ tls_generators_->lock };
             global_generator_.seed(seed);
-            for (Xoroshiro128p* generator : tls_generators_->list)
+
+            for (RegisteredGenerator* generator : tls_generators_->list)
             {
-                *generator = global_generator_.jump();
+                generator->instance = global_generator_.jump();
+
+                generator->bool_distribution.reset();
+                generator->normal_distribution.reset();
+                generator->poisson_distribution.reset();
             }
         }
 
@@ -220,25 +272,33 @@ namespace gapp::rng
             {
                 std::scoped_lock _{ tls_generators_->lock };
                 instance = global_generator_.jump();
-                tls_generators_->list.push_back(std::addressof(instance));
+                tls_generators_->list.push_back(this);
             }
 
             ~RegisteredGenerator() noexcept
             {
                 std::scoped_lock _{ tls_generators_->lock };
-                std::erase(tls_generators_->list, std::addressof(instance));
+                std::erase(tls_generators_->list, this);
             }
 
             Xoroshiro128p instance{ 0 };
+
+            detail::uniform_bool_distribution bool_distribution           = {};
+            std::normal_distribution<double> normal_distribution          = {};
+            std::poisson_distribution<std::uint64_t> poisson_distribution = {};
         };
 
         struct GeneratorList
         {
             detail::spinlock lock;
-            std::vector<Xoroshiro128p*> list;
+            std::vector<RegisteredGenerator*> list;
         };
 
-        GAPP_API inline static Xoroshiro128p global_generator_{ GAPP_SEED };
+        friend bool randomBool() noexcept;
+        template<std::integral T> friend T randomPoisson(double);
+        template<std::floating_point T> friend T randomNormal(T, T);
+
+        GAPP_API inline static constinit Xoroshiro128p global_generator_{ GAPP_SEED };
         GAPP_API inline static detail::Indestructible<GeneratorList> tls_generators_;
         alignas(128) inline static thread_local RegisteredGenerator generator_;
     };
@@ -246,49 +306,6 @@ namespace gapp::rng
 
     /** The global pseudo-random number generator instance used in the algorithms. */
     inline constexpr ConcurrentXoroshiro128p prng;
-
-
-    /** Generate a random boolean value from a uniform distribution. */
-    inline bool randomBool() noexcept;
-
-    /** Generate a random integer from a uniform distribution on the closed interval [lbound, ubound]. */
-    template<std::integral IntType = int>
-    IntType randomInt(IntType lbound, IntType ubound);
-
-    /** Generate a random floating-point value from a uniform distribution on the half-open interval [0.0, 1.0). */
-    template<std::floating_point RealType = double>
-    RealType randomReal();
-
-    /** Generate a random floating-point value of from a uniform distribution on the half-open interval [lbound, ubound). */
-    template<std::floating_point RealType = double>
-    RealType randomReal(RealType lbound, RealType ubound);
-
-    /** Generate a random floating-point value from a normal distribution with the specified mean and std deviation. */
-    template<std::floating_point RealType = double>
-    RealType randomNormal(RealType mean = 0.0, RealType std_dev = 1.0);
-
-    /** Generate a random integer value from an approximate binomial distribution with the parameters n and p. */
-    template<std::integral IntType = int>
-    IntType randomBinomial(IntType n, double p);
-
-
-    /** Generate a random index for a range. */
-    template<std::ranges::random_access_range R>
-    detail::size_type<R> randomIndex(const R& range);
-
-    /** Pick a random element from a range. */
-    template<std::forward_iterator Iter>
-    Iter randomElement(Iter first, Iter last);
-
-
-    /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). */
-    template<std::integral IntType>
-    small_vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
-
-
-    /** Select an index based on a discrete CDF. */
-    template<std::floating_point T>
-    size_t sampleCdf(std::span<const T> cdf);
 
 } // namespace gapp::rng
 
@@ -305,17 +322,7 @@ namespace gapp::rng
 {
     bool randomBool() noexcept
     {
-        constinit thread_local uint64_t bit_pool = 1;
-
-        if (bit_pool == detail::lsb_mask<uint64_t>)
-        {
-            bit_pool = prng() | detail::msb_mask<uint64_t>;
-        }
-
-        const bool bit = detail::last_bit(bit_pool);
-        bit_pool >>= 1;
-
-        return bit;
+        return prng.generator_.bool_distribution(rng::prng);
     }
 
     template<std::integral IntType>
@@ -323,12 +330,7 @@ namespace gapp::rng
     {
         GAPP_ASSERT(lbound <= ubound);
 
-        // std::uniform_int_distribution doesnt support char and other 8 bit types
-        using NonCharInt = std::conditional_t<std::is_signed_v<IntType>, int64_t, uint64_t>;
-
-        std::uniform_int_distribution<NonCharInt> dist{ lbound, ubound };
-
-        return dist(rng::prng);
+        return std::uniform_int_distribution<decltype(+lbound)>{ lbound, ubound }(rng::prng);
     }
 
     template<std::floating_point RealType>
@@ -350,10 +352,20 @@ namespace gapp::rng
     {
         GAPP_ASSERT(std_dev >= 0.0);
 
-        // keep the distribution for the state
-        thread_local std::normal_distribution<RealType> dist;
+        return std_dev * prng.generator_.normal_distribution(rng::prng) + mean;
+    }
 
-        return std_dev * dist(rng::prng) + mean;
+    template<std::integral IntType>
+    IntType randomPoisson(double mean)
+    {
+        GAPP_ASSERT(mean > 0.0);
+
+        if (prng.generator_.poisson_distribution.mean() != mean)
+        {
+            prng.generator_.poisson_distribution = std::poisson_distribution<std::uint64_t>{ mean };
+        }
+
+        return prng.generator_.poisson_distribution(rng::prng);
     }
 
     template<std::integral IntType>
@@ -374,7 +386,7 @@ namespace gapp::rng
             rand = rng::randomNormal(mean, std_dev);
         }
 
-        return static_cast<IntType>(std::round(rand));
+        return IntType(std::round(rand));
     }
 
     template<std::integral IntType>
@@ -382,21 +394,15 @@ namespace gapp::rng
     {
         GAPP_ASSERT(n >= 0);
         GAPP_ASSERT(0.0 <= p && p <= 1.0);
-        GAPP_ASSERT(n * p < 12.0); // required to avoid data race in std::poisson_distribution with libstdc++
         
         if (p == 0.0) return 0;
         if (p == 1.0) return n;
 
-        // keep the distribution to avoid expensive initialization
-        thread_local std::poisson_distribution<IntType> dist;
+        const double mean = n * p;
 
-        if (dist.mean() != n * p)
-        {
-            dist = std::poisson_distribution<IntType>{ n * p };
-        }
+        IntType rand = rng::randomPoisson<IntType>(mean);
+        while (rand > n) { rand = rng::randomPoisson<IntType>(mean); }
 
-        IntType rand = dist(rng::prng);
-        while (rand > n) { rand = dist(rng::prng); }
         return rand;
     }
 
@@ -432,7 +438,7 @@ namespace gapp::rng
     {
         GAPP_ASSERT(!range.empty());
 
-        return std::uniform_int_distribution<detail::size_type<R>>{ 0, range.size() - 1 }(rng::prng);
+        return rng::randomInt<detail::size_type<R>>(0, range.size() - 1);
     }
 
     template<std::forward_iterator Iter>

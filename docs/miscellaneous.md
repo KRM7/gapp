@@ -107,4 +107,31 @@ will be used instead.
 Note that this function is not thread-safe, and shouldn't be called while a genetic
 algorithm is running.
 
+
+## Determinism and reproducibility
+
+Due to the library's reliance on random numbers generated from a global generator, 
+the solutions to a problem will generally vary between runs even if the same parameters
+are used. However, it is possible to reproduce the results of previous runs by seeding
+the random number generator appropriately.
+
+```cpp
+rng::prng.seed(0x9e3779b97f4a7c15);
+const auto solutions1 = ga.solve(f);
+
+rng::prng.seed(0x9e3779b97f4a7c15);
+const auto solutions2 = ga.solve(f);
+
+assert(solutions1 == solutions2);
+```
+
+As long as the PRNG is seeded with the same value before each run, the results from the
+runs will be the same. This will be true regardless of the number of threads used, there
+is no need to use single-threaded execution for this. However, the number of threads used
+should not be changed between the runs, as that would lead to different results.
+
+The results also depend on the implementation of the standard library, so they will
+not be reproducible using different implementations. This also means that results
+are not generally reproducible across different platforms.
+
 ------------------------------------------------------------------------------------------------
