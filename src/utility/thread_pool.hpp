@@ -201,7 +201,7 @@ namespace gapp
     * @note This function is not thread-safe and shouldn't be called while a genetic algorithm
     *   is running.
     * 
-    * @count The desired number of threads. Must be at least 1.
+    * @param count The desired number of threads. Must be at least 1.
     */
     inline void execution_threads(size_t count)
     {
