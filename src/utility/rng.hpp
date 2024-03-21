@@ -3,6 +3,7 @@
 #ifndef GA_UTILITY_RNG_HPP
 #define GA_UTILITY_RNG_HPP
 
+#include "functional.hpp"
 #include "distribution.hpp"
 #include "small_vector.hpp"
 #include "type_traits.hpp"
@@ -78,8 +79,8 @@ namespace gapp::rng
     small_vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
 
     /** Select an index based on a discrete CDF. */
-    template<std::floating_point T>
-    size_t sampleCdf(std::span<const T> cdf);
+    template<std::floating_point RealType>
+    size_t sampleCdf(std::span<const RealType> cdf);
 
 
     /**
@@ -520,16 +521,20 @@ namespace gapp::rng
         return numbers;
     }
 
-    template<std::floating_point T>
-    size_t sampleCdf(std::span<const T> cdf)
+    template<std::floating_point RealType>
+    size_t sampleCdf(std::span<const RealType> cdf)
     {
         GAPP_ASSERT(!cdf.empty());
         GAPP_ASSERT(0.0 <= cdf.front());
 
-        const auto limitval = rng::randomReal<T>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
-        const auto selected = std::lower_bound(cdf.begin(), cdf.end(), limitval);
+        const RealType threshold = rng::randomReal<RealType>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
 
-        return static_cast<size_t>(selected - cdf.begin());
+        if (cdf.size() < 128)
+        {
+            return std::distance(cdf.begin(), std::find_if(cdf.begin(), cdf.end(), detail::greater_eq_than(threshold)));
+        }
+
+        return std::distance(cdf.begin(), std::lower_bound(cdf.begin(), cdf.end(), threshold));
     }
 
 } // namespace gapp::rng
