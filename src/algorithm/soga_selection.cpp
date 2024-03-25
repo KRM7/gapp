@@ -2,9 +2,11 @@
 
 #include "soga_selection.hpp"
 #include "../core/ga_info.hpp"
+#include "../core/candidate.hpp"
 #include "../core/population.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
+#include "../utility/small_vector.hpp"
 #include "../utility/math.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
@@ -63,7 +65,8 @@ namespace gapp::selection
         GAPP_ASSERT(fmat.size() >= tourney_size_);
         GAPP_ASSERT(fmat.ncols() == 1);
 
-        const auto candidate_indices = rng::sampleUnique(0_sz, fmat.size(), tourney_size_);
+        small_vector<size_t> candidate_indices(tourney_size_);
+        std::generate(candidate_indices.begin(), candidate_indices.end(), [&]{ return rng::randomIndex(fmat); });
 
         return *std::max_element(candidate_indices.begin(), candidate_indices.end(),
         [&](size_t lhs, size_t rhs) noexcept

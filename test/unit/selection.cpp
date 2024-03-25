@@ -58,7 +58,7 @@ TEST_CASE("tournament_selection", "[selection][single-objective]")
 
     fmat[0] = { -math::inf<double> };
     selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) != 0);
+    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
 
     fmat[1] = { math::large<double> };
     selection->prepareSelectionsImpl(context, fmat);
