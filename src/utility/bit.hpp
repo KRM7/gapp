@@ -7,6 +7,7 @@
 #include <concepts>
 #include <limits>
 #include <climits>
+#include <cstddef>
 
 namespace gapp::detail
 {
@@ -18,6 +19,13 @@ namespace gapp::detail
 
     template<typename T>
     inline constexpr T msb_mask = T{ 1 } << (bitsizeof<T> - 1);
+
+
+    template<std::unsigned_integral T>
+    inline constexpr T ones = ~T{ 0 };
+
+    template<std::unsigned_integral T>
+    inline constexpr T zeros = T{ 0 };
 
 
     template<std::floating_point T>
@@ -36,15 +44,37 @@ namespace gapp::detail
     }
 
     template<typename T>
-    constexpr bool first_bit(T value) noexcept
+    constexpr bool left_bit(T value) noexcept
     {
         return value & detail::msb_mask<T>;
     }
 
     template<typename T>
-    constexpr bool last_bit(T value) noexcept
+    constexpr bool right_bit(T value) noexcept
     {
         return value & detail::lsb_mask<T>;
+    }
+
+    template<std::unsigned_integral T>
+    constexpr T ones_right_n(std::size_t n) noexcept
+    {
+        GAPP_ASSERT(n <= bitsizeof<T>);
+
+        return n ? ones<T> >> (bitsizeof<T> - n) : zeros<T>;
+    }
+
+    template<std::unsigned_integral T>
+    constexpr T ones_left_n(std::size_t n) noexcept
+    {
+        GAPP_ASSERT(n <= bitsizeof<T>);
+
+        return n ? ones<T> << (bitsizeof<T> - n) : zeros<T>;
+    }
+
+    template<std::unsigned_integral T>
+    constexpr T to_mask(bool value) noexcept
+    {
+        return static_cast<T>(-1 * static_cast<int>(value));
     }
 
 } // namespace gapp::detail

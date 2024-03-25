@@ -5,6 +5,7 @@
 
 #include "../core/candidate.hpp"
 #include "../utility/small_vector.hpp"
+#include "../utility/dynamic_bitset.hpp"
 #include <vector>
 #include <span>
 #include <unordered_map>
@@ -215,13 +216,13 @@ namespace gapp::crossover::dtl
         GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
         GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
-        std::vector is_direct(chrom_len, false);
+        detail::dynamic_bitset is_direct(chrom_len);
         for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
 
         Candidate child = parent1;
 
         size_t parent_pos = (last == chrom_len) ? 0 : last;
-        size_t child_pos = (last == chrom_len) ? 0 : last;
+        size_t child_pos  = (last == chrom_len) ? 0 : last;
 
         for (size_t i = 0; i < chrom_len - range_len; i++)
         {
@@ -271,7 +272,7 @@ namespace gapp::crossover::dtl
         GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
         GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
-        std::vector is_direct(chrom_len, false);
+        detail::dynamic_bitset is_direct(chrom_len);
         for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
 
         Candidate child = parent1;
@@ -323,7 +324,7 @@ namespace gapp::crossover::dtl
         GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
         GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
 
-        std::vector is_direct(chrom_len, false);
+        detail::dynamic_bitset is_direct(chrom_len);
         for (size_t idx : indices) is_direct[parent1.chromosome[idx]] = true;
 
         Candidate child = parent1;
@@ -351,12 +352,12 @@ namespace gapp::crossover::dtl
         std::vector<size_t> odd_indices;
         odd_indices.reserve(chrom_len / 2);
 
-        std::vector<bool> deleted(chrom_len, false);
+        detail::dynamic_bitset deleted(chrom_len);
         size_t num_deleted = 0;
 
         for (bool odd_cycle = false; num_deleted < chrom_len; odd_cycle ^= 1)
         {
-            size_t pos = *detail::index_of(deleted, false);
+            size_t pos = deleted.find_first(false);
             const T cycle_start = chrom1[pos];
 
             deleted[pos] = true;
@@ -560,13 +561,13 @@ namespace gapp::crossover::dtl
         Candidate<T> child{ parent1.chromosome[0] };
         child.chromosome.reserve(chrom_len);
 
-        std::vector is_used(chrom_len, false);
+        detail::dynamic_bitset is_used(chrom_len);
         is_used[parent1.chromosome[0]] = true;
 
         while (child.chromosome.size() != chrom_len)
         {
             T last_gene = child.chromosome.back();
-            T next_gene = T(*detail::index_of(is_used, false));
+            T next_gene = T(is_used.find_first(false));
 
             for (T neighbour : nb_lists[last_gene])
             {
@@ -631,7 +632,7 @@ namespace gapp::crossover::dtl
 
         Candidate child = parent2;
 
-        std::vector is_direct(chrom_len, false);
+        detail::dynamic_bitset is_direct(chrom_len);
         for (size_t i = first; i < last; i++)
         {
             child.chromosome[i] = parent1.chromosome[i];
