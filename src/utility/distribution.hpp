@@ -33,7 +33,7 @@ namespace gapp::detail
                 bit_pool_ = generator() | detail::msb_mask<typename Generator::result_type>;
             }
 
-            const bool bit = detail::last_bit(bit_pool_);
+            const bool bit = detail::lsb(bit_pool_);
             bit_pool_ >>= 1;
 
             return bit;
