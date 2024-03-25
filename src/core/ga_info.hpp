@@ -340,10 +340,13 @@ namespace gapp
         /** Destructor. */
         virtual ~GaInfo() noexcept;
 
-    protected:
+    private:
 
         GaInfo(GaInfo&&) noexcept;
         GaInfo& operator=(GaInfo&&) noexcept;
+
+        template<typename T>
+        friend class GA;
 
         FitnessMatrix fitness_matrix_;
 
