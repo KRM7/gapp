@@ -6,6 +6,7 @@
 #include "functional.hpp"
 #include "distribution.hpp"
 #include "small_vector.hpp"
+#include "dynamic_bitset.hpp"
 #include "type_traits.hpp"
 #include "bit.hpp"
 #include "rcu.hpp"
@@ -486,9 +487,9 @@ namespace gapp::rng
 
         small_vector<IntType> numbers(count);
 
-        thread_local std::vector<bool> is_selected;
+        thread_local detail::dynamic_bitset is_selected;
         is_selected.resize(range_len);
-        std::fill(is_selected.begin(), is_selected.end(), select_many);
+        is_selected.fill(select_many);
 
         if (!select_many)
         {
