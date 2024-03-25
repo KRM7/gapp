@@ -614,21 +614,6 @@ namespace gapp
         bool isValidEvaluatedPopulation(const Population<T>& pop) const;
         bool isValidUnevaluatedPopulation(const Population<T>& pop) const;
         bool fitnessMatrixIsSynced() const;
-
-
-        /* Make the protected members of GaInfo private. */
-        using GaInfo::fitness_matrix_;
-        using GaInfo::algorithm_;
-        using GaInfo::stop_condition_;
-        using GaInfo::metrics_;
-        using GaInfo::on_generation_end_;
-        using GaInfo::population_size_;
-        using GaInfo::max_gen_;
-        using GaInfo::num_objectives_;
-        using GaInfo::generation_cntr_;
-        using GaInfo::num_fitness_evals_;
-        using GaInfo::keep_all_optimal_sols_;
-        using GaInfo::use_default_algorithm_;
     };
 
 } // namespace gapp
