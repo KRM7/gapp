@@ -86,6 +86,25 @@
 #endif
 
 
+#if defined(__has_feature)
+#   if __has_feature(thread_sanitizer) && __has_include(<sanitizer/tsan_interface.h>)
+#       include <sanitizer/tsan_interface.h>
+#       define GAPP_ANNOTATE_TSAN_ACQUIRE(p) __tsan_acquire(p)
+#       define GAPP_ANNOTATE_TSAN_RELEASE(p) __tsan_release(p)
+#   else
+#       define GAPP_ANNOTATE_TSAN_ACQUIRE(p)
+#       define GAPP_ANNOTATE_TSAN_RELEASE(p)
+#   endif
+#elif defined(__SANITIZE_THREAD__) && __has_include(<sanitizer/tsan_interface.h>)
+#   include <sanitizer/tsan_interface.h>
+#   define GAPP_ANNOTATE_TSAN_ACQUIRE(p) __tsan_acquire(p)
+#   define GAPP_ANNOTATE_TSAN_RELEASE(p) __tsan_release(p)
+#else
+#   define GAPP_ANNOTATE_TSAN_ACQUIRE(p)
+#   define GAPP_ANNOTATE_TSAN_RELEASE(p)
+#endif
+
+
 #if defined(_WIN32) && !defined(GAPP_BUILD_STATIC)
 #   if defined(gapp_EXPORTS)
 #       define GAPP_API __declspec(dllexport)

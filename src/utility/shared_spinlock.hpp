@@ -4,10 +4,7 @@
 #define GA_UTILITY_SHARED_SPINLOCK_HPP
 
 #include "utility.hpp"
-#include "spinlock.hpp"
 #include <atomic>
-#include <thread>
-#include <tuple>
 #include <limits>
 #include <cstdint>
 
@@ -20,16 +17,15 @@ namespace gapp::detail
         {
             while (true)
             {
-                while (cntr_.load(std::memory_order_relaxed)) GAPP_PAUSE();
                 if (try_lock()) break;
-                std::this_thread::yield();
+                while (cntr_.load(std::memory_order_relaxed)) GAPP_PAUSE();
             }
         }
 
         bool try_lock() noexcept
         {
             std::uint32_t expected = 0;
-            return cntr_.compare_exchange_strong(expected, WRITER, std::memory_order_acq_rel, std::memory_order_relaxed);
+            return cntr_.compare_exchange_strong(expected, WRITER, std::memory_order_acquire, std::memory_order_relaxed);
         }
 
         void unlock() noexcept
@@ -39,15 +35,15 @@ namespace gapp::detail
 
         void lock_shared() noexcept
         {
-            cntr_.fetch_add(1, std::memory_order_release);
+            cntr_.fetch_add(1, std::memory_order_relaxed);
             while (cntr_.load(std::memory_order_relaxed) >= WRITER) GAPP_PAUSE();
-            std::ignore = cntr_.load(std::memory_order_acquire);
+            std::atomic_thread_fence(std::memory_order_acquire);
+            GAPP_ANNOTATE_TSAN_ACQUIRE(&cntr_);
         }
 
         bool try_lock_shared() noexcept
         {
-            cntr_.fetch_add(1, std::memory_order_release);
-            if (cntr_.load(std::memory_order_acquire) < WRITER) return true;
+            if (cntr_.fetch_add(1, std::memory_order_acquire) < WRITER) return true;
             cntr_.fetch_sub(1, std::memory_order_relaxed);
             return false;
         }
