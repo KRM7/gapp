@@ -493,9 +493,9 @@ namespace gapp
         prepareSelections();
         detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(population_size_ / 2), [&](size_t i)
         {
-            Candidate<T>& child1 = children[2 * i];
-            Candidate<T>& child2 = children[2 * i + 1];
-            std::tie(child1, child2) = crossover(select(), select());
+            CandidatePair child_pair = crossover(select(), select());
+            children[2 * i]     = std::move(child_pair.first);
+            children[2 * i + 1] = std::move(child_pair.second);
         });
 
         if (population_size_ % 2) children.back() = crossover(select(), select()).first;
