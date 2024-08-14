@@ -135,7 +135,11 @@ namespace gapp
 
     /** A pair of candidates. */
     template<typename T>
-    using CandidatePair = std::pair<Candidate<T>, Candidate<T>>;
+    struct CandidatePair
+    {
+        Candidate<T> first;
+        Candidate<T> second;
+    };
 
 
     /**
