@@ -18,7 +18,7 @@
 #include <cstdlib>
 #include <cstddef>
 
-// NOLINTBEGIN(*pointer-arithmetic)
+// NOLINTBEGIN(*pointer-arithmetic, *union-access)
 
 namespace gapp::detail
 {
@@ -302,8 +302,8 @@ namespace gapp::detail
     struct small_vector_buffer
     {
     public:
-        constexpr small_vector_buffer() noexcept {};
-        constexpr ~small_vector_buffer() noexcept {};
+        constexpr small_vector_buffer() noexcept {};    // NOLINT(*default)
+        constexpr ~small_vector_buffer() noexcept {};   // NOLINT(*default)
 
         constexpr auto begin() noexcept { return data_.data(); }
         constexpr auto begin() const noexcept { return data_.data(); }
@@ -1076,6 +1076,6 @@ namespace gapp
 
 } // namespace gapp
 
-// NOLINTEND(*pointer-arithmetic)
+// NOLINTEND(*pointer-arithmetic, *union-access)
 
 #endif // !GAPP_UTILITY_SMALL_VECTOR_HPP
