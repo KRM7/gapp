@@ -103,7 +103,8 @@
       "variables": [
         {
           "name": "CMAKE_CXX_CLANG_TIDY",
-          "value": "clang-tidy"
+          "value": "clang-tidy",
+          "type": "STRING"
         }
       ]
     },

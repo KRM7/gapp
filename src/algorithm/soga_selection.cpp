@@ -152,9 +152,9 @@ namespace gapp::selection
         const double temperature = temperature_(ga.generation_cntr(), ga.max_gen());
 
         // can't capture the iterators by ref or value here
-        std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&, fmin = *fmin](double f) noexcept
+        std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&, f_min = *fmin](double f) noexcept
         {
-            const double fnorm = f / df - fmin / df; // normalize the fitness values to prevent overflows with std::exp
+            const double fnorm = f / df - f_min / df; // normalize the fitness values to prevent overflows with std::exp
 
             return std::min(math::large<double>, std::exp(fnorm / temperature));
         });

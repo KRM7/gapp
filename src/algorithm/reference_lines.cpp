@@ -17,7 +17,7 @@
 
 namespace gapp::algorithm::reflines
 {
-    using SimplexMapping = FitnessVector(*)(FitnessVector&&);
+    using SimplexMapping = void(*)(FitnessVector&);
 
     /*
     * The unit-hypercube -> unit-simplex transformations used for the quasirandom points are based on:
@@ -27,35 +27,35 @@ namespace gapp::algorithm::reflines
     */
 
     /* Transform a point from the n-dimensional unit hypercube to the n-dimensional unit simplex. */
-    static inline FitnessVector simplexMappingLog(FitnessVector&& point)
+    static inline void simplexMappingLog(FitnessVector& point)
     {
         GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         std::transform(point.begin(), point.end(), point.begin(), [](double p) { return -std::log(std::max(p, math::small<double>)); });
         const double sum = std::reduce(point.begin(), point.end(), 0.0);
         std::transform(point.begin(), point.end(), point.begin(), detail::divide_by(sum));
-
-        return point;
     }
 
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
-    static inline FitnessVector simplexMappingSort(FitnessVector&& point)
+    static inline void simplexMappingSort(FitnessVector& point)
     {
         GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         point.push_back(1.0);
         std::sort(point.begin(), point.end());
         std::adjacent_difference(point.begin(), point.end(), point.begin());
-
-        return point;
     }
 
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
-    static inline FitnessVector simplexMappingRoot(FitnessVector&& point)
+    static inline void simplexMappingRoot(FitnessVector& point)
     {
         GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
-        if (point.empty()) return { 1.0 };
+        if (point.empty())
+        {
+            point = { 1.0 };
+            return;
+        }
 
         point.back() = std::pow(point.back(), 1.0 / point.size());
 
@@ -66,17 +66,15 @@ namespace gapp::algorithm::reflines
         point.push_back(1.0);
 
         std::adjacent_difference(point.begin(), point.end(), point.begin());
-
-        return point;
     }
 
     /* Transform a point from the n-dimensional unit hypercube to the (n+1)-dimensional unit simplex. */
-    static inline FitnessVector simplexMappingMirror(FitnessVector&& point)
+    static inline void simplexMappingMirror(FitnessVector& point)
     {
         GAPP_ASSERT(std::all_of(point.begin(), point.end(), detail::between(0.0, 1.0)));
 
         point.push_back(1.0);
-        if (point.size() == 1) return point;
+        if (point.size() == 1) return;
 
         for (auto last = std::prev(point.end(), 2); ; )
         {
@@ -98,8 +96,6 @@ namespace gapp::algorithm::reflines
             if (!has_lower) --last;
         }
         std::adjacent_difference(point.begin(), point.end(), point.begin());
-
-        return point;
     }
 
 
@@ -128,10 +124,9 @@ namespace gapp::algorithm::reflines
 
         for (size_t i = 0; i < num_points; i++)
         {
-            auto hypercubePoint = qrng();
-            FitnessVector simplexPoint = F({ hypercubePoint.begin(), hypercubePoint.end() });
-
-            points[i] = std::move(simplexPoint);
+            auto point = qrng();
+            std::invoke(F, point);
+            points[i] = std::move(point);
         }
 
         return points;

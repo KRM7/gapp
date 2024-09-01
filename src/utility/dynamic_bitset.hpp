@@ -12,7 +12,7 @@
 #include <cstdint>
 #include <cstddef>
 
-// NOLINTBEGIN(*bool-conversion, *assignment, *assignment-signature, *operator)
+// NOLINTBEGIN(*bool-conversion, *assignment, *assignment-signature, *operator, *ref-data-members)
 
 namespace gapp::detail
 {
@@ -251,6 +251,6 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-// NOLINTEND(*bool-conversion, *assignment, *assignment-signature, *operator)
+// NOLINTEND(*bool-conversion, *assignment, *assignment-signature, *operator, *ref-data-members)
 
 #endif // !GAPP_UTILITY_DYNAMIC_BITSET_HPP

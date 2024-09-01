@@ -106,7 +106,7 @@ namespace gapp::rng
     }
 
     template<std::floating_point RealType>
-    constexpr inline RealType QuasiRandom<RealType>::phi(size_type dim, size_t n) noexcept
+    constexpr RealType QuasiRandom<RealType>::phi(size_type dim, size_t n) noexcept
     {
         RealType phid = 1.0;
         while (n--)

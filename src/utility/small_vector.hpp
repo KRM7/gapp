@@ -276,14 +276,14 @@ namespace gapp::detail
     public:
         template<typename... Args>
         constexpr allocator_managed(Allocator& alloc, Args&&... args) :
-            alloc_(alloc)
+            alloc_(std::addressof(alloc))
         {
-            detail::construct(alloc_, std::addressof(**this), std::forward<Args>(args)...);
+            detail::construct(*alloc_, std::addressof(**this), std::forward<Args>(args)...);
         }
 
         constexpr ~allocator_managed() noexcept
         {
-            detail::destroy(alloc_, std::addressof(**this));
+            detail::destroy(*alloc_, std::addressof(**this));
         }
 
         constexpr T& operator*() noexcept { return data_; }
@@ -291,7 +291,7 @@ namespace gapp::detail
 
     private:
         union { T data_; };
-        Allocator& alloc_;
+        Allocator* alloc_;
     };
 
     //--------------------------------------- SMALL VECTOR BUFFER -------------------------------------------------------
@@ -321,11 +321,11 @@ namespace gapp::detail
     struct default_small_size
     {
     private:
-        inline constexpr static std::size_t overall_size = cache_line_size;
-        inline constexpr static std::size_t buffer_size = overall_size - 3 * sizeof(T*);
-        inline constexpr static std::size_t buffer_min_count = 4;
+        constexpr static std::size_t overall_size = cache_line_size;
+        constexpr static std::size_t buffer_size = overall_size - 3 * sizeof(T*);
+        constexpr static std::size_t buffer_min_count = 4;
     public:
-        inline constexpr static std::size_t value = std::max(buffer_min_count, buffer_size / sizeof(T));
+        constexpr static std::size_t value = std::max(buffer_min_count, buffer_size / sizeof(T));
     };
 
     template<typename T>

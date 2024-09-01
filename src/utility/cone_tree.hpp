@@ -34,7 +34,7 @@ namespace gapp::detail
 
         struct Node
         {
-            Point center  = {};
+            Point center  = {}; // NOLINT(*redundant-member-init)
             double radius = 0.0;
             size_t first  = 0;  /* Index of the first point which belongs to the node. */
             size_t last   = 0;  /* Index of the first point which does not belong to the node. */
@@ -62,7 +62,7 @@ namespace gapp::detail
         Matrix<double> points_;
         std::vector<Node> nodes_;
 
-        inline static constexpr size_t MAX_LEAF_ELEMENTS = 8;  /* The maximum number of points in a leaf node. */
+        static constexpr size_t MAX_LEAF_ELEMENTS = 8;  /* The maximum number of points in a leaf node. */
 
         void buildTree();
 

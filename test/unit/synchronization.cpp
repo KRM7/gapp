@@ -3,6 +3,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include "utility/spinlock.hpp"
 #include "utility/shared_spinlock.hpp"
+#include "utility/latch.hpp"
 #include <mutex>
 #include <shared_mutex>
 #include <thread>
@@ -55,4 +56,19 @@ TEST_CASE("shared_spinlock", "[synchronization]")
     REQUIRE(n == 3000);
     REQUIRE(0 <= read);
     REQUIRE(read <= 3000);
+}
+
+TEST_CASE("latch", "[synchronization]")
+{
+    int n1 = 1;
+    int n2 = 1;
+    latch nthreads(2);
+
+    std::jthread t1{ [&]{ n1--; nthreads.count_down(); } };
+    std::jthread t2{ [&]{ n2--; nthreads.count_down(); } };
+
+    nthreads.wait();
+
+    REQUIRE(n2 == 0);
+    REQUIRE(n1 == 0);
 }

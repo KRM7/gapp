@@ -7,6 +7,7 @@
 #include "algorithm.hpp"
 #include "functional.hpp"
 #include "iterators.hpp"
+#include "latch.hpp"
 #include "utility.hpp"
 #include <algorithm>
 #include <type_traits>
@@ -14,7 +15,6 @@
 #include <thread>
 #include <atomic>
 #include <future>
-#include <latch>
 #include <functional>
 #include <iterator>
 #include <exception>
@@ -27,20 +27,6 @@ namespace gapp::detail
     class thread_pool
     {
     public:
-        template<typename F, typename... Args>
-        auto execute_task(F f, Args... args) -> std::future<std::invoke_result_t<F, Args...>>
-        {
-            using R = std::invoke_result_t<F, Args...>;
-
-            std::packaged_task<R()> task{ [f = std::move(f), ...args = std::move(args)]() mutable { std::invoke(std::move(f), std::move(args)...); }};
-            std::future<R> result = task.get_future();
-
-            bool success = scheduled_worker_queue().emplace([task = std::move(task)]() mutable { task(); });
-            if (!success) GAPP_THROW(std::runtime_error, "Attempting to submit a task to a stopped thread pool.");
-
-            return result;
-        }
-
         template<typename F, typename Iter>
         void execute_loop(Iter first, Iter last, size_t block_size, F&& unary_op)
         {
@@ -61,7 +47,7 @@ namespace gapp::detail
             const size_t step_size   = iterations / task_count;
             const size_t remainder   = iterations % task_count;
 
-            std::latch remaining_tasks(task_count - 1);
+            detail::latch remaining_tasks(task_count - 1);
 
             for (size_t i = 0; i < task_count - 1; i++)
             {

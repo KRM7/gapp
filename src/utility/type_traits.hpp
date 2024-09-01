@@ -111,7 +111,7 @@ namespace gapp::detail
         static std::true_type f(BaseTempl<TArgs...>*);
         static std::false_type f(...);
     public:
-        inline constexpr static bool value = decltype( f(static_cast<Derived*>(nullptr)) )::value;
+        constexpr static bool value = decltype( f(static_cast<Derived*>(nullptr)) )::value;
     };
 
     template<typename Derived, template<typename...> class BaseTempl>

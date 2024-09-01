@@ -68,7 +68,7 @@ namespace gapp::detail
             std::vector<registered_reader*> list;
         };
 
-        inline static constexpr uint64_t NOT_READING = std::numeric_limits<uint64_t>::max();
+        static constexpr uint64_t NOT_READING = std::numeric_limits<uint64_t>::max();
 
         GAPP_API inline static detail::Indestructible<tls_reader_list> tls_readers;
         GAPP_API inline static constinit std::atomic<uint64_t> writer_epoch = 0;

@@ -4,26 +4,21 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
         build-type: [ Release, RelWithDebInfo ]
         compiler: [
-            { cxx: g++-11, pkgs: gcc@11, extra-flags: "-undefined dynamic_lookup" },
-            { cxx: g++-12, pkgs: gcc@12, extra-flags: "-undefined dynamic_lookup" },
-            { cxx: g++-13, pkgs: gcc@13, extra-flags: "-undefined dynamic_lookup -Wno-array-bounds -Wno-stringop-overflow -Wno-stringop-overread" },
-            {
-              cxx: $(brew --prefix llvm@14)/bin/clang++,
-              pkgs: llvm@14 gcc@11,
-              extra-flags: "-femulated-tls -stdlib=libstdc++ -stdlib++-isystem $(brew --prefix gcc@11)/include/c++/11 -cxx-isystem $(brew --prefix gcc@11)/include/c++/11/x86_64-apple-darwin22",
-              linker-flags: "-L$(brew --prefix gcc@11)/lib/gcc/11"
-            },
+            { cxx: g++-11, pkgs: gcc@11, extra-flags: "-undefined dynamic_lookup -Wno-psabi" },
+            { cxx: g++-12, pkgs: gcc@12, extra-flags: "-undefined dynamic_lookup -Wno-psabi" },
+            { cxx: g++-13, pkgs: gcc@13, extra-flags: "-undefined dynamic_lookup -Wno-psabi" },
+            { cxx: g++-14, pkgs: gcc@14, extra-flags: "-undefined dynamic_lookup -Wno-psabi" },
             {
               cxx: $(brew --prefix llvm@15)/bin/clang++,
-              pkgs: llvm@15 gcc@12,
-              extra-flags: "-femulated-tls -stdlib=libstdc++ -stdlib++-isystem $(brew --prefix gcc@12)/include/c++/12 -cxx-isystem $(brew --prefix gcc@12)/include/c++/12/x86_64-apple-darwin22",
-              linker-flags: "-L$(brew --prefix gcc@12)/lib/gcc/12"
+              pkgs: llvm@15 gcc@11,
+              extra-flags: "-femulated-tls -stdlib=libstdc++ -stdlib++-isystem $(brew --prefix gcc@11)/include/c++/11 -cxx-isystem $(brew --prefix gcc@11)/include/c++/11/aarch64-apple-darwin23",
+              linker-flags: "-L$(brew --prefix gcc@11)/lib/gcc/11"
             }
         ]
 
@@ -39,9 +34,6 @@ jobs:
 
     - name: setup-compiler
       run: brew update && brew install ${{ matrix.compiler.pkgs }}
-
-    - name: setup-xcode
-      run: sudo xcode-select -switch /Applications/Xcode_15.1.app
 
     - name: setup-catch
       run: sudo bash ../tools/install_catch.sh -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}"

@@ -34,7 +34,7 @@ namespace gapp
         *   is considered to be dynamic if it may return different fitness vectors for the same
         *   candidate solution over multiple calls to the fitness function.
         */
-        enum class Type { Static = 0, Dynamic = 1 };
+        enum class Type : bool { Static = false, Dynamic = true };
 
         /**
         * Create a fitness function.

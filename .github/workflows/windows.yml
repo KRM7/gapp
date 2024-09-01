@@ -11,7 +11,10 @@ jobs:
         build-type: [ Release, RelWithDebInfo ]
         platform: [ x64, Win32 ]
         generator: [ "Visual Studio 17 2022" ]
-        compiler: [ v143, ClangCL ]
+        compiler: [ 
+            { name: msvc, toolset: v143 }, 
+            { name: clang, toolset: ClangCL }
+        ]
         build-shared: [ "ON", "OFF" ]
         exclude:
           - platform: Win32
@@ -23,7 +26,7 @@ jobs:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.compiler }}-${{ matrix.platform }}, ${{ matrix.build-type }}, Shared=${{ matrix.build-shared }}
+    name: ${{ matrix.compiler.name }}-${{ matrix.platform }}, ${{ matrix.build-type }}, Shared=${{ matrix.build-shared }}
 
 
     steps:
@@ -36,14 +39,14 @@ jobs:
     - name: setup-catch
       env:
         CMAKE_GENERATOR: ${{ matrix.generator }}
-        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler }}
+        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler.toolset }}
         CMAKE_GENERATOR_PLATFORM: ${{ matrix.platform }}
       run: bash ../tools/install_catch.sh
 
     - name: setup-build
       env:
         CMAKE_GENERATOR: ${{ matrix.generator }}
-        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler }}
+        CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler.toolset }}
         CMAKE_GENERATOR_PLATFORM: ${{ matrix.platform }}
       run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DBUILD_SHARED_LIBS=${{ matrix.build-shared }} -DGAPP_USE_WERROR=ON -DGAPP_USE_LTO=ON
 
