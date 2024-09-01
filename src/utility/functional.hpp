@@ -74,36 +74,6 @@ namespace gapp::detail
         return result;
     }
 
-    template<typename T>
-    std::vector<T> flatten(const std::vector<std::pair<T, T>>& pairs)
-    {
-        std::vector<T> flat;
-        flat.reserve(2 * pairs.size());
-
-        for (size_t i = 0; i < pairs.size(); i++)
-        {
-            flat.push_back(pairs[i].first);
-            flat.push_back(pairs[i].second);
-        }
-
-        return flat;
-    }
-
-    template<typename T>
-    std::vector<T> flatten(std::vector<std::pair<T, T>>&& pairs)
-    {
-        std::vector<T> flat;
-        flat.reserve(2 * pairs.size());
-
-        for (size_t i = 0; i < pairs.size(); i++)
-        {
-            flat.push_back(std::move(pairs[i].first));
-            flat.push_back(std::move(pairs[i].second));
-        }
-
-        return flat;
-    }
-
 
     template<typename T>
     constexpr auto multiply_by(const T& multiplier)

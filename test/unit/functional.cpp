@@ -26,13 +26,6 @@ TEST_CASE("map", "[functional]")
     REQUIRE(map(std::vector<int>{}, std::identity{}).empty());
 }
 
-TEST_CASE("flatten", "[functional]")
-{
-    std::vector<std::pair<int, int>> num_pairs = { { 0, 1 }, { 1, 3 }, { 5, 2 }};
-
-    REQUIRE(flatten(num_pairs) == std::vector{ 0, 1, 1, 3, 5, 2 });
-}
-
 TEST_CASE("arithmetic_funcs", "[functional]")
 {
     const std::vector nums = { 1, 2, 4, 2, 9 };

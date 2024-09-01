@@ -273,7 +273,7 @@ namespace gapp::problems
         nadir_point_ = FitnessVector(num_obj, 0.0);
         for (size_t i = 0; i < num_obj; i++)
         {
-            nadir_point_[i] = -1.0 / std::pow(std::sqrt(2), num_obj - 1 - i);
+            nadir_point_[i] = -1.0 / std::pow(std::numbers::sqrt2, num_obj - 1 - i);
         }
         nadir_point_[0] = nadir_point_[1];
 
@@ -298,7 +298,7 @@ namespace gapp::problems
         nadir_point_ = FitnessVector(num_obj, 0.0);
         for (size_t i = 0; i < num_obj; i++)
         {
-            nadir_point_[i] = -1.0 / std::pow(std::sqrt(2), num_obj - 1 - i);
+            nadir_point_[i] = -1.0 / std::pow(std::numbers::sqrt2, num_obj - 1 - i);
         }
         nadir_point_[0] = nadir_point_[1];
 

@@ -56,8 +56,8 @@ namespace gapp::algorithm::dtl
         constexpr iterator end() const noexcept { return last_; }
 
     private:
-        iterator first_ = {};
-        iterator last_  = {};
+        iterator first_;
+        iterator last_;
     };
 
 

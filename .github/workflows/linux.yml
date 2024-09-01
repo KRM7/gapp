@@ -4,17 +4,23 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    container:
+      image: ubuntu:24.04
     strategy:
       fail-fast: false
       matrix:
+        common-pkgs: [ git cmake ]
         build-type: [ Release, RelWithDebInfo ]
         compiler: [
             { cxx: g++-11, pkgs: g++-11 },
             { cxx: g++-12, pkgs: g++-12 },
             { cxx: g++-13, pkgs: g++-13 },
-            { cxx: clang++-14, pkgs: clang-14 libstdc++6=12.3.0-1ubuntu1~22.04 libgcc-s1=12.3.0-1ubuntu1~22.04 },
+            { cxx: g++-14, pkgs: g++-14 },
             { cxx: clang++-15, pkgs: clang-15 },
+            { cxx: clang++-16, pkgs: clang-16 },
+            { cxx: clang++-17, pkgs: clang-17 },
+            { cxx: clang++-18, pkgs: clang-18 },
         ]
         
     defaults:
@@ -28,17 +34,17 @@ jobs:
       uses: actions/checkout@v4
 
     - name: setup-compiler
-      run: sudo apt update && sudo apt install --allow-downgrades -y ${{ matrix.compiler.pkgs }}
+      run: apt update && apt install --allow-downgrades -y ${{ matrix.common-pkgs }} ${{ matrix.compiler.pkgs }}
 
     - name: setup-catch
       env:
         CXX: ${{ matrix.compiler.cxx }}
-      run: sudo bash ../tools/install_catch.sh
+      run: bash ../tools/install_catch.sh
 
     - name: setup-build
       env:
         CXX: ${{ matrix.compiler.cxx }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_USE_WERROR=ON -DGAPP_USE_LTO=ON
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_USE_WERROR=ON -DGAPP_USE_LTO=ON -DGAPP_CXX_FLAGS="-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -D_GLIBCXX_ASSERTIONS"
 
     - name: build
       run: cmake --build . --parallel 8
@@ -47,4 +53,4 @@ jobs:
       run: ctest --output-on-failure --schedule-random
 
     - name: install
-      run: sudo cmake --install .
+      run: cmake --install .

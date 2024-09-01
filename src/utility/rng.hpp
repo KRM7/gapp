@@ -285,9 +285,9 @@ namespace gapp::rng
 
             Xoroshiro128p instance{ 0 };
 
-            detail::uniform_bool_distribution bool_distribution           = {};
-            std::normal_distribution<double> normal_distribution          = {};
-            std::poisson_distribution<std::uint64_t> poisson_distribution = {};
+            detail::uniform_bool_distribution bool_distribution;
+            std::normal_distribution<double> normal_distribution;
+            std::poisson_distribution<std::uint64_t> poisson_distribution;
         };
 
         struct GeneratorList

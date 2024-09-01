@@ -30,16 +30,19 @@
   -readability-uppercase-literal-suffix,
   -readability-braces-around-statements,
   -bugprone-easily-swappable-parameters,
+  -bugprone-unchecked-optional-access,
   -cppcoreguidelines-special-member-functions,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-non-private-member-variables-in-classes,
   -cppcoreguidelines-prefer-member-initializer,
+  -cppcoreguidelines-missing-std-forward,
   -cppcoreguidelines-narrowing-conversions,
   -cppcoreguidelines-avoid-non-const-global-variables,
   -misc-non-private-member-variables-in-classes,
   -misc-no-recursion,
   -misc-const-correctness,
-  -misc-use-anonymous-namespace
+  -misc-use-anonymous-namespace,
+  -misc-include-cleaner
 
 
 # Also check the header files

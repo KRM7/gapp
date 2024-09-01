@@ -100,7 +100,8 @@ else() # GNU style compiler interface
 
     # gcc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op")
+        # -Warray-bounds, -Wstringop-overflow, -Wstringop-overread are regular false positives since g++-12
+	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op -Wno-array-bounds -Wno-stringop-overflow -Wno-stringop-overread")
     endif()
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -108,7 +109,7 @@ else() # GNU style compiler interface
     endif()
 
     set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} ${GAPP_WARN_FLAGS}")
-    set(CMAKE_CXX_FLAGS_DEBUG "-Og")
+    set(CMAKE_CXX_FLAGS_DEBUG "-Og -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS")
     set(CMAKE_CXX_FLAGS_RELEASE "-g -DNDEBUG ${GAPP_OPT_FLAGS}")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g ${GAPP_OPT_FLAGS}")
 endif()

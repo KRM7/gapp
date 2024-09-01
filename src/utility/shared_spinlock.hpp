@@ -54,7 +54,7 @@ namespace gapp::detail
         }
 
     private:
-        constexpr inline static std::uint32_t WRITER = std::numeric_limits<std::uint32_t>::max() >> 1;
+        static constexpr std::uint32_t WRITER = std::numeric_limits<std::uint32_t>::max() >> 1;
         std::atomic<std::uint32_t> cntr_;
     };
 

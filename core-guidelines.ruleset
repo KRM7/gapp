@@ -24,9 +24,11 @@
 	<!-- Disable rules that are too noisy/not helpful. -->	  
     <Rule Id="C26493" Action="None" /> <!-- Don't use C-style casts. -->
     <Rule Id="C26496" Action="None" /> <!-- The variable 'xyz' is assigned only once, mark it as const. -->
-	<Rule Id="C26814" Action="None" /> <!-- The const variable 'xyz' can be computed at compile time. Use constexpr. -->
+    <Rule Id="C26814" Action="None" /> <!-- The const variable 'xyz' can be computed at compile time. Use constexpr. -->
     <Rule Id="C26812" Action="None" /> <!-- Prefer 'enum class' over 'enum'. -->
-	<Rule Id="C26455" Action="None" /> <!-- Default constructor should not throw. Declare it 'noexcept'. -->
+    <Rule Id="C26455" Action="None" /> <!-- Default constructor should not throw. Declare it 'noexcept'. -->
+    <Rule Id="C26440" Action="None" /> <!-- Function can be declared noexcept. -->
+    <Rule Id="C26447" Action="None" /> <!-- Function declared as noexcept calls potentially throwing function. -->
 
 	<!-- Enable useful rules that are off by default. -->
     <Rule Id="C26815" Action="Warning" /> <!-- The pointer is dangling because it points at a temporary instance that was destroyed. -->

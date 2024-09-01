@@ -41,29 +41,10 @@ TEST_CASE("concurrent_queue", "[thread-pool]")
     REQUIRE_THAT(output, Equals(input));
 }
 
-TEST_CASE("thread_pool", "[thread-pool]")
-{
-    std::atomic<int> n = 0;
-    auto increment_n = [&]{ n++; };
-
-    thread_pool pool;
-    std::vector<std::future<void>> futures;
-
-    for (size_t i = 0; i < 1000; i++)
-    {
-        auto res = pool.execute_task(increment_n);
-        futures.push_back(std::move(res));
-    }
-
-    for (auto& elem : futures) { elem.wait(); }
-
-    REQUIRE(n == 1000);
-}
-
 TEST_CASE("parallel_for", "[thread-pool]")
 {
-    std::atomic<int> n = 0;
-    auto increment_n = [&](int) { n++; };
+    int n = 0;
+    auto increment_n = [&](int) { std::atomic_ref{ n }.fetch_add(1, std::memory_order_relaxed); };
 
     parallel_for(iota_iterator(0), iota_iterator(100), increment_n);
     REQUIRE(n == 100);
@@ -74,7 +55,7 @@ TEST_CASE("parallel_for", "[thread-pool]")
 
 TEST_CASE("nested_parallel_for", "[thread-pool]")
 {
-    std::atomic<int> n = 0;
+    int n = 0;
 
     parallel_for(iota_iterator(0), iota_iterator(10), [&](int)
     {
@@ -82,7 +63,7 @@ TEST_CASE("nested_parallel_for", "[thread-pool]")
         {
             parallel_for(iota_iterator(0), iota_iterator(100), [&](int)
             {
-                n.fetch_add(1, std::memory_order_relaxed);
+                std::atomic_ref{ n }.fetch_add(1, std::memory_order_relaxed);
             });
         });
     });

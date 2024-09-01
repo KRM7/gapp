@@ -133,7 +133,7 @@ namespace gapp::detail
             node.radius = findRadius(node_cbegin(node), node_cend(node), node.center);
 
             /* Leaf node. */
-            if (size_t(node.last - node.first) <= MAX_LEAF_ELEMENTS)
+            if (node.last - node.first <= MAX_LEAF_ELEMENTS)
             {
                 node.left = 0;
                 node.right = 0;

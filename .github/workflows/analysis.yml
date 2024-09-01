@@ -6,8 +6,6 @@ jobs:
   core-guidelines:
     name: core-guidelines-check
     runs-on: windows-2022
-    # Disabled because of an internal compiler error in reference_lines.cpp
-    if: false
 
     defaults:
       run:
@@ -37,24 +35,23 @@ jobs:
 #############################################################################################################
 
   clang-analyzers:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
         tool: [
-            { name: iwyu,       cmake-flag: CMAKE_CXX_INCLUDE_WHAT_YOU_USE="iwyu;-Xiwyu;--mapping_file=../.iwyu-mappings" },
             { name: clang-tidy, cmake-flag: CMAKE_CXX_CLANG_TIDY="clang-tidy" },
             { name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck;--version;--verbose;--report-progress;--enable=all;--error-exitcode=1;--std=c++20;--suppressions-list=../.cppcheck-supressions" }
         ]
         include:
-          - pkgs: clang-15 clang-tools-15 clang-tidy-15 iwyu cppcheck
-            cxx: clang++-15
+          - pkgs: clang-18 clang-tools-18 clang-tidy-18 iwyu cppcheck
+            cxx: clang++-18
 
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.tool.name }}
+    name: ${{ matrix.tool.name }} (${{ matrix.cxx }})
 
     steps:
       - name: checkout-repo
@@ -79,15 +76,15 @@ jobs:
 #############################################################################################################
 
   codeql:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
         include:
-          - pkgs: clang-15
-            cxx: clang++-15
+          - pkgs: clang-18
+            cxx: clang++-18
 
-    name: codeql
+    name: codeql (${{ matrix.cxx }})
 
     defaults:
       run:
@@ -104,7 +101,7 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: cpp
-          queries: security-and-quality
+          config-file: ${{ github.workspace }}/.github/codeql/codeql-config.yml
 
       - name: setup-build
         env:

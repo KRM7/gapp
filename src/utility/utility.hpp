@@ -10,10 +10,24 @@
 #include <cstddef>
 
 
-#define GAPP_GCC_COMPILER ( __GNUC__ && !__clang__ )
-#define GAPP_CLANG_COMPILER ( __GNUC__ && __clang__ )
-#define GAPP_MSVC_COMPILER ( _MSC_VER && !__clang__ )
-#define GAPP_CLANG_CL_COMPILER ( _MSC_VER && __clang__ )
+#if defined(__GNUC__) && !defined(__clang__)
+#   define GAPP_GCC_COMPILER
+#elif defined(__GNUC__) && defined(__clang__)
+#   define GAPP_CLANG_COMPILER
+#elif defined(_MSC_VER) && !defined(__clang__)
+#   define GAPP_MSVC_COMPILER
+#elif defined(_MSC_VER) && defined(__clang__)
+#   define GAPP_CLANG_CL_COMPILER
+#endif
+
+
+#if defined(_M_IX86) || defined(_M_X64) || defined(__x86_64__) || defined(__i386__)
+#   define GAPP_X86_ARCH
+#endif
+
+#if defined(_M_ARM) || defined(_M_ARM64) || defined(__arm__) || defined(__aarch64__)
+#   define GAPP_ARM_ARCH
+#endif
 
 
 #if defined(_MSC_VER)
@@ -35,7 +49,7 @@
 
 
 #if __has_cpp_attribute(no_unique_address)
-#   if GAPP_MSVC_COMPILER
+#   if defined(GAPP_MSVC_COMPILER)
 #       define GAPP_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
 #   else
 #       define GAPP_NO_UNIQUE_ADDRESS [[no_unique_address]]
@@ -77,10 +91,12 @@
 #endif
 
 
-#if defined(__GNUC__) || defined(__clang__)
+#if (defined(__GNUC__) || defined(__clang__)) && defined(GAPP_X86_ARCH)
 #   define GAPP_PAUSE() __builtin_ia32_pause()
-#elif defined(_MSC_VER)
+#elif defined(GAPP_MSVC_COMPILER) && defined(GAPP_X86_ARCH)
 #   define GAPP_PAUSE() _mm_pause()
+#elif defined(GAPP_MSVC_COMPILER) && defined(GAPP_ARM_ARCH)
+#   define GAPP_PAUSE() __yield()
 #else
 #   define GAPP_PAUSE()
 #endif
@@ -89,16 +105,16 @@
 #if defined(__has_feature)
 #   if __has_feature(thread_sanitizer) && __has_include(<sanitizer/tsan_interface.h>)
 #       include <sanitizer/tsan_interface.h>
-#       define GAPP_ANNOTATE_TSAN_ACQUIRE(p) __tsan_acquire(p)
-#       define GAPP_ANNOTATE_TSAN_RELEASE(p) __tsan_release(p)
+#       define GAPP_ANNOTATE_TSAN_ACQUIRE(p) __tsan_acquire((void*)p)
+#       define GAPP_ANNOTATE_TSAN_RELEASE(p) __tsan_release((void*)p)
 #   else
 #       define GAPP_ANNOTATE_TSAN_ACQUIRE(p)
 #       define GAPP_ANNOTATE_TSAN_RELEASE(p)
 #   endif
 #elif defined(__SANITIZE_THREAD__) && __has_include(<sanitizer/tsan_interface.h>)
 #   include <sanitizer/tsan_interface.h>
-#   define GAPP_ANNOTATE_TSAN_ACQUIRE(p) __tsan_acquire(p)
-#   define GAPP_ANNOTATE_TSAN_RELEASE(p) __tsan_release(p)
+#   define GAPP_ANNOTATE_TSAN_ACQUIRE(p) __tsan_acquire((void*)p)
+#   define GAPP_ANNOTATE_TSAN_RELEASE(p) __tsan_release((void*)p)
 #else
 #   define GAPP_ANNOTATE_TSAN_ACQUIRE(p)
 #   define GAPP_ANNOTATE_TSAN_RELEASE(p)
