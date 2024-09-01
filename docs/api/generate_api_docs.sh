@@ -1,4 +1,4 @@
-#!/bin/sh
+﻿#!/bin/sh
 
 echo -e "Generating API documentation...\n"
 

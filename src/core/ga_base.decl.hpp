@@ -10,6 +10,7 @@
 #include "../encoding/gene_types.hpp"
 #include "../stop_condition/stop_condition.hpp"
 #include "../utility/bounded_value.hpp"
+#include "../utility/cache.hpp"
 #include "../utility/type_traits.hpp"
 #include <algorithm>
 #include <vector>
@@ -334,6 +335,30 @@ namespace gapp
         */
         void repair_function(RepairCallable f);
 
+        /**
+        * Set the number of generations whose solutions will be cached by the %GA.
+        * This can be used to reduce the number of fitness function evaluations
+        * performed during the runs.
+        * 
+        * If not specified, or if @p generations is specified as 0, the default
+        * behaviour is to not cache any solutions.
+        * The cache will also be disabled when using a dynamic fitness function,
+        * regardless of the number specified for @p generations.
+        * 
+        * When using a cache, it is recommended to only cache a small number of
+        * generations (1 or 2), as larger values will typically have very little
+        * additional benefit.
+        * Using the cache should also be avoided for the real-encoded GA, since
+        * the cache hit rates will typically be very low due to the floating-point
+        * encoding used.
+        * 
+        * The cache is not kept between runs, and setting a new size will also
+        * clear the current cache.
+        * 
+        * @param generations The number of generations to cache. Specifying 0 as
+        *   the value will disable the cache.
+        */
+        void cache_size(size_t generations) noexcept;
 
         /**
         * @returns The pareto-optimal solutions found by the %GA.
@@ -557,6 +582,9 @@ namespace gapp
 
         Population<T> population_;
         Candidates<T> solutions_;
+
+        detail::fifo_cache<Candidate<T>, FitnessVector> fitness_cache_;
+        size_t cached_generations_ = 0;
 
         std::unique_ptr<FitnessFunctionBase<T>> fitness_function_;
         std::unique_ptr<crossover::Crossover<T>> crossover_;

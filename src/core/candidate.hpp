@@ -202,4 +202,17 @@ namespace gapp
 
 } // namespace gapp
 
+namespace std
+{
+    template<typename T>
+    struct hash<gapp::Candidate<T>>
+    {
+        std::size_t operator()(const gapp::Candidate<T>& candidate) const noexcept
+        {
+            return gapp::CandidateHasher<T>{}(candidate);
+        }
+    };
+
+} // namespace std
+
 #endif // !GA_CORE_CANDIDATE_HPP

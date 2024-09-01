@@ -2,7 +2,7 @@
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 
 <Type Name="gapp::detail::Matrix&lt;*,*&gt;">
-  <DisplayString>{{ Matrix&lt;{"$T1",sb}, {"$T2",sb}&gt;{{ size = {nrows_}x{ncols_} }} }}</DisplayString>
+  <DisplayString>{{ {{ size = {nrows_}x{ncols_} }} }}</DisplayString>
   <Expand>
 	<Item Name="[nrows]">nrows_</Item>
 	<Item Name="[ncols]">ncols_</Item>
@@ -17,12 +17,36 @@
 </Type>
 
 <Type Name="gapp::small_vector&lt;*,*,*&gt;">
-	<DisplayString>{{ small_vector&lt;{"$T1",sb}, {"$T2",sb}&gt;{{ size = { last_ - first_ }, capacity = { last_alloc_ - first_ } }} }}</DisplayString>
+	<DisplayString>{{ {{ size = { last_ - first_ }, capacity = { last_alloc_ - first_ } }} }}</DisplayString>
 	<Expand>
 		<ArrayItems>
 			<Size>last_ - first_</Size>
 			<ValuePointer>first_</ValuePointer>
 		</ArrayItems>
+	</Expand>
+</Type>
+
+<Type Name="gapp::detail::dynamic_bitset">
+	<DisplayString>
+		{{ {{ size = { size_ }, capacity = { block_size * (blocks_.last_alloc_ - blocks_.first_) } }} }}
+	</DisplayString>
+	<Expand>
+		<IndexListItems>
+			<Size>size_</Size>
+			<ValueNode>(bool)(blocks_.first_[$i / block_size] &amp; (block_type(1) &lt;&lt; ($i % block_size)))</ValueNode>
+		</IndexListItems>
+	</Expand>
+</Type>
+
+<Type Name="gapp::detail::circular_buffer&lt;*,*&gt;">
+	<DisplayString>
+		{{ {{ size = { size_ }, capacity = { capacity_ } }} }}
+	</DisplayString>
+	<Expand>
+		<IndexListItems>
+			<Size>size_</Size>
+			<ValueNode>*(buffer_ + (first_ + $i &gt;= capacity_ ? first_ + $i - capacity_ : first_ + $i))</ValueNode>
+		</IndexListItems>
 	</Expand>
 </Type>
 

@@ -24,17 +24,31 @@ namespace gapp
     {
     public:
         /**
+        * The list of potential fitness function types.
+        * A fitness function may either be static or dynamic.
+        * 
+        * @var Type::Static The value representing a static fitness function. A fitness function
+        *   is considered static if it always returns the same fitness vector for a particular
+        *   candidate solution.
+        * @var Type::Dynamic The value representing a dynamic fitness function. A fitness function
+        *   is considered to be dynamic if it may return different fitness vectors for the same
+        *   candidate solution over multiple calls to the fitness function.
+        */
+        enum class Type { Static = 0, Dynamic = 1 };
+
+        /**
         * Create a fitness function.
         *
         * @param chrom_len The chromosome length that is expected by the fitness function,
-        *   and will be used for the candidate solutions in the GA. \n
-        *   Must be at least 1, and a value must be specified even if the chromosome lengths are variable,
-        *   as it will still be used to generate the initial population.
-        * @param is_dynamic Should be true if the fitness vector returned for a chromosome will not
-        *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
+        *   and will be used for the candidate solutions in the GA.
+        *   Must be at least 1, and a value must be specified even if the chromosome length
+        *   is variable, as it will still be used to generate the initial population.
+        * @param type The type of the fitness function. The value should be either Type::Static
+        *   or Type::Dynamic, based on whether the fitness function always returns the same 
+        *   fitness vector for a solution (static) or not (dynamic).
         */
-        constexpr FitnessFunctionInfo(Positive<size_t> chrom_len, bool is_dynamic = false) noexcept :
-            chrom_len_(chrom_len), is_dynamic_(is_dynamic)
+        constexpr FitnessFunctionInfo(Positive<size_t> chrom_len, Type type = Type::Static) noexcept :
+            chrom_len_(chrom_len), type_(type)
         {}
 
         /** @returns The chromosome length the fitness function expects. */
@@ -43,7 +57,7 @@ namespace gapp
 
         /** @returns True if the fitness function is dynamic. */
         [[nodiscard]]
-        constexpr bool is_dynamic() const noexcept { return is_dynamic_; }
+        constexpr bool is_dynamic() const noexcept { return type_ == Type::Dynamic; }
 
         /** Destructor. */
         virtual ~FitnessFunctionInfo()                             = default;
@@ -57,7 +71,7 @@ namespace gapp
 
     private:
         Positive<size_t> chrom_len_;
-        bool is_dynamic_ = false;
+        Type type_;
     };
 
     /**
@@ -65,8 +79,8 @@ namespace gapp
     * The fitness functions take a candidate solution (chromosome) as a parameter
     * and return a fitness vector after evaluating the chromosome.
     * 
-    * This should be used as the base class for fitness functions if the chromosome length
-    * is not known at compile time.
+    * This should be used as the base class for fitness functions if the chromosome
+    * length is not known at compile time.
     * If the chromosome length is known at compile, use FitnessFunction as the base class instead.
     * 
     * @tparam T The gene type expected by the fitness function.
@@ -114,14 +128,17 @@ namespace gapp
     class FitnessFunction : public FitnessFunctionBase<T>
     {
     public:
+        using Type = FitnessFunctionInfo::Type;
+
         /**
         * Create a fitness function.
         *
-        * @param dynamic Should be true if the fitness vector returned for a chromosome will not
-        *   always be the same for the same chromosome (eg. it changes over time or isn't deterministic).
+        * @param type The type of the fitness function. The value should be either Type::Static
+        *   or Type::Dynamic, based on whether the fitness function always returns the same
+        *   fitness vector for a solution (static) or not (dynamic).
         */
-        constexpr FitnessFunction(bool dynamic = false) noexcept :
-            FitnessFunctionBase<T>(ChromLen, dynamic)
+        constexpr FitnessFunction(Type type = Type::Static) noexcept :
+            FitnessFunctionBase<T>(ChromLen, type)
         {}
     };
 

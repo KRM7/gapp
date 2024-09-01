@@ -228,6 +228,12 @@ namespace gapp
     }
 
     template<typename T>
+    inline void GA<T>::cache_size(size_t generations) noexcept
+    {
+        cached_generations_ = generations;
+    }
+
+    template<typename T>
     inline Positive<size_t> GA<T>::findNumberOfObjectives() const
     {
         GAPP_ASSERT(fitness_function_);
@@ -319,6 +325,8 @@ namespace gapp
         num_fitness_evals_ = 0;
         solutions_.clear();
         population_.clear();
+
+        fitness_cache_.reset(!fitness_function_->is_dynamic() * cached_generations_ * population_size_);
 
         if constexpr (is_bounded<T>) { bounds_ = std::move(bounds); }
 
@@ -431,6 +439,7 @@ namespace gapp
         GAPP_ASSERT(isValidEvaluatedPopulation(population_));
         GAPP_ASSERT(fitnessMatrixIsSynced());
 
+        fitness_cache_.insert(population_.begin(), population_.end(), &Candidate<T>::fitness);
         population_ = algorithm_->nextPopulation(*this, std::move(population_), std::move(children));
         fitness_matrix_ = detail::toFitnessMatrix(population_);
     }
@@ -452,13 +461,25 @@ namespace gapp
         /* If the fitness function is static, and the solution has already
          * been evaluted sometime earlier (in an earlier generation), there
          * is no point doing it again. */
-        if (!sol.is_evaluated || fitness_function_->is_dynamic())
+        if (!fitness_function_->is_dynamic() && sol.is_evaluated) return;
+        
+        if (cached_generations_)
         {
-            std::atomic_ref{ num_fitness_evals_ }.fetch_add(1, std::memory_order_release);
+            GAPP_ASSERT(!fitness_function_->is_dynamic());
 
-            sol.fitness = (*fitness_function_)(sol.chromosome);
-            sol.is_evaluated = true;
+            const FitnessVector* fitness = fitness_cache_.get(sol);
+            if (fitness)
+            {
+                sol.fitness = *fitness;
+                sol.is_evaluated = true;
+                return;
+            }
         }
+
+        std::atomic_ref{ num_fitness_evals_ }.fetch_add(1, std::memory_order_release);
+
+        sol.fitness = (*fitness_function_)(sol.chromosome);
+        sol.is_evaluated = true;
 
         GAPP_ASSERT(hasValidFitness(sol));
     }

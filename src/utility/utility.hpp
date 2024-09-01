@@ -186,12 +186,33 @@ namespace gapp::detail
     }
 
     template<std::integral T>
-    constexpr void increment_mod(T& value, T mod)
+    constexpr T next_mod(T value, T mod) noexcept
     {
         GAPP_ASSERT(mod > 0);
         GAPP_ASSERT(0 <= value && value < mod);
 
-        value = (value + 1 == mod) ? T(0) : value + 1;
+        return (value + 1 == mod) ? T(0) : (value + 1);
+    }
+
+    template<std::integral T>
+    constexpr T prev_mod(T value, T mod) noexcept
+    {
+        GAPP_ASSERT(mod > 0);
+        GAPP_ASSERT(0 <= value && value < mod);
+
+        return (value == 0) ? (mod - 1) : (value - 1);
+    }
+
+    template<std::integral T>
+    constexpr void increment_mod(T& value, T mod) noexcept
+    {
+        value = next_mod(value, mod);
+    }
+
+    template<std::integral T>
+    constexpr void decrement_mod(T& value, T mod) noexcept
+    {
+        value = prev_mod(value, mod);
     }
 
 } // namespace gapp::detail

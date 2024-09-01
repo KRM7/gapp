@@ -295,7 +295,7 @@ namespace gapp::detail
     *   operator<
     *   increment() function (equivalent to prefix operator++)
     *   decrement() function (equivalent to prefix operator--)
-    *   operator +=(n)
+    *   operator+=(n)
     *   operator-(it, it)
     */
     template<typename Derived, typename Distance = std::ptrdiff_t>
@@ -555,6 +555,15 @@ namespace gapp::detail
     private:
         T value_;
     };
+
+
+    template<std::input_iterator Iter>
+    constexpr auto make_move_iterator_if_noexcept(Iter it) noexcept
+    {
+        if constexpr (std::is_nothrow_move_constructible_v<std::iter_value_t<Iter>>)
+            return std::move_iterator<Iter>(it);
+        else return it;
+    }
 
 } // namespace gapp::detail
 
