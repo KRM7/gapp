@@ -19,14 +19,45 @@ static constexpr auto always_false = [](auto) { return false; };
 
 using namespace gapp;
 
+TEST_CASE("next_mod", "[algorithm]")
+{
+    REQUIRE(detail::next_mod(0, 3) == 1);
+    REQUIRE(detail::next_mod(1, 3) == 2);
+    REQUIRE(detail::next_mod(2, 3) == 0);
+}
+
+TEST_CASE("prev_mod", "[algorithm]")
+{
+    REQUIRE(detail::prev_mod(0, 3) == 2);
+    REQUIRE(detail::prev_mod(1, 3) == 0);
+    REQUIRE(detail::prev_mod(2, 3) == 1);
+}
+
 TEST_CASE("increment_mod", "[algorithm]")
 {
     int n = 0;
 
-    detail::increment_mod(n, 2);
+    detail::increment_mod(n, 3);
     REQUIRE(n == 1);
 
-    detail::increment_mod(n, 2);
+    detail::increment_mod(n, 3);
+    REQUIRE(n == 2);
+
+    detail::increment_mod(n, 3);
+    REQUIRE(n == 0);
+}
+
+TEST_CASE("decrement_mod", "[algorithm]")
+{
+    int n = 0;
+
+    detail::decrement_mod(n, 3);
+    REQUIRE(n == 2);
+
+    detail::decrement_mod(n, 3);
+    REQUIRE(n == 1);
+
+    detail::decrement_mod(n, 3);
     REQUIRE(n == 0);
 }
 

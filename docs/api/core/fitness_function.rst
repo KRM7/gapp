@@ -32,3 +32,16 @@ class FitnessFunctionBase
    :members:
    :protected-members:
    :private-members:
+
+
+class FitnessFunctionInfo
+---------------------------------------------------
+
+.. code-block::
+
+   #include <core/fitness_function.hpp>
+
+.. doxygenclass:: gapp::FitnessFunctionInfo
+   :project: gapp
+   :members:
+   :protected-members:

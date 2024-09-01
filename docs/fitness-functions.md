@@ -133,22 +133,29 @@ returned by `invoke`.
 
 ## Other fitness function properties
 
-There are some other parameters of the fitness function that can
-be specified, but these generally don't have to be changed from
-their default values. However, more complex fitness functions might
-have to set their values different from these defaults in some cases.
+There are some additional parameters of the fitness function that can
+be specified, but these typically don't have to be changed from
+their default values. More complex fitness functions, however, might
+have to set their values differently from the defaults in some cases.
 
 ### Dynamic fitness functions
 
-By default, the fitness function is assumed to always return the
-same fitness vector for a particular chromosome passed to it as an
+The fitness functions are, by default, assumed to always return the
+same fitness vector for a given chromosome passed to them as an
 argument. This assumption is used to prevent unnecessary fitness
-function calls, but this optimization would cause incorrect fitness
-vectors to be assigned to some solutions if the assumption is false.
+function calls, but it would also cause potentially incorrect fitness
+vectors to be assigned to some solutions if the assumption is not true.
 
-For fitness functions where this assumption would not be true, the value
-of the `dynamic` parameter in the constructor of `FitnessFunctionBase`
-or `FitnessFunction` has to be set to `true`.
+In order to prevent this, the fitness functions have a type parameter
+associated with them, which can either be `Static` or `Dynamic`. The type
+of a fitness function can be set in its constructor, with the default type
+being `Static`.
+
+For fitness functions where this default behaviour would be incorrect, the
+value of the `type` parameter in the constructor of the fitness function
+should to be set to `Dynamic`. This will disable any kind of caching that
+might be used in the GAs, and cause the solutions to be evaluated using
+the fitness function every time it's needed.
 
 ### Variable chromosome lengths
 
@@ -164,19 +171,48 @@ the initial population is generated instead of explicitly specified.
 // implementation of a dynamic fitness function
 class MyFitnessFunction : public FitnessFunction<RealGene, 1>
 {
-    MyFitnessFunction() : FitnessFunction(/* dynamic = */ true) {}
+    MyFitnessFunction() : FitnessFunction(/* type = */ Type::Dynamic) {}
 
     FitnessVector invoke(const Chromosome<RealGene>& x) const override;
 };
+```
+
+## The number of objective function evaluations
+
+The number of times the fitness function is evaluated during a run of the GA
+is determined by the number of candidates in the population, and the number
+of generations. Naively, the number of fitness function calls during a run
+would be:
+
+```
+N = population_size * generations
+```
+
+While there are cases where this will really be the number of fitness
+function calls, such as when the fitness function is dynamic, the library
+generally tries to minimize the number of calls to the fitness function
+where possible, which means that the actual number will typically be
+smaller than this.
+
+By default, only a simple method is used to achieve this, with minimal
+overhead during the runs, but it is also possible to cache the fitnesses
+of the candidate solutions during a run to further reduce the number of
+fitness function calls. Doing this has a larger overhead though, so it's
+only worth doing if the fitness function is relatively expensive to evaluate.
+
+This cache can be turned on using the `cache_size` method of the GAs:
+
+```cpp
+GA.cache_size(2); // cache the last 2 generations
 ```
 
 ## Other concerns
 
 ### Numeric issues
 
-The library in general only assumes that the fitness values returned
+The library, in general, only assumes that the fitness values returned
 by the fitness function are valid numbers (i.e. no `NaN` values will
-be returned by it).
+be returned by the fitness function).
 
 Whether infinite fitness values are allowed or not depends on the
 selection method used in the GA. If the fitness function can return
@@ -190,8 +226,9 @@ any issues.
 
 ### Thread safety
 
-The candidate solutions in the population are evaluated concurrently
-in each generation of a run. As a result of this, the implementation
-of the `invoke` method in the derived fitness functions must be thread-safe.
+The candidate solutions of a population are evaluated concurrently
+in each generation of a run. This means that the implementation
+of the `invoke` method in the derived fitness functions should either
+be thread-safe.
 
 ------------------------------------------------------------------------------------------------

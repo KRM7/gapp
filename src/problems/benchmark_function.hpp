@@ -100,19 +100,19 @@ namespace gapp::problems
 
         /* Single-objective, uniform bounds. */
         BenchmarkFunction(std::string name, Bounds<T> bounds, Chromosome<T> optimum, double optimal_value) :
-            FitnessFunctionBase<T>(optimum.size(), 1),
+            FitnessFunctionBase<T>(optimum.size()),
             BenchmarkFunctionTraits<T>(std::move(name), bounds, std::move(optimum), optimal_value)
         {}
 
         /* Multi-objective, uniform bounds. */
         BenchmarkFunction(std::string name, Bounds<T> bounds, Chromosome<T> optimum, FitnessVector optimal_value) :
-            FitnessFunctionBase<T>(optimum.size(), optimal_value.size()),
+            FitnessFunctionBase<T>(optimum.size()),
             BenchmarkFunctionTraits<T>(std::move(name), bounds, std::move(optimum), std::move(optimal_value))
         {}
 
         /* General ctor, uniform bounds. */
         BenchmarkFunction(std::string name, size_t nvars, size_t nobj, Bounds<T> bounds) :
-            FitnessFunctionBase<T>(nvars, nobj),
+            FitnessFunctionBase<T>(nvars),
             BenchmarkFunctionTraits<T>(std::move(name), nobj, nvars, bounds)
         {}
 

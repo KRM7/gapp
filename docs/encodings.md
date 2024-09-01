@@ -48,10 +48,10 @@ BinaryGA{}.solve(problems::Sphere{});
 
 ## Solution representation
 
-The gene type determines how the candidate solutions to the problem
-are going be encoded in the population. The representation of the solutions
-will be a vector of the gene type used in all cases. Currently, there is no
-way to change this to use some other data structure, so this should be taken
+How the candidate solutions to a problem are going be encoded in the GA is
+determined by the gene type. The representation of the solutions will always
+be a vector of the gene type used. There is currently no way to change this
+to use some other data structure instead of a vector, so this should be taken
 into account when defining new encodings.
 
 ```cpp
@@ -60,11 +60,16 @@ using Chromosome = std::vector<GeneType>;
 ```
 
 The candidates contain some more information in addition to their
-chromosomes, for example their fitness vectors, but these are
-independent of the gene type.
+chromosomes, like their fitness vectors, but these are independent
+of the gene type. They are represented by the `Candidate` class.
 
-The population is then made up of several candidates encoded in
+A population is then made up of several candidates encoded in
 this way.
+
+```cpp
+template<typename GeneType>
+using Population = std::vector<Candidate<GeneType>>;
+```
 
 ### Variable chromosome lengths
 
@@ -92,7 +97,7 @@ new GA class. In order to do this, you have to:
  - define a specialization for `GaTraits<GeneType>`
  - specialize `is_bounded<GeneType>` if needed
  - define the GA class, derived from `GA<GeneType>`
- - define crossover and mutation operators for this encoding
+ - define crossover and mutation operators for the new encoding
 
 The gene type may be anything, with one restriction: the types
 already used for the existing encodings are reserved and can't
@@ -105,9 +110,9 @@ using MyGeneType = std::variant<double, int>;
 
 The specialization of `GaTraits<T>` for the gene type is required
 in order to define some attributes of the GA. These are the default
-crossover and mutation operators that will be used by the GA if none
-are specified explicitly, and the default mutation probability used
-for the mutation operators:
+crossover and mutation operators that will be used by the GA when
+they are not specified explicitly, and the default mutation probability
+used for the mutation operator:
 
 ```cpp
 namespace gapp

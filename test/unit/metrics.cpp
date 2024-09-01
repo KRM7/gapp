@@ -22,6 +22,7 @@ TEMPLATE_TEST_CASE("fitness_metrics", "[metrics]", FitnessMin, FitnessMax, Fitne
     using Metric = TestType;
 
     BinaryGA GA{ popsize };
+
     GA.track(Metric{});
     GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj }, num_gen);
 
@@ -40,6 +41,7 @@ TEMPLATE_TEST_CASE("fitness_metrics", "[metrics]", FitnessMin, FitnessMax, Fitne
 TEST_CASE("nadir_point_metric", "[metrics]")
 {
     BinaryGA GA{ popsize };
+
     GA.track(NadirPoint{});
     GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj }, num_gen);
 
@@ -55,6 +57,7 @@ TEST_CASE("nadir_point_metric", "[metrics]")
 TEST_CASE("hypervolume_metric", "[metrics]")
 {
     BinaryGA GA{ popsize };
+
     GA.track(Hypervolume{ FitnessVector(num_obj, -10.0) });
     GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj }, num_gen);
 
@@ -67,7 +70,8 @@ TEST_CASE("hypervolume_metric", "[metrics]")
 TEST_CASE("hypervolume_auto", "[metrics]")
 {
     BinaryGA GA{ popsize };
-    GA.track(AutoHypervolume{ });
+
+    GA.track(AutoHypervolume{});
     GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj }, num_gen);
 
     const auto& metric = GA.get_metric<AutoHypervolume>();
@@ -79,15 +83,16 @@ TEST_CASE("hypervolume_auto", "[metrics]")
 TEST_CASE("fitness_evaluations", "[metrics]")
 {
     BinaryGA GA{ popsize };
+
     GA.track(FitnessEvaluations{});
-    GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj }, num_gen);
+    GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj, FitnessFunctionInfo::Type::Static }, num_gen);
 
     const auto& metric1 = GA.get_metric<FitnessEvaluations>();
 
     REQUIRE(metric1.size() == num_gen);
     REQUIRE(std::all_of(metric1.begin(), metric1.end(), detail::between(0_sz, popsize)));
 
-    GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj, true }, num_gen);
+    GA.solve(DummyFitnessFunction<BinaryGene>{ 10, num_obj, FitnessFunctionInfo::Type::Dynamic }, num_gen);
 
     const auto& metric2 = GA.get_metric<FitnessEvaluations>();
 
