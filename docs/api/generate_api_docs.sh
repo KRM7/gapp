@@ -10,7 +10,7 @@ python --version
 
 echo -e "Pip version:"
 pip --version
-pip install -r ${APIDOC_DIR}/requirements.txt
+pip install --break-system-packages -r ${APIDOC_DIR}/requirements.txt
 
 echo -e "Doxygen version:"
 doxygen --version
