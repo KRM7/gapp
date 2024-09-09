@@ -1,15 +1,14 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CROSSOVER_DTL_HPP
-#define GA_CROSSOVER_DTL_HPP
+#ifndef GAPP_CROSSOVER_DTL_HPP
+#define GAPP_CROSSOVER_DTL_HPP
 
+#include "neighbour_list.hpp"
 #include "../core/candidate.hpp"
 #include "../utility/small_vector.hpp"
 #include "../utility/dynamic_bitset.hpp"
 #include <vector>
 #include <span>
-#include <unordered_map>
-#include <type_traits>
 #include <concepts>
 #include <cstddef>
 
@@ -55,26 +54,18 @@ namespace gapp::crossover::dtl
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::span<const size_t> indices);
 
 
-    /* Find the indices of genes in the chromosomes chrom1 and chrom2 which belong to odd cycles. Used in the cycle crossover operator. */
+    /* Find the indices of genes in the chromosomes chrom1 and chrom2 which belong to odd cycles. */
     template<typename T>
+    std::vector<size_t> findOddCycleIndices(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
+
+    /* Find the indices of genes in the chromosomes chrom1 and chrom2 which belong to odd cycles. */
+    template<std::unsigned_integral T>
     std::vector<size_t> findOddCycleIndices(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
 
     /* Implementation of the cycle crossover for any gene type. */
     template<typename T>
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2);
 
-
-    /* A list of neighbours for a gene. */
-    template<typename T>
-    class NeighbourList;
-
-    /* A list of neighbours for an unsigned integer gene. */
-    template<std::unsigned_integral T>
-    class NeighbourList<T>;
-
-    /* Conctruct the neighbour lists of each gene based on 2 chromosomes. The first and last elements are considered neighbours. */
-    template<typename T, typename R = std::conditional_t<std::is_unsigned_v<T>, std::vector<NeighbourList<T>>, std::unordered_map<T, NeighbourList<T>>>>
-    R makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2);
 
     /* Implementation of the edge crossover for any gene type, only generates a single child. */
     template<typename T>
@@ -100,9 +91,7 @@ namespace gapp::crossover::dtl
 
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
-#include "../utility/iterators.hpp"
 #include "../utility/utility.hpp"
-#include <array>
 #include <unordered_set>
 #include <algorithm>
 
@@ -174,6 +163,24 @@ namespace gapp::crossover::dtl
     }
 
 
+    template<std::unsigned_integral T>
+    bool isValidIntegerPermutation(const Chromosome<T>& chrom)
+    {
+        if (chrom.empty()) return true;
+
+        if (*std::min_element(chrom.begin(), chrom.end()) != 0) return false;
+        if (*std::max_element(chrom.begin(), chrom.end()) != chrom.size() - 1) return false;
+
+        detail::dynamic_bitset present(chrom.size());
+        for (const T& val : chrom)
+        {
+            if (present[val]) return false;
+            present[val] = true;
+        }
+
+        return true;
+    }
+
     template<typename T>
     Candidate<T> order1CrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
     {
@@ -210,11 +217,10 @@ namespace gapp::crossover::dtl
         const size_t chrom_len = parent1.chromosome.size();
         const size_t range_len = last - first;
 
-        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
         GAPP_ASSERT(first <= last && last <= chrom_len);
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(isValidIntegerPermutation(parent1.chromosome));
+        GAPP_ASSERT(isValidIntegerPermutation(parent2.chromosome));
 
         detail::dynamic_bitset is_direct(chrom_len);
         for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
@@ -266,11 +272,10 @@ namespace gapp::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
-        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
         GAPP_ASSERT(first <= last && last <= chrom_len);
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(isValidIntegerPermutation(parent1.chromosome));
+        GAPP_ASSERT(isValidIntegerPermutation(parent2.chromosome));
 
         detail::dynamic_bitset is_direct(chrom_len);
         for (size_t idx = first; idx != last; idx++) is_direct[parent1.chromosome[idx]] = true;
@@ -317,24 +322,32 @@ namespace gapp::crossover::dtl
     Candidate<T> positionCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, std::span<const size_t> indices)
     {
         const size_t chrom_len = parent1.chromosome.size();
-
-        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
+        
         GAPP_ASSERT(std::all_of(indices.begin(), indices.end(), detail::between(0_sz, chrom_len - 1)));
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(isValidIntegerPermutation(parent1.chromosome));
+        GAPP_ASSERT(isValidIntegerPermutation(parent2.chromosome));
 
         detail::dynamic_bitset is_direct(chrom_len);
         for (size_t idx : indices) is_direct[parent1.chromosome[idx]] = true;
 
+        small_vector<size_t> next_indirect(chrom_len);
+        for (ptrdiff_t indirect = -1, i = chrom_len - 1; i >= 0; i--)
+        {
+            const T gene = parent1.chromosome[i];
+
+            indirect = is_direct[gene] ? indirect : i;
+            next_indirect[i] = indirect;
+        }
+
         Candidate child = parent1;
 
-        for (auto child_pos = child.chromosome.begin(); const T& gene : parent2.chromosome)
+        for (size_t child_pos = 0; T gene : parent2.chromosome)
         {
             if (!is_direct[gene])
             {
-                while (is_direct[*child_pos]) ++child_pos;
-                *child_pos++ = gene;
+                child_pos = next_indirect[child_pos];
+                child.chromosome[child_pos++] = gene;
             }
         }
 
@@ -379,6 +392,51 @@ namespace gapp::crossover::dtl
         return odd_indices;
     }
 
+    template<std::unsigned_integral T>
+    std::vector<size_t> findOddCycleIndices(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
+    {
+        GAPP_ASSERT(chrom1.size() == chrom2.size());
+        GAPP_ASSERT(isValidIntegerPermutation(chrom1));
+        GAPP_ASSERT(isValidIntegerPermutation(chrom2));
+
+        const size_t chrom_len = chrom1.size();
+
+        std::vector<size_t> odd_indices;
+        odd_indices.reserve(chrom_len / 2);
+
+        detail::dynamic_bitset deleted(chrom_len);
+        size_t num_deleted = 0;
+
+        std::vector index_lookup(chrom_len, 0_sz);
+        for (size_t i = 0; i < chrom_len; i++)
+        {
+            index_lookup[chrom1[i]] = i;
+        }
+
+        for (bool odd_cycle = false; num_deleted < chrom_len; odd_cycle ^= 1)
+        {
+            size_t pos = deleted.find_first(false);
+            T cycle_start = chrom1[pos];
+
+            deleted[pos] = true;
+            num_deleted++;
+
+            if (odd_cycle) odd_indices.push_back(pos);
+
+            while (chrom2[pos] != cycle_start)
+            {
+                pos = index_lookup[chrom2[pos]];
+
+                deleted[pos] = true;
+                num_deleted++;
+
+                if (odd_cycle) odd_indices.push_back(pos);
+            }
+        }
+
+        return odd_indices;
+    }
+
     template<typename T>
     CandidatePair<T> cycleCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
     {
@@ -398,117 +456,6 @@ namespace gapp::crossover::dtl
         return { std::move(child1), std::move(child2) };
     }
 
-
-    template<typename T>
-    class NeighbourList : public detail::container_interface<NeighbourList<T>>
-    {
-    public:
-        using value_type      = T;
-        using reference       = T&;
-        using const_reference = const T&;
-
-        using size_type       = std::size_t;
-        using difference_type = std::ptrdiff_t;
-
-        using iterator               = typename std::vector<value_type>::iterator;
-        using const_iterator         = typename std::vector<value_type>::const_iterator;
-        using reverse_iterator       = typename std::vector<value_type>::reverse_iterator;
-        using const_reverse_iterator = typename std::vector<value_type>::const_reverse_iterator;
-
-        NeighbourList() { neighbours_.reserve(4); }
-
-        void add(const T& value)
-        {
-            if (!detail::contains(neighbours_.cbegin(), neighbours_.cend(), value))
-            {
-                neighbours_.push_back(value);
-            }
-        }
-
-        void remove(const T& value) { detail::erase_first_stable(neighbours_, value); }
-
-        constexpr auto begin() noexcept       { return neighbours_.begin(); }
-        constexpr auto end() noexcept         { return neighbours_.end(); }
-        constexpr auto begin() const noexcept { return neighbours_.begin(); }
-        constexpr auto end() const noexcept   { return neighbours_.end(); }
-
-    private:
-        small_vector<T> neighbours_;
-    };
-
-    template<std::unsigned_integral T>
-    class NeighbourList<T> : public detail::iterator_interface<NeighbourList<T>>
-    {
-    public:
-        void add(T value)
-        {
-            GAPP_ASSERT(value != EMPTY);
-
-            /* Assume that EMPTY values are at the back. */
-            for (T& neighbour : neighbours_)
-            {
-                if (neighbour == value) return;
-                if (neighbour == EMPTY)
-                {
-                    neighbour = value;
-                    return;
-                }
-            }
-            GAPP_UNREACHABLE();
-        }
-
-        void remove(T value)
-        {
-            GAPP_ASSERT(value != EMPTY);
-
-            for (T& neighbour : neighbours_)
-            {
-                neighbour = (neighbour == value) ? EMPTY : neighbour;
-            }
-        }
-
-        constexpr size_t size() const noexcept
-        {
-            return std::count_if(neighbours_.begin(), neighbours_.end(), detail::not_equal_to(EMPTY));
-        }
-
-        constexpr bool empty() const noexcept { return size() == 0; }
-
-        constexpr auto begin() noexcept       { return neighbours_.begin(); }
-        constexpr auto end() noexcept         { return neighbours_.end(); }
-        constexpr auto begin() const noexcept { return neighbours_.begin(); }
-        constexpr auto end() const noexcept   { return neighbours_.end(); }
-
-        static constexpr T EMPTY = T(-1);
-
-    private:
-        std::array<T, 4> neighbours_{ EMPTY, EMPTY, EMPTY, EMPTY };
-    };
-
-    template<typename T, typename R>
-    R makeNeighbourLists(const Chromosome<T>& chrom1, const Chromosome<T>& chrom2)
-    {
-        GAPP_ASSERT(chrom1.size() == chrom2.size());
-
-        R nb_lists(chrom1.size());
-
-        nb_lists[chrom1.front()].add(chrom1[1]);
-        nb_lists[chrom2.front()].add(chrom2[1]);
-
-        for (size_t i = 1; i < chrom1.size() - 1; i++)
-        {
-            nb_lists[chrom1[i]].add(chrom1[i - 1]);
-            nb_lists[chrom1[i]].add(chrom1[i + 1]);
-
-            nb_lists[chrom2[i]].add(chrom2[i - 1]);
-            nb_lists[chrom2[i]].add(chrom2[i + 1]);
-        }
-
-        nb_lists[chrom1.back()].add(*(chrom1.end() - 2));
-        nb_lists[chrom2.back()].add(*(chrom2.end() - 2));
-
-        return nb_lists;
-    }
 
     template<typename T>
     Candidate<T> edgeCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2)
@@ -551,10 +498,9 @@ namespace gapp::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
-        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
-        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(isValidIntegerPermutation(parent1.chromosome));
+        GAPP_ASSERT(isValidIntegerPermutation(parent2.chromosome));
 
         auto nb_lists = makeNeighbourLists(parent1.chromosome, parent2.chromosome);
 
@@ -567,7 +513,7 @@ namespace gapp::crossover::dtl
         while (child.chromosome.size() != chrom_len)
         {
             T last_gene = child.chromosome.back();
-            T next_gene = T(is_used.find_first(false));
+            T next_gene = is_used.find_first(false);
 
             for (T neighbour : nb_lists[last_gene])
             {
@@ -587,6 +533,7 @@ namespace gapp::crossover::dtl
 
         return child;
     }
+
 
     template<typename T>
     Candidate<T> pmxCrossoverImpl(const Candidate<T>& parent1, const Candidate<T>& parent2, size_t first, size_t last)
@@ -624,11 +571,10 @@ namespace gapp::crossover::dtl
     {
         const size_t chrom_len = parent1.chromosome.size();
 
-        /* The genes have to be unique unsigned integers in the range [0, chrom_len). */
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size());
         GAPP_ASSERT(first <= last && last <= parent1.chromosome.size());
-        GAPP_ASSERT(*std::min_element(parent1.chromosome.begin(), parent1.chromosome.end()) == 0);
-        GAPP_ASSERT(*std::max_element(parent1.chromosome.begin(), parent1.chromosome.end()) == chrom_len - 1);
+        GAPP_ASSERT(isValidIntegerPermutation(parent1.chromosome));
+        GAPP_ASSERT(isValidIntegerPermutation(parent2.chromosome));
 
         Candidate child = parent2;
 
@@ -663,4 +609,4 @@ namespace gapp::crossover::dtl
     
 } // namespace gapp::crossover::dtl
 
-#endif // !GA_CROSSOVER_DTL_HPP
+#endif // !GAPP_CROSSOVER_DTL_HPP
