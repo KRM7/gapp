@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_ALGORITHM_BASE_IMPL_HPP
-#define GA_ALGORITHM_ALGORITHM_BASE_IMPL_HPP
+#ifndef GAPP_ALGORITHM_ALGORITHM_BASE_IMPL_HPP
+#define GAPP_ALGORITHM_ALGORITHM_BASE_IMPL_HPP
 
 #include "algorithm_base.decl.hpp"
 #include "../core/ga_info.hpp"
@@ -17,7 +17,7 @@
 namespace gapp::algorithm
 {
     template<typename T>
-    auto Algorithm::select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const -> const Candidate<T>&
+    const Candidate<T>& Algorithm::select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const
     {
         GAPP_ASSERT(ga.population_size() == pop.size());
         GAPP_ASSERT(pop.size() == fmat.size());
@@ -30,7 +30,7 @@ namespace gapp::algorithm
     }
 
     template<typename T>
-    auto Algorithm::nextPopulation(const GA<T>& ga, Population<T> parents, Population<T> children) -> Population<T>
+    Population<T> Algorithm::nextPopulation(const GA<T>& ga, Population<T> parents, Population<T> children)
     {
         GAPP_ASSERT(ga.population_size() == parents.size());
         GAPP_ASSERT(ga.population_size() <= children.size());
@@ -48,7 +48,7 @@ namespace gapp::algorithm
     }
 
     template<typename T>
-    auto Algorithm::optimalSolutions(const GA<T>& ga, const Population<T>& pop) const -> Candidates<T>
+    Candidates<T> Algorithm::optimalSolutions(const GA<T>& ga, const Population<T>& pop) const
     {
         GAPP_ASSERT(ga.population_size() == pop.size());
 
@@ -66,4 +66,4 @@ namespace gapp::algorithm
 
 } // namespace gapp::algorithm
 
-#endif //!GA_ALGORITHM_ALGORITHM_BASE_IMPL_HPP
+#endif //!GAPP_ALGORITHM_ALGORITHM_BASE_IMPL_HPP

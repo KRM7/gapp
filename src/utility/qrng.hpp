@@ -4,7 +4,7 @@
 #define GA_UTILITY_QRNG_HPP
 
 #include "bounded_value.hpp"
-#include <vector>
+#include "small_vector.hpp"
 #include <concepts>
 #include <cstddef>
 
@@ -18,8 +18,8 @@ namespace gapp::rng
     class QuasiRandom
     {
     public:
-        using result_type = std::vector<RealType>;
-        using state_type  = std::vector<RealType>;
+        using result_type = small_vector<RealType>;
+        using state_type  = small_vector<RealType>;
         using size_type   = std::size_t;
 
         /** Create a quasi-random number generator in @p dim dimensions. */

@@ -1,10 +1,10 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
-#define GA_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
+#ifndef GAPP_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
+#define GAPP_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
 
 #include "../core/population.hpp"
-#include <vector>
+#include "../utility/small_vector.hpp"
 #include <cstddef>
 
 namespace gapp
@@ -44,7 +44,7 @@ namespace gapp::replacement
         * @param fmat The fitness matrix of the combined parent and child populations.
         * @returns The indices of the candidates selected from the fitness matrix.
         */
-        virtual std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) = 0;
+        virtual small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) = 0;
         
 
         /** Destructor. */
@@ -61,4 +61,4 @@ namespace gapp::replacement
 
 } // namespace gapp::replacement
 
-#endif // !GA_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
+#endif // !GAPP_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP

@@ -3,6 +3,7 @@
 #ifndef GA_UTILITY_MATRIX_HPP
 #define GA_UTILITY_MATRIX_HPP
 
+#include "small_vector.hpp"
 #include "iterators.hpp"
 #include "functional.hpp"
 #include "type_traits.hpp"
@@ -261,6 +262,8 @@ namespace gapp::detail
 
         template<typename alloc_type>
         operator std::vector<value_type, alloc_type>() const { return std::vector<value_type, alloc_type>(begin(), end()); }
+
+        operator small_vector<value_type>() const { return small_vector<value_type>(begin(), end()); }
 
         operator std::span<copy_const_t<MatrixType, value_type>>() const { return { begin(), end() }; }
 

@@ -205,7 +205,7 @@ namespace gapp::detail
         }
 
     private:
-        small_vector<block_type> blocks_;
+        small_vector<block_type, 4> blocks_;
         size_type size_ = 0;
 
         constexpr size_type find_first_one() const noexcept

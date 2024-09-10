@@ -42,7 +42,7 @@ TEMPLATE_TEST_CASE("single_objective_problems", "[problems]", Sphere, Rastrigin,
 
     TestType func(var_count);
 
-    REQUIRE_THAT( func(func.optimum()), Approx(func.optimal_value()).margin(1E-6) );
+    REQUIRE_THAT( func(func.optimum()).std_vec(), Approx(func.optimal_value().std_vec()).margin(1E-6) );
 
     const auto random_chrom = randomChromosome(func.bounds());
 
@@ -58,7 +58,7 @@ TEST_CASE("kursawe", "[problems]")
 
     Kursawe func(var_count);
 
-    REQUIRE_THAT( func(func.optimum()), Approx(func.optimal_value()).margin(1E-6) );
+    REQUIRE_THAT( func(func.optimum()).std_vec(), Approx(func.optimal_value().std_vec()).margin(1E-6));
 
     REQUIRE( !paretoCompareLess(func.ideal_point(), func.nadir_point()) );
     REQUIRE( !paretoCompareLess(func.optimal_value(), func.nadir_point()) );
@@ -80,7 +80,7 @@ TEMPLATE_TEST_CASE("zdt_suite", "[problems]", ZDT1, ZDT2, ZDT3, ZDT4, ZDT5, ZDT6
 
     TestType func(var_count);
 
-    REQUIRE_THAT(func(func.optimum()), Approx(func.optimal_value()).margin(1E-6));
+    REQUIRE_THAT(func(func.optimum()).std_vec(), Approx(func.optimal_value().std_vec()).margin(1E-6));
 
     REQUIRE( !paretoCompareLess(func.ideal_point(), func.nadir_point()) );
     REQUIRE( !paretoCompareLess(func.optimal_value(), func.nadir_point()) );
@@ -102,7 +102,7 @@ TEMPLATE_TEST_CASE("dtlz_suite", "[problems]", DTLZ1, DTLZ2, DTLZ3, DTLZ4, DTLZ5
 
     TestType func(num_obj);
 
-    REQUIRE_THAT( func(func.optimum()), Approx(func.optimal_value()).margin(1E-6) );
+    REQUIRE_THAT( func(func.optimum()).std_vec(), Approx(func.optimal_value().std_vec()).margin(1E-6) );
 
     REQUIRE( !paretoCompareLess(func.ideal_point(), func.nadir_point()) );
     REQUIRE( !paretoCompareLess(func.optimal_value(), func.nadir_point()) );

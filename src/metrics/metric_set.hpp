@@ -4,7 +4,7 @@
 #define GA_METRICS_METRIC_SET_HPP
 
 #include "monitor_base.hpp"
-#include <vector>
+#include "../utility/small_vector.hpp"
 #include <memory>
 #include <type_traits>
 #include <concepts>
@@ -33,7 +33,7 @@ namespace gapp::detail
         void update(const GaInfo& ga);
 
     private:
-        std::vector<std::unique_ptr<metrics::MonitorBase>> metrics_;
+        small_vector<std::unique_ptr<metrics::MonitorBase>> metrics_;
     };
 
 } // namespace gapp::detail

@@ -1,12 +1,12 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_NSGA3_HPP
-#define GA_ALGORITHM_NSGA3_HPP
+#ifndef GAPP_ALGORITHM_NSGA3_HPP
+#define GAPP_ALGORITHM_NSGA3_HPP
 
 #include "algorithm_base.hpp"
 #include "reference_lines.hpp"
 #include "../utility/math.hpp"
-#include <vector>
+#include "../utility/small_vector.hpp"
 #include <functional>
 #include <memory>
 #include <cstddef>
@@ -64,9 +64,9 @@ namespace gapp::algorithm
         void initializeImpl(const GaInfo& ga) override;
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
-        std::vector<size_t> optimalSolutionsImpl(const GaInfo& ga) const override;
+        small_vector<size_t> optimalSolutionsImpl(const GaInfo& ga) const override;
 
         struct Impl;
         std::unique_ptr<Impl> pimpl_;
@@ -74,4 +74,4 @@ namespace gapp::algorithm
 
 } // namespace gapp::algorithm
 
-#endif // !GA_ALGORITHM_NSGA2_HPP
+#endif // !GAPP_ALGORITHM_NSGA2_HPP

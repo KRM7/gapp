@@ -278,7 +278,7 @@ namespace gapp::algorithm::dtl
         pareto_fronts.reserve(popsize);
 
         size_t current_rank = 0;
-        std::vector<size_t> removed_rows;
+        small_vector<size_t, 8> removed_rows;
 
         while (pareto_fronts.size() != popsize)
         {

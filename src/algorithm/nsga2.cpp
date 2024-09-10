@@ -26,11 +26,11 @@ namespace gapp::algorithm
         GAPP_ASSERT(!fmat.empty());
         GAPP_ASSERT(std::none_of(pareto_fronts.begin(), pareto_fronts.end(), detail::is_size(0)));
 
-        std::vector<double> crowding_distances(fmat.size(), 0.0);
+        std::vector crowding_distances(fmat.size(), 0.0);
 
         for (size_t obj = 0; obj < fmat.ncols(); obj++)
         {
-            const FitnessVector fvec = fmat.column(obj);
+            const auto fvec = fmat.column(obj);
 
             for (const auto& front : pareto_fronts)
             {
@@ -83,7 +83,7 @@ namespace gapp::algorithm
         return idx2;
     }
 
-    std::vector<size_t> NSGA2::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    small_vector<size_t> NSGA2::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         GAPP_ASSERT(ga.num_objectives() > 1);
         GAPP_ASSERT(fmat.ncols() == ga.num_objectives());
@@ -103,7 +103,7 @@ namespace gapp::algorithm
         dists_ = crowdingDistances(fmat, pareto_fronts.fronts());
         dists_.resize(popsize);
 
-        std::vector<size_t> new_pop(popsize);
+        small_vector<size_t> new_pop(popsize);
         for (size_t i = 0; i < popsize; i++)
         {
             new_pop[i] = pareto_fronts[i].idx;
@@ -113,7 +113,7 @@ namespace gapp::algorithm
         return new_pop;
     }
 
-    std::vector<size_t> NSGA2::optimalSolutionsImpl(const GaInfo&) const
+    small_vector<size_t> NSGA2::optimalSolutionsImpl(const GaInfo&) const
     {
         return detail::find_indices(ranks_, detail::equal_to(0_sz));
     }

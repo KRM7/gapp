@@ -8,6 +8,7 @@
 #include "../metrics/pop_stats.hpp"
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
+#include "../utility/small_vector.hpp"
 #include "../utility/thread_pool.hpp"
 #include "../utility/math.hpp"
 #include "../utility/rng.hpp"
@@ -42,11 +43,11 @@ namespace gapp::algorithm
     }
 
     /* Create a weight vector for the given axis (used in the ASF). */
-    static inline std::vector<double> weightVector(size_t dimensions, size_t axis)
+    static inline small_vector<double> weightVector(size_t dimensions, size_t axis)
     {
         GAPP_ASSERT(dimensions > axis);
 
-        std::vector weights(dimensions, 1E-6);
+        small_vector weights(dimensions, 1E-6);
         weights[axis] = 1.0;
 
         return weights;
@@ -127,7 +128,7 @@ namespace gapp::algorithm
         void incrementNicheCount(std::vector<size_t>& refs, size_t ref);
 
         /* Create a new population from pareto_fronts. */
-        std::vector<size_t> createPopulation(std::span<const FrontElement> pareto_fronts);
+        small_vector<size_t> createPopulation(std::span<const FrontElement> pareto_fronts);
     };
 
 
@@ -296,9 +297,9 @@ namespace gapp::algorithm
         std::iter_swap(current, std::prev(first_eq));
     }
 
-    std::vector<size_t> NSGA3::Impl::createPopulation(std::span<const FrontElement> pareto_fronts)
+    small_vector<size_t> NSGA3::Impl::createPopulation(std::span<const FrontElement> pareto_fronts)
     {
-        std::vector<size_t> new_pop;
+        small_vector<size_t> new_pop;
         std::vector<Impl::CandidateInfo> new_info;
 
         new_pop.reserve(pareto_fronts.size());
@@ -340,7 +341,7 @@ namespace gapp::algorithm
         pimpl_->recalcNicheCounts(pareto_fronts);
     }
 
-    std::vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    small_vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         GAPP_ASSERT(ga.num_objectives() > 1);
         GAPP_ASSERT(fmat.ncols() == ga.num_objectives());
@@ -403,7 +404,7 @@ namespace gapp::algorithm
         return pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
     }
 
-    std::vector<size_t> NSGA3::optimalSolutionsImpl(const GaInfo&) const
+    small_vector<size_t> NSGA3::optimalSolutionsImpl(const GaInfo&) const
     {
         return detail::find_indices(pimpl_->sol_info_, [](const Impl::CandidateInfo& sol) { return sol.rank == 0; });
     }

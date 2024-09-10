@@ -15,11 +15,13 @@
 
 namespace gapp::detail
 {
-    using iterator = ConeTree::iterator;
+    using iterator       = ConeTree::iterator;
     using const_iterator = ConeTree::const_iterator;
 
-    using Point = ConeTree::Point;
-    using Node = ConeTree::Node;
+    using Point    = ConeTree::Point;
+    using PointRef = ConeTree::PointRef;
+
+    using Node       = ConeTree::Node;
     using FindResult = ConeTree::FindResult;
 
 
@@ -32,8 +34,7 @@ namespace gapp::detail
         for (const Point& point : points) points_.append_row(point);
 
         nodes_.reserve(4 * points_.size() / MAX_LEAF_ELEMENTS);
-        Node root{ .first = 0, .last = points_.size() };
-        nodes_.push_back(root);
+        nodes_.push_back({ .first = 0, .last = points_.size() });
 
         buildTree();
     }
@@ -64,20 +65,19 @@ namespace gapp::detail
 
         const ptrdiff_t range_len = std::distance(first, last);
 
-        Point center(first->begin(), first->end());
+        Point center(*first);
 
         for (++first; first != last; ++first)
         {
             std::transform(center.begin(), center.end(), first->begin(), center.begin(), std::plus{});
         }
-
         std::transform(center.begin(), center.end(), center.begin(), detail::divide_by(range_len));
 
         return center;
     }
 
     /* Find the Euclidean distance between the center point and the point in the range [first, last) furthest from it. */
-    static inline double findRadius(const_iterator first, const_iterator last, const Point& center)
+    static inline double findRadius(const_iterator first, const_iterator last, PointRef center)
     {
         auto distance = std::bind_front(math::euclideanDistanceSq, center);
         auto furthest = detail::max_element(first, last, distance);
@@ -92,7 +92,7 @@ namespace gapp::detail
     }
 
     /* Return the max possible inner product between the point and a point inside the node. */
-    static inline double innerProductUpperBound(const Node& node, const Point& point, double point_norm)
+    static inline double innerProductUpperBound(const Node& node, PointRef point, double point_norm)
     {
         const double center_prod = std::inner_product(point.begin(), point.end(), node.center.begin(), 0.0);
 
@@ -100,7 +100,7 @@ namespace gapp::detail
     }
 
     /* Find the best match in the range [first, last) using linear search. */
-    static FindResult findBestMatchLinear(const Point& query_point, const_iterator first, const_iterator last)
+    static FindResult findBestMatchLinear(PointRef query_point, const_iterator first, const_iterator last)
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
         GAPP_ASSERT(query_point.size() == first->size());
@@ -168,7 +168,7 @@ namespace gapp::detail
         }
     }
 
-    FindResult ConeTree::findBestMatch(const Point& query_point) const
+    FindResult ConeTree::findBestMatch(PointRef query_point) const
     {
         if (points_.empty()) return { points_.end(), 0.0 };
 

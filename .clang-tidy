@@ -29,6 +29,7 @@
   -readability-suspicious-call-argument,
   -readability-uppercase-literal-suffix,
   -readability-braces-around-statements,
+  -readability-qualified-auto,
   -bugprone-easily-swappable-parameters,
   -bugprone-unchecked-optional-access,
   -cppcoreguidelines-special-member-functions,

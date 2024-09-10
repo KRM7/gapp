@@ -1,8 +1,9 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_ALGORITHM_HPP
-#define GA_UTILITY_ALGORITHM_HPP
+#ifndef GAPP_UTILITY_ALGORITHM_HPP
+#define GAPP_UTILITY_ALGORITHM_HPP
 
+#include "small_vector.hpp"
 #include "type_traits.hpp"
 #include "utility.hpp"
 #include <vector>
@@ -34,9 +35,9 @@ namespace gapp::detail
         return static_cast<CastType>(u);
     }
 
-    inline std::vector<size_t> index_vector(size_t n, size_t first = 0)
+    constexpr small_vector<size_t> index_vector(size_t n, size_t first = 0)
     {
-        std::vector<size_t> indices(n);
+        small_vector<size_t> indices(n);
         std::iota(indices.begin(), indices.end(), first);
 
         return indices;
@@ -44,7 +45,7 @@ namespace gapp::detail
 
     template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
     requires std::strict_weak_order<Comp&, std::iter_reference_t<Iter>, std::iter_reference_t<Iter>>
-    std::vector<size_t> argsort(Iter first, Iter last, Comp&& comp = {})
+    small_vector<size_t> argsort(Iter first, Iter last, Comp&& comp = {})
     {
         GAPP_ASSERT(std::distance(first, last) >= 0);
 
@@ -71,7 +72,7 @@ namespace gapp::detail
 
     template<std::random_access_iterator Iter, typename Comp = std::less<std::iter_value_t<Iter>>>
     requires std::strict_weak_order<Comp&, std::iter_reference_t<Iter>, std::iter_reference_t<Iter>>
-    std::vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = {})
+    small_vector<size_t> partial_argsort(Iter first, Iter middle, Iter last, Comp&& comp = {})
     {
         GAPP_ASSERT(std::distance(first, middle) >= 0);
         GAPP_ASSERT(std::distance(middle, last) >= 0);
@@ -233,7 +234,7 @@ namespace gapp::detail
 
         using ValueType = std::remove_cvref_t<std::iter_reference_t<Iter>>;
 
-        std::vector<ValueType> result;
+        small_vector<ValueType> result;
         result.reserve(last - first);
 
         for (; first != last; ++first)
@@ -265,9 +266,9 @@ namespace gapp::detail
 
     template<std::ranges::random_access_range R, typename Pred>
     requires std::predicate<Pred&, detail::const_reference_t<R>>
-    std::vector<size_t> find_indices(const R& range, Pred&& pred)
+    small_vector<size_t> find_indices(const R& range, Pred&& pred)
     {
-        std::vector<size_t> indices;
+        small_vector<size_t> indices;
 
         for (size_t i = 0; i < range.size(); i++)
         {
@@ -312,29 +313,27 @@ namespace gapp::detail
     }
 
     template<std::ranges::random_access_range R>
-    auto select(R&& range, const std::vector<size_t>& indices)
+    auto select(R&& container, std::span<const size_t> indices)
     {
-        using ValueType = detail::value_t<std::remove_cvref_t<R>>;
-
-        std::vector<ValueType> selected;
+        std::remove_cvref_t<R> selected;
         selected.reserve(indices.size());
 
         for (size_t idx : indices)
         {
-            selected.push_back(detail::forward_like<R>(range[idx]));
+            selected.push_back(detail::forward_like<R>(container[idx]));
         }
 
         return selected;
     }
 
-    template<std::totally_ordered T>
-    constexpr void erase_duplicates(std::vector<T>& container)
+    template<std::ranges::random_access_range R>
+    constexpr void erase_duplicates(R& range)
     {
-        std::sort(container.begin(), container.end());
-        const auto last = std::unique(container.begin(), container.end());
-        container.erase(last, container.end());
+        std::sort(range.begin(), range.end());
+        const auto last = std::unique(range.begin(), range.end());
+        range.erase(last, range.end());
     }
 
 } // namespace gapp::detail
 
-#endif // !GA_UTILITY_ALGORITHM_HPP
+#endif // !GAPP_UTILITY_ALGORITHM_HPP

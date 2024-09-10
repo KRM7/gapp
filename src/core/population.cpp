@@ -3,6 +3,7 @@
 #include "population.hpp"
 #include "../utility/math.hpp"
 #include "../utility/algorithm.hpp"
+#include "../utility/functional.hpp"
 #include <algorithm>
 #include <iterator>
 #include <vector>
@@ -13,19 +14,19 @@ namespace gapp::detail
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         FitnessVector fitness_vector(last - first);
-        std::transform(first, last, fitness_vector.begin(), [](const auto& row) { return row[0]; });
+        std::transform(first, last, fitness_vector.begin(), detail::element_at(0));
 
         return fitness_vector;
     }
 
-    std::vector<size_t> findParetoFront(const FitnessMatrix& fmat)
+    small_vector<size_t> findParetoFront(const FitnessMatrix& fmat)
     {
         if (fmat.empty()) return {};
 
         return (fmat.ncols() == 1) ? findParetoFront1D(fmat) : findParetoFrontBest(fmat);
     }
 
-    std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
+    small_vector<size_t> findParetoFront1D(const FitnessMatrix& fmat)
     {
         const auto best = std::max_element(fmat.begin(), fmat.end(),
         [](const auto& lhs, const auto& rhs) noexcept
@@ -41,7 +42,7 @@ namespace gapp::detail
         });
     }
 
-    std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat)
+    small_vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat)
     {
         const auto indices = detail::argsort(fmat.begin(), fmat.end(), [](const auto& lhs, const auto& rhs) noexcept
         {
@@ -52,7 +53,7 @@ namespace gapp::detail
             return false;
         });
 
-        std::vector<size_t> optimal_indices;
+        small_vector<size_t> optimal_indices;
 
         for (size_t idx : indices)
         {
@@ -67,14 +68,14 @@ namespace gapp::detail
         return optimal_indices;
     }
 
-    std::vector<size_t> findParetoFrontBest(const FitnessMatrix& fmat)
+    small_vector<size_t> findParetoFrontBest(const FitnessMatrix& fmat)
     {
         // Implementation of the BEST algorithm based on the description in:
         //      Godfrey et al. "Algorithms and analyses for maximal vector computation." The VLDB Journal 16, no. 1 (2007): 5-28.
 
         auto indices = detail::index_vector(fmat.size());
 
-        std::vector<size_t> optimal_indices;
+        small_vector<size_t> optimal_indices;
         optimal_indices.reserve(fmat.size());
 
         auto first = indices.begin();
@@ -128,7 +129,7 @@ namespace gapp::detail
         return optimal_indices;
     }
 
-    std::vector<size_t> findParetoFrontKungImpl(const FitnessMatrix& fmat, std::vector<size_t>::const_iterator first, std::vector<size_t>::const_iterator last)
+    small_vector<size_t> findParetoFrontKungImpl(const FitnessMatrix& fmat, small_vector<size_t>::const_iterator first, small_vector<size_t>::const_iterator last)
     {
         if (std::distance(first, last) == 1) return { *first };
 
@@ -154,7 +155,7 @@ namespace gapp::detail
         return top_half;
     }
 
-    std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat)
+    small_vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat)
     {
         /* See: Kung et al. "On finding the maxima of a set of vectors." Journal of the ACM (JACM) 22.4 (1975): 469-476. */
         /* Doesn't work for d = 1 (single-objective optimization). */

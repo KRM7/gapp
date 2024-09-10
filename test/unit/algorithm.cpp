@@ -5,6 +5,7 @@
 #include <vector>
 #include <tuple>
 #include <cstddef>
+#include "utility/small_vector.hpp"
 #include "utility/algorithm.hpp"
 #include "utility/rng.hpp"
 #include "utility/utility.hpp"
@@ -19,74 +20,33 @@ static constexpr auto always_false = [](auto) { return false; };
 
 using namespace gapp;
 
-TEST_CASE("next_mod", "[algorithm]")
-{
-    REQUIRE(detail::next_mod(0, 3) == 1);
-    REQUIRE(detail::next_mod(1, 3) == 2);
-    REQUIRE(detail::next_mod(2, 3) == 0);
-}
-
-TEST_CASE("prev_mod", "[algorithm]")
-{
-    REQUIRE(detail::prev_mod(0, 3) == 2);
-    REQUIRE(detail::prev_mod(1, 3) == 0);
-    REQUIRE(detail::prev_mod(2, 3) == 1);
-}
-
-TEST_CASE("increment_mod", "[algorithm]")
-{
-    int n = 0;
-
-    detail::increment_mod(n, 3);
-    REQUIRE(n == 1);
-
-    detail::increment_mod(n, 3);
-    REQUIRE(n == 2);
-
-    detail::increment_mod(n, 3);
-    REQUIRE(n == 0);
-}
-
-TEST_CASE("decrement_mod", "[algorithm]")
-{
-    int n = 0;
-
-    detail::decrement_mod(n, 3);
-    REQUIRE(n == 2);
-
-    detail::decrement_mod(n, 3);
-    REQUIRE(n == 1);
-
-    detail::decrement_mod(n, 3);
-    REQUIRE(n == 0);
-}
 
 TEST_CASE("index_vector", "[algorithm]")
 {
-    REQUIRE(detail::index_vector(3) == std::vector<size_t>{ 0, 1, 2 });
-    REQUIRE(detail::index_vector(4, 2) == std::vector<size_t>{ 2, 3, 4, 5 });
+    REQUIRE(detail::index_vector(3) == small_vector<size_t>{ 0, 1, 2 });
+    REQUIRE(detail::index_vector(4, 2) == small_vector<size_t>{ 2, 3, 4, 5 });
 }
 
 TEST_CASE("argsort", "[algorithm]")
 {
-    const std::vector nums = { 4.0, 0.0, 2.0, 1.0 };
+    const small_vector nums = { 4.0, 0.0, 2.0, 1.0 };
 
     SECTION("iterators")
     {
         const auto indices = detail::argsort(nums.begin(), nums.end());
-        REQUIRE(indices == std::vector<size_t>{ 1, 3, 2, 0 });
+        REQUIRE(indices == small_vector<size_t>{ 1, 3, 2, 0 });
     }
 
     SECTION("reverse iterators")
     {
         const auto indices = detail::argsort(nums.rbegin(), nums.rend());
-        REQUIRE(indices == std::vector<size_t>{ 0, 2, 3, 1 });
+        REQUIRE(indices == small_vector<size_t>{ 0, 2, 3, 1 });
     }
 
     SECTION("compare function")
     {
         const auto indices = detail::argsort(nums.begin(), nums.end(), std::greater<>{});
-        REQUIRE(indices == std::vector<size_t>{ 0, 2, 3, 1 });
+        REQUIRE(indices == small_vector<size_t>{ 0, 2, 3, 1 });
     }
 
     SECTION("empty range")
@@ -98,7 +58,7 @@ TEST_CASE("argsort", "[algorithm]")
 
 TEST_CASE("partial_argsort", "[algorithm]")
 {
-    const std::vector nums = { 4.0, 0.0, 2.0, 1.0, 5.0 };
+    const small_vector nums = { 4.0, 0.0, 2.0, 1.0, 5.0 };
 
     SECTION("iterators")
     {
@@ -136,7 +96,7 @@ TEST_CASE("partial_argsort", "[algorithm]")
 
 TEST_CASE("max_element", "[algorithm]")
 {
-    const std::vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+    const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
 
     REQUIRE(*detail::max_element(nums.begin(), nums.end()) == 5.0);
     REQUIRE(*detail::max_element(nums.rbegin(), nums.rend()) == 5.0);
@@ -148,7 +108,7 @@ TEST_CASE("max_element", "[algorithm]")
 
 TEST_CASE("min_element", "[algorithm]")
 {
-    const std::vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+    const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
 
     REQUIRE(*detail::min_element(nums.begin(), nums.end()) == 0.0);
     REQUIRE(*detail::min_element(nums.rbegin(), nums.rend()) == 0.0);
@@ -160,7 +120,7 @@ TEST_CASE("min_element", "[algorithm]")
 
 TEST_CASE("argmax", "[algorithm]")
 {
-    const std::vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+    const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
 
     REQUIRE(detail::argmax(nums.begin(), nums.end()) == 3);
     REQUIRE(detail::argmax(nums.rbegin(), nums.rend()) == 3);
@@ -224,7 +184,7 @@ TEST_CASE("partial_shuffle", "[algorithm]")
 
 TEST_CASE("contains", "[algorithm]")
 {
-    const std::vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+    const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
 
     REQUIRE(detail::contains(nums.begin(), nums.end(), 0.0));
     REQUIRE(detail::contains(nums.begin(), nums.end(), 1.0));
@@ -235,10 +195,10 @@ TEST_CASE("contains", "[algorithm]")
 
 TEST_CASE("find_all", "[algorithm]")
 {
-    const std::vector nums = { 4, 0, 2, 5, 1 };
+    const small_vector nums = { 4, 0, 2, 5, 1 };
 
     const auto odd_nums = detail::find_all(nums.begin(), nums.end(), is_odd);
-    REQUIRE(odd_nums == std::vector{ 5, 1 });
+    REQUIRE(odd_nums == small_vector{ 5, 1 });
 
     const auto big_nums = detail::find_all(nums.begin(), nums.end(), is_big);
     REQUIRE(big_nums.empty());
@@ -249,16 +209,16 @@ TEST_CASE("find_all", "[algorithm]")
 
 TEST_CASE("find_indices", "[algorithm]")
 {
-    const std::vector nums = { 4, 0, 2, 5, 1 };
+    const small_vector nums = { 4, 0, 2, 5, 1 };
 
     const auto odd_num_idxs = detail::find_indices(nums, is_odd);
-    REQUIRE(odd_num_idxs == std::vector{ 3_sz, 4_sz });
+    REQUIRE(odd_num_idxs == small_vector{ 3_sz, 4_sz });
 
     const auto big_num_idxs = detail::find_indices(nums, is_big);
     REQUIRE(big_num_idxs.empty());
 
     const auto all = detail::find_indices(nums, always_true);
-    REQUIRE(all == std::vector{ 0_sz, 1_sz, 2_sz, 3_sz, 4_sz });
+    REQUIRE(all == small_vector{ 0_sz, 1_sz, 2_sz, 3_sz, 4_sz });
 
     const auto none = detail::find_indices(nums, always_false);
     REQUIRE(none.empty());
@@ -266,7 +226,7 @@ TEST_CASE("find_indices", "[algorithm]")
 
 TEST_CASE("index_of", "[algorithm]")
 {
-    const std::vector nums = { 4, 0, 2, 5, 1 };
+    const small_vector nums = { 4, 0, 2, 5, 1 };
 
     REQUIRE(detail::index_of(nums, 4) == 0_sz);
     REQUIRE(detail::index_of(nums, 2) == 2_sz);
@@ -276,7 +236,7 @@ TEST_CASE("index_of", "[algorithm]")
 
 TEST_CASE("find_index", "[algorithm]")
 {
-    const std::vector nums = { 4, 0, 2, 5, 1 };
+    const small_vector nums = { 4, 0, 2, 5, 1 };
 
     const auto first_idx = detail::find_index(nums, always_true);
     REQUIRE(first_idx == 0_sz);
@@ -331,16 +291,16 @@ TEST_CASE("select", "[algorithm]")
 {
     const std::vector nums = { 4, 0, 2, 5, 1, 3, 1 };
 
-    auto selected = detail::select(nums, { 0, 1, 4 });
+    auto selected = detail::select(nums, std::vector{ 0_sz, 1_sz, 4_sz });
     REQUIRE(selected == std::vector{ 4, 0, 1 });
 
-    selected = detail::select(selected, { 2 });
+    selected = detail::select(selected, std::vector{ 2_sz });
     REQUIRE(selected == std::vector{ 1 });
 
     selected = detail::select(nums, { });
     REQUIRE(selected.empty());
 
-    selected = detail::select(std::vector{ 1, 3, 5 }, { 0, 1 });
+    selected = detail::select(std::vector{ 1, 3, 5 }, std::vector{ 0_sz, 1_sz });
     REQUIRE(selected == std::vector{ 1, 3 });
 }
 

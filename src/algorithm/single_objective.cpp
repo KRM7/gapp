@@ -59,7 +59,7 @@ namespace gapp::algorithm
         selection_->initializeImpl(ga);
     }
 
-    std::vector<size_t> SingleObjective::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    small_vector<size_t> SingleObjective::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         GAPP_ASSERT(replacement_);
         GAPP_ASSERT(ga.num_objectives() == 1, "The number of objectives must be 1 for the single-objective algorithms.");
