@@ -1,15 +1,15 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_SINGLE_OBJECTIVE_HPP
-#define GA_ALGORITHM_SINGLE_OBJECTIVE_HPP
+#ifndef GAPP_ALGORITHM_SINGLE_OBJECTIVE_HPP
+#define GAPP_ALGORITHM_SINGLE_OBJECTIVE_HPP
 
 #include "algorithm_base.decl.hpp"
 #include "selection_base.hpp"
 #include "replacement_base.hpp"
 #include "soga_selection.hpp"
 #include "soga_replacement.hpp"
+#include "../utility/small_vector.hpp"
 #include "../utility/utility.hpp"
-#include <vector>
 #include <concepts>
 #include <functional>
 #include <memory>
@@ -45,7 +45,7 @@ namespace gapp::algorithm
         * when not using a replacement policy derived from replacement::Replacement.
         * @see replacement_method()
         */
-        using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, const FitnessMatrix&)>;
+        using ReplacementCallable = std::function<small_vector<size_t>(const GaInfo&, const FitnessMatrix&)>;
 
 
         /**
@@ -153,7 +153,7 @@ namespace gapp::algorithm
         void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
         std::unique_ptr<selection::Selection> selection_;
         std::unique_ptr<replacement::Replacement> replacement_;
@@ -204,4 +204,4 @@ namespace gapp::algorithm
 
 } // namespace gapp::algorithm
 
-#endif // !GA_ALGORITHM_SINGLE_OBJECTIVE_HPP
+#endif // !GAPP_ALGORITHM_SINGLE_OBJECTIVE_HPP

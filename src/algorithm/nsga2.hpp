@@ -1,9 +1,10 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_NSGA2_HPP
-#define GA_ALGORITHM_NSGA2_HPP
+#ifndef GAPP_ALGORITHM_NSGA2_HPP
+#define GAPP_ALGORITHM_NSGA2_HPP
 
 #include "algorithm_base.hpp"
+#include "../utility/small_vector.hpp"
 #include <vector>
 #include <cstddef>
 
@@ -38,9 +39,9 @@ namespace gapp::algorithm
         void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) override {}
         size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
-        std::vector<size_t> optimalSolutionsImpl(const GaInfo& ga) const override;
+        small_vector<size_t> optimalSolutionsImpl(const GaInfo& ga) const override;
 
         std::vector<size_t> ranks_;
         std::vector<double> dists_;
@@ -48,4 +49,4 @@ namespace gapp::algorithm
 
 } // namespace gapp::algorithm
 
-#endif // !GA_ALGORITHM_NSGA2_HPP
+#endif // !GAPP_ALGORITHM_NSGA2_HPP

@@ -4,6 +4,7 @@
 #define GA_UTILITY_CONE_TREE_HPP
 
 #include "matrix.hpp"
+#include "small_vector.hpp"
 #include <vector>
 #include <span>
 #include <type_traits>
@@ -24,7 +25,8 @@ namespace gapp::detail
         using iterator       = Matrix<double>::iterator;
         using const_iterator = Matrix<double>::const_iterator;
 
-        using Point = std::vector<double>;
+        using Point    = small_vector<double>;
+        using PointRef = std::span<const double>;
 
         struct FindResult
         {
@@ -48,7 +50,7 @@ namespace gapp::detail
         explicit ConeTree(std::span<const Point> points);
 
         /* Returns the closest point in the tree to the query point, and its distance. */
-        FindResult findBestMatch(const Point& query_point) const;
+        FindResult findBestMatch(PointRef query_point) const;
 
         constexpr const_iterator begin() const noexcept { return points_.begin(); }
         constexpr const_iterator end() const noexcept   { return points_.end(); }

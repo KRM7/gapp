@@ -1,9 +1,10 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CORE_CANDIDATE_HPP
-#define GA_CORE_CANDIDATE_HPP
+#ifndef GAPP_CORE_CANDIDATE_HPP
+#define GAPP_CORE_CANDIDATE_HPP
 
 #include "../utility/math.hpp"
+#include "../utility/small_vector.hpp"
 #include "../utility/matrix.hpp"
 #include "../utility/concepts.hpp"
 #include <vector>
@@ -14,7 +15,7 @@
 namespace gapp
 {
     /** The class used to represent the fitness of the candidates. Contains a fitness value for each objective. */
-    using FitnessVector = std::vector<double>;
+    using FitnessVector = small_vector<double>;
 
     /** 
     * The class used to represent the fitness values of multiple candidates.
@@ -128,8 +129,8 @@ namespace gapp
         Candidate& operator=(Candidate&&)       = default;
         ~Candidate()                            = default;
 
-        Chromosome<T> chromosome;   /**< The chromosome encoding the solution. */
         FitnessVector fitness;      /**< The fitness values of the solution (for every objective). */
+        Chromosome<T> chromosome;   /**< The chromosome encoding the solution. */
         bool is_evaluated = false;  /**< True if the candidate's fitness value doesn't need to be computed. */
     };
 
@@ -215,4 +216,4 @@ namespace std
 
 } // namespace std
 
-#endif // !GA_CORE_CANDIDATE_HPP
+#endif // !GAPP_CORE_CANDIDATE_HPP

@@ -44,7 +44,7 @@ jobs:
             { name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck;--version;--verbose;--report-progress;--enable=all;--error-exitcode=1;--std=c++20;--suppressions-list=../.cppcheck-supressions" }
         ]
         include:
-          - pkgs: clang-18 clang-tools-18 clang-tidy-18 iwyu cppcheck
+          - pkgs: clang-18 clang-tools-18 clang-tidy-18 cppcheck
             cxx: clang++-18
 
     defaults:

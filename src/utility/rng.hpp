@@ -475,12 +475,12 @@ namespace gapp::rng
     template<std::integral IntType>
     small_vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count)
     {
-        const size_t range_len = detail::range_length(lbound, ubound);
+        const std::uint64_t range_len = detail::range_length(lbound, ubound);
 
         GAPP_ASSERT(ubound >= lbound);
         GAPP_ASSERT(range_len >= count);
 
-        const bool select_many = (count > 0.6 * range_len);
+        const bool select_many = (count >= std::uint64_t(0.6 * range_len));
         const bool huge_range  = (range_len >= 65536);
 
         if (huge_range) [[unlikely]] return rng::sampleUniqueSet(lbound, ubound, count);

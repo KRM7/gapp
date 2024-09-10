@@ -4,6 +4,7 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_all.hpp>
 #include "core/population.hpp"
+#include "utility/small_vector.hpp"
 #include "utility/utility.hpp"
 #include <vector>
 
@@ -22,7 +23,7 @@ TEST_CASE("find_pareto_front_1D", "[pareto_front]")
 
         auto optimal_indices = findParetoFront1D(fmat);
 
-        REQUIRE(optimal_indices == std::vector{ 1_sz });
+        REQUIRE(optimal_indices == small_vector{ 1_sz });
     }
 
     SECTION("multiple optimum")
@@ -31,7 +32,7 @@ TEST_CASE("find_pareto_front_1D", "[pareto_front]")
 
         auto optimal_indices = findParetoFront1D(fmat);
 
-        REQUIRE(optimal_indices == std::vector{ 2_sz, 7_sz, 10_sz });
+        REQUIRE(optimal_indices == small_vector{ 2_sz, 7_sz, 10_sz });
     }
 
     SECTION("multiple optimum approx")
@@ -40,7 +41,7 @@ TEST_CASE("find_pareto_front_1D", "[pareto_front]")
 
         auto optimal_indices = findParetoFront1D(fmat);
 
-        REQUIRE(optimal_indices == std::vector{ 2_sz, 3_sz, 5_sz, 7_sz, 10_sz });
+        REQUIRE(optimal_indices == small_vector{ 2_sz, 3_sz, 5_sz, 7_sz, 10_sz });
     }
 }
 
@@ -70,14 +71,14 @@ TEMPLATE_TEST_CASE_SIG("find_pareto_front_nd", "[pareto_front]", ((auto F), F), 
 
         auto optimal_indices = F(fmat);
 
-        REQUIRE(optimal_indices == std::vector<size_t>{ 3 });
+        REQUIRE(optimal_indices == small_vector<size_t>{ 3 });
     }
 
     SECTION("multiple optimum")
     {
         ScopedTolerances _(0.0, 0.0);
 
-        auto optimal_indices = F(fmat);
+        auto optimal_indices = F(fmat).std_vec();
 
         REQUIRE_THAT(optimal_indices, Matchers::UnorderedEquals(std::vector<size_t>{ 5, 9, 11, 13, 14 }));
     }
@@ -86,7 +87,7 @@ TEMPLATE_TEST_CASE_SIG("find_pareto_front_nd", "[pareto_front]", ((auto F), F), 
     {
         ScopedTolerances _(0.1, 0.0);
 
-        auto optimal_indices = F(fmat);
+        auto optimal_indices = F(fmat).std_vec();
 
         REQUIRE_THAT(optimal_indices, Matchers::UnorderedEquals(std::vector<size_t>{ 4, 5, 9, 11, 12, 13, 14 }));
     }

@@ -100,8 +100,7 @@ else() # GNU style compiler interface
 
     # gcc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        # -Warray-bounds, -Wstringop-overflow, -Wstringop-overread are regular false positives since g++-12
-	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op -Wno-array-bounds -Wno-stringop-overflow -Wno-stringop-overread")
+	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op -Wno-array-bounds -Wno-stringop-overflow -Wno-stringop-overread -Wno-free-nonheap-object")
     endif()
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")

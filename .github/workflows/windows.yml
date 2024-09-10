@@ -18,8 +18,6 @@ jobs:
         build-shared: [ "ON", "OFF" ]
         exclude:
           - platform: Win32
-            compiler: ClangCL
-          - platform: Win32
             build-type: Release
 
     defaults:
@@ -32,9 +30,6 @@ jobs:
     steps:
     - name: checkout-repo
       uses: actions/checkout@v4
-
-    #- name: setup-compiler
-    #  run: choco install -y --allow-downgrade ${{ matrix.compiler.pkgs }}
 
     - name: setup-catch
       env:

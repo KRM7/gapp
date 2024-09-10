@@ -1,11 +1,11 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_SOGA_REPLACEMENT_HPP
-#define GA_ALGORITHM_SOGA_REPLACEMENT_HPP
+#ifndef GAPP_ALGORITHM_SOGA_REPLACEMENT_HPP
+#define GAPP_ALGORITHM_SOGA_REPLACEMENT_HPP
 
 #include "replacement_base.hpp"
 #include "../core/population.hpp"
-#include <vector>
+#include "../utility/small_vector.hpp"
 #include <functional>
 #include <cstddef>
 
@@ -28,7 +28,7 @@ namespace gapp::replacement
     class KeepChildren final : public Replacement
     {
     private:
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
     };
 
 
@@ -69,7 +69,7 @@ namespace gapp::replacement
         constexpr size_t elite_num() const noexcept { return n_; }
 
     private:
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
         size_t n_;
     };
@@ -85,7 +85,7 @@ namespace gapp::replacement
     class KeepBest final : public Replacement
     {
     private:
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
     };
 
 
@@ -96,12 +96,12 @@ namespace gapp::replacement
     class Lambda final : public Replacement
     {
     public:
-        using ReplacementCallable = std::function<std::vector<size_t>(const GaInfo&, const FitnessMatrix&)>;
+        using ReplacementCallable = std::function<small_vector<size_t>(const GaInfo&, const FitnessMatrix&)>;
 
         explicit Lambda(ReplacementCallable f) noexcept;
 
     private:
-        std::vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
 
         ReplacementCallable replacement_;
     };

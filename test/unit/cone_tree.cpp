@@ -52,10 +52,10 @@ TEST_CASE("cone_tree lookup", "[cone_tree]")
 
     ConeTree tree(points);
 
-    auto best = tree.findBestMatch({ 1.0, 1.0, 0.1 });
+    auto best = tree.findBestMatch(ConeTree::Point{ 1.0, 1.0, 0.1 });
     REQUIRE(*best.elem == ConeTree::Point{ 0.8, 0.8, 0.6 });
 
-    best = tree.findBestMatch({ 0.1, 0.5, 0.8 });
+    best = tree.findBestMatch(ConeTree::Point{ 0.1, 0.5, 0.8 });
     REQUIRE(*best.elem == ConeTree::Point{ 0.6, 0.8, 0.8 });
 }
 
@@ -63,7 +63,7 @@ TEST_CASE("empty_cone_tree", "[cone_tree]")
 {
     ConeTree tree;
 
-    auto best = tree.findBestMatch({ 1.0, 1.0 });
+    auto best = tree.findBestMatch(ConeTree::Point{ 1.0, 1.0 });
 
     REQUIRE(best.elem == tree.end());
 }

@@ -1,12 +1,13 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_UTILITY_HPP
-#define GA_UTILITY_UTILITY_HPP
+#ifndef GAPP_UTILITY_UTILITY_HPP
+#define GAPP_UTILITY_UTILITY_HPP
 
 #include <vector>
 #include <concepts>
 #include <type_traits>
 #include <cassert>
+#include <cstdint>
 #include <cstddef>
 
 
@@ -76,9 +77,9 @@
 
 
 #if defined(__GNUC__) || defined(__clang__)
-#   define GAPP_NON_NULL __attribute__((nonnull))
+#   define GAPP_MAY_ALIAS __attribute__((may_alias))
 #else
-#   define GAPP_NON_NULL
+#   define GAPP_MAY_ALIAS
 #endif
 
 
@@ -178,27 +179,13 @@ namespace gapp::detail
         temp.swap(vec);
     }
 
-    // returns true if the signs of the parameters are the same
-    template<std::signed_integral T>
-    constexpr bool same_sign(T left, T right) noexcept
-    {
-        return (left ^ right) >= 0;
-    }
-
-    // returns the length of the range [low, high) without overflow
+    // returns the length of the range [low, high] without overflow
     template<std::integral T>
-    constexpr size_t range_length(T low, T high) noexcept
+    constexpr std::uint64_t range_length(T low, T high) noexcept
     {
         GAPP_ASSERT(low <= high);
 
-        if constexpr (std::is_unsigned_v<T>)
-        {
-            return high - low;
-        }
-        else
-        {
-            return same_sign(low, high) ? high - low : -(low + 1) + high + 1;
-        }
+        return std::uint64_t(high) - std::uint64_t(low);
     }
 
     template<std::integral T>
@@ -233,4 +220,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_UTILITY_UTILITY_HPP
+#endif // !GAPP_UTILITY_UTILITY_HPP

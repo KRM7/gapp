@@ -44,7 +44,7 @@ TEST_CASE("replacement_best", "[replacement][single-objective]")
     math::ScopedTolerances _(0.0, 0.0);
 
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepBest>();
-    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix);
+    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix).std_vec();
 
     const std::vector<size_t> expected = { 0, 1, 4, 5, 9, 11, 12, 15, 16, 17 };
 
@@ -54,7 +54,7 @@ TEST_CASE("replacement_best", "[replacement][single-objective]")
 TEST_CASE("replacement_children", "[replacement][single-objective]")
 {
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepChildren>();
-    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix);
+    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix).std_vec();
 
     const std::vector<size_t> expected = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
@@ -64,7 +64,7 @@ TEST_CASE("replacement_children", "[replacement][single-objective]")
 TEST_CASE("replacement_elitism", "[replacement][single-objective]")
 {
     std::unique_ptr<Replacement> replacement = std::make_unique<Elitism>(2);
-    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix);
+    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix).std_vec();
 
     const std::vector<size_t> expected = { 0, 5, 10, 11, 12, 13, 14, 15, 16, 17 };
 

@@ -27,10 +27,10 @@ namespace gapp::crossover::dtl
         using size_type              = std::size_t;
         using difference_type        = std::ptrdiff_t;
 
-        using iterator               = typename std::vector<value_type>::iterator;
-        using const_iterator         = typename std::vector<value_type>::const_iterator;
-        using reverse_iterator       = typename std::vector<value_type>::reverse_iterator;
-        using const_reverse_iterator = typename std::vector<value_type>::const_reverse_iterator;
+        using iterator               = typename small_vector<value_type>::iterator;
+        using const_iterator         = typename small_vector<value_type>::const_iterator;
+        using reverse_iterator       = typename small_vector<value_type>::reverse_iterator;
+        using const_reverse_iterator = typename small_vector<value_type>::const_reverse_iterator;
 
         constexpr auto begin() noexcept { return neighbours_.begin(); }
         constexpr auto end() noexcept { return neighbours_.end(); }

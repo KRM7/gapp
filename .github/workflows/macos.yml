@@ -10,10 +10,10 @@ jobs:
       matrix:
         build-type: [ Release, RelWithDebInfo ]
         compiler: [
-            { cxx: g++-11, pkgs: gcc@11, extra-flags: "-undefined dynamic_lookup -Wno-psabi" },
-            { cxx: g++-12, pkgs: gcc@12, extra-flags: "-undefined dynamic_lookup -Wno-psabi" },
-            { cxx: g++-13, pkgs: gcc@13, extra-flags: "-undefined dynamic_lookup -Wno-psabi" },
-            { cxx: g++-14, pkgs: gcc@14, extra-flags: "-undefined dynamic_lookup -Wno-psabi" },
+            { cxx: g++-11, pkgs: gcc@11, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
+            { cxx: g++-12, pkgs: gcc@12, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
+            { cxx: g++-13, pkgs: gcc@13, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
+            { cxx: g++-14, pkgs: gcc@14, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
             {
               cxx: $(brew --prefix llvm@15)/bin/clang++,
               pkgs: llvm@15 gcc@11,

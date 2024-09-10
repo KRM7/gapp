@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 Kriszti·n Rug·si. Subject to the MIT License. */
+Ôªø/* Copyright (c) 2023 Kriszti√°n Rug√°si. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>

@@ -1,12 +1,12 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_ALGORITHM_BASE_DECL_HPP
-#define GA_ALGORITHM_ALGORITHM_BASE_DECL_HPP
+#ifndef GAPP_ALGORITHM_ALGORITHM_BASE_DECL_HPP
+#define GAPP_ALGORITHM_ALGORITHM_BASE_DECL_HPP
 
 #include "selection_base.hpp"
 #include "replacement_base.hpp"
 #include "../core/population.hpp"
-#include <vector>
+#include "../utility/small_vector.hpp"
 #include <cstddef>
 
 namespace gapp
@@ -138,9 +138,9 @@ namespace gapp::algorithm
         * @param ga The %GA that uses the algorithm.
         * @returns The indices of the pareto optimal solutions in the current population.
         */
-        virtual std::vector<size_t> optimalSolutionsImpl(const GaInfo&) const { return {}; }
+        virtual small_vector<size_t> optimalSolutionsImpl(const GaInfo&) const { return {}; }
     };
 
 } // namespace gapp::algorithm
 
-#endif // !GA_ALGORITHM_ALGORITHM_BASE_DECL_HPP
+#endif // !GAPP_ALGORITHM_ALGORITHM_BASE_DECL_HPP

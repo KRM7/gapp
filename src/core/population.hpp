@@ -1,10 +1,10 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CORE_POPULATION_HPP
-#define GA_CORE_POPULATION_HPP
+#ifndef GAPP_CORE_POPULATION_HPP
+#define GAPP_CORE_POPULATION_HPP
 
 #include "candidate.hpp"
-#include <vector>
+#include "../utility/small_vector.hpp"
 #include <cstddef>
 
 namespace gapp
@@ -32,12 +32,12 @@ namespace gapp::detail
     template<typename T>
     Candidates<T> findParetoFront(const Population<T>& pop);
 
-    std::vector<size_t> findParetoFront(const FitnessMatrix& fmat);
+    small_vector<size_t> findParetoFront(const FitnessMatrix& fmat);
 
-    std::vector<size_t> findParetoFront1D(const FitnessMatrix& fmat);
-    std::vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat);
-    std::vector<size_t> findParetoFrontBest(const FitnessMatrix& fmat);
-    std::vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat);
+    small_vector<size_t> findParetoFront1D(const FitnessMatrix& fmat);
+    small_vector<size_t> findParetoFrontSort(const FitnessMatrix& fmat);
+    small_vector<size_t> findParetoFrontBest(const FitnessMatrix& fmat);
+    small_vector<size_t> findParetoFrontKung(const FitnessMatrix& fmat);
 
     /* Find the pareto-optimal solutions in the set (lhs U rhs), assuming both lhs and rhs are pareto sets. */
     template<typename T>
@@ -169,4 +169,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_CORE_POPULATION_HPP
+#endif // !GAPP_CORE_POPULATION_HPP

@@ -5,7 +5,7 @@
 
 #include "scope_exit.hpp"
 #include "utility.hpp"
-#include <array>
+#include <vector>
 #include <algorithm>
 #include <iterator>
 #include <initializer_list>
@@ -14,11 +14,10 @@
 #include <type_traits>
 #include <utility>
 #include <stdexcept>
-#include <cstring>
 #include <cstdlib>
 #include <cstddef>
 
-// NOLINTBEGIN(*pointer-arithmetic, *union-access)
+// NOLINTBEGIN(*pointer-arithmetic, *union-access, *redundant-expression, *exception-escape)
 
 namespace gapp::detail
 {
@@ -168,7 +167,7 @@ namespace gapp::detail
         {
             if (!std::is_constant_evaluated())
             {
-                std::memset(first, 0, sizeof(T) * (last - first));
+                std::fill((char*)first, (char*)last, 0);
                 return;
             }
         }
@@ -201,7 +200,8 @@ namespace gapp::detail
         {
             if (!std::is_constant_evaluated())
             {
-                std::memcpy(first, std::to_address(src_first), sizeof(T) * (last - first));
+                char* src = (char*)std::to_address(src_first);
+                std::copy(src, src + sizeof(T) * (last - first), (char*)first);
                 return;
             }
         }
@@ -221,7 +221,7 @@ namespace gapp::detail
         {
             if (!std::is_constant_evaluated())
             {
-                std::memcpy(dest, first, sizeof(T) * (last - first));
+                std::copy((char*)first, (char*)last, (char*)dest);
                 return;
             }
         }
@@ -241,7 +241,7 @@ namespace gapp::detail
         {
             if (!std::is_constant_evaluated())
             {
-                std::memcpy(dest, first, sizeof(T) * (last - first));
+                std::copy((char*)first, (char*)last, (char*)dest);
                 return;
             }
         }
@@ -305,15 +305,15 @@ namespace gapp::detail
         constexpr small_vector_buffer() noexcept {};    // NOLINT(*default)
         constexpr ~small_vector_buffer() noexcept {};   // NOLINT(*default)
 
-        constexpr auto begin() noexcept { return data_.data(); }
-        constexpr auto begin() const noexcept { return data_.data(); }
+        constexpr auto begin() noexcept { return std::begin(data_); }
+        constexpr auto begin() const noexcept { return std::begin(data_); }
 
-        constexpr auto end() noexcept { return data_.data() + Size; }
-        constexpr auto end() const noexcept { return data_.data() + Size; }
+        constexpr auto end() noexcept { return std::end(data_); }
+        constexpr auto end() const noexcept { return std::end(data_); }
 
-        constexpr std::size_t size() const noexcept { return Size; }
+        constexpr std::size_t size() const noexcept { return std::size(data_); }
     private:
-        union { std::array<T, Size> data_; };
+        union { char dummy_ = {}; T data_[Size]; }; // NOLINT(*arrays)
     };
 
 
@@ -396,8 +396,6 @@ namespace gapp
         constexpr small_vector(Iter src_first, Iter src_last, const A& allocator = A()) :
             alloc_(allocator)
         {
-            if (src_first == src_last) return;
-
             const auto src_len = std::distance(src_first, src_last);
             allocate_n(src_len);
             detail::scope_exit guard{ [&] { deallocate(); } };
@@ -441,9 +439,9 @@ namespace gapp
             }
             else
             {
-                std::swap(first_, other.first_);
-                std::swap(last_, other.last_);
-                std::swap(last_alloc_, other.last_alloc_);
+                first_ = std::exchange(other.first_, other.buffer_.begin());
+                last_  = std::exchange(other.last_, other.buffer_.begin());
+                last_alloc_ = std::exchange(other.last_alloc_, other.buffer_.end());
             }
         }
 
@@ -877,6 +875,8 @@ namespace gapp
         //               OTHER               //
         //-----------------------------------//
 
+        constexpr std::vector<T> std_vec() const { return std::vector<T>{ begin(), end() }; }
+
         constexpr allocator_type get_allocator() const noexcept(std::is_nothrow_copy_constructible_v<A>) { return alloc_; }
 
         constexpr friend bool operator==(const small_vector& lhs, const small_vector& rhs) noexcept
@@ -890,10 +890,7 @@ namespace gapp
         }
 
     private:
-        static constexpr std::size_t alignment = std::max(alignof(T), detail::cache_line_size);
-
-        alignas(alignment)
-        GAPP_NO_UNIQUE_ADDRESS detail::small_vector_buffer<T, Size> buffer_;
+        detail::small_vector_buffer<T, Size> buffer_;
         pointer first_      = nullptr;
         pointer last_       = nullptr;
         pointer last_alloc_ = nullptr;
@@ -1076,6 +1073,6 @@ namespace gapp
 
 } // namespace gapp
 
-// NOLINTEND(*pointer-arithmetic, *union-access)
+// NOLINTEND(*pointer-arithmetic, *union-access, *redundant-expression, *exception-escape)
 
 #endif // !GAPP_UTILITY_SMALL_VECTOR_HPP
