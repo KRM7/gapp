@@ -178,17 +178,15 @@ namespace gapp::selection
     }
 
 
-    Lambda::Lambda(SelectionCallable f) noexcept
+    Lambda::Lambda(SelectionCallable f) noexcept :
+        selection_(std::move(f))
     {
-        GAPP_ASSERT(f, "The selection method can't be a nullptr.");
-
-        selection_ = std::move(f);
+        GAPP_ASSERT(selection_, "The selection method can't be a nullptr.");
     }
 
     size_t Lambda::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
     {
         GAPP_ASSERT(selection_);
-
         return selection_(ga, fmat);
     }
 

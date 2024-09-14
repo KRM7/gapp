@@ -20,7 +20,6 @@
   -modernize-use-nodiscard,
   -modernize-use-auto,
   -modernize-use-trailing-return-type,
-  -performance-noexcept-move-constructor,
   -readability-identifier-length,
   -readability-magic-numbers,
   -readability-named-parameter,

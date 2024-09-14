@@ -51,17 +51,15 @@ namespace gapp::replacement
     }
 
 
-    Lambda::Lambda(ReplacementCallable f) noexcept
+    Lambda::Lambda(ReplacementCallable f) noexcept :
+        replacement_(std::move(f))
     {
-        GAPP_ASSERT(f, "The population replacement method can't be a nullptr.");
-
-        replacement_ = std::move(f);
+        GAPP_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
     }
 
     small_vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
     {
         GAPP_ASSERT(replacement_);
-
         return replacement_(ga, fmat);
     }
 

@@ -22,11 +22,10 @@ namespace gapp::mutation
         using MutationCallable = std::function<void(const GA<T>&, const Candidate<T>&, Chromosome<T>&)>;
 
         constexpr explicit Lambda(MutationCallable f) noexcept :
-            Mutation<T>(0.01)
+            Mutation<T>(0.01),
+            mutate_(std::move(f))
         {
-            GAPP_ASSERT(f, "The mutation method can't be a nullptr.");
-
-            mutate_ = std::move(f);
+            GAPP_ASSERT(mutate_, "The mutation method can't be a nullptr.");
         }
 
     private:
@@ -35,7 +34,6 @@ namespace gapp::mutation
         void mutate(const GA<T>& ga, const Candidate<T>& candidate, Chromosome<T>& chromosome) const override
         {
             GAPP_ASSERT(mutate_);
-
             mutate_(ga, candidate, chromosome);
         }
     };
