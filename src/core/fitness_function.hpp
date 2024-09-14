@@ -154,18 +154,16 @@ namespace gapp::detail
         using FitnessCallable = std::function<FitnessVector(const Chromosome<T>&)>;
 
         FitnessLambda(size_t chrom_len, FitnessCallable f) noexcept :
-            FitnessFunctionBase<T>(chrom_len)
+            FitnessFunctionBase<T>(chrom_len),
+            fitness_function_(std::move(f))
         {
-            GAPP_ASSERT(f, "The fitness function can't be a nullptr.");
-
-            fitness_function_ = std::move(f);
+            GAPP_ASSERT(fitness_function_, "The fitness function can't be a nullptr.");
         }
 
     private:
         FitnessVector invoke(const Chromosome<T>& chrom) const override
         {
             GAPP_ASSERT(fitness_function_);
-
             return fitness_function_(chrom);
         }
 

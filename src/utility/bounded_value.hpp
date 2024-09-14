@@ -37,11 +37,10 @@ namespace gapp::detail
     public:
         using value_type = T;
 
-        constexpr /* implicit */ BoundedValue(value_type value) noexcept
+        constexpr /* implicit */ BoundedValue(value_type value) noexcept :
+            value_(std::move(value))
         {
-            GAPP_ASSERT(I.contains(value), "The value is outside of the allowed interval.");
-
-            value_ = std::move(value);
+            GAPP_ASSERT(I.contains(value_), "The value is outside of the allowed interval.");
         }
 
         constexpr /* implicit */ operator value_type() const noexcept { return value_; }
