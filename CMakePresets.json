@@ -16,7 +16,8 @@
         "GAPP_BUILD_TESTS": "ON",
         "GAPP_BUILD_BENCHMARKS": "ON",
         "GAPP_BUILD_EXAMPLES": "ON",
-        "GAPP_USE_LTO": "ON"
+        "GAPP_USE_LTO": "ON",
+        "GAPP_USE_MARCH_NATIVE": "ON"
       }
     },
     {
