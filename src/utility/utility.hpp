@@ -61,29 +61,6 @@
 
 
 #if defined(__GNUC__) || defined(__clang__)
-#   define GAPP_CONST __attribute__((const))
-#elif defined(_MSC_VER)
-#   define GAPP_CONST __declspec(noalias)
-#else
-#   define GAPP_CONST
-#endif
-
-
-#if defined(__GNUC__) || defined(__clang__)
-#   define GAPP_PURE __attribute__((pure))
-#else
-#   define GAPP_PURE
-#endif
-
-
-#if defined(__GNUC__) || defined(__clang__)
-#   define GAPP_MAY_ALIAS __attribute__((may_alias))
-#else
-#   define GAPP_MAY_ALIAS
-#endif
-
-
-#if defined(__GNUC__) || defined(__clang__)
 #   define GAPP_NOINLINE __attribute((noinline))
 #elif defined(_MSC_VER)
 #   define GAPP_NOINLINE __declspec(noinline)
