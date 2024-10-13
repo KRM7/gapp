@@ -1,8 +1,9 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_RNG_HPP
-#define GA_UTILITY_RNG_HPP
+#ifndef GAPP_UTILITY_RNG_HPP
+#define GAPP_UTILITY_RNG_HPP
 
+#include "algorithm.hpp"
 #include "functional.hpp"
 #include "distribution.hpp"
 #include "small_vector.hpp"
@@ -530,14 +531,9 @@ namespace gapp::rng
 
         const RealType threshold = rng::randomReal<RealType>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
 
-        if (cdf.size() < 128)
-        {
-            return std::distance(cdf.begin(), std::find_if(cdf.begin(), cdf.end(), detail::greater_eq_than(threshold)));
-        }
-
-        return std::distance(cdf.begin(), std::lower_bound(cdf.begin(), cdf.end(), threshold));
+        return std::distance(cdf.begin(), detail::lower_bound(cdf.begin(), cdf.end(), threshold));
     }
 
 } // namespace gapp::rng
 
-#endif // !GA_UTILITY_RNG_HPP
+#endif // !GAPP_UTILITY_RNG_HPP

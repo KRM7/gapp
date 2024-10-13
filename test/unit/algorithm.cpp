@@ -94,6 +94,32 @@ TEST_CASE("partial_argsort", "[algorithm]")
     }
 }
 
+TEST_CASE("lower_bound" "[algorithm]")
+{
+    small_vector nums(500, 0.0);
+    std::iota(nums.begin(), nums.end(), 0.0);
+
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), 0.0) == 0.0);
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), 1.0) == 1.0);
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), 2.0) == 2.0);
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), 120.0) == 120.0);
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), 499.0) == 499.0);
+
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), 1.9) == 2.0);
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), 1.1) == 2.0);
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), 332.7) == 333.0);
+
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), -1.0) == 0.0);
+    REQUIRE(*detail::lower_bound(nums.begin(), nums.end(), -100.0) == 0.0);
+
+    REQUIRE(detail::lower_bound(nums.begin(), nums.end(), 499.1) == nums.end());
+    REQUIRE(detail::lower_bound(nums.begin(), nums.end(), 10000.0) == nums.end());
+
+    REQUIRE(*detail::lower_bound(nums.rbegin(), nums.rend(), 1.1, std::greater<>{}) == 1.0);
+
+    REQUIRE(detail::lower_bound(nums.begin(), nums.begin(), 33.0) == nums.begin());
+}
+
 TEST_CASE("max_element", "[algorithm]")
 {
     const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
