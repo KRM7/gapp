@@ -18,7 +18,7 @@ problems and their solutions. Each of the GA classes is for a particular
 encoding type, and it can only be used for objective functions using the
 same encoding type.
 
-The below table shows each of the GA classes in the library, the encoding
+The below table lists each of the GA classes in the library, the encoding
 (or gene) type used by them, and the problem (or fitness function) type
 they can be used for:
 
@@ -36,15 +36,18 @@ encoding, and are defined for a particular gene type.
 All of these GA classes are defined in the main `gapp` namespace.
 
 ```cpp
-// the fitness function uses permutation encoding
+// The fitness function uses permutation encoding, so we
+// use PermutationGA
 PermutationGA{}.solve(problems::TSP52{});
 
-// the fitness function uses real-encoding
+// The fitness function uses real-encoding, so we use RCGA
 RCGA{}.solve(problems::Sphere{}, Bounds{ -10.0, 10.0 });
 
-// the fitness function uses binary-encoding
+// The fitness function uses binary-encoding, so we use the
+// BinaryGA class
 BinaryGA{}.solve(problems::Sphere{});
 ```
+
 
 ## Solution representation
 
@@ -71,22 +74,29 @@ template<typename GeneType>
 using Population = std::vector<Candidate<GeneType>>;
 ```
 
+### Mixed encodings
+
+For mixed encodings, where each gene might have a different type, the
+recommendation is to use `std::variant` for the gene type.
+
 ### Variable chromosome lengths
 
 The length of the chromosomes is specified as part of the fitness function.
 Normally, this will be a constant value, meaning that all the solutions
-will have the same chromosome lengths throughout a run. However, using a
+will have the same chromosome length throughout a run. However, using a
 constant chromosome length is not a requirement as long as all parts of the
 GA can handle different lengths. The parts which must be able to do this are
 the:
+
  - fitness function
  - crossover operator
  - mutation operator
  - repair function
 
-The crossover and mutation operators both provide a method called
-`allow_variable_chrom_length()` that can be used to check if they support
-this or not.
+The crossover and mutation operators both provide an
+`allow_variable_chrom_length()` method that can be used to check if they
+support this or not.
+
 
 ## Custom encodings
 
@@ -131,8 +141,8 @@ namespace gapp
 Specializing the `is_bounded<T>` variable template is only needed if
 the gene type used should have it's lower and upper bounds specified
 for each gene in the `solve` method. The value should be `true` in
-this case, and `false` otherwise (which is also the default value used
-in the primary template).
+this case, and `false` otherwise (which is the default value used in
+the primary template).
 
 ```cpp
 namespace gapp
@@ -146,7 +156,7 @@ namespace gapp
 
 The actual GA class should be derived from `GA<T>` using the desired gene
 type for the type parameter `T`. The derived class only has to implement
-the `generateCandidate` method, and optionally the `initialize` method:
+the `generateCandidate` method, and optionally, the `initialize` method:
 
 ```cpp
 class MyGA : public GA<MyGeneType>
@@ -169,3 +179,5 @@ on the encoding type, and the operators included in the library will not
 work for new encodings.
 
 ------------------------------------------------------------------------------------------------
+
+[<p align="right">Next: Algorithms</p>](algorithms.md)

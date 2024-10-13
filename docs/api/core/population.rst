@@ -53,8 +53,9 @@ class Candidate
    :private-members:
 
 
-.. doxygentypedef:: gapp::CandidatePair
+.. doxygenstruct:: gapp::CandidatePair
    :project: gapp
+   :members:
 
 
 class Population

@@ -22,7 +22,7 @@ of the population, with the value of the metric being recorded in each generatio
 
 ## Usage
 
-The tracked metrics must be set before a run, using the `track()`
+The tracked metrics must be specified before a run, using the `track()`
 method of the GAs. You can specify any number of metrics in the arguments
 of this function:
 
@@ -34,8 +34,8 @@ GA.track(metrics::FitnessMin{}, metrics::FitnessMax{})
 GA.solve(...);
 ```
 
-After the run, you can access the metrics using the `get_metric<Metric>()` method.
-This will return a reference to the given metric, which stores the values of that
+After the run, you can access the metrics using the `get_metric<MetricType>()` method.
+This will return a reference to the given metric, which contains the values of that
 metric for every generation:
 
 ```cpp
@@ -64,7 +64,8 @@ are intended to be used for multi-objective optimization problems.
 
 If you want to track something that doesn't have a metric already implemented 
 for it, it's possible to implement your own metrics. Metrics must be derived
-from the `Monitor` class, and implement the `initialize`, and `update` methods:
+from the `metrics::Monitor` class, and implement the `initialize`, and `update`
+methods:
 
 ```cpp
 // The second type parameter of Monitor is the type used to store the
@@ -86,7 +87,9 @@ class MyMetric : public metrics::Monitor<MyMetric, std::vector<double>>
 };
 ```
 
-These custom metrics can be used the same way as any other metric implemented
-in the library.
+These custom metrics can be used the same way as any other metric already
+implemented in the library.
 
 ------------------------------------------------------------------------------------------------
+
+[<p align="right">Next: Miscellaneous</p>](miscellaneous.md)

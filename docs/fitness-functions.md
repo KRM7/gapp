@@ -13,26 +13,27 @@
 # Fitness functions
 
 The `solve` methods of the GAs expect a fitness function
-as their first arguments. This fitness function defines
+as their first argument. This fitness function defines
 the optimization problem that will be solved by the GA.
 
 ## Defining a fitness function
 
 Fitness functions have to be implemented as a class derived
-either from `FitnessFunctionBase` or `FitnessFunction`. There
-are several things that have to be considered when defining a
-fitness function, all of which depend on the particular problem 
-we are trying to find the solution for.
+either from `FitnessFunctionBase` or `FitnessFunction`, overriding
+their `invoke` method.  
+There are several things that have to be considered when defining a
+fitness function, all of which depend on the particular problem we
+are trying to find the solution for.
 
 ### Encoding
 
-The first thing that should be considered is the encoding
-type, i.e. how the solutions to the problem should be represented
+The first thing that should be considered is the encoding type,
+meaning how the solutions to the problem should be represented
 in the population. There are several options provided by the
 library, but user-defined encodings can also be used in the cases
-where none of these fit the problem well enough.
+where none of these fit the problem well enough.  
 The representation is determined by the gene type used in the
-fitness function and genetic algorithm classes: the solutions
+fitness function and in the genetic algorithm classes: the solutions
 will be encoded as a vector of the specified gene type.
 
 ```cpp
@@ -40,7 +41,7 @@ template<typename GeneType>
 using Chromosome = std::vector<GeneType>;
 ```
 
-The options for the gene type provided by the library are:
+The options for the gene type already provided by the library are:
 
  - BinaryGene
  - RealGene
@@ -48,28 +49,29 @@ The options for the gene type provided by the library are:
  - IntegerGene
 
 The gene type is specified as the type parameter of the
-`FitnessFunctionBase` and `FitnessFunction` classes.
-This gene type will also determine the GA class that has to be
-used to find the optimum the fitness function.
+`FitnessFunctionBase` and `FitnessFunction` classes, and it will
+also determine the GA class that has to be used to find the optimum
+of the fitness function.
 
-See [encodings.md](encodings.md) for more information regarding the encodings.
+> [!NOTE]
+> See [encodings.md](encodings.md) for more information about the encoding types.
 
 ### Chromosome length
 
 The length of the chromosomes is another parameter that has to be
-considered, and has to be specified for the fitness function.
-Generally, the chromosome length is going to be equal to the
-number of variables in the problem, but this isn't always true.
+specified for the fitness function. Generally, the chromosome length
+is going to be equal to the number of variables in the problem, but
+depending on the encoding used, this will not always be true.  
 For example, if the fitness function uses binary-encoding, a
-single variable will likely be represented by multiple binary
-genes instead of just a single one.
+single variable will most likely be represented by multiple binary
+genes instead of just a single one. 
 
 The chromosome length will also determine the base class that
 should be used for defining the fitness function. `FitnessFunctionBase`
 can be used for every problem, and the chromosome length is specified
 in its constructor. `FitnessFunction` can only be used if the chromosome
-length is known at compile-time, as the chromosome length is specified
-as a template parameter of the class.
+length is known at compile-time, and the chromosome length is specified
+as a template parameter of the class in addition to the gene type.
 
 ```cpp
 template<typename GeneType>
@@ -95,9 +97,12 @@ of objectives. This can't be changed.
 
 The exact number of objectives is not generally relevant to the
 GAs, but whether it is single- or multi-objective will determine
-which algorithms can be used in the GAs for the fitness function.
-See [algorithms.md](algorithms.md) for more information about the
-different algorithms.
+which algorithms can be used in the GAs for the particular fitness
+function.
+
+> [!NOTE]
+> See [algorithms.md](algorithms.md) for more information about the
+> different algorithms.
 
 ### Maximization or minimization
 
@@ -107,15 +112,15 @@ always have to be implemented for maximization. When trying to find
 the minimum of some function, the problem can easily be transformed
 into a maximization problem by multiplying the function by -1. This
 multiplication is not an issue as all parts of the GAs are implemented
-in a way so that they can handle negative fitness values (this includes
+in a way so that they can handle negative fitness values. This includes
 operators which might not usually support negative values, such as the
-roulette selection operator).
+roulette selection operator.
 
 ### Example
 
 As a simple example, let's say that we are trying to find the minimum
 of the function `f(x) = x^2`. The implementation of the fitness
-function could be the following in this case:
+function for this problem would be the following:
 
 ```cpp
 class XSquare : public FitnessFunction</* GeneType = */ RealGene, /* ChromLen = */ 1>
@@ -131,12 +136,13 @@ A fitness function for a multi-objective problem would be implemented
 the same way, with the only difference being the size of the fitness vector
 returned by `invoke`.
 
+
 ## Other fitness function properties
 
 There are some additional parameters of the fitness function that can
-be specified, but these typically don't have to be changed from
-their default values. More complex fitness functions, however, might
-have to set their values differently from the defaults in some cases.
+be specified, but these have default values which will typically work
+for most problems. More complex fitness functions, however, might
+have to set their values differently from the defaults.
 
 ### Dynamic fitness functions
 
@@ -146,29 +152,20 @@ argument. This assumption is used to prevent unnecessary fitness
 function calls, but it would also cause potentially incorrect fitness
 vectors to be assigned to some solutions if the assumption is not true.
 
-In order to prevent this, the fitness functions have a type parameter
-associated with them, which can either be `Static` or `Dynamic`. The type
-of a fitness function can be set in its constructor, with the default type
-being `Static`.
+In order to prevent this, the fitness functions have a `Type` associated
+with them, which can either be `Static` or `Dynamic`. The type of a fitness
+function can be set in its constructor, with the default type being `Static`.
 
 For fitness functions where this default behaviour would be incorrect, the
 value of the `type` parameter in the constructor of the fitness function
 should to be set to `Dynamic`. This will disable any kind of caching that
-might be used in the GAs, and cause the solutions to be evaluated using
-the fitness function every time it's needed.
+might normally be used in the GAs, and cause the solutions to be evaluated
+using the fitness function every time it's needed.
 
-### Variable chromosome lengths
-
-The chromosome length parameter of the fitness function has to be
-specified even if variable length chromosomes are used to represent
-the solutions. In this case the value of this parameter will only be
-used to generate the solutions of the initial population, assuming that
-the initial population is generated instead of explicitly specified.
-
-### Example
+#### Example
 
 ```cpp
-// implementation of a dynamic fitness function
+// Implementation of a dynamic fitness function
 class MyFitnessFunction : public FitnessFunction<RealGene, 1>
 {
     MyFitnessFunction() : FitnessFunction(/* type = */ Type::Dynamic) {}
@@ -176,6 +173,23 @@ class MyFitnessFunction : public FitnessFunction<RealGene, 1>
     FitnessVector invoke(const Chromosome<RealGene>& x) const override;
 };
 ```
+
+### Variable chromosome lengths
+
+The library allows for variable chromosome lengths to be used to encode
+the solutions. However, the chromosome length parameter of the fitness
+function still has to be specified even when variable length chromosomes
+are used to represent the solutions.  
+In this case the value will only be used to generate the solutions of the
+initial population (assuming that the initial population is generated instead
+of being explicitly specified by the user).
+
+> [!NOTE]
+> When using variable chromosome lengths, every part of the GAs must be able
+> to handle them. This usually means implementing custom crossover and mutation
+> methods, as most of the operators already implemented in the library can only
+> be used with static chromosome lengths.
+
 
 ## The number of objective function evaluations
 
@@ -192,7 +206,7 @@ While there are cases where this will really be the number of fitness
 function calls, such as when the fitness function is dynamic, the library
 generally tries to minimize the number of calls to the fitness function
 where possible, which means that the actual number will typically be
-smaller than this.
+lower than this.
 
 By default, only a simple method is used to achieve this, with minimal
 overhead during the runs, but it is also possible to cache the fitnesses
@@ -207,6 +221,12 @@ GA.cache_size(2); // cache the last 2 generations
 ```
 
 ## Other concerns
+
+### Thread safety
+
+The candidate solutions of a population are evaluated concurrently
+in each generation of a run. This means that the implementation
+of the `invoke` method in the fitness functions must be thread-safe.
 
 ### Numeric issues
 
@@ -224,11 +244,10 @@ on the selection method used, but all selection methods implemented
 as part of the library are able to handle negative values without
 any issues.
 
-### Thread safety
-
-The candidate solutions of a population are evaluated concurrently
-in each generation of a run. This means that the implementation
-of the `invoke` method in the derived fitness functions should either
-be thread-safe.
+Check the documentations of the selection methods and the algorithms
+for information on what fitness values they support. The default methods
+used support both negative and infinite values.
 
 ------------------------------------------------------------------------------------------------
+
+[<p align="right">Next: Encodings</p>](encodings.md)
