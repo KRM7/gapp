@@ -105,6 +105,28 @@ namespace gapp::detail
         return indices;
     }
 
+    template<std::random_access_iterator Iter, typename T, typename Comp = std::less<std::iter_value_t<Iter>>>
+    requires std::strict_weak_order<Comp, std::iter_reference_t<Iter>, const T&>
+    Iter lower_bound(Iter first, Iter last, const T& value, Comp&& comp = {})
+    {
+        GAPP_ASSERT(std::distance(first, last) >= 0);
+        GAPP_ASSERT(std::is_sorted(first, last, comp));
+
+        std::size_t length = last - first;
+        while (length > 32)
+        {
+            length = length / 2;
+            first = std::invoke(comp, first[length], value) ? first + length : first;
+        }
+
+        for (; first != last; ++first)
+        {
+            if (!std::invoke(comp, *first, value)) break;
+        }
+
+        return first;
+    }
+
     template<std::forward_iterator Iter, typename F = std::identity>
     requires std::invocable<F&, std::iter_reference_t<Iter>>
     constexpr Iter max_element(Iter first, Iter last, F&& transform = {})
