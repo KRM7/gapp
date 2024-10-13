@@ -26,7 +26,8 @@ and multi-objective optimization problems respectively. It is also possible
 to implement more general algorithms that work for any type of problem, but
 the library currently doesn't include such an algorithm.
 
-There are 3 algorithms implemented by the library, defined in the `gapp::algorithm` namespace:
+There are 3 algorithms implemented by the library, all defined in the `gapp::algorithm`
+namespace:
 
  - SingleObjective (single-objective)
  - NSGA-II	(multi-objective)
@@ -154,7 +155,10 @@ algorithm::SingleObjective algorithm;
 algorithm.selection_method(MyTournamentSelection{});
 ```
 
-Note that a more general version of the tournament selection operator
-is already implemented in the library, called `selection::Tournament`.
+> [!TIP]
+> A more general version of the tournament selection operator
+> is already implemented in the library, as `selection::Tournament`.
 
 ------------------------------------------------------------------------------------------------
+
+[<p align="right">Next: Genetic operators</p>](genetic-operators.md)

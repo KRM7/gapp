@@ -11,10 +11,11 @@
 ## Overview
 
 gapp is a library of genetic algorithm implementations in C++ for solving single-
-and multi-objective optimization problems. Every part of the algorithms can be customized
-and defined by the user, but the library also includes GAs for several commonly used encoding types,
-frequently used crossover and mutation methods for each of these encodings,
-and several stop conditions that can be used.
+and multi-objective optimization problems. The algorithms are highly customizable,
+with all of their parts possibly defined by the user, but the library also includes
+GAs for several commonly used encoding types, frequently used crossover and mutation
+methods for each of these encodings, several stop conditions, and other utilities that
+can be used.
 
 
 ## Usage example
@@ -88,9 +89,7 @@ target_link_libraries(YourTarget PRIVATE gapp::gapp)
 
 ## Documentation
 
-The API documentation is available [here](https://krm7.github.io/gapp/).
-
-Additional documentation for the library can be found in the [docs](./docs) directory:
+The documentation for the library can be found in the [docs](./docs) directory:
 
 * [Introduction](./docs/introduction.md)
 * [Fitness functions](./docs/fitness-functions.md) 
@@ -100,6 +99,8 @@ Additional documentation for the library can be found in the [docs](./docs) dire
 * [Stop conditions](./docs/stop-conditions.md)  
 * [Metrics](./docs/metrics.md)    
 * [Miscellaneous](./docs/miscellaneous.md)
+
+The API documentation is available [here](https://krm7.github.io/gapp/).
 
 
 ## Examples

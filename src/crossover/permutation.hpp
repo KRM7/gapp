@@ -102,7 +102,7 @@ namespace gapp::crossover::perm
     * Partially mapped (%PMX) crossover operator for the permutation encoded %GA.
     * 
     * Similar to the Order1 crossover, a random range of genes is selected from parent1 and copied
-    * directly intto the same positions of the child chromosome, and the remaining genes not yet in
+    * directly into the same positions of the child chromosome, and the remaining genes not yet in
     * the child are filled in from parent2 using a different method from the one used in the Order1
     * crossover.
     * 
