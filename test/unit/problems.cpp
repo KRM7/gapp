@@ -15,22 +15,22 @@ using namespace gapp::rng;
 using namespace gapp::math;
 using namespace Catch::Matchers;
 
-Chromosome<RealGene> randomChromosome(const BoundsVector<RealGene>& bounds)
+Candidate<RealGene> randomSolution(const BoundsVector<RealGene>& bounds)
 {
     Chromosome<RealGene> point;
     point.reserve(bounds.size());
 
     for (const auto& bound : bounds) { point.push_back( randomReal(bound.lower(), bound.upper()) ); }
 
-    return point;
+    return Candidate<RealGene>{ std::move(point) };
 }
 
-Chromosome<BinaryGene> randomChromosome(const BoundsVector<BinaryGene>& bounds)
+Candidate<BinaryGene> randomSolution(const BoundsVector<BinaryGene>& bounds)
 {
     Chromosome<BinaryGene> point(bounds.size());
     std::generate(point.begin(), point.end(), randomBool);
 
-    return point;
+    return Candidate<BinaryGene>{ std::move(point) };
 }
 
 
@@ -44,10 +44,10 @@ TEMPLATE_TEST_CASE("single_objective_problems", "[problems]", Sphere, Rastrigin,
 
     REQUIRE_THAT( func(func.optimum()).std_vec(), Approx(func.optimal_value().std_vec()).margin(1E-6) );
 
-    const auto random_chrom = randomChromosome(func.bounds());
+    const auto random_sol = randomSolution(func.bounds());
 
     REQUIRE( func.bounds().size() == var_count );
-    REQUIRE( !paretoCompareLess(func.optimal_value(), func(random_chrom)) );
+    REQUIRE( !paretoCompareLess(func.optimal_value(), func(random_sol)) );
 }
 
 TEST_CASE("kursawe", "[problems]")
@@ -66,10 +66,10 @@ TEST_CASE("kursawe", "[problems]")
 
     REQUIRE( func.bounds().size() == func.num_vars());
 
-    const auto random_chrom = randomChromosome(func.bounds());
+    const auto random_sol = randomSolution(func.bounds());
 
-    REQUIRE( !paretoCompareLess(func.optimal_value(), func(random_chrom)) );
-    REQUIRE( !paretoCompareLess(func.ideal_point(), func(random_chrom)) );
+    REQUIRE( !paretoCompareLess(func.optimal_value(), func(random_sol)) );
+    REQUIRE( !paretoCompareLess(func.ideal_point(), func(random_sol)) );
 }
 
 TEMPLATE_TEST_CASE("zdt_suite", "[problems]", ZDT1, ZDT2, ZDT3, ZDT4, ZDT5, ZDT6)
@@ -88,10 +88,10 @@ TEMPLATE_TEST_CASE("zdt_suite", "[problems]", ZDT1, ZDT2, ZDT3, ZDT4, ZDT5, ZDT6
 
     REQUIRE( func.bounds().size() == func.num_vars() );
 
-    const auto random_chrom = randomChromosome(func.bounds());
+    const auto random_sol = randomSolution(func.bounds());
 
-    REQUIRE( !paretoCompareLess(func.optimal_value(), func(random_chrom)) );
-    REQUIRE( !paretoCompareLess(func.ideal_point(), func(random_chrom)) );
+    REQUIRE( !paretoCompareLess(func.optimal_value(), func(random_sol)) );
+    REQUIRE( !paretoCompareLess(func.ideal_point(), func(random_sol)) );
 }
 
 TEMPLATE_TEST_CASE("dtlz_suite", "[problems]", DTLZ1, DTLZ2, DTLZ3, DTLZ4, DTLZ5, DTLZ6, DTLZ7)
@@ -110,8 +110,8 @@ TEMPLATE_TEST_CASE("dtlz_suite", "[problems]", DTLZ1, DTLZ2, DTLZ3, DTLZ4, DTLZ5
 
     REQUIRE( func.bounds().size() == func.num_vars() );
 
-    const auto random_chrom = randomChromosome(func.bounds());
+    const auto random_sol = randomSolution(func.bounds());
 
-    REQUIRE( !paretoCompareLess(func.optimal_value(), func(random_chrom)) );
-    REQUIRE( !paretoCompareLess(func.ideal_point(), func(random_chrom)) );
+    REQUIRE( !paretoCompareLess(func.optimal_value(), func(random_sol)) );
+    REQUIRE( !paretoCompareLess(func.ideal_point(), func(random_sol)) );
 }

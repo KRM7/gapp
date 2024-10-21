@@ -17,16 +17,16 @@
 namespace gapp::algorithm
 {
     template<typename T>
-    const Candidate<T>& Algorithm::select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const
+    const Candidate<T>& Algorithm::select(const GA<T>& ga, const PopulationView& pop) const
     {
         GAPP_ASSERT(ga.population_size() == pop.size());
-        GAPP_ASSERT(pop.size() == fmat.size());
 
-        const size_t selected_idx = selectImpl(ga, fmat);
+        const CandidateInfo& selected = selectImpl(ga, pop);
 
-        GAPP_ASSERT(selected_idx < pop.size(), "An invalid index was returned by selectImpl().");
+        GAPP_ASSERT(std::any_of(pop.begin(), pop.end(), detail::reference_to(selected)),
+                    "An invalid candidate was returned by selectImpl().");
 
-        return pop[selected_idx];
+        return static_cast<const Candidate<T>&>(selected);
     }
 
     template<typename T>
@@ -35,16 +35,18 @@ namespace gapp::algorithm
         GAPP_ASSERT(ga.population_size() == parents.size());
         GAPP_ASSERT(ga.population_size() <= children.size());
 
-        parents.reserve(parents.size() + children.size());
-        std::move(children.begin(), children.end(), std::back_inserter(parents));
-        const FitnessMatrix fmat = detail::toFitnessMatrix(parents);
+        parents.insert(parents.end(), std::move_iterator(children.begin()), std::move_iterator(children.end()));
 
-        const auto next_indices = nextPopulationImpl(ga, fmat);
+        const CandidatePtrVec next_pop = nextPopulationImpl(ga, parents);
 
-        GAPP_ASSERT(std::all_of(next_indices.begin(), next_indices.end(), detail::less_than(parents.size())),
-                  "An invalid index was returned by nextPopulationImpl().");
+        GAPP_ASSERT(std::all_of(next_pop.begin(), next_pop.end(), detail::points_into(parents)),
+                    "An invalid candidate was returned by nextPopulationImpl().");
 
-        return detail::select(std::move(parents), next_indices);
+        return detail::map(next_pop, [](const CandidateInfo* candidate_info)
+        {
+            const auto* candidate = static_cast<const Candidate<T>*>(candidate_info);
+            return std::move(*const_cast<Candidate<T>*>(candidate)); // NOLINT(*const-cast)
+        });
     }
 
     template<typename T>
@@ -52,16 +54,20 @@ namespace gapp::algorithm
     {
         GAPP_ASSERT(ga.population_size() == pop.size());
 
-        const auto optimal_indices = optimalSolutionsImpl(ga);
+        const auto optimal_indices = optimalSolutionsImpl(ga, pop);
+
+        GAPP_ASSERT(!optimal_indices.empty(),
+                    "No optimal solutions were returned by optimalSolutionsImpl().");
 
         GAPP_ASSERT(std::all_of(optimal_indices.begin(), optimal_indices.end(), detail::less_than(pop.size())),
-                  "An invalid index was returned by optimalSolutionsImpl().");
+                    "An invalid index was returned by optimalSolutionsImpl().");
 
-        auto optimal_sols = optimal_indices.empty() ?
-            detail::findParetoFront(pop) :
-            detail::select(pop, optimal_indices);
+        return detail::select(pop, optimal_indices);
+    }
 
-        return optimal_sols;
+    inline small_vector<size_t> Algorithm::optimalSolutionsImpl(const GaInfo& ga, const PopulationView&) const
+    {
+        return detail::findParetoFront(ga.fitness_matrix());
     }
 
 } // namespace gapp::algorithm

@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CORE_FITNESS_FUNCTION_HPP
-#define GA_CORE_FITNESS_FUNCTION_HPP
+#ifndef GAPP_CORE_FITNESS_FUNCTION_HPP
+#define GAPP_CORE_FITNESS_FUNCTION_HPP
 
 #include "candidate.hpp"
 #include "../utility/bounded_value.hpp"
@@ -76,12 +76,13 @@ namespace gapp
 
     /**
     * The base class of the fitness functions used in the GAs.
-    * The fitness functions take a candidate solution (chromosome) as a parameter
-    * and return a fitness vector after evaluating the chromosome.
+    * The fitness functions take a candidate solution as a parameter and
+    * return a fitness vector after evaluating the chromosome of the candidate.
     * 
     * This should be used as the base class for fitness functions if the chromosome
     * length is not known at compile time.
-    * If the chromosome length is known at compile, use FitnessFunction as the base class instead.
+    * If the chromosome length is known at compile, use FitnessFunction as the base
+    * class instead.
     * 
     * @tparam T The gene type expected by the fitness function.
     */
@@ -95,29 +96,30 @@ namespace gapp
         using FitnessFunctionInfo::FitnessFunctionInfo;
 
         /**
-        * Compute the fitness value of a chromosome.
+        * Compute the fitness value of a solution.
         * 
-        * The size of the chromosome must be equal to the chromosome length set
+        * The length of the chromosome is equal to the chromosome length set
         * for the fitness function, unless variable chromosome lengths are allowed.
         * 
-        * @param chrom The chromosome to evaluate.
-        * @returns The fitness vector of the chromosome, with a size equal to the number of objectives.
+        * @param sol The candidate solution to evaluate.
+        * @returns The fitness vector of the candidate, with a size equal to the number of objectives.
         */
-        FitnessVector operator()(const Chromosome<T>& chrom) const { return invoke(chrom); }
+        FitnessVector operator()(const Candidate<T>& sol) const { return invoke(sol); }
 
     private:
         /** The implementation of the fitness function. Should be thread-safe. */
-        virtual FitnessVector invoke(const Chromosome<T>& chrom) const = 0;
+        virtual FitnessVector invoke(const Candidate<T>& sol) const = 0;
     };
 
     /**
     * The base class of the fitness functions used in the algorithms.
-    * The fitness functions take a candidate solution (chromosome) as a parameter
-    * and return a fitness vector after evaluating the chromosome.
+    * The fitness functions take a candidate solution as a parameter
+    * and return a fitness vector after evaluating the chromosome of
+    * candidate.
     *
-    * This should only be used as the base class for fitness functions if the chromosome length
-    * is known at compile time.
-    * If the chromosome length is not known at compile, use FitnessFunctionBase as the base class instead.
+    * This can only be used as the base class for fitness functions if the
+    * chromosome length is known at compile time. If the chromosome length is
+    * not known at compile time, use FitnessFunctionBase as the base class instead.
     *
     * @tparam T The gene type expected by the fitness function.
     * @tparam ChromLen The length of the chromosomes expected by the fitness function. Must be at least 1.
@@ -151,7 +153,7 @@ namespace gapp::detail
     class FitnessLambda final : public FitnessFunctionBase<T>
     {
     public:
-        using FitnessCallable = std::function<FitnessVector(const Chromosome<T>&)>;
+        using FitnessCallable = std::function<FitnessVector(const Candidate<T>&)>;
 
         FitnessLambda(size_t chrom_len, FitnessCallable f) noexcept :
             FitnessFunctionBase<T>(chrom_len),
@@ -161,10 +163,10 @@ namespace gapp::detail
         }
 
     private:
-        FitnessVector invoke(const Chromosome<T>& chrom) const override
+        FitnessVector invoke(const Candidate<T>& sol) const override
         {
             GAPP_ASSERT(fitness_function_);
-            return fitness_function_(chrom);
+            return fitness_function_(sol);
         }
 
         FitnessCallable fitness_function_;
@@ -172,4 +174,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_CORE_FITNESS_FUNCTION_HPP
+#endif // !GAPP_CORE_FITNESS_FUNCTION_HPP

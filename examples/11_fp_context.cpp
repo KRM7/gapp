@@ -8,7 +8,7 @@ using namespace gapp;
 
 class SinX : public FitnessFunction<RealGene, 1>
 {
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override { return { std::sin(x[0]) }; }
+    FitnessVector invoke(const Candidate<RealGene>& sol) const override { return { std::sin(sol[0]) }; }
 };
 
 int main()

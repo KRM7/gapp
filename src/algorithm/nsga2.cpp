@@ -69,51 +69,53 @@ namespace gapp::algorithm
         dists_ = crowdingDistances(ga.fitness_matrix(), pareto_fronts.fronts());
     }
 
-    size_t NSGA2::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
+    const CandidateInfo& NSGA2::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
-        GAPP_ASSERT(!fmat.empty() && fmat.size() == ranks_.size());
+        GAPP_ASSERT(!pop.empty() && pop.size() == ranks_.size());
 
-        const size_t idx1 = rng::randomIndex(fmat);
-        const size_t idx2 = rng::randomIndex(fmat);
+        const size_t idx1 = rng::randomIndex(pop);
+        const size_t idx2 = rng::randomIndex(pop);
 
         // lower ranks and higher crowding distances are better
-        if (ranks_[idx1] < ranks_[idx2]) return idx1;
-        if (ranks_[idx1] > ranks_[idx2]) return idx2;
-        if (dists_[idx1] > dists_[idx2]) return idx1;
-        return idx2;
+        if (ranks_[idx1] < ranks_[idx2]) return pop[idx1];
+        if (ranks_[idx1] > ranks_[idx2]) return pop[idx2];
+        if (dists_[idx1] > dists_[idx2]) return pop[idx1];
+        return pop[idx2];
     }
 
-    small_vector<size_t> NSGA2::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    CandidatePtrVec NSGA2::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(ga.num_objectives() > 1);
-        GAPP_ASSERT(fmat.ncols() == ga.num_objectives());
 
         const size_t popsize = ga.population_size();
+        const FitnessMatrix fitness_matrix = detail::toFitnessMatrix(pop);
 
-        auto pareto_fronts = nonDominatedSort(fmat);
+        auto pareto_fronts = nonDominatedSort(fitness_matrix);
         auto partial_front = pareto_fronts.partialFront(popsize);
 
-        if (!partial_front.empty()) { dists_ = crowdingDistances(fmat, { partial_front }); }
+        if (!partial_front.empty()) { dists_ = crowdingDistances(fitness_matrix, { partial_front }); }
         std::sort(partial_front.begin(), partial_front.end(), [this](const FrontElement& lhs, const FrontElement& rhs)
         {
             return dists_[lhs.idx] > dists_[rhs.idx]; // descending
         });
 
         pareto_fronts.resize(popsize);
-        dists_ = crowdingDistances(fmat, pareto_fronts.fronts());
+        dists_ = crowdingDistances(fitness_matrix, pareto_fronts.fronts());
         dists_.resize(popsize);
 
-        small_vector<size_t> new_pop(popsize);
+        CandidatePtrVec new_pop(popsize);
         for (size_t i = 0; i < popsize; i++)
         {
-            new_pop[i] = pareto_fronts[i].idx;
-            ranks_[i]  = pareto_fronts[i].rank;
+            const auto [idx, rank] = pareto_fronts[i];
+
+            new_pop[i] = &pop[idx];
+            ranks_[i]  = rank;
         }
 
         return new_pop;
     }
 
-    small_vector<size_t> NSGA2::optimalSolutionsImpl(const GaInfo&) const
+    small_vector<size_t> NSGA2::optimalSolutionsImpl(const GaInfo&, const PopulationView&) const
     {
         return detail::find_indices(ranks_, detail::equal_to(0_sz));
     }

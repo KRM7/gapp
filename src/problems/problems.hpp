@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PROBLEMS_HPP
-#define GA_PROBLEMS_HPP
+#ifndef GAPP_PROBLEMS_HPP
+#define GAPP_PROBLEMS_HPP
 
 #include "benchmark_function.hpp"
 #include "single_objective.hpp"
@@ -19,4 +19,4 @@
 */
 namespace gapp::problems {}
 
-#endif // !GA_PROBLEMS_HPP
+#endif // !GAPP_PROBLEMS_HPP

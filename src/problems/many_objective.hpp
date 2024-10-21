@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PROBLEMS_MANY_OBJECTIVE_HPP
-#define GA_PROBLEMS_MANY_OBJECTIVE_HPP
+#ifndef GAPP_PROBLEMS_MANY_OBJECTIVE_HPP
+#define GAPP_PROBLEMS_MANY_OBJECTIVE_HPP
 
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
@@ -46,7 +46,7 @@ namespace gapp::problems
         explicit DTLZ1(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
 
         static constexpr size_t K = 5;
     };
@@ -88,7 +88,7 @@ namespace gapp::problems
         explicit DTLZ2(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
 
         static constexpr size_t K = 10;
     };
@@ -131,7 +131,7 @@ namespace gapp::problems
         explicit DTLZ3(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
 
         static constexpr size_t K = 10;
     };
@@ -174,7 +174,7 @@ namespace gapp::problems
         explicit DTLZ4(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
 
         static constexpr size_t K = 10;
     };
@@ -220,7 +220,7 @@ namespace gapp::problems
         explicit DTLZ5(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
 
         static constexpr size_t K = 10;
     };
@@ -266,7 +266,7 @@ namespace gapp::problems
         explicit DTLZ6(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
 
         static constexpr size_t K = 10;
     };
@@ -307,11 +307,11 @@ namespace gapp::problems
         explicit DTLZ7(size_t num_obj, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
 
         static constexpr size_t K = 20;
     };
 
 } // namespace gapp::problems
 
-#endif // !GA_PROBLEMS_MANY_OBJECTIVE_HPP
+#endif // !GAPP_PROBLEMS_MANY_OBJECTIVE_HPP

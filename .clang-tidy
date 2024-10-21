@@ -38,6 +38,7 @@
   -cppcoreguidelines-missing-std-forward,
   -cppcoreguidelines-narrowing-conversions,
   -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
   -misc-non-private-member-variables-in-classes,
   -misc-no-recursion,
   -misc-const-correctness,

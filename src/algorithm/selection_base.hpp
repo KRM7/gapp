@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_SOGA_SELECTION_BASE_HPP
-#define GA_ALGORITHM_SOGA_SELECTION_BASE_HPP
+#ifndef GAPP_ALGORITHM_SOGA_SELECTION_BASE_HPP
+#define GAPP_ALGORITHM_SOGA_SELECTION_BASE_HPP
 
 #include "../core/population.hpp"
 #include <type_traits>
@@ -46,15 +46,15 @@ namespace gapp::selection
         /**
         * Prepare the operator for the selections if necessary.
         *
-        * This method will be called exactly once every generation right before the selections
-        * are performed.
+        * This method will be called exactly once every generation right before the
+        * selections are performed.
         *
         * The default implementation does nothing.
         *
         * @param ga The %GA that uses the algorithm.
-        * @param fmat The fitness matrix of the population.
+        * @param pop A view of the population without the encoding dependent parts of the candidates.
         */
-        virtual void prepareSelectionsImpl(const GaInfo&, const FitnessMatrix&) {}
+        virtual void prepareSelectionsImpl(const GaInfo&, const PopulationView&) {}
 
         /**
         * Select a single candidate for crossover from the population.
@@ -62,17 +62,17 @@ namespace gapp::selection
         * This method will be called exactly (population_size) or (population_size + 1)
         * times in every generation (depending on which number is even).
         * 
-        * The method should return the index of the selected candidate based on the fitness matrix
-        * of the current population (i.e. return an index from the fitness matrix).
+        * The method should return a reference to the selected candidate from the current
+        * population @p pop.
         *
         * The implementation should be thread-safe if parallel execution is enabled for the GAs
         * (which is true by default).
         *
         * @param ga The %GA that uses the algorithm.
-        * @param fmat The fitness matrix of the current population.
-        * @returns The index of the candidate selected from the population.
+        * @param pop A view of the population without the encoding dependent parts of the candidates.
+        * @returns The candidate selected from the population @p pop.
         */
-        virtual size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const = 0;
+        virtual const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const = 0;
 
 
         /** Destructor. */
@@ -90,4 +90,4 @@ namespace gapp::selection
 
 } // namespace gapp::selection
 
-#endif // !GA_ALGORITHM_SOGA_SELECTION_BASE_HPP
+#endif // !GAPP_ALGORITHM_SOGA_SELECTION_BASE_HPP

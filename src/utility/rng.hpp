@@ -67,13 +67,17 @@ namespace gapp::rng
     IntType randomBinomial(IntType n, double p);
 
 
-    /** Generate a random index for a range. */
+    /** Generate a random index for a range (from a uniform distribution over the valid indices). */
     template<std::ranges::random_access_range R>
     detail::size_type<R> randomIndex(const R& range);
 
-    /** Pick a random element from a range. */
+    /** Pick a random element from a range (from a uniform distribution over the elements). */
     template<std::forward_iterator Iter>
     Iter randomElement(Iter first, Iter last);
+
+    /** Pick a random element from a range using the specified cumulative distribution function. */
+    template<std::ranges::random_access_range Range, std::ranges::random_access_range Dist>
+    std::ranges::range_reference_t<Range> randomElement(Range&& range, Dist&& cdf);
 
 
     /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). */
@@ -81,8 +85,8 @@ namespace gapp::rng
     small_vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
 
     /** Select an index based on a discrete CDF. */
-    template<std::floating_point RealType>
-    size_t sampleCdf(std::span<const RealType> cdf);
+    template<std::ranges::random_access_range Range>
+    size_t sampleCdf(const Range& cdf);
 
 
     /**
@@ -455,6 +459,15 @@ namespace gapp::rng
         return std::next(first, offset);
     }
 
+    template<std::ranges::random_access_range Range, std::ranges::random_access_range Dist>
+    std::ranges::range_reference_t<Range> randomElement(Range&& range, Dist&& cdf)
+    {
+        GAPP_ASSERT(!range.empty());
+        GAPP_ASSERT(range.size() == cdf.size());
+
+        return range[rng::sampleCdf(cdf)];
+    }
+
     template<std::integral IntType>
     GAPP_NOINLINE small_vector<IntType> sampleUniqueSet(IntType lbound, IntType ubound, size_t count)
     {
@@ -523,13 +536,15 @@ namespace gapp::rng
         return numbers;
     }
 
-    template<std::floating_point RealType>
-    size_t sampleCdf(std::span<const RealType> cdf)
+    template<std::ranges::random_access_range Range>
+    size_t sampleCdf(const Range& cdf)
     {
+        static_assert(std::is_floating_point_v<detail::value_t<Range>>);
+
         GAPP_ASSERT(!cdf.empty());
         GAPP_ASSERT(0.0 <= cdf.front());
 
-        const RealType threshold = rng::randomReal<RealType>(0.0, cdf.back()); // use cdf.back() in case it's not exactly 1.0
+        const auto threshold = rng::randomReal() * cdf.back(); // multiply by cdf.back() in case it's not exactly 1.0
 
         return std::distance(cdf.begin(), detail::lower_bound(cdf.begin(), cdf.end(), threshold));
     }

@@ -1,10 +1,11 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_FUNCTIONAL_HPP
-#define GA_UTILITY_FUNCTIONAL_HPP
+#ifndef GAPP_UTILITY_FUNCTIONAL_HPP
+#define GAPP_UTILITY_FUNCTIONAL_HPP
 
 #include "type_traits.hpp"
 #include "utility.hpp"
+#include <algorithm>
 #include <functional>
 #include <array>
 #include <vector>
@@ -56,21 +57,6 @@ namespace gapp::detail
             result[i] = std::invoke(f, cont[i]);
         }
 
-        return result;
-    }
-
-    template<typename ValueType, size_t N, typename F>
-    requires std::invocable<F&, ValueType&>
-    constexpr auto map(const std::array<ValueType, N>& cont, F&& f)
-    {
-        using MappedType = std::invoke_result_t<F&, ValueType>;
-        using ResultType = std::array<std::decay_t<MappedType>, N>;
-
-        ResultType result;
-        for (size_t i = 0; i < N; i++)
-        {
-            result[i] = std::invoke(f, cont[i]);
-        }
         return result;
     }
 
@@ -211,6 +197,30 @@ namespace gapp::detail
         };
     }
 
+    constexpr auto reference_to(const auto& target) noexcept
+    {
+        return [&](const auto& value) noexcept
+        {
+            return std::addressof(value) == std::addressof(target);
+        };
+    }
+
+    constexpr auto element_of(const auto& container) noexcept
+    {
+        return [&](const auto& elem) noexcept(noexcept(elem == elem))
+        {
+            return std::any_of(container.begin(), container.end(), detail::equal_to(elem));
+        };
+    }
+
+    constexpr auto points_into(const auto& container) noexcept
+    {
+        return [&](const auto* pointer) noexcept
+        {
+            return pointer && std::any_of(container.begin(), container.end(), detail::reference_to(*pointer));
+        };
+    }
+
 
     template<typename...>
     class function_ref;
@@ -225,7 +235,7 @@ namespace gapp::detail
         template<typename Callable>
         requires(!std::is_same_v<std::remove_const_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
         function_ref(Callable& f) noexcept :
-            callable_(static_cast<void*>(std::addressof(f))),
+            callable_(reinterpret_cast<void*>(std::addressof(f))),
             invoke_(invoke_fn<Callable>)
         {}
 
@@ -233,7 +243,7 @@ namespace gapp::detail
         requires(!std::is_same_v<std::remove_const_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
         function_ref& operator=(Callable& f) noexcept
         {
-            callable_ = static_cast<void*>(std::addressof(f));
+            callable_ = reinterpret_cast<void*>(std::addressof(f));
             invoke_ = invoke_fn<Callable>;
             return *this;
         }
@@ -252,7 +262,7 @@ namespace gapp::detail
         template<typename Callable>
         static Ret invoke_fn(void* f, Args... args) noexcept(std::is_nothrow_invocable_r_v<Ret, Callable&, Args...>)
         {
-            return std::invoke(*static_cast<Callable*>(f), std::forward<Args>(args)...);
+            return std::invoke(*reinterpret_cast<Callable*>(f), std::forward<Args>(args)...);
         }
 
         void* callable_ = nullptr;
@@ -271,16 +281,16 @@ namespace gapp::detail
         move_only_function(std::nullptr_t) noexcept {}
 
         template<typename F>
-        requires(!std::is_same_v<F, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
-        move_only_function(F f) :
-            fptr_(std::make_unique<Impl<F>>(std::move(f)))
+        requires(!std::is_same_v<std::remove_reference_t<F>, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
+        move_only_function(F&& f) :
+            fptr_(std::make_unique<Impl<F>>(std::forward<F>(f)))
         {}
 
         template<typename F>
-        requires(!std::is_same_v<F, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
-        move_only_function& operator=(F f)
+        requires(!std::is_same_v<std::remove_reference_t<F>, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
+        move_only_function& operator=(F&& f)
         {
-            fptr_ = std::make_unique<Impl<F>>(std::move(f));
+            fptr_ = std::make_unique<Impl<F>>(std::forward<F>(f));
             return *this;
         }
 
@@ -327,4 +337,4 @@ namespace gapp::detail
     
 } // namespace gapp::detail
 
-#endif // !GA_UTILITY_FUNCTIONAL_HPP
+#endif // !GAPP_UTILITY_FUNCTIONAL_HPP

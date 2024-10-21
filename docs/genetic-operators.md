@@ -1,12 +1,13 @@
 ﻿
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
-3. [Encodings](encodings.md)  
-4. [Algorithms](algorithms.md)  
-5. **Genetic operators**  
-6. [Stop conditions](stop-conditions.md)  
-7. [Metrics](metrics.md)  
-8. [Miscellaneous](miscellaneous.md)
+3. [Constraint handling](constraint-handling.md)  
+4. [Encodings](encodings.md)  
+5. [Algorithms](algorithms.md)  
+6. **Genetic operators**  
+7. [Stop conditions](stop-conditions.md)  
+8. [Metrics](metrics.md)  
+9. [Miscellaneous](miscellaneous.md)
 
 ------------------------------------------------------------------------------------------------
 
@@ -140,11 +141,10 @@ The repair function can be specified as some callable object using the `repair_f
 method of the GAs:
 
 ```cpp
-ga.repair_function([](const GA<RealGene>&, const Chromosome<RealGene>& chrom)
+ga.repair_function([](const GA<RealGene>&, const Candidate<RealGene>&, Chromosome<RealGene>& chrom)
 {
-    auto new_chrom = chrom;
-    // do something with new_chrom ...
-    return new_chrom;
+    // change chrom ...
+    return true; // return true if chrom was changed, or false otherwise
 });
 ```
 
@@ -231,4 +231,4 @@ regardless of how they are defined:
 
 ------------------------------------------------------------------------------------------------
 
-[<p align="right">Next: Stop conditions</p>](stop-conditions.md)
+<p align="right"><a href="stop-conditions.md">Next: Stop conditions</a></p>

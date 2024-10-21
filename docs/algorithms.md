@@ -1,12 +1,13 @@
 ﻿
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
-3. [Encodings](encodings.md)  
-4. **Algorithms**  
-5. [Genetic operators](genetic-operators.md)  
-6. [Stop conditions](stop-conditions.md)  
-7. [Metrics](metrics.md)    
-8. [Miscellaneous](miscellaneous.md)
+3. [Constraint handling](constraint-handling.md)  
+4. [Encodings](encodings.md)  
+5. **Algorithms**  
+6. [Genetic operators](genetic-operators.md)  
+7. [Stop conditions](stop-conditions.md)  
+8. [Metrics](metrics.md)  
+9. [Miscellaneous](miscellaneous.md)
 
 ------------------------------------------------------------------------------------------------
 
@@ -36,8 +37,7 @@ namespace:
 ## Selecting the algorithm
 
 By default, if no algorithm is explicitly specified for the GA, a default one will
-automatically be selected based on the number of objectives of the fitness function
-being used.
+be automatically selected based on the number of objectives of the fitness function.
 As a result of this, the default algorithm used by the GA will always be compatible
 with the fitness function regardless of the number of objectives.
 
@@ -120,12 +120,12 @@ method could be implemented the following way:
 ```cpp
 algorithm::SingleObjective algorithm;
 
-algorithm.selection_method([](const GaInfo& context, const FitnessMatrix& fmat)
+algorithm.selection_method([](const GaInfo& context, const PopulationView& pop)
 {
-    size_t first  = rng::randomIdx(fmat);
-    size_t second = rng::randomIdx(fmat);
+    const size_t idx1 = rng::randomIdx(pop);
+    const size_t idx2 = rng::randomIdx(pop);
 
-    return (fmat[first][0] >= fmat[second][0]) ? first : second;
+    return (pop[idx1].fitness[0] >= pop[idx2].fitness[0]) ? pop[idx1] : pop[idx2];
 });
 ```
 
@@ -137,12 +137,12 @@ tournament selection shown above could also be implemented this way:
 class MyTournamentSelection : public selection::Selection
 {
 public:
-    size_t selectImpl(const GaInfo& context, const FitnessMatrix& fmat) const override
+    const CandidateInfo& selectImpl(const GaInfo& context, const PopulationView& pop) const override
     {
-        size_t first  = rng::randomIdx(fmat);
-        size_t second = rng::randomIdx(fmat);
+        const size_t idx1 = rng::randomIdx(pop);
+        const size_t idx2 = rng::randomIdx(pop);
         
-        return (fmat[first][0] >= fmat[second][0]) ? first : second;
+        return (pop[idx1].fitness[0] >= pop[idx2].fitness[0]) ? pop[idx1] : pop[idx2];
     }
 };
 ```
@@ -156,9 +156,9 @@ algorithm.selection_method(MyTournamentSelection{});
 ```
 
 > [!TIP]
-> A more general version of the tournament selection operator
-> is already implemented in the library, as `selection::Tournament`.
+> A more general version of the tournament selection operator is
+> already implemented in the library by the `selection::Tournament` class.
 
 ------------------------------------------------------------------------------------------------
 
-[<p align="right">Next: Genetic operators</p>](genetic-operators.md)
+<p align="right"><a href="genetic-operators.md">Next: Genetic operators</a></p>
