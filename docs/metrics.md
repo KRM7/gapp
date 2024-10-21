@@ -1,12 +1,13 @@
 ﻿
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
-3. [Encodings](encodings.md)  
-4. [Algorithms](algorithms.md)  
-5. [Genetic operators](genetic-operators.md)  
-6. [Stop conditions](stop-conditions.md)  
-7. **Metrics**  
-8. [Miscellaneous](miscellaneous.md)
+3. [Constraint handling](constraint-handling.md)  
+4. [Encodings](encodings.md)  
+5. [Algorithms](algorithms.md)  
+6. [Genetic operators](genetic-operators.md)  
+7. [Stop conditions](stop-conditions.md)  
+8. **Metrics**  
+9. [Miscellaneous](miscellaneous.md)
 
 ------------------------------------------------------------------------------------------------
 
@@ -90,6 +91,18 @@ class MyMetric : public metrics::Monitor<MyMetric, std::vector<double>>
 These custom metrics can be used the same way as any other metric already
 implemented in the library.
 
+## Encoding dependent metrics
+
+The base class used for the metrics, as well as all of its methods, is
+independent of the encoding/gene type used for the GAs. This means that
+the chromosomes are not immediately available for the implementation of
+these methods.
+However, this doesn't mean that metrics based on the chromosome values
+can't be implemented. If the concrete encoding type is known, the `GaInfo`
+parameter of the methods can be downcast to the appropriate `GA<GeneType>`
+type, and the population, including all of the chromosomes, can then be
+accessed through this parameter.
+
 ------------------------------------------------------------------------------------------------
 
-[<p align="right">Next: Miscellaneous</p>](miscellaneous.md)
+<p align="right"><a href="miscellaneous.md">Next: Miscellaneous</a></p>

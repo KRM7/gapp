@@ -13,60 +13,63 @@ using namespace gapp::replacement;
 static constexpr size_t POPSIZE = 10;
 static const BinaryGA context = []{ BinaryGA GA(POPSIZE); GA.solve(DummyFitnessFunction<BinaryGene>(10), 1); return GA; }();
 
-static const FitnessMatrix fitness_matrix = {
+static const Population<BinaryGene> pop = []
+{
+    Population<BinaryGene> p(20);
     // parents
-    { math::inf<double> },
-    { math::large<double> },
-    { 0.0 },
-    { -math::inf<double> },
-    { 1.0 },
-    { math::inf<double> },
-    { 0.0 },
-    { -math::large<double> },
-    { -math::inf<double> },
-    { math::small<double> },
+    p[0].fitness = { math::inf<double> };
+    p[1].fitness = { math::large<double> };
+    p[2].fitness = { 0.0 };
+    p[3].fitness = { -math::inf<double> };
+    p[4].fitness = { 1.0 };
+    p[5].fitness = { math::inf<double> };
+    p[6].fitness = { 0.0 };
+    p[7].fitness = { -math::large<double> };
+    p[8].fitness = { -math::inf<double> };
+    p[9].fitness = { math::small<double> };
     // children
-    { 0.0 },
-    { math::large<double> },
-    { math::small<double> },
-    { -1.0 },
-    { -math::inf<double> },
-    { 500.0 },
-    { math::large<double> },
-    { math::inf<double> },
-    { 0.0 },
-    { -math::large<double> }
-};
+    p[10].fitness = { 0.0 };
+    p[11].fitness = { math::large<double> };
+    p[12].fitness = { math::small<double> };
+    p[13].fitness = { -1.0 };
+    p[14].fitness = { -math::inf<double> };
+    p[15].fitness = { 500.0 };
+    p[16].fitness = { math::large<double> };
+    p[17].fitness = { math::inf<double> };
+    p[18].fitness = { 0.0 };
+    p[19].fitness = { -math::large<double> };
 
+    return p;
+}();
 
 TEST_CASE("replacement_best", "[replacement][single-objective]")
 {
     math::ScopedTolerances _(0.0, 0.0);
 
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepBest>();
-    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix).std_vec();
+    const auto next_pop = replacement->nextPopulationImpl(context, pop);
 
-    const std::vector<size_t> expected = { 0, 1, 4, 5, 9, 11, 12, 15, 16, 17 };
+    const CandidatePtrVec expected = { &pop[0], &pop[1], &pop[4], &pop[5], &pop[9], &pop[11], &pop[12], &pop[15], &pop[16], &pop[17] };
 
-    REQUIRE_THAT(indices, Catch::Matchers::UnorderedEquals(expected));
+    REQUIRE_THAT(next_pop, Catch::Matchers::UnorderedEquals(expected));
 }
 
 TEST_CASE("replacement_children", "[replacement][single-objective]")
 {
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepChildren>();
-    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix).std_vec();
+    const auto next_pop = replacement->nextPopulationImpl(context, pop);
 
-    const std::vector<size_t> expected = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+    const CandidatePtrVec expected = { &pop[10], &pop[11], &pop[12], &pop[13], &pop[14], &pop[15], &pop[16], &pop[17], &pop[18], &pop[19] };
 
-    REQUIRE_THAT(indices, Catch::Matchers::UnorderedEquals(expected));
+    REQUIRE_THAT(next_pop, Catch::Matchers::UnorderedEquals(expected));
 }
 
 TEST_CASE("replacement_elitism", "[replacement][single-objective]")
 {
     std::unique_ptr<Replacement> replacement = std::make_unique<Elitism>(2);
-    const auto indices = replacement->nextPopulationImpl(context, fitness_matrix).std_vec();
+    const auto next_pop = replacement->nextPopulationImpl(context, pop);
 
-    const std::vector<size_t> expected = { 0, 5, 10, 11, 12, 13, 14, 15, 16, 17 };
+    const CandidatePtrVec expected = { &pop[0], &pop[5], &pop[10], &pop[11], &pop[12], &pop[13], &pop[14], &pop[15], &pop[16], &pop[17] };
 
-    REQUIRE_THAT(indices, Catch::Matchers::UnorderedEquals(expected));
+    REQUIRE_THAT(next_pop, Catch::Matchers::UnorderedEquals(expected));
 }

@@ -38,14 +38,14 @@ namespace gapp::algorithm
         * when not using a selection method derived from selection::Selection.
         * @see selection_method()
         */
-        using SelectionCallable = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
+        using SelectionCallable = std::function<const CandidateInfo&(const GaInfo&, const PopulationView&)>;
 
         /**
         * The general callable type that can be used as a population replacement policy,
         * when not using a replacement policy derived from replacement::Replacement.
         * @see replacement_method()
         */
-        using ReplacementCallable = std::function<small_vector<size_t>(const GaInfo&, const FitnessMatrix&)>;
+        using ReplacementCallable = std::function<CandidatePtrVec(const GaInfo&, const PopulationView&)>;
 
 
         /**
@@ -150,10 +150,11 @@ namespace gapp::algorithm
     private:
 
         void initializeImpl(const GaInfo& ga) override;
-        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
 
-        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
+        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+
+        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
 
         std::unique_ptr<selection::Selection> selection_;
         std::unique_ptr<replacement::Replacement> replacement_;
@@ -188,18 +189,19 @@ namespace gapp::algorithm
         replacement_ = std::make_unique<R>(std::move(replacement));
     }
 
-    inline void SingleObjective::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    inline void SingleObjective::prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(selection_);
+        GAPP_ASSERT(std::all_of(pop.begin(), pop.end(), [](const auto& sol) { return sol.fitness.size() == 1; }));
 
-        selection_->prepareSelectionsImpl(ga, fmat);
+        selection_->prepareSelectionsImpl(ga, pop);
     }
 
-    inline size_t SingleObjective::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
+    inline const CandidateInfo& SingleObjective::selectImpl(const GaInfo& ga, const PopulationView& pop) const
     {
         GAPP_ASSERT(selection_);
 
-        return selection_->selectImpl(ga, fmat);
+        return selection_->selectImpl(ga, pop);
     }
 
 } // namespace gapp::algorithm

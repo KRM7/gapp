@@ -28,7 +28,7 @@ namespace gapp::replacement
     class KeepChildren final : public Replacement
     {
     private:
-        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
     };
 
 
@@ -41,7 +41,7 @@ namespace gapp::replacement
     * while the remaining (pop_size - N) slots are filled by the first (pop_size - N) child solutions.
     * 
     * If N is equal to 0, this is equivalent to only keeping the children for the next generation
-    * (ie. KeepChildren).
+    * (i.e. KeepChildren).
     */
     class Elitism final : public Replacement
     {
@@ -69,7 +69,7 @@ namespace gapp::replacement
         constexpr size_t elite_num() const noexcept { return n_; }
 
     private:
-        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
 
         size_t n_;
     };
@@ -85,7 +85,7 @@ namespace gapp::replacement
     class KeepBest final : public Replacement
     {
     private:
-        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
     };
 
 
@@ -96,12 +96,12 @@ namespace gapp::replacement
     class Lambda final : public Replacement
     {
     public:
-        using ReplacementCallable = std::function<small_vector<size_t>(const GaInfo&, const FitnessMatrix&)>;
+        using ReplacementCallable = std::function<CandidatePtrVec(const GaInfo&, const PopulationView&)>;
 
         explicit Lambda(ReplacementCallable f) noexcept;
 
     private:
-        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
 
         ReplacementCallable replacement_;
     };

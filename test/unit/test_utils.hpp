@@ -23,7 +23,7 @@ public:
 private:
     size_t nobj_;
 
-    FitnessVector invoke(const Chromosome<T>&) const override
+    FitnessVector invoke(const Candidate<T>&) const override
     {
         return FitnessVector(nobj_, 0.0); // NOLINT(*return-braced-init-list)
     }

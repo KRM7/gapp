@@ -11,147 +11,138 @@ using namespace gapp::selection;
 
 static constexpr size_t POPSIZE = 10;
 static const BinaryGA context = []{ BinaryGA GA(POPSIZE); GA.solve(DummyFitnessFunction<BinaryGene>(10), 1); return GA; }();
+static const Candidate<BinaryGene> sol = []{ Candidate<BinaryGene> c; c.fitness = { 0.0 }; return c; }();
 
 TEST_CASE("roulette_selection", "[selection][single-objective]")
 {
-    FitnessMatrix fmat = {
-        { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }
-    };
+    Population<BinaryGene> pop(10, sol);
 
     std::unique_ptr<Selection> selection = std::make_unique<Roulette>();
     selection->initializeImpl(context);
 
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[3] = { math::small<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) == 3);
+    pop[3].fitness = { math::small<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(&selection->selectImpl(context, pop) == &pop[3]);
 
-    fmat[3] = { math::large<double> };
-    fmat[4] = { math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    size_t idx = selection->selectImpl(context, fmat);
-    REQUIRE((idx == 3 || idx == 4));
+    pop[3].fitness = { math::large<double> };
+    pop[4].fitness = { math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    const CandidateInfo& selected = selection->selectImpl(context, pop);
+    REQUIRE((&selected == &pop[3] || &selected == &pop[4]));
 
-    fmat[0] = { -math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[0].fitness = { -math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[3] = { -math::large<double> };
-    fmat[4] = { -math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[3].fitness = { -math::large<double> };
+    pop[4].fitness = { -math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 }
 
 TEST_CASE("tournament_selection", "[selection][single-objective]")
 {
-    FitnessMatrix fmat = {
-        { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }
-    };
+    Population<BinaryGene> pop(10, sol);
 
     std::unique_ptr<Selection> selection = std::make_unique<Tournament>();
     selection->initializeImpl(context);
 
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[0] = { -math::inf<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[0].fitness = { -math::inf<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[1] = { math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[1].fitness = { math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[4] = { math::inf<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[4].fitness = { math::inf<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 }
 
 TEST_CASE("rank_selection", "[selection][single-objective]")
 {
-    FitnessMatrix fmat = {
-        { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }
-    };
+    Population<BinaryGene> pop(10, sol);
 
     std::unique_ptr<Selection> selection = std::make_unique<Rank>(0.0);
     selection->initializeImpl(context);
 
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[0] = { -math::inf<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) != 0);
+    pop[0].fitness = { -math::inf<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(&selection->selectImpl(context, pop) != &pop[0]);
 
-    fmat[1] = { math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[1].fitness = { math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[4] = { math::inf<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[4].fitness = { math::inf<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 }
 
 TEST_CASE("sigma_selection" "[selection][single-objective]")
 {
-    FitnessMatrix fmat = {
-        { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }
-    };
+    Population<BinaryGene> pop(10, sol);
 
     std::unique_ptr<Selection> selection = std::make_unique<Sigma>();
     selection->initializeImpl(context);
 
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[3] = { math::small<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[3].fitness = { math::small<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[3] = { math::large<double> };
-    fmat[4] = { math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[3].fitness = { math::large<double> };
+    pop[4].fitness = { math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[0] = { -math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[0].fitness = { -math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[3] = { -math::large<double> };
-    fmat[4] = { -math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[3].fitness = { -math::large<double> };
+    pop[4].fitness = { -math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 }
 
 TEST_CASE("boltzmann_selection" "[selection][single-objective]")
 {
-    FitnessMatrix fmat = {
-        { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }, { 0.0 }
-    };
+    Population<BinaryGene> pop(10, sol);
 
     std::unique_ptr<Selection> selection = std::make_unique<Boltzmann>();
     selection->initializeImpl(context);
 
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[3] = { math::small<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[3].fitness = { math::small<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[3] = { math::large<double> };
-    fmat[4] = { math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[3].fitness = { math::large<double> };
+    pop[4].fitness = { math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[0] = { -math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[0].fitness = { -math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 
-    fmat[3] = { -math::large<double> };
-    fmat[4] = { -math::large<double> };
-    selection->prepareSelectionsImpl(context, fmat);
-    REQUIRE(selection->selectImpl(context, fmat) < fmat.size());
+    pop[3].fitness = { -math::large<double> };
+    pop[4].fitness = { -math::large<double> };
+    selection->prepareSelectionsImpl(context, pop);
+    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
 }

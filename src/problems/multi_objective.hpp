@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PROBLEMS_MULTI_OBJECTIVE_HPP
-#define GA_PROBLEMS_MULTI_OBJECTIVE_HPP
+#ifndef GAPP_PROBLEMS_MULTI_OBJECTIVE_HPP
+#define GAPP_PROBLEMS_MULTI_OBJECTIVE_HPP
 
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
@@ -39,7 +39,7 @@ namespace gapp::problems
         explicit Kursawe(size_t num_vars = 3, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -74,7 +74,7 @@ namespace gapp::problems
         explicit ZDT1(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -109,7 +109,7 @@ namespace gapp::problems
         explicit ZDT2(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -145,7 +145,7 @@ namespace gapp::problems
         explicit ZDT3(size_t num_vars = 30, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -182,7 +182,7 @@ namespace gapp::problems
         explicit ZDT4(size_t num_vars = 10, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -216,7 +216,7 @@ namespace gapp::problems
         explicit ZDT5(size_t num_vars = 11);
 
     private:
-        FitnessVector invoke(const Chromosome<BinaryGene>& vars) const override;
+        FitnessVector invoke(const Candidate<BinaryGene>& sol) const override;
 
         static constexpr size_t FIRST_BITS = 30;
         static constexpr size_t REST_BITS = 5;
@@ -255,9 +255,9 @@ namespace gapp::problems
         explicit ZDT6(size_t num_vars = 10, size_t bits_per_var = 32);
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 } // namespace gapp::problems
 
-#endif // !GA_PROBLEMS_MULTI_OBJECTIVE_HPP
+#endif // !GAPP_PROBLEMS_MULTI_OBJECTIVE_HPP

@@ -111,7 +111,7 @@ TEST_CASE("comparison_funcs", "[functional]")
 
 TEST_CASE("is_size", "[functional]")
 {
-    std::vector<double> empty;
+    const std::vector<double> empty;
 
     REQUIRE(is_size(0)(empty));
     REQUIRE(!is_size(1)(empty));
@@ -119,8 +119,103 @@ TEST_CASE("is_size", "[functional]")
 
 TEST_CASE("element_at", "[functional]")
 {
-    std::vector<double> vec{ 4.0, 2.0, 3.0 };
+    const std::vector vec{ 4.0, 2.0, 3.0 };
 
     REQUIRE(element_at(0)(vec) == 4.0);
     REQUIRE(element_at(2)(vec) == 3.0);
+}
+
+TEST_CASE("reference_to", "[functional]")
+{
+    const std::vector vec{ 4.0, 2.0, 3.0 };
+
+    REQUIRE(reference_to(vec[0])(vec[0]));
+    REQUIRE(!reference_to(vec[0])(vec[1]));
+
+    const double val = 2.0;
+
+    REQUIRE(!reference_to(vec[1])(val));
+}
+
+TEST_CASE("element_of", "[functional]")
+{
+    const std::vector vec{ 4.0, 2.0, 3.0 };
+
+    REQUIRE(element_of(vec)(4.0));
+    REQUIRE(element_of(vec)(2.0));
+    REQUIRE(element_of(vec)(3.0));
+
+    REQUIRE(!element_of(vec)(1.0));
+    REQUIRE(!element_of(vec)(0.0));
+}
+
+TEST_CASE("points_into", "[functional]")
+{
+    const std::vector vec{ 4.0, 2.0, 3.0 };
+
+    REQUIRE(points_into(vec)(vec.data()));
+    REQUIRE(points_into(vec)(&vec[2]));
+
+    const double val = 0.0;
+    const double* ptr = nullptr;
+
+    REQUIRE(!points_into(vec)(&val));
+    REQUIRE(!points_into(vec)(ptr));
+}
+
+TEST_CASE("function_ref", "[functional]")
+{
+    // constructor
+    function_ref<int(int)> f0;
+    REQUIRE(!f0);
+
+    function_ref<void(double)> f1(nullptr);
+    REQUIRE(!f1);
+
+    function_ref f2 = f0;
+
+    // assignment, invoke
+    f0 = square<int>;
+    REQUIRE(f0);
+    REQUIRE(f0(2) == 4);
+
+    f0 = nullptr;
+    REQUIRE(!f0);
+
+    f0 = increment<int>;
+    REQUIRE(f0);
+    REQUIRE(f0(1) == 2);
+
+    f2 = f0;
+    REQUIRE(f2(2) == 3);
+    REQUIRE(f0(2) == 3);
+}
+
+TEST_CASE("move_only_function", "[functional]")
+{
+    // constructor
+    move_only_function<int(int)> f0;
+    REQUIRE(!f0);
+
+    move_only_function<void(double)> f1(nullptr);
+    REQUIRE(!f1);
+
+    move_only_function<int(int)> f2 = std::move(f0);
+    REQUIRE(!f2);
+    REQUIRE(!f0);
+
+    move_only_function<int(int)> f3 = square<int>;
+    REQUIRE(f3);
+
+    // assignment, invoke
+    f0 = square<int>;
+    REQUIRE(f0);
+    REQUIRE(f0(2) == 4);
+
+    f0 = nullptr;
+    REQUIRE(!f0);
+
+    f0 = std::move(f3);
+    REQUIRE(f0);
+    REQUIRE(f0(2) == 4);
 }

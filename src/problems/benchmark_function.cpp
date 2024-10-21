@@ -4,33 +4,30 @@
 #include "../encoding/gene_types.hpp"
 #include "../utility/utility.hpp"
 #include <numeric>
-#include <cmath>
 #include <cstddef>
 
 namespace gapp::problems
 {
-    Chromosome<RealGene> BenchmarkFunction<RealGene>::convert(const Chromosome<BinaryGene>& bchrom, const BoundsVector<RealGene>& bounds, size_t var_bits)
+    Candidate<RealGene> BenchmarkFunction<RealGene>::convert(const Candidate<BinaryGene>& sol, const BoundsVector<RealGene>& bounds, size_t var_bits) const
     {
-        GAPP_ASSERT(bchrom.size() == var_bits * bounds.size());
+        GAPP_ASSERT(sol.chromosome.size() == var_bits * bounds.size());
 
-        Chromosome<RealGene> vars(bounds.size());
+        Candidate<RealGene> new_sol(bounds.size());
 
-        for (size_t i = 0; i < vars.size(); i++)
+        for (size_t i = 0; i < new_sol.size(); i++)
         {
-            const auto first = bchrom.begin() + i * var_bits;
-            const auto last = bchrom.begin() + (i + 1) * var_bits;
+            const auto first = sol.begin() + i * var_bits;
+            const auto last = sol.begin() + (i + 1) * var_bits;
 
-            const RealGene val = std::accumulate(first, last, 0.0, [](RealGene acc, BinaryGene bit) noexcept
+            const RealGene val = std::accumulate(first, last, 0.0, [&](RealGene acc, BinaryGene bit) noexcept
             {
-                return (acc * 2) + bit;
+                return (acc * 2) + bit * lsb_;
             });
 
-            vars[i] = val / (std::pow(2.0, var_bits) - 1); // use double to avoid integer overflow
-            vars[i] *= bounds[i].upper() - bounds[i].lower();
-            vars[i] += bounds[i].lower();
+            new_sol[i] = val * (bounds[i].upper() - bounds[i].lower()) + bounds[i].lower();
         }
 
-        return vars;
+        return new_sol;
     }
 
 } // namespace gapp::problems

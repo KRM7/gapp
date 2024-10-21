@@ -66,10 +66,9 @@ int main()
 
     // using a repair function
 
-    ga.repair_function([](const GA<PermutationGene>&, const Chromosome<PermutationGene>& chrom)
+    ga.repair_function([](const GA<PermutationGene>&, const Candidate<PermutationGene>&, Chromosome<PermutationGene>& chrom)
     {
-        auto new_chrom = chrom;
-        std::swap(new_chrom.front(), new_chrom.back());
-        return new_chrom;
+        std::swap(chrom.front(), chrom.back());
+        return true;
     });
 }

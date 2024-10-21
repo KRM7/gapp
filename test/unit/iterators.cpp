@@ -177,3 +177,21 @@ TEST_CASE("iota_iterator", "[iterators]")
         REQUIRE(last - first == 4);
     }
 }
+
+TEST_CASE("base_iterator", "[iterators]")
+{
+    struct Base { int n = 1; };
+    struct Derived : Base { int m = 2; };
+
+    std::vector<Derived> vec(10);
+
+    REQUIRE(
+        std::all_of(base_begin<Base>(vec), base_end<Base>(vec), [](const Base& b) { return b.n == 1; })
+    );
+
+    for (Base& b : base_view<Base>(vec)) { b.n = 3; }
+
+    REQUIRE(
+        std::all_of(base_begin<Base>(vec), base_end<Base>(vec), [](const Base& b) { return b.n == 3; })
+    );
+}

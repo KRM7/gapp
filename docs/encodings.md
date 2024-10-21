@@ -1,12 +1,13 @@
 
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
-3. **Encodings**  
-4. [Algorithms](algorithms.md)  
-5. [Genetic operators](genetic-operators.md)  
-6. [Stop conditions](stop-conditions.md)  
-7. [Metrics](metrics.md)    
-8. [Miscellaneous](miscellaneous.md)
+3. [Constraint handling](constraint-handling.md)  
+4. **Encodings**  
+5. [Algorithms](algorithms.md)  
+6. [Genetic operators](genetic-operators.md)  
+7. [Stop conditions](stop-conditions.md)  
+8. [Metrics](metrics.md)  
+9. [Miscellaneous](miscellaneous.md)
 
 ------------------------------------------------------------------------------------------------
 
@@ -74,10 +75,13 @@ template<typename GeneType>
 using Population = std::vector<Candidate<GeneType>>;
 ```
 
+
 ### Mixed encodings
 
 For mixed encodings, where each gene might have a different type, the
-recommendation is to use `std::variant` for the gene type.
+recommendation is to use `std::variant` or a similar type for the gene
+type.
+
 
 ### Variable chromosome lengths
 
@@ -85,10 +89,11 @@ The length of the chromosomes is specified as part of the fitness function.
 Normally, this will be a constant value, meaning that all the solutions
 will have the same chromosome length throughout a run. However, using a
 constant chromosome length is not a requirement as long as all parts of the
-GA can handle different lengths. The parts which must be able to do this are
+GA can handle variable lengths. The parts which must be able to do this are
 the:
 
  - fitness function
+ - constraints function
  - crossover operator
  - mutation operator
  - repair function
@@ -180,4 +185,4 @@ work for new encodings.
 
 ------------------------------------------------------------------------------------------------
 
-[<p align="right">Next: Algorithms</p>](algorithms.md)
+<p align="right"><a href="algorithms.md">Next: Algorithms</a></p>

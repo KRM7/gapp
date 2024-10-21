@@ -43,9 +43,9 @@ private:
 
 class CountOnes : public FitnessFunction<BinaryGene, 10>
 {
-    FitnessVector invoke(const Chromosome<BinaryGene>& x) const override
+    FitnessVector invoke(const Candidate<BinaryGene>& sol) const override
     {
-        return { static_cast<double>(std::count(x.begin(), x.end(), BinaryGene{ 1 })) };
+        return { static_cast<double>(std::count(sol.begin(), sol.end(), BinaryGene{ 1 })) };
     }
 };
 

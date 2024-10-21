@@ -12,42 +12,68 @@
 
 namespace gapp::replacement
 {
-    small_vector<size_t> KeepChildren::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix&)
+    CandidatePtrVec KeepChildren::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
-        return detail::index_vector(ga.population_size(), ga.population_size());
+        GAPP_ASSERT(pop.size() >= 2 * ga.population_size());
+
+        CandidatePtrVec next_pop(ga.population_size());
+        const auto children_first = pop.begin() + ga.population_size();
+        const auto children_last  = pop.begin() + 2 * ga.population_size();
+
+        std::transform(children_first, children_last, next_pop.begin(), [](const auto& sol) { return &sol; });
+
+        return next_pop;
     }
 
-    small_vector<size_t> Elitism::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    CandidatePtrVec Elitism::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
-        GAPP_ASSERT(fmat.size() >= 2 * ga.population_size());
+        GAPP_ASSERT(pop.size() >= 2 * ga.population_size());
 
         const size_t elite_count = std::min(n_, ga.population_size());
 
-        const auto sorted_parent_indices = detail::partial_argsort(fmat.begin(), fmat.begin() + elite_count, fmat.begin() + ga.population_size(),
+        const auto parents_first = pop.begin();
+        const auto sorted_last   = pop.begin() + elite_count;
+        const auto parents_last  = pop.begin() + ga.population_size();
+
+        const auto sorted_parent_indices = detail::partial_argsort(parents_first, sorted_last, parents_last,
         [](const auto& lhs, const auto& rhs) noexcept
         {
-            return math::paretoCompareLess(rhs, lhs); // descending
+            return math::paretoCompareLess(rhs.fitness, lhs.fitness); // descending
         });
 
-        small_vector<size_t> indices(ga.population_size());
-        std::copy(sorted_parent_indices.begin(), sorted_parent_indices.begin() + elite_count, indices.begin());
-        std::iota(indices.begin() + elite_count, indices.end(), ga.population_size());
+        CandidatePtrVec next_pop(ga.population_size());
 
-        return indices;
+        for (size_t i = 0; i < elite_count; i++)
+        {
+            next_pop[i] = &pop[sorted_parent_indices[i]];
+        }
+
+        for (size_t i = elite_count; i < ga.population_size(); i++)
+        {
+            next_pop[i] = &pop[ga.population_size() + i - elite_count];
+        }
+
+        return next_pop;
     }
 
-    small_vector<size_t> KeepBest::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    CandidatePtrVec KeepBest::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
-        GAPP_ASSERT(fmat.size() >= ga.population_size());
+        GAPP_ASSERT(pop.size() >= ga.population_size());
 
-        auto sorted_indices = detail::partial_argsort(fmat.begin(), fmat.begin() + ga.population_size(), fmat.end(),
+        const auto indices = detail::partial_argsort(pop.begin(), pop.begin() + ga.population_size(), pop.end(),
         [](const auto& lhs, const auto& rhs) noexcept
         {
-            return math::paretoCompareLess(rhs, lhs); // descending
+            return math::paretoCompareLess(rhs.fitness, lhs.fitness); // descending
         });
-        sorted_indices.resize(ga.population_size());
 
-        return sorted_indices;
+        CandidatePtrVec next_pop(ga.population_size());
+
+        for (size_t i = 0; i < ga.population_size(); i++)
+        {
+            next_pop[i] = &pop[indices[i]];
+        }
+
+        return next_pop;
     }
 
 
@@ -57,10 +83,10 @@ namespace gapp::replacement
         GAPP_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
     }
 
-    small_vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    CandidatePtrVec Lambda::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(replacement_);
-        return replacement_(ga, fmat);
+        return replacement_(ga, pop);
     }
 
 } // namespace gapp::replacement

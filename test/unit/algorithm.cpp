@@ -20,6 +20,25 @@ static constexpr auto always_false = [](auto) { return false; };
 
 using namespace gapp;
 
+TEST_CASE("forward_like", "[algorithm]")
+{
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(detail::forward_like<int>(3))>);
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(detail::forward_like<int&&>(3))>);
+
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(detail::forward_like<int>(std::declval<int&&>()))>);
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(detail::forward_like<int&&>(std::declval<int&&>()))>);
+
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(detail::forward_like<int>(std::declval<int&>()))>);
+    STATIC_REQUIRE(std::is_same_v<int&,  decltype(detail::forward_like<int&>(std::declval<int&>()))>);
+    STATIC_REQUIRE(std::is_same_v<int&&, decltype(detail::forward_like<int&&>(std::declval<int&>()))>);
+
+
+    STATIC_REQUIRE(std::is_same_v<const int&,  decltype(detail::forward_like<int&>(std::declval<const int&>()))>);
+    STATIC_REQUIRE(std::is_same_v<const int&&, decltype(detail::forward_like<int&&>(std::declval<const int&>()))>);
+
+    STATIC_REQUIRE(std::is_same_v<const int&,  decltype(detail::forward_like<const int&>(std::declval<int&>()))>);
+    STATIC_REQUIRE(std::is_same_v<const int&&, decltype(detail::forward_like<const int>(std::declval<int&>()))>);
+}
 
 TEST_CASE("index_vector", "[algorithm]")
 {
@@ -142,6 +161,57 @@ TEST_CASE("min_element", "[algorithm]")
     REQUIRE(detail::min_element(nums.begin(), nums.begin()) == nums.begin());
 
     REQUIRE(*detail::min_element(nums.begin(), nums.end(), std::negate{}) == 5.0);
+}
+
+TEST_CASE("minmax_element", "[algorithm]")
+{
+    const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+
+    const auto res1 = detail::minmax_element(nums.begin(), nums.end());
+    REQUIRE(*res1.first  == 0.0);
+    REQUIRE(*res1.second == 5.0);
+
+    const auto res2 = detail::minmax_element(nums.rbegin(), nums.rend());
+    REQUIRE(*res2.first  == 0.0);
+    REQUIRE(*res2.second == 5.0);
+
+    const auto res3 = detail::minmax_element(nums.begin(), nums.begin());
+    REQUIRE(res3.first  == nums.begin());
+    REQUIRE(res3.second == nums.begin());
+
+    const auto res4 = detail::minmax_element(nums.begin(), nums.end(), std::negate{});
+    REQUIRE(*res4.first  == 5.0);
+    REQUIRE(*res4.second == 0.0);
+}
+
+TEST_CASE("max_value", "[algorithm]")
+{
+    const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+
+    REQUIRE(detail::max_value(nums.begin(), nums.end()) == 5.0);
+    REQUIRE(detail::max_value(nums.rbegin(), nums.rend()) == 5.0);
+
+    REQUIRE(detail::max_value(nums.begin(), nums.end(), std::negate{}) == 0.0);
+}
+
+TEST_CASE("min_value", "[algorithm]")
+{
+    const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+
+    REQUIRE(detail::min_value(nums.begin(), nums.end()) == 0.0);
+    REQUIRE(detail::min_value(nums.rbegin(), nums.rend()) == 0.0);
+
+    REQUIRE(detail::min_value(nums.begin(), nums.end(), std::negate{}) == -5.0);
+}
+
+TEST_CASE("minmax_value", "[algorithm]")
+{
+    const small_vector nums = { 4.0, 0.0, 2.0, 5.0, 1.0 };
+
+    REQUIRE(detail::minmax_value(nums.begin(), nums.end()) == std::pair{ 0.0, 5.0 });
+    REQUIRE(detail::minmax_value(nums.rbegin(), nums.rend()) == std::pair{ 0.0, 5.0 });
+
+    REQUIRE(detail::minmax_value(nums.begin(), nums.end(), std::negate{}) == std::pair{ -5.0, 0.0 });
 }
 
 TEST_CASE("argmax", "[algorithm]")

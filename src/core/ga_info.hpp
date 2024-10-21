@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CORE_GA_INFO_HPP
-#define GA_CORE_GA_INFO_HPP
+#ifndef GAPP_CORE_GA_INFO_HPP
+#define GAPP_CORE_GA_INFO_HPP
 
 #include "population.hpp"
 #include "fitness_function.hpp"
@@ -100,7 +100,7 @@ namespace gapp
         [[nodiscard]]
         virtual const FitnessFunctionInfo* fitness_function() const& noexcept = 0;
 
-        /** @returns The chromosome length used. Returns 0 if the chromosome length is unspecified (ie. no fitness function was set yet). */
+        /** @returns The chromosome length used. Returns 0 if the chromosome length is unspecified (i.e. no fitness function was set yet). */
         [[nodiscard]]
         virtual size_t chrom_len() const noexcept = 0;
 
@@ -110,12 +110,21 @@ namespace gapp
 
 
         /**
+        * @returns A view of the population, without the encoding dependent parts of the candidates
+        * (i.e. without the chromosomes). Each element of this view is a reference to an actual
+        * candidate of the population, not a separate data structure. They may be cast to the concrete
+        * candidate type if the encoding type is known.
+        */
+        [[nodiscard]]
+        virtual PopulationView population_view() const& noexcept = 0;
+
+        /**
         * @returns The fitness matrix of the population.
         * Each row of the matrix is the fitness vector of the corresponding solution in the population. \n
         * For example, fmat[0] is the fitness vector of the first member of the population.
         */
         [[nodiscard]]
-        const FitnessMatrix& fitness_matrix() const noexcept { return fitness_matrix_; }
+        const FitnessMatrix& fitness_matrix() const& noexcept { return fitness_matrix_; }
 
         /**
         * @returns The number of fitness evaluations performed during the run so far.
@@ -417,4 +426,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_CORE_GA_INFO_HPP
+#endif // !GAPP_CORE_GA_INFO_HPP

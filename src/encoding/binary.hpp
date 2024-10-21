@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ENCODING_BINARY_HPP
-#define GA_ENCODING_BINARY_HPP
+#ifndef GAPP_ENCODING_BINARY_HPP
+#define GAPP_ENCODING_BINARY_HPP
 
 #include "gene_types.hpp"
 #include "../core/ga_base.hpp"
@@ -36,4 +36,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_ENCODING_BINARY_HPP
+#endif // !GAPP_ENCODING_BINARY_HPP

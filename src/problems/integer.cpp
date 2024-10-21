@@ -17,14 +17,14 @@ namespace gapp::problems
         nadir_point_ = optimal_value_;
     }
 
-    auto StringFinder::invoke(const Chromosome<IntegerGene>& chrom) const -> FitnessVector
+    auto StringFinder::invoke(const Candidate<IntegerGene>& sol) const -> FitnessVector
     {
-        GAPP_ASSERT(chrom.size() == num_vars());
+        GAPP_ASSERT(sol.size() == num_vars());
 
         double fitness = 0.0;
-        for (size_t i = 0; i < chrom.size(); i++)
+        for (size_t i = 0; i < sol.size(); i++)
         {
-            bool match = (static_cast<char>(chrom[i]) == target_[i]);
+            bool match = (static_cast<char>(sol[i]) == target_[i]);
             fitness += double(match);
         }
 

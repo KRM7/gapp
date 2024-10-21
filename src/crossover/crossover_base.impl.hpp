@@ -14,7 +14,7 @@ namespace gapp::crossover
     template<typename T>
     CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
-        GAPP_ASSERT(parent1.is_evaluated && parent2.is_evaluated);
+        GAPP_ASSERT(parent1.is_evaluated() && parent2.is_evaluated());
         GAPP_ASSERT(parent1.fitness.size() == parent2.fitness.size());
         GAPP_ASSERT(parent1.fitness.size() == ga.num_objectives());
         GAPP_ASSERT(allow_variable_chrom_length() || (parent1.chromosome.size() == ga.chrom_len() &&
@@ -45,8 +45,8 @@ namespace gapp::crossover
         GAPP_ASSERT(allow_variable_chrom_length() || child2.chromosome.size() == ga.chrom_len(),
                   "The crossover returned a candidate with incorrect chromosome length.");
 
-        child1.is_evaluated = false;
-        child2.is_evaluated = false;
+        child1.fitness.clear();
+        child2.fitness.clear();
 
         /*
         * Check if either of the children are the same as one of the parents.
@@ -58,22 +58,18 @@ namespace gapp::crossover
         if (child1 == parent1)
         {
             child1.fitness = parent1.fitness;
-            child1.is_evaluated = parent1.is_evaluated;
         }
         else if (child1 == parent2)
         {
             child1.fitness = parent2.fitness;
-            child1.is_evaluated = parent2.is_evaluated;
         }
         if (child2 == parent1)
         {
             child2.fitness = parent1.fitness;
-            child2.is_evaluated = parent1.is_evaluated;
         }
         else if (child2 == parent2)
         {
             child2.fitness = parent2.fitness;
-            child2.is_evaluated = parent2.is_evaluated;
         }
 
         return { std::move(child1), std::move(child2) };

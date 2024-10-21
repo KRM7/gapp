@@ -27,7 +27,7 @@ namespace gapp::selection
 
         std::vector<double> cdf(weights.size());
 
-        const double wmax = std::max(math::small<double>, *std::max_element(weights.begin(), weights.end()));
+        const double wmax = std::max(math::small<double>, detail::max_value(weights.begin(), weights.end()));
         const double wsum = std::transform_reduce(weights.begin(), weights.end(), 0.0, std::plus{}, detail::divide_by(wmax));
         const double idiv = std::isfinite(1.0 / wsum) ? (1.0 / wsum) : 1.0;
         const double corr = std::isfinite(1.0 / wsum) ? 0.0 : (1.0 / weights.size());
@@ -38,41 +38,38 @@ namespace gapp::selection
     }
 
 
-    void Roulette::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
+    void Roulette::prepareSelectionsImpl(const GaInfo&, const PopulationView& pop)
     {
-        GAPP_ASSERT(!fmat.empty());
+        GAPP_ASSERT(!pop.empty());
 
-        FitnessVector fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
+        FitnessVector fvec = detail::toFitnessVector(pop);
 
-        /* Roulette selection wouldn't work for negative fitness values. */
-        const double lowest = *std::min_element(fvec.begin(), fvec.end());
-        const double offset = -(2.0 / 3.0) * std::min(0.0, lowest); // only adjust if there are negative fitness values
-        const double scale = (lowest >= 0.0) ? 1.0 : (1.0 / 3.0);   // scaling to prevent overflow
+        /* Adjust for negative fitness values. */
+        const double lowest = detail::min_value(fvec.begin(), fvec.end());
+        const double offset = (-2.0 / 3.0) * lowest;
+        const double scale  = 1.0 / 3.0;
 
-        std::transform(fvec.begin(), fvec.end(), fvec.begin(), detail::multiply_add(scale, offset));
+        if (lowest < 0.0) std::transform(fvec.begin(), fvec.end(), fvec.begin(), detail::multiply_add(scale, offset));
 
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Roulette::selectImpl(const GaInfo&, const FitnessMatrix&) const
+    const CandidateInfo& Roulette::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
-        return rng::sampleCdf<double>(cdf_);
+        return rng::randomElement(pop, cdf_);
     }
 
 
-    size_t Tournament::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
+    const CandidateInfo& Tournament::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
-        GAPP_ASSERT(fmat.size() >= tourney_size_);
-        GAPP_ASSERT(fmat.ncols() == 1);
+        GAPP_ASSERT(!pop.empty());
 
-        small_vector<size_t> candidate_indices(tourney_size_);
-        std::generate(candidate_indices.begin(), candidate_indices.end(), [&]{ return rng::randomIndex(fmat); });
+        small_vector<size_t> candidate_indexes(tourney_size_);
+        std::generate(candidate_indexes.begin(), candidate_indexes.end(), [&] { return rng::randomIndex(pop); });
 
-        return *std::max_element(candidate_indices.begin(), candidate_indices.end(),
-        [&](size_t lhs, size_t rhs) noexcept
-        {
-            return fmat[lhs][0] < fmat[rhs][0];
-        });
+        const size_t selected_idx = *detail::max_element(candidate_indexes.begin(), candidate_indexes.end(), [&](size_t idx) { return pop[idx].fitness[0]; });
+
+        return pop[selected_idx];
     }
 
 
@@ -90,48 +87,49 @@ namespace gapp::selection
         max_weight_ = max_weight;
     }
 
-    void Rank::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
+    void Rank::prepareSelectionsImpl(const GaInfo&, const PopulationView& pop)
     {
-        GAPP_ASSERT(fmat.ncols() == 1);
+        GAPP_ASSERT(pop.size() > 1);
 
-        const auto indices = detail::argsort(fmat.begin(), fmat.end(), [](const auto& lhs, const auto& rhs) { return lhs[0] < rhs[0]; });
+        FitnessVector fvec = detail::toFitnessVector(pop);
+        const auto indices = detail::argsort(fvec.begin(), fvec.end());
 
-        std::vector<double> weights(fmat.size());
-        for (size_t i = 0; i < indices.size(); i++)
+        const double weight_step = (max_weight_ - min_weight_) / (pop.size() - 1);
+        for (double weight = min_weight_; size_t idx : indices)
         {
-            const double t = i / (weights.size() - 1.0);
-            weights[indices[i]] = std::lerp(min_weight_, max_weight_, t);
+            fvec[idx] = weight;
+            weight += weight_step;
         }
-
-        cdf_ = weightsToCdf(weights);
-    }
-
-    size_t Rank::selectImpl(const GaInfo&, const FitnessMatrix&) const
-    {
-        return rng::sampleCdf<double>(cdf_);
-    }
-
-
-    void Sigma::prepareSelectionsImpl(const GaInfo&, const FitnessMatrix& fmat)
-    {
-        FitnessVector fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
-        const double fmean = math::mean(fvec);
-        const double fdev = math::stdDev(fvec, fmean);
-        const double idiv = 1.0 / std::clamp(fdev, math::small<double>, math::large<double>);
-
-        std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&](double f)
-        {
-            const double weight = 1.0 + (f - fmean) * idiv;
-
-            return std::clamp(weight, 0.0, math::large<double>);  /* If ( fitness < (f_mean - scale * SD) ) the weight could be negative. */
-        });
 
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Sigma::selectImpl(const GaInfo&, const FitnessMatrix&) const
+    const CandidateInfo& Rank::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
-        return rng::sampleCdf<double>(cdf_);
+        return rng::randomElement(pop, cdf_);
+    }
+
+
+    void Sigma::prepareSelectionsImpl(const GaInfo&, const PopulationView& pop)
+    {
+        FitnessVector fvec = detail::toFitnessVector(pop);
+
+        const double fmean = math::mean(fvec);
+        const double fdev = math::stdDev(fvec, fmean);
+        const double idiv = 1.0 / std::clamp(fdev, math::small<double>, math::large<double>);
+
+        for (double& f : fvec)
+        {
+            const double weight = 1.0 + (f - fmean) * idiv;
+            f = std::clamp(weight, 0.0, math::large<double>);
+        }
+
+        cdf_ = weightsToCdf(fvec);
+    }
+
+    const CandidateInfo& Sigma::selectImpl(const GaInfo&, const PopulationView& pop) const
+    {
+        return rng::randomElement(pop, cdf_);
     }
 
 
@@ -142,39 +140,39 @@ namespace gapp::selection
         temperature_ = std::move(f);
     }
 
-    void Boltzmann::prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    void Boltzmann::prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop)
     {
-        GAPP_ASSERT(fmat.ncols() == 1);
+        GAPP_ASSERT(!pop.empty());
+        GAPP_ASSERT(temperature_);
 
-        FitnessVector fvec = detail::toFitnessVector(fmat.begin(), fmat.end());
-        const auto [fmin, fmax] = std::minmax_element(fvec.begin(), fvec.end());
-        const double df = std::clamp(*fmax - *fmin, math::small<double>, math::large<double>);
-        const double temperature = temperature_(ga.generation_cntr(), ga.max_gen());
+        FitnessVector fvec = detail::toFitnessVector(pop);
 
-        // can't capture the iterators by ref or value here
-        std::transform(fvec.begin(), fvec.end(), fvec.begin(), [&, f_min = *fmin](double f) noexcept
+        const auto [fmin, fmax] = detail::minmax_value(fvec.begin(), fvec.end());
+        const double df = std::clamp(fmax - fmin, math::small<double>, math::large<double>);
+        const double temperature = std::invoke(temperature_, ga.generation_cntr(), ga.max_gen());
+
+        for (double& f : fvec)
         {
-            const double fnorm = f / df - f_min / df; // normalize the fitness values to prevent overflows with std::exp
-
-            return std::min(math::large<double>, std::exp(fnorm / temperature));
-        });
+            const double fnorm = (f / df) - (fmin / df);
+            f = std::min(math::large<double>, std::exp(fnorm / temperature));
+        }
 
         cdf_ = weightsToCdf(fvec);
     }
 
-    size_t Boltzmann::selectImpl(const GaInfo&, const FitnessMatrix&) const
+    const CandidateInfo& Boltzmann::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
-        return rng::sampleCdf<double>(cdf_);
+        return rng::randomElement(pop, cdf_);
     }
 
     double Boltzmann::boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept
     {
-        constexpr double Tmin = 0.2;
-        constexpr double Tmax = 4.0;
-        constexpr double tbeg = 3.0;
-        constexpr double Vtd = 10.0;
+        static constexpr double Tmin = 0.2;
+        static constexpr double Tmax = 4.0;
+        static constexpr double Tbeg = 3.0;
+        static constexpr double Vtd = 10.0;
 
-        return -Tmax / (1.0 + std::exp(-Vtd * (double(gen) / max_gen) + tbeg)) + Tmax + Tmin;
+        return -Tmax / (1.0 + std::exp(-Vtd * (double(gen) / max_gen) + Tbeg)) + Tmax + Tmin;
     }
 
 
@@ -184,10 +182,10 @@ namespace gapp::selection
         GAPP_ASSERT(selection_, "The selection method can't be a nullptr.");
     }
 
-    size_t Lambda::selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const
+    const CandidateInfo& Lambda::selectImpl(const GaInfo& ga, const PopulationView& pop) const
     {
         GAPP_ASSERT(selection_);
-        return selection_(ga, fmat);
+        return selection_(ga, pop);
     }
 
 } // namespace gapp::selection

@@ -50,4 +50,16 @@
 	</Expand>
 </Type>
 
+<Type Name="gapp::detail::base_view&lt;*&gt;">
+	<DisplayString>
+		{{ {{ size = { (last_.ptr_ - first_.ptr_) / first_.step_ } }} }}
+	</DisplayString>
+	<Expand>
+		<IndexListItems>
+			<Size>(last_.ptr_ - first_.ptr_) / first_.step_</Size>
+			<ValueNode>*($T1*)(first_.ptr_ + $i * first_.step_)</ValueNode>
+		</IndexListItems>
+	</Expand>
+</Type>
+
 </AutoVisualizer>

@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_MATH_HPP
-#define GA_UTILITY_MATH_HPP
+#ifndef GAPP_UTILITY_MATH_HPP
+#define GAPP_UTILITY_MATH_HPP
 
 #include "bounded_value.hpp"
 #include "utility.hpp"
@@ -253,4 +253,4 @@ namespace gapp::math
 
 } // namespace gapp::math
 
-#endif // !GA_UTILITY_MATH_HPP
+#endif // !GAPP_UTILITY_MATH_HPP
