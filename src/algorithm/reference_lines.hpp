@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_REFERENCE_LINES_HPP
-#define GA_ALGORITHM_REFERENCE_LINES_HPP
+#ifndef GAPP_ALGORITHM_REFERENCE_LINES_HPP
+#define GAPP_ALGORITHM_REFERENCE_LINES_HPP
 
 #include "../core/candidate.hpp"
 #include "../utility/bounded_value.hpp"
@@ -68,4 +68,4 @@ namespace gapp::algorithm::reflines
 
 } // namespace gapp::algorithm::reflines
 
-#endif // !GA_ALGORITHM_REFERENCE_LINES_HPP
+#endif // !GAPP_ALGORITHM_REFERENCE_LINES_HPP

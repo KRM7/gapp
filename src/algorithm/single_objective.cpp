@@ -1,6 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "single_objective.hpp"
+#include "algorithm_base.hpp"
 #include "soga_selection.hpp"
 #include "soga_replacement.hpp"
 #include "../core/ga_info.hpp"
@@ -59,12 +60,12 @@ namespace gapp::algorithm
         selection_->initializeImpl(ga);
     }
 
-    small_vector<size_t> SingleObjective::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    CandidatePtrVec SingleObjective::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(replacement_);
         GAPP_ASSERT(ga.num_objectives() == 1, "The number of objectives must be 1 for the single-objective algorithms.");
 
-        return replacement_->nextPopulationImpl(ga, fmat);
+        return replacement_->nextPopulationImpl(ga, pop);
     }
 
 } // namespace gapp::algorithm

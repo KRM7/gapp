@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ENCODING_PERMUTATION_HPP
-#define GA_ENCODING_PERMUTATION_HPP
+#ifndef GAPP_ENCODING_PERMUTATION_HPP
+#define GAPP_ENCODING_PERMUTATION_HPP
 
 #include "gene_types.hpp"
 #include "../core/ga_base.hpp"
@@ -26,10 +26,10 @@ namespace gapp
     * that should be used for combinatorial problems.
     * 
     * The chromosome of a candidate solution encodes a permutation. Every gene of a chromosome
-    * is a unique unsigned integer in the closed interval of [0, chrom_len - 1],
+    * is a unique unsigned integer in the closed interval of [0, chrom_len - 1].
     * 
     * Without any loss of generality, the first and last elements of the permutations are
-    * assumed to be unrelated, eg. the permutation A-B-C-D will not be considered equal
+    * assumed to be unrelated, e.g. the permutation A-B-C-D will not be considered equal
     * to the permutation B-C-D-A by the %GA. The fitness function should also be written
     * with this in mind.
     */
@@ -43,4 +43,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_ENCODING_PERMUTATION_HPP
+#endif // !GAPP_ENCODING_PERMUTATION_HPP

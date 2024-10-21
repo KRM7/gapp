@@ -80,3 +80,22 @@ TEST_CASE("copy_const_t", "[type_traits]")
     STATIC_REQUIRE(std::is_same_v<copy_const_t<int, const double>, const double>);
     STATIC_REQUIRE(std::is_same_v<copy_const_t<const int, const double>, const double>);
 }
+
+TEST_CASE("copy_volatile_t", "[type_traits]")
+{
+    STATIC_REQUIRE(std::is_same_v<copy_volatile_t<volatile int, double>, volatile double>);
+    STATIC_REQUIRE(std::is_same_v<copy_volatile_t<int, double>, double>);
+    STATIC_REQUIRE(std::is_same_v<copy_volatile_t<int, volatile double>, volatile double>);
+    STATIC_REQUIRE(std::is_same_v<copy_volatile_t<volatile int, volatile double>, volatile double>);
+}
+
+TEST_CASE("copy_cv_t", "[type_traits]")
+{
+    STATIC_REQUIRE(std::is_same_v<copy_cv_t<const int, volatile double>, const volatile double>);
+    STATIC_REQUIRE(std::is_same_v<copy_cv_t<const volatile int, double>, const volatile double>);
+    STATIC_REQUIRE(std::is_same_v<copy_cv_t<int, double>, double>);
+    STATIC_REQUIRE(std::is_same_v<copy_cv_t<int, const double>, const double>);
+    STATIC_REQUIRE(std::is_same_v<copy_cv_t<volatile int, const double>, const volatile double>);
+    STATIC_REQUIRE(std::is_same_v<copy_cv_t<const int, const double>, const double>);
+    STATIC_REQUIRE(std::is_same_v<copy_cv_t<const volatile int, const volatile double>, const volatile double>);
+}

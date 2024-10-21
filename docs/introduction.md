@@ -1,12 +1,13 @@
 ﻿
 1. **Introduction**  
 2. [Fitness functions](fitness-functions.md)  
-3. [Encodings](encodings.md)  
-4. [Algorithms](algorithms.md)  
-5. [Genetic operators](genetic-operators.md)  
-6. [Stop conditions](stop-conditions.md)  
-7. [Metrics](metrics.md)  
-8. [Miscellaneous](miscellaneous.md)  
+3. [Constraint handling](constraint-handling.md)  
+4. [Encodings](encodings.md)  
+5. [Algorithms](algorithms.md)  
+6. [Genetic operators](genetic-operators.md)  
+7. [Stop conditions](stop-conditions.md)  
+8. [Metrics](metrics.md)  
+9. [Miscellaneous](miscellaneous.md)  
 
 ------------------------------------------------------------------------------------------------
 
@@ -77,8 +78,8 @@ At this point, we know everything needed to implement the fitness function:
 
 using namespace gapp;
 
-// Fitness functions should be derived from the FitnessFunction class and
-// specify the encoding type and the chromosome length as template parameters
+// Fitness functions should be derived from the FitnessFunction class template and
+// specify the encoding type and the chromosome length as the template parameters
 // (or use the FitnessFunctionBase class as the base class if the chromosome length
 // is not known at compile time).
 class SinX : public FitnessFunction<RealGene, /* chrom_length = */ 1> 
@@ -272,4 +273,4 @@ Generation | Fitness mean | Fitness max
 
 ------------------------------------------------------------------------------------------------
 
-[<p align="right">Next: Fitness functions</p>](fitness-functions.md)
+<p align="right"><a href="fitness-functions.md">Next: Fitness functions</a></p>

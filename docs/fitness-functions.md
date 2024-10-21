@@ -1,12 +1,13 @@
 ﻿
 1. [Introduction](introduction.md)  
 2. **Fitness functions**  
-3. [Encodings](encodings.md)  
-4. [Algorithms](algorithms.md)  
-5. [Genetic operators](genetic-operators.md)  
-6. [Stop conditions](stop-conditions.md)  
-7. [Metrics](metrics.md)    
-8. [Miscellaneous](miscellaneous.md)
+3. [Constraint handling](constraint-handling.md)  
+4. [Encodings](encodings.md)  
+5. [Algorithms](algorithms.md)  
+6. [Genetic operators](genetic-operators.md)  
+7. [Stop conditions](stop-conditions.md)  
+8. [Metrics](metrics.md)  
+9. [Miscellaneous](miscellaneous.md)
 
 ------------------------------------------------------------------------------------------------
 
@@ -125,7 +126,7 @@ function for this problem would be the following:
 ```cpp
 class XSquare : public FitnessFunction</* GeneType = */ RealGene, /* ChromLen = */ 1>
 {
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override
+    FitnessVector invoke(const Candidate<RealGene>& x) const override
     {
         return { -x[0] * x[0] };
     }
@@ -147,10 +148,10 @@ have to set their values differently from the defaults.
 ### Dynamic fitness functions
 
 The fitness functions are, by default, assumed to always return the
-same fitness vector for a given chromosome passed to them as an
+same fitness vector for a given candidate solution passed to them as an
 argument. This assumption is used to prevent unnecessary fitness
 function calls, but it would also cause potentially incorrect fitness
-vectors to be assigned to some solutions if the assumption is not true.
+vectors to be assigned to some solutions if this assumption is not true.
 
 In order to prevent this, the fitness functions have a `Type` associated
 with them, which can either be `Static` or `Dynamic`. The type of a fitness
@@ -170,7 +171,7 @@ class MyFitnessFunction : public FitnessFunction<RealGene, 1>
 {
     MyFitnessFunction() : FitnessFunction(/* type = */ Type::Dynamic) {}
 
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override;
+    FitnessVector invoke(const Candidate<RealGene>& x) const override;
 };
 ```
 
@@ -181,8 +182,8 @@ the solutions. However, the chromosome length parameter of the fitness
 function still has to be specified even when variable length chromosomes
 are used to represent the solutions.  
 In this case the value will only be used to generate the solutions of the
-initial population (assuming that the initial population is generated instead
-of being explicitly specified by the user).
+initial population (assuming that the initial population is generated and
+not explicitly specified by the user).
 
 > [!NOTE]
 > When using variable chromosome lengths, every part of the GAs must be able
@@ -250,4 +251,4 @@ used support both negative and infinite values.
 
 ------------------------------------------------------------------------------------------------
 
-[<p align="right">Next: Encodings</p>](encodings.md)
+<p align="right"><a href="constraint-handling.md">Next: Constraint handling</a></p>

@@ -5,6 +5,7 @@
 
 #include "candidate.hpp"
 #include "../utility/small_vector.hpp"
+#include "../utility/iterators.hpp"
 #include <cstddef>
 
 namespace gapp
@@ -17,16 +18,28 @@ namespace gapp
     template<typename Gene>
     using Candidates = std::vector<Candidate<Gene>>;
 
+    /** A view of a population without the encoding specific parts (i.e. without the chromosomes). */
+    using PopulationView = detail::base_view<const CandidateInfo>;
+
+    /** A vector of pointers to candidates. */
+    using CandidatePtrVec = std::vector<const CandidateInfo*>;
+
 } // namespace gapp
 
 namespace gapp::detail
 {
-    /* Return the fitness matrix of the population (multi-objective). */
+    /* Return the fitness matrix of the population. */
     template<typename T>
     FitnessMatrix toFitnessMatrix(const Population<T>& pop);
 
+    /* Return the fitness matrix of the population. */
+    FitnessMatrix toFitnessMatrix(const PopulationView& pop);
+
     /* Return the fitness vector of a fitness matrix along the first objective axis. */
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last);
+
+    /* Return the fitness vector of a population along the first objective axis. */
+    FitnessVector toFitnessVector(const PopulationView& pop);
 
     /* Find the pareto-optimal solutions in a population. Assumes fitness maximization, duplicates are not eliminated. */
     template<typename T>
@@ -56,7 +69,6 @@ namespace gapp::detail
 
 #include "../utility/algorithm.hpp"
 #include "../utility/functional.hpp"
-#include "../utility/iterators.hpp"
 #include "../utility/thread_pool.hpp"
 #include "../utility/utility.hpp"
 #include "../utility/math.hpp"

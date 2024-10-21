@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CORE_GA_BASE_DECL_HPP
-#define GA_CORE_GA_BASE_DECL_HPP
+#ifndef GAPP_CORE_GA_BASE_DECL_HPP
+#define GAPP_CORE_GA_BASE_DECL_HPP
 
 #include "ga_info.hpp"
 #include "ga_traits.hpp"
@@ -82,12 +82,23 @@ namespace gapp
         using MutationCallable = std::function<void(const GA&, const Candidate<T>&, Chromosome<T>&)>;
 
         /**
+        * The general callable type that can be used as a constraints function in the %GA.
+        * The function takes a chromosome, and returns a vector of the constraint violation
+        * degrees for each constraint associated with the fitness function.
+        * 
+        * @see constraints_function
+        */
+        using ConstraintsFunction = std::function<CVVector(const GA&, const Chromosome<T>&)>;
+
+        /**
         * The general callable type that can be used as a repair function in the %GA.
-        * The function takes a candidate solution, and performs some operation on it.
+        * The function takes a candidate solution, and potentially changes this solution's
+        * chromosome.
+        * The function returns true if it changed the chromosome, and false if it didn't.
         * 
         * @see repair_function
         */
-        using RepairCallable = std::function<Chromosome<T>(const GA&, const Chromosome<T>&)>;
+        using RepairCallable = std::function<bool(const GA&, const Candidate<T>&, Chromosome<T>&)>;
 
 
         /**
@@ -192,7 +203,7 @@ namespace gapp
         [[nodiscard]]
         const FitnessFunctionBase<T>* fitness_function() const& noexcept final;
 
-        /** @returns The chromosome length used. Returns 0 if the chromosome length is unspecified (ie. no fitness function was set yet). */
+        /** @returns The chromosome length used. Returns 0 if the chromosome length is unspecified (i.e. no fitness function was set yet). */
         [[nodiscard]]
         size_t chrom_len() const noexcept final;
 
@@ -321,19 +332,44 @@ namespace gapp
         Probability mutation_rate() const noexcept final;
 
         /**
+        * Set the constraints function associated with the fitness function. This is
+        * meant to allow for the handling of constrained optimization problems.
+        * 
+        * The constraints function takes a chromosome, and returns a vector of the
+        * constraint violation degrees of the solution for each constraint associated
+        * with the fitness function.
+        * The concrete interpretation of the constraint violation degrees is up the the
+        * constraint handling technique used, but higher values mean greater degrees of
+        * violation, and 0 or lower values mean that the solution does not violate that
+        * particular constraint.
+        * 
+        * A nullptr can be used if there are no constraints associated with the fitness
+        * function. This is also the default behaviour (i.e. no constraints are set by
+        * default).
+        * 
+        * The constraints function should be thread-safe if parallel execution is enabled
+        * (true by default).
+        * 
+        * @param f The constraints to use. Allowed to be a nullptr.
+        */
+        void constraints_function(ConstraintsFunction f) noexcept;
+
+        /**
         * Set a repair function for the %GA.
-        * This function will be invoked for each chromosome in every generation,
-        * after the chromosomes were mutated.
+        * This function will be invoked for each candidate in every generation,
+        * after the chromosomes were mutated and the constraint violations were
+        * computed.
         * 
         * Using a repair function is optional, and no repair function is used
         * in the %GA by default. A nullptr can be used as the argument to this function
         * to disable the use of a repair function.
         * 
-        * The repair function should be thread-safe if parallel execution is enabled (true by default).
+        * The repair function should be thread-safe if parallel execution is enabled
+        * (true by default).
         * 
         * @param f The repair function to use. Allowed to be a nullptr.
         */
-        void repair_function(RepairCallable f);
+        void repair_function(RepairCallable f) noexcept;
 
         /**
         * Set the number of generations whose solutions will be cached by the %GA.
@@ -375,6 +411,15 @@ namespace gapp
         */
         [[nodiscard]]
         const Population<T>& population() const& noexcept { return population_; }
+
+        /**
+        * @returns A view of the population, without the encoding dependent parts of the candidates
+        * (i.e. without the chromosomes). Each element of this view is a reference to an actual
+        * candidate of the population, not a separate data structure. They may be cast to the concrete
+        * candidate type if the encoding type is known.
+        */
+        [[nodiscard]]
+        PopulationView population_view() const& noexcept final { return population_; }
 
 
         /********************* NON-BOUNDED ALGORITHM SOLVE METHODS *********************/
@@ -589,6 +634,7 @@ namespace gapp
         std::unique_ptr<FitnessFunctionBase<T>> fitness_function_;
         std::unique_ptr<crossover::Crossover<T>> crossover_;
         std::unique_ptr<mutation::Mutation<T>> mutation_;
+        ConstraintsFunction constraints_function_;
         RepairCallable repair_ = nullptr;
 
         GAPP_NO_UNIQUE_ADDRESS MaybeBoundsVector bounds_;
@@ -617,7 +663,7 @@ namespace gapp
         */
         virtual Candidate<T> generateCandidate() const = 0;
 
-        Positive<size_t> findNumberOfObjectives() const;
+        std::pair<Positive<size_t>, size_t> findObjectiveProperties() const;
         std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
         Probability defaultMutationRate() const;
 
@@ -627,6 +673,7 @@ namespace gapp
         const Candidate<T>& select() const;
         CandidatePair<T> crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const;
         void mutate(Candidate<T>& sol) const;
+        void validate(Candidate<T>& sol) const;
         void repair(Candidate<T>& sol) const;
         void updatePopulation(Population<T>&& children);
         bool stopCondition() const;
@@ -636,8 +683,9 @@ namespace gapp
 
         void advance();
 
-
+        /* Invariant checking functions. */
         bool hasValidFitness(const Candidate<T>& sol) const noexcept;
+        bool hasValidConstraints(const Candidate<T>& sol) const noexcept;
         bool hasValidChromosome(const Candidate<T>& sol) const noexcept;
         bool isValidEvaluatedPopulation(const Population<T>& pop) const;
         bool isValidUnevaluatedPopulation(const Population<T>& pop) const;
@@ -646,4 +694,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_CORE_GA_BASE_DECL_HPP
+#endif // !GAPP_CORE_GA_BASE_DECL_HPP

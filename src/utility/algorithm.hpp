@@ -24,13 +24,15 @@
 namespace gapp::detail
 {
     template<typename T, typename U>
-    constexpr auto&& forward_like(U&& u) noexcept // from P2445R1
+    constexpr auto&& forward_like(U&& u) noexcept
     {
         using NorefU = std::remove_reference_t<U>;
 
         using CastType = std::conditional_t<std::is_lvalue_reference_v<T>,
-            detail::copy_const_t<T, NorefU&>,
-            detail::copy_const_t<T, NorefU&&>>;
+            detail::copy_const_t<T, NorefU>&,
+            detail::copy_const_t<T, NorefU>&&>;
+
+        static_assert(!(!std::is_lvalue_reference_v<U> && std::is_lvalue_reference_v<CastType>));
 
         return static_cast<CastType>(u);
     }
@@ -169,6 +171,98 @@ namespace gapp::detail
         }
 
         return min_elem;
+    }
+
+    template<std::forward_iterator Iter, typename F = std::identity>
+    requires std::invocable<F&, std::iter_reference_t<Iter>>
+    constexpr std::pair<Iter, Iter> minmax_element(Iter first, Iter last, F&& transform = {})
+    {
+        GAPP_ASSERT(std::distance(first, last) >= 0);
+
+        if (first == last) return { first, first };
+
+        Iter min_elem = first;
+        Iter max_elem = first;
+        auto min_value = std::invoke(transform, *first);
+        auto max_value = min_value;
+
+        for (++first; first != last; ++first)
+        {
+            auto value = std::invoke(transform, *first);
+            if (value < min_value)
+            {
+                min_value = std::move(value);
+                min_elem = first;
+            }
+            else if (max_value < value)
+            {
+                max_value = std::move(value);
+                max_elem = first;
+            }
+        }
+
+        return { min_elem, max_elem };
+    }
+
+    template<std::forward_iterator Iter, typename F = std::identity>
+    requires std::invocable<F&, std::iter_reference_t<Iter>>
+    constexpr auto max_value(Iter first, Iter last, F&& transform = {})
+    {
+        GAPP_ASSERT(std::distance(first, last) > 0);
+
+        auto max_value = std::invoke(transform, *first);
+
+        for (++first; first != last; ++first)
+        {
+            auto value = std::invoke(transform, *first);
+            if (!(max_value < value)) continue;
+            max_value = std::move(value);
+        }
+
+        return max_value;
+    }
+
+    template<std::forward_iterator Iter, typename F = std::identity>
+    requires std::invocable<F&, std::iter_reference_t<Iter>>
+    constexpr auto min_value(Iter first, Iter last, F&& transform = {})
+    {
+        GAPP_ASSERT(std::distance(first, last) > 0);
+
+        auto min_value = std::invoke(transform, *first);
+
+        for (++first; first != last; ++first)
+        {
+            auto value = std::invoke(transform, *first);
+            if (!(value < min_value)) continue;
+            min_value = std::move(value);
+        }
+
+        return min_value;
+    }
+
+    template<std::forward_iterator Iter, typename F = std::identity>
+    requires std::invocable<F&, std::iter_reference_t<Iter>>
+    constexpr auto minmax_value(Iter first, Iter last, F&& transform = {})
+    {
+        GAPP_ASSERT(std::distance(first, last) > 0);
+
+        auto min_value = std::invoke(transform, *first);
+        auto max_value = min_value;
+
+        for (++first; first != last; ++first)
+        {
+            auto value = std::invoke(transform, *first);
+            if (value < min_value)
+            {
+                min_value = std::move(value);
+            }
+            else if (max_value < value)
+            {
+                max_value = std::move(value);
+            }
+        }
+
+        return std::pair{ std::move(min_value), std::move(max_value) };
     }
 
     template<std::random_access_iterator Iter, typename F = std::identity>

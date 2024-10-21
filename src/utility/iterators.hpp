@@ -1,11 +1,12 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_ITERATORS_HPP
-#define GA_UTILITY_ITERATORS_HPP
+#ifndef GAPP_UTILITY_ITERATORS_HPP
+#define GAPP_UTILITY_ITERATORS_HPP
 
 #include "utility.hpp"
 #include "type_traits.hpp"
 #include <iterator>
+#include <ranges>
 #include <type_traits>
 #include <concepts>
 #include <compare>
@@ -557,14 +558,117 @@ namespace gapp::detail
     };
 
 
+    /* base iterator */
+
+    template<typename Base>
+    class base_iterator : public random_access_iterator_interface<base_iterator<Base>>
+    {
+    public:
+        using my_base_ = random_access_iterator_interface<base_iterator<Base>>;
+
+        using typename my_base_::iterator_category;
+        using typename my_base_::difference_type;
+
+        using value_type = Base;
+        using reference  = Base&;
+        using pointer    = Base*;
+
+        constexpr base_iterator() noexcept = default;
+
+        template<std::derived_from<Base> Derived>
+        explicit constexpr base_iterator(Derived* data) noexcept :
+            ptr_(reinterpret_cast<internal_pointer>(static_cast<Base*>(data))),
+            step_(sizeof(Derived))
+        {}
+
+        constexpr reference operator*() const noexcept
+        {
+            return *std::launder(reinterpret_cast<pointer>(ptr_));
+        }
+
+        friend constexpr bool operator==(const base_iterator& lhs, const base_iterator& rhs) noexcept
+        {
+            return lhs.ptr_ == rhs.ptr_;
+        }
+
+        friend constexpr bool operator<(const base_iterator& lhs, const base_iterator& rhs) noexcept
+        {
+            return lhs.ptr_ < rhs.ptr_;
+        }
+
+        constexpr base_iterator& increment() noexcept
+        {
+            ptr_ += step_;
+            return *this;
+        }
+
+        constexpr base_iterator& decrement() noexcept
+        {
+            ptr_ -= step_;
+            return *this;
+        }
+
+        constexpr base_iterator& operator+=(difference_type n) noexcept
+        {
+            ptr_ += n * step_;
+            return *this;
+        }
+
+        friend constexpr difference_type operator-(base_iterator lhs, base_iterator rhs) noexcept
+        {
+            GAPP_ASSERT(lhs.step_ == rhs.step_);
+            return (lhs.ptr_ - rhs.ptr_) / lhs.step_;
+        }
+
+    private:
+        using internal_pointer = detail::copy_cv_t<Base, unsigned char>*;
+
+        internal_pointer ptr_ = nullptr;
+        std::size_t step_ = 0;
+    };
+
+
+    template<typename Base, std::ranges::contiguous_range Container>
+    constexpr auto base_begin(Container& container) noexcept
+    {
+        if (container.empty()) return base_iterator<Base>();
+
+        return base_iterator<Base>(std::to_address(container.begin()));
+    }
+
+    template<typename Base, std::ranges::contiguous_range Container>
+    constexpr auto base_end(Container& container) noexcept
+    {
+        return base_begin<Base>(container) + container.size();
+    }
+
+    template<typename Base>
+    struct base_view : public container_interface<base_view<Base>>
+    {
+        template<std::ranges::contiguous_range Range>
+        requires(std::is_lvalue_reference_v<Range>)
+        constexpr /* implicit */ base_view(Range&& r) noexcept :
+            first_(base_begin<Base>(r)),
+            last_(base_end<Base>(r))
+        {}
+
+        constexpr auto begin() const noexcept { return first_; }
+        constexpr auto end() const noexcept { return last_; }
+
+    private:
+        base_iterator<Base> first_;
+        base_iterator<Base> last_;
+    };
+
+
     template<std::input_iterator Iter>
     constexpr auto make_move_iterator_if_noexcept(Iter it) noexcept
     {
         if constexpr (std::is_nothrow_move_constructible_v<std::iter_value_t<Iter>>)
-            return std::move_iterator<Iter>(it);
+            return std::make_move_iterator(it);
         else return it;
     }
 
 } // namespace gapp::detail
 
-#endif // !GA_UTILITY_ITERATORS_HPP
+#endif // !GAPP_UTILITY_ITERATORS_HPP

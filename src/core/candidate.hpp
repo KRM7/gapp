@@ -6,15 +6,21 @@
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
 #include "../utility/matrix.hpp"
+#include "../utility/functional.hpp"
 #include "../utility/concepts.hpp"
+#include "../utility/iterators.hpp"
 #include <vector>
+#include <algorithm>
 #include <utility>
 #include <concepts>
 #include <cstddef>
 
 namespace gapp
 {
-    /** The class used to represent the fitness of the candidates. Contains a fitness value for each objective. */
+    /**
+    * The class used to represent the fitness of the candidates. 
+    * Contains a fitness value for each objective.
+    */
     using FitnessVector = small_vector<double>;
 
     /** 
@@ -24,6 +30,16 @@ namespace gapp
     * The size of a fitness matrix is: [ number_of_candidates x number_of_objectives ].
     */
     using FitnessMatrix = detail::Matrix<double>;
+
+    /**
+    * The class used to represent the constraint violations of a candidate. It contains
+    * the degree of constraint violation for each constraint separately. Higher values
+    * mean greater degrees of constraint violation, while 0 or lower values mean no
+    * constraint violation for a given constraint.
+    * 
+    * The size of a constraint violation vector is equal to the number of constraints.
+    */
+    using CVVector = small_vector<double, 2>;
 
     /**
     * The class used to represent the lower and upper bounds of a gene.
@@ -75,13 +91,83 @@ namespace gapp
     template<typename T>
     using Chromosome = std::vector<T>;
 
+
+    /**
+    * The base class used for the representation of candidate solutions in all of the GAs.
+    * This class contains the parts of the candidates that are independent of the encoding type.
+    * The derived Candidate class contains the encoding dependent parts in addition to these.
+    *
+    * @tparam T The gene type used in the candidate's chromosome.
+    */
+    struct CandidateInfo
+    {
+        /** The solution's fitness value for each objective. */
+        FitnessVector fitness;
+
+        /** The solution's degree of constraint violation for each constraint. */
+        CVVector constraint_violation;
+
+
+        /** 
+        * @returns The number of objectives associated with the candidate.
+        *    The return value will be 0 if called before the candidate has been evaluated.
+        *    Equivalent to calling fitness.size().
+        */
+        size_t num_objectives() const noexcept
+        {
+            return fitness.size();
+        }
+
+        /**
+        * @returns True if the candidate has a valid fitness vector associated with it.
+        *    Equivalent to calling !fitness.empty().
+        */
+        bool is_evaluated() const noexcept 
+        {
+            return !fitness.empty();
+        }
+
+        /** 
+        * @returns The number of constraints associated with the candidate.
+        *    The return value will be 0 if called before the constraints have been evaluated.
+        *    Equivalent to calling constraint_violation.size().
+        */
+        size_t num_constraints() const noexcept
+        {
+            return constraint_violation.size();
+        }
+
+        /**
+        * @returns True if the candidate violates any of its constraints. If there are no
+        *    constraints associated with the candidate, it will also return false.
+        *    Returns false if called before the constraints have been evaluated.
+        */
+        bool has_constraint_violation() const noexcept
+        {
+            return std::any_of(constraint_violation.begin(), constraint_violation.end(), detail::greater_than(0.0));
+        }
+
+    protected:
+
+        CandidateInfo()                                 = default;
+        CandidateInfo(const CandidateInfo&)             = default;
+        CandidateInfo(CandidateInfo&&)                  = default;
+        CandidateInfo& operator=(const CandidateInfo&)  = default;
+        CandidateInfo& operator=(CandidateInfo&&)       = default;
+        ~CandidateInfo()                                = default;
+    };
+
     /**
     * The class that is used to represent candidate solutions in all of the algorithms.
+    * 
+    * Contains several helper methods to access the chromosome directly, such as iterator
+    * methods. The behaviour of all these helper functions is equivalent to calling the
+    * matching functions on the chromosome member.
     * 
     * @tparam T The gene type used in the candidate's chromosome.
     */
     template<typename T>
-    struct Candidate
+    struct Candidate : public CandidateInfo, public detail::container_interface<Candidate<T>>
     {
         using Gene = T; /**< The type of the candidate's genes. */
 
@@ -93,6 +179,17 @@ namespace gapp
         */
         explicit Candidate(size_t chrom_len) :
             chromosome(chrom_len)
+        {}
+
+        /**
+        * Create a candidate with an empty fitness vector and specific chromosome size.
+        * The genes of the chromosome will be equal to @p gene.
+        *
+        * @param chrom_len The length of the chromosome.
+        * @param gene The value of the genes in the chromosome.
+        */
+        Candidate(size_t chrom_len, Gene gene) :
+            chromosome(chrom_len, gene)
         {}
 
         /**
@@ -129,9 +226,24 @@ namespace gapp
         Candidate& operator=(Candidate&&)       = default;
         ~Candidate()                            = default;
 
-        FitnessVector fitness;      /**< The fitness values of the solution (for every objective). */
-        Chromosome<T> chromosome;   /**< The chromosome encoding the solution. */
-        bool is_evaluated = false;  /**< True if the candidate's fitness value doesn't need to be computed. */
+
+        /** @returns An iterator to the beginning of the candidate's chromosome. */
+        auto begin() noexcept { return chromosome.begin(); }
+        auto begin() const noexcept { return chromosome.begin(); }
+
+        /** @returns An iterator to the end of the candidate's chromosome. */
+        auto end() noexcept { return chromosome.end(); }
+        auto end() const noexcept { return chromosome.end(); }
+
+
+        /** @returns The length of the chromosome. Equivalent to calling chromosome.size(). */
+        size_t chrom_len() const noexcept
+        {
+            return chromosome.size();
+        }
+
+        /** The chromosome encoding the solution. */
+        Chromosome<T> chromosome;
     };
 
     /** A pair of candidates. */
@@ -164,7 +276,6 @@ namespace gapp
 /* IMPLEMENTATION */
 
 #include "../utility/utility.hpp"
-#include <algorithm>
 #include <functional>
 #include <type_traits>
 

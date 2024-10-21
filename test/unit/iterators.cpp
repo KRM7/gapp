@@ -177,3 +177,60 @@ TEST_CASE("iota_iterator", "[iterators]")
         REQUIRE(last - first == 4);
     }
 }
+
+TEST_CASE("base_iterator_single", "[iterators]")
+{
+    struct Base { int n = 1; };
+    struct Derived : Base { int m = 2; };
+
+    std::vector<Derived> vec(10);
+
+    REQUIRE(
+        std::all_of(base_begin<Base>(vec), base_end<Base>(vec), [](const Base& b) { return b.n == 1; })
+    );
+
+    for (Base& b : base_view<Base>(vec)) { b.n = 3; }
+
+    REQUIRE(
+        std::all_of(base_begin<Base>(vec), base_end<Base>(vec), [](const Base& b) { return b.n == 3; })
+    );
+}
+
+TEST_CASE("base_iterator_multi", "[iterators]")
+{
+    struct Base1 { int n1 = 1; };
+    struct Base2 { int n2 = 2; };
+    struct Derived : Base1, Base2 { int m = 2; };
+
+    std::vector<Derived> vec(10);
+
+    REQUIRE(
+        std::all_of(base_begin<Base2>(vec), base_end<Base2>(vec), [](const Base2& b) { return b.n2 == 2; })
+    );
+
+    for (Base2& b : base_view<Base2>(vec)) { b.n2 = 3; }
+
+    REQUIRE(
+        std::all_of(base_begin<Base2>(vec), base_end<Base2>(vec), [](const Base2& b) { return b.n2 == 3; })
+    );
+}
+
+TEST_CASE("base_iterator_virtual", "[iterators]")
+{
+    struct Base { int n = 1; };
+    struct Middle1 : virtual Base { int p = 2; };
+    struct Middle2 : virtual Base { int q = 3; };
+    struct Derived : Middle1, Middle2 { int r = 4; };
+
+    std::vector<Derived> vec(10);
+
+    REQUIRE(
+        std::all_of(base_begin<Base>(vec), base_end<Base>(vec), [](const Base& b) { return b.n == 1; })
+    );
+
+    for (Base& b : base_view<Base>(vec)) { b.n = 3; }
+
+    REQUIRE(
+        std::all_of(base_begin<Base>(vec), base_end<Base>(vec), [](const Base& b) { return b.n == 3; })
+    );
+}

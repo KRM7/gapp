@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ENCODING_INTEGER_HPP
-#define GA_ENCODING_INTEGER_HPP
+#ifndef GAPP_ENCODING_INTEGER_HPP
+#define GAPP_ENCODING_INTEGER_HPP
 
 #include "gene_types.hpp"
 #include "../core/ga_base.hpp"
@@ -23,10 +23,10 @@ namespace gapp
 
     /**
     * Integer-encoded genetic algorithm class. This is the main solver
-    * that should be used for binary-encoded objective functions.
+    * that should be used for integer-encoded objective functions.
     * 
     * Similar to the binary-encoded %GA, but the values of a genes can be any integer
-    * in a closed interval, not just 0 or 1. The particular interval is specified by the gene bounds.
+    * in a closed interval, not just 0 or 1. The concrete interval is specified by the gene bounds.
     * 
     * @see BinaryGA
     */
@@ -40,4 +40,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_ENCODING_INTEGER_HPP
+#endif // !GAPP_ENCODING_INTEGER_HPP

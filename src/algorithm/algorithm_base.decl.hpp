@@ -59,9 +59,9 @@ namespace gapp::algorithm
         * Implemented by prepareSelectionsImpl().
         *
         * @param ga The %GA that uses the algorithm.
-        * @param fmat The fitness matrix of the population.
+        * @param pop A view of the population without the encoding dependent parts of the candidates.
         */
-        void prepareSelections(const GaInfo& ga, const FitnessMatrix& fmat) { prepareSelectionsImpl(ga, fmat); }
+        void prepareSelections(const GaInfo& ga, const PopulationView& pop) { prepareSelectionsImpl(ga, pop); }
 
         /**
         * Select a single candidate from the population for crossover.
@@ -74,12 +74,11 @@ namespace gapp::algorithm
         * Implemented by selectImpl().
         *
         * @param ga The %GA that uses the algorithm.
-        * @param pop The current population.
-        * @param fmat The fitness matrix of the current population.
+        * @param pop A view of the population without the encoding dependent parts of the candidates.
         * @returns The candidate selected from the population.
         */
         template<typename T>
-        const Candidate<T>& select(const GA<T>& ga, const Population<T>& pop, const FitnessMatrix& fmat) const;
+        const Candidate<T>& select(const GA<T>& ga, const PopulationView& pop) const;
 
         /**
         * Select the candidates of the next generation from the candidates of the
@@ -103,12 +102,11 @@ namespace gapp::algorithm
         * 
         * Implemented by optimalSolutionsImpl().
         * The default implementation will use a generic method to find the pareto-optimal
-        * solutions in the population. This default will be used if optimalSolutionsImpl()
-        * returns an empty vector.
+        * solutions in the population.
         * 
         * @param ga The %GA that uses the algorithm.
         * @param pop The current population of the GA.
-        * @returns The pareto optimal solutions of the population pop.
+        * @returns The pareto optimal solutions of the population.
         */
         template<typename T>
         Candidates<T> optimalSolutions(const GA<T>& ga, const Population<T>& pop) const;
@@ -132,13 +130,15 @@ namespace gapp::algorithm
         * 
         * Returns the indices of the optimal solutions in the current population, which is
         * the population that was returned by the last call to nextPopulation().
-        * If the optimal solutions can't be found trivially, it should just return an empty
-        * vector (this is the default behaviour).
+        * 
+        * Derived classes should use the default implementation of this method instead of
+        * overriding it, unless they can find the optimal solutions trivially.
         * 
         * @param ga The %GA that uses the algorithm.
+        * @param pop A view of the population without the encoding dependent parts of the candidates.
         * @returns The indices of the pareto optimal solutions in the current population.
         */
-        virtual small_vector<size_t> optimalSolutionsImpl(const GaInfo&) const { return {}; }
+        virtual small_vector<size_t> optimalSolutionsImpl(const GaInfo& ga, const PopulationView& pop) const;
     };
 
 } // namespace gapp::algorithm

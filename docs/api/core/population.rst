@@ -28,6 +28,17 @@ class FitnessMatrix
    :project: gapp
 
 
+class CVVector
+---------------------------------------------------
+
+.. code-block::
+
+   #include <population/candidate.hpp>
+
+.. doxygentypedef:: gapp::CVVector
+   :project: gapp
+
+
 class Chromosome
 ---------------------------------------------------
 
@@ -46,6 +57,13 @@ class Candidate
 
    #include <population/candidate.hpp>
 
+.. doxygenstruct:: gapp::CandidateInfo
+   :project: gapp
+   :members:
+   :protected-members:
+   :private-members:
+
+
 .. doxygenstruct:: gapp::Candidate
    :project: gapp
    :members:
@@ -58,6 +76,28 @@ class Candidate
    :members:
 
 
+class Candidates
+---------------------------------------------------
+
+.. code-block::
+
+   #include <population/population.hpp>
+
+.. doxygentypedef:: gapp::Candidates
+   :project: gapp
+
+
+class CandidatePtrVec
+---------------------------------------------------
+
+.. code-block::
+
+   #include <population/population.hpp>
+
+.. doxygentypedef:: gapp::CandidatePtrVec
+   :project: gapp
+
+
 class Population
 ---------------------------------------------------
 
@@ -66,6 +106,17 @@ class Population
    #include <population/population.hpp>
 
 .. doxygentypedef:: gapp::Population
+   :project: gapp
+
+
+class PopulationView
+---------------------------------------------------
+
+.. code-block::
+
+   #include <population/population.hpp>
+
+.. doxygentypedef:: gapp::PopulationView
    :project: gapp
 
 
@@ -85,5 +136,4 @@ class Bounds
 
 .. doxygentypedef:: gapp::BoundsVector
    :project: gapp
-
 

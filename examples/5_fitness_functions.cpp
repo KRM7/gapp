@@ -9,7 +9,7 @@ using namespace gapp;
 class XSquare : public FitnessFunction</* GeneType = */ RealGene, /* ChromLen = */ 1>
 {
 public:
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override
+    FitnessVector invoke(const Candidate<RealGene>& x) const override
     {
         return { -x[0] * x[0] };
     }
@@ -19,7 +19,7 @@ public:
 class XSquareMulti : public FitnessFunction<RealGene, 1>
 {
 public:
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override
+    FitnessVector invoke(const Candidate<RealGene>& x) const override
     {
         const double f1 = -x[0] * x[0];
         const double f2 = (std::abs(x[0]) <= 2.0) ? 0.0 : 1.0;
@@ -34,7 +34,7 @@ class XSquareDynamic : public FitnessFunction< RealGene, 1>
 public:
     XSquareDynamic() : FitnessFunction(Type::Dynamic) {}
 
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override
+    FitnessVector invoke(const Candidate<RealGene>& x) const override
     {
         return { -x[0] * x[0] + rng::randomNormal(0.0, 1.0) };
     }

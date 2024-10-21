@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PROBLEMS_INTEGER_HPP
-#define GA_PROBLEMS_INTEGER_HPP
+#ifndef GAPP_PROBLEMS_INTEGER_HPP
+#define GAPP_PROBLEMS_INTEGER_HPP
 
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
@@ -29,11 +29,11 @@ namespace gapp::problems
         explicit StringFinder(std::string target);
 
     private:
-        FitnessVector invoke(const Chromosome<IntegerGene>& chrom) const override;
+        FitnessVector invoke(const Candidate<IntegerGene>& sol) const override;
 
         std::string target_;
     };
 
 } // namespace gapp::problems
 
-#endif // !GA_PROBLEMS_INTEGER_HPP
+#endif // !GAPP_PROBLEMS_INTEGER_HPP

@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PROBLEMS_SINGLE_OBJECTIVE_HPP
-#define GA_PROBLEMS_SINGLE_OBJECTIVE_HPP
+#ifndef GAPP_PROBLEMS_SINGLE_OBJECTIVE_HPP
+#define GAPP_PROBLEMS_SINGLE_OBJECTIVE_HPP
 
 #include "benchmark_function.hpp"
 #include "../encoding/gene_types.hpp"
@@ -35,7 +35,7 @@ namespace gapp::problems
         {}
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -69,7 +69,7 @@ namespace gapp::problems
         {}
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -105,7 +105,7 @@ namespace gapp::problems
         {}
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -137,7 +137,7 @@ namespace gapp::problems
         {}
 
     private:
-        FitnessVector invoke(const Chromosome<double>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -177,7 +177,7 @@ namespace gapp::problems
         {}
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -213,7 +213,7 @@ namespace gapp::problems
         {}
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 
@@ -244,9 +244,9 @@ namespace gapp::problems
         {}
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& vars) const override;
+        FitnessVector invoke(const Candidate<RealGene>& sol) const override;
     };
 
 } // namespace gapp::problems
 
-#endif // !GA_PROBLEMS_SINGLE_OBJECTIVE_HPP
+#endif // !GAPP_PROBLEMS_SINGLE_OBJECTIVE_HPP

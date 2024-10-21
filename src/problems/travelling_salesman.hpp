@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PROBLEMS_TSP_HPP
-#define GA_PROBLEMS_TSP_HPP
+#ifndef GAPP_PROBLEMS_TSP_HPP
+#define GAPP_PROBLEMS_TSP_HPP
 
 #include "benchmark_function.hpp"
 #include "tsp_data/tsp_data.hpp"
@@ -27,7 +27,7 @@ namespace gapp::problems
         TSP(std::span<const Coords> cities, double optimal_value);
 
     private:
-        FitnessVector invoke(const Chromosome<PermutationGene>& chrom) const override;
+        FitnessVector invoke(const Candidate<PermutationGene>& sol) const override;
 
         DistanceMatrix distance_matrix_;
     };
@@ -120,4 +120,4 @@ namespace gapp::problems
 
 } // namespace gapp::problems
 
-#endif // !GA_PROBLEMS_TSP_HPP
+#endif // !GAPP_PROBLEMS_TSP_HPP

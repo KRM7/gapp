@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_ND_SORT_HPP
-#define GA_ALGORITHM_ND_SORT_HPP
+#ifndef GAPP_ALGORITHM_ND_SORT_HPP
+#define GAPP_ALGORITHM_ND_SORT_HPP
 
 #include "../core/population.hpp"
 #include "../utility/iterators.hpp"
@@ -104,4 +104,4 @@ namespace gapp::algorithm::dtl
 
 } // namespace gapp::algorithm::dtl
 
-#endif // !GA_ALGORITHM_ND_SORT_HPP
+#endif // !GAPP_ALGORITHM_ND_SORT_HPP
