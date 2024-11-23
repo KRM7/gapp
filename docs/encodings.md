@@ -83,6 +83,15 @@ recommendation is to use `std::variant` or a similar type for the gene
 type.
 
 
+### Extending the candidates
+
+The candidates contain an additional `attributes` field that may hold any
+additional data that is associated with the candidate. This field will always
+be empty by default, as the library does not use it for anything by default.
+The purpose of this field is to allow the user to extend the candidates with
+arbitrary data if neccessary, and it may be used freely to do so.
+
+
 ### Variable chromosome lengths
 
 The length of the chromosomes is specified as part of the fitness function.
