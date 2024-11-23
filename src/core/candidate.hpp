@@ -11,6 +11,7 @@
 #include "../utility/iterators.hpp"
 #include <vector>
 #include <algorithm>
+#include <any>
 #include <utility>
 #include <concepts>
 #include <cstddef>
@@ -106,6 +107,9 @@ namespace gapp
 
         /** The solution's degree of constraint violation for each constraint. */
         CVVector constraint_violation;
+
+        /** Arbitrary data associated with the candidate. */
+        std::any attributes;
 
 
         /** 
