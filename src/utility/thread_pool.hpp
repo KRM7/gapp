@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_THREAD_POOL_HPP
-#define GA_UTILITY_THREAD_POOL_HPP
+#ifndef GAPP_UTILITY_THREAD_POOL_HPP
+#define GAPP_UTILITY_THREAD_POOL_HPP
 
 #include "concurrent_queue.hpp"
 #include "algorithm.hpp"
@@ -202,4 +202,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_UTILITY_THREAD_POOL_HPP
+#endif // !GAPP_UTILITY_THREAD_POOL_HPP
