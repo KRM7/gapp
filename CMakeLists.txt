@@ -61,11 +61,11 @@ if(MSVC) # MSVC style compiler interface
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -Zc:throwingNew")
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -external:anglebrackets")
-        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -fp:contract")
+        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -fp:precise")
     endif()
     # clang-cl specific options
     if(GAPP_USE_MARCH_NATIVE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native")
+        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native -fp:precise -clang:-ffp-contract=off")
     endif()
 
     set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} -Z7 -diagnostics:caret ${GAPP_WARN_FLAGS}")
@@ -85,7 +85,7 @@ else() # GNU style compiler interface
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
 
-    set(GAPP_OPT_FLAGS "-O3 -fno-math-errno -fno-trapping-math -freciprocal-math -fno-signed-zeros -fno-associative-math -fno-finite-math-only")
+    set(GAPP_OPT_FLAGS "-O3 -fno-math-errno -fno-trapping-math -freciprocal-math -fno-signed-zeros -fno-associative-math -fno-finite-math-only -ffp-contract=off")
     if(GAPP_USE_MARCH_NATIVE)
         set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native")
     endif()

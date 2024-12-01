@@ -114,13 +114,13 @@ namespace gapp::math
 
         if (vec.size() == 1) return 0.0;
 
-        long double var = std::transform_reduce(vec.begin(), vec.end(), 0.0L, std::plus{},
-        [mean, n = 1.0 / std::sqrt(vec.size())](long double val) noexcept
+        const double var = std::transform_reduce(vec.begin(), vec.end(), 0.0, std::plus{},
+        [mean, n = 1.0 / std::sqrt(vec.size())](double val) noexcept
         {
             return std::pow(n * (val - mean), 2);
         });
 
-        return static_cast<double>(std::sqrt(var));
+        return std::sqrt(var);
     }
 
     double integralSinPow(size_t exponent, double x) noexcept
