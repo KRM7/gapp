@@ -1,12 +1,13 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PROBLEMS_BENCHMARK_FUNCTION_HPP
-#define GA_PROBLEMS_BENCHMARK_FUNCTION_HPP
+#ifndef GAPP_PROBLEMS_BENCHMARK_FUNCTION_HPP
+#define GAPP_PROBLEMS_BENCHMARK_FUNCTION_HPP
 
 #include "../core/fitness_function.hpp"
 #include "../core/candidate.hpp"
 #include "../encoding/gene_types.hpp"
 #include <string>
+#include <cmath>
 #include <utility>
 #include <cstddef>
 
@@ -35,7 +36,7 @@ namespace gapp::problems
 
         /** @returns The maximum of the benchmark function. */
         [[nodiscard]]
-        const Chromosome<T>& optimum() const noexcept { return optimum_; }
+        const Candidate<T>& optimum() const noexcept { return optimum_; }
 
         /** @returns The ideal point of the pareto front. Same as the optimal value for single objective benchmarks. */
         [[nodiscard]]
@@ -75,7 +76,7 @@ namespace gapp::problems
         std::string name_;
         size_t num_objectives_;
         BoundsVector<T> bounds_;
-        Chromosome<T> optimum_;
+        Candidate<T> optimum_;
         FitnessVector optimal_value_;
         FitnessVector ideal_point_;
         FitnessVector nadir_point_;
@@ -146,21 +147,24 @@ namespace gapp::problems
         BenchmarkFunction(std::string name, Bounds<RealGene> bounds, Chromosome<RealGene> optimum, double optimal_value, size_t var_bits) :
             FitnessFunctionBase<RealGene>(optimum.size()),
             FitnessFunctionBase<BinaryGene>(optimum.size() * var_bits),
-            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), optimal_value)
+            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), optimal_value),
+            lsb_(1.0 / (std::pow(2.0, var_bits) - 1.0))
         {}
 
        /* Multi-objective, uniform bounds. */
         BenchmarkFunction(std::string name, Bounds<RealGene> bounds, Chromosome<RealGene> optimum, FitnessVector optimal_value, size_t var_bits) :
             FitnessFunctionBase<RealGene>(optimum.size()),
             FitnessFunctionBase<BinaryGene>(optimum.size() * var_bits),
-            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), std::move(optimal_value))
+            BenchmarkFunctionTraits<RealGene>(std::move(name), bounds, std::move(optimum), std::move(optimal_value)),
+            lsb_(1.0 / (std::pow(2.0, var_bits) - 1.0))
         {}
 
        /* General ctor, uniform bounds. */
         BenchmarkFunction(std::string name, size_t nvars, size_t nobj, Bounds<RealGene> bounds, size_t var_bits) :
             FitnessFunctionBase<RealGene>(nvars),
             FitnessFunctionBase<BinaryGene>(nvars * var_bits),
-            BenchmarkFunctionTraits<RealGene>(std::move(name), nobj, nvars, bounds)
+            BenchmarkFunctionTraits<RealGene>(std::move(name), nobj, nvars, bounds),
+            lsb_(1.0 / (std::pow(2.0, var_bits) - 1.0))
         {}
 
         BenchmarkFunction(const BenchmarkFunction&)             = default;
@@ -169,17 +173,19 @@ namespace gapp::problems
         BenchmarkFunction& operator=(BenchmarkFunction&&)       = default;
 
     private:
-        FitnessVector invoke(const Chromosome<RealGene>& chrom) const override = 0;
+        RealGene lsb_;
 
-        FitnessVector invoke(const Chromosome<BinaryGene>& chrom) const final
+        FitnessVector invoke(const Candidate<RealGene>& chrom) const override = 0;
+
+        FitnessVector invoke(const Candidate<BinaryGene>& chrom) const final
         {
             size_t var_bits = FitnessFunctionBase<BinaryGene>::chrom_len() / FitnessFunctionBase<RealGene>::chrom_len();
             return this->invoke(convert(chrom, bounds(), var_bits));
         }
 
-        static Chromosome<RealGene> convert(const Chromosome<BinaryGene>& bchrom, const BoundsVector<RealGene>& bounds, size_t var_bits);
+        Candidate<RealGene> convert(const Candidate<BinaryGene>& sol, const BoundsVector<RealGene>& bounds, size_t var_bits) const;
     };
 
 } // namespace gapp::problems
 
-#endif // !GA_PROBLEMS_BENCHMARK_FUNCTION_HPP
+#endif // !GAPP_PROBLEMS_BENCHMARK_FUNCTION_HPP

@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_TYPE_TRAITS_HPP
-#define GA_UTILITY_TYPE_TRAITS_HPP
+#ifndef GAPP_UTILITY_TYPE_TRAITS_HPP
+#define GAPP_UTILITY_TYPE_TRAITS_HPP
 
 #include <type_traits>
 #include <iterator>
@@ -21,31 +21,25 @@ namespace gapp::detail
 
 
     template<typename T>
-    using iterator_t = typename T::iterator;
+    using iterator_t = decltype(std::declval<T&>().begin());
 
     template<typename T>
-    using const_iterator_t = typename T::const_iterator;
+    using const_iterator_t = decltype(std::declval<T&>().cbegin());
 
     template<typename T>
-    using value_t = typename T::value_type;
+    using value_t = std::iter_value_t<detail::iterator_t<T>>;
 
     template<typename T>
-    using reference_t = typename T::reference;
+    using reference_t = std::iter_reference_t<detail::iterator_t<T>>;
 
     template<typename T>
-    using const_reference_t = typename T::const_reference;
+    using const_reference_t = decltype(*std::declval<detail::const_iterator_t<T>&>());
 
     template<typename T>
-    using pointer_t = typename T::pointer;
+    using size_type = decltype(std::declval<T&>().size());
 
     template<typename T>
-    using const_pointer_t = typename T::const_pointer;
-
-    template<typename T>
-    using size_type = typename T::size_type;
-
-    template<typename T>
-    using difference_t = typename T::difference_type;
+    using difference_t = std::iter_difference_t<detail::iterator_t<T>>;
 
 
     template<template<typename...> class T1, template<typename...> class T2>
@@ -163,6 +157,12 @@ namespace gapp::detail
     template<typename From, typename To>
     using copy_const_t = std::conditional_t<std::is_const_v<std::remove_reference_t<From>>, const To, To>;
 
+    template<typename From, typename To>
+    using copy_volatile_t = std::conditional_t<std::is_volatile_v<std::remove_reference_t<From>>, volatile To, To>;
+
+    template<typename From, typename To>
+    using copy_cv_t = copy_const_t<From, copy_volatile_t<From, To>>;
+
 
 
     template<typename T>
@@ -181,4 +181,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_UTILITY_TYPE_TRAITS_HPP
+#endif // !GAPP_UTILITY_TYPE_TRAITS_HPP

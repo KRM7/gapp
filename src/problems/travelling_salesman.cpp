@@ -27,17 +27,17 @@ namespace gapp::problems
         }
     }
 
-    auto TSP::invoke(const Chromosome<PermutationGene>& chrom) const -> FitnessVector
+    auto TSP::invoke(const Candidate<PermutationGene>& sol) const -> FitnessVector
     {
         const size_t ncities = distance_matrix_.size();
 
         double distance = 0.0;
         for (size_t i = 0; i < num_vars() - 1; i++)
         {
-            distance += distance_matrix_[chrom[i]][chrom[i + 1]];
+            distance += distance_matrix_[sol[i]][sol[i + 1]];
         }
-        distance += distance_matrix_[ncities - 1][chrom.front()];
-        distance += distance_matrix_[ncities - 1][chrom.back()];
+        distance += distance_matrix_[ncities - 1][sol.front()];
+        distance += distance_matrix_[ncities - 1][sol.back()];
 
         return { -distance }; /* For maximization. */
     }

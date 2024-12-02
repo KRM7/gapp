@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CORE_GA_BASE_IMPL_HPP
-#define GA_CORE_GA_BASE_IMPL_HPP
+#ifndef GAPP_CORE_GA_BASE_IMPL_HPP
+#define GAPP_CORE_GA_BASE_IMPL_HPP
 
 #include "ga_base.decl.hpp"
 #include "ga_traits.hpp"
@@ -221,7 +221,14 @@ namespace gapp
     }
 
     template<typename T>
-    inline void GA<T>::repair_function(RepairCallable f)
+    inline void GA<T>::constraints_function(ConstraintsFunction f) noexcept
+    {
+        /* Nullptr is fine here, it just won't be called */
+        constraints_function_ = std::move(f);
+    }
+
+    template<typename T>
+    inline void GA<T>::repair_function(RepairCallable f) noexcept
     {
         /* Nullptr is fine here, it just won't be called */
         repair_ = std::move(f);
@@ -238,9 +245,10 @@ namespace gapp
     {
         GAPP_ASSERT(fitness_function_);
 
-        const Candidate<T> candidate = generateCandidate();
-        const FitnessVector fitness = (*fitness_function_)(candidate.chromosome);
+        Candidate<T> candidate = generateCandidate();
+        validate(candidate);
 
+        const FitnessVector fitness = (*fitness_function_)(candidate);
         GAPP_ASSERT(!fitness.empty(), "The number of objectives must be greater than 0.");
 
         return fitness.size();
@@ -272,7 +280,7 @@ namespace gapp
     {
         GAPP_ASSERT(fitness_function_);
 
-        return sol.is_evaluated && (sol.fitness.size() == num_objectives());
+        return sol.is_evaluated() && (sol.fitness.size() == num_objectives());
     }
 
     template<typename T>
@@ -296,7 +304,7 @@ namespace gapp
     {
         return std::all_of(pop.begin(), pop.end(), [this](const Candidate<T>& sol)
         {
-            return hasValidChromosome(sol) && (!sol.is_evaluated || hasValidFitness(sol));
+            return hasValidChromosome(sol) && (!sol.is_evaluated() || hasValidFitness(sol));
         });
     }
 
@@ -336,7 +344,7 @@ namespace gapp
         /* Create and evaluate the initial population of the algorithm. */
         num_objectives_ = findNumberOfObjectives();
         population_ = generatePopulation(population_size_, std::move(initial_population));
-        detail::parallel_for(population_.begin(), population_.end(), [this](Candidate<T>& sol) { evaluate(sol); });
+        detail::parallel_for(population_.begin(), population_.end(), [this](Candidate<T>& sol) { validate(sol); repair(sol); evaluate(sol); });
         fitness_matrix_ = detail::toFitnessMatrix(population_);
         if (keep_all_optimal_sols_) solutions_ = detail::findParetoFront(population_);
 
@@ -386,7 +394,7 @@ namespace gapp
         GAPP_ASSERT(isValidEvaluatedPopulation(population_));
         GAPP_ASSERT(fitnessMatrixIsSynced());
 
-        algorithm_->prepareSelections(*this, fitness_matrix());
+        algorithm_->prepareSelections(*this, population_);
     }
 
     template<typename T>
@@ -394,7 +402,7 @@ namespace gapp
     {
         GAPP_ASSERT(algorithm_);
 
-        return algorithm_->select(*this, population(), fitness_matrix());
+        return algorithm_->select(*this, population_);
     }
 
     template<typename T>
@@ -414,6 +422,17 @@ namespace gapp
     }
 
     template<typename T>
+    void GA<T>::validate(Candidate<T>& sol) const
+    {
+        GAPP_ASSERT(hasValidChromosome(sol));
+
+        /* Don't do anything for unconstrained optimization problems. */
+        if (!constraints_function_) return;
+
+        sol.constraint_violation = constraints_function_(*this, sol.chromosome);
+    }
+
+    template<typename T>
     void GA<T>::repair(Candidate<T>& sol) const
     {
         GAPP_ASSERT(hasValidChromosome(sol));
@@ -421,12 +440,10 @@ namespace gapp
         /* Don't try to do anything unless a repair function is set. */
         if (!repair_) return;
 
-        auto improved_chrom = repair_(*this, sol.chromosome);
-
-        if (improved_chrom != sol.chromosome)
+        if (repair_(*this, sol, sol.chromosome))
         {
-            sol.is_evaluated = false;
-            sol.chromosome = std::move(improved_chrom);
+            sol.fitness.clear();
+            validate(sol);
         }
 
         GAPP_ASSERT(hasValidChromosome(sol), "Invalid chromosome returned by the repair function.");
@@ -461,25 +478,21 @@ namespace gapp
         /* If the fitness function is static, and the solution has already
          * been evaluted sometime earlier (in an earlier generation), there
          * is no point doing it again. */
-        if (!fitness_function_->is_dynamic() && sol.is_evaluated) return;
+        if (!fitness_function_->is_dynamic() && sol.is_evaluated()) return;
         
         if (cached_generations_)
         {
             GAPP_ASSERT(!fitness_function_->is_dynamic());
 
-            const FitnessVector* fitness = fitness_cache_.get(sol);
-            if (fitness)
+            if (const FitnessVector* fitness = fitness_cache_.get(sol))
             {
                 sol.fitness = *fitness;
-                sol.is_evaluated = true;
                 return;
             }
         }
 
         std::atomic_ref{ num_fitness_evals_ }.fetch_add(1, std::memory_order_release);
-
-        sol.fitness = (*fitness_function_)(sol.chromosome);
-        sol.is_evaluated = true;
+        sol.fitness = (*fitness_function_)(sol);
 
         GAPP_ASSERT(hasValidFitness(sol));
     }
@@ -512,6 +525,7 @@ namespace gapp
         Population<T> children(population_size_);
 
         prepareSelections();
+
         detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(population_size_ / 2), [&](size_t i)
         {
             CandidatePair child_pair = crossover(select(), select());
@@ -524,6 +538,7 @@ namespace gapp
         detail::parallel_for(children.begin(), children.end(), [this](Candidate<T>& child)
         {
             mutate(child);
+            validate(child);
             repair(child);
             evaluate(child);
         });
@@ -660,4 +675,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_CORE_GA_BASE_IMPL_HPP
+#endif // !GAPP_CORE_GA_BASE_IMPL_HPP

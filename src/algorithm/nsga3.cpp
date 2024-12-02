@@ -74,7 +74,7 @@ namespace gapp::algorithm
 
     struct NSGA3::Impl
     {
-        struct CandidateInfo
+        struct CandidateTraits
         {
             size_t rank;
             size_t ref_idx;
@@ -84,7 +84,7 @@ namespace gapp::algorithm
         RefLineGenerator ref_generator_;
         FitnessMatrix ref_lines_;
 
-        std::vector<CandidateInfo> sol_info_;
+        std::vector<CandidateTraits> sol_info_;
         std::vector<size_t> niche_counts_;
 
         FitnessVector ideal_point_;
@@ -128,7 +128,7 @@ namespace gapp::algorithm
         void incrementNicheCount(std::vector<size_t>& refs, size_t ref);
 
         /* Create a new population from pareto_fronts. */
-        small_vector<size_t> createPopulation(std::span<const FrontElement> pareto_fronts);
+        CandidatePtrVec createPopulation(std::span<const FrontElement> pareto_fronts, const PopulationView& pop);
     };
 
 
@@ -297,21 +297,21 @@ namespace gapp::algorithm
         std::iter_swap(current, std::prev(first_eq));
     }
 
-    small_vector<size_t> NSGA3::Impl::createPopulation(std::span<const FrontElement> pareto_fronts)
+    CandidatePtrVec NSGA3::Impl::createPopulation(std::span<const FrontElement> pareto_fronts, const PopulationView& pop)
     {
-        small_vector<size_t> new_pop;
-        std::vector<Impl::CandidateInfo> new_info;
+        CandidatePtrVec new_pop;
+        std::vector<Impl::CandidateTraits> new_traits;
 
         new_pop.reserve(pareto_fronts.size());
-        new_info.reserve(pareto_fronts.size());
+        new_traits.reserve(pareto_fronts.size());
 
         for (const FrontElement& sol : pareto_fronts)
         {
-            new_pop.push_back(sol.idx);
-            new_info.push_back(sol_info_[sol.idx]);
+            new_pop.push_back(&pop[sol.idx]);
+            new_traits.push_back(sol_info_[sol.idx]);
         }
 
-        sol_info_ = std::move(new_info);
+        sol_info_ = std::move(new_traits);
 
         return new_pop;
     }
@@ -341,21 +341,21 @@ namespace gapp::algorithm
         pimpl_->recalcNicheCounts(pareto_fronts);
     }
 
-    small_vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat)
+    CandidatePtrVec NSGA3::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(ga.num_objectives() > 1);
-        GAPP_ASSERT(fmat.ncols() == ga.num_objectives());
 
         const size_t popsize = ga.population_size();
+        const FitnessMatrix fitness_matrix = detail::toFitnessMatrix(pop);
 
-        auto pareto_fronts = nonDominatedSort(fmat.begin(), fmat.end());
+        auto pareto_fronts = nonDominatedSort(fitness_matrix);
         auto partial_front = pareto_fronts.partialFront(popsize);
 
-        pimpl_->sol_info_.resize(fmat.size());
+        pimpl_->sol_info_.resize(pop.size());
         std::for_each(pareto_fronts.begin(), pareto_fronts.end(), [this](const FrontElement& sol) { pimpl_->sol_info_[sol.idx].rank = sol.rank; });
 
         /* The ref lines of the candidates after partial_last are irrelevant, as they can never be part of the next population. */
-        pimpl_->associatePopWithRefs(fmat.begin(), fmat.end(), { pareto_fronts.begin(), partial_front.end() });
+        pimpl_->associatePopWithRefs(fitness_matrix.begin(), fitness_matrix.end(), { pareto_fronts.begin(), partial_front.end() });
         /* The niche counts should be calculated excluding the partial front for now. */
         pimpl_->recalcNicheCounts({ pareto_fronts.begin(), partial_front.begin() });
 
@@ -391,22 +391,24 @@ namespace gapp::algorithm
 
         pareto_fronts.resize(popsize);
 
-        return pimpl_->createPopulation(pareto_fronts);
+        return pimpl_->createPopulation(pareto_fronts, pop);
     }
 
-    size_t NSGA3::selectImpl(const GaInfo&, const FitnessMatrix& fmat) const
+    const CandidateInfo& NSGA3::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
-        GAPP_ASSERT(!fmat.empty());
+        GAPP_ASSERT(!pop.empty());
 
-        const size_t idx1 = rng::randomIndex(fmat);
-        const size_t idx2 = rng::randomIndex(fmat);
+        const size_t idx1 = rng::randomIndex(pop);
+        const size_t idx2 = rng::randomIndex(pop);
 
-        return pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
+        const size_t selected_idx = pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
+
+        return pop[selected_idx];
     }
 
-    small_vector<size_t> NSGA3::optimalSolutionsImpl(const GaInfo&) const
+    small_vector<size_t> NSGA3::optimalSolutionsImpl(const GaInfo&, const PopulationView&) const
     {
-        return detail::find_indices(pimpl_->sol_info_, [](const Impl::CandidateInfo& sol) { return sol.rank == 0; });
+        return detail::find_indices(pimpl_->sol_info_, [](const auto& sol) { return sol.rank == 0; });
     }
 
 } // namespace gapp::algorithm

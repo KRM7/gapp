@@ -8,11 +8,11 @@ using namespace gapp;
 
 class Kursawe2 : public FitnessFunction<RealGene, 2>
 {
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override
+    FitnessVector invoke(const Candidate<RealGene>& sol) const override
     {
-        const double f1 = 10.0 * std::exp(-0.2 * std::sqrt(std::pow(x[0], 2) + std::pow(x[1], 2)));
-        const double f21 = std::pow(std::abs(x[0]), 0.8) + 5.0 * std::sin(std::pow(x[0], 3));
-        const double f22 = std::pow(std::abs(x[1]), 0.8) + 5.0 * std::sin(std::pow(x[1], 3));
+        const double f1 = 10.0 * std::exp(-0.2 * std::sqrt(std::pow(sol[0], 2) + std::pow(sol[1], 2)));
+        const double f21 = std::pow(std::abs(sol[0]), 0.8) + 5.0 * std::sin(std::pow(sol[0], 3));
+        const double f22 = std::pow(std::abs(sol[1]), 0.8) + 5.0 * std::sin(std::pow(sol[1], 3));
 
         return { -f1, -f21 - f22 };
     }

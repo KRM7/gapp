@@ -11,10 +11,33 @@
 
 namespace gapp::detail
 {
+    FitnessMatrix toFitnessMatrix(const PopulationView& pop)
+    {
+        if (pop.empty()) return {};
+
+        FitnessMatrix fitness_matrix;
+        fitness_matrix.reserve(pop.size(), pop[0].fitness.size());
+
+        for (const CandidateInfo& sol : pop)
+        {
+            fitness_matrix.append_row(sol.fitness);
+        }
+
+        return fitness_matrix;
+    }
+
     FitnessVector toFitnessVector(FitnessMatrix::const_iterator first, FitnessMatrix::const_iterator last)
     {
         FitnessVector fitness_vector(last - first);
         std::transform(first, last, fitness_vector.begin(), detail::element_at(0));
+
+        return fitness_vector;
+    }
+
+    FitnessVector toFitnessVector(const PopulationView& pop)
+    {
+        FitnessVector fitness_vector(pop.size());
+        std::transform(pop.begin(), pop.end(), fitness_vector.begin(), [](const CandidateInfo& sol) { return sol.fitness[0]; });
 
         return fitness_vector;
     }

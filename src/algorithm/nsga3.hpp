@@ -62,11 +62,12 @@ namespace gapp::algorithm
     private:
 
         void initializeImpl(const GaInfo& ga) override;
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+        void prepareSelectionsImpl(const GaInfo&, const PopulationView&) override {}
+        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
-        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
+        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
 
-        small_vector<size_t> optimalSolutionsImpl(const GaInfo& ga) const override;
+        small_vector<size_t> optimalSolutionsImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         struct Impl;
         std::unique_ptr<Impl> pimpl_;

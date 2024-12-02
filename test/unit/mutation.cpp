@@ -26,35 +26,32 @@ TEST_CASE("mutation_fitness_eval", "[crossover]")
 
     SECTION("evaluated, unchanged")
     {
-        candidate.is_evaluated = true;
         mutation.mutation_rate(0.0);
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.is_evaluated());
+        REQUIRE(candidate.fitness == FitnessVector{ 0.0 });
     }
 
     SECTION("evaluated, changed")
     {
-        candidate.is_evaluated = true;
         mutation.mutation_rate(1.0);
 
         mutation(context, candidate);
 
-        REQUIRE(!candidate.is_evaluated);
+        REQUIRE(!candidate.is_evaluated());
     }
 
     SECTION("unevaluated")
     {
-        candidate.is_evaluated = false;
+        candidate.fitness.clear();
         mutation.mutation_rate(0.1);
 
         mutation(context, candidate);
 
-        REQUIRE(!candidate.is_evaluated);
+        REQUIRE(!candidate.is_evaluated());
     }
-
-    REQUIRE(candidate.fitness == FitnessVector{ 0.0 });
 }
 
 TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
@@ -65,7 +62,7 @@ TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
     context.solve(DummyFitnessFunction<BinaryGene>(10), 1);
 
     Candidate<BinaryGene> candidate{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
-    candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
+    candidate.fitness = { 0.0 };
 
     Candidate<BinaryGene> old_candidate = candidate;
 
@@ -75,8 +72,9 @@ TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.is_evaluated());
         REQUIRE(candidate.chromosome == old_candidate.chromosome);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
     }
 
     SECTION("mutation probability = 1.0")
@@ -85,13 +83,9 @@ TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
 
         mutation(context, candidate);
 
-        REQUIRE(!candidate.is_evaluated);
+        REQUIRE(!candidate.is_evaluated());
         REQUIRE(candidate.chromosome != old_candidate.chromosome);
     }
-
-    REQUIRE(
-        candidate.fitness == old_candidate.fitness
-    );
 
     REQUIRE(
         candidate.chromosome.size() == old_candidate.chromosome.size()
@@ -111,7 +105,7 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
     context.solve(DummyFitnessFunction<RealGene>(10), bounds, 1);
 
     Candidate<RealGene> candidate{ { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } };
-    candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
+    candidate.fitness = { 0.0 };
 
     Candidate<RealGene> old_candidate = candidate;
 
@@ -121,8 +115,9 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.is_evaluated());
         REQUIRE(candidate.chromosome == old_candidate.chromosome);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
     }
 
     SECTION("mutation probability = 1.0")
@@ -131,12 +126,8 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
 
         mutation(context, candidate);
 
-        REQUIRE(( candidate.is_evaluated == (candidate.chromosome == old_candidate.chromosome) ));
+        REQUIRE(( candidate.is_evaluated() == (candidate.chromosome == old_candidate.chromosome)));
     }
-
-    REQUIRE(
-        candidate.fitness == old_candidate.fitness
-    );
 
     REQUIRE(
         candidate.chromosome.size() == old_candidate.chromosome.size()
@@ -155,7 +146,7 @@ TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, 
     context.solve(DummyFitnessFunction<PermutationGene>(10), 1);
 
     Candidate<PermutationGene> candidate{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
-    candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
+    candidate.fitness = { 0.0 };
 
     Candidate<PermutationGene> old_candidate = candidate;
 
@@ -165,8 +156,9 @@ TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, 
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.is_evaluated());
         REQUIRE(candidate.chromosome == old_candidate.chromosome);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
     }
 
     SECTION("mutation probability = 1.0")
@@ -177,14 +169,10 @@ TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, 
 
         if constexpr (!std::is_same_v<Mutation, perm::Shuffle>) // shuffle could return the same sequence
         {
-            REQUIRE(!candidate.is_evaluated);
+            REQUIRE(!candidate.is_evaluated());
             REQUIRE(candidate.chromosome != old_candidate.chromosome);
         }
     }
-
-    REQUIRE(
-        candidate.fitness == old_candidate.fitness
-    );
 
     REQUIRE(
         candidate.chromosome.size() == old_candidate.chromosome.size()
@@ -209,7 +197,7 @@ TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
     context.solve(DummyFitnessFunction<IntegerGene>(10), bounds, 1);
 
     Candidate<IntegerGene> candidate{ { 0, 1, 2, 3, 3, 1, 0, 1, 0, 2 } };
-    candidate.fitness = { 0.0 }; candidate.is_evaluated = true;
+    candidate.fitness = { 0.0 };
 
     Candidate<IntegerGene> old_candidate = candidate;
 
@@ -219,8 +207,9 @@ TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
 
         mutation(context, candidate);
 
-        REQUIRE(candidate.is_evaluated);
+        REQUIRE(candidate.is_evaluated());
         REQUIRE(candidate.chromosome == old_candidate.chromosome);
+        REQUIRE(candidate.fitness == old_candidate.fitness);
     }
 
     SECTION("mutation probability = 1.0")
@@ -229,13 +218,9 @@ TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
 
         mutation(context, candidate);
 
-        REQUIRE(!candidate.is_evaluated);
+        REQUIRE(!candidate.is_evaluated());
         REQUIRE(candidate.chromosome != old_candidate.chromosome);
     }
-
-    REQUIRE(
-        candidate.fitness == old_candidate.fitness
-    );
 
     REQUIRE(
         candidate.chromosome.size() == old_candidate.chromosome.size()

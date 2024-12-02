@@ -62,14 +62,39 @@ TEST_CASE("random_index", "[rng]")
 
 TEST_CASE("random_element", "[rng]")
 {
-    std::vector<int> single{ 2 };
-    std::vector<int> vector{ 0, 3 };
+    const std::vector single{ 2 };
+    const std::vector vector{ 0, 3 };
 
     REQUIRE(randomElement(single.begin(), single.end()) == single.begin());
 
     for (size_t i = 0; i < 100; i++)
     {
         REQUIRE(randomElement(vector.begin(), vector.end()) != vector.end());
+    }
+}
+
+TEST_CASE("random_element_cdf", "[rng]")
+{
+    const std::vector single{ 2 };
+
+    REQUIRE(randomElement(single, std::vector{ 1.0 }) == 2);
+
+    const std::vector vec1{ 0, 3, 9 };
+    const std::vector cdf1{ 0.3, 0.4, 1.0 };
+
+    for (size_t i = 0; i < 100; i++)
+    {
+        const int elt = randomElement(vec1, cdf1);
+        REQUIRE((elt == 0 || elt == 3 || elt == 9));
+    }
+
+    const std::vector vec2{ 0, 3, 9 };
+    const std::vector cdf2{ 0.0, 0.0, 1.0 };
+
+    for (size_t i = 0; i < 100; i++)
+    {
+        const int elt = randomElement(vec2, cdf2);
+        REQUIRE(elt == 9);
     }
 }
 
@@ -125,4 +150,24 @@ TEMPLATE_TEST_CASE("sample_unique_bounds_64", "[rng]", std::int64_t, std::uint64
         std::sort(nums.begin(), nums.end()),
         std::unique(nums.begin(), nums.end()) == nums.end()
     ));
+}
+
+TEST_CASE("sample_cdf", "[rng]")
+{
+    const std::vector cdf1 = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+
+    for (size_t i = 0; i < 100; i++)
+    {
+        const size_t idx = rng::sampleCdf(cdf1);
+        REQUIRE(idx < cdf1.size());
+    }
+
+    const std::vector cdf2 = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0 };
+
+    for (size_t i = 0; i < 100; i++)
+    {
+        const size_t idx = rng::sampleCdf(cdf2);
+        REQUIRE(idx > 4);
+        REQUIRE(idx < cdf1.size());
+    }
 }

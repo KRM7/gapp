@@ -1,12 +1,13 @@
 ﻿
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
-3. [Encodings](encodings.md)  
-4. [Algorithms](algorithms.md)  
-5. [Genetic operators](genetic-operators.md)  
-6. **Stop conditions**  
-7. [Metrics](metrics.md)  
-8. [Miscellaneous](miscellaneous.md)
+3. [Constraint handling](constraint-handling.md)  
+4. [Encodings](encodings.md)  
+5. [Algorithms](algorithms.md)  
+6. [Genetic operators](genetic-operators.md)  
+7. **Stop conditions**  
+8. [Metrics](metrics.md)  
+9. [Miscellaneous](miscellaneous.md)
 
 ------------------------------------------------------------------------------------------------
 
@@ -121,4 +122,4 @@ class MyStopCondition : public stopping::StopCondition
 
 ------------------------------------------------------------------------------------------------
 
-[<p align="right">Next: Metrics</p>](metrics.md)
+<p align="right"><a href="metrics.md">Next: Metrics</a></p>

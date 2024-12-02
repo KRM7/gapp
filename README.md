@@ -28,7 +28,7 @@ using namespace gapp;
 
 class SinX : public FitnessFunction<RealGene, 1> 
 {
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override { return { std::sin(x[0]) }; }
+    FitnessVector invoke(const Candidate<RealGene>& x) const override { return { std::sin(x[0]) }; }
 };
 
 int main()
@@ -50,7 +50,7 @@ The maximum of sin(x) in [0.0, 3.14] is at x = 1.57079
 
 The following are needed for building and using the library:
 
-- C++20 compiler (gcc 11.0, clang 15.0, msvc 14.30 or later)
+- C++20 compiler (gcc 11, clang 15, msvc 14.30 or later)
 - CMake 3.21 or later
 - Catch2 3.3 or later (optional, only needed for the tests)
 
@@ -110,6 +110,7 @@ The [examples](./examples) directory contains several examples for using the lib
 * [Minimal example](./examples/1_minimal_example.cpp)
 * [Single-objective optimization](./examples/2_basic_single_objective.cpp)
 * [Multi-objective optimization](./examples/3_basic_multi_objective.cpp)
+* [Constrained optimization](./examples/4_constrained_problem.cpp)
 
 -------------------------------------------------------------------------------------------------
 

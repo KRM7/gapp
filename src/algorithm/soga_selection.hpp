@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_ALGORITHM_SOGA_SELECTION_HPP
-#define GA_ALGORITHM_SOGA_SELECTION_HPP
+#ifndef GAPP_ALGORITHM_SOGA_SELECTION_HPP
+#define GAPP_ALGORITHM_SOGA_SELECTION_HPP
 
 #include "selection_base.hpp"
 #include "../core/population.hpp"
@@ -35,8 +35,8 @@ namespace gapp::selection
     class Roulette final : public Selection
     {
     private:
-        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+        void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
+        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         std::vector<double> cdf_;
     };
@@ -79,7 +79,7 @@ namespace gapp::selection
         constexpr size_t size() const noexcept { return tourney_size_; }
 
     private:
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         Positive<size_t> tourney_size_;
     };
@@ -131,8 +131,8 @@ namespace gapp::selection
         double max_weight() const noexcept { return max_weight_; }
 
     private:
-        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+        void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
+        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         std::vector<double> cdf_;
         NonNegative<double> min_weight_;
@@ -173,8 +173,8 @@ namespace gapp::selection
         * scaled. Smaller values of the parameter will emphasize the differences
         * between the candidates, meaning that even candidates with small differences
         * in their fitnesses can have large differences in their selection probabilities.
-        * Larger values will lead to the candidates having a more equal probability of being
-        * selected regardless of the differences in fitnesses.
+        * Larger values will lead to the candidates having a more equal probability of
+        * being selected regardless of the differences in fitnesses.
         *
         * @param scale The scaling parameter to use. Must be greater than 0.
         */
@@ -185,15 +185,15 @@ namespace gapp::selection
         double scale() const noexcept { return scale_; }
 
     private:
-        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+        void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
+        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         std::vector<double> cdf_;
         Positive<double> scale_;
     };
 
     /**
-    * %Boltzmann selection operator forthe single-objective algorithm.
+    * %Boltzmann selection operator for the single-objective algorithm.
     * 
     * The fitness values of the candidates are scaled based on the overall fitness
     * values of the population, and the probability of selecting a candidate will be
@@ -215,21 +215,22 @@ namespace gapp::selection
     public:
         /**
         * The general callable type that can be used as a temperature function.
-        * The function should return the temperature in the given generation, with its signature being: \n
+        * The function should return the temperature in the given generation,
+        * with its signature being: \n
         * \t    double f(size_t current_generation, size_t max_generation)
         */
         using TemperatureFunction = std::function<double(size_t, size_t)>;
         
         /**
-        * Create a %Boltzmann selection operator.
+        * Create a Boltzmann selection operator.
         *
         * @param f The temperature function to use. Can't be a nullptr.
         */
         explicit Boltzmann(TemperatureFunction f = boltzmannDefaultTemp) noexcept;
         
     private:
-        void prepareSelectionsImpl(const GaInfo& ga, const FitnessMatrix& fmat) override;
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+        void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
+        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         static double boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept;
 
@@ -244,16 +245,16 @@ namespace gapp::selection
     class Lambda final : public Selection
     {
     public:
-        using SelectionCallable = std::function<size_t(const GaInfo&, const FitnessMatrix&)>;
+        using SelectionCallable = std::function<const CandidateInfo&(const GaInfo&, const PopulationView&)>;
 
         explicit Lambda(SelectionCallable f) noexcept;
 
     private:
-        size_t selectImpl(const GaInfo& ga, const FitnessMatrix& fmat) const override;
+        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         SelectionCallable selection_;
     };
 
 } // namespace gapp::selection
 
-#endif // !GA_ALGORITHM_SOGA_SELECTION_HPP
+#endif // !GAPP_ALGORITHM_SOGA_SELECTION_HPP

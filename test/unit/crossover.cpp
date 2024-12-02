@@ -136,8 +136,8 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
 
     Candidate<RealGene> parent1{ { 0.0, 0.12, 0.48, 0.19, 1.0, 1.0, 0.0, 0.72, 0.81, 0.03 } };
     Candidate<RealGene> parent2{ { 1.0, 0.34, 0.97, 0.36, 1.0, 0.0, 0.0, 0.28, 0.49, 0.79 } };
-    parent1.fitness = { 0.0 }; parent1.is_evaluated = true;
-    parent2.fitness = { 0.0 }; parent2.is_evaluated = true;
+    parent1.fitness = { 0.0 };
+    parent2.fitness = { 0.0 };
 
     auto [child1, child2] = crossover(context, parent1, parent2);
 
@@ -156,8 +156,8 @@ TEST_CASE("crossover_fitness_eval", "[crossover]")
 
     Candidate<BinaryGene> parent1{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
     Candidate<BinaryGene> parent2{ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } };
-    parent1.fitness = { 0.0 }; parent1.is_evaluated = true;
-    parent2.fitness = { 0.0 }; parent2.is_evaluated = true;
+    parent1.fitness = { 0.0 };
+    parent2.fitness = { 0.0 };
 
     SECTION("unchanged chromosomes")
     {
@@ -165,8 +165,8 @@ TEST_CASE("crossover_fitness_eval", "[crossover]")
 
         auto [child1, child2] = crossover(context, parent1, parent2);
 
-        REQUIRE(child1.is_evaluated);
-        REQUIRE(child2.is_evaluated);
+        REQUIRE(child1.is_evaluated());
+        REQUIRE(child2.is_evaluated());
         REQUIRE(child1.fitness == parent1.fitness);
         REQUIRE(child2.fitness == parent2.fitness);
     }
@@ -177,9 +177,9 @@ TEST_CASE("crossover_fitness_eval", "[crossover]")
 
         auto [child1, child2] = crossover(context, parent1, parent2);
 
-        REQUIRE((!child1.is_evaluated || child1.chromosome == parent1.chromosome || child1.chromosome == parent2.chromosome));
-        REQUIRE((!child2.is_evaluated || child2.chromosome == parent1.chromosome || child2.chromosome == parent2.chromosome));
-        REQUIRE(child1.fitness == parent1.fitness);
-        REQUIRE(child2.fitness == parent1.fitness);
+        REQUIRE((!child1.is_evaluated() || child1.chromosome == parent1.chromosome || child1.chromosome == parent2.chromosome));
+        REQUIRE((!child2.is_evaluated() || child2.chromosome == parent1.chromosome || child2.chromosome == parent2.chromosome));
+        REQUIRE((!child1.is_evaluated() || child1.fitness == parent1.fitness));
+        REQUIRE((!child1.is_evaluated() || child2.fitness == parent1.fitness));
     }
 }
