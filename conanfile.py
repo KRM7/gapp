@@ -5,9 +5,9 @@ from conan.tools.files import copy
 
 class GappRecipe(ConanFile):
     name = "gapp"
-    version = "0.2.0"
+    version = "0.3.0"
     description = "A genetic algorithms library in C++ for single- and multi-objective optimization."
-    topics = ("optimization", "multi-objective-optimization", "genetic-algorithm", "cpp20")
+    topics = ("optimization", "multi-objective-optimization", "constrained-optimization", "genetic-algorithm", "cpp20")
     url = "https://github.com/KRM7/gapp"
     license = "MIT"
 
