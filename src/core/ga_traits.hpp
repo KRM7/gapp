@@ -36,11 +36,14 @@ namespace gapp
     * ```
     * 
     * @see GA
+    * 
+    * TODO: mention randomChromosome, different signature for bounded, non bounded gene types
+    * TODO: mention mixed genes, this struct has to be specialized for all the inidividual genes
     */
     template<typename GeneType>
     struct GaTraits
     {
-        static_assert(detail::always_false<GeneType>, "The GaTraits class must be specialized for each new gene type.");
+        static_assert(detail::always_false<GeneType>, "The GaTraits class must be specialized for every gene type.");
     };
 
 } // namespace gapp

@@ -4,16 +4,15 @@
 #include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
 #include <algorithm>
-#include <vector>
 
 namespace gapp
 {
-    auto BinaryGA::generateCandidate() const -> Candidate<GeneType>
+    Chromosome<BinaryGene> GaTraits<BinaryGene>::randomChromosome(size_t chrom_len)
     {
-        Candidate<GeneType> solution(chrom_len());
-        std::generate(solution.chromosome.begin(), solution.chromosome.end(), rng::randomBool);
+        Chromosome<BinaryGene> chrom(chrom_len);
+        std::generate(chrom.begin(), chrom.end(), rng::randomBool);
 
-        return solution;
+        return chrom;
     }
 
 } // namespace gapp

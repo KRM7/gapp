@@ -4,21 +4,20 @@
 #include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
-#include <vector>
 
 namespace gapp
 {
-    auto RCGA::generateCandidate() const -> Candidate<GeneType>
+    Chromosome<RealGene> GaTraits<RealGene>::randomChromosome(size_t chrom_len, const BoundsVector<RealGene>& bounds)
     {
-        GAPP_ASSERT(chrom_len() == gene_bounds().size(), "The size of the bounds vector must match the chromosome length.");
+        GAPP_ASSERT(chrom_len == bounds.size(), "The size of the bounds vector must match the chromosome length.");
 
-        Candidate<GeneType> solution(chrom_len());
-        for (size_t i = 0; i < solution.chromosome.size(); i++)
+        Chromosome<RealGene> chrom(chrom_len);
+        for (size_t i = 0; i < chrom.size(); i++)
         {
-            solution.chromosome[i] = rng::randomReal(gene_bounds()[i].lower(), gene_bounds()[i].upper());
+            chrom[i] = rng::randomReal(bounds[i].lower(), bounds[i].upper());
         }
 
-        return solution;
+        return chrom;
     }
 
 } // namespace gapp

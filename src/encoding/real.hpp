@@ -20,6 +20,8 @@ namespace gapp
         using DefaultMutation = mutation::real::Gauss;
 
         static constexpr Probability defaultMutationRate(size_t chrom_len) noexcept { return 1.0 / chrom_len; }
+
+        static Chromosome<RealGene> randomChromosome(size_t chrom_len, const BoundsVector<RealGene>& bounds);
     };
 
     /**
@@ -30,8 +32,6 @@ namespace gapp
     {
     public:
         using GA::GA;
-    private:
-        Candidate<GeneType> generateCandidate() const override;
     };
 
 } // namespace gapp

@@ -653,21 +653,13 @@ namespace gapp
         */
         virtual void initialize() {};
 
-        /**
-        * Generate a candidate solution. This method will be used to generate the initial
-        * population of the %GA if the initial population is not fully specified in solve().
-        * 
-        * Has to be implemented in the derived classes, and every generated candidate must be
-        * valid (eg. the chromosome sizes must be correct, its genes must be within the specified
-        * bounds etc.).
-        */
-        virtual Candidate<T> generateCandidate() const = 0;
-
         std::pair<Positive<size_t>, size_t> findObjectiveProperties() const;
         std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
         Probability defaultMutationRate() const;
 
         void initializeAlgorithm(MaybeBoundsVector bounds, Population<T> initial_population);
+        Candidate<T> generateCandidate() const requires(is_bounded<T>);
+        Candidate<T> generateCandidate() const requires(!is_bounded<T>);
         Population<T> generatePopulation(Positive<size_t> pop_size, Population<T> initial_population) const;
         void prepareSelections() const;
         const Candidate<T>& select() const;

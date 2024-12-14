@@ -19,6 +19,8 @@ namespace gapp
         using DefaultMutation = mutation::integer::Uniform;
 
         static constexpr Probability defaultMutationRate(size_t chrom_len) noexcept { return 1.0 / chrom_len; }
+
+        static Chromosome<IntegerGene> randomChromosome(size_t chrom_len, const BoundsVector<IntegerGene>& bounds);
     };
 
     /**
@@ -34,8 +36,6 @@ namespace gapp
     {
     public:
         using GA::GA;
-    private:
-        Candidate<GeneType> generateCandidate() const override;
     };
 
 } // namespace gapp

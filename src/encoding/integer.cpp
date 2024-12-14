@@ -3,20 +3,20 @@
 #include "integer.hpp"
 #include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
-#include <vector>
 
 namespace gapp
 {
-    auto IntegerGA::generateCandidate() const -> Candidate<GeneType>
+    Chromosome<IntegerGene> GaTraits<IntegerGene>::randomChromosome(size_t chrom_len, const BoundsVector<IntegerGene>& bounds)
     {
-        Candidate<GeneType> solution(chrom_len());
+        GAPP_ASSERT(chrom_len == bounds.size(), "The size of the bounds vector must match the chromosome length.");
 
-        for (size_t idx = 0; idx < chrom_len(); idx++)
+        Chromosome<IntegerGene> chrom(chrom_len);
+        for (size_t idx = 0; idx < chrom_len; idx++)
         {
-            solution.chromosome[idx] = rng::randomInt(gene_bounds()[idx].lower(), gene_bounds()[idx].upper());
+            chrom[idx] = rng::randomInt(bounds[idx].lower(), bounds[idx].upper());
         }
 
-        return solution;
+        return chrom;
     }
 
 } // namespace gapp
