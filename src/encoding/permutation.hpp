@@ -19,6 +19,8 @@ namespace gapp
         using DefaultMutation = mutation::perm::Inversion;
 
         static constexpr Probability defaultMutationRate(size_t) noexcept { return 0.6; }
+
+        static Chromosome<PermutationGene> randomChromosome(size_t chrom_len);
     };
 
     /**
@@ -37,8 +39,6 @@ namespace gapp
     {
     public:
         using GA::GA;
-    private:
-        Candidate<GeneType> generateCandidate() const override;
     };
 
 } // namespace gapp

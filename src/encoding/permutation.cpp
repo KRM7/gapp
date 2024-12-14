@@ -5,17 +5,16 @@
 #include "../utility/rng.hpp"
 #include <algorithm>
 #include <numeric>
-#include <vector>
 
 namespace gapp
 {
-    auto PermutationGA::generateCandidate() const -> Candidate<GeneType>
+    Chromosome<PermutationGene> GaTraits<PermutationGene>::randomChromosome(size_t chrom_len)
     {
-        Candidate<GeneType> solution(chrom_len());
-        std::iota(solution.chromosome.begin(), solution.chromosome.end(), GeneType{ 0 });
-        std::shuffle(solution.chromosome.begin(), solution.chromosome.end(), rng::prng);
+        Chromosome<PermutationGene> chrom(chrom_len);
+        std::iota(chrom.begin(), chrom.end(), PermutationGene{ 0 });
+        std::shuffle(chrom.begin(), chrom.end(), rng::prng);
 
-        return solution;
+        return chrom;
     }
 
 } // namespace gapp

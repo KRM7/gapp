@@ -20,6 +20,8 @@ namespace gapp
         using DefaultMutation = mutation::binary::Flip;
 
         static constexpr Probability defaultMutationRate(size_t chrom_len) noexcept { return 1.0 / chrom_len; }
+
+        static Chromosome<BinaryGene> randomChromosome(size_t chrom_len);
     };
 
     /**
@@ -30,8 +32,6 @@ namespace gapp
     {
     public:
         using GA::GA;
-    private:
-        Candidate<GeneType> generateCandidate() const override;
     };
 
 } // namespace gapp

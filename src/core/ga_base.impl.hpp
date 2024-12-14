@@ -376,6 +376,18 @@ namespace gapp
     }
 
     template<typename T>
+    Candidate<T> GA<T>::generateCandidate() const requires(is_bounded<T>)
+    {
+        return Candidate<T>(GaTraits<T>::randomChromosome(chrom_len(), gene_bounds()));
+    }
+
+    template<typename T>
+    Candidate<T> GA<T>::generateCandidate() const requires(!is_bounded<T>)
+    {
+        return Candidate<T>(GaTraits<T>::randomChromosome(chrom_len()));
+    }
+
+    template<typename T>
     Population<T> GA<T>::generatePopulation(Positive<size_t> pop_size, Population<T> initial_population) const
     {
         GAPP_ASSERT(isValidUnevaluatedPopulation(initial_population), "An invalid initial population was specified for the GA.");
