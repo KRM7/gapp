@@ -62,7 +62,7 @@ namespace gapp::selection
         * This method will be called exactly (population_size) or (population_size + 1)
         * times in every generation (depending on which number is even).
         * 
-        * The method should return a reference to the selected candidate from the current
+        * The method should return the index of the selected candidate from the current
         * population @p pop.
         *
         * The implementation should be thread-safe if parallel execution is enabled for the GAs
@@ -70,9 +70,9 @@ namespace gapp::selection
         *
         * @param ga The %GA that uses the algorithm.
         * @param pop A view of the population without the encoding dependent parts of the candidates.
-        * @returns The candidate selected from the population @p pop.
+        * @returns The index of the candidate selected from the population @p pop.
         */
-        virtual const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const = 0;
+        virtual size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const = 0;
 
 
         /** Destructor. */

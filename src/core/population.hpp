@@ -21,9 +21,6 @@ namespace gapp
     /** A view of a population without the encoding specific parts (i.e. without the chromosomes). */
     using PopulationView = detail::base_view<const CandidateInfo>;
 
-    /** A vector of pointers to candidates. */
-    using CandidatePtrVec = std::vector<const CandidateInfo*>;
-
 } // namespace gapp
 
 namespace gapp::detail

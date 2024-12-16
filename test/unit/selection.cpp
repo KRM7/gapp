@@ -21,26 +21,26 @@ TEST_CASE("roulette_selection", "[selection][single-objective]")
     selection->initializeImpl(context);
 
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[3].fitness = { math::small<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(&selection->selectImpl(context, pop) == &pop[3]);
+    REQUIRE(selection->selectImpl(context, pop) == 3);
 
     pop[3].fitness = { math::large<double> };
     pop[4].fitness = { math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    const CandidateInfo& selected = selection->selectImpl(context, pop);
-    REQUIRE((&selected == &pop[3] || &selected == &pop[4]));
+    const size_t idx = selection->selectImpl(context, pop);
+    REQUIRE((idx == 3 || idx == 4));
 
     pop[0].fitness = { -math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[3].fitness = { -math::large<double> };
     pop[4].fitness = { -math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 }
 
 TEST_CASE("tournament_selection", "[selection][single-objective]")
@@ -51,19 +51,19 @@ TEST_CASE("tournament_selection", "[selection][single-objective]")
     selection->initializeImpl(context);
 
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[0].fitness = { -math::inf<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[1].fitness = { math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[4].fitness = { math::inf<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 }
 
 TEST_CASE("rank_selection", "[selection][single-objective]")
@@ -74,19 +74,19 @@ TEST_CASE("rank_selection", "[selection][single-objective]")
     selection->initializeImpl(context);
 
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[0].fitness = { -math::inf<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(&selection->selectImpl(context, pop) != &pop[0]);
+    REQUIRE(selection->selectImpl(context, pop) != 0);
 
     pop[1].fitness = { math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[4].fitness = { math::inf<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 }
 
 TEST_CASE("sigma_selection" "[selection][single-objective]")
@@ -97,25 +97,25 @@ TEST_CASE("sigma_selection" "[selection][single-objective]")
     selection->initializeImpl(context);
 
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[3].fitness = { math::small<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[3].fitness = { math::large<double> };
     pop[4].fitness = { math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[0].fitness = { -math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[3].fitness = { -math::large<double> };
     pop[4].fitness = { -math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 }
 
 TEST_CASE("boltzmann_selection" "[selection][single-objective]")
@@ -126,23 +126,23 @@ TEST_CASE("boltzmann_selection" "[selection][single-objective]")
     selection->initializeImpl(context);
 
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[3].fitness = { math::small<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[3].fitness = { math::large<double> };
     pop[4].fitness = { math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[0].fitness = { -math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 
     pop[3].fitness = { -math::large<double> };
     pop[4].fitness = { -math::large<double> };
     selection->prepareSelectionsImpl(context, pop);
-    REQUIRE(detail::points_into(pop)(&selection->selectImpl(context, pop)));
+    REQUIRE(selection->selectImpl(context, pop) < pop.size());
 }

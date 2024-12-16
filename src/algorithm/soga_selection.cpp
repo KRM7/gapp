@@ -54,22 +54,20 @@ namespace gapp::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    const CandidateInfo& Roulette::selectImpl(const GaInfo&, const PopulationView& pop) const
+    size_t Roulette::selectImpl(const GaInfo&, const PopulationView&) const
     {
-        return rng::randomElement(pop, cdf_);
+        return rng::sampleCdf(cdf_);
     }
 
 
-    const CandidateInfo& Tournament::selectImpl(const GaInfo&, const PopulationView& pop) const
+    size_t Tournament::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
         GAPP_ASSERT(!pop.empty());
 
         small_vector<size_t> candidate_indexes(tourney_size_);
         std::generate(candidate_indexes.begin(), candidate_indexes.end(), [&] { return rng::randomIndex(pop); });
 
-        const size_t selected_idx = *detail::max_element(candidate_indexes.begin(), candidate_indexes.end(), [&](size_t idx) { return pop[idx].fitness[0]; });
-
-        return pop[selected_idx];
+        return *detail::max_element(candidate_indexes.begin(), candidate_indexes.end(), [&](size_t idx) { return pop[idx].fitness[0]; });
     }
 
 
@@ -104,9 +102,9 @@ namespace gapp::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    const CandidateInfo& Rank::selectImpl(const GaInfo&, const PopulationView& pop) const
+    size_t Rank::selectImpl(const GaInfo&, const PopulationView&) const
     {
-        return rng::randomElement(pop, cdf_);
+        return rng::sampleCdf(cdf_);
     }
 
 
@@ -127,9 +125,9 @@ namespace gapp::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    const CandidateInfo& Sigma::selectImpl(const GaInfo&, const PopulationView& pop) const
+    size_t Sigma::selectImpl(const GaInfo&, const PopulationView&) const
     {
-        return rng::randomElement(pop, cdf_);
+        return rng::sampleCdf(cdf_);
     }
 
 
@@ -160,9 +158,9 @@ namespace gapp::selection
         cdf_ = weightsToCdf(fvec);
     }
 
-    const CandidateInfo& Boltzmann::selectImpl(const GaInfo&, const PopulationView& pop) const
+    size_t Boltzmann::selectImpl(const GaInfo&, const PopulationView&) const
     {
-        return rng::randomElement(pop, cdf_);
+        return rng::sampleCdf(cdf_);
     }
 
     double Boltzmann::boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept
@@ -182,7 +180,7 @@ namespace gapp::selection
         GAPP_ASSERT(selection_, "The selection method can't be a nullptr.");
     }
 
-    const CandidateInfo& Lambda::selectImpl(const GaInfo& ga, const PopulationView& pop) const
+    size_t Lambda::selectImpl(const GaInfo& ga, const PopulationView& pop) const
     {
         GAPP_ASSERT(selection_);
         return selection_(ga, pop);

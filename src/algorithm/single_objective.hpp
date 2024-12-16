@@ -38,14 +38,14 @@ namespace gapp::algorithm
         * when not using a selection method derived from selection::Selection.
         * @see selection_method()
         */
-        using SelectionCallable = std::function<const CandidateInfo&(const GaInfo&, const PopulationView&)>;
+        using SelectionCallable = std::function<size_t(const GaInfo&, const PopulationView&)>;
 
         /**
         * The general callable type that can be used as a population replacement policy,
         * when not using a replacement policy derived from replacement::Replacement.
         * @see replacement_method()
         */
-        using ReplacementCallable = std::function<CandidatePtrVec(const GaInfo&, const PopulationView&)>;
+        using ReplacementCallable = std::function<small_vector<size_t>(const GaInfo&, const PopulationView&)>;
 
 
         /**
@@ -152,9 +152,9 @@ namespace gapp::algorithm
         void initializeImpl(const GaInfo& ga) override;
 
         void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
-        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
-        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
 
         std::unique_ptr<selection::Selection> selection_;
         std::unique_ptr<replacement::Replacement> replacement_;
@@ -197,7 +197,7 @@ namespace gapp::algorithm
         selection_->prepareSelectionsImpl(ga, pop);
     }
 
-    inline const CandidateInfo& SingleObjective::selectImpl(const GaInfo& ga, const PopulationView& pop) const
+    inline size_t SingleObjective::selectImpl(const GaInfo& ga, const PopulationView& pop) const
     {
         GAPP_ASSERT(selection_);
 

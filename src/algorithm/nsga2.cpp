@@ -69,7 +69,7 @@ namespace gapp::algorithm
         dists_ = crowdingDistances(ga.fitness_matrix(), pareto_fronts.fronts());
     }
 
-    const CandidateInfo& NSGA2::selectImpl(const GaInfo&, const PopulationView& pop) const
+    size_t NSGA2::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
         GAPP_ASSERT(!pop.empty() && pop.size() == ranks_.size());
 
@@ -77,13 +77,13 @@ namespace gapp::algorithm
         const size_t idx2 = rng::randomIndex(pop);
 
         // lower ranks and higher crowding distances are better
-        if (ranks_[idx1] < ranks_[idx2]) return pop[idx1];
-        if (ranks_[idx1] > ranks_[idx2]) return pop[idx2];
-        if (dists_[idx1] > dists_[idx2]) return pop[idx1];
-        return pop[idx2];
+        if (ranks_[idx1] < ranks_[idx2]) return idx1;
+        if (ranks_[idx1] > ranks_[idx2]) return idx2;
+        if (dists_[idx1] > dists_[idx2]) return idx1;
+        return idx2;
     }
 
-    CandidatePtrVec NSGA2::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
+    small_vector<size_t> NSGA2::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(ga.num_objectives() > 1);
 
@@ -103,13 +103,11 @@ namespace gapp::algorithm
         dists_ = crowdingDistances(fitness_matrix, pareto_fronts.fronts());
         dists_.resize(popsize);
 
-        CandidatePtrVec new_pop(popsize);
+        small_vector<size_t> new_pop(popsize);
         for (size_t i = 0; i < popsize; i++)
         {
-            const auto [idx, rank] = pareto_fronts[i];
-
-            new_pop[i] = &pop[idx];
-            ranks_[i]  = rank;
+            new_pop[i] = pareto_fronts[i].idx;
+            ranks_[i]  = pareto_fronts[i].rank;
         }
 
         return new_pop;

@@ -128,7 +128,7 @@ namespace gapp::algorithm
         void incrementNicheCount(std::vector<size_t>& refs, size_t ref);
 
         /* Create a new population from pareto_fronts. */
-        CandidatePtrVec createPopulation(std::span<const FrontElement> pareto_fronts, const PopulationView& pop);
+        small_vector<size_t> createPopulation(std::span<const FrontElement> pareto_fronts);
     };
 
 
@@ -297,9 +297,9 @@ namespace gapp::algorithm
         std::iter_swap(current, std::prev(first_eq));
     }
 
-    CandidatePtrVec NSGA3::Impl::createPopulation(std::span<const FrontElement> pareto_fronts, const PopulationView& pop)
+    small_vector<size_t> NSGA3::Impl::createPopulation(std::span<const FrontElement> pareto_fronts)
     {
-        CandidatePtrVec new_pop;
+        small_vector<size_t> new_pop;
         std::vector<Impl::CandidateTraits> new_traits;
 
         new_pop.reserve(pareto_fronts.size());
@@ -307,7 +307,7 @@ namespace gapp::algorithm
 
         for (const FrontElement& sol : pareto_fronts)
         {
-            new_pop.push_back(&pop[sol.idx]);
+            new_pop.push_back(sol.idx);
             new_traits.push_back(sol_info_[sol.idx]);
         }
 
@@ -341,7 +341,7 @@ namespace gapp::algorithm
         pimpl_->recalcNicheCounts(pareto_fronts);
     }
 
-    CandidatePtrVec NSGA3::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
+    small_vector<size_t> NSGA3::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(ga.num_objectives() > 1);
 
@@ -391,19 +391,17 @@ namespace gapp::algorithm
 
         pareto_fronts.resize(popsize);
 
-        return pimpl_->createPopulation(pareto_fronts, pop);
+        return pimpl_->createPopulation(pareto_fronts);
     }
 
-    const CandidateInfo& NSGA3::selectImpl(const GaInfo&, const PopulationView& pop) const
+    size_t NSGA3::selectImpl(const GaInfo&, const PopulationView& pop) const
     {
         GAPP_ASSERT(!pop.empty());
 
         const size_t idx1 = rng::randomIndex(pop);
         const size_t idx2 = rng::randomIndex(pop);
 
-        const size_t selected_idx = pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
-
-        return pop[selected_idx];
+        return pimpl_->nichedCompare(idx1, idx2) ? idx1 : idx2;
     }
 
     small_vector<size_t> NSGA3::optimalSolutionsImpl(const GaInfo&, const PopulationView&) const

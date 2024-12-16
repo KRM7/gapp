@@ -47,29 +47,29 @@ TEST_CASE("replacement_best", "[replacement][single-objective]")
     math::ScopedTolerances _(0.0, 0.0);
 
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepBest>();
-    const auto next_pop = replacement->nextPopulationImpl(context, pop);
+    const auto indices = replacement->nextPopulationImpl(context, pop);
 
-    const CandidatePtrVec expected = { &pop[0], &pop[1], &pop[4], &pop[5], &pop[9], &pop[11], &pop[12], &pop[15], &pop[16], &pop[17] };
+    const std::vector<size_t> expected = { 0, 1, 4, 5, 9, 11, 12, 15, 16, 17 };
 
-    REQUIRE_THAT(next_pop, Catch::Matchers::UnorderedEquals(expected));
+    REQUIRE_THAT(indices.std_vec(), Catch::Matchers::UnorderedEquals(expected));
 }
 
 TEST_CASE("replacement_children", "[replacement][single-objective]")
 {
     std::unique_ptr<Replacement> replacement = std::make_unique<KeepChildren>();
-    const auto next_pop = replacement->nextPopulationImpl(context, pop);
+    const auto indices = replacement->nextPopulationImpl(context, pop);
 
-    const CandidatePtrVec expected = { &pop[10], &pop[11], &pop[12], &pop[13], &pop[14], &pop[15], &pop[16], &pop[17], &pop[18], &pop[19] };
+    const std::vector<size_t> expected = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
 
-    REQUIRE_THAT(next_pop, Catch::Matchers::UnorderedEquals(expected));
+    REQUIRE_THAT(indices.std_vec(), Catch::Matchers::UnorderedEquals(expected));
 }
 
 TEST_CASE("replacement_elitism", "[replacement][single-objective]")
 {
     std::unique_ptr<Replacement> replacement = std::make_unique<Elitism>(2);
-    const auto next_pop = replacement->nextPopulationImpl(context, pop);
+    const auto indices = replacement->nextPopulationImpl(context, pop);
 
-    const CandidatePtrVec expected = { &pop[0], &pop[5], &pop[10], &pop[11], &pop[12], &pop[13], &pop[14], &pop[15], &pop[16], &pop[17] };
+    const std::vector<size_t> expected = { 0, 5, 10, 11, 12, 13, 14, 15, 16, 17 };
 
-    REQUIRE_THAT(next_pop, Catch::Matchers::UnorderedEquals(expected));
+    REQUIRE_THAT(indices.std_vec(), Catch::Matchers::UnorderedEquals(expected));
 }

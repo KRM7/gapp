@@ -28,7 +28,7 @@ namespace gapp::replacement
     class KeepChildren final : public Replacement
     {
     private:
-        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
     };
 
 
@@ -69,7 +69,7 @@ namespace gapp::replacement
         constexpr size_t elite_num() const noexcept { return n_; }
 
     private:
-        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
 
         size_t n_;
     };
@@ -85,7 +85,7 @@ namespace gapp::replacement
     class KeepBest final : public Replacement
     {
     private:
-        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
     };
 
 
@@ -96,12 +96,12 @@ namespace gapp::replacement
     class Lambda final : public Replacement
     {
     public:
-        using ReplacementCallable = std::function<CandidatePtrVec(const GaInfo&, const PopulationView&)>;
+        using ReplacementCallable = std::function<small_vector<size_t>(const GaInfo&, const PopulationView&)>;
 
         explicit Lambda(ReplacementCallable f) noexcept;
 
     private:
-        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
 
         ReplacementCallable replacement_;
     };
