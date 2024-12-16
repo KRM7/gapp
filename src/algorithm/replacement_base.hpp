@@ -38,15 +38,15 @@ namespace gapp::replacement
         * population, while the rest (another population_size elements) corresponds
         * to the child population.
         * 
-        * The method should return population_size number of unique pointers to
-        * elements of @p pop, pointing to the candidates that will comprise the
+        * The method should return population_size number of unique indices into
+        * the population @p pop. The candidates at these indices will comprise the
         * next generation's population.
         * 
         * @param ga The %GA that uses the replacement method.
         * @param pop A view of the combined parent and child population.
-        * @returns A vector of pointers to the candidates that were selected from @p pop for the next population.
+        * @returns The indices of the candidates selected from the population @p pop.
         */
-        virtual CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) = 0;
+        virtual small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) = 0;
         
 
         /** Destructor. */

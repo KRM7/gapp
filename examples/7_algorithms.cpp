@@ -7,12 +7,12 @@ using namespace gapp;
 class MyTournamentSelection : public selection::Selection
 {
 public:
-    const CandidateInfo& selectImpl(const GaInfo&, const PopulationView& pop) const override
+    size_t selectImpl(const GaInfo&, const PopulationView& pop) const override
     {
         const size_t idx1 = rng::randomIndex(pop);
         const size_t idx2 = rng::randomIndex(pop);
 
-        return (pop[idx1].fitness[0] >= pop[idx2].fitness[0]) ? pop[idx1] : pop[idx2];
+        return (pop[idx1].fitness[0] >= pop[idx2].fitness[0]) ? idx1 : idx2;
     }
 };
 

@@ -17,16 +17,31 @@
 namespace gapp::algorithm
 {
     template<typename T>
-    const Candidate<T>& Algorithm::select(const GA<T>& ga, const PopulationView& pop) const
+    void Algorithm::initialize(const GA<T>& ga)
+    {
+        GAPP_ASSERT(ga.population_size() == ga.population().size());
+
+        initializeImpl(ga);
+    }
+
+    template<typename T>
+    void Algorithm::prepareSelections(const GA<T>& ga, const Population<T>& pop)
     {
         GAPP_ASSERT(ga.population_size() == pop.size());
 
-        const CandidateInfo& selected = selectImpl(ga, pop);
+        prepareSelectionsImpl(ga, pop);
+    }
 
-        GAPP_ASSERT(std::any_of(pop.begin(), pop.end(), detail::reference_to(selected)),
-                    "An invalid candidate was returned by selectImpl().");
+    template<typename T>
+    const Candidate<T>& Algorithm::select(const GA<T>& ga, const Population<T>& pop) const
+    {
+        GAPP_ASSERT(ga.population_size() == pop.size());
 
-        return static_cast<const Candidate<T>&>(selected);
+        const size_t selected_idx = selectImpl(ga, pop);
+
+        GAPP_ASSERT(selected_idx < pop.size(), "An invalid index was returned by selectImpl().");
+
+        return pop[selected_idx];
     }
 
     template<typename T>
@@ -37,16 +52,15 @@ namespace gapp::algorithm
 
         parents.insert(parents.end(), std::move_iterator(children.begin()), std::move_iterator(children.end()));
 
-        const CandidatePtrVec next_pop = nextPopulationImpl(ga, parents);
+        const auto next_indices = nextPopulationImpl(ga, parents);
 
-        GAPP_ASSERT(std::all_of(next_pop.begin(), next_pop.end(), detail::points_into(parents)),
-                    "An invalid candidate was returned by nextPopulationImpl().");
+        GAPP_ASSERT(std::all_of(next_indices.begin(), next_indices.end(), detail::less_than(parents.size())),
+                    "An invalid index was returned by nextPopulationImpl().");
 
-        return detail::map(next_pop, [](const CandidateInfo* candidate_info)
-        {
-            const auto* candidate = static_cast<const Candidate<T>*>(candidate_info);
-            return std::move(*const_cast<Candidate<T>*>(candidate)); // NOLINT(*const-cast)
-        });
+        GAPP_ASSERT(next_indices.size() == ga.population_size(),
+                    "The number of indices returned by nextPopulationImpl() is incorrect.");
+
+        return detail::select(std::move(parents), next_indices);
     }
 
     template<typename T>

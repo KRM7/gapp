@@ -48,7 +48,8 @@ namespace gapp::algorithm
         *
         * @param ga The %GA that uses the algorithm.
         */
-        void initialize(const GaInfo& ga) { initializeImpl(ga); }
+        template<typename T>
+        void initialize(const GA<T>& ga);
 
         /**
         * Prepare the algorithm for the selections if neccesary.
@@ -59,9 +60,10 @@ namespace gapp::algorithm
         * Implemented by prepareSelectionsImpl().
         *
         * @param ga The %GA that uses the algorithm.
-        * @param pop A view of the population without the encoding dependent parts of the candidates.
+        * @param pop The current population of the GA.
         */
-        void prepareSelections(const GaInfo& ga, const PopulationView& pop) { prepareSelectionsImpl(ga, pop); }
+        template<typename T>
+        void prepareSelections(const GA<T>& ga, const Population<T>& pop);
 
         /**
         * Select a single candidate from the population for crossover.
@@ -74,11 +76,11 @@ namespace gapp::algorithm
         * Implemented by selectImpl().
         *
         * @param ga The %GA that uses the algorithm.
-        * @param pop A view of the population without the encoding dependent parts of the candidates.
+        * @param pop The current population of the GA.
         * @returns The candidate selected from the population.
         */
         template<typename T>
-        const Candidate<T>& select(const GA<T>& ga, const PopulationView& pop) const;
+        const Candidate<T>& select(const GA<T>& ga, const Population<T>& pop) const;
 
         /**
         * Select the candidates of the next generation from the candidates of the

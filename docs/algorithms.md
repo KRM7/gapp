@@ -125,7 +125,7 @@ algorithm.selection_method([](const GaInfo& context, const PopulationView& pop)
     const size_t idx1 = rng::randomIdx(pop);
     const size_t idx2 = rng::randomIdx(pop);
 
-    return (pop[idx1].fitness[0] >= pop[idx2].fitness[0]) ? pop[idx1] : pop[idx2];
+    return (pop[idx1].fitness[0] >= pop[idx2].fitness[0]) ? idx1 : idx2;
 });
 ```
 
@@ -137,12 +137,12 @@ tournament selection shown above could also be implemented this way:
 class MyTournamentSelection : public selection::Selection
 {
 public:
-    const CandidateInfo& selectImpl(const GaInfo& context, const PopulationView& pop) const override
+    size_t selectImpl(const GaInfo& context, const PopulationView& pop) const override
     {
         const size_t idx1 = rng::randomIdx(pop);
         const size_t idx2 = rng::randomIdx(pop);
         
-        return (pop[idx1].fitness[0] >= pop[idx2].fitness[0]) ? pop[idx1] : pop[idx2];
+        return (pop[idx1].fitness[0] >= pop[idx2].fitness[0]) ? idx1 : idx2;
     }
 };
 ```

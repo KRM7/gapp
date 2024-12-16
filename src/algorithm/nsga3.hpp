@@ -63,9 +63,9 @@ namespace gapp::algorithm
 
         void initializeImpl(const GaInfo& ga) override;
         void prepareSelectionsImpl(const GaInfo&, const PopulationView&) override {}
-        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
-        CandidatePtrVec nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
+        small_vector<size_t> nextPopulationImpl(const GaInfo& ga, const PopulationView& pop) override;
 
         small_vector<size_t> optimalSolutionsImpl(const GaInfo& ga, const PopulationView& pop) const override;
 

@@ -36,7 +36,7 @@ namespace gapp::selection
     {
     private:
         void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
-        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         std::vector<double> cdf_;
     };
@@ -79,7 +79,7 @@ namespace gapp::selection
         constexpr size_t size() const noexcept { return tourney_size_; }
 
     private:
-        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         Positive<size_t> tourney_size_;
     };
@@ -132,7 +132,7 @@ namespace gapp::selection
 
     private:
         void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
-        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         std::vector<double> cdf_;
         NonNegative<double> min_weight_;
@@ -186,7 +186,7 @@ namespace gapp::selection
 
     private:
         void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
-        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         std::vector<double> cdf_;
         Positive<double> scale_;
@@ -230,7 +230,7 @@ namespace gapp::selection
         
     private:
         void prepareSelectionsImpl(const GaInfo& ga, const PopulationView& pop) override;
-        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         static double boltzmannDefaultTemp(size_t gen, size_t max_gen) noexcept;
 
@@ -245,12 +245,12 @@ namespace gapp::selection
     class Lambda final : public Selection
     {
     public:
-        using SelectionCallable = std::function<const CandidateInfo&(const GaInfo&, const PopulationView&)>;
+        using SelectionCallable = std::function<size_t(const GaInfo&, const PopulationView&)>;
 
         explicit Lambda(SelectionCallable f) noexcept;
 
     private:
-        const CandidateInfo& selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
+        size_t selectImpl(const GaInfo& ga, const PopulationView& pop) const override;
 
         SelectionCallable selection_;
     };

@@ -87,17 +87,6 @@ class Candidates
    :project: gapp
 
 
-class CandidatePtrVec
----------------------------------------------------
-
-.. code-block::
-
-   #include <population/population.hpp>
-
-.. doxygentypedef:: gapp::CandidatePtrVec
-   :project: gapp
-
-
 class Population
 ---------------------------------------------------
 

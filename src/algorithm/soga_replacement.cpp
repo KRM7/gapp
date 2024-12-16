@@ -12,20 +12,12 @@
 
 namespace gapp::replacement
 {
-    CandidatePtrVec KeepChildren::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
+    small_vector<size_t> KeepChildren::nextPopulationImpl(const GaInfo& ga, const PopulationView&)
     {
-        GAPP_ASSERT(pop.size() >= 2 * ga.population_size());
-
-        CandidatePtrVec next_pop(ga.population_size());
-        const auto children_first = pop.begin() + ga.population_size();
-        const auto children_last  = pop.begin() + 2 * ga.population_size();
-
-        std::transform(children_first, children_last, next_pop.begin(), [](const auto& sol) { return &sol; });
-
-        return next_pop;
+        return detail::index_vector(ga.population_size(), ga.population_size());
     }
 
-    CandidatePtrVec Elitism::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
+    small_vector<size_t> Elitism::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(pop.size() >= 2 * ga.population_size());
 
@@ -35,45 +27,31 @@ namespace gapp::replacement
         const auto sorted_last   = pop.begin() + elite_count;
         const auto parents_last  = pop.begin() + ga.population_size();
 
-        const auto sorted_parent_indices = detail::partial_argsort(parents_first, sorted_last, parents_last,
+        auto indices = detail::partial_argsort(parents_first, sorted_last, parents_last,
         [](const auto& lhs, const auto& rhs) noexcept
         {
             return math::paretoCompareLess(rhs.fitness, lhs.fitness); // descending
         });
 
-        CandidatePtrVec next_pop(ga.population_size());
+        indices.resize(ga.population_size());
+        std::iota(indices.begin() + elite_count, indices.end(), ga.population_size());
 
-        for (size_t i = 0; i < elite_count; i++)
-        {
-            next_pop[i] = &pop[sorted_parent_indices[i]];
-        }
-
-        for (size_t i = elite_count; i < ga.population_size(); i++)
-        {
-            next_pop[i] = &pop[ga.population_size() + i - elite_count];
-        }
-
-        return next_pop;
+        return indices;
     }
 
-    CandidatePtrVec KeepBest::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
+    small_vector<size_t> KeepBest::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(pop.size() >= ga.population_size());
 
-        const auto indices = detail::partial_argsort(pop.begin(), pop.begin() + ga.population_size(), pop.end(),
+        auto indices = detail::partial_argsort(pop.begin(), pop.begin() + ga.population_size(), pop.end(),
         [](const auto& lhs, const auto& rhs) noexcept
         {
             return math::paretoCompareLess(rhs.fitness, lhs.fitness); // descending
         });
 
-        CandidatePtrVec next_pop(ga.population_size());
+        indices.resize(ga.population_size());
 
-        for (size_t i = 0; i < ga.population_size(); i++)
-        {
-            next_pop[i] = &pop[indices[i]];
-        }
-
-        return next_pop;
+        return indices;
     }
 
 
@@ -83,7 +61,7 @@ namespace gapp::replacement
         GAPP_ASSERT(replacement_, "The population replacement method can't be a nullptr.");
     }
 
-    CandidatePtrVec Lambda::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
+    small_vector<size_t> Lambda::nextPopulationImpl(const GaInfo& ga, const PopulationView& pop)
     {
         GAPP_ASSERT(replacement_);
         return replacement_(ga, pop);
