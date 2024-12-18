@@ -26,9 +26,9 @@ static FitnessVector randomFitness(size_t nobj, double radius)
     return fvec;
 }
 
-static Population<int> randomPopulation(size_t popsize, size_t nobj, double radius = 1.0)
+static Population<RealGene> randomPopulation(size_t popsize, size_t nobj, double radius = 1.0)
 {
-    Population<int> pop(popsize, Candidate<int>(0));
+    Population<RealGene> pop(popsize, Candidate<RealGene>());
     for (auto& candidate : pop) { candidate.fitness = randomFitness(nobj, radius); }
 
     return pop;
@@ -44,16 +44,16 @@ TEST_CASE("merge_pareto_sets_size", "[benchmark]")
 
     BENCHMARK_ADVANCED("merge")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(popsize, num_obj);
-        Population<int> rhs = randomPopulation(popsize, num_obj);
+        Population<RealGene> lhs = randomPopulation(popsize, num_obj);
+        Population<RealGene> rhs = randomPopulation(popsize, num_obj);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
     BENCHMARK_ADVANCED("append/naive")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(popsize, num_obj);
-        Population<int> rhs = randomPopulation(popsize, num_obj);
+        Population<RealGene> lhs = randomPopulation(popsize, num_obj);
+        Population<RealGene> rhs = randomPopulation(popsize, num_obj);
 
         meter.measure([&]
         {
@@ -73,16 +73,16 @@ TEST_CASE("merge_pareto_sets_relative_sizes", "[benchmark]")
 
     BENCHMARK_ADVANCED("merge_left_greater")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(large_popsize, num_obj);
-        Population<int> rhs = randomPopulation(small_popsize, num_obj);
+        Population<RealGene> lhs = randomPopulation(large_popsize, num_obj);
+        Population<RealGene> rhs = randomPopulation(small_popsize, num_obj);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
     BENCHMARK_ADVANCED("merge_right_greater")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(small_popsize, num_obj);
-        Population<int> rhs = randomPopulation(large_popsize, num_obj);
+        Population<RealGene> lhs = randomPopulation(small_popsize, num_obj);
+        Population<RealGene> rhs = randomPopulation(large_popsize, num_obj);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
@@ -96,24 +96,24 @@ TEST_CASE("merge_pareto_sets_dominated", "[benchmark]")
 
     BENCHMARK_ADVANCED("merge_equal")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(popsize, num_obj);
-        Population<int> rhs = randomPopulation(popsize, num_obj);
+        Population<RealGene> lhs = randomPopulation(popsize, num_obj);
+        Population<RealGene> rhs = randomPopulation(popsize, num_obj);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
     BENCHMARK_ADVANCED("merge_left_dominated")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(popsize, num_obj, 0.5);
-        Population<int> rhs = randomPopulation(popsize, num_obj, 1.0);
+        Population<RealGene> lhs = randomPopulation(popsize, num_obj, 0.5);
+        Population<RealGene> rhs = randomPopulation(popsize, num_obj, 1.0);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
     BENCHMARK_ADVANCED("merge_right_dominated")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(popsize, num_obj, 1.0);
-        Population<int> rhs = randomPopulation(popsize, num_obj, 0.5);
+        Population<RealGene> lhs = randomPopulation(popsize, num_obj, 1.0);
+        Population<RealGene> rhs = randomPopulation(popsize, num_obj, 0.5);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
@@ -129,24 +129,24 @@ TEST_CASE("merge_pareto_sets_objectives", "[benchmark]")
 
     BENCHMARK_ADVANCED("merge_small_obj")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(popsize, small_obj);
-        Population<int> rhs = randomPopulation(popsize, small_obj);
+        Population<RealGene> lhs = randomPopulation(popsize, small_obj);
+        Population<RealGene> rhs = randomPopulation(popsize, small_obj);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
     BENCHMARK_ADVANCED("merge_medium_obj")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(popsize, medium_obj);
-        Population<int> rhs = randomPopulation(popsize, medium_obj);
+        Population<RealGene> lhs = randomPopulation(popsize, medium_obj);
+        Population<RealGene> rhs = randomPopulation(popsize, medium_obj);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };
 
     BENCHMARK_ADVANCED("merge_large_obj")(Benchmark::Chronometer meter)
     {
-        Population<int> lhs = randomPopulation(popsize, large_obj);
-        Population<int> rhs = randomPopulation(popsize, large_obj);
+        Population<RealGene> lhs = randomPopulation(popsize, large_obj);
+        Population<RealGene> rhs = randomPopulation(popsize, large_obj);
 
         meter.measure([&] { return mergeParetoSets(std::move(lhs), std::move(rhs)); });
     };

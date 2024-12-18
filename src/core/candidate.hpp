@@ -3,6 +3,7 @@
 #ifndef GAPP_CORE_CANDIDATE_HPP
 #define GAPP_CORE_CANDIDATE_HPP
 
+#include "../encoding/gene_types.hpp"
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
 #include "../utility/matrix.hpp"
@@ -10,6 +11,7 @@
 #include "../utility/concepts.hpp"
 #include "../utility/iterators.hpp"
 #include <vector>
+#include <span>
 #include <algorithm>
 #include <any>
 #include <utility>
@@ -82,6 +84,14 @@ namespace gapp
     */
     template<typename T>
     using BoundsVector = std::vector<Bounds<T>>;
+
+    /**
+    * A view of a bounds vector, containing the bounds for each gene of a chromosome.
+    *
+    * @tparam T The gene type.
+    */
+    template<typename T>
+    using BoundsView = std::span<const Bounds<T>>;
 
     /**
     * The type used to represent the chromosome of a candidate solution.
@@ -161,6 +171,17 @@ namespace gapp
         ~CandidateInfo()                                = default;
     };
 
+    namespace detail
+    {
+        template<typename T>
+        struct CandidateBounds {};
+
+        template<typename T>
+        requires(is_bounded<T>)
+        struct CandidateBounds<T> { BoundsView<T> bounds_; };
+
+    } // namespace detail
+
     /**
     * The class that is used to represent candidate solutions in all of the algorithms.
     * 
@@ -171,29 +192,19 @@ namespace gapp
     * @tparam T The gene type used in the candidate's chromosome.
     */
     template<typename T>
-    struct Candidate : public CandidateInfo, public detail::container_interface<Candidate<T>>
+    struct Candidate : public CandidateInfo, private detail::CandidateBounds<T>, public detail::container_interface<Candidate<T>>
     {
         using Gene = T; /**< The type of the candidate's genes. */
 
         /**
-        * Create a candidate with an empty fitness vector and specific chromosome size.
-        * The genes of the chromosome will be default constructed.
+        * Create a candidate with an empty fitness vector and chromosome, with
+        * the specified gene bounds.
         * 
-        * @param chrom_len The length of the chromosome.
+        * @param bounds The lower and upper bounds of each gene of the chromosome.
         */
-        explicit Candidate(size_t chrom_len) :
-            chromosome(chrom_len)
-        {}
-
-        /**
-        * Create a candidate with an empty fitness vector and specific chromosome size.
-        * The genes of the chromosome will be equal to @p gene.
-        *
-        * @param chrom_len The length of the chromosome.
-        * @param gene The value of the genes in the chromosome.
-        */
-        Candidate(size_t chrom_len, Gene gene) :
-            chromosome(chrom_len, gene)
+        explicit Candidate(BoundsView<T> bounds) requires(is_bounded<T>) :
+            detail::CandidateBounds<T>(bounds),
+            chromosome(bounds.size())
         {}
 
         /**
@@ -201,25 +212,19 @@ namespace gapp
         *
         * @param chrom The chromosome of the candidate.
         */
-        explicit Candidate(const Chromosome<T>& chrom) :
-            chromosome(chrom)
-        {}
-
-        /**
-        * Create a candidate with an empty fitness vector and a given chromosome.
-        *
-        * @param chrom The chromosome of the candidate.
-        */
-        explicit Candidate(Chromosome<T>&& chrom) noexcept :
+        explicit Candidate(Chromosome<T> chrom) requires(!is_bounded<T>) :
             chromosome(std::move(chrom))
         {}
 
         /**
-        * Create a candidate with an empty fitness vector from a list of genes.
-        *
-        * @param chrom A list of genes for the chromosome.
+        * Create a candidate with an empty fitness vector, using the given chromosome and
+        * bounds.
+        * 
+        * @param chrom The chromosome of the candidate.
+        * @param bounds The bounds of each gene of the chromosome.
         */
-        Candidate(std::initializer_list<T> chrom) :
+        Candidate(Chromosome<T> chrom, BoundsView<T> bounds) requires(is_bounded<T>) :
+            detail::CandidateBounds<T>(bounds),
             chromosome(std::move(chrom))
         {}
 
@@ -239,6 +244,13 @@ namespace gapp
         auto end() noexcept { return chromosome.end(); }
         auto end() const noexcept { return chromosome.end(); }
 
+
+        /** @returns The lower and upper bounds for each gene of the candidate's chromosome. */
+        BoundsView<T> gene_bounds() const noexcept requires(is_bounded<T>)
+        {
+            GAPP_ASSERT(this->bounds_.size() == chromosome.size(), "Attempting to access invalid gene bounds.");
+            return this->bounds_;
+        }
 
         /** @returns The length of the chromosome. Equivalent to calling chromosome.size(). */
         size_t chrom_len() const noexcept

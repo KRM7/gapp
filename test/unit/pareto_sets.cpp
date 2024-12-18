@@ -12,9 +12,9 @@ using namespace gapp::detail;
 using namespace Catch;
 
 
-static Population<int> fmatToPopulation(const FitnessMatrix& fmat)
+static Population<RealGene> fmatToPopulation(const FitnessMatrix& fmat)
 {
-    Population<int> pop(fmat.size(), Candidate<int>(0));
+    Population<RealGene> pop(fmat.size());
 
     for (size_t i = 0; i < fmat.size(); i++) { pop[i].fitness = FitnessVector(fmat[i]); }
 
@@ -67,13 +67,13 @@ TEST_CASE("merge_pareto_sets", "[pareto_front]")
         { -1.0, 14.0 },
     };
 
-    Population<int> pop1 = fmatToPopulation(front1);
-    Population<int> pop2 = fmatToPopulation(front2);
-    Population<int> expected_pop = fmatToPopulation(pareto_set);
+    Population<RealGene> pop1 = fmatToPopulation(front1);
+    Population<RealGene> pop2 = fmatToPopulation(front2);
+    Population<RealGene> expected_pop = fmatToPopulation(pareto_set);
 
-    Population<int> optimal_pop = mergeParetoSets(pop1, pop2);
+    Population<RealGene> optimal_pop = mergeParetoSets(pop1, pop2);
 
     REQUIRE(optimal_pop.size() == expected_pop.size());
 
-    REQUIRE(std::is_permutation(optimal_pop.begin(), optimal_pop.end(), expected_pop.begin(), fcomp<int>));
+    REQUIRE(std::is_permutation(optimal_pop.begin(), optimal_pop.end(), expected_pop.begin(), fcomp<RealGene>));
 }

@@ -2,7 +2,7 @@
 
 #include "real.hpp"
 #include "../core/candidate.hpp"
-#include "../core/ga_base.hpp"
+#include "../core/ga_info.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
@@ -12,11 +12,11 @@
 
 namespace gapp::mutation::real
 {
-    void Uniform::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Uniform::mutate(const GaInfo&, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
-        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(sol.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        const auto& bounds = ga.gene_bounds();
+        const auto& bounds = sol.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
@@ -27,11 +27,11 @@ namespace gapp::mutation::real
         }
     }
 
-    void NonUniform::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void NonUniform::mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
-        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(sol.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        const auto& bounds = ga.gene_bounds();
+        const auto& bounds = sol.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
@@ -50,11 +50,11 @@ namespace gapp::mutation::real
         }
     }
 
-    void Gauss::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Gauss::mutate(const GaInfo&, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
-        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(sol.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        const auto& bounds = ga.gene_bounds();
+        const auto& bounds = sol.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
@@ -69,11 +69,11 @@ namespace gapp::mutation::real
         }
     }
 
-    void Polynomial::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Polynomial::mutate(const GaInfo&, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
-        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(sol.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        const auto& bounds = ga.gene_bounds();
+        const auto& bounds = sol.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
@@ -96,11 +96,11 @@ namespace gapp::mutation::real
         }
     }
 
-    void Boundary::mutate(const GA<GeneType>& ga, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Boundary::mutate(const GaInfo&, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
-        GAPP_ASSERT(ga.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(sol.gene_bounds().size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        const auto& bounds = ga.gene_bounds();
+        const auto& bounds = sol.gene_bounds();
 
         const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);

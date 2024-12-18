@@ -17,7 +17,7 @@ TEST_CASE("repair_function", "[repair_function]")
 
     std::atomic<size_t> repair_count = 0;
 
-    ga.repair_function([&](const GA<RealGene>&, const Candidate<RealGene>&, Chromosome<RealGene>& chrom)
+    ga.repair_function([&](const GaInfo&, const Candidate<RealGene>&, Chromosome<RealGene>& chrom)
     {
         for (RealGene& gene : chrom) gene = std::max(0.0, gene);
         repair_count++;

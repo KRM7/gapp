@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_MUTATION_PERMUTATION_HPP
-#define GA_MUTATION_PERMUTATION_HPP
+#ifndef GAPP_MUTATION_PERMUTATION_HPP
+#define GAPP_MUTATION_PERMUTATION_HPP
 
 #include "mutation_base.hpp"
 #include "../encoding/gene_types.hpp"
@@ -48,7 +48,7 @@ namespace gapp::mutation::perm
         constexpr double range_max() const noexcept { return range_max_; }
 
     private:
-        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
 
         Normalized<double> range_max_;
     };
@@ -65,7 +65,7 @@ namespace gapp::mutation::perm
         using Mutation::Mutation;
         constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
     private:
-        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
     };
 
     /**
@@ -81,7 +81,7 @@ namespace gapp::mutation::perm
         using Mutation::Mutation;
         constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
     private:
-        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
     };
 
     /**
@@ -126,7 +126,7 @@ namespace gapp::mutation::perm
         constexpr double range_max() const noexcept { return range_max_; }
 
     private:
-        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
 
         Normalized<double> range_max_;
     };
@@ -170,11 +170,11 @@ namespace gapp::mutation::perm
         constexpr double range_max() const noexcept { return range_max_; }
 
     private:
-        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
 
         Normalized<double> range_max_;
     };
 
 } // namespace gapp::mutation::perm
 
-#endif // !GA_MUTATION_PERMUTATION_HPP
+#endif // !GAPP_MUTATION_PERMUTATION_HPP

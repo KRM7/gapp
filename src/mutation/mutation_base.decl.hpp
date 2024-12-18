@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_MUTATION_BASE_DECL_HPP
-#define GA_MUTATION_BASE_DECL_HPP
+#ifndef GAPP_MUTATION_BASE_DECL_HPP
+#define GAPP_MUTATION_BASE_DECL_HPP
 
 #include "../core/candidate.hpp"
 #include "../utility/bounded_value.hpp"
@@ -10,8 +10,7 @@
 
 namespace gapp
 {
-    template<typename T>
-    class GA;
+    class GaInfo;
 
 } // namespace gapp
 
@@ -78,7 +77,7 @@ namespace gapp::mutation
         * @param ga The genetic algorithm the mutation operator is being used in.
         * @param candidate The candidate to mutate.
         */
-        void operator()(const GA<T>& ga, Candidate<T>& candidate) const;
+        void operator()(const GaInfo& ga, Candidate<T>& candidate) const;
 
 
         /** Destructor. */
@@ -110,11 +109,11 @@ namespace gapp::mutation
         * @param candidate The candidate solution that will be mutated.
         * @param chromosome The chromosome to mutate. This is the chromosome of @p candidate.
         */
-        virtual void mutate(const GA<T>& ga, const Candidate<T>& candidate, Chromosome<T>& chromosome) const = 0;
+        virtual void mutate(const GaInfo& ga, const Candidate<T>& candidate, Chromosome<T>& chromosome) const = 0;
 
         Probability pm_;
     };
 
 } // namespace gapp::mutation
 
-#endif // !GA_MUTATION_BASE_DECL_HPP
+#endif // !GAPP_MUTATION_BASE_DECL_HPP

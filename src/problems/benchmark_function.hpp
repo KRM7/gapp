@@ -53,14 +53,14 @@ namespace gapp::problems
 
         /* Single-objective, uniform bounds. */
         BenchmarkFunctionTraits(std::string name, Bounds<T> bounds, Chromosome<T> optimum, double optimal_value) :
-            name_(std::move(name)), num_objectives_(1), bounds_(BoundsVector<T>(optimum.size(), bounds)), optimum_(std::move(optimum)),
+            name_(std::move(name)), num_objectives_(1), bounds_(BoundsVector<T>(optimum.size(), bounds)), optimum_(std::move(optimum), bounds_),
             optimal_value_(FitnessVector(1, optimal_value)), ideal_point_(optimal_value_), nadir_point_(optimal_value_)
         {}
 
         /* Multi-objective, uniform bounds. */
         BenchmarkFunctionTraits(std::string name, Bounds<T> bounds, Chromosome<T> optimum, FitnessVector optimal_value) :
             name_(std::move(name)), num_objectives_(optimal_value.size()), bounds_(BoundsVector<T>(optimum.size(), bounds)),
-            optimum_(std::move(optimum)), optimal_value_(std::move(optimal_value))
+            optimum_(std::move(optimum), bounds_), optimal_value_(std::move(optimal_value))
         {}
 
         /* General ctor, uniform bounds. */

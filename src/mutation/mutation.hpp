@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_MUTATION_HPP
-#define GA_MUTATION_HPP
+#ifndef GAPP_MUTATION_HPP
+#define GAPP_MUTATION_HPP
 
 #include "mutation_base.hpp"
 #include "binary.hpp"
@@ -12,4 +12,4 @@
 /** %Mutation operators used in the GAs. */
 namespace gapp::mutation {}
 
-#endif // !GA_MUTATION_HPP
+#endif // !GAPP_MUTATION_HPP

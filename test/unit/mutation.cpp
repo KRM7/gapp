@@ -99,12 +99,14 @@ TEMPLATE_TEST_CASE("binary_mutation", "[mutation]", binary::Flip)
 TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, real::NonUniform, real::Polynomial, real::Uniform)
 {
     using Mutation = TestType;
-    const Bounds bounds = { -1.0, 1.0 };
+
+    constexpr size_t chrom_len = 10;
+    const BoundsVector<RealGene> bounds(chrom_len, { -1.0, 1.0 });
 
     RCGA context;
-    context.solve(DummyFitnessFunction<RealGene>(10), bounds, 1);
+    context.solve(DummyFitnessFunction<RealGene>(chrom_len), bounds, 1);
 
-    Candidate<RealGene> candidate{ { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } };
+    Candidate<RealGene> candidate{ { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }, bounds };
     candidate.fitness = { 0.0 };
 
     Candidate<RealGene> old_candidate = candidate;
@@ -129,12 +131,14 @@ TEMPLATE_TEST_CASE("real_mutation", "[mutation]", real::Boundary, real::Gauss, r
         REQUIRE(( candidate.is_evaluated() == (candidate.chromosome == old_candidate.chromosome)));
     }
 
+    REQUIRE(candidate.chromosome.size() == chrom_len);
+
     REQUIRE(
         candidate.chromosome.size() == old_candidate.chromosome.size()
     );
 
     REQUIRE(
-        std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(bounds.lower(), bounds.upper()))
+        std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(-1.0, 1.0))
     );
 }
 
@@ -191,12 +195,14 @@ TEMPLATE_TEST_CASE("perm_mutation", "[mutation]", perm::Inversion, perm::Shift, 
 TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
 {
     using Mutation = TestType;
-    const Bounds<IntegerGene> bounds = { 0, 3 };
+
+    constexpr size_t chrom_len = 10;
+    const BoundsVector<IntegerGene> bounds(chrom_len, { 0, 3 });
 
     IntegerGA context;
-    context.solve(DummyFitnessFunction<IntegerGene>(10), bounds, 1);
+    context.solve(DummyFitnessFunction<IntegerGene>(chrom_len), bounds, 1);
 
-    Candidate<IntegerGene> candidate{ { 0, 1, 2, 3, 3, 1, 0, 1, 0, 2 } };
+    Candidate<IntegerGene> candidate{ { 0, 1, 2, 3, 3, 1, 0, 1, 0, 2 }, bounds };
     candidate.fitness = { 0.0 };
 
     Candidate<IntegerGene> old_candidate = candidate;
@@ -222,11 +228,13 @@ TEMPLATE_TEST_CASE("integer_mutation", "[mutation]", integer::Uniform)
         REQUIRE(candidate.chromosome != old_candidate.chromosome);
     }
 
+    REQUIRE(candidate.chromosome.size() == chrom_len);
+
     REQUIRE(
         candidate.chromosome.size() == old_candidate.chromosome.size()
     );
 
     REQUIRE(
-        std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(bounds.lower(), bounds.upper()))
+        std::all_of(candidate.chromosome.begin(), candidate.chromosome.end(), detail::between(0, 3))
     );
 }

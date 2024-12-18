@@ -1,10 +1,10 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_MUTATION_BASE_IMPL_HPP
-#define GA_MUTATION_BASE_IMPL_HPP
+#ifndef GAPP_MUTATION_BASE_IMPL_HPP
+#define GAPP_MUTATION_BASE_IMPL_HPP
 
 #include "mutation_base.decl.hpp"
-#include "../core/ga_base.decl.hpp"
+#include "../core/ga_info.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <utility>
@@ -12,7 +12,7 @@
 namespace gapp::mutation
 {
     template<typename T>
-    void Mutation<T>::operator()(const GA<T>& ga, Candidate<T>& candidate) const
+    void Mutation<T>::operator()(const GaInfo& ga, Candidate<T>& candidate) const
     {
         GAPP_ASSERT(candidate.fitness.empty() || candidate.fitness.size() == ga.num_objectives());
         GAPP_ASSERT(allow_variable_chrom_length() || candidate.chromosome.size() == ga.chrom_len());
@@ -38,4 +38,4 @@ namespace gapp::mutation
 
 } // namespace gapp::mutation
 
-#endif // !GA_MUTATION_BASE_IMPL_HPP
+#endif // !GAPP_MUTATION_BASE_IMPL_HPP

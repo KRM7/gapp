@@ -12,7 +12,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(sol.chromosome.size() == var_bits * bounds.size());
 
-        Candidate<RealGene> new_sol(bounds.size());
+        Candidate<RealGene> new_sol(bounds);
 
         for (size_t i = 0; i < new_sol.size(); i++)
         {

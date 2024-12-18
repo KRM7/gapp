@@ -1,7 +1,6 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "permutation.hpp"
-#include "../core/ga_base.hpp"
 #include "../core/candidate.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
@@ -13,7 +12,7 @@
 
 namespace gapp::mutation::perm
 {
-    void Inversion::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Inversion::mutate(const GaInfo&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
         const size_t chrom_len = chromosome.size();
 
@@ -32,7 +31,7 @@ namespace gapp::mutation::perm
         }
     }
 
-    void Swap2::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Swap2::mutate(const GaInfo&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
         if (chromosome.size() < 2) return;
 
@@ -45,7 +44,7 @@ namespace gapp::mutation::perm
         }
     }
 
-    void Swap3::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Swap3::mutate(const GaInfo&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
         if (chromosome.size() < 3) return;
 
@@ -59,7 +58,7 @@ namespace gapp::mutation::perm
         }
     }
 
-    void Shuffle::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Shuffle::mutate(const GaInfo&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
         const size_t chrom_len = chromosome.size();
 
@@ -78,7 +77,7 @@ namespace gapp::mutation::perm
         }
     }
 
-    void Shift::mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
+    void Shift::mutate(const GaInfo&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const
     {
         const size_t chrom_len = chromosome.size();
 

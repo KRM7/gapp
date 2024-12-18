@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_MUTATION_INTEGER_HPP
-#define GA_MUTATION_INTEGER_HPP
+#ifndef GAPP_MUTATION_INTEGER_HPP
+#define GAPP_MUTATION_INTEGER_HPP
 
 #include "mutation_base.hpp"
 #include "../encoding/gene_types.hpp"
@@ -19,9 +19,9 @@ namespace gapp::mutation::integer
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
     };
 
 } // namespace gapp::mutation::integer
 
-#endif // !GA_MUTATION_INTEGER_HPP
+#endif // !GAPP_MUTATION_INTEGER_HPP

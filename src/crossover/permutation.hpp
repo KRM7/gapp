@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CROSSOVER_PERMUTATION_HPP
-#define GA_CROSSOVER_PERMUTATION_HPP
+#ifndef GAPP_CROSSOVER_PERMUTATION_HPP
+#define GAPP_CROSSOVER_PERMUTATION_HPP
 
 #include "crossover_base.decl.hpp"
 #include "../core/candidate.hpp"
@@ -25,7 +25,7 @@ namespace gapp::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -44,7 +44,7 @@ namespace gapp::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -64,7 +64,7 @@ namespace gapp::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -79,7 +79,7 @@ namespace gapp::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -95,7 +95,7 @@ namespace gapp::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -113,9 +113,9 @@ namespace gapp::crossover::perm
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
 } // namespace gapp::crossover::perm
 
-#endif // !GA_CROSSOVER_PERMUTATION_HPP
+#endif // !GAPP_CROSSOVER_PERMUTATION_HPP

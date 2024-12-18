@@ -466,7 +466,7 @@ namespace gapp::crossover::dtl
 
         auto nb_lists = makeNeighbourLists(parent1.chromosome, parent2.chromosome);
 
-        Candidate<T> child{ parent1.chromosome[0] };
+        Candidate<T> child({ parent1.chromosome[0] });
         child.chromosome.reserve(chrom_len);
 
         std::vector<T> remaining_genes(parent1.chromosome.begin() + 1, parent1.chromosome.end());
@@ -504,7 +504,7 @@ namespace gapp::crossover::dtl
 
         auto nb_lists = makeNeighbourLists(parent1.chromosome, parent2.chromosome);
 
-        Candidate<T> child{ parent1.chromosome[0] };
+        Candidate<T> child({ parent1.chromosome[0] });
         child.chromosome.reserve(chrom_len);
 
         detail::dynamic_bitset is_used(chrom_len);

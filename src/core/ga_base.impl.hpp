@@ -378,7 +378,7 @@ namespace gapp
     template<typename T>
     Candidate<T> GA<T>::generateCandidate() const requires(is_bounded<T>)
     {
-        return Candidate<T>(GaTraits<T>::randomChromosome(chrom_len(), gene_bounds()));
+        return Candidate<T>(GaTraits<T>::randomChromosome(chrom_len(), gene_bounds()), gene_bounds());
     }
 
     template<typename T>

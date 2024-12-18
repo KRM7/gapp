@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_TEST_VARIABLE_LENGTH_HPP
-#define GA_TEST_VARIABLE_LENGTH_HPP
+#ifndef GAPP_TEST_VARIABLE_LENGTH_HPP
+#define GAPP_TEST_VARIABLE_LENGTH_HPP
 
 #include "gapp.hpp"
 #include <algorithm>
@@ -16,7 +16,7 @@ public:
     using Crossover::Crossover;
     bool allow_variable_chrom_length() const noexcept override { return true; }
 private:
-    CandidatePair<GeneType> crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override
+    CandidatePair<GeneType> crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override
     {
         return { parent1, parent2 };
     }
@@ -29,7 +29,7 @@ public:
     using Mutation::Mutation;
     bool allow_variable_chrom_length() const noexcept override { return true; }
 private:
-    void mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const override
+    void mutate(const GaInfo&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const override
     {
         const size_t flip_count = rng::randomBinomial(chromosome.size(), mutation_rate());
         const auto flipped_indices = rng::sampleUnique(0_sz, chromosome.size(), flip_count);
@@ -64,4 +64,4 @@ inline void variable_chrom_length()
               << "\nBest fitness found: " << solutions[0].fitness[0] << "\n";
 }
 
-#endif // !GA_TEST_VARIABLE_LENGTH_HPP
+#endif // !GAPP_TEST_VARIABLE_LENGTH_HPP

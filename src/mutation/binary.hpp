@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_MUTATION_BINARY_HPP
-#define GA_MUTATION_BINARY_HPP
+#ifndef GAPP_MUTATION_BINARY_HPP
+#define GAPP_MUTATION_BINARY_HPP
 
 #include "mutation_base.hpp"
 #include "../encoding/gene_types.hpp"
@@ -20,9 +20,9 @@ namespace gapp::mutation::binary
         using Mutation::Mutation;
         constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
     private:
-        void mutate(const GA<GeneType>& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
     };
 
 } // namespace gapp::mutation::binary
 
-#endif // !GA_MUTATION_BINARY_HPP
+#endif // !GAPP_MUTATION_BINARY_HPP

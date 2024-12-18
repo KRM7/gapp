@@ -14,7 +14,7 @@ TEST_CASE("unconstrained_problem", "[constraints]")
 {
     RCGA ga{ population_size };
 
-    ga.repair_function([&](const GA<RealGene>&, const Candidate<RealGene>& sol, Chromosome<RealGene>&)
+    ga.repair_function([&](const GaInfo&, const Candidate<RealGene>& sol, Chromosome<RealGene>&)
     {
         REQUIRE(sol.constraint_violation.empty());
         REQUIRE(!sol.has_constraint_violation());
@@ -31,12 +31,12 @@ TEST_CASE("constrained_problem", "[constraints]")
 {
     RCGA ga{ population_size };
 
-    ga.constraints_function([](const GA<RealGene>&, const Chromosome<RealGene>&)
+    ga.constraints_function([](const GaInfo&, const Chromosome<RealGene>&)
     {
         return CVVector{ 1.0, 0.0 };
     });
 
-    ga.repair_function([&](const GA<RealGene>&, const Candidate<RealGene>& sol, Chromosome<RealGene>&)
+    ga.repair_function([&](const GaInfo&, const Candidate<RealGene>& sol, Chromosome<RealGene>&)
     {
         REQUIRE(sol.constraint_violation == CVVector{ 1.0, 0.0 });
         REQUIRE(sol.has_constraint_violation());
