@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CROSSOVER_HPP
-#define GA_CROSSOVER_HPP
+#ifndef GAPP_CROSSOVER_HPP
+#define GAPP_CROSSOVER_HPP
 
 #include "crossover_base.hpp"
 #include "binary.hpp"
@@ -12,4 +12,4 @@
 /** %Crossover operators used in the GAs. */
 namespace gapp::crossover {}
 
-#endif // !GA_CROSSOVER_HPP
+#endif // !GAPP_CROSSOVER_HPP

@@ -141,7 +141,7 @@ The repair function can be specified as some callable object using the `repair_f
 method of the GAs:
 
 ```cpp
-ga.repair_function([](const GA<RealGene>&, const Candidate<RealGene>&, Chromosome<RealGene>& chrom)
+ga.repair_function([](const GaInfo&, const Candidate<RealGene>&, Chromosome<RealGene>& chrom)
 {
     // change chrom ...
     return true; // return true if chrom was changed, or false otherwise
@@ -164,7 +164,7 @@ The simplest way to do this is to use a lambda function (or some other callable)
 ```cpp
 RCGA ga;
 
-ga.crossover_method([](const GA<RealGene>&, const Candidate<RealGene>& parent1, const Candidate<RealGene>& parent2)
+ga.crossover_method([](const GaInfo&, const Candidate<RealGene>& parent1, const Candidate<RealGene>& parent2)
 {
     auto child1 = parent1;
     auto child2 = parent2;
@@ -174,7 +174,7 @@ ga.crossover_method([](const GA<RealGene>&, const Candidate<RealGene>& parent1, 
     return CandidatePair<RealGene>{ std::move(child1), std::move(child2) };
 });
 
-ga.mutation_method([](const GA<RealGene>& ga, const Candidate<RealGene>& sol, Chromosome<RealGene>& chrom)
+ga.mutation_method([](const GaInfo& ga, const Candidate<RealGene>& sol, Chromosome<RealGene>& chrom)
 {
     for (RealGene& gene : chrom)
     {
@@ -197,7 +197,7 @@ class MyCrossover : public crossover::Crossover<RealGene>
 public:
     using Crossover::Crossover;
 
-    CandidatePair<RealGene> crossover(const GA<RealGene>& ga, const Candidate<RealGene>& parent1, const Candidate<RealGene>& parent2) const override
+    CandidatePair<RealGene> crossover(const GaInfo& ga, const Candidate<RealGene>& parent1, const Candidate<RealGene>& parent2) const override
     {
         // perform the crossover ...
     }
@@ -210,7 +210,7 @@ class MyMutation : public mutation::Mutation<RealGene>
 public:
     using Mutation::Mutation;
 
-    void mutate(const GA<RealGene>& ga, const Candidate<RealGene>& candidate, Chromosome<RealGene>& chromosome) const override
+    void mutate(const GaInfo& ga, const Candidate<RealGene>& candidate, Chromosome<RealGene>& chromosome) const override
     {
         // perform the mutation on chromosome ...
     }

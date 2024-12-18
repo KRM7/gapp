@@ -19,7 +19,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = Candidate<RealGene>(num_vars, 0.0);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars, 0.0), bounds_);
         optimal_value_ = { 10.0 * double(num_vars - 1), 0.0 };
 
         ideal_point_ = { 10.0 * double(num_vars - 1), 3.85 * double(num_vars - 1) + 4.0 };
@@ -49,7 +49,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = Candidate<RealGene>(num_vars, 0.0);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars, 0.0), bounds_);
         optimal_value_ = { 0.0, -1.0 };
 
         ideal_point_ = {  0.0,  0.0 };
@@ -76,7 +76,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = Candidate<RealGene>(num_vars, 0.0);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars, 0.0), bounds_);
         optimal_value_ = { 0.0, -1.0 };
 
         ideal_point_ = {  0.0,  0.0 };
@@ -103,7 +103,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = Candidate<RealGene>(num_vars, 0.0);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars, 0.0), bounds_);
         optimal_value_ = { 0.0, -1.0 };
 
         ideal_point_ = {  0.0,   0.8 };
@@ -132,7 +132,7 @@ namespace gapp::problems
 
         bounds_[0] = { 0.0, 1.0 };
 
-        optimum_ = Candidate<RealGene>(num_vars, 0.0);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars, 0.0), bounds_);
         optimal_value_ = { 0.0, -1.0 };
 
         ideal_point_ = {  0.0,  0.0 };
@@ -161,7 +161,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = Candidate<GeneType>(this->num_vars(), GeneType{ 1 });
+        optimum_ = Candidate<GeneType>(Chromosome<GeneType>(this->num_vars(), GeneType{ 1 }));
         optimal_value_ = { -(FIRST_BITS + 1.0), -(num_vars - 1.0) / (FIRST_BITS + 1.0) };
 
         ideal_point_ = { -1.0, -(num_vars - 1.0) / (FIRST_BITS + 1.0) };
@@ -193,7 +193,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_vars >= 2, "The number of variables must be at least 2.");
 
-        optimum_ = Candidate<RealGene>(num_vars, 0.0);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars, 0.0), bounds_);
         optimal_value_ = { -1.0, 0.0 };
 
         ideal_point_ = {  0.0,  0.0 };

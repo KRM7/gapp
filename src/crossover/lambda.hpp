@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CROSSOVER_LAMBDA_HPP
-#define GA_CROSSOVER_LAMBDA_HPP
+#ifndef GAPP_CROSSOVER_LAMBDA_HPP
+#define GAPP_CROSSOVER_LAMBDA_HPP
 
 #include "crossover_base.hpp"
 #include "../core/candidate.hpp"
@@ -19,7 +19,7 @@ namespace gapp::crossover
     class Lambda final : public Crossover<T>
     {
     public:
-        using CrossoverCallable = std::function<CandidatePair<T>(const GA<T>&, const Candidate<T>&, const Candidate<T>&)>;
+        using CrossoverCallable = std::function<CandidatePair<T>(const GaInfo&, const Candidate<T>&, const Candidate<T>&)>;
 
         constexpr explicit Lambda(CrossoverCallable f) noexcept :
             crossover_(std::move(f))
@@ -30,7 +30,7 @@ namespace gapp::crossover
     private:
         CrossoverCallable crossover_;
 
-        CandidatePair<T> crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const override
+        CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const override
         {
             GAPP_ASSERT(crossover_);
             return crossover_(ga, parent1, parent2);
@@ -39,4 +39,4 @@ namespace gapp::crossover
 
 } // namespace gapp::crossover
 
-#endif
+#endif // !GAPP_CROSSOVER_LAMBDA_HPP

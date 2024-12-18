@@ -22,7 +22,7 @@ Candidate<RealGene> randomSolution(const BoundsVector<RealGene>& bounds)
 
     for (const auto& bound : bounds) { point.push_back( randomReal(bound.lower(), bound.upper()) ); }
 
-    return Candidate<RealGene>{ std::move(point) };
+    return Candidate<RealGene>{ std::move(point), bounds };
 }
 
 Candidate<BinaryGene> randomSolution(const BoundsVector<BinaryGene>& bounds)

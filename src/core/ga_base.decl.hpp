@@ -70,7 +70,7 @@ namespace gapp
         * 
         * @see crossover_method
         */
-        using CrossoverCallable = std::function<CandidatePair<T>(const GA&, const Candidate<T>&, const Candidate<T>&)>;
+        using CrossoverCallable = std::function<CandidatePair<T>(const GaInfo&, const Candidate<T>&, const Candidate<T>&)>;
 
         /**
         * The general callable type that can be used as a mutation method in the %GA (when
@@ -79,7 +79,7 @@ namespace gapp
         * 
         * @see mutation_method
         */
-        using MutationCallable = std::function<void(const GA&, const Candidate<T>&, Chromosome<T>&)>;
+        using MutationCallable = std::function<void(const GaInfo&, const Candidate<T>&, Chromosome<T>&)>;
 
         /**
         * The general callable type that can be used as a constraints function in the %GA.
@@ -88,7 +88,7 @@ namespace gapp
         * 
         * @see constraints_function
         */
-        using ConstraintsFunction = std::function<CVVector(const GA&, const Chromosome<T>&)>;
+        using ConstraintsFunction = std::function<CVVector(const GaInfo&, const Chromosome<T>&)>;
 
         /**
         * The general callable type that can be used as a repair function in the %GA.
@@ -98,7 +98,7 @@ namespace gapp
         * 
         * @see repair_function
         */
-        using RepairCallable = std::function<bool(const GA&, const Candidate<T>&, Chromosome<T>&)>;
+        using RepairCallable = std::function<bool(const GaInfo&, const Candidate<T>&, Chromosome<T>&)>;
 
 
         /**

@@ -127,15 +127,15 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
     using Crossover = TestType;
 
     constexpr size_t chrom_len = 10;
-    constexpr Bounds<RealGene> bounds = { 0.0, 1.0 };
+    const BoundsVector<RealGene> bounds(chrom_len, { 0.0, 1.0 });
 
     RCGA context;
     context.solve(DummyFitnessFunction<RealGene>(chrom_len), bounds, 1);
 
     constexpr Crossover crossover{ 0.8 };
 
-    Candidate<RealGene> parent1{ { 0.0, 0.12, 0.48, 0.19, 1.0, 1.0, 0.0, 0.72, 0.81, 0.03 } };
-    Candidate<RealGene> parent2{ { 1.0, 0.34, 0.97, 0.36, 1.0, 0.0, 0.0, 0.28, 0.49, 0.79 } };
+    Candidate<RealGene> parent1{ { 0.0, 0.12, 0.48, 0.19, 1.0, 1.0, 0.0, 0.72, 0.81, 0.03 }, bounds };
+    Candidate<RealGene> parent2{ { 1.0, 0.34, 0.97, 0.36, 1.0, 0.0, 0.0, 0.28, 0.49, 0.79 }, bounds };
     parent1.fitness = { 0.0 };
     parent2.fitness = { 0.0 };
 
@@ -143,8 +143,8 @@ TEMPLATE_TEST_CASE("real_crossover", "[crossover]", real::Arithmetic, real::BLXa
 
     REQUIRE(child1.chromosome.size() == chrom_len);
     REQUIRE(child2.chromosome.size() == chrom_len);
-    REQUIRE(std::all_of(child1.chromosome.begin(), child1.chromosome.end(), detail::between(bounds.lower(), bounds.upper())));
-    REQUIRE(std::all_of(child2.chromosome.begin(), child2.chromosome.end(), detail::between(bounds.lower(), bounds.upper())));
+    REQUIRE(std::all_of(child1.chromosome.begin(), child1.chromosome.end(), detail::between(0.0, 1.0)));
+    REQUIRE(std::all_of(child2.chromosome.begin(), child2.chromosome.end(), detail::between(0.0, 1.0)));
 }
 
 TEST_CASE("crossover_fitness_eval", "[crossover]")

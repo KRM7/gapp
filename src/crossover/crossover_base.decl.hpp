@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CROSSOVER_BASE_DECL_HPP
-#define GA_CROSSOVER_BASE_DECL_HPP
+#ifndef GAPP_CROSSOVER_BASE_DECL_HPP
+#define GAPP_CROSSOVER_BASE_DECL_HPP
 
 #include "../core/candidate.hpp"
 #include "../utility/bounded_value.hpp"
@@ -10,8 +10,7 @@
 
 namespace gapp
 {
-    template<typename T>
-    class GA;
+    class GaInfo;
 
 } // namespace gapp
 
@@ -86,7 +85,7 @@ namespace gapp::crossover
         * @param parent2 The second parent solution.
         * @returns The pair of children resulting from the crossover.
         */
-        CandidatePair<T> operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
+        CandidatePair<T> operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
 
 
         /** Destructor. */
@@ -120,11 +119,11 @@ namespace gapp::crossover
         * @param parent2 The second parent solution.
         * @returns The pair of children resulting from the crossover.
         */
-        virtual CandidatePair<T> crossover(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
+        virtual CandidatePair<T> crossover(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const = 0;
 
         Probability pc_;
     };
 
 } // namespace gapp::crossover
 
-#endif // !GA_CROSSOVER_BASE_DECL_HPP
+#endif // !GAPP_CROSSOVER_BASE_DECL_HPP

@@ -1,10 +1,10 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CROSSOVER_BASE_IMPL_HPP
-#define GA_CROSSOVER_BASE_IMPL_HPP
+#ifndef GAPP_CROSSOVER_BASE_IMPL_HPP
+#define GAPP_CROSSOVER_BASE_IMPL_HPP
 
 #include "crossover_base.decl.hpp"
-#include "../core/ga_base.decl.hpp"
+#include "../core/ga_info.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <utility>
@@ -12,13 +12,12 @@
 namespace gapp::crossover
 {
     template<typename T>
-    CandidatePair<T> Crossover<T>::operator()(const GA<T>& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
+    CandidatePair<T> Crossover<T>::operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const
     {
         GAPP_ASSERT(parent1.is_evaluated() && parent2.is_evaluated());
         GAPP_ASSERT(parent1.fitness.size() == parent2.fitness.size());
         GAPP_ASSERT(parent1.fitness.size() == ga.num_objectives());
-        GAPP_ASSERT(allow_variable_chrom_length() || (parent1.chromosome.size() == ga.chrom_len() &&
-                                                      parent2.chromosome.size() == ga.chrom_len()));
+        GAPP_ASSERT(allow_variable_chrom_length() || (parent1.chrom_len() == ga.chrom_len() && parent2.chrom_len() == ga.chrom_len()));
 
         /* Only need to perform the crossover with the set pc probability. Return early with (1 - pc) probability. */
         if (rng::randomReal() >= pc_)
@@ -77,4 +76,4 @@ namespace gapp::crossover
 
 } // namespace gapp::crossover
 
-#endif // !GA_CROSSOVER_BASE_IMPL_HPP
+#endif // !GAPP_CROSSOVER_BASE_IMPL_HPP

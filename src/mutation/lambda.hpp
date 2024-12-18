@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_MUTATION_LAMBDA_HPP
-#define GA_MUTATION_LAMBDA_HPP
+#ifndef GAPP_MUTATION_LAMBDA_HPP
+#define GAPP_MUTATION_LAMBDA_HPP
 
 #include "mutation_base.hpp"
 #include "../core/candidate.hpp"
@@ -19,7 +19,7 @@ namespace gapp::mutation
     class Lambda final : public Mutation<T>
     {
     public:
-        using MutationCallable = std::function<void(const GA<T>&, const Candidate<T>&, Chromosome<T>&)>;
+        using MutationCallable = std::function<void(const GaInfo&, const Candidate<T>&, Chromosome<T>&)>;
 
         constexpr explicit Lambda(MutationCallable f) noexcept :
             Mutation<T>(0.01),
@@ -31,7 +31,7 @@ namespace gapp::mutation
     private:
         MutationCallable mutate_;
 
-        void mutate(const GA<T>& ga, const Candidate<T>& candidate, Chromosome<T>& chromosome) const override
+        void mutate(const GaInfo& ga, const Candidate<T>& candidate, Chromosome<T>& chromosome) const override
         {
             GAPP_ASSERT(mutate_);
             mutate_(ga, candidate, chromosome);
@@ -40,4 +40,4 @@ namespace gapp::mutation
 
 } // namespace gapp::mutation
 
-#endif // !GA_MUTATION_LAMBDA_HPP
+#endif // !GAPP_MUTATION_LAMBDA_HPP

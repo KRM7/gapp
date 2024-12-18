@@ -85,7 +85,7 @@ using namespace gapp;
 class SinX : public FitnessFunction<RealGene, /* chrom_length = */ 1> 
 {
     // Define the fitness function by overriding the invoke method
-    FitnessVector invoke(const Chromosome<RealGene>& x) const override
+    FitnessVector invoke(const Candidate<RealGene>& x) const override
     {
         // The number of objectives will be deduced from the size of the fitness vector returned
         // from this function, there is no need to explicitly specify it anywhere

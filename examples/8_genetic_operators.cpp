@@ -11,7 +11,7 @@ class MyCrossover : public crossover::Crossover<PermutationGene>
 public:
     using Crossover::Crossover;
 
-    CandidatePair<GeneType> crossover(const GA<GeneType>&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override
+    CandidatePair<GeneType> crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override
     {
         auto child1 = parent1;
         auto child2 = parent2;
@@ -27,7 +27,7 @@ class MyMutation : public mutation::Mutation<PermutationGene>
 public:
     using Mutation::Mutation;
 
-    void mutate(const GA<GeneType>&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const override
+    void mutate(const GaInfo&, const Candidate<GeneType>&, Chromosome<GeneType>& chromosome) const override
     {
         if (rng::randomReal() < mutation_rate())
         {
@@ -66,7 +66,7 @@ int main()
 
     // using a repair function
 
-    ga.repair_function([](const GA<PermutationGene>&, const Candidate<PermutationGene>&, Chromosome<PermutationGene>& chrom)
+    ga.repair_function([](const GaInfo&, const Candidate<PermutationGene>&, Chromosome<PermutationGene>& chrom)
     {
         std::swap(chrom.front(), chrom.back());
         return true;

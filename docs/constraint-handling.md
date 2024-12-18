@@ -40,7 +40,7 @@ violate that particular constraint.
 ```cpp
 // Specify a constraint that the sum of the variables in a chromosome must be
 // greater than 0
-ga.constraints_function([](const GA<RealGene>&, const Chromosome<RealGene>& chrom)
+ga.constraints_function([](const GaInfo&, const Chromosome<RealGene>& chrom)
 {
     return { -std::accumulate(chrom.begin(), chrom.end(), 0.0) };
 });
@@ -128,7 +128,7 @@ solutions that violate a constraint so that it does not do so, or at
 least in a way that its degree of violation will be smaller:
 
 ```cpp
-ga.repair_function([](const GA<RealGene>& ga, const Candidate<RealGene>& sol, Chromosome<RealGene>& chrom)
+ga.repair_function([](const GaInfo& ga, const Candidate<RealGene>& sol, Chromosome<RealGene>& chrom)
 {
     if (sol.has_constraint_violation())
     {

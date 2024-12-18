@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_CROSSOVER_REAL_HPP
-#define GA_CROSSOVER_REAL_HPP
+#ifndef GAPP_CROSSOVER_REAL_HPP
+#define GAPP_CROSSOVER_REAL_HPP
 
 #include "crossover_base.decl.hpp"
 #include "../core/candidate.hpp"
@@ -25,7 +25,7 @@ namespace gapp::crossover::real
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
     /**
@@ -74,7 +74,7 @@ namespace gapp::crossover::real
         constexpr GeneType alpha() const noexcept { return alpha_; }
 
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
         NonNegative<GeneType> alpha_;
     };
@@ -124,7 +124,7 @@ namespace gapp::crossover::real
         constexpr GeneType eta() const noexcept { return eta_; }
 
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
         NonNegative<GeneType> eta_;
     };
@@ -143,10 +143,10 @@ namespace gapp::crossover::real
     public:
         using Crossover::Crossover;
     private:
-        CandidatePair<GeneType> crossover(const GA<GeneType>& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
     };
 
 
 } // namespace gapp::crossover::real
 
-#endif // !GA_CROSSOVER_REAL_HPP
+#endif // !GAPP_CROSSOVER_REAL_HPP

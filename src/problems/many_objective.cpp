@@ -193,7 +193,7 @@ namespace gapp::problems
         ideal_point_ = FitnessVector(num_obj, 0.0);
         nadir_point_ = FitnessVector(num_obj, -0.5);
 
-        optimum_ = Candidate<RealGene>(num_vars(), 0.5);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars(), 0.5), bounds_);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
         optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_.back() = -0.5;
@@ -213,7 +213,7 @@ namespace gapp::problems
         ideal_point_ = FitnessVector(num_obj, 0.0);
         nadir_point_ = FitnessVector(num_obj, -1.0);
 
-        optimum_ = Candidate<RealGene>(num_vars(), 0.5);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars(), 0.5), bounds_);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
         optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_[0] = -1.0;
@@ -233,7 +233,7 @@ namespace gapp::problems
         ideal_point_ = FitnessVector(num_obj, 0.0);
         nadir_point_ = FitnessVector(num_obj, -1.0);
 
-        optimum_ = Candidate<RealGene>(num_vars(), 0.5);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars(), 0.5), bounds_);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
         optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_[0] = -1.0;
@@ -253,7 +253,7 @@ namespace gapp::problems
         ideal_point_ = FitnessVector(num_obj, 0.0);
         nadir_point_ = FitnessVector(num_obj, -1.0);
 
-        optimum_ = Candidate<RealGene>(num_vars(), 0.5);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars(), 0.5), bounds_);
         optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_[0] = -1.0;
     }
@@ -277,7 +277,7 @@ namespace gapp::problems
         }
         nadir_point_[0] = nadir_point_[1];
 
-        optimum_ = Candidate<RealGene>(num_vars(), 0.5);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars(), 0.5), bounds_);
         std::fill(optimum_.begin(), optimum_.begin() + num_obj - 1, 0.0);
         optimal_value_ = nadir_point_;
         optimal_value_.back() = 0.0;
@@ -302,7 +302,7 @@ namespace gapp::problems
         }
         nadir_point_[0] = nadir_point_[1];
 
-        optimum_ = Candidate<RealGene>(num_vars(), 0.0);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars(), 0.0), bounds_);
         optimal_value_ = nadir_point_;
         optimal_value_.back() = 0.0;
     }
@@ -318,7 +318,7 @@ namespace gapp::problems
     {
         GAPP_ASSERT(num_obj >= 2, "The number of objectives must be at least 2.");
 
-        optimum_ = Candidate<RealGene>(num_vars(), 0.0);
+        optimum_ = Candidate<RealGene>(Chromosome<RealGene>(num_vars(), 0.0), bounds_);
         optimal_value_ = FitnessVector(num_obj, 0.0);
         optimal_value_.back() = -2.0 * num_obj;
 
