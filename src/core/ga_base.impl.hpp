@@ -1,12 +1,14 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_CORE_GA_BASE_IMPL_HPP
 #define GAPP_CORE_GA_BASE_IMPL_HPP
 
 #include "ga_base.decl.hpp"
 #include "ga_traits.hpp"
+#include "candidate.hpp"
 #include "population.hpp"
 #include "fitness_function.hpp"
+#include "../encoding/gene_types.hpp"
 #include "../algorithm/algorithm_base.hpp"
 #include "../algorithm/single_objective.hpp"
 #include "../algorithm/nsga3.hpp"
@@ -19,14 +21,18 @@
 #include "../utility/functional.hpp"
 #include "../utility/thread_pool.hpp"
 #include "../utility/scope_exit.hpp"
+#include "../utility/type_id.hpp"
+#include "../utility/type_list.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
 #include <functional>
 #include <numeric>
 #include <type_traits>
+#include <tuple>
 #include <memory>
 #include <atomic>
 #include <utility>
+#include <cstddef>
 
 namespace gapp
 {
@@ -44,18 +50,16 @@ namespace gapp
 
     template<typename T>
     GA<T>::GA(Positive<size_t> population_size) :
-        GA(population_size, std::make_unique<algorithm::SingleObjective>(), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>(0.01))
+        GA(population_size, std::make_unique<algorithm::SingleObjective>(), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>())
     {
         use_default_algorithm_ = true;
-        use_default_mutation_rate_ = true;
     }
 
     template<typename T>
     GA<T>::GA(Positive<size_t> population_size, std::unique_ptr<typename algorithm::Algorithm> algorithm) :
-        GA(population_size, std::move(algorithm), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>(0.01))
+        GA(population_size, std::move(algorithm), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>())
     {
         use_default_algorithm_ = false;
-        use_default_mutation_rate_ = true;
     }
 
     template<typename T>
@@ -66,7 +70,6 @@ namespace gapp
         GA(population_size, std::make_unique<algorithm::SingleObjective>(), std::move(crossover), std::move(mutation), std::move(stop_condition))
     {
         use_default_algorithm_ = true;
-        use_default_mutation_rate_ = false;
     }
 
     template<typename T>
@@ -105,22 +108,47 @@ namespace gapp
 
     
     template<typename T>
+    size_t GA<T>::index_of_gene(size_t type_id) const noexcept
+    {
+        return component_genes_t<T>::index_of_id(type_id).value_or(0);
+    }
+
+    template<typename T>
+    template<typename U>
+    BoundsVector<U> GA<T>::boundsToUniformBoundsVector(const FitnessFunctionBase<T>& fitness_function, Bounds<U> bounds) const
+    {
+        return BoundsVector<U>(fitness_function.template chrom_len<U>(), bounds);
+    }
+
+    template<typename T>
+    template<typename... Us>
+    auto GA<T>::boundsToUniformBoundsVector(const FitnessFunctionBase<T>& fitness_function, std::tuple<Bounds<Us>...> bounds) const
+    {
+        return std::tuple{ boundsToUniformBoundsVector(fitness_function, std::get<Bounds<Us>>(bounds))... };
+    }
+    
+    template<typename T>
     inline const FitnessFunctionBase<T>* GA<T>::fitness_function() const& noexcept
     {
-        return fitness_function_.get();
+        return static_cast<const FitnessFunctionBase<T>*>(fitness_function_.get());
     }
 
     template<typename T>
+    template<typename GeneType>
     inline size_t GA<T>::chrom_len() const noexcept
     {
-        return fitness_function() ? fitness_function()->chrom_len() : 0_sz;
+        if (!fitness_function_) return 0;
+
+        return fitness_function()->template chrom_len<GeneType>();
     }
 
-
     template<typename T>
-    inline const BoundsVector<T>& GA<T>::gene_bounds() const noexcept requires(is_bounded<T>)
+    template<typename GeneType>
+    inline const BoundsVector<GeneType>& GA<T>::gene_bounds() const noexcept
     {
-        return bounds_;
+        static_assert(is_bounded_gene_v<GeneType>, "The gene type must be a bounded gene type.");
+
+        return std::get<BoundsVector<GeneType>>(bounds_);
     }
 
 
@@ -147,27 +175,42 @@ namespace gapp
     }
 
     template<typename T>
-    inline const crossover::Crossover<T>& GA<T>::crossover_method() const& noexcept
+    template<typename GeneType>
+    inline crossover::Crossover<GeneType>& GA<T>::crossover_method() const& noexcept
     {
         GAPP_ASSERT(crossover_);
 
-        return *crossover_;
+        if constexpr (std::is_same_v<GeneType, T>)
+        {
+            return *crossover_;
+        }
+        else
+        {
+            return crossover_->template component<GeneType>();
+        }
     }
 
     template<typename T>
-    inline void GA<T>::crossover_rate(Probability pc) noexcept
+    void* GA<T>::crossover_method_impl(size_t type_id) const noexcept
     {
         GAPP_ASSERT(crossover_);
 
-        crossover_->crossover_rate(pc);
-    }
+        if (detail::type_id<T>() == type_id)
+        {
+            return static_cast<void*>(crossover_.get());
+        }
 
-    template<typename T>
-    inline Probability GA<T>::crossover_rate() const noexcept
-    {
-        GAPP_ASSERT(crossover_);
-
-        return crossover_->crossover_rate();
+        if constexpr (is_mixed_gene_v<T>)
+        {
+            return component_genes_t<T>::apply([&]<typename... Ts>()
+            {
+                void* crossover_method = nullptr;
+                ((detail::type_id<Ts>() == type_id ? crossover_method = (void*)std::addressof(crossover_->template component<Ts>())
+                                                   : crossover_method), ...);
+                return crossover_method;
+            });
+        }
+        else return nullptr;
     }
 
     template<typename T>
@@ -176,7 +219,6 @@ namespace gapp
     inline void GA<T>::mutation_method(F f)
     {
         mutation_ = std::make_unique<F>(std::move(f));
-        use_default_mutation_rate_ = false;
     }
 
     template<typename T>
@@ -185,39 +227,51 @@ namespace gapp
         GAPP_ASSERT(f, "The mutation method can't be a nullptr.");
 
         mutation_ = std::move(f);
-        use_default_mutation_rate_ = false;
     }
 
     template<typename T>
     inline void GA<T>::mutation_method(MutationCallable f)
     {
         mutation_ = std::make_unique<mutation::Lambda<T>>(std::move(f));
-        use_default_mutation_rate_ = true;
     }
 
     template<typename T>
-    inline const mutation::Mutation<T>& GA<T>::mutation_method() const& noexcept
+    template<typename GeneType>
+    inline mutation::Mutation<GeneType>& GA<T>::mutation_method() const& noexcept
     {
         GAPP_ASSERT(mutation_);
 
-        return *mutation_;
+        if constexpr (std::is_same_v<GeneType, T>)
+        {
+            return *mutation_;
+        }
+        else
+        {
+            return mutation_->template component<GeneType>();
+        }
     }
 
     template<typename T>
-    inline void GA<T>::mutation_rate(Probability pm) noexcept
+    void* GA<T>::mutation_method_impl(size_t type_id) const noexcept
     {
         GAPP_ASSERT(mutation_);
 
-        mutation_->mutation_rate(pm);
-        use_default_mutation_rate_ = false;
-    }
+        if (detail::type_id<T>() == type_id)
+        {
+            return static_cast<void*>(mutation_.get());
+        }
 
-    template<typename T>
-    inline Probability GA<T>::mutation_rate() const noexcept
-    {
-        GAPP_ASSERT(mutation_);
-
-        return mutation_->mutation_rate();
+        if constexpr (is_mixed_gene_v<T>)
+        {
+            return component_genes_t<T>::apply([&]<typename... Ts>()
+            {
+                void* mutation_method = nullptr;
+                ((detail::type_id<Ts>() == type_id ? mutation_method = (void*)std::addressof(mutation_->template component<Ts>())
+                                                   : mutation_method), ...);
+                return mutation_method;
+            });
+        }
+        else return nullptr;
     }
 
     template<typename T>
@@ -241,14 +295,18 @@ namespace gapp
     }
 
     template<typename T>
-    inline std::pair<Positive<size_t>, size_t> GA<T>::findObjectiveProperties() const
+    inline std::pair<size_t, size_t> GA<T>::findObjectiveProperties() const
     {
         GAPP_ASSERT(fitness_function_);
 
         Candidate<T> candidate = generateCandidate();
-        validate(candidate);
 
-        const FitnessVector fitness = (*fitness_function_)(candidate);
+        if (constraints_function_)
+        {
+            candidate.constraint_violation = constraints_function_(*this, candidate);
+        }
+
+        const FitnessVector fitness = std::invoke(*fitness_function(), candidate);
         GAPP_ASSERT(!fitness.empty(), "The number of objectives must be greater than 0.");
 
         return { fitness.size(), candidate.num_constraints() };
@@ -268,11 +326,26 @@ namespace gapp
     }
 
     template<typename T>
-    inline Probability GA<T>::defaultMutationRate() const
+    template<typename GeneType>
+    inline void GA<T>::setDefaultMutationRate() const
     {
+        GAPP_ASSERT(mutation_);
         GAPP_ASSERT(fitness_function_);
 
-        return GaTraits<T>::defaultMutationRate(chrom_len());
+        if (!mutation_method<GeneType>().use_default_mutation_rate()) return;
+        mutation_method<GeneType>().mutation_rate(GaTraits<GeneType>::defaultMutationRate(chrom_len<GeneType>()));
+    }
+
+    template<typename T>
+    inline void GA<T>::setDefaultMutationRates() const
+    {
+        GAPP_ASSERT(mutation_);
+        GAPP_ASSERT(fitness_function_);
+
+        component_genes_t<T>::apply([&]<typename... Ts>()
+        {
+            (setDefaultMutationRate<Ts>(), ...);
+        });
     }
 
     template<typename T>
@@ -294,8 +367,11 @@ namespace gapp
     template<typename T>
     inline bool GA<T>::hasValidChromosome(const Candidate<T>& sol) const noexcept
     {
-        return (crossover_->allow_variable_chrom_length() && mutation_->allow_variable_chrom_length()) ||
-               (sol.chromosome.size() == chrom_len());
+        return component_genes_t<T>::apply([&]<typename... Ts>()
+        {
+            return ((sol.template chrom_len<Ts>() == chrom_len<Ts>() ||
+                    (crossover_method<Ts>().allow_variable_chrom_length() && mutation_method<Ts>().allow_variable_chrom_length())) && ...);
+        });
     }
 
     template<typename T>
@@ -317,6 +393,15 @@ namespace gapp
     }
 
     template<typename T>
+    inline bool GA<T>::isValidBoundsVectors(const BoundsVectors& bounds) const
+    {
+        return bounded_component_genes_t<T>::apply([&]<typename... Us>()
+        {
+            return ((std::get<BoundsVector<Us>>(bounds).size() == chrom_len<Us>()) && ...);
+        });
+    }
+
+    template<typename T>
     inline bool GA<T>::fitnessMatrixIsSynced() const
     {
         return std::equal(fitness_matrix_.begin(), fitness_matrix_.end(), population_.begin(), population_.end(),
@@ -328,11 +413,12 @@ namespace gapp
 
 
     template<typename T>
-    void GA<T>::initializeAlgorithm(MaybeBoundsVector bounds, Population<T> initial_population)
+    void GA<T>::initializeAlgorithm(BoundsVectors bounds, Population<T> initial_population)
     {
         GAPP_ASSERT(fitness_function_);
         GAPP_ASSERT(algorithm_ && stop_condition_);
         GAPP_ASSERT(crossover_ && mutation_);
+        GAPP_ASSERT(isValidBoundsVectors(bounds));
 
         detail::execution_context::global_thread_pool.reset_scheduler();
 
@@ -342,9 +428,9 @@ namespace gapp
         solutions_.clear();
         population_.clear();
 
-        fitness_cache_.reset(!fitness_function_->is_dynamic() * cached_generations_ * population_size_);
+        fitness_cache_.reset(size_t(!fitness_function_->is_dynamic()) * cached_generations_ * population_size_);
 
-        if constexpr (is_bounded<T>) { bounds_ = std::move(bounds); }
+        bounds_ = std::move(bounds);
 
         /* Derived GA. */
         initialize();
@@ -365,7 +451,7 @@ namespace gapp
         if (use_default_algorithm_) algorithm_ = defaultAlgorithm();
         algorithm_->initialize(*this);
 
-        if (use_default_mutation_rate_) mutation_rate(defaultMutationRate());
+        setDefaultMutationRates();
 
         stop_condition_->initialize(*this);
 
@@ -376,15 +462,31 @@ namespace gapp
     }
 
     template<typename T>
-    Candidate<T> GA<T>::generateCandidate() const requires(is_bounded<T>)
+    template<typename GeneType>
+    Candidate<GeneType> GA<T>::generateCandidate() const
     {
-        return Candidate<T>(GaTraits<T>::randomChromosome(chrom_len(), gene_bounds()), gene_bounds());
+        static_assert(!is_mixed_gene_v<GeneType>);
+
+        const size_t chrom_size = chrom_len<GeneType>();
+
+        if constexpr (is_bounded_gene_v<GeneType>)
+        {
+            const BoundsVector<GeneType>& bounds = gene_bounds<GeneType>();
+            return Candidate<GeneType>(GaTraits<GeneType>::randomChromosome(chrom_size, bounds), bounds);
+        }
+        else
+        {
+            return Candidate<GeneType>(GaTraits<GeneType>::randomChromosome(chrom_size));
+        }
     }
 
     template<typename T>
-    Candidate<T> GA<T>::generateCandidate() const requires(!is_bounded<T>)
+    Candidate<T> GA<T>::generateCandidate() const
     {
-        return Candidate<T>(GaTraits<T>::randomChromosome(chrom_len()));
+        return component_genes_t<T>::apply([&]<typename... Ts>()
+        {
+            return Candidate<T>{{ generateCandidate<Ts>()... }};
+        });
     }
 
     template<typename T>
@@ -430,43 +532,91 @@ namespace gapp
     {
         GAPP_ASSERT(crossover_);
 
-        return (*crossover_)(*this, parent1, parent2);
+        auto [child1, child2] = (*crossover_)(*this, parent1, parent2);
+
+        child1.fitness.clear();
+        child2.fitness.clear();
+
+        /*
+        * Check if either of the children is the same as one of the parents.
+        * This can happen in edge cases even if the parents are different.
+        * If one of the children is the same as one of the parents, then the fitness function
+        * evaluation for that child can be skipped by assigning it the same fitness as the parent.
+        */
+        if (child1 == parent1)
+        {
+            child1.fitness = parent1.fitness;
+        }
+        else if (child1 == parent2)
+        {
+            child1.fitness = parent2.fitness;
+        }
+        if (child2 == parent1)
+        {
+            child2.fitness = parent1.fitness;
+        }
+        else if (child2 == parent2)
+        {
+            child2.fitness = parent2.fitness;
+        }
+
+        return { std::move(child1), std::move(child2) };
     }
 
     template<typename T>
-    inline void GA<T>::mutate(Candidate<T>& sol) const
+    inline void GA<T>::mutate(Candidate<T>& candidate) const
     {
         GAPP_ASSERT(mutation_);
 
-        (*mutation_)(*this, sol);
+        if (!candidate.is_evaluated())
+        {
+            (*mutation_)(*this, candidate);
+            return;
+        }
+
+        /* 
+        * If the candidate has a valid fitness vector, which can happen when the crossover
+        * didn't change the candidate, we can save a fitness function call in the cases 
+        * the mutation also doesn't change the candidate. 
+        */
+        thread_local Candidate<T> old_candidate;
+        old_candidate = candidate;
+
+        (*mutation_)(*this, candidate);
+
+        if (candidate != old_candidate)
+        {
+            candidate.fitness.clear();
+        }
     }
 
     template<typename T>
-    void GA<T>::validate(Candidate<T>& sol) const
+    void GA<T>::validate(Candidate<T>& candidate) const
     {
-        GAPP_ASSERT(hasValidChromosome(sol));
+        GAPP_ASSERT(hasValidChromosome(candidate));
 
         /* Don't do anything for unconstrained optimization problems. */
         if (!constraints_function_) return;
+        candidate.constraint_violation = constraints_function_(*this, candidate);
 
-        sol.constraint_violation = constraints_function_(*this, sol.chromosome);
+        GAPP_ASSERT(hasValidConstraints(candidate), "An invalid constraints vector was returned by the constraints function.");
     }
 
     template<typename T>
-    void GA<T>::repair(Candidate<T>& sol) const
+    void GA<T>::repair(Candidate<T>& candidate) const
     {
-        GAPP_ASSERT(hasValidChromosome(sol));
+        GAPP_ASSERT(hasValidChromosome(candidate));
 
         /* Don't try to do anything unless a repair function is set. */
         if (!repair_) return;
 
-        if (repair_(*this, sol, sol.chromosome))
+        if (repair_(*this, candidate))
         {
-            sol.fitness.clear();
-            validate(sol);
+            candidate.fitness.clear();
+            validate(candidate);
         }
 
-        GAPP_ASSERT(hasValidChromosome(sol), "Invalid chromosome returned by the repair function.");
+        GAPP_ASSERT(hasValidChromosome(candidate), "Invalid chromosome returned by the repair function.");
     }
 
     template<typename T>
@@ -490,31 +640,31 @@ namespace gapp
     }
 
     template<typename T>
-    inline void GA<T>::evaluate(Candidate<T>& sol)
+    inline void GA<T>::evaluate(Candidate<T>& candidate)
     {
         GAPP_ASSERT(fitness_function_);
-        GAPP_ASSERT(hasValidChromosome(sol));
+        GAPP_ASSERT(hasValidChromosome(candidate));
 
         /* If the fitness function is static, and the solution has already
          * been evaluted sometime earlier (in an earlier generation), there
          * is no point doing it again. */
-        if (!fitness_function_->is_dynamic() && sol.is_evaluated()) return;
+        if (!fitness_function_->is_dynamic() && candidate.is_evaluated()) return;
         
         if (cached_generations_)
         {
             GAPP_ASSERT(!fitness_function_->is_dynamic());
 
-            if (const FitnessVector* fitness = fitness_cache_.get(sol))
+            if (const FitnessVector* fitness = fitness_cache_.get(candidate))
             {
-                sol.fitness = *fitness;
+                candidate.fitness = *fitness;
                 return;
             }
         }
 
         std::atomic_ref{ num_fitness_evals_ }.fetch_add(1, std::memory_order_release);
-        sol.fitness = (*fitness_function_)(sol);
+        candidate.fitness = (*fitness_function())(candidate);
 
-        GAPP_ASSERT(hasValidFitness(sol));
+        GAPP_ASSERT(hasValidFitness(candidate), "Invalid fitness vector returned by the fitness function.");
     }
 
     template<typename T>
@@ -529,11 +679,8 @@ namespace gapp
         /* Duplicate elements are removed from optimal_sols using exact comparison
         *  of the chromosomes in order to avoid issues with using a non-transitive
         *  comparison function for std::sort and std::unique. */
-        auto chrom_eq = [](const auto& lhs, const auto& rhs) { return lhs.chromosome == rhs.chromosome; };
-        auto chrom_less = [](const auto& lhs, const auto& rhs) { return lhs.chromosome < rhs.chromosome; };
-
-        std::sort(optimal_sols.begin(), optimal_sols.end(), chrom_less);
-        auto last = std::unique(optimal_sols.begin(), optimal_sols.end(), chrom_eq);
+        std::sort(optimal_sols.begin(), optimal_sols.end(), detail::CandidateLessThanExact{});
+        auto last = std::unique(optimal_sols.begin(), optimal_sols.end(), detail::CandidateEqualExact{});
         optimal_sols.erase(last, optimal_sols.end());
     }
 
@@ -573,7 +720,7 @@ namespace gapp
     }
 
     template<typename T>
-    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, size_t generations, Population<T> initial_population) requires (!is_bounded<T>)
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, size_t generations, Population<T> initial_population) requires(!is_partially_bounded_gene_v<T>)
     {
         GAPP_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
 
@@ -593,10 +740,9 @@ namespace gapp
     }
 
     template<typename T>
-    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population) requires (is_bounded<T>)
+    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVectors bounds, size_t generations, Population<T> initial_population) requires(is_partially_bounded_gene_v<T>)
     {
         GAPP_ASSERT(fitness_function, "The fitness function can't be a nullptr.");
-        GAPP_ASSERT(bounds.size() == fitness_function->chrom_len(), "The length of the bounds vector must match the chromosome length.");
 
         detail::restore_on_exit _{ max_gen_ };
 
@@ -614,14 +760,8 @@ namespace gapp
     }
 
     template<typename T>
-    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Population<T> initial_population) requires (!is_bounded<T>)
-    {
-        return solve(std::move(fitness_function), max_gen(), std::move(initial_population));
-    }
-
-    template<typename T>
     template<typename F>
-    requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+    requires (!is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, Population<T> initial_population)
     {
         return solve(std::make_unique<F>(std::move(fitness_function)), max_gen(), std::move(initial_population));
@@ -629,68 +769,44 @@ namespace gapp
 
     template<typename T>
     template<typename F>
-    requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+    requires (!is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
     Candidates<T> GA<T>::solve(F fitness_function, size_t generations, Population<T> initial_population)
     {
         return solve(std::make_unique<F>(std::move(fitness_function)), generations, std::move(initial_population));
     }
 
     template<typename T>
-    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population) requires (is_bounded<T>)
-    {
-        const size_t chrom_len = fitness_function->chrom_len();
-
-        return solve(std::move(fitness_function), BoundsVector<T>(chrom_len, bounds), generations, std::move(initial_population));
-    }
-
-    template<typename T>
-    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, Population<T> initial_population) requires (is_bounded<T>)
-    {
-        return solve(std::move(fitness_function), std::move(bounds), max_gen(), std::move(initial_population));
-    }
-
-    template<typename T>
-    Candidates<T> GA<T>::solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Bounds<T> bounds, Population<T> initial_population) requires (is_bounded<T>)
-    {
-        const size_t chrom_len = fitness_function->chrom_len();
-
-        return solve(std::move(fitness_function), BoundsVector<T>(chrom_len, bounds), max_gen(), std::move(initial_population));
-    }
-
-    template<typename T>
     template<typename F>
-    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
-    Candidates<T> GA<T>::solve(F fitness_function, BoundsVector<T> bounds, Population<T> initial_population)
+    requires (is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+    Candidates<T> GA<T>::solve(F fitness_function, BoundsVectors bounds, Population<T> initial_population)
     {
         return solve(std::make_unique<F>(std::move(fitness_function)), std::move(bounds), max_gen(), std::move(initial_population));
     }
 
     template<typename T>
     template<typename F>
-    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
-    Candidates<T> GA<T>::solve(F fitness_function, Bounds<T> bounds, Population<T> initial_population)
+    requires (is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+    Candidates<T> GA<T>::solve(F fitness_function, BoundsList bounds, Population<T> initial_population)
     {
-        const size_t chrom_len = fitness_function.FitnessFunctionBase<T>::chrom_len();
-
-        return solve(std::make_unique<F>(std::move(fitness_function)), BoundsVector<T>(chrom_len, bounds), max_gen(), std::move(initial_population));
+        BoundsVectors bounds_vectors = boundsToUniformBoundsVector(fitness_function, bounds);
+        return solve(std::make_unique<F>(std::move(fitness_function)), std::move(bounds_vectors), max_gen(), std::move(initial_population));
     }
 
     template<typename T>
     template<typename F>
-    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
-    Candidates<T> GA<T>::solve(F fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population)
+    requires (is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+    Candidates<T> GA<T>::solve(F fitness_function, BoundsVectors bounds, size_t generations, Population<T> initial_population)
     {
         return solve(std::make_unique<F>(std::move(fitness_function)), std::move(bounds), generations, std::move(initial_population));
     }
 
     template<typename T>
     template<typename F>
-    requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
-    Candidates<T> GA<T>::solve(F fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population)
+    requires (is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+    Candidates<T> GA<T>::solve(F fitness_function, BoundsList bounds, size_t generations, Population<T> initial_population)
     {
-        const size_t chrom_len = fitness_function.FitnessFunctionBase<T>::chrom_len();
-
-        return solve(std::make_unique<F>(std::move(fitness_function)), BoundsVector<T>(chrom_len, bounds), generations, std::move(initial_population));
+        BoundsVectors bounds_vectors = boundsToUniformBoundsVector(fitness_function, bounds);
+        return solve(std::make_unique<F>(std::move(fitness_function)), std::move(bounds_vectors), generations, std::move(initial_population));
     }
 
 } // namespace gapp

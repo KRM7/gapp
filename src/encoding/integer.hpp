@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_ENCODING_INTEGER_HPP
 #define GAPP_ENCODING_INTEGER_HPP
@@ -20,7 +20,7 @@ namespace gapp
 
         static constexpr Probability defaultMutationRate(size_t chrom_len) noexcept { return 1.0 / chrom_len; }
 
-        static Chromosome<IntegerGene> randomChromosome(size_t chrom_len, const BoundsVector<IntegerGene>& bounds);
+        static Chromosome<IntegerGene> randomChromosome(size_t chrom_len, BoundsView<IntegerGene> bounds);
     };
 
     /**

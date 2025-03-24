@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
 #include "../core/candidate.hpp"
@@ -7,7 +7,7 @@
 
 namespace gapp
 {
-    Chromosome<RealGene> GaTraits<RealGene>::randomChromosome(size_t chrom_len, const BoundsVector<RealGene>& bounds)
+    Chromosome<RealGene> GaTraits<RealGene>::randomChromosome(size_t chrom_len, BoundsView<RealGene> bounds)
     {
         GAPP_ASSERT(chrom_len == bounds.size(), "The size of the bounds vector must match the chromosome length.");
 

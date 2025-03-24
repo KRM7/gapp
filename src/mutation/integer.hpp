@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_MUTATION_INTEGER_HPP
 #define GAPP_MUTATION_INTEGER_HPP
@@ -19,7 +19,7 @@ namespace gapp::mutation::integer
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
     };
 
 } // namespace gapp::mutation::integer

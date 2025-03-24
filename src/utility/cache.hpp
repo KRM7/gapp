@@ -4,7 +4,7 @@
 #define GAPP_UTILITY_CACHE_HPP
 
 #include "circular_buffer.hpp"
-#include "concepts.hpp"
+#include "hash.hpp"
 #include "utility.hpp"
 #include <unordered_map>
 #include <type_traits>

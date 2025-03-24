@@ -8,6 +8,7 @@
 #include "real.hpp"
 #include "permutation.hpp"
 #include "integer.hpp"
+#include "mixed.hpp"
 
 /** %Crossover operators used in the GAs. */
 namespace gapp::crossover {}

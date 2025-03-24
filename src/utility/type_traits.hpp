@@ -1,10 +1,13 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_UTILITY_TYPE_TRAITS_HPP
 #define GAPP_UTILITY_TYPE_TRAITS_HPP
 
 #include <type_traits>
+#include <tuple>
+#include <optional>
 #include <iterator>
+#include <cstddef>
 
 namespace gapp::detail
 {
@@ -13,10 +16,10 @@ namespace gapp::detail
     struct inplace_t {};
 
 
-    template<typename T>
+    template<typename... Ts>
     inline constexpr bool always_false = false;
 
-    template<typename T>
+    template<typename... Ts>
     inline constexpr bool always_true = false;
 
 
@@ -42,6 +45,52 @@ namespace gapp::detail
     using difference_t = std::iter_difference_t<detail::iterator_t<T>>;
 
 
+
+    template<typename... Ts>
+    struct concat_tup { static_assert(always_false<Ts...>, "Can't concatenate non tuple types."); };
+
+    template<typename... Ts, typename... Us>
+    struct concat_tup<std::tuple<Ts...>, std::tuple<Us...>> : std::type_identity<std::tuple<Ts..., Us...>> {};
+
+    template<typename T, typename... Us>
+    struct concat_tup<T, std::tuple<Us...>> : std::type_identity<std::tuple<T, Us...>> {};
+
+    template<typename... Ts, typename U>
+    struct concat_tup<std::tuple<Ts...>, U> : std::type_identity<std::tuple<Ts..., U>> {};
+
+    template<typename... Ts>
+    using concat_tup_t = typename concat_tup<Ts...>::type;
+
+
+
+    template<template<typename> class Pred, typename... Ts>
+    struct filter_types {};
+
+    template<template<typename> class Pred>
+    struct filter_types<Pred> : std::type_identity<std::tuple<>> {};
+
+    template<template<typename> class Pred, typename T, typename... Ts>
+    struct filter_types<Pred, T, Ts...>
+    {
+        using type = std::conditional_t<Pred<T>::value, concat_tup_t<T, typename filter_types<Pred, Ts...>::type>, typename filter_types<Pred, Ts...>::type>;
+    };
+
+    template<template<typename> class Pred, typename... Ts>
+    using filter_types_t = typename filter_types<Pred, Ts...>::type;
+
+
+
+    template<template<typename...> class F, typename... Ts>
+    struct map_types {};
+
+    template<template<typename...> class F, typename... Ts>
+    struct map_types<F, std::tuple<Ts...>> : std::type_identity<std::tuple<F<Ts>...>> {};
+
+    template<template<typename...> class F, typename... Ts>
+    using map_types_t = typename map_types<F, Ts...>::type;
+
+
+
     template<template<typename...> class T1, template<typename...> class T2>
     struct is_same_template : std::false_type {};
 
@@ -60,8 +109,7 @@ namespace gapp::detail
              template<typename...> class Target,
              template<typename...> class... Targets>
     struct is_one_of_templates<Match, Target, Targets...>
-        : std::bool_constant<std::disjunction_v<is_same_template<Match, Target>,
-                             is_one_of_templates<Match, Targets...>>>
+        : std::disjunction<is_same_template<Match, Target>, is_one_of_templates<Match, Targets...>>
     {};
 
     template<template<typename...> class T, template<typename...> class... Ts>
@@ -69,8 +117,19 @@ namespace gapp::detail
 
 
 
+    template<typename... Ts>
+    struct unique_types : std::true_type {};
+
+    template<typename T, typename... Ts>
+    struct unique_types<T, Ts...> : std::conjunction<std::negation<std::is_same<T, Ts>>..., unique_types<Ts...>> {};
+
+    template<typename... Ts>
+    inline constexpr bool unique_types_v = unique_types<Ts...>::value;
+
+
+
     template<size_t N, typename... Args>
-    struct nth_type {};
+    struct nth_type { static_assert(always_false<Args...>, "No such index."); };
 
     template<typename Arg, typename... Args>
     struct nth_type<0, Arg, Args...> : std::type_identity<Arg> {};
@@ -83,6 +142,20 @@ namespace gapp::detail
 
     template<size_t N, typename... Args>
     using nth_type_t = typename nth_type<N, Args...>::type;
+
+
+
+    template<typename T, typename... Ts>
+    struct index_of_type { static_assert(always_false<T>, "No such type."); };
+
+    template<typename T, typename... Ts>
+    struct index_of_type<T, T, Ts...> : std::integral_constant<std::size_t, 0> {};
+
+    template<typename T, typename U, typename... Ts>
+    struct index_of_type<T, U, Ts...> : std::integral_constant<std::size_t, index_of_type<T, Ts...>::value + 1> {};
+
+    template<typename T, typename... Ts>
+    inline constexpr std::size_t index_of_type_v = index_of_type<T, Ts...>::value;
 
 
 

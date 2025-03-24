@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2024 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2024 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
 #include <atomic>
@@ -17,9 +17,9 @@ TEST_CASE("repair_function", "[repair_function]")
 
     std::atomic<size_t> repair_count = 0;
 
-    ga.repair_function([&](const GaInfo&, const Candidate<RealGene>&, Chromosome<RealGene>& chrom)
+    ga.repair_function([&](const GaInfo&, Candidate<RealGene>& sol)
     {
-        for (RealGene& gene : chrom) gene = std::max(0.0, gene);
+        for (RealGene& gene : sol) gene = std::max(0.0, gene);
         repair_count++;
 
         return true;

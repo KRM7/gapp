@@ -1,10 +1,12 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_CROSSOVER_LAMBDA_HPP
 #define GAPP_CROSSOVER_LAMBDA_HPP
 
 #include "crossover_base.hpp"
 #include "../core/candidate.hpp"
+#include "../encoding/gene_types.hpp"
+#include "../utility/type_traits.hpp"
 #include "../utility/utility.hpp"
 #include <functional>
 #include <utility>
@@ -19,6 +21,9 @@ namespace gapp::crossover
     class Lambda final : public Crossover<T>
     {
     public:
+        static_assert(!detail::is_specialization_of_v<T, MixedGene>,
+          "Callable types are not supported as crossover methods for mixed encodings.");
+
         using CrossoverCallable = std::function<CandidatePair<T>(const GaInfo&, const Candidate<T>&, const Candidate<T>&)>;
 
         constexpr explicit Lambda(CrossoverCallable f) noexcept :

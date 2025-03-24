@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_CORE_GA_BASE_DECL_HPP
 #define GAPP_CORE_GA_BASE_DECL_HPP
@@ -42,16 +42,13 @@ namespace gapp
     * encoding/gene specific information of the %GA in addition to the non-encoding
     * dependent parts contained by GaInfo.
     * 
-    * This class should be used as the base class of new genetic algorithms. It has
-    * 2 virtual functions that should be implemented in the derived classes:
-    *   - initialize (optional) : Perform some additional initialization specific to the derived class.
-    *   - generateCandidate     : Returns a (randomly) generated candidate solution. Used to create the initial population.
+    * This class should be used as the base class of new genetic algorithms.
     * 
-    * @note Before declaring a class that is derived from this class, the GaTraits struct should be specialized for the
-    *   particular gene type that is used. If the gene type is bounded, the is_bounded variable template should
-    *   also be specialized.
+    * @note Before declaring a class that is derived from this class, the GaTraits struct should be
+    *   specialized for the particular gene type that is used. If the gene type is bounded, the
+    *   is_bounded_gene type trait should also be specialized.
     * 
-    * @see GaTraits, is_bounded
+    * @see GaTraits, is_bounded_gene
     *
     * @tparam T The gene type used for the candidate's chromosomes.
     */
@@ -61,6 +58,20 @@ namespace gapp
     public:
         /** The gene type of the candidates. */
         using GeneType = T;
+
+        /** A set of bounds vectors. Contains a BoundsVector for each bounded gene of the encoding. */
+        using BoundsVectors = std::conditional_t<is_partially_bounded_gene_v<T>,
+            detail::map_types_t<BoundsVector, typename component_genes_t<T>::template filter_types_t<is_bounded_gene>::to_tuple>,
+            /* unused placeholder type */ std::integral_constant<size_t, 0>>;
+
+        /**
+        * A set of gene bounds. Contains a single Bounds element for each bounded gene type of the
+        * encoding, which specifies the same lower and upper bounds for every gene in the chromosome
+        * of the associated encoding.
+        */
+        using BoundsList = std::conditional_t<is_partially_bounded_gene_v<T>,
+            detail::map_types_t<Bounds, typename component_genes_t<T>::template filter_types_t<is_bounded_gene>::to_tuple>,
+            /* unused placeholder type */ std::integral_constant<size_t, 1>>;
 
         /**
         * The general callable type that can be used as a crossover method in the %GA (when
@@ -83,22 +94,27 @@ namespace gapp
 
         /**
         * The general callable type that can be used as a constraints function in the %GA.
-        * The function takes a chromosome, and returns a vector of the constraint violation
+        * The function takes a candidate, and returns a vector of the constraint violation
         * degrees for each constraint associated with the fitness function.
         * 
         * @see constraints_function
         */
-        using ConstraintsFunction = std::function<CVVector(const GaInfo&, const Chromosome<T>&)>;
+        using ConstraintsFunction = std::function<CVVector(const GaInfo&, const Candidate<T>&)>;
 
         /**
         * The general callable type that can be used as a repair function in the %GA.
         * The function takes a candidate solution, and potentially changes this solution's
-        * chromosome.
-        * The function returns true if it changed the chromosome, and false if it didn't.
+        * chromosomes.
+        * 
+        * The repair function may not modify any part of the candidates other than their
+        * chromosomes.
+        * 
+        * The function should return true if any of the candidate's chromosomes were changed,
+        * and false otherwise.
         * 
         * @see repair_function
         */
-        using RepairCallable = std::function<bool(const GaInfo&, const Candidate<T>&, Chromosome<T>&)>;
+        using RepairCallable = std::function<bool(const GaInfo&, Candidate<T>&)>;
 
 
         /**
@@ -203,14 +219,19 @@ namespace gapp
         [[nodiscard]]
         const FitnessFunctionBase<T>* fitness_function() const& noexcept final;
 
-        /** @returns The chromosome length used. Returns 0 if the chromosome length is unspecified (i.e. no fitness function was set yet). */
-        [[nodiscard]]
-        size_t chrom_len() const noexcept final;
+        /**
+        * @returns The chromosome length used for the specified gene type of the encoding,
+        *  or 0 if no fitness function is set.
+        */
+        template<typename GeneType = T>
+        [[nodiscard]] size_t chrom_len() const noexcept;
 
-
-        /** @returns The lower and upper bounds for each of the chromosomes' genes (the ranges are inclusive). @see Bounds */
-        [[nodiscard]]
-        const BoundsVector<T>& gene_bounds() const noexcept requires (is_bounded<T>);
+        /** 
+        * @returns The lower and upper bounds for each of the genes of the chromosome associated
+        * with the specified gene type. The ranges are inclusive. @see Bounds
+        */
+        template<typename GeneType = T>
+        [[nodiscard]] const BoundsVector<GeneType>& gene_bounds() const noexcept;
 
         /**
         * Set the crossover method the %GA will use.
@@ -251,25 +272,9 @@ namespace gapp
         */
         void crossover_method(CrossoverCallable f);
 
-        /** @returns The crossover operator used by the %GA. */
-        [[nodiscard]]
-        const crossover::Crossover<T>& crossover_method() const& noexcept;
-
-        /**
-        * Set the crossover rate of the crossover operator used.
-        * 
-        * @note This crossover rate will be set for the current crossover method, and it
-        *   will be changed if a new crossover method is set.
-        * 
-        * @see crossover_method
-        *
-        * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
-        */
-        void crossover_rate(Probability pc) noexcept final;
-
-        /** @returns The crossover rate set for the crossover operator. */
-        [[nodiscard]]
-        Probability crossover_rate() const noexcept final;
+        /** @returns The crossover operator used by the %GA for the specified gene type. */
+        template<typename GeneType = T>
+        [[nodiscard]] crossover::Crossover<GeneType>& crossover_method() const& noexcept;
 
 
         /**
@@ -311,31 +316,16 @@ namespace gapp
         */
         void mutation_method(MutationCallable f);
 
-        /** @returns The mutation operator used by the %GA. */
-        [[nodiscard]]
-        const mutation::Mutation<T>& mutation_method() const& noexcept;
+        /** @returns The mutation operator used by the %GA for the specified gene type. */
+        template<typename GeneType = T>
+        [[nodiscard]] mutation::Mutation<GeneType>& mutation_method() const& noexcept;
 
-        /**
-        * Set the mutation rate of the mutation operator.
-        * 
-        * @note This mutation rate will be set for the current mutation method, and it
-        *   will be changed if a new mutation method is set.
-        *
-        * @see mutation_method
-        *
-        * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
-        */
-        void mutation_rate(Probability pm) noexcept final;
-
-        /** @returns The mutation probability set for the mutation operator. */
-        [[nodiscard]]
-        Probability mutation_rate() const noexcept final;
 
         /**
         * Set the constraints function associated with the fitness function. This is
         * meant to allow for the handling of constrained optimization problems.
         * 
-        * The constraints function takes a chromosome, and returns a vector of the
+        * The constraints function takes a candidate, and returns a vector of the
         * constraint violation degrees of the solution for each constraint associated
         * with the fitness function.
         * The concrete interpretation of the constraint violation degrees is up the the
@@ -437,21 +427,7 @@ namespace gapp
         * @param initial_population The starting population to use as the first generation of the %GA.
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
-        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, size_t generations, Population<T> initial_population = {}) requires (!is_bounded<T>);
-
-        /**
-        * Find the maximum of a fitness function using the genetic algorithm.
-        * 
-        * Specifying an initial population is optional and it may have any number of solutions,
-        * but only the first population_size() elements will be used if it's greater than the
-        * population size set for the %GA. If it has less candidates than the population size,
-        * the rest of the candidates will be generated using the generateCandidate() method.
-        *
-        * @param fitness_function The fitness function to find the maximum of. Can't be a nullptr.
-        * @param initial_population The starting population to use as the first generation of the %GA.
-        * @returns The pareto-optimal solutions found (this is not the final population).
-        */
-        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Population<T> initial_population = {}) requires (!is_bounded<T>);
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, size_t generations, Population<T> initial_population = {}) requires(!is_partially_bounded_gene_v<T>);
 
         /**
         * Find the maximum of a fitness function using the genetic algorithm.
@@ -466,7 +442,7 @@ namespace gapp
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+        requires (!is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
         Candidates<T> solve(F fitness_function, Population<T> initial_population = {});
 
         /**
@@ -483,7 +459,7 @@ namespace gapp
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (!is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+        requires (!is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
         Candidates<T> solve(F fitness_function, size_t generations, Population<T> initial_population = {});
 
 
@@ -498,58 +474,12 @@ namespace gapp
         * the rest of the candidates will be generated using the generateCandidate() method.
         *
         * @param fitness_function The fitness function to find the maximum of. Can't be a nullptr.
-        * @param bounds The lower and upper bounds of each of the chromosomes' genes.
+        * @param bounds The lower and upper bounds of each of the chromosomes' genes, for each of the bounded encoding types.
         * @param generations The maximum number of generations the run can last for.
         * @param initial_population The starting population to use as the first generation of the %GA.
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
-        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population = {}) requires (is_bounded<T>);
-
-        /**
-        * Find the maximum of a fitness function using the genetic algorithm.
-        *
-        * Specifying an initial population is optional and it may have any number of solutions,
-        * but only the first population_size() elements will be used if it's greater than the
-        * population size set for the %GA. If it has less candidates than the population size,
-        * the rest of the candidates will be generated using the generateCandidate() method.
-        *
-        * @param fitness_function The fitness function to find the maximum of. Can't be a nullptr.
-        * @param bounds The lower and upper bounds of a gene. The same bounds will be used for every gene of the chromosomes.
-        * @param generations The maximum number of generations the run can last for.
-        * @param initial_population The starting population to use as the first generation of the %GA.
-        * @returns The pareto-optimal solutions found (this is not the final population).
-        */
-        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population = {}) requires (is_bounded<T>);
-
-        /**
-        * Find the maximum of a fitness function using the genetic algorithm.
-        * 
-        * Specifying an initial population is optional and it may have any number of solutions,
-        * but only the first population_size() elements will be used if it's greater than the
-        * population size set for the %GA. If it has less candidates than the population size,
-        * the rest of the candidates will be generated using the generateCandidate() method.
-        *
-        * @param fitness_function The fitness function to find the maximum of. Can't be a nullptr.
-        * @param bounds The lower and upper bounds of each of the chromosomes' genes.
-        * @param initial_population The starting population to use as the first generation of the %GA.
-        * @returns The pareto-optimal solutions found (this is not the final population).
-        */
-        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVector<T> bounds, Population<T> initial_population = {}) requires (is_bounded<T>);
-
-        /**
-        * Find the maximum of a fitness function using the genetic algorithm.
-        * 
-        * Specifying an initial population is optional and it may have any number of solutions,
-        * but only the first population_size() elements will be used if it's greater than the
-        * population size set for the %GA. If it has less candidates than the population size,
-        * the rest of the candidates will be generated using the generateCandidate() method.
-        *
-        * @param fitness_function The fitness function to find the maximum of. Can't be a nullptr.
-        * @param bounds The lower and upper bounds of a gene. The same bounds will be used for every gene of the chromosomes.
-        * @param initial_population The starting population to use as the first generation of the %GA.
-        * @returns The pareto-optimal solutions found (this is not the final population).
-        */
-        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, Bounds<T> bounds, Population<T> initial_population = {}) requires (is_bounded<T>);
+        Candidates<T> solve(std::unique_ptr<FitnessFunctionBase<T>> fitness_function, BoundsVectors bounds, size_t generations, Population<T> initial_population = {}) requires(is_partially_bounded_gene_v<T>);
 
         /**
         * Find the maximum of a fitness function using the genetic algorithm.
@@ -560,13 +490,13 @@ namespace gapp
         * the rest of the candidates will be generated using the generateCandidate() method.
         *
         * @param fitness_function The fitness function to find the maximum of.
-        * @param bounds The lower and upper bounds of each of the chromosomes' genes.
+        * @param bounds The lower and upper bounds of each of the chromosomes' genes, for each of the bounded encoding types.
         * @param initial_population The starting population to use as the first generation of the %GA.
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
-        Candidates<T> solve(F fitness_function, BoundsVector<T> bounds, Population<T> initial_population = {});
+        requires (is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+        Candidates<T> solve(F fitness_function, BoundsVectors bounds, Population<T> initial_population = {});
 
         /**
         * Find the maximum of a fitness function using the genetic algorithm.
@@ -577,13 +507,14 @@ namespace gapp
         * the rest of the candidates will be generated using the generateCandidate() method.
         *
         * @param fitness_function The fitness function to find the maximum of.
-        * @param bounds The lower and upper bounds of a gene. The same bounds will be used for every gene of the chromosomes.
+        * @param bounds The lower and upper bounds for each bounded gene type.
+        *  The same bounds will be used for each of the genes of a chromosome of a particular gene type.
         * @param initial_population The starting population to use as the first generation of the %GA.
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
-        Candidates<T> solve(F fitness_function, Bounds<T> bounds, Population<T> initial_population = {});
+        requires (is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+        Candidates<T> solve(F fitness_function, BoundsList bounds, Population<T> initial_population = {});
 
         /**
         * Find the maximum of a fitness function using the genetic algorithm.
@@ -594,14 +525,14 @@ namespace gapp
         * the rest of the candidates will be generated using the generateCandidate() method.
         *
         * @param fitness_function The fitness function to find the maximum of.
-        * @param bounds The lower and upper bounds of each of the chromosomes' genes.
+        * @param bounds The lower and upper bounds of each of the chromosomes' genes, for each of the bounded encoding types.
         * @param generations The maximum number of generations the run can last for.
         * @param initial_population The starting population to use as the first generation of the %GA.
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
-        Candidates<T> solve(F fitness_function, BoundsVector<T> bounds, size_t generations, Population<T> initial_population = {});
+        requires (is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+        Candidates<T> solve(F fitness_function, BoundsVectors bounds, size_t generations, Population<T> initial_population = {});
 
         /**
         * Find the maximum of a fitness function using the genetic algorithm.
@@ -612,34 +543,29 @@ namespace gapp
         * the rest of the candidates will be generated using the generateCandidate() method.
         *
         * @param fitness_function The fitness function to find the maximum of.
-        * @param bounds The lower and upper bounds of a gene. The same bounds will be used for every gene of the chromosomes.
+        * @param bounds The lower and upper bounds for each bounded gene type.
+        *  The same bounds will be used for each of the genes of a chromosome of a particular gene type.
         * @param generations The maximum number of generations the run can last for.
         * @param initial_population The starting population to use as the first generation of the %GA.
         * @returns The pareto-optimal solutions found (this is not the final population).
         */
         template<typename F>
-        requires (is_bounded<T> && std::derived_from<F, FitnessFunctionBase<T>>)
-        Candidates<T> solve(F fitness_function, Bounds<T> bounds, size_t generations, Population<T> initial_population = {});
+        requires (is_partially_bounded_gene_v<T> && std::derived_from<F, FitnessFunctionBase<T>>)
+        Candidates<T> solve(F fitness_function, BoundsList bounds, size_t generations, Population<T> initial_population = {});
 
     private:
-
-        using MaybeBoundsVector = std::conditional_t<is_bounded<T>, BoundsVector<T>, detail::empty_t>;
-
         Population<T> population_;
         Candidates<T> solutions_;
 
         detail::fifo_cache<Candidate<T>, FitnessVector> fitness_cache_;
         size_t cached_generations_ = 0;
 
-        std::unique_ptr<FitnessFunctionBase<T>> fitness_function_;
         std::unique_ptr<crossover::Crossover<T>> crossover_;
         std::unique_ptr<mutation::Mutation<T>> mutation_;
         ConstraintsFunction constraints_function_;
         RepairCallable repair_ = nullptr;
 
-        GAPP_NO_UNIQUE_ADDRESS MaybeBoundsVector bounds_;
-
-        bool use_default_mutation_rate_ = false;
+        BoundsVectors bounds_;
 
         /**
         * Initialize the derived genetic algorithm. This method will be called exactly once
@@ -653,27 +579,43 @@ namespace gapp
         */
         virtual void initialize() {};
 
-        std::pair<Positive<size_t>, size_t> findObjectiveProperties() const;
-        std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
-        Probability defaultMutationRate() const;
+        template<typename U>
+        BoundsVector<U> boundsToUniformBoundsVector(const FitnessFunctionBase<T>& fitness_function, Bounds<U> bounds) const;
 
-        void initializeAlgorithm(MaybeBoundsVector bounds, Population<T> initial_population);
-        Candidate<T> generateCandidate() const requires(is_bounded<T>);
-        Candidate<T> generateCandidate() const requires(!is_bounded<T>);
+        template<typename... Us>
+        auto boundsToUniformBoundsVector(const FitnessFunctionBase<T>& fitness_function, std::tuple<Bounds<Us>...> bounds) const;
+
+        std::pair<size_t, size_t> findObjectiveProperties() const;
+        std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
+
+        template<typename GeneType>
+        void setDefaultMutationRate() const;
+        void setDefaultMutationRates() const;
+
+        template<typename GeneType>
+        Candidate<GeneType> generateCandidate() const;
+        Candidate<T> generateCandidate() const;
+
+        void initializeAlgorithm(BoundsVectors bounds, Population<T> initial_population);
         Population<T> generatePopulation(Positive<size_t> pop_size, Population<T> initial_population) const;
         void prepareSelections() const;
         const Candidate<T>& select() const;
         CandidatePair<T> crossover(const Candidate<T>& parent1, const Candidate<T>& parent2) const;
-        void mutate(Candidate<T>& sol) const;
-        void validate(Candidate<T>& sol) const;
-        void repair(Candidate<T>& sol) const;
+        void mutate(Candidate<T>& candidate) const;
+        void validate(Candidate<T>& candidate) const;
+        void repair(Candidate<T>& candidate) const;
         void updatePopulation(Population<T>&& children);
         bool stopCondition() const;
 
-        void evaluate(Candidate<T>& sol);
+        void evaluate(Candidate<T>& candidate);
         void updateOptimalSolutions(Candidates<T>& optimal_sols, const Population<T>& pop) const;
 
         void advance();
+
+        size_t index_of_gene(size_t type_id) const noexcept final;
+
+        void* crossover_method_impl(size_t type_id) const noexcept final;
+        void* mutation_method_impl(size_t type_id) const noexcept final;
 
         /* Invariant checking functions. */
         bool hasValidFitness(const Candidate<T>& sol) const noexcept;
@@ -681,6 +623,7 @@ namespace gapp
         bool hasValidChromosome(const Candidate<T>& sol) const noexcept;
         bool isValidEvaluatedPopulation(const Population<T>& pop) const;
         bool isValidUnevaluatedPopulation(const Population<T>& pop) const;
+        bool isValidBoundsVectors(const BoundsVectors& bounds) const;
         bool fitnessMatrixIsSynced() const;
     };
 

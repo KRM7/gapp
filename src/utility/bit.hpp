@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_UTILITY_BIT_HPP
 #define GA_UTILITY_BIT_HPP

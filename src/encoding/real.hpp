@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_ENCODING_REAL_HPP
 #define GAPP_ENCODING_REAL_HPP
@@ -21,7 +21,7 @@ namespace gapp
 
         static constexpr Probability defaultMutationRate(size_t chrom_len) noexcept { return 1.0 / chrom_len; }
 
-        static Chromosome<RealGene> randomChromosome(size_t chrom_len, const BoundsVector<RealGene>& bounds);
+        static Chromosome<RealGene> randomChromosome(size_t chrom_len, BoundsView<RealGene> bounds);
     };
 
     /**
