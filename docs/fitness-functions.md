@@ -1,4 +1,4 @@
-﻿
+
 1. [Introduction](introduction.md)  
 2. **Fitness functions**  
 3. [Constraint handling](constraint-handling.md)  
@@ -33,14 +33,13 @@ meaning how the solutions to the problem should be represented
 in the population. There are several options provided by the
 library, but user-defined encodings can also be used in the cases
 where none of these fit the problem well enough.  
-The representation is determined by the gene type used in the
-fitness function and in the genetic algorithm classes: the solutions
-will be encoded as a vector of the specified gene type.
 
-```cpp
-template<typename GeneType>
-using Chromosome = std::vector<GeneType>;
-```
+The representation is determined by the gene type used in the
+fitness function and in the genetic algorithm classes. For simple
+encodings, the solutions have a single chromosome of the gene type,
+which is a vector of genes.
+For mixed encodings, the candidates have multiple chromosomes, one
+for each of the component gene types of the mixed encoding.
 
 The options for the gene type already provided by the library are:
 
@@ -48,6 +47,7 @@ The options for the gene type already provided by the library are:
  - RealGene
  - PermutationGene
  - IntegerGene
+ - MixedGene
 
 The gene type is specified as the type parameter of the
 `FitnessFunctionBase` and `FitnessFunction` classes, and it will
@@ -74,11 +74,15 @@ in its constructor. `FitnessFunction` can only be used if the chromosome
 length is known at compile-time, and the chromosome length is specified
 as a template parameter of the class in addition to the gene type.
 
+For mixed gene types, there are multiple chromosomes associated
+with a single candidate, so multiple chromosome lengths have to be
+specified for the fitness function as well.
+
 ```cpp
 template<typename GeneType>
 class FitnessFunctionBase;
 
-template<typename GeneType, size_t ChromLen>
+template<typename GeneType, size_t... ChromLens>
 class FitnessFunction;
 ```
 

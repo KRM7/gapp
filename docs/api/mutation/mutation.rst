@@ -8,6 +8,7 @@ Mutations
    mutation_binary
    mutation_permutation
    mutation_integer
+   mutation_mixed
 
 
 .. doxygennamespace:: gapp::mutation

@@ -8,5 +8,6 @@
 #include "real.hpp"
 #include "permutation.hpp"
 #include "integer.hpp"
+#include "mixed.hpp"
 
 #endif // !GAPP_ENCODING_ENCODING_HPP

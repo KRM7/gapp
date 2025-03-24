@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_TEST_UTILS_HPP
 #define GA_TEST_UTILS_HPP
@@ -18,6 +18,11 @@ public:
 
     explicit DummyFitnessFunction(size_t chrom_len, size_t nobj = 1, Type type = Type::Static) :
         FitnessFunctionBase<T>(chrom_len, type), nobj_(nobj)
+    {}
+
+    template<size_t N>
+    explicit DummyFitnessFunction(std::array<size_t, N> chrom_lens, size_t nobj = 1, Type type = Type::Static) :
+        FitnessFunctionBase<T>(chrom_lens, type), nobj_(nobj)
     {}
 
 private:

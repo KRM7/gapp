@@ -1,4 +1,4 @@
-﻿
+
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
 3. **Constraint handling**  
@@ -23,41 +23,39 @@ constraint handling could be implemented.
 ## Defining constraints
 
 The constraints can be specified using the `constraints_function` method
-of the GAs, as a callable. This constraints function takes a chromosome as
-its parameter, and returns a vector of constraint violation values for the
-given chromosome.
+of the GAs. This constraints function takes a candidate as its parameter,
+and returns a vector of constraint violation values for the candidate.
 
 ```cpp
-using ConstraintsFunction = std::function<CVVector(const GA<T>&, const Chromosome<T>&)>;
+using ConstraintsFunction = std::function<CVVector(const GaInfo&, const Candidate<T>&)>;
 ```
 
-In the returned vector, there should be a constraint violation value for each of
+The returned vector should consist of a constraint violation value for each of
 the constraints associated with the optimization problem. These values specify
 the degree of violation for the constraints. Higher values mean greater degrees
 of constraint violation, while 0 or lower values mean that the solution does not
 violate that particular constraint.
 
 ```cpp
-// Specify a constraint that the sum of the variables in a chromosome must be
+// Specify a constraint that the sum of the variables in the chromosome must be
 // greater than 0
-ga.constraints_function([](const GaInfo&, const Chromosome<RealGene>& chrom)
+ga.constraints_function([](const GaInfo&, const Candidate<RealGene>& sol)
 {
-    return { -std::accumulate(chrom.begin(), chrom.end(), 0.0) };
+    return { -std::accumulate(sol.begin(), sol.end(), 0.0) };
 });
 ```
 
 The constraints are evaluated before the fitness function, and the computed
-constraint violation vector is a member of the candidate solution structure,
-so the constraint violation values are available in the fitness function and
-also in other parts of the genetic algorithms.
+constraint violation vector is a member of the candidates, so the constraint
+violation values are available in the fitness function and also in other parts
+of the genetic algorithms.
 
 This means that the constraint violation values can be considered during the
 fitness calculation, the selection process, in the repair function call, or any
 other part of the algorithms. The only exception is the mutation operator.
 
-> [!Note]
-> The constraint function will be evaluated concurrently for multiple candidate
-> solutions of the population, so its implementation should be thread-safe.
+The constraint function will be evaluated concurrently for multiple candidate
+solutions of the population, so its implementation should be thread-safe.
 
 
 ## Constraint handling methods
@@ -71,8 +69,8 @@ examples for some of the possible methods here.
 A simple approach is to consider each constraint as an additional objective,
 by including each constraint in the fitness function definition as a separate
 dimension. In this case, specifying a constraints function separately is not
-necessary, since it's already a part of the fitness function definition.
-The problem is then solved as an unconstrained multi-objective optimization
+necessary, since it's already part of the fitness function definition. The
+problem is then solved as an unconstrained multi-objective optimization
 problem.
 
 ### Penalty based methods
@@ -128,11 +126,11 @@ solutions that violate a constraint so that it does not do so, or at
 least in a way that its degree of violation will be smaller:
 
 ```cpp
-ga.repair_function([](const GaInfo& ga, const Candidate<RealGene>& sol, Chromosome<RealGene>& chrom)
+ga.repair_function([](const GaInfo& ga, Candidate<RealGene>& sol)
 {
     if (sol.has_constraint_violation())
     {
-        // modify chrom ...
+        // modify the chromosome of the candidate ...
         return true;
     }
     return false;

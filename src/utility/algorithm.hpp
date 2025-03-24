@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_UTILITY_ALGORITHM_HPP
 #define GAPP_UTILITY_ALGORITHM_HPP
@@ -35,6 +35,15 @@ namespace gapp::detail
         static_assert(!(!std::is_lvalue_reference_v<U> && std::is_lvalue_reference_v<CastType>));
 
         return static_cast<CastType>(u);
+    }
+
+    template<typename T, size_t N>
+    constexpr bool equal(std::span<T, N> lhs, std::span<T, N> rhs)
+    {
+        if (lhs.size() != rhs.size()) return false;
+        if (lhs.data() == rhs.data()) return true;
+
+        return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
 
     constexpr small_vector<size_t> index_vector(size_t n, size_t first = 0)

@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_TEST_BENCHMARK_UTILS_HPP
 #define GA_TEST_BENCHMARK_UTILS_HPP
@@ -45,13 +45,13 @@ void writePopulationToFile(const std::vector<T>& sols, std::ostream& os)
 template<typename T, typename F>
 void benchmarkSoga(GA<T>& ga, size_t max_gen, F fitness_func)
 {
-    using RunFn = std::conditional_t<!is_bounded<T>,
+    using RunFn = std::conditional_t<!is_bounded_gene_v<T>,
         Candidates<T>(GA<T>::*)(F, size_t, Population<T>),
-        Candidates<T>(GA<T>::*)(F, BoundsVector<T>, size_t, Population<T>)>;
+        Candidates<T>(GA<T>::*)(F, typename GA<T>::BoundsVectors, size_t, Population<T>)>;
 
     auto [sols, time_spent] = [&]
     {
-        if constexpr (!is_bounded<T>)
+        if constexpr (!is_bounded_gene_v<T>)
             return invoke_timed(static_cast<RunFn>(&GA<T>::template solve<F>), ga, fitness_func, max_gen, Population<T>{});
         else
             return invoke_timed(static_cast<RunFn>(&GA<T>::template solve<F>), ga, fitness_func, fitness_func.bounds(), max_gen, Population<T>{});
@@ -71,13 +71,13 @@ void benchmarkSoga(GA<T>& ga, size_t max_gen, F fitness_func)
 template<typename T, typename F>
 void benchmarkMoga(GA<T>& ga, size_t max_gen, const std::string& ga_name, F fitness_func)
 {
-    using RunFn = std::conditional_t<!is_bounded<T>,
+    using RunFn = std::conditional_t<!is_bounded_gene_v<T>,
         Candidates<T>(GA<T>::*)(F, size_t, Population<T>),
-        Candidates<T>(GA<T>::*)(F, BoundsVector<T>, size_t, Population<T>)>;
+        Candidates<T>(GA<T>::*)(F, typename GA<T>::BoundsVectors, size_t, Population<T>)>;
 
     auto [sols, time_spent] = [&]
     {
-        if constexpr (!is_bounded<T>)
+        if constexpr (!is_bounded_gene_v<T>)
             return invoke_timed(static_cast<RunFn>(&GA<T>::template solve<F>), ga, fitness_func, max_gen, Population<T>{});
         else
             return invoke_timed(static_cast<RunFn>(&GA<T>::template solve<F>), ga, fitness_func, fitness_func.bounds(), max_gen, Population<T>{});
@@ -122,7 +122,7 @@ void benchmarkTSP(PermutationGA& ga, size_t max_gen, F fitness_func)
 template<typename F>
 void benchmarkInt(IntegerGA& ga, size_t max_gen, F fitness_func)
 {
-    using RunFn = Candidates<IntegerGene>(IntegerGA::*)(F, BoundsVector<IntegerGene>, size_t, Population<IntegerGene>);
+    using RunFn = Candidates<IntegerGene>(IntegerGA::*)(F, IntegerGA::BoundsVectors, size_t, Population<IntegerGene>);
 
     auto [sols, time_spent] = invoke_timed(static_cast<RunFn>(&IntegerGA::template solve<F>), ga, fitness_func, fitness_func.bounds(), max_gen, Population<IntegerGene>{});
 

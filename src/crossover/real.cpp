@@ -19,10 +19,10 @@ namespace gapp::crossover::real
     auto Arithmetic::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
-        GAPP_ASSERT(parent1.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
-        GAPP_ASSERT(parent2.gene_bounds().size() == parent2.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent1.gene_bounds.size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent2.gene_bounds.size() == parent2.chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        const auto& bounds = parent1.gene_bounds();
+        const auto& bounds = parent1.gene_bounds;
         const size_t chrom_len = parent1.chromosome.size();
 
         Candidate child1{ parent1 }, child2{ parent2 };
@@ -44,10 +44,10 @@ namespace gapp::crossover::real
     auto BLXa::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
-        GAPP_ASSERT(parent1.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
-        GAPP_ASSERT(parent2.gene_bounds().size() == parent2.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent1.gene_bounds.size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent2.gene_bounds.size() == parent2.chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        const auto& bounds = parent1.gene_bounds();
+        const auto& bounds = parent1.gene_bounds;
         const size_t chrom_len = parent1.chromosome.size();
 
         Candidate child1{ parent1 }, child2{ parent2 };
@@ -71,10 +71,10 @@ namespace gapp::crossover::real
     auto SimulatedBinary::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
-        GAPP_ASSERT(parent1.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
-        GAPP_ASSERT(parent2.gene_bounds().size() == parent2.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent1.gene_bounds.size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent2.gene_bounds.size() == parent2.chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
-        const auto& bounds = parent1.gene_bounds();
+        const auto& bounds = parent1.gene_bounds;
         const size_t chrom_len = parent1.chromosome.size();
 
         Candidate child1{ parent1 }, child2{ parent2 };
@@ -117,11 +117,11 @@ namespace gapp::crossover::real
     auto Wright::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
-        GAPP_ASSERT(parent1.gene_bounds().size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
-        GAPP_ASSERT(parent2.gene_bounds().size() == parent2.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent1.gene_bounds.size() == parent1.chromosome.size(), "Mismatching bounds and chromosome lengths.");
+        GAPP_ASSERT(parent2.gene_bounds.size() == parent2.chromosome.size(), "Mismatching bounds and chromosome lengths.");
         GAPP_ASSERT(parent1.fitness.size() == parent2.fitness.size(), "Mismatching parent fitness vector lengths.");
 
-        const auto& bounds = parent1.gene_bounds();
+        const auto& bounds = parent1.gene_bounds;
         const size_t chrom_len = parent1.chromosome.size();
 
         Candidate child1{ parent1 }, child2{ parent2 };

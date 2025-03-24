@@ -1,4 +1,4 @@
-﻿
+
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
 3. [Constraint handling](constraint-handling.md)  
@@ -44,7 +44,7 @@ The mutation methods are organized the same way.
 
 The library doesn't provide any repair functions since their use in the GAs
 is optional, and their implementation is highly dependent on the problem itself.
-These have to be defined by the user when they are needed.
+These have to be defined by the user if they are needed.
 
 ## Crossover
 
@@ -62,29 +62,64 @@ GA.crossover_method(crossover::perm::Edge{});
 ```
 
 The probability of performing the crossover operation is a general parameter
-of the crossovers and it can be set for all of the crossover operators either
-in their constructors or by using the `crossover_rate` method:
+of the crossovers, and it can be set for all of the crossover operators in
+their constructors or by using the `crossover_rate` method:
 
 ```cpp
 PermutationGA GA;
 GA.crossover_method(crossover::perm::Edge{ /* crossover_rate = */ 0.8 });
 ```
 
-The GA classes also provide a `crossover_rate` method that can be used to set
-the crossover probability for the current crossover operator used by the GA:
+The crossover method used by the GA classes can also be accessed using the
+`crossover_method` function. This can be used, for example, to change the
+crossover probability after the crossover method has already been set:
 
 ```cpp
 PermutationGA GA;
 GA.crossover_method(crossover::perm::Edge{});
-GA.crossover_rate(0.8); // same as GA.crossover_method().crossover_rate(0.8)
+GA.crossover_method().crossover_rate(0.8);
 ```
 
-Note that regardless of how you set the crossover probability, it is associated
-with a particular crossover operator, not the GA itself, so it will be changed
-when you change the crossover operator.
+Note that the parameters of the crossover operators, such as the crossover
+probability, are associated with the crossover operators, not the GA itself,
+so they will be changed when a new crossover operator is set for the GA.
 
-Some crossover operators also have additional parameters that are specific
-to that operator.
+The crossover operators may also have additional parameters that are specific
+to that particular operator.
+
+### Mixed crossovers
+
+The crossover operators for the mixed encodings are composite operators made
+up of an independent crossover operator for each of the component gene types
+of the mixed encoding. These component operators are applied to each of the
+associated chromosomes of the candidates separately.
+
+The crossover class used for all of the mixed crossovers is `crossover::Mixed`.
+The component crossovers are specified in the constructor of the class:
+
+```cpp
+MixedGA<RealGene, BinaryGene> ga;
+ga.crossover_method(crossover::Mixed{ crossover::real::Wright{}, crossover::binary::Uniform{} });
+```
+
+The parameters of the crossovers, such as the crossover probability, are associated
+with the individual components of the mixed crossover, not with the mixed crossover
+itself. This means that each component crossover has its own crossover probability.
+
+The component crossovers can be accessed through the mixed crossover, using the
+`component` method. This can be used, for example, to change the crossover
+probabilities of the individual components:
+
+```cpp
+ga.crossover_method().component<RealGene>().crossover_rate(0.8);
+```
+
+There are also some helper methods to access common parameters like the crossover
+probability directly:
+
+```cpp
+ga.crossover_method().crossover_rate<RealGene>(0.8);
+```
 
 ## Mutation
 
@@ -94,7 +129,8 @@ with exploring more of the search space and avoiding convergence to local
 optima.
 
 The mutation operator used by the GAs can be chosen similar to the crossover
-operators, either in the constructor or by using the `mutation_method` method:
+operators, either in the constructor of the GA or by using the `mutation_method`
+method:
 
 ```cpp
 RCGA GA;
@@ -106,7 +142,7 @@ probability parameter, but how this probability is interpreted depends
 on the specific mutation operator. It may either be interpreted on a
 per-gene or on a per-solution basis.
 
-The mutation probability can be set similar to the crossover probability, either
+The mutation probability can be set similar to the crossover probability,
 in the constructor of the mutation operator, or by using the `mutation_rate`
 method:
 
@@ -115,40 +151,85 @@ RCGA GA;
 GA.mutation_method(mutation::real::NonUniform{ /* mutation_rate = */ 0.1 });
 ```
 
-The GA classes also provide a `mutation_rate` method that can be used to set
-the mutation probability for the current mutation operator of the GA:
+The mutation method used by the GA class can also be accessed using the
+`mutation_method` function. This can be used, for example, to change the
+mutation probability after the mutation method has already been set:
 
 ```cpp
 RCGA GA;
 GA.mutation_method(mutation::real::NonUniform{});
-GA.mutation_rate(0.1); // same as GA.mutation_method().mutation_rate(0.1)
+GA.mutation_method().mutation_rate(0.1);
 ```
 
 Note that just like for the crossovers, the mutation rate is associated with the
 mutation operator, not the GA itself, which means that it will be changed along
 with the mutation operator when that is changed.
 
-Similar to the crossovers, some mutation operators also have additional parameters
-that are specific to that particular operator.
+Note that just like in the case of the crossover operators, the parameters of
+the mutation operators, such as the mutation probability, are associated with
+the mutation operators themselves, not with the GA, so they will be changed
+when a new mutation operator is set for the GA.
+
+The mutation operators may also have additional parameters that are specific
+to that particular operator.
+
+### Mixed mutations
+
+The mixed mutation operators are structured the same as the mixed crossover
+operators. They are composite operators made up of an independent mutation
+operator for each of the component gene types of the mixed encoding. These
+component operators are applied to each of the associated chromosomes of the
+candidates separately.
+
+The mutation class used for all of the mixed mutations is `mutation::Mixed`.
+The component mutations are specified in the constructor of the class:
+
+```cpp
+MixedGA<RealGene, BinaryGene> ga;
+ga.mutation_method(mutation::Mixed{ mutation::real::Uniform{}, mutation::binary::Flip{} });
+```
+
+The parameters of the mutations, such as the mutation probability, are associated
+with the individual components of the mixed mutation, not with the mixed mutation
+itself. This means that each component mutation has its own mutation probability.
+
+The component mutations can be accessed through the mixed mutation, using the
+`component` method. This can be used, for example, to change the mutation
+probabilities of the individual components:
+
+```cpp
+ga.mutation_method().component<RealGene>().mutation_rate(0.8);
+```
+
+There are also some helper methods to access common parameters like the mutation
+probability directly:
+
+```cpp
+ga.mutation_method().mutation_rate<RealGene>(0.8);
+```
 
 ## Repair
 
 The repair function is an additional operator that will be applied to each
-solution after the mutations. Using a repair function is optional, and they are
-not used in the GAs by default.
+solution after the mutations. Using a repair function is optional, and they
+are not used in the GAs by default.
 
 The repair function can be specified as some callable object using the `repair_function`
 method of the GAs:
 
 ```cpp
-ga.repair_function([](const GaInfo&, const Candidate<RealGene>&, Chromosome<RealGene>& chrom)
+ga.repair_function([](const GaInfo&, Candidate<RealGene>& sol)
 {
-    // change chrom ...
-    return true; // return true if chrom was changed, or false otherwise
+    // change the chromosome of the candidate in some way ...
+
+    return true; // return true if the chromosome was changed, or false otherwise
 });
 ```
 
-The repair function can be reset by setting it to a nullptr:
+The implementation of the repair function may not change any part of the
+candidates other than their chromosomes. The function should also be thread-safe.
+
+The repair function used by the GA can be cleared by setting it to a nullptr:
 
 ```cpp
 GA.repair_function(nullptr);
@@ -228,6 +309,9 @@ regardless of how they are defined:
  - The mutation modifies the `chromosome` parameter directly, and does not return anything.
  - The implementations should be thread-safe. It can be assumed that the mutation operator
    has exclusive access to its `chromosome` parameter.
+ - If a mixed encoding uses a custom gene type as one of its component gene types, you
+   only need to define a crossover or a mutation operator for that particular custom gene
+   type, which can then be used in the mixed crossover or mutation operators.
 
 ------------------------------------------------------------------------------------------------
 

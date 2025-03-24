@@ -1,4 +1,4 @@
-﻿
+
 1. **Introduction**  
 2. [Fitness functions](fitness-functions.md)  
 3. [Constraint handling](constraint-handling.md)  
@@ -104,6 +104,7 @@ encoding types:
 * RCGA (real-encoded GA)
 * IntegerGA (integer-encoded GA)
 * PermutationGA (for combinatorial problems)
+* MixedGA (multiple encoding types)
 
 Since the fitness function we defined uses real-encoding, we need to use the RCGA class.
 
@@ -156,8 +157,8 @@ In a lot of cases, running the GAs with the default parameters might not be
 enough. You can customize every part of the GAs, we will look at some examples here.
 
 The single-objective algorithms are made up of a selection and a population-replacement
-strategy. These are independent of eachother, and the method used for them can be specified
-as such.
+strategy. These are independent of each other, and the methods used for them can be
+specified as such.
 
 ```cpp
 // Use tournament selection and an elitist population replacement method
