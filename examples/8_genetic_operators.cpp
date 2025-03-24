@@ -1,4 +1,4 @@
-﻿/* Example showing the usage of the genetic operators in the GAs. */
+/* Example showing the usage of the genetic operators in the GAs. */
 
 #include "gapp.hpp"
 #include <algorithm>
@@ -46,18 +46,18 @@ int main()
     ga.crossover_method(crossover::perm::Edge{}); // using the default crossover probability
     ga.mutation_method(mutation::perm::Inversion{ /* mutation_rate = */ 0.3 });
 
-    std::cout << "The default crossover probability is "<< ga.crossover_rate() << ".\n";
+    std::cout << "The default crossover probability is " << ga.crossover_method().crossover_rate() << ".\n";
 
     // changing the crossover and mutation probabilities
 
     ga.crossover_method(crossover::perm::Edge{ /* crossover_rate = */ 0.92 });
-    std::cout << "The crossover probability is " << ga.crossover_rate() << ".\n";
+    std::cout << "The crossover probability is " << ga.crossover_method().crossover_rate() << ".\n";
 
-    ga.crossover_rate(0.71);
-    ga.mutation_rate(0.1);
+    ga.crossover_method().crossover_rate(0.71);
+    ga.mutation_method().mutation_rate(0.1);
 
-    std::cout << "The crossover probability is " << ga.crossover_rate() << ".\n";
-    std::cout << "The mutation probability is " << ga.mutation_rate() << ".\n";
+    std::cout << "The crossover probability is " << ga.crossover_method().crossover_rate() << ".\n";
+    std::cout << "The mutation probability is " << ga.mutation_method().mutation_rate() << ".\n";
 
     // user defined crossover and mutation methods
 
@@ -66,9 +66,9 @@ int main()
 
     // using a repair function
 
-    ga.repair_function([](const GaInfo&, const Candidate<PermutationGene>&, Chromosome<PermutationGene>& chrom)
+    ga.repair_function([](const GaInfo&, Candidate<PermutationGene>& sol)
     {
-        std::swap(chrom.front(), chrom.back());
+        std::swap(sol.front(), sol.back());
         return true;
     });
 }

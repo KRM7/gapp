@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
 #include "../core/candidate.hpp"
@@ -6,7 +6,7 @@
 
 namespace gapp
 {
-    Chromosome<IntegerGene> GaTraits<IntegerGene>::randomChromosome(size_t chrom_len, const BoundsVector<IntegerGene>& bounds)
+    Chromosome<IntegerGene> GaTraits<IntegerGene>::randomChromosome(size_t chrom_len, BoundsView<IntegerGene> bounds)
     {
         GAPP_ASSERT(chrom_len == bounds.size(), "The size of the bounds vector must match the chromosome length.");
 

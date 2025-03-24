@@ -1,5 +1,5 @@
 project = "gapp"
-copyright = "2024, Krisztián Rugási"
+copyright = "2025, Krisztián Rugási"
 
 highlight_language = "c++"
 primary_domain = "cpp"

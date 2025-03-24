@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_MUTATION_REAL_HPP
 #define GAPP_MUTATION_REAL_HPP
@@ -21,7 +21,7 @@ namespace gapp::mutation::real
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
     };
 
     /**
@@ -44,6 +44,11 @@ namespace gapp::mutation::real
     class NonUniform final : public Mutation<RealGene>
     {
     public:
+        /** Create a non-uniform mutation operator that will use the default mutation rate of the GA. */
+        constexpr explicit NonUniform() noexcept :
+            beta_(2.0)
+        {}
+
         /**
         * Create a non-uniform mutation operator with the specified parameters.
         * 
@@ -72,7 +77,7 @@ namespace gapp::mutation::real
         constexpr GeneType beta() const noexcept { return beta_; }
 
     private:
-        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
 
         NonNegative<GeneType> beta_;
     };
@@ -95,6 +100,11 @@ namespace gapp::mutation::real
     class Gauss final : public Mutation<RealGene>
     {
     public:
+        /** Create a %Gauss mutation operator that will use the default mutation rate of the GA. */
+        constexpr explicit Gauss() noexcept :
+            sigma_(6.0)
+        {}
+
         /**
         * Create a %Gauss mutation operator with the specified parameters.
         * 
@@ -125,7 +135,7 @@ namespace gapp::mutation::real
         constexpr GeneType sigma() const noexcept { return sigma_; }
 
     private:
-        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
 
         Positive<GeneType> sigma_;
     };
@@ -145,6 +155,11 @@ namespace gapp::mutation::real
     class Polynomial final : public Mutation<RealGene>
     {
     public:
+        /** Create a polynomial mutation operator that will use the default mutation rate of the GA. */
+        constexpr explicit Polynomial() noexcept :
+            eta_(40.0)
+        {}
+
         /**
         * Create a polynomial mutation operator with the specified parameters.
         * 
@@ -174,7 +189,7 @@ namespace gapp::mutation::real
         constexpr GeneType eta() const noexcept { return eta_; }
 
     private:
-        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
 
         NonNegative<GeneType> eta_;
     };
@@ -191,7 +206,7 @@ namespace gapp::mutation::real
     public:
         using Mutation::Mutation;
     private:
-        void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
+        void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
     };
 
 } // namespace gapp::mutation::real

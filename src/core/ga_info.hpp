@@ -1,17 +1,20 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_CORE_GA_INFO_HPP
 #define GAPP_CORE_GA_INFO_HPP
 
 #include "population.hpp"
 #include "fitness_function.hpp"
-#include "../utility/bounded_value.hpp"
-#include "../utility/utility.hpp"
 #include "../metrics/metric_set.hpp"
+#include "../utility/small_vector.hpp"
+#include "../utility/bounded_value.hpp"
+#include "../utility/type_id.hpp"
+#include "../utility/utility.hpp"
 #include <functional>
 #include <type_traits>
 #include <concepts>
 #include <memory>
+#include <utility>
 #include <cstddef>
 
 namespace gapp::algorithm
@@ -26,13 +29,26 @@ namespace gapp::stopping
 
 } // namespace gapp::stopping
 
+namespace gapp::crossover
+{
+    template<typename T>
+    class Crossover;
+
+} // namespace gapp::crossover
+
+namespace gapp::mutation
+{
+    template<typename T>
+    class Mutation;
+
+} // namespace gapp::mutation
 
 namespace gapp
 {
     /**
     * The base class that all GAs are derived from.
     * Contains all of the general properties of a genetic algorithm that 
-    * does not depend on the encoding type.
+    * do not depend on the encoding type.
     * 
     * %GA implementations should use the GA class as their base class instead
     * of inheriting from this class directly.
@@ -98,17 +114,33 @@ namespace gapp
 
         /** @returns The fitness function used. A nullptr is returned if no fitness function is set. */
         [[nodiscard]]
-        virtual const FitnessFunctionInfo* fitness_function() const& noexcept = 0;
+        virtual const FitnessFunctionInfo* fitness_function() const& noexcept;
 
-        /** @returns The chromosome length used. Returns 0 if the chromosome length is unspecified (i.e. no fitness function was set yet). */
+        /**
+        * @returns The chromosome length used for each chromosome of the encoding.
+        * The size of the returned vector will be equal to the number of gene types in the encoding.
+        * This means a size of 1 for simple encodings, and a size equal to the number of component
+        * genes for mixed encodings.
+        * The order of the values in the vector will match the order of the genes as specified in
+        * the encoding.
+        * An empty vector is returned if no fitness function is set.
+        */
         [[nodiscard]]
-        virtual size_t chrom_len() const noexcept = 0;
+        const small_vector<size_t>& chrom_lens() const noexcept;
 
-        /** @returns The number of objectives of the fitness function. */
+        /**
+        * @returns The chromosome length used for the specified gene type of the encoding.
+        * Returns 0 if the candidates don't have a chromosome for the specified gene type or
+        * if no fitness function is set.
+        */
+        template<typename GeneType>
+        [[nodiscard]] size_t chrom_len() const noexcept;
+
+        /** @returns The number of objectives of the fitness function, or 0 if no fitness function is set. */
         [[nodiscard]]
-        size_t num_objectives() const noexcept { GAPP_ASSERT(num_objectives_); return num_objectives_; }
+        size_t num_objectives() const noexcept { return num_objectives_; }
 
-        /** @returns The number of constraints associated with the fitness function. */
+        /** @returns The number of constraints associated with the fitness function, or 0 if no fitness function is set. */
         [[nodiscard]]
         size_t num_constraints() const noexcept { return num_constraints_; }
 
@@ -143,29 +175,25 @@ namespace gapp
         */
         [[nodiscard]]
         size_t generation_cntr() const noexcept { return generation_cntr_; }
-        
+
 
         /**
-        * Set the crossover rate of the crossover operator used by the algorithm.
-        *
-        * @param pc The crossover probability. Must be in the closed interval [0.0, 1.0].
+        * @returns The crossover method associated with the specified gene type.
+        * The gene type may either be the mixed gene or one of the component genes for mixed
+        * encodings. A nullptr is returned if the specified gene type is not part of the
+        * encoding.
         */
-        virtual void crossover_rate(Probability pc) noexcept = 0;
-
-        /** @returns The crossover rate set for the crossover operator. */
-        [[nodiscard]]
-        virtual Probability crossover_rate() const noexcept = 0;
+        template<typename GeneType>
+        [[nodiscard]] crossover::Crossover<GeneType>* crossover_method() const& noexcept;
 
         /**
-        * Set the mutation rate of the mutation operator used by the algorithm.
-        *
-        * @param pm The mutation probability. Must be in the closed interval [0.0, 1.0].
+        * @returns The mutation method associated with the specified gene type.
+        * The gene type may either be the mixed gene or one of the component genes for mixed
+        * encodings. A nullptr is returned if the specified gene type is not part of the
+        * encoding.
         */
-        virtual void mutation_rate(Probability pm) noexcept = 0;
-
-        /** @returns The mutation rate set for the mutation operator. */
-        [[nodiscard]]
-        virtual Probability mutation_rate() const noexcept = 0;
+        template<typename GeneType>
+        [[nodiscard]] mutation::Mutation<GeneType>* mutation_method() const& noexcept;
 
 
         /**
@@ -363,6 +391,7 @@ namespace gapp
 
         FitnessMatrix fitness_matrix_;
 
+        std::unique_ptr<FitnessFunctionInfo> fitness_function_;
         std::unique_ptr<algorithm::Algorithm> algorithm_;
         std::unique_ptr<stopping::StopCondition> stop_condition_;
         detail::MetricSet metrics_;
@@ -380,17 +409,37 @@ namespace gapp
 
         /** The default population size used in the %GA if none is specified. */
         static constexpr size_t DEFAULT_POPSIZE = 100;
+
+        virtual size_t index_of_gene(size_t type_id) const noexcept = 0;
+
+        virtual void* crossover_method_impl(size_t type_id) const noexcept = 0;
+        virtual void* mutation_method_impl(size_t type_id) const noexcept = 0;
     };
 
 } // namespace gapp
 
-
-/* IMPLEMENTATION */
-
-#include <utility>
-
 namespace gapp
 {
+    template<typename GeneType>
+    size_t GaInfo::chrom_len() const noexcept
+    {
+        if (!fitness_function_) return 0;
+
+        return chrom_lens()[index_of_gene(detail::type_id<GeneType>())];
+    }
+
+    template<typename GeneType>
+    crossover::Crossover<GeneType>* GaInfo::crossover_method() const& noexcept
+    {
+        return static_cast<crossover::Crossover<GeneType>*>(crossover_method_impl(detail::type_id<GeneType>()));
+    }
+
+    template<typename GeneType>
+    mutation::Mutation<GeneType>* GaInfo::mutation_method() const& noexcept
+    {
+        return static_cast<mutation::Mutation<GeneType>*>(mutation_method_impl(detail::type_id<GeneType>()));
+    }
+
     template<typename F>
     requires std::derived_from<F, algorithm::Algorithm>
     inline void GaInfo::algorithm(F f)

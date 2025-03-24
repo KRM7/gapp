@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.21)
 
 project(gapp VERSION 0.3.0 LANGUAGES CXX)
 
@@ -100,15 +100,20 @@ else() # GNU style compiler interface
 
     # gcc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op -Wno-array-bounds -Wno-stringop-overflow -Wno-stringop-overread -Wno-free-nonheap-object")
+	    set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wlogical-op")
+        # These are disabled due to the large number of false positives with gcc14
+        set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wno-array-bounds -Wno-stringop-overflow -Wno-stringop-overread -Wno-free-nonheap-object -Wno-maybe-uninitialized")
+        # This is disabled because the warning is issued for the wrong class by gcc
+        set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wno-virtual-move-assign")
     endif()
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS}")
+        set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -fsized-deallocation")
     endif()
 
     set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} ${GAPP_WARN_FLAGS}")
-    set(CMAKE_CXX_FLAGS_DEBUG "-Og -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS")
+    set(CMAKE_CXX_FLAGS_DEBUG "-Og -D_GLIBCXX_ASSERTIONS")
     set(CMAKE_CXX_FLAGS_RELEASE "-g -DNDEBUG ${GAPP_OPT_FLAGS}")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g ${GAPP_OPT_FLAGS}")
 endif()

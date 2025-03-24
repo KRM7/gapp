@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_MUTATION_PERMUTATION_HPP
 #define GAPP_MUTATION_PERMUTATION_HPP
@@ -22,6 +22,11 @@ namespace gapp::mutation::perm
     class Inversion final : public Mutation<PermutationGene>
     {
     public:
+        /** Create an inversion mutation operator that will use the default mutation rate of the GA. */
+        constexpr explicit Inversion() noexcept :
+            range_max_(0.75)
+        {}
+
         /**
         * Create an inversion mutation operator.
         * 
@@ -31,8 +36,6 @@ namespace gapp::mutation::perm
         constexpr explicit Inversion(Probability pm, Normalized<double> range_max = 0.75) noexcept :
             Mutation(pm), range_max_(range_max)
         {}
-
-        constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
 
         /**
         * Set the maximum length of the ranges that can be selected to be reversed
@@ -46,6 +49,8 @@ namespace gapp::mutation::perm
         /** @returns The maximum length of the reversed ranges. */
         [[nodiscard]]
         constexpr double range_max() const noexcept { return range_max_; }
+
+        constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
 
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
@@ -100,6 +105,11 @@ namespace gapp::mutation::perm
     class Shuffle final : public Mutation<PermutationGene>
     {
     public:
+        /** Create a shuffle mutation operator that will use the default mutation rate of the GA. */
+        constexpr explicit Shuffle() noexcept :
+            range_max_(0.75)
+        {}
+
         /**
         * Create a shuffle mutation operator.
         *
@@ -109,8 +119,6 @@ namespace gapp::mutation::perm
         constexpr explicit Shuffle(Probability pm, Normalized<double> range_max = 0.5) noexcept :
             Mutation(pm), range_max_(range_max)
         {}
-
-        constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
 
         /**
         * Set the maximum length of the ranges that can be selected to be shuffled
@@ -124,6 +132,8 @@ namespace gapp::mutation::perm
         /** @returns The maximum length of the shuffled ranges. */
         [[nodiscard]]
         constexpr double range_max() const noexcept { return range_max_; }
+
+        constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
 
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;
@@ -144,6 +154,11 @@ namespace gapp::mutation::perm
     class Shift final : public Mutation<PermutationGene>
     {
     public:
+        /** Create a shift mutation operator that will use the default mutation rate of the GA. */
+        constexpr explicit Shift() noexcept :
+            range_max_(0.75)
+        {}
+
         /**
         * Create a shift mutation operator.
         *
@@ -153,8 +168,6 @@ namespace gapp::mutation::perm
         constexpr explicit Shift(Probability pm, Normalized<double> range_max = 0.75) noexcept :
             Mutation(pm), range_max_(range_max)
         {}
-
-        constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
 
         /**
         * Set the maximum length of the ranges that can be selected to be moved
@@ -168,6 +181,8 @@ namespace gapp::mutation::perm
         /** @returns The maximum length of the moved ranges. */
         [[nodiscard]]
         constexpr double range_max() const noexcept { return range_max_; }
+
+        constexpr bool allow_variable_chrom_length() const noexcept override { return true; }
 
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& candidate, Chromosome<GeneType>& chromosome) const override;

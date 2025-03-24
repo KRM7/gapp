@@ -10,6 +10,8 @@
 
 namespace gapp
 {
+    const small_vector<size_t> empty;
+
     GaInfo::GaInfo(GaInfo&&) noexcept            = default;
     GaInfo& GaInfo::operator=(GaInfo&&) noexcept = default;
 
@@ -21,6 +23,16 @@ namespace gapp
     {
         if (!algorithm_) algorithm_ = std::make_unique<algorithm::SingleObjective>();
         if (!stop_condition_) stop_condition_ = std::make_unique<stopping::NoEarlyStop>();
+    }
+
+    const FitnessFunctionInfo* GaInfo::fitness_function() const& noexcept
+    {
+        return fitness_function_.get();
+    }
+
+    const small_vector<size_t>& GaInfo::chrom_lens() const noexcept
+    {
+        return fitness_function_ ? fitness_function_->chrom_lens() : empty;
     }
 
     size_t GaInfo::num_fitness_evals() const noexcept

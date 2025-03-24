@@ -1,4 +1,4 @@
-﻿name: linux
+name: linux
 
 on: [push, pull_request]
 
@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         common-pkgs: [ git cmake ]
-        build-type: [ Release, RelWithDebInfo ]
+        build-type: [ Release, RelWithDebInfo, Debug ]
         compiler: [
             { cxx: g++-11, pkgs: g++-11 },
             { cxx: g++-12, pkgs: g++-12 },

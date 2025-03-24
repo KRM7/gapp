@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Example showing a simple real-encoded, constrained optimization problem.
 * 
 * The objective function is f(x, y) = x^2 + y^2,
@@ -39,19 +39,19 @@ int main()
     
     /* Specify the constraints. We need to assign some positive constraint violation
        value to negative values of the variables for both constraints. */
-    ga.constraints_function([](const GaInfo&, const Chromosome<RealGene>& sol)
+    ga.constraints_function([](const GaInfo&, const Candidate<RealGene>& sol)
     {
         return CVVector{ -sol[0], -sol[1] };
     });
 
     /* Attempt to improve solutions that violate one of the constraints using a repair function. 
        Note that this part is not necessary for the constraint handling and could just be skipped. */
-    ga.repair_function([](const GaInfo&, const Candidate<RealGene>& sol, Chromosome<RealGene>& chrom)
+    ga.repair_function([](const GaInfo&, Candidate<RealGene>& sol)
     {
         if (!sol.has_constraint_violation()) return false;
 
-        chrom[0] = -chrom[0];
-        chrom[1] = -chrom[1];
+        sol[0] = -sol[0];
+        sol[1] = -sol[1];
         return true;
     });
 

@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
 #include "utility/type_traits.hpp"
@@ -9,6 +9,29 @@ using namespace gapp::detail;
 
 template<typename T>
 class Vec : public std::vector<T> {};
+
+TEST_CASE("concat_tup", "[type_traits]")
+{
+    STATIC_REQUIRE(std::is_same_v<concat_tup_t<std::tuple<int, double>, std::tuple<>>, std::tuple<int, double>>);
+    STATIC_REQUIRE(std::is_same_v<concat_tup_t<std::tuple<>, std::tuple<int, double>>, std::tuple<int, double>>);
+
+    STATIC_REQUIRE(std::is_same_v<concat_tup_t<std::tuple<int, double>, std::tuple<float>>, std::tuple<int, double, float>>);
+
+    STATIC_REQUIRE(std::is_same_v<concat_tup_t<std::tuple<int, double>, float>, std::tuple<int, double, float>>);
+    STATIC_REQUIRE(std::is_same_v<concat_tup_t<float, std::tuple<int, double>>, std::tuple<float, int, double>>);
+}
+
+TEST_CASE("filter_types", "[type_traits]")
+{
+    STATIC_REQUIRE(std::is_same_v<filter_types_t<std::is_floating_point>, std::tuple<>>);
+    STATIC_REQUIRE(std::is_same_v<filter_types_t<std::is_floating_point, int, void, float, double, long>, std::tuple<float, double>>);
+}
+
+TEST_CASE("map_types", "[type_traits]")
+{
+    STATIC_REQUIRE(std::is_same_v<map_types_t<std::tuple, std::tuple<>>, std::tuple<>>);
+    STATIC_REQUIRE(std::is_same_v<map_types_t<std::tuple, std::tuple<int, double, long>>, std::tuple<std::tuple<int>, std::tuple<double>, std::tuple<long>>>);
+}
 
 TEST_CASE("is_same_template", "[type_traits]")
 {
@@ -26,11 +49,30 @@ TEST_CASE("is_one_of_templates", "[type_traits]")
     STATIC_REQUIRE(!is_one_of_templates_v<std::vector>);
 }
 
+TEST_CASE("unique_types", "[type_traits]")
+{
+    STATIC_REQUIRE(unique_types_v<>);
+    STATIC_REQUIRE(unique_types_v<void>);
+    STATIC_REQUIRE(unique_types_v<void, int, double>);
+    STATIC_REQUIRE(unique_types_v<const int, int>);
+
+    STATIC_REQUIRE(!unique_types_v<int, int>);
+    STATIC_REQUIRE(!unique_types_v<void, int, float, double, void>);
+}
+
 TEST_CASE("nth_type", "[type_traits]")
 {
     STATIC_REQUIRE(std::is_same_v<nth_type_t<1, int, void>, void>);
     STATIC_REQUIRE(std::is_same_v<nth_type_t<3, int, void, double, float>, float>);
     STATIC_REQUIRE(std::is_same_v<nth_type_t<0, int, void>, int>);
+}
+
+TEST_CASE("index_of_type", "[type_traits]")
+{
+    STATIC_REQUIRE(index_of_type_v<int, int> == 0);
+    STATIC_REQUIRE(index_of_type_v<int, int, int, int> == 0);
+    STATIC_REQUIRE(index_of_type_v<double, int, double, int> == 1);
+    STATIC_REQUIRE(index_of_type_v<void, int, float, long, void> == 3);
 }
 
 TEST_CASE("is_derived_from_spec_of", "[type_traits]")

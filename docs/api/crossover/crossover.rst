@@ -8,6 +8,7 @@ Crossovers
    crossover_binary
    crossover_permutation
    crossover_integer
+   crossover_mixed
 
 
 .. doxygennamespace:: gapp::crossover

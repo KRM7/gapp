@@ -8,6 +8,7 @@ Encodings
    encoding_binary
    encoding_permutation
    encoding_integer
+   encoding_mixed
 
 
 .. doxygennamespace:: gapp
@@ -29,14 +30,69 @@ struct GaTraits
    :private-members:
 
 
-bool is_bounded
+struct is_bounded_gene
 ---------------------------------------------------
 
 .. code-block::
 
-   #include <core/ga_traits.hpp>
+   #include <encoding/gene_types.hpp>
 
-.. doxygenvariable:: gapp::is_bounded
+.. doxygenstruct:: gapp::is_bounded_gene
+   :project: gapp
+
+
+bool is_bounded_gene_v
+---------------------------------------------------
+
+.. code-block::
+
+   #include <encoding/gene_types.hpp>
+
+.. doxygenvariable:: gapp::is_bounded_gene_v
+   :project: gapp
+
+
+struct is_partially_bounded_gene
+---------------------------------------------------
+
+.. code-block::
+
+   #include <encoding/gene_types.hpp>
+
+.. doxygenstruct:: gapp::is_partially_bounded_gene
+   :project: gapp
+
+
+bool is_partially_bounded_gene_v
+---------------------------------------------------
+
+.. code-block::
+
+   #include <encoding/gene_types.hpp>
+
+.. doxygenvariable:: gapp::is_partially_bounded_gene_v
+   :project: gapp
+
+
+struct is_mixed_gene
+---------------------------------------------------
+
+.. code-block::
+
+   #include <encoding/gene_types.hpp>
+
+.. doxygenstruct:: gapp::is_mixed_gene
+   :project: gapp
+
+
+bool is_mixed_gene_v
+---------------------------------------------------
+
+.. code-block::
+
+   #include <encoding/gene_types.hpp>
+
+.. doxygenvariable:: gapp::is_mixed_gene_v
    :project: gapp
 
 

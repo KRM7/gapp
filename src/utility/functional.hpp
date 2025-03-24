@@ -15,6 +15,7 @@
 #include <concepts>
 #include <utility>
 #include <cmath>
+#include <cstddef>
 #include <cassert>
 
 namespace gapp

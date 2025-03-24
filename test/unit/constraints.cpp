@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2024 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2024 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
 #include "gapp.hpp"
@@ -14,7 +14,7 @@ TEST_CASE("unconstrained_problem", "[constraints]")
 {
     RCGA ga{ population_size };
 
-    ga.repair_function([&](const GaInfo&, const Candidate<RealGene>& sol, Chromosome<RealGene>&)
+    ga.repair_function([&](const GaInfo&, const Candidate<RealGene>& sol)
     {
         REQUIRE(sol.constraint_violation.empty());
         REQUIRE(!sol.has_constraint_violation());
@@ -31,12 +31,12 @@ TEST_CASE("constrained_problem", "[constraints]")
 {
     RCGA ga{ population_size };
 
-    ga.constraints_function([](const GaInfo&, const Chromosome<RealGene>&)
+    ga.constraints_function([](const GaInfo&, const Candidate<RealGene>&)
     {
         return CVVector{ 1.0, 0.0 };
     });
 
-    ga.repair_function([&](const GaInfo&, const Candidate<RealGene>& sol, Chromosome<RealGene>&)
+    ga.repair_function([&](const GaInfo&, Candidate<RealGene>& sol)
     {
         REQUIRE(sol.constraint_violation == CVVector{ 1.0, 0.0 });
         REQUIRE(sol.has_constraint_violation());

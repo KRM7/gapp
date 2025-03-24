@@ -1,11 +1,10 @@
 ﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_STOP_CONDITION_COMPOSITE
-#define GA_STOP_CONDITION_COMPOSITE
+#ifndef GAPP_STOP_CONDITION_COMPOSITE
+#define GAPP_STOP_CONDITION_COMPOSITE
 
 #include "stop_condition_base.hpp"
 #include "../core/ga_info.hpp"
-#include "../utility/concepts.hpp"
 #include <functional>
 #include <concepts>
 #include <utility>
@@ -107,4 +106,4 @@ namespace gapp::stopping
 
 } // namespace gapp::stopping
 
-#endif // !GA_STOP_CONDITION_COMPOSITE
+#endif // !GAPP_STOP_CONDITION_COMPOSITE

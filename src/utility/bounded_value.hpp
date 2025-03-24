@@ -43,6 +43,8 @@ namespace gapp::detail
             GAPP_ASSERT(I.contains(value_), "The value is outside of the allowed interval.");
         }
 
+        constexpr value_type operator*() const noexcept { return value_; }
+
         constexpr /* implicit */ operator value_type() const noexcept { return value_; }
 
         static constexpr T lower_bound = I.left_;

@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_UTILITY_SMALL_VECTOR_HPP
 #define GAPP_UTILITY_SMALL_VECTOR_HPP
