@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_CROSSOVER_INTEGER_HPP
 #define GAPP_CROSSOVER_INTEGER_HPP
@@ -112,8 +112,8 @@ namespace gapp::crossover::integer
         * @param swap_prob The probability of swapping each pair of genes between the 2 parents.
         *   Must be in the closed interval [0.0, 1.0].
         */
-        constexpr explicit Uniform(Probability pc, Probability ps = 0.5) noexcept :
-            Crossover(pc), ps_(ps)
+        constexpr explicit Uniform(Probability pc, Probability swap_prob = 0.5) noexcept :
+            Crossover(pc), ps_(swap_prob)
         {}
 
         /**

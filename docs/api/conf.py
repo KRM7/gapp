@@ -1,4 +1,6 @@
 project = "gapp"
+release = "0.3.0"
+author = "Krisztián Rugási"
 copyright = "2025, Krisztián Rugási"
 
 highlight_language = "c++"

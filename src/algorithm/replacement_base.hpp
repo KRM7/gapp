@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
 #define GAPP_ALGORITHM_SOGA_REPLACEMENT_BASE_HPP
@@ -33,7 +33,7 @@ namespace gapp::replacement
         * Select the candidates of the next generation from the candidates of the
         * combined current and child populations.
         * 
-        * The @pop parameter describes the combined parent and child populations.
+        * The @p pop parameter describes the combined parent and child populations.
         * The top half (first population_size elements) corresponds to the parent
         * population, while the rest (another population_size elements) corresponds
         * to the child population.

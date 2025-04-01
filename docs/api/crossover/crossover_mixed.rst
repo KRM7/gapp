@@ -26,7 +26,7 @@ class Crossover<MixedGene>
 
    #include <crossover/crossover_base.hpp>
 
-.. doxygenclass:: gapp::crossover::Crossover< MixedGene >
+.. doxygenclass:: gapp::crossover::Crossover< MixedGene < Ts... > >
    :project: gapp
    :members:
    :protected-members:

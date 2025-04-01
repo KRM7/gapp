@@ -26,7 +26,7 @@ class Mutation<MixedGene>
 
    #include <mutation/mutation_base.hpp>
 
-.. doxygenclass:: gapp::mutation::Mutation< MixedGene >
+.. doxygenclass:: gapp::mutation::Mutation< MixedGene < Ts... > >
    :project: gapp
    :members:
    :protected-members:
