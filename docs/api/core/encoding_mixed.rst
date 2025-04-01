@@ -24,7 +24,7 @@ class GaTraits<MixedGene>
 
    #include <encoding/mixed.hpp>
 
-.. doxygenstruct:: gapp::GaTraits< MixedGene < Ts... > >
+.. doxygenstruct:: gapp::GaTraits< MixedGene< Ts... > >
    :project: gapp
    :members:
    :undoc-members:

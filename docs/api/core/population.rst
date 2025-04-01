@@ -50,7 +50,7 @@ class Chromosome
    :project: gapp
 
 
-class Candidate
+class CandidateInfo
 ---------------------------------------------------
 
 .. code-block::
@@ -64,12 +64,40 @@ class Candidate
    :private-members:
 
 
+class Candidate
+---------------------------------------------------
+
+.. code-block::
+
+   #include <population/candidate.hpp>
+
 .. doxygenstruct:: gapp::Candidate
    :project: gapp
    :members:
    :protected-members:
    :private-members:
 
+
+class Candidate<MixedGene>
+---------------------------------------------------
+
+.. code-block::
+
+   #include <population/candidate.hpp>
+
+.. doxygenstruct:: gapp::Candidate< MixedGene< Ts... > >
+   :project: gapp
+   :members:
+   :protected-members:
+   :private-members:
+
+
+class CandidatePair
+---------------------------------------------------
+
+.. code-block::
+
+   #include <population/candidate.hpp>
 
 .. doxygenstruct:: gapp::CandidatePair
    :project: gapp

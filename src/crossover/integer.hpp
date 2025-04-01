@@ -121,7 +121,7 @@ namespace gapp::crossover::integer
         * The swap probability is the probability of swapping a given pair of genes
         * between the parents.
         *
-        * @param swap_prob The probability of swapping each pair of genes between the 2 parents.
+        * @param ps The probability of swapping each pair of genes between the 2 parents.
         *   Must be in the closed interval [0.0, 1.0].
         */
         constexpr void swap_probability(Probability ps) noexcept { ps_ = ps; }

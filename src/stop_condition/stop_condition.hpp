@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_STOP_CONDITION_DECL_HPP
 #define GA_STOP_CONDITION_DECL_HPP
@@ -78,7 +78,7 @@ namespace gapp::stopping
         /**
         * Set the fitness threshold vector.
         *
-        * @param fitness_threshold The fitness threshold vector used. The size of this vector
+        * @param threshold The fitness threshold vector used. The size of this vector
         *   should be the same as the size of the fitness vectors of the population
         *   (ie. the number of objectives should match).
         */
