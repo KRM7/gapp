@@ -31,7 +31,7 @@ namespace gapp::crossover
     * 
     *   - crossover : Perform the crossover on 2 candidate solutions.
     * 
-    * @tparam The gene type the crossover operator is defined for.
+    * @tparam T The gene type the crossover operator is defined for.
     */
     template<typename T>
     class Crossover
