@@ -1,4 +1,4 @@
-﻿name: docs
+name: docs
 
 on: 
   push:
@@ -29,6 +29,7 @@ jobs:
         git rebase origin/master
         sudo bash ./docs/api/generate_api_docs.sh
         sudo rsync -a docs/api/sphinx-out/ docs/
+        git add .
         git commit --all --amend --no-edit
         git push --force-with-lease
      
