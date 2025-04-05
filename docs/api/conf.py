@@ -5,7 +5,7 @@ copyright = "2025, Krisztián Rugási"
 
 highlight_language = "c++"
 primary_domain = "cpp"
-maximum_signature_line_length = 80
+maximum_signature_line_length = 120
 
 extensions = [ "breathe" ]
 
