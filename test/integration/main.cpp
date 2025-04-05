@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "binary_soga.hpp"
 #include "real_soga.hpp"
@@ -7,9 +7,12 @@
 #include "nsga2.hpp"
 #include "nsga3.hpp"
 #include "variable_length.hpp"
+#include "mixed_encoding.hpp"
 
 int main()
 {
+    execution_threads(1);
+
     //while (true)
     {
         rng::prng.seed(0x123456789);
@@ -48,5 +51,6 @@ int main()
         benchmark_nsga3_dtlz();
 
         variable_chrom_length();
+        mixed_encoding<problems::tsp124_coords>();
     }
 }
