@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GA_UTILITY_RCU_HPP
 #define GA_UTILITY_RCU_HPP
@@ -19,13 +19,13 @@ namespace gapp::detail
     class rcu_domain
     {
     public:
-        static void read_lock() noexcept
+        GAPP_API static void read_lock() noexcept
         {
             reader.epoch.store(writer_epoch.load(std::memory_order_relaxed), std::memory_order_release);
             std::ignore = reader.epoch.load(std::memory_order_acquire);
         }
 
-        static void read_unlock() noexcept
+        GAPP_API static void read_unlock() noexcept
         {
             reader.epoch.store(NOT_READING, std::memory_order_release);
         }
@@ -72,7 +72,7 @@ namespace gapp::detail
 
         GAPP_API inline static detail::Indestructible<tls_reader_list> tls_readers;
         GAPP_API inline static constinit std::atomic<uint64_t> writer_epoch = 0;
-        alignas(128) inline static thread_local registered_reader reader;
+        alignas(128) static thread_local registered_reader reader;
     };
 
     // NOLINTBEGIN(*owning-memory)
