@@ -110,7 +110,7 @@
 #endif
 
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) && !defined(GAPP_DISABLE_ASSERTS)
 #   define GAPP_ASSERT_1(condition) assert(condition)
 #   define GAPP_ASSERT_2(condition, msg) assert( (condition) && (msg) )
 #   define GAPP_ASSERT_(_1, _2, NAME, ...) NAME
