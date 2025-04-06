@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_UTILITY_RNG_HPP
 #define GAPP_UTILITY_RNG_HPP
@@ -241,7 +241,7 @@ namespace gapp::rng
         using state_type  = Xoroshiro128p::state_type;
 
         /** @return The next number of the sequence. Thread-safe. */
-        result_type operator()() const noexcept
+        GAPP_API result_type operator()() const noexcept
         {
             return std::invoke(generator_.instance);
         }
@@ -272,6 +272,8 @@ namespace gapp::rng
         /** @returns The largest possible value that can be generated. */
         static constexpr result_type max() noexcept { return Xoroshiro128p::max(); }
 
+        GAPP_API static auto& generator() noexcept { return generator_; }
+
     private:
         struct RegisteredGenerator
         {
@@ -301,13 +303,9 @@ namespace gapp::rng
             std::vector<RegisteredGenerator*> list;
         };
 
-        friend bool randomBool() noexcept;
-        template<std::integral T> friend T randomPoisson(double);
-        template<std::floating_point T> friend T randomNormal(T, T);
-
         GAPP_API inline static constinit Xoroshiro128p global_generator_{ GAPP_SEED };
         GAPP_API inline static detail::Indestructible<GeneratorList> tls_generators_;
-        alignas(128) inline static thread_local RegisteredGenerator generator_;
+        alignas(128) static thread_local RegisteredGenerator generator_;
     };
 
 
@@ -329,7 +327,7 @@ namespace gapp::rng
 {
     bool randomBool() noexcept
     {
-        return prng.generator_.bool_distribution(rng::prng);
+        return prng.generator().bool_distribution(rng::prng);
     }
 
     template<std::integral IntType>
@@ -359,7 +357,7 @@ namespace gapp::rng
     {
         GAPP_ASSERT(std_dev >= 0.0);
 
-        return std_dev * prng.generator_.normal_distribution(rng::prng) + mean;
+        return std_dev * prng.generator().normal_distribution(rng::prng) + mean;
     }
 
     template<std::integral IntType>
@@ -367,12 +365,12 @@ namespace gapp::rng
     {
         GAPP_ASSERT(mean > 0.0);
 
-        if (prng.generator_.poisson_distribution.mean() != mean)
+        if (prng.generator().poisson_distribution.mean() != mean)
         {
-            prng.generator_.poisson_distribution = std::poisson_distribution<std::uint64_t>{ mean };
+            prng.generator().poisson_distribution = std::poisson_distribution<std::uint64_t>{ mean };
         }
 
-        return prng.generator_.poisson_distribution(rng::prng);
+        return prng.generator().poisson_distribution(rng::prng);
     }
 
     template<std::integral IntType>
