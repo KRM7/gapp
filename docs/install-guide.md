@@ -1,4 +1,4 @@
-﻿# Install guide
+# Install guide
 
 [Requirements](#requirements)    
 [Install with CMake](#install-with-cmake)  
@@ -202,6 +202,10 @@ headers will be slightly different, ie. you will need to do `#include <gapp.hpp>
 - `GAPP_USE_MARCH_NATIVE` - When this option is `ON`, the library will be optimized specifically for the
     host architecture in the optimized configurations (Release and RelWithDebInfo). This has no effect on
     Debug builds. The default value is `OFF`.
+
+- `GAPP_DISABLE_ASSERTS` - When this option is `ON`, all assertions in the library will be disabled,
+    even when `NDEBUG` is not defined. Defining `NDEBUG` disables assertions in the library regardless
+    the value of this option. The default value is `OFF`.
 
 - `GAPP_DISABLE_EXCEPTIONS` - When this option is `ON`, the library will be built with exception
     support disabled. The default value is `OFF`.

@@ -13,6 +13,7 @@ option(GAPP_BUILD_EXAMPLES "Build the examples for the library when ON." OFF)
 option(GAPP_USE_WERROR "Treat all warnings as errors during the build." OFF)
 option(GAPP_USE_LTO "Use link time optimizations for the library (only used for optimized builds)." OFF)
 option(GAPP_USE_MARCH_NATIVE "Optimize for the host architecture in release builds (only used for gcc and clang)." OFF)
+option(GAPP_DISABLE_ASSERTS "Disable all assertions in the library, even when NDEBUG is not defined." OFF)
 option(GAPP_DISABLE_EXCEPTIONS "Disable exception support when building the library." OFF)
 option(GAPP_DISABLE_RTTI "Disable run-time type information when building the library." OFF)
 
@@ -143,7 +144,8 @@ target_include_directories(gapp SYSTEM INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURR
                                 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 target_compile_features(gapp PUBLIC "cxx_std_20")
-target_compile_definitions(gapp PUBLIC "$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:GAPP_BUILD_STATIC>")
+target_compile_definitions(gapp PUBLIC "$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:GAPP_BUILD_STATIC>"
+                                       "$<$<BOOL:${GAPP_DISABLE_ASSERTS}>:GAPP_DISABLE_ASSERTS>")
 target_compile_options(gapp PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:-Zc:preprocessor>")
 
 
