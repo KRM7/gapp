@@ -59,6 +59,9 @@ namespace gapp::replacement
         Replacement(Replacement&&)                  = default;
         Replacement& operator=(const Replacement&)  = default;
         Replacement& operator=(Replacement&&)       = default;
+
+        template<typename, typename>
+        friend class AnyObjective;
     };
 
 } // namespace gapp::replacement
