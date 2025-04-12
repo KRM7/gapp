@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_ALGORITHM_ALGORITHM_BASE_DECL_HPP
 #define GAPP_ALGORITHM_ALGORITHM_BASE_DECL_HPP
@@ -126,6 +126,9 @@ namespace gapp::algorithm
         Algorithm& operator=(Algorithm&&)       = default;
 
     private:
+
+        template<typename, typename>
+        friend class AnyObjective;
 
         /**
         * The implementation of the optimalSolutions() function.

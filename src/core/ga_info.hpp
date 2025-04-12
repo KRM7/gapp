@@ -405,7 +405,6 @@ namespace gapp
         size_t num_fitness_evals_ = 0;
 
         bool keep_all_optimal_sols_ = false;
-        bool use_default_algorithm_ = false;
 
         /** The default population size used in the %GA if none is specified. */
         static constexpr size_t DEFAULT_POPSIZE = 100;
@@ -445,7 +444,6 @@ namespace gapp
     inline void GaInfo::algorithm(F f)
     {
         algorithm_ = std::make_unique<F>(std::move(f));
-        use_default_algorithm_ = false;
     }
 
     template<typename F>

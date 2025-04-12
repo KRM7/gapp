@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_ALGORITHM_SOGA_SELECTION_BASE_HPP
 #define GAPP_ALGORITHM_SOGA_SELECTION_BASE_HPP
@@ -86,6 +86,8 @@ namespace gapp::selection
         Selection& operator=(const Selection&)  = default;
         Selection& operator=(Selection&&)       = default;
 
+        template<typename, typename>
+        friend class AnyObjective;
     };
 
 } // namespace gapp::selection

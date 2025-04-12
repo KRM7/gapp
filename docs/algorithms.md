@@ -1,4 +1,4 @@
-﻿
+
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
 3. [Constraint handling](constraint-handling.md)  
@@ -34,12 +34,16 @@ namespace:
  - NSGA-II	(multi-objective)
  - NSGA-III	(multi-objective)
 
+The library also offers a wrapper algorithm, `AnyObjective`, that can be used
+to turn a single- and a multi-objective algorithm into an algorithm that can be
+used for any number of objectives.
+
 ## Selecting the algorithm
 
-By default, if no algorithm is explicitly specified for the GA, a default one will
-be automatically selected based on the number of objectives of the fitness function.
-As a result of this, the default algorithm used by the GA will always be compatible
-with the fitness function regardless of the number of objectives.
+By default, if no algorithm is explicitly specified for the GA, a default
+`AnyObjective` algorithm will be used. As a result of this, the default algorithm
+used by the GA will always be compatible with the fitness function regardless of
+the number of objectives.
 
 ```cpp
 BinaryGA ga;

@@ -25,3 +25,16 @@ class Algorithm
    :members:
    :protected-members:
    :private-members:
+
+
+class AnyObjective
+---------------------------------------------------
+
+.. code-block::
+
+   #include <algorithm/any_objective.hpp>
+
+.. doxygenclass:: gapp::algorithm::AnyObjective
+   :project: gapp
+   :members:
+   :protected-members:

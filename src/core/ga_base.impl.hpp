@@ -10,8 +10,7 @@
 #include "fitness_function.hpp"
 #include "../encoding/gene_types.hpp"
 #include "../algorithm/algorithm_base.hpp"
-#include "../algorithm/single_objective.hpp"
-#include "../algorithm/nsga3.hpp"
+#include "../algorithm/any_objective.hpp"
 #include "../crossover/crossover_base.hpp"
 #include "../crossover/lambda.hpp"
 #include "../mutation/mutation_base.hpp"
@@ -50,27 +49,21 @@ namespace gapp
 
     template<typename T>
     GA<T>::GA(Positive<size_t> population_size) :
-        GA(population_size, std::make_unique<algorithm::SingleObjective>(), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>())
-    {
-        use_default_algorithm_ = true;
-    }
+        GA(population_size, std::make_unique<algorithm::AnyObjective<>>(), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>())
+    {}
 
     template<typename T>
     GA<T>::GA(Positive<size_t> population_size, std::unique_ptr<typename algorithm::Algorithm> algorithm) :
         GA(population_size, std::move(algorithm), std::make_unique<typename GaTraits<T>::DefaultCrossover>(), std::make_unique<typename GaTraits<T>::DefaultMutation>())
-    {
-        use_default_algorithm_ = false;
-    }
+    {}
 
     template<typename T>
     GA<T>::GA(Positive<size_t> population_size,
               std::unique_ptr<typename crossover::Crossover<T>> crossover,
               std::unique_ptr<typename mutation::Mutation<T>> mutation,
               std::unique_ptr<typename stopping::StopCondition> stop_condition) :
-        GA(population_size, std::make_unique<algorithm::SingleObjective>(), std::move(crossover), std::move(mutation), std::move(stop_condition))
-    {
-        use_default_algorithm_ = true;
-    }
+        GA(population_size, std::make_unique<algorithm::AnyObjective<>>(), std::move(crossover), std::move(mutation), std::move(stop_condition))
+    {}
 
     template<typename T>
     template<typename AlgorithmType>
@@ -86,7 +79,7 @@ namespace gapp
              std::derived_from<StoppingType, stopping::StopCondition>
     GA<T>::GA(Positive<size_t> population_size, CrossoverType crossover, MutationType mutation, StoppingType stop_condition) :
         GA(population_size,
-           std::make_unique<algorithm::SingleObjective>(),
+           std::make_unique<algorithm::AnyObjective<>>(),
            std::make_unique<CrossoverType>(std::move(crossover)),
            std::make_unique<MutationType>(std::move(mutation)),
            std::make_unique<StoppingType>(std::move(stop_condition)))
@@ -313,19 +306,6 @@ namespace gapp
     }
 
     template<typename T>
-    inline std::unique_ptr<algorithm::Algorithm> GA<T>::defaultAlgorithm() const
-    {
-        GAPP_ASSERT(fitness_function_);
-        GAPP_ASSERT(num_objectives() > 0);
-
-        if (num_objectives() == 1)
-        {
-            return std::make_unique<algorithm::SingleObjective>();
-        }
-        return std::make_unique<algorithm::NSGA3>();
-    }
-
-    template<typename T>
     template<typename GeneType>
     inline void GA<T>::setDefaultMutationRate() const
     {
@@ -448,7 +428,6 @@ namespace gapp
         /* Initialize the algorithm used.
          * This must be done after the initial population has been created and evaluted,
          * as it might want to use the population's fitness values (fitness_matrix_). */
-        if (use_default_algorithm_) algorithm_ = defaultAlgorithm();
         algorithm_->initialize(*this);
 
         setDefaultMutationRates();

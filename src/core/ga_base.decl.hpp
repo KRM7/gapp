@@ -586,7 +586,6 @@ namespace gapp
         auto boundsToUniformBoundsVector(const FitnessFunctionBase<T>& fitness_function, std::tuple<Bounds<Us>...> bounds) const;
 
         std::pair<size_t, size_t> findObjectiveProperties() const;
-        std::unique_ptr<algorithm::Algorithm> defaultAlgorithm() const;
 
         template<typename GeneType>
         void setDefaultMutationRate() const;
