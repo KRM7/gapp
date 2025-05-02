@@ -1,4 +1,4 @@
-﻿
+
 1. [Introduction](introduction.md)  
 2. [Fitness functions](fitness-functions.md)  
 3. [Constraint handling](constraint-handling.md)  
@@ -130,6 +130,9 @@ As long as the PRNG is seeded with the same value before each run, the results f
 runs will be the same. This will be true regardless of the number of threads used, there
 is no need to use single-threaded execution for this. However, the number of threads used
 should not be changed between the runs, as that would lead to different results.
+
+Changing the number of execution threads will also cause the random number generators to
+be reset, so the `seed()` method should be called *after* setting the number of threads.
 
 The results also depend on the implementation of the standard library, so they will
 not be reproducible using different implementations. This also means that results
