@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_CONCURRENT_QUEUE_HPP
-#define GA_UTILITY_CONCURRENT_QUEUE_HPP
+#ifndef GAPP_UTILITY_CONCURRENT_QUEUE_HPP
+#define GAPP_UTILITY_CONCURRENT_QUEUE_HPP
 
 #include <condition_variable>
 #include <mutex>
@@ -56,6 +56,26 @@ namespace gapp::detail
             return queue_.empty();
         }
 
+        concurrent_queue() = default;
+
+        concurrent_queue(concurrent_queue&& other) noexcept
+        {
+            std::scoped_lock lock{ other.queue_lock_ };
+            queue_ = std::move(other.queue_);
+            is_closed_ = other.is_closed_;
+            other.is_closed_ = true;
+            other.queue_cv_.notify_all();
+        }
+
+        concurrent_queue& operator=(concurrent_queue&& other) noexcept
+        {
+            std::scoped_lock lock{ queue_lock_, other.queue_lock_ };
+            queue_ = std::move(other.queue_);
+            is_closed_ = other.is_closed_;
+            other.is_closed_ = true;
+            other.queue_cv_.notify_all();
+        }
+
     private:
         std::deque<T> queue_;
         mutable std::mutex queue_lock_;
@@ -65,4 +85,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_UTILITY_CONCURRENT_QUEUE_HPP
+#endif // !GAPP_UTILITY_CONCURRENT_QUEUE_HPP
