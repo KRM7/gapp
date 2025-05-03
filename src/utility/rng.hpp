@@ -5,6 +5,7 @@
 
 #include "algorithm.hpp"
 #include "functional.hpp"
+#include "thread_pool.hpp"
 #include "distribution.hpp"
 #include "small_vector.hpp"
 #include "dynamic_bitset.hpp"
@@ -29,7 +30,6 @@
 #include <cstdint>
 #include <cstddef>
 #include <concepts>
-
 
 #ifndef GAPP_SEED
 #   define GAPP_SEED 0x3da99432ab975d26LL
@@ -251,10 +251,20 @@ namespace gapp::rng
          * be called concurrently with the random number generation functions (e.g. while a GA
          * is running).
          */
-        static void seed(std::uint64_t seed)
+        GAPP_API static void seed(std::uint64_t seed)
         {
+            detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(execution_threads()), [](size_t)
+            {
+                std::ignore = generator_;
+            });
+
             std::scoped_lock _{ tls_generators_->lock };
             global_generator_.seed(seed);
+
+            std::ranges::sort(tls_generators_->list, std::less{}, [](RegisteredGenerator* generator)
+            {
+                return generator->thread_id->load(std::memory_order_acquire);
+            });
 
             for (RegisteredGenerator* generator : tls_generators_->list)
             {
@@ -281,6 +291,7 @@ namespace gapp::rng
             {
                 std::scoped_lock _{ tls_generators_->lock };
                 instance = global_generator_.jump();
+                thread_id = &detail::thread_pool::this_thread_id();
                 tls_generators_->list.push_back(this);
             }
 
@@ -291,6 +302,7 @@ namespace gapp::rng
             }
 
             Xoroshiro128p instance{ 0 };
+            std::atomic<std::uint64_t>* thread_id = nullptr;
 
             detail::uniform_bool_distribution bool_distribution;
             std::normal_distribution<double> normal_distribution;

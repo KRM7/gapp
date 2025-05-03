@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_UTILITY_THREAD_POOL_HPP
 #define GAPP_UTILITY_THREAD_POOL_HPP
@@ -21,12 +21,18 @@
 #include <stdexcept>
 #include <utility>
 #include <cstddef>
+#include <cstdint>
 
 namespace gapp::detail
 {
     class thread_pool
     {
     public:
+        GAPP_API static auto& this_thread_id() noexcept
+        {
+            return this_thread_id_;
+        }
+
         template<typename F, typename Iter>
         void execute_loop(Iter first, Iter last, size_t block_size, F&& unary_op)
         {
@@ -88,10 +94,15 @@ namespace gapp::detail
 
         void thread_count(size_t count)
         {
+            GAPP_ASSERT(count);
+
             reset_scheduler();
-            if (count == thread_count()) return;
             stop();
-            workers_ = std::vector<worker_t>(count - 1);
+            workers_.clear();
+            workers_.reserve(count - 1);
+
+            for (size_t id = 1; id < count; id++)
+                workers_.emplace_back(id);
         }
 
         size_t thread_count() const noexcept
@@ -99,9 +110,9 @@ namespace gapp::detail
             return workers_.size() + 1;
         }
 
-        ~thread_pool() noexcept { stop(); }
+        thread_pool() { thread_count(std::max(std::thread::hardware_concurrency(), 1u)); }
 
-        thread_pool() = default;
+        ~thread_pool() noexcept { stop(); }
 
         thread_pool(const thread_pool&)            = delete;
         thread_pool(thread_pool&&)                 = delete;
@@ -114,8 +125,10 @@ namespace gapp::detail
 
         struct alignas(128) worker_t
         {
-            static void worker_main(detail::concurrent_queue<task_t>& task_queue) noexcept
+            static void worker_main(std::uint64_t thread_id, detail::concurrent_queue<task_t>& task_queue) noexcept
             {
+                this_thread_id().store(thread_id, std::memory_order_release);
+
                 while (true)
                 {
                     auto task = task_queue.take();
@@ -124,12 +137,18 @@ namespace gapp::detail
                 }
             }
 
+            explicit worker_t(std::uint64_t thread_id) :
+                thread(worker_main, thread_id, std::ref(task_queue))
+            {}
+
             detail::concurrent_queue<task_t> task_queue;
-            std::jthread thread{ worker_main, std::ref(task_queue) };
+            std::jthread thread;
         };
 
         auto scheduled_worker_queue() noexcept -> detail::concurrent_queue<task_t>&
         {
+            GAPP_ASSERT(!workers_.empty());
+
             const size_t current_turn   = turn_.fetch_add(1, std::memory_order_relaxed);
             const size_t current_worker = current_turn % workers_.size();
 
@@ -140,7 +159,8 @@ namespace gapp::detail
         {
             for (worker_t& worker : workers_)
             {
-                if (worker.thread.get_id() == std::this_thread::get_id()) { return &worker.task_queue; }
+                if (worker.thread.get_id() == std::this_thread::get_id()) 
+                    return std::addressof(worker.task_queue);
             }
             return nullptr;
         }
@@ -150,7 +170,9 @@ namespace gapp::detail
             for (worker_t& worker : workers_) { worker.task_queue.close(); }
         }
 
-        std::vector<worker_t> workers_{ std::max(std::thread::hardware_concurrency(), 1u) - 1u };
+        static thread_local std::atomic<std::uint64_t> this_thread_id_;
+
+        std::vector<worker_t> workers_;
         std::atomic<size_t> turn_;
     };
 
