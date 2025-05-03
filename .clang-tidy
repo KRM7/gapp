@@ -1,4 +1,4 @@
-﻿Checks: >
+Checks: >
   -*,
   clang-analyzer-*,
   modernize-*,
@@ -29,6 +29,7 @@
   -readability-uppercase-literal-suffix,
   -readability-braces-around-statements,
   -readability-qualified-auto,
+  -readability-static-accessed-through-instance,
   -bugprone-easily-swappable-parameters,
   -bugprone-unchecked-optional-access,
   -cppcoreguidelines-special-member-functions,
