@@ -43,7 +43,7 @@ namespace gapp::detail
 
             const size_t iterations  = std::distance(first, last);
             const size_t block_count = iterations / block_size + bool(iterations % block_size);
-            const size_t task_count  = detail::min(workers_.size() + workers_.empty(), iterations, block_count);
+            const size_t task_count  = detail::min(workers_.size() + 1, iterations, block_count);
             const size_t step_size   = iterations / task_count;
             const size_t remainder   = iterations % task_count;
 
