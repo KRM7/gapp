@@ -261,7 +261,7 @@ namespace gapp::rng
             std::scoped_lock _{ tls_generators_->lock };
             global_generator_.seed(seed);
 
-            std::ranges::sort(tls_generators_->list, std::less{}, [](RegisteredGenerator* generator)
+            std::ranges::sort(tls_generators_->list, std::greater{}, [](RegisteredGenerator* generator)
             {
                 return generator->thread_id->load(std::memory_order_acquire);
             });
