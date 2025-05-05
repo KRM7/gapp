@@ -101,7 +101,7 @@ namespace gapp::detail
             workers_.clear();
             workers_.reserve(count - 1);
 
-            for (size_t id = 1; id < count; id++)
+            for (size_t id = 2; id < count + 1; id++)
                 workers_.emplace_back(id);
         }
 
@@ -110,7 +110,11 @@ namespace gapp::detail
             return workers_.size() + 1;
         }
 
-        thread_pool() { thread_count(std::max(std::thread::hardware_concurrency(), 1u)); }
+        thread_pool() 
+        {
+            this_thread_id().store(1, std::memory_order_release);
+            thread_count(std::max(std::thread::hardware_concurrency(), 1u)); 
+        }
 
         ~thread_pool() noexcept { stop(); }
 
