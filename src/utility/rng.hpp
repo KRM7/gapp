@@ -12,7 +12,6 @@
 #include "type_traits.hpp"
 #include "bit.hpp"
 #include "rcu.hpp"
-#include "indestructible.hpp"
 #include "spinlock.hpp"
 #include "utility.hpp"
 #include <algorithm>
@@ -258,17 +257,17 @@ namespace gapp::rng
                 std::ignore = generator_;
             });
 
-            std::scoped_lock _{ tls_generators_->lock };
-            global_generator_.seed(seed);
+            std::scoped_lock _{ tls_generators()->lock};
+            global_generator().seed(seed);
 
-            std::ranges::sort(tls_generators_->list, std::greater{}, [](RegisteredGenerator* generator)
+            std::ranges::sort(tls_generators()->list, std::greater{}, [](RegisteredGenerator* generator)
             {
                 return generator->thread_id->load(std::memory_order_acquire);
             });
 
-            for (RegisteredGenerator* generator : tls_generators_->list)
+            for (RegisteredGenerator* generator : tls_generators()->list)
             {
-                generator->instance = global_generator_.jump();
+                generator->instance = global_generator().jump();
 
                 generator->bool_distribution.reset();
                 generator->normal_distribution.reset();
@@ -289,20 +288,20 @@ namespace gapp::rng
         {
             RegisteredGenerator() noexcept // NOLINT(*exception-escape)
             {
-                std::scoped_lock _{ tls_generators_->lock };
-                instance = global_generator_.jump();
+                std::scoped_lock _{ tls_generators()->lock };
+                instance = global_generator().jump();
                 thread_id = &detail::thread_pool::this_thread_id();
-                tls_generators_->list.push_back(this);
+                tls_generators()->list.push_back(this);
             }
 
             ~RegisteredGenerator() noexcept
             {
-                std::scoped_lock _{ tls_generators_->lock };
-                std::erase(tls_generators_->list, this);
+                std::scoped_lock _{ tls_generators()->lock };
+                std::erase(tls_generators()->list, this);
             }
 
             Xoroshiro128p instance{ 0 };
-            std::atomic<std::uint64_t>* thread_id = nullptr;
+            std::atomic<std::uint64_t>* thread_id;
 
             detail::uniform_bool_distribution bool_distribution;
             std::normal_distribution<double> normal_distribution;
@@ -315,8 +314,18 @@ namespace gapp::rng
             std::vector<RegisteredGenerator*> list;
         };
 
-        GAPP_API inline static constinit Xoroshiro128p global_generator_{ GAPP_SEED };
-        GAPP_API inline static detail::Indestructible<GeneratorList> tls_generators_;
+        GAPP_API static Xoroshiro128p& global_generator() noexcept
+        {
+            static Xoroshiro128p global_generator_{ GAPP_SEED };
+            return global_generator_;
+        }
+
+        GAPP_API static GeneratorList* tls_generators() noexcept
+        {
+            static GeneratorList* tls_generators_ = new GeneratorList();
+            return tls_generators_;
+        }
+
         alignas(128) static thread_local RegisteredGenerator generator_;
     };
 
