@@ -4,7 +4,6 @@
 #define GA_UTILITY_RCU_HPP
 
 #include "shared_spinlock.hpp"
-#include "indestructible.hpp"
 #include "utility.hpp"
 #include <atomic>
 #include <memory>
@@ -36,9 +35,9 @@ namespace gapp::detail
             uint64_t target  = current + 1;
             writer_epoch.compare_exchange_strong(current, target, std::memory_order_release);
 
-            std::shared_lock _{ tls_readers->lock };
+            std::shared_lock _{ tls_readers()->lock};
 
-            for (const registered_reader* tls_reader : tls_readers->list)
+            for (const registered_reader* tls_reader : tls_readers()->list)
             {
                 while (tls_reader->epoch.load(std::memory_order_acquire) < target) GAPP_PAUSE();
             }
@@ -49,14 +48,14 @@ namespace gapp::detail
         {
             registered_reader() noexcept // NOLINT(*exception-escape)
             {
-                std::unique_lock _{ tls_readers->lock };
-                tls_readers->list.push_back(this);
+                std::unique_lock _{ tls_readers()->lock};
+                tls_readers()->list.push_back(this);
             }
 
             ~registered_reader() noexcept
             {
-                std::unique_lock _{ tls_readers->lock };
-                std::erase(tls_readers->list, this);
+                std::unique_lock _{ tls_readers()->lock};
+                std::erase(tls_readers()->list, this);
             }
 
             std::atomic<uint64_t> epoch = NOT_READING;
@@ -68,9 +67,14 @@ namespace gapp::detail
             std::vector<registered_reader*> list;
         };
 
+        GAPP_API static tls_reader_list* tls_readers() noexcept
+        {
+            static tls_reader_list* tls_readers_ = new tls_reader_list();
+            return tls_readers_;
+        }
+
         static constexpr uint64_t NOT_READING = std::numeric_limits<uint64_t>::max();
 
-        GAPP_API inline static detail::Indestructible<tls_reader_list> tls_readers;
         GAPP_API inline static constinit std::atomic<uint64_t> writer_epoch = 0;
         alignas(128) static thread_local registered_reader reader;
     };
