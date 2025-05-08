@@ -182,7 +182,11 @@ namespace gapp::detail
 
     struct execution_context
     {
-        GAPP_API inline static thread_pool global_thread_pool;
+        GAPP_API static thread_pool& global_thread_pool() noexcept
+        {
+            static thread_pool global_thread_pool_;
+            return global_thread_pool_;
+        }
     };
 
 
@@ -190,14 +194,14 @@ namespace gapp::detail
     requires std::invocable<F, std::iter_reference_t<Iter>>
     void parallel_for(Iter first, Iter last, F&& f)
     {
-        execution_context::global_thread_pool.execute_loop(first, last, 1, std::forward<F>(f));
+        execution_context::global_thread_pool().execute_loop(first, last, 1, std::forward<F>(f));
     }
 
     template<typename F, typename Iter>
     requires std::invocable<F, std::iter_reference_t<Iter>>
     void parallel_for(Iter first, Iter last, size_t block_size, F&& f)
     {
-        execution_context::global_thread_pool.execute_loop(first, last, block_size, std::forward<F>(f));
+        execution_context::global_thread_pool().execute_loop(first, last, block_size, std::forward<F>(f));
     }
 
 } // namespace gapp::detail
@@ -217,13 +221,13 @@ namespace gapp
     */
     inline void execution_threads(size_t count)
     {
-        detail::execution_context::global_thread_pool.thread_count(std::max(count, 1_sz));
+        detail::execution_context::global_thread_pool().thread_count(std::max(count, 1_sz));
     }
 
     /** @returns The number of threads used by the library. */
     inline size_t execution_threads() noexcept
     {
-        return detail::execution_context::global_thread_pool.thread_count();
+        return detail::execution_context::global_thread_pool().thread_count();
     }
 
 } // namespace gapp

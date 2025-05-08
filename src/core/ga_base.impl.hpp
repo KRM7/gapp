@@ -400,7 +400,7 @@ namespace gapp
         GAPP_ASSERT(crossover_ && mutation_);
         GAPP_ASSERT(isValidBoundsVectors(bounds));
 
-        detail::execution_context::global_thread_pool.reset_scheduler();
+        detail::execution_context::global_thread_pool().reset_scheduler();
 
         /* Reset state in case solve() has already been called before. */
         generation_cntr_ = 0;
