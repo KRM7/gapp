@@ -1,15 +1,4 @@
 name: "CodeQL config"
 
 queries:
-  - uses: security-and-quality
-
-query-filters:
-  - exclude:
-      id: cpp/include-non-header
-  - exclude:
-      id: cpp/undisciplined-multiple-inheritance
-  - exclude:
-      id: cpp/unused-static-variable
-  - exclude:
-      id: cpp/missing-return
-      
+  - uses: security-extended

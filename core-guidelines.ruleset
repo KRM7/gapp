@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="Rules for GeneticAlgorithm" Description="Code analysis rules for GeneticAlgorithm.vcxproj." ToolsVersion="17.0">
   <Include Path="cppcorecheckarithmeticrules.ruleset" Action="Default" />
   <Include Path="cppcorecheckboundsrules.ruleset" Action="Default" />
@@ -29,6 +29,8 @@
     <Rule Id="C26455" Action="None" /> <!-- Default constructor should not throw. Declare it 'noexcept'. -->
     <Rule Id="C26440" Action="None" /> <!-- Function can be declared noexcept. -->
     <Rule Id="C26447" Action="None" /> <!-- Function declared as noexcept calls potentially throwing function. -->
+	<Rule Id="C26481" Action="None" /> <!-- Don't use pointer arithmetic. Use span instead -->
+	<Rule Id="C26459" Action="None" /> <!-- You called an STL function ... with a raw pointer parameter ... -->
 
 	<!-- Enable useful rules that are off by default. -->
     <Rule Id="C26815" Action="Warning" /> <!-- The pointer is dangling because it points at a temporary instance that was destroyed. -->
