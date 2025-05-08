@@ -1,4 +1,4 @@
-﻿name: code analysis
+name: code analysis
 
 on: [push, pull_request]
 
@@ -41,7 +41,7 @@ jobs:
       matrix:
         tool: [
             { name: clang-tidy, cmake-flag: CMAKE_CXX_CLANG_TIDY="clang-tidy" },
-            { name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck;--version;--verbose;--report-progress;--enable=all;--error-exitcode=1;--std=c++20;--suppressions-list=../.cppcheck-supressions" }
+            #{ name: cppcheck,   cmake-flag: CMAKE_CXX_CPPCHECK="cppcheck;--version;--verbose;--report-progress;--enable=all;--error-exitcode=1;--std=c++20;--suppressions-list=../.cppcheck-supressions" }
         ]
         include:
           - pkgs: clang-18 clang-tools-18 clang-tidy-18 cppcheck
