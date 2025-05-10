@@ -36,7 +36,7 @@ jobs:
       run: brew update && brew install ${{ matrix.compiler.pkgs }}
 
     - name: setup-catch
-      run: sudo bash ../tools/install_catch.sh -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}"
+      run: sudo bash ../tools/install_catch.sh ${{ matrix.build-type }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}"
 
     - name: setup-build
       run: cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}" -DGAPP_USE_WERROR=ON

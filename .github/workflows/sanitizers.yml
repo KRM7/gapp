@@ -1,4 +1,4 @@
-﻿name: sanitizers
+name: sanitizers
 
 on: [push, pull_request]
 
@@ -38,7 +38,7 @@ jobs:
     - name: setup-catch
       env:
         CXX: ${{ matrix.cxx }}
-      run: sudo bash ../tools/install_catch.sh
+      run: sudo bash ../tools/install_catch.sh Release
 
     - name: setup-build
       env:

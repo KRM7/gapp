@@ -1,4 +1,4 @@
-﻿name: windows
+name: windows
 
 on: [push, pull_request]
 
@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: [ Release, RelWithDebInfo ]
+        build-type: [ Release, RelWithDebInfo, Debug ]
         platform: [ x64, Win32 ]
         generator: [ "Visual Studio 17 2022" ]
         compiler: [ 
@@ -19,6 +19,10 @@ jobs:
         exclude:
           - platform: Win32
             build-type: Release
+          - platform: Win32
+            build-type: Debug
+          - platform: Win32
+            build-shared: "OFF"
 
     defaults:
       run:
@@ -36,7 +40,7 @@ jobs:
         CMAKE_GENERATOR: ${{ matrix.generator }}
         CMAKE_GENERATOR_TOOLSET: ${{ matrix.compiler.toolset }}
         CMAKE_GENERATOR_PLATFORM: ${{ matrix.platform }}
-      run: bash ../tools/install_catch.sh
+      run: bash ../tools/install_catch.sh ${{ matrix.build-type }}
 
     - name: setup-build
       env:
@@ -53,3 +57,25 @@ jobs:
 
     - name: install
       run: cmake --install . --config ${{ matrix.build-type }}
+
+    - name: run-reproducibility-test
+      run: ${{ matrix.build-type }}/reproducibility_test | tee results-${{ matrix.compiler.name }}-${{ matrix.build-type }}-${{ matrix.platform }}-shared${{ matrix.build-shared }}.txt
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: results-${{ matrix.compiler.name }}-${{ matrix.build-type }}-${{ matrix.platform }}-shared${{ matrix.build-shared }}
+        path: ${{ github.workspace }}/build/results-${{ matrix.compiler.name }}-${{ matrix.build-type }}-${{ matrix.platform }}-shared${{ matrix.build-shared }}.txt
+
+
+  compare:
+    needs: build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: results*
+          merge-multiple: true
+
+      - name: compare-results
+        run: diff --unified=0 --to-file results*
