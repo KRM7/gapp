@@ -39,12 +39,12 @@ jobs:
     - name: setup-catch
       env:
         CXX: ${{ matrix.compiler.cxx }}
-      run: bash ../tools/install_catch.sh
+      run: bash ../tools/install_catch.sh ${{ matrix.build-type }}
 
     - name: setup-build
       env:
         CXX: ${{ matrix.compiler.cxx }}
-      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_USE_WERROR=ON -DGAPP_USE_LTO=ON -DGAPP_CXX_FLAGS="-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -D_GLIBCXX_ASSERTIONS"
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DGAPP_USE_WERROR=ON -DGAPP_USE_LTO=ON -DGAPP_CXX_FLAGS="-D_GLIBCXX_ASSERTIONS"
 
     - name: build
       run: cmake --build . --parallel 8
@@ -54,3 +54,25 @@ jobs:
 
     - name: install
       run: cmake --install .
+
+    - name: run-reproducibility-test
+      run: ./reproducibility_test | tee results-${{ matrix.compiler.cxx }}-${{ matrix.build-type }}.txt
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: results-${{ matrix.compiler.cxx }}-${{ matrix.build-type }}
+        path: ${{ github.workspace }}/build/results-${{ matrix.compiler.cxx }}-${{ matrix.build-type }}.txt
+
+  
+  compare:
+    needs: build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: results*
+          merge-multiple: true
+
+      - name: compare-results
+        run: diff --unified=0 --to-file results*
