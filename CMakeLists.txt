@@ -45,8 +45,7 @@ if(MSVC) # MSVC style compiler interface
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -WX")
     endif()
 
-    set(GAPP_OPT_FLAGS "-O2 -Oi -Gy")
-    set(GAPP_OPT_LINK_FLAGS "-OPT:REF -OPT:ICF -OPT:LBR")
+    set(GAPP_OPT_FLAGS "-O2 -Oi -Gy -Gw")
 
     if(GAPP_DISABLE_EXCEPTIONS)
         set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -D_HAS_EXCEPTIONS=0")
@@ -74,11 +73,7 @@ if(MSVC) # MSVC style compiler interface
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG ${GAPP_OPT_FLAGS}")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${GAPP_OPT_FLAGS}")
 
-    link_libraries("-DEBUG:FULL" "-pdbaltpath:%_PDB%")
-    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} ${GAPP_OPT_LINK_FLAGS}")
-    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} ${GAPP_OPT_LINK_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} ${GAPP_OPT_LINK_FLAGS}")
-    set(CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO} ${GAPP_OPT_LINK_FLAGS}")
+    link_libraries("-DEBUG:FULL" "-pdbaltpath:%_PDB%" "-OPT:REF" "-OPT:ICF" "-OPT:LBR")
 
 else() # GNU style compiler interface
     set(GAPP_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
@@ -86,7 +81,9 @@ else() # GNU style compiler interface
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Werror -pedantic-errors")
     endif()
 
-    set(GAPP_OPT_FLAGS "-O3 -fno-math-errno -fno-trapping-math -freciprocal-math -fno-signed-zeros -fno-associative-math -fno-finite-math-only -ffp-contract=off")
+    set(GAPP_OPT_FLAGS "-O3 -ffunction-sections -fdata-sections")
+    set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -fno-math-errno -fno-trapping-math -freciprocal-math -fno-signed-zeros -fno-associative-math -fno-finite-math-only -ffp-contract=off")
+
     if(GAPP_USE_MARCH_NATIVE)
         set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native")
     endif()
