@@ -17,7 +17,7 @@
 #include <cstdlib>
 #include <cstddef>
 
-// NOLINTBEGIN(*pointer-arithmetic, *union-access, *redundant-expression, *exception-escape)
+// NOLINTBEGIN(*pointer-arithmetic, *redundant-expression, *exception-escape)
 
 namespace gapp::detail
 {
@@ -1073,6 +1073,6 @@ namespace gapp
 
 } // namespace gapp
 
-// NOLINTEND(*pointer-arithmetic, *union-access, *redundant-expression, *exception-escape)
+// NOLINTEND(*pointer-arithmetic, *redundant-expression, *exception-escape)
 
 #endif // !GAPP_UTILITY_SMALL_VECTOR_HPP
