@@ -81,6 +81,12 @@ namespace gapp::crossover
     }
 
     template<typename... Ts>
+    void Mixed<Ts...>::initialize(const GaInfo& ga)
+    {
+        (static_cast<Crossover<typename Ts::GeneType>&>(std::get<Ts>(components_)).initialize(ga), ...);
+    }
+
+    template<typename... Ts>
     auto Mixed<Ts...>::crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const
         -> CandidatePair<GeneType>
     {
