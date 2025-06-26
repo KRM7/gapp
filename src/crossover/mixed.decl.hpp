@@ -84,6 +84,7 @@ namespace gapp::crossover
     private:
         using typename Base::GeneType;
 
+        void initialize(const GaInfo& ga) override;
         CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
 
         constexpr void crossover_rate_impl(Probability pc, size_t idx) noexcept override;

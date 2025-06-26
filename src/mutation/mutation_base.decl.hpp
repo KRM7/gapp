@@ -26,9 +26,10 @@ namespace gapp::mutation
     * per-gene depending on how the particular operator is defined.
     * 
     * New mutation operators should be derived from this class, and they should
-    * implement the following virtual method:
+    * implement the following virtual methods:
     * 
-    *   - mutate : Perform the mutation on a single candidate's chromosome.
+    *   - initialize (optional) : Initialize the mutation operator at the start of a run. Does nothing by default.
+    *   - mutate                : Perform the mutation on a single candidate's chromosome.
     * 
     * @tparam T The gene type the mutation operator is defined for.
     */
@@ -88,6 +89,15 @@ namespace gapp::mutation
         * @param candidate The candidate to mutate.
         */
         void operator()(const GaInfo& ga, Candidate<T>& candidate) const;
+
+        /**
+        * Initialize the mutation operator.
+        * This method will be called exactly once at the start of each run.
+        * The default implementation does nothing.
+        *
+        * @param ga The genetic algorithm the mutation operator is used in.
+        */
+        virtual void initialize(const GaInfo&) {}
 
 
         /** Destructor. */
@@ -220,6 +230,8 @@ namespace gapp::mutation
         */
         void operator()(const GaInfo& ga, Candidate<GeneType>& candidate) const;
 
+        /** Initialize the mutation operator. */
+        virtual void initialize(const GaInfo& ga) = 0;
 
         /** Destructor. */
         virtual ~Mutation()                  = default;

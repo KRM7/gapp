@@ -81,6 +81,12 @@ namespace gapp::mutation
     }
 
     template<typename... Ts>
+    void Mixed<Ts...>::initialize(const GaInfo& ga)
+    {
+        (static_cast<Mutation<typename Ts::GeneType>&>(std::get<Ts>(components_)).initialize(ga), ...);
+    }
+
+    template<typename... Ts>
     void Mixed<Ts...>::mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const
     {
         (std::get<Ts>(components_)(ga, candidate), ...);

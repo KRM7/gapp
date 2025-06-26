@@ -26,10 +26,11 @@ namespace gapp::crossover
     * The crossover operation is only performed on the 2 parents with a set probability only,
     * the rest of the time the returned children will be the same as the parents.
     * 
-    * New crossover operators should be derived from this class, and they must implement the
-    * following virtual method:
+    * New crossover operators should be derived from this class, and they should implement the
+    * following virtual methods:
     * 
-    *   - crossover : Perform the crossover on 2 candidate solutions.
+    *   - initialize (optional) : Initialize the crossover operator at the start of a run. Does nothing by default.
+    *   - crossover             : Perform the crossover on 2 candidate solutions.
     * 
     * @tparam T The gene type the crossover operator is defined for.
     */
@@ -89,6 +90,15 @@ namespace gapp::crossover
         * @returns The pair of children resulting from the crossover.
         */
         CandidatePair<T> operator()(const GaInfo& ga, const Candidate<T>& parent1, const Candidate<T>& parent2) const;
+
+        /**
+        * Initialize the crossover operator.
+        * This method will be called exactly once at the start of each run.
+        * The default implementation does nothing.
+        *
+        * @param ga The genetic algorithm the crossover operator is used in.
+        */
+        virtual void initialize(const GaInfo&) {}
 
 
         /** Destructor. */
@@ -224,6 +234,9 @@ namespace gapp::crossover
         * @returns The pair of children resulting from the crossover.
         */
         CandidatePair<GeneType> operator()(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const;
+
+        /** Initialize the crossover operator. */
+        virtual void initialize(const GaInfo& ga) = 0;
 
 
         /** Destructor. */

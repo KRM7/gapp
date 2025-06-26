@@ -432,6 +432,9 @@ namespace gapp
 
         setDefaultMutationRates();
 
+        crossover_->initialize(*this);
+        mutation_->initialize(*this);
+
         stop_condition_->initialize(*this);
 
         metrics_.initialize(*this);

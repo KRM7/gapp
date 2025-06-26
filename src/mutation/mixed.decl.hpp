@@ -85,6 +85,7 @@ namespace gapp::mutation
     private:
         using typename Base::GeneType;
 
+        void initialize(const GaInfo& ga) override;
         void mutate(const GaInfo& ga, Candidate<GeneType>& candidate) const override;
 
         constexpr void mutation_rate_impl(Probability pc, size_t idx) noexcept override;
