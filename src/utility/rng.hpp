@@ -11,24 +11,29 @@
 #include "dynamic_bitset.hpp"
 #include "type_traits.hpp"
 #include "bit.hpp"
-#include "rcu.hpp"
 #include "spinlock.hpp"
 #include "utility.hpp"
 #include <algorithm>
 #include <functional>
+#include <numeric>
+#include <iterator>
 #include <ranges>
 #include <array>
 #include <vector>
 #include <span>
 #include <unordered_set>
+#include <concepts>
 #include <bit>
 #include <random>
 #include <limits>
 #include <memory>
 #include <mutex>
+#include <utility>
+#include <cmath>
 #include <cstdint>
 #include <cstddef>
-#include <concepts>
+#include <climits>
+
 
 #ifndef GAPP_SEED
 #   define GAPP_SEED 0x3da99432ab975d26LL
@@ -38,48 +43,56 @@
 /** Contains the PRNG classes and functions used for generating random numbers. */
 namespace gapp::rng
 {
-    /** Generate a random boolean value from a uniform distribution. */
+    /** Generate a random boolean value from a uniform distribution. Thread-safe. */
     inline bool randomBool() noexcept;
 
-    /** Generate a random integer from a uniform distribution on the closed interval [lbound, ubound]. */
+    /** Generate a random integer from a uniform distribution on the closed interval [lbound, ubound]. Thread-safe. */
     template<std::integral IntType = int>
-    IntType randomInt(IntType lbound, IntType ubound);
+    IntType randomInt(IntType lbound, IntType ubound) noexcept;
 
-    /** Generate a random floating-point value from a uniform distribution on the half-open interval [0.0, 1.0). */
+    /** Generate a random floating-point value from a uniform distribution on the half-open interval [0.0, 1.0). Thread-safe. */
     template<std::floating_point RealType = double>
-    RealType randomReal();
+    RealType randomReal() noexcept;
 
-    /** Generate a random floating-point value of from a uniform distribution on the half-open interval [lbound, ubound). */
+    /** Generate a random floating-point value of from a uniform distribution on the half-open interval [lbound, ubound). Thread-safe. */
     template<std::floating_point RealType = double>
-    RealType randomReal(RealType lbound, RealType ubound);
+    RealType randomReal(RealType lbound, RealType ubound) noexcept;
 
-    /** Generate a random floating-point value from a normal distribution with the specified mean and std deviation. */
+    /** Generate a random floating-point value from a normal distribution with the specified mean and std deviation. Thread-safe. */
     template<std::floating_point RealType = double>
-    RealType randomNormal(RealType mean = 0.0, RealType std_dev = 1.0);
+    RealType randomNormal(RealType mean = 0.0, RealType std_dev = 1.0) noexcept;
 
-    /** Generate a random integer value from a poisson distribution with the specified mean. */
+    /** Generate a random integer value from a binomial distribution with the parameters n and p. Thread-safe. */
     template<std::integral IntType = int>
-    IntType randomPoisson(double mean);
+    IntType randomBinomial(IntType n, double p) noexcept;
 
-    /** Generate a random integer value from an approximate binomial distribution with the parameters n and p. */
+
+    /** Generate random integer values from a binomial distribution. operator() is thread-safe. */
     template<std::integral IntType = int>
-    IntType randomBinomial(IntType n, double p);
+    class CachedRandomBinomial
+    {
+    public:
+        void init(IntType n, double p) noexcept;
+        IntType operator()(IntType n, double p) const noexcept;
+    private:
+        mutable rng::binomial_distribution<IntType> dist_ = { 0, 0.0 };
+    };
 
 
-    /** Generate a random index for a range (from a uniform distribution over the valid indices). */
+    /** Generate a random index for a range (from a uniform distribution over the valid indices). Thread-safe. */
     template<std::ranges::random_access_range R>
-    detail::size_type<R> randomIndex(const R& range);
+    detail::size_type<R> randomIndex(const R& range) noexcept;
 
-    /** Pick a random element from a range (from a uniform distribution over the elements). */
+    /** Pick a random element from a range (from a uniform distribution over the elements). Thread-safe. */
     template<std::forward_iterator Iter>
-    Iter randomElement(Iter first, Iter last);
+    Iter randomElement(Iter first, Iter last) noexcept;
 
-    /** Pick a random element from a range using the specified cumulative distribution function. */
+    /** Pick a random element from a range using the specified cumulative distribution function. Thread-safe. */
     template<std::ranges::random_access_range Range, std::ranges::random_access_range Dist>
     std::ranges::range_reference_t<Range> randomElement(Range&& range, Dist&& cdf);
 
 
-    /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). */
+    /** Generate @p count unique integers from the half-open range [@p lbound, @p ubound). Thread-safe. */
     template<std::integral IntType>
     small_vector<IntType> sampleUnique(IntType lbound, IntType ubound, size_t count);
 
@@ -268,10 +281,6 @@ namespace gapp::rng
             for (RegisteredGenerator* generator : tls_generators()->list)
             {
                 generator->instance = global_generator().jump();
-
-                generator->bool_distribution.reset();
-                generator->normal_distribution.reset();
-                generator->poisson_distribution.reset();
             }
         }
 
@@ -302,10 +311,6 @@ namespace gapp::rng
 
             Xoroshiro128p instance{ 0 };
             std::atomic<std::uint64_t>* thread_id;
-
-            rng::uniform_bool_distribution bool_distribution;
-            std::normal_distribution<double> normal_distribution;
-            std::poisson_distribution<std::uint64_t> poisson_distribution;
         };
 
         struct GeneratorList
@@ -338,129 +343,71 @@ namespace gapp::rng
 
 /* IMPLEMENTATION */
 
-#include <utility>
-#include <numeric>
-#include <iterator>
-#include <cmath>
-#include <climits>
-
 namespace gapp::rng
 {
     bool randomBool() noexcept
     {
-        return prng.generator().bool_distribution(rng::prng);
+        return bool(rng::prng() & 1u);
     }
 
     template<std::integral IntType>
-    IntType randomInt(IntType lbound, IntType ubound)
+    IntType randomInt(IntType lbound, IntType ubound) noexcept
     {
         GAPP_ASSERT(lbound <= ubound);
 
-        return std::uniform_int_distribution<decltype(+lbound)>{ lbound, ubound }(rng::prng);
+        return rng::uniform_int_distribution<IntType>{ lbound, ubound }(rng::prng);
     }
 
     template<std::floating_point RealType>
-    RealType randomReal()
+    RealType randomReal() noexcept
     {
-        return (rng::prng() >> detail::exponent_bits<RealType>) * (std::numeric_limits<RealType>::epsilon() / 2.0);
+        return rng::generate_canonical<RealType>(rng::prng);
     }
 
     template<std::floating_point RealType>
-    RealType randomReal(RealType lbound, RealType ubound)
+    RealType randomReal(RealType lbound, RealType ubound) noexcept
     {
         GAPP_ASSERT(lbound <= ubound);
 
-        return lbound + (ubound - lbound) * rng::randomReal();
+        return rng::uniform_real_distribution<RealType>{ lbound, ubound }(rng::prng);
     }
 
     template<std::floating_point RealType>
-    RealType randomNormal(RealType mean, RealType std_dev)
+    RealType randomNormal(RealType mean, RealType std_dev) noexcept
     {
         GAPP_ASSERT(std_dev >= 0.0);
 
-        return std_dev * prng.generator().normal_distribution(rng::prng) + mean;
+        return rng::normal_distribution<RealType>{ mean, std_dev }(rng::prng);
     }
 
     template<std::integral IntType>
-    IntType randomPoisson(double mean)
+    IntType randomBinomial(IntType n, double p) noexcept
     {
-        GAPP_ASSERT(mean > 0.0);
+        GAPP_ASSERT(n >= 0);
+        GAPP_ASSERT(0.0 <= p && p <= 1.0);
 
-        if (prng.generator().poisson_distribution.mean() != mean)
+        return rng::binomial_distribution<IntType>{ n, p }(rng::prng);
+    }
+
+    template<std::integral IntType>
+    void CachedRandomBinomial<IntType>::init(IntType n, double p) noexcept
+    {
+        dist_ = rng::binomial_distribution<IntType>(n, p);
+    }
+
+    template<std::integral IntType>
+    IntType CachedRandomBinomial<IntType>::operator()(IntType n, double p) const noexcept
+    {
+        if (dist_.n() != n || dist_.p() != p)
         {
-            prng.generator().poisson_distribution = std::poisson_distribution<std::uint64_t>{ mean };
+            return rng::binomial_distribution<IntType>{ n, p }(rng::prng);
         }
 
-        return prng.generator().poisson_distribution(rng::prng);
-    }
-
-    template<std::integral IntType>
-    IntType randomBinomialApproxNormal(IntType n, double p)
-    {
-        GAPP_ASSERT(n >= 0);
-        GAPP_ASSERT(0.0 <= p && p <= 1.0);
-
-        const double mean = n * p;
-        const double std_dev = std::sqrt(mean * (1.0 - p));
-
-        const double accept_min = -0.5;
-        const double accept_max = n + 0.5;
-
-        double rand = rng::randomNormal(mean, std_dev);
-        while (!(accept_min < rand && rand < accept_max))
-        {
-            rand = rng::randomNormal(mean, std_dev);
-        }
-
-        return IntType(std::round(rand));
-    }
-
-    template<std::integral IntType>
-    IntType randomBinomialApproxPoisson(IntType n, double p)
-    {
-        GAPP_ASSERT(n >= 0);
-        GAPP_ASSERT(0.0 <= p && p <= 1.0);
-        
-        if (p == 0.0) return 0;
-        if (p == 1.0) return n;
-
-        const double mean = n * p;
-
-        IntType rand = rng::randomPoisson<IntType>(mean);
-        while (rand > n) { rand = rng::randomPoisson<IntType>(mean); }
-
-        return rand;
-    }
-
-    template<std::integral IntType>
-    IntType randomBinomialExact(IntType n, double p)
-    {
-        GAPP_ASSERT(n >= 0);
-        GAPP_ASSERT(0.0 <= p && p <= 1.0);
-
-        IntType res = 0;
-        while (n--) { res += (randomReal() <= p); }
-        return res;
-    }
-
-    template<std::integral IntType>
-    IntType randomBinomial(IntType n, double p)
-    {
-        GAPP_ASSERT(n >= 0);
-        GAPP_ASSERT(0.0 <= p && p <= 1.0);
-
-        const double mean = p * n;
-
-        const bool use_poisson = (n > 50 && mean < 10.0) || ((5 < n && n <= 50) && p < 0.2);
-        const bool use_normal = !use_poisson && (n > 5);
-
-        if (use_poisson) return rng::randomBinomialApproxPoisson(n, p);
-        if (use_normal)  return rng::randomBinomialApproxNormal(n, p);
-        return rng::randomBinomialExact(n, p);
+        return dist_(rng::prng);
     }
 
     template<std::ranges::random_access_range R>
-    detail::size_type<R> randomIndex(const R& range)
+    detail::size_type<R> randomIndex(const R& range) noexcept
     {
         GAPP_ASSERT(!range.empty());
 
@@ -468,7 +415,7 @@ namespace gapp::rng
     }
 
     template<std::forward_iterator Iter>
-    Iter randomElement(Iter first, Iter last)
+    Iter randomElement(Iter first, Iter last) noexcept
     {
         GAPP_ASSERT(std::distance(first, last) > 0);
 
@@ -516,7 +463,7 @@ namespace gapp::rng
         const bool select_many = (count >= std::uint64_t(0.6 * range_len));
         const bool huge_range  = (range_len >= 65536);
 
-        if (huge_range) [[unlikely]] return rng::sampleUniqueSet(lbound, ubound, count);
+        if (huge_range) return rng::sampleUniqueSet(lbound, ubound, count);
 
         small_vector<IntType> numbers(count);
 

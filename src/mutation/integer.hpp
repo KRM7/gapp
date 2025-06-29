@@ -5,6 +5,8 @@
 
 #include "mutation_base.hpp"
 #include "../encoding/gene_types.hpp"
+#include "../utility/rng.hpp"
+#include <cstddef>
 
 /** Predefined mutation operators for the integer encoded genetic algorithm. */
 namespace gapp::mutation::integer
@@ -20,6 +22,9 @@ namespace gapp::mutation::integer
         using Mutation::Mutation;
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
+        void initialize(const GaInfo& ga) override;
+
+        rng::CachedRandomBinomial<size_t> random_binomial_;
     };
 
 } // namespace gapp::mutation::integer

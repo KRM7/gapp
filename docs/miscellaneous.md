@@ -101,7 +101,7 @@ execution_threads(1); // run everything on a single thread
 ```
 
 The specified thread count should be between 1 and the number of hardware threads.
-Numbers larger than the number of hardware threads can be set, but they will likely
+Values larger than the number of hardware threads can be used, but they will likely
 lead to worse performance. If 0 is specified, it will be ignored and a single thread
 will be used instead.
 
@@ -127,15 +127,13 @@ assert(solutions1 == solutions2);
 ```
 
 As long as the PRNG is seeded with the same value before each run, the results from the
-runs will be the same. This will be true regardless of the number of threads used, there
-is no need to use single-threaded execution for this. However, the number of threads used
-should not be changed between the runs, as that would lead to different results.
+runs will be the same. This is true true regardless of the number of threads used, it is
+not needed to use single-threaded execution for it. However, the number of threads used
+must be the same for each of the runs, otherwise the results will likely be different.
 
 Changing the number of execution threads will also cause the random number generators to
 be reset, so the `seed()` method should be called *after* setting the number of threads.
 
-The results also depend on the implementation of the standard library, so they will
-not be reproducible using different implementations. This also means that results
-are not generally reproducible across different platforms.
+The results do not depend on the platform or the implementation of the standard library.
 
 ------------------------------------------------------------------------------------------------

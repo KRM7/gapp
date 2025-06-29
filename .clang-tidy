@@ -43,6 +43,7 @@ Checks: >
   -cppcoreguidelines-avoid-non-const-global-variables,
   -cppcoreguidelines-pro-type-reinterpret-cast,
   -cppcoreguidelines-pro-type-union-access,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
   -cppcoreguidelines-owning-memory,
   -misc-non-private-member-variables-in-classes,
   -misc-no-recursion,

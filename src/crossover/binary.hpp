@@ -7,6 +7,7 @@
 #include "../core/candidate.hpp"
 #include "../encoding/gene_types.hpp"
 #include "../utility/bounded_value.hpp"
+#include "../utility/rng.hpp"
 #include <cstddef>
 
 /** Predefined crossover operators for the binary encoded genetic algorithm. */
@@ -132,7 +133,9 @@ namespace gapp::crossover::binary
 
     private:
         CandidatePair<GeneType> crossover(const GaInfo& ga, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const override;
+        void initialize(const GaInfo& ga) override;
 
+        rng::CachedRandomBinomial<size_t> random_binomial_;
         Probability ps_ = 0.5;
     };
 

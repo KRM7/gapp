@@ -6,6 +6,8 @@
 #include "mutation_base.hpp"
 #include "../encoding/gene_types.hpp"
 #include "../utility/bounded_value.hpp"
+#include "../utility/rng.hpp"
+#include <cstddef>
 
 /** Predefined mutation operators for the real encoded genetic algorithm. */
 namespace gapp::mutation::real
@@ -22,6 +24,9 @@ namespace gapp::mutation::real
         using Mutation::Mutation;
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
+        void initialize(const GaInfo& ga) override;
+
+        rng::CachedRandomBinomial<size_t> random_binomial_;
     };
 
     /**
@@ -78,7 +83,9 @@ namespace gapp::mutation::real
 
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
+        void initialize(const GaInfo& ga) override;
 
+        rng::CachedRandomBinomial<size_t> random_binomial_;
         NonNegative<GeneType> beta_;
     };
 
@@ -136,7 +143,9 @@ namespace gapp::mutation::real
 
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
+        void initialize(const GaInfo& ga) override;
 
+        rng::CachedRandomBinomial<size_t> random_binomial_;
         Positive<GeneType> sigma_;
     };
 
@@ -190,7 +199,9 @@ namespace gapp::mutation::real
 
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
+        void initialize(const GaInfo& ga) override;
 
+        rng::CachedRandomBinomial<size_t> random_binomial_;
         NonNegative<GeneType> eta_;
     };
 
@@ -207,6 +218,9 @@ namespace gapp::mutation::real
         using Mutation::Mutation;
     private:
         void mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const override;
+        void initialize(const GaInfo& ga) override;
+
+        rng::CachedRandomBinomial<size_t> random_binomial_;
     };
 
 } // namespace gapp::mutation::real

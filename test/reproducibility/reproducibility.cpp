@@ -16,6 +16,9 @@ int main()
     std::cout << "real-1: " << rng::randomReal() << "\n";
     std::cout << "normal-1: " << rng::randomNormal() << "\n";
 
+    std::cout << "binomial-1: " << rng::randomBinomial(100, 0.01) << "\n";
+    std::cout << "binomial-2: " << rng::randomBinomial(100, 0.25) << "\n";
+
     RCGA ga{ 100 };
     problems::Sphere f{ 3 };
 
