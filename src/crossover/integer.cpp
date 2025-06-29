@@ -1,8 +1,9 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "integer.hpp"
 #include "crossover_impl.hpp"
 #include "../core/candidate.hpp"
+#include "../core/ga_info.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/bounded_value.hpp"
 #include "../utility/utility.hpp"
@@ -28,8 +29,10 @@ namespace gapp::crossover::integer
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
 
         const size_t chrom_len = parent1.chromosome.size();
+        const size_t crossover_point1 = rng::randomInt(0_sz, chrom_len);
+        const size_t crossover_point2 = rng::randomInt(0_sz, chrom_len);
 
-        return dtl::twoPointCrossoverImpl(parent1, parent2, { rng::randomInt(0_sz, chrom_len), rng::randomInt(0_sz, chrom_len) });
+        return dtl::twoPointCrossoverImpl(parent1, parent2, { crossover_point1, crossover_point2 });
     }
 
     auto NPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -44,12 +47,17 @@ namespace gapp::crossover::integer
         return dtl::nPointCrossoverImpl(parent1, parent2, std::move(cx_points));
     }
 
+    void Uniform::initialize(const GaInfo& ga)
+    {
+        random_binomial_.init(ga.chrom_len<GeneType>(), ps_);
+    }
+
     auto Uniform::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
         
         const size_t chrom_len = parent1.chromosome.size();
-        const size_t num_swapped = rng::randomBinomial(chrom_len, ps_);
+        const size_t num_swapped = random_binomial_(chrom_len, ps_);
         const auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
 
         Candidate child1 = parent1;

@@ -1,8 +1,9 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "binary.hpp"
 #include "crossover_impl.hpp"
 #include "../core/candidate.hpp"
+#include "../core/ga_info.hpp"
 #include "../utility/rng.hpp"
 #include "../utility/utility.hpp"
 #include <algorithm>
@@ -45,12 +46,17 @@ namespace gapp::crossover::binary
         return dtl::nPointCrossoverImpl(parent1, parent2, std::move(crossover_points));
     }
 
+    void Uniform::initialize(const GaInfo& ga)
+    {
+        random_binomial_.init(ga.chrom_len<GeneType>(), ps_);
+    }
+
     auto Uniform::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
 
         const size_t chrom_len = parent1.chromosome.size();
-        const size_t num_swapped = rng::randomBinomial(chrom_len, ps_);
+        const size_t num_swapped = random_binomial_(chrom_len, ps_);
         const auto swapped_indices = rng::sampleUnique(0_sz, chrom_len, num_swapped);
 
         Candidate child1{ parent1 }, child2{ parent2 };

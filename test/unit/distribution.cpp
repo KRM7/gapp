@@ -230,6 +230,9 @@ TEST_CASE("symmetric_binomial_distribution", "[distribution]")
     REQUIRE(dist1.min() == 0);
     REQUIRE(dist1.max() == 100);
 
+    REQUIRE(dist1.n() == 100);
+    REQUIRE(dist1.p() == 0.5);
+
     for (size_t i = 0; i < 1000; i++)
     {
         REQUIRE(dist1(rng::prng) >= 0);
@@ -240,6 +243,9 @@ TEST_CASE("symmetric_binomial_distribution", "[distribution]")
 
     REQUIRE(dist2.min() == 0);
     REQUIRE(dist2.max() == 1000);
+
+    REQUIRE(dist2.n() == 1000);
+    REQUIRE(dist2.p() == 0.5);
 
     for (size_t i = 0; i < 1000; i++)
     {
@@ -258,6 +264,9 @@ TEST_CASE("binomial_distribution", "[distribution]")
     REQUIRE(dist1.min() == 0);
     REQUIRE(dist1.max() == 100);
 
+    REQUIRE(dist1.n() == 100);
+    REQUIRE(dist1.p() == 0.02);
+
     for (size_t i = 0; i < 1000; i++)
     {
         const int64_t n = dist1(rng::prng);
@@ -269,8 +278,11 @@ TEST_CASE("binomial_distribution", "[distribution]")
 
     rng::binomial_distribution<int64_t> dist2(100, 0.35);
 
-    REQUIRE(dist1.min() == 0);
-    REQUIRE(dist1.max() == 100);
+    REQUIRE(dist2.min() == 0);
+    REQUIRE(dist2.max() == 100);
+
+    REQUIRE(dist2.n() == 100);
+    REQUIRE(dist2.p() == 0.35);
 
     for (size_t i = 0; i < 1000; i++)
     {

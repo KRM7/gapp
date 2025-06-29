@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #include "real.hpp"
 #include "../core/candidate.hpp"
@@ -12,13 +12,18 @@
 
 namespace gapp::mutation::real
 {
+    void Uniform::initialize(const GaInfo& ga)
+    {
+        random_binomial_.init(ga.chrom_len<GeneType>(), mutation_rate());
+    }
+
     void Uniform::mutate(const GaInfo&, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
         GAPP_ASSERT(sol.gene_bounds.size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = sol.gene_bounds;
 
-        const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
+        const size_t mutate_count = random_binomial_(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
@@ -27,13 +32,18 @@ namespace gapp::mutation::real
         }
     }
 
+    void NonUniform::initialize(const GaInfo& ga)
+    {
+        random_binomial_.init(ga.chrom_len<GeneType>(), mutation_rate());
+    }
+
     void NonUniform::mutate(const GaInfo& ga, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
         GAPP_ASSERT(sol.gene_bounds.size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = sol.gene_bounds;
 
-        const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
+        const size_t mutate_count = random_binomial_(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
@@ -50,13 +60,18 @@ namespace gapp::mutation::real
         }
     }
 
+    void Gauss::initialize(const GaInfo& ga)
+    {
+        random_binomial_.init(ga.chrom_len<GeneType>(), mutation_rate());
+    }
+
     void Gauss::mutate(const GaInfo&, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
         GAPP_ASSERT(sol.gene_bounds.size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = sol.gene_bounds;
 
-        const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
+        const size_t mutate_count = random_binomial_(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
@@ -69,13 +84,18 @@ namespace gapp::mutation::real
         }
     }
 
+    void Polynomial::initialize(const GaInfo& ga)
+    {
+        random_binomial_.init(ga.chrom_len<GeneType>(), mutation_rate());
+    }
+
     void Polynomial::mutate(const GaInfo&, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
         GAPP_ASSERT(sol.gene_bounds.size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = sol.gene_bounds;
 
-        const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
+        const size_t mutate_count = random_binomial_(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)
@@ -96,13 +116,18 @@ namespace gapp::mutation::real
         }
     }
 
+    void Boundary::initialize(const GaInfo& ga)
+    {
+        random_binomial_.init(ga.chrom_len<GeneType>(), mutation_rate());
+    }
+
     void Boundary::mutate(const GaInfo&, const Candidate<GeneType>& sol, Chromosome<GeneType>& chromosome) const
     {
         GAPP_ASSERT(sol.gene_bounds.size() == chromosome.size(), "Mismatching bounds and chromosome lengths.");
 
         const auto& bounds = sol.gene_bounds;
 
-        const size_t mutate_count = rng::randomBinomial(chromosome.size(), mutation_rate());
+        const size_t mutate_count = random_binomial_(chromosome.size(), mutation_rate());
         const auto mutated_indices = rng::sampleUnique(0_sz, chromosome.size(), mutate_count);
 
         for (const auto& idx : mutated_indices)

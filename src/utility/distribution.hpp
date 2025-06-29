@@ -495,6 +495,9 @@ namespace gapp::rng
 
         constexpr void reset() noexcept {}
 
+        constexpr result_type n() const noexcept { return n_; }
+        constexpr double p() const noexcept { return 0.5; }
+
         constexpr result_type min() const noexcept { return 0; }
         constexpr result_type max() const noexcept { return n_; }
 
@@ -616,6 +619,9 @@ namespace gapp::rng
         }
 
         constexpr void reset() noexcept {}
+
+        constexpr result_type n() const noexcept { return n_; }
+        constexpr double p() const noexcept { return p_; }
 
         constexpr result_type min() const noexcept { return 0; }
         constexpr result_type max() const noexcept { return n_; }
