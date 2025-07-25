@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
@@ -15,7 +15,7 @@ using namespace gapp::detail;
 
 TEST_CASE("parallel_for", "[benchmark]")
 {
-    const size_t work_size = GENERATE(10, 100, 1000, 10000);
+    const size_t work_size = GENERATE(100, 1000, 10000);
 
     std::atomic<double> n = 0.0;
 

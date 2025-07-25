@@ -38,18 +38,17 @@ namespace gapp::detail
         {
             if (first == last) return;
 
-            std::exception_ptr exception;
-            std::atomic<bool> has_exception;
-
-            [[maybe_unused]] const auto thread_guard = [&]() noexcept
+            if (this_thread_id() > 1)
             {
-                if (!has_exception.exchange(true, std::memory_order_relaxed))
-                    exception = std::current_exception();
-            };
+                std::for_each(first, last, std::forward<F>(unary_op));
+                return;
+            }
+
+            [[maybe_unused]] thread_guard guard;
 
             const size_t iterations  = std::distance(first, last);
             const size_t block_count = iterations / block_size + bool(iterations % block_size);
-            const size_t task_count  = detail::min(workers_.size() + 1, iterations, block_count);
+            const size_t task_count  = detail::min(thread_count(), iterations, block_count);
             const size_t step_size   = iterations / task_count;
             const size_t remainder   = iterations % task_count;
 
@@ -62,29 +61,20 @@ namespace gapp::detail
 
                 auto task = [&, block_first, block_last]() mutable noexcept
                 {
-                    GAPP_TRY { while (block_first != block_last) { std::invoke(unary_op, *block_first++); } }
-                    GAPP_CATCH (...) { thread_guard(); }
+                    GAPP_TRY { std::for_each(block_first, block_last, unary_op); }
+                    GAPP_CATCH (...) { guard(); }
                     remaining_tasks.count_down();
                 };
 
-                bool success = scheduled_worker_queue().emplace(std::move(task));
-                if (!success) GAPP_THROW(std::runtime_error, "Attempting to submit a task to a stopped thread pool.");
+                [[maybe_unused]] const bool success = scheduled_worker_queue().emplace(std::move(task));
+                GAPP_ASSERT(success, "Attempting to submit a task to a stopped thread pool.");
             }
 
-            while (first != last) { std::invoke(unary_op, *first++); }
+            GAPP_TRY { std::for_each(first, last, unary_op); }
+            GAPP_CATCH (...) { guard(); }
 
-            if (auto* local_queue = local_worker_queue(); !local_queue)
-            {
-                remaining_tasks.wait();
-            }
-            else while (true)
-            {
-                while (!local_queue->empty()) { std::invoke(*local_queue->take()); }
-                if (remaining_tasks.try_wait()) break;
-                std::this_thread::yield();
-            }
-
-            if (has_exception.load(std::memory_order_relaxed)) std::rethrow_exception(exception);
+            remaining_tasks.wait();
+            guard.rethrow_exception();
         }
 
         void reset_scheduler()
@@ -110,7 +100,7 @@ namespace gapp::detail
             return workers_.size() + 1;
         }
 
-        thread_pool() 
+        thread_pool()
         {
             this_thread_id().store(1, std::memory_order_release);
             thread_count(std::max(std::thread::hardware_concurrency(), 1u)); 
@@ -129,7 +119,7 @@ namespace gapp::detail
 
         struct alignas(128) worker_t
         {
-            static void worker_main(std::uint64_t thread_id, detail::concurrent_queue<task_t>& task_queue) noexcept
+            static void worker_main(std::uint64_t thread_id, concurrent_queue<task_t>& task_queue) noexcept
             {
                 this_thread_id().store(thread_id, std::memory_order_release);
 
@@ -145,11 +135,29 @@ namespace gapp::detail
                 thread(worker_main, thread_id, std::ref(task_queue))
             {}
 
-            detail::concurrent_queue<task_t> task_queue;
+            concurrent_queue<task_t> task_queue;
             std::jthread thread;
         };
 
-        auto scheduled_worker_queue() noexcept -> detail::concurrent_queue<task_t>&
+        struct thread_guard
+        {
+            void operator()() noexcept
+            {
+                if (!has_exception.exchange(true, std::memory_order_relaxed))
+                    exception = std::current_exception();
+            }
+
+            void rethrow_exception() const
+            {
+                if (has_exception.load(std::memory_order_relaxed))
+                    std::rethrow_exception(exception);
+            }
+
+            std::exception_ptr exception;
+            std::atomic_bool has_exception;
+        };
+
+        auto scheduled_worker_queue() noexcept -> concurrent_queue<task_t>&
         {
             GAPP_ASSERT(!workers_.empty());
 
@@ -157,21 +165,12 @@ namespace gapp::detail
             const size_t current_worker = current_turn % workers_.size();
 
             return workers_[current_worker].task_queue;
-        }
-
-        auto local_worker_queue() noexcept -> detail::concurrent_queue<task_t>*
-        {
-            for (worker_t& worker : workers_)
-            {
-                if (worker.thread.get_id() == std::this_thread::get_id()) 
-                    return std::addressof(worker.task_queue);
-            }
-            return nullptr;
-        }
+         }
 
         void stop() noexcept
         {
-            for (worker_t& worker : workers_) { worker.task_queue.close(); }
+            for (worker_t& worker : workers_)
+                worker.task_queue.close();
         }
 
         static thread_local std::atomic<std::uint64_t> this_thread_id_;

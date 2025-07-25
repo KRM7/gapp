@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_UTILITY_FUNCTIONAL_HPP
 #define GAPP_UTILITY_FUNCTIONAL_HPP
@@ -284,14 +284,14 @@ namespace gapp::detail
         template<typename F>
         requires(!std::is_same_v<std::remove_reference_t<F>, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
         move_only_function(F&& f) :
-            fptr_(std::make_unique<Impl<F>>(std::forward<F>(f)))
+            fptr_(std::make_unique<Impl<std::decay_t<F>>>(std::forward<F>(f)))
         {}
 
         template<typename F>
         requires(!std::is_same_v<std::remove_reference_t<F>, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
         move_only_function& operator=(F&& f)
         {
-            fptr_ = std::make_unique<Impl<F>>(std::forward<F>(f));
+            fptr_ = std::make_unique<Impl<std::decay_t<F>>>(std::forward<F>(f));
             return *this;
         }
 
