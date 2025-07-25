@@ -671,33 +671,31 @@ namespace gapp
     {
         GAPP_ASSERT(population_.size() == population_size_);
 
-        Population<T> children(population_size_);
-
         prepareSelections();
 
-        detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(population_size_ / 2), [&](size_t i)
+        Population<T> children(population_size_ + population_size_ % 2);
+
+        detail::parallel_for(detail::iota_iterator(0_sz), detail::iota_iterator(children.size() / 2), [&](size_t i)
         {
             const Candidate<T>& parent1 = select();
             const Candidate<T>& parent2 = select();
-            CandidatePair child_pair = crossover(parent1, parent2);
-            children[2 * i]     = std::move(child_pair.first);
-            children[2 * i + 1] = std::move(child_pair.second);
+            auto [child1, child2] = crossover(parent1, parent2);
+
+            mutate(child1);
+            validate(child1);
+            repair(child1);
+            evaluate(child1);
+
+            mutate(child2);
+            validate(child2);
+            repair(child2);
+            evaluate(child2);
+
+            children[2 * i]     = std::move(child1);
+            children[2 * i + 1] = std::move(child2);
         });
 
-        if (population_size_ % 2)
-        {
-            const Candidate<T>& parent1 = select();
-            const Candidate<T>& parent2 = select();
-            children.back() = crossover(parent1, parent2).first;
-        }
-
-        detail::parallel_for(children.begin(), children.end(), [this](Candidate<T>& child)
-        {
-            mutate(child);
-            validate(child);
-            repair(child);
-            evaluate(child);
-        });
+        if (population_size_ % 2) children.pop_back();
 
         updatePopulation(std::move(children));
 
