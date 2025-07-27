@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_PROBLEMS_TSP_DATA_HPP
-#define GA_PROBLEMS_TSP_DATA_HPP
+#ifndef GAPP_PROBLEMS_TSP_DATA_HPP
+#define GAPP_PROBLEMS_TSP_DATA_HPP
 
 #include <array>
 
@@ -46,4 +46,4 @@ namespace gapp::problems
 
 } // namespace gapp::problems
 
-#endif // !GA_PROBLEMS_TSP_DATA_HPP
+#endif // !GAPP_PROBLEMS_TSP_DATA_HPP

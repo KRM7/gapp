@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_METRICS_MISC_METRICS_HPP
-#define GA_METRICS_MISC_METRICS_HPP
+#ifndef GAPP_METRICS_MISC_METRICS_HPP
+#define GAPP_METRICS_MISC_METRICS_HPP
 
 #include "monitor.hpp"
 #include <vector>
@@ -20,4 +20,4 @@ namespace gapp::metrics
 
 } // namespace gapp::metrics
 
-#endif // !GA_METRICS_MISC_METRICS_HPP
+#endif // !GAPP_METRICS_MISC_METRICS_HPP

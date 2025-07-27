@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_BOUNDED_VALUE_HPP
-#define GA_UTILITY_BOUNDED_VALUE_HPP
+#ifndef GAPP_UTILITY_BOUNDED_VALUE_HPP
+#define GAPP_UTILITY_BOUNDED_VALUE_HPP
 
 #include "utility.hpp"
 #include <utility>
@@ -92,4 +92,4 @@ namespace gapp
 
 } // namespace gapp
 
-#endif // !GA_UTILITY_BOUNDED_VALUE_HPP
+#endif // !GAPP_UTILITY_BOUNDED_VALUE_HPP

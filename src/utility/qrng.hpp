@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_QRNG_HPP
-#define GA_UTILITY_QRNG_HPP
+#ifndef GAPP_UTILITY_QRNG_HPP
+#define GAPP_UTILITY_QRNG_HPP
 
 #include "bounded_value.hpp"
 #include "small_vector.hpp"
@@ -119,4 +119,4 @@ namespace gapp::rng
 
 } // namespace gapp::rng
 
-#endif // !GA_UTILITY_QRNG_HPP
+#endif // !GAPP_UTILITY_QRNG_HPP

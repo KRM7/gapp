@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_GAPP_HPP
-#define GA_GAPP_HPP
+#ifndef GAPP_GAPP_HPP
+#define GAPP_GAPP_HPP
 
 #include "utility/rng.hpp"
 #include "core/candidate.hpp"
@@ -18,4 +18,4 @@
 #include "problems/problems.hpp"
 #include "metrics/metrics.hpp"
 
-#endif // !GA_GAPP_HPP
+#endif // !GAPP_GAPP_HPP
