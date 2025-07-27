@@ -134,6 +134,19 @@ must be the same for each of the runs, otherwise the results will likely be diff
 Changing the number of execution threads will also cause the random number generators to
 be reset, so the `seed()` method should be called *after* setting the number of threads.
 
+```cpp
+// seed prng after setting the thread count
+execution_threads(16);
+rng::prng.seed(0x9e3779b97f4a7c15);
+```
+
 The results do not depend on the platform or the implementation of the standard library.
+
+The reproducibility of results across debug and release builds may depend on the compiler
+flags used. By default, when the `GAPP_DETERMINISM` cmake option is `ON` (which is the default
+value of the option), the compiler flags required for reproducible results will be added to
+the library and dependent targets. If this is not required, the option may be turned off.
+When the option is `ON`, adding additional compiler flags which may affect reproducibility
+(such as `-ffast-math` for gcc/clang) should be avoided.
 
 ------------------------------------------------------------------------------------------------
