@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_STOP_CONDITION_BASE_HPP
-#define GA_STOP_CONDITION_BASE_HPP
+#ifndef GAPP_STOP_CONDITION_BASE_HPP
+#define GAPP_STOP_CONDITION_BASE_HPP
 
 #include "../utility/utility.hpp"
 #include <functional>
@@ -104,4 +104,4 @@ namespace gapp::stopping
 
 } // namespace gapp::stopping
 
-#endif
+#endif // !GAPP_STOP_CONDITION_BASE_HPP

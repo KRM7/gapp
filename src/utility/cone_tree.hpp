@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_CONE_TREE_HPP
-#define GA_UTILITY_CONE_TREE_HPP
+#ifndef GAPP_UTILITY_CONE_TREE_HPP
+#define GAPP_UTILITY_CONE_TREE_HPP
 
 #include "matrix.hpp"
 #include "small_vector.hpp"
@@ -83,4 +83,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_UTILITY_CONE_TREE_HPP
+#endif // !GAPP_UTILITY_CONE_TREE_HPP

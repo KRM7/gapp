@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_STOP_CONDITION_DECL_HPP
-#define GA_STOP_CONDITION_DECL_HPP
+#ifndef GAPP_STOP_CONDITION_DECL_HPP
+#define GAPP_STOP_CONDITION_DECL_HPP
 
 #include "stop_condition_base.hpp"
 #include "../core/population.hpp"
@@ -244,4 +244,4 @@ namespace gapp::stopping
 
 } // namespace gapp::stopping
 
-#endif // !GA_STOP_CONDITION_DECL_HPP
+#endif // !GAPP_STOP_CONDITION_DECL_HPP

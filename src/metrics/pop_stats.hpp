@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_METRICS_POP_STATS_HPP
-#define GA_METRICS_POP_STATS_HPP
+#ifndef GAPP_METRICS_POP_STATS_HPP
+#define GAPP_METRICS_POP_STATS_HPP
 
 #include "../core/candidate.hpp"
 #include <span>
@@ -34,4 +34,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_METRICS_POP_STATS_HPP
+#endif // !GAPP_METRICS_POP_STATS_HPP

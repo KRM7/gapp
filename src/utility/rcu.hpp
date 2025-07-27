@@ -1,7 +1,7 @@
 /* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_UTILITY_RCU_HPP
-#define GA_UTILITY_RCU_HPP
+#ifndef GAPP_UTILITY_RCU_HPP
+#define GAPP_UTILITY_RCU_HPP
 
 #include "shared_spinlock.hpp"
 #include "utility.hpp"
@@ -135,4 +135,4 @@ namespace gapp::detail
 
 } // namespace gapp::detail
 
-#endif // !GA_UTILITY_RCU_HPP
+#endif // !GAPP_UTILITY_RCU_HPP
