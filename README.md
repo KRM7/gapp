@@ -63,7 +63,7 @@ The library uses CMake as its build system. Assuming you have all of the require
 listed above, the steps for installing the library in Release config are:
 
 ```shell
-git clone https://github.com/KRM7/gapp.git --branch v0.3.0
+git clone https://github.com/KRM7/gapp.git --branch v1.0.0
 cd gapp/build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
 cmake --build . --config Release
@@ -74,7 +74,7 @@ Alternatively, you can also use the install script that is provided with the lib
 will install all available configurations:
 
 ```shell
-git clone https://github.com/KRM7/gapp.git --branch v0.3.0
+git clone https://github.com/KRM7/gapp.git --branch v1.0.0
 sudo bash ./gapp/tools/install.sh
 ```
 
