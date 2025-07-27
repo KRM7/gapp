@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2024 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2024 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_CROSSOVER_NEIGHBOUR_LIST_HPP
 #define GAPP_CROSSOVER_NEIGHBOUR_LIST_HPP

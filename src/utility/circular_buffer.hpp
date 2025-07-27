@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2024 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2024 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_UTILITY_CIRCULAR_BUFFER_HPP
 #define GAPP_UTILITY_CIRCULAR_BUFFER_HPP

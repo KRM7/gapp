@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_ALGORITHM_ALGORITHM_BASE_HPP
 #define GAPP_ALGORITHM_ALGORITHM_BASE_HPP

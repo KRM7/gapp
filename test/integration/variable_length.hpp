@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_TEST_VARIABLE_LENGTH_HPP
 #define GAPP_TEST_VARIABLE_LENGTH_HPP

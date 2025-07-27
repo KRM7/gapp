@@ -1,4 +1,4 @@
-﻿/* Example showing the definition of fitness function for the GAs. */
+/* Example showing the definition of fitness function for the GAs. */
 
 #include "gapp.hpp"
 #include <iostream>

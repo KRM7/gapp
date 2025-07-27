@@ -1,4 +1,4 @@
-﻿/* Example showing the usage of the algorithms in the GAs. */
+/* Example showing the usage of the algorithms in the GAs. */
 
 #include "gapp.hpp"
 

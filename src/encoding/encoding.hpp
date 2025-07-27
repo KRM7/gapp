@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #ifndef GAPP_ENCODING_ENCODING_HPP
 #define GAPP_ENCODING_ENCODING_HPP
