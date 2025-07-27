@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_TEST_BENCHMARK_INTEGER_HPP
-#define GA_TEST_BENCHMARK_INTEGER_HPP
+#ifndef GAPP_TEST_BENCHMARK_INTEGER_HPP
+#define GAPP_TEST_BENCHMARK_INTEGER_HPP
 
 #include "encoding/integer.hpp"
 #include "algorithm/algorithm.hpp"
@@ -36,4 +36,4 @@ inline void integer_sentence()
     benchmarkInt(GA, 1000, StringFinder{ "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque gravida ut ipsum at tincidunt." });
 }
 
-#endif // !GA_TEST_BENCHMARK_INTEGER_HPP
+#endif // !GAPP_TEST_BENCHMARK_INTEGER_HPP

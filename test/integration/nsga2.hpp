@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_TEST_BENCHMARK_NSGA2_HPP
-#define GA_TEST_BENCHMARK_NSGA2_HPP
+#ifndef GAPP_TEST_BENCHMARK_NSGA2_HPP
+#define GAPP_TEST_BENCHMARK_NSGA2_HPP
 
 #include "encoding/real.hpp"
 #include "encoding/binary.hpp"
@@ -63,4 +63,4 @@ inline void benchmark_nsga2_dtlz(size_t generations = 1000, size_t population_si
     benchmark_real_nsga2(DTLZ7{ dim }, generations, population_size);
 }
 
-#endif // !GA_TEST_BENCHMARK_NSGA2_HPP
+#endif // !GAPP_TEST_BENCHMARK_NSGA2_HPP

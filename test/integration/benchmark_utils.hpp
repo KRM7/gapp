@@ -1,7 +1,7 @@
 /* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_TEST_BENCHMARK_UTILS_HPP
-#define GA_TEST_BENCHMARK_UTILS_HPP
+#ifndef GAPP_TEST_BENCHMARK_UTILS_HPP
+#define GAPP_TEST_BENCHMARK_UTILS_HPP
 
 #include "gapp.hpp"
 #include <string>
@@ -135,4 +135,4 @@ void benchmarkInt(IntegerGA& ga, size_t max_gen, F fitness_func)
               << "\nTime taken: " << std::fixed << std::setprecision(4) << time_spent << "s\n\n";
 }
 
-#endif // !GA_TEST_BENCHMARK_UTILS_HPP
+#endif // !GAPP_TEST_BENCHMARK_UTILS_HPP

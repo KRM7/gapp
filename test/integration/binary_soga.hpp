@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_TEST_BENCHMARK_BINARY_HPP
-#define GA_TEST_BENCHMARK_BINARY_HPP
+#ifndef GAPP_TEST_BENCHMARK_BINARY_HPP
+#define GAPP_TEST_BENCHMARK_BINARY_HPP
 
 #include "encoding/binary.hpp"
 #include "algorithm/algorithm.hpp"
@@ -97,4 +97,4 @@ inline void binary_levy()
     benchmarkSoga(GA, 1500, Levy{ 10 });
 }
 
-#endif // !GA_TEST_BENCHMARK_BINARY_HPP
+#endif // !GAPP_TEST_BENCHMARK_BINARY_HPP

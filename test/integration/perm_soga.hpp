@@ -1,7 +1,7 @@
-﻿/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2022 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_TEST_BENCHMARK_PERM_HPP
-#define GA_TEST_BENCHMARK_PERM_HPP
+#ifndef GAPP_TEST_BENCHMARK_PERM_HPP
+#define GAPP_TEST_BENCHMARK_PERM_HPP
 
 #include "encoding/permutation.hpp"
 #include "algorithm/algorithm.hpp"
@@ -91,4 +91,4 @@ inline void perm_tsp439()
     benchmarkTSP(GA, 1000, TSP439{});
 }
 
-#endif // !GA_TEST_BENCHMARK_PERM_HPP
+#endif // !GAPP_TEST_BENCHMARK_PERM_HPP
