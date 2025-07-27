@@ -1,7 +1,7 @@
 /* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
-#ifndef GA_TEST_UTILS_HPP
-#define GA_TEST_UTILS_HPP
+#ifndef GAPP_TEST_UTILS_HPP
+#define GAPP_TEST_UTILS_HPP
 
 #include "core/fitness_function.hpp"
 #include "core/candidate.hpp"
@@ -34,4 +34,4 @@ private:
     }
 };
 
-#endif // !GA_TEST_UTILS_HPP
+#endif // !GAPP_TEST_UTILS_HPP

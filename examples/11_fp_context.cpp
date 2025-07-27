@@ -1,4 +1,4 @@
-﻿/* Example showing how to change the tolerances used for floating-point comparisons in the GA. */
+/* Example showing how to change the tolerances used for floating-point comparisons in the GA. */
 
 #include "gapp.hpp" // include everything
 #include <iostream>

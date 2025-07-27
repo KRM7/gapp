@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
+/* Copyright (c) 2023 Krisztián Rugási. Subject to the MIT License. */
 
 #include <catch2/catch_test_macros.hpp>
 #include "utility/spinlock.hpp"

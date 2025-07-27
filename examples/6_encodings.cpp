@@ -1,4 +1,4 @@
-﻿/* Example showing the usage of the GAs with different encodings. */
+/* Example showing the usage of the GAs with different encodings. */
 
 #include "gapp.hpp"
 

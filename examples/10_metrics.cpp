@@ -1,4 +1,4 @@
-﻿/* Example showing the usage of metrics in the GAs. */
+/* Example showing the usage of metrics in the GAs. */
 
 #include "gapp.hpp"
 #include <vector>
