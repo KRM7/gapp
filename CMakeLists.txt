@@ -10,6 +10,7 @@ include(CMakePackageConfigHelpers)
 option(GAPP_BUILD_TESTS "Build the tests for the library when ON." ON)
 option(GAPP_BUILD_BENCHMARKS "Build the benchmarks for the library when ON." OFF)
 option(GAPP_BUILD_EXAMPLES "Build the examples for the library when ON." OFF)
+option(GAPP_DETERMINISM "Add compiler options required for reproducible results when ON." ON)
 option(GAPP_USE_WERROR "Treat all warnings as errors during the build." OFF)
 option(GAPP_USE_LTO "Use link time optimizations for the library (only used for optimized builds)." OFF)
 option(GAPP_USE_MARCH_NATIVE "Optimize for the host architecture in release builds (only used for gcc and clang)." OFF)
@@ -27,9 +28,7 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release|RelWithDebInfo)$")
 endif()
 
 # Shared library specific settings
-if(BUILD_SHARED_LIBS)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-endif()
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ${BUILD_SHARED_LIBS})
 
 # Prefix static libraries with "lib" on all platforms
 set(CMAKE_STATIC_LIBRARY_PREFIX "lib")
@@ -57,15 +56,19 @@ if(MSVC) # MSVC style compiler interface
         set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -GR-")
     endif()
 
+    if(GAPP_USE_MARCH_NATIVE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native")
+    endif()
+
     # msvc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -Zc:throwingNew")
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -external:anglebrackets")
-        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -fp:precise")
     endif()
+
     # clang-cl specific options
-    if(GAPP_USE_MARCH_NATIVE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native -fp:precise -clang:-ffp-contract=off")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS}")
     endif()
 
     set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} -Z7 -diagnostics:caret ${GAPP_WARN_FLAGS}")
@@ -82,7 +85,7 @@ else() # GNU style compiler interface
     endif()
 
     set(GAPP_OPT_FLAGS "-O3 -ffunction-sections -fdata-sections")
-    set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -fno-math-errno -fno-trapping-math -freciprocal-math -fno-signed-zeros -fno-associative-math -fno-finite-math-only -ffp-contract=off")
+    set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -fno-math-errno -fno-trapping-math")
 
     if(GAPP_USE_MARCH_NATIVE)
         set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS} -march=native")
@@ -104,6 +107,7 @@ else() # GNU style compiler interface
         # This is disabled because the warning is issued for the wrong class by gcc
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Wno-virtual-move-assign")
     endif()
+
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS}")
@@ -144,6 +148,13 @@ target_compile_features(gapp PUBLIC "cxx_std_20")
 target_compile_definitions(gapp PUBLIC "$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:GAPP_BUILD_STATIC>"
                                        "$<$<BOOL:${GAPP_DISABLE_ASSERTS}>:GAPP_DISABLE_ASSERTS>")
 target_compile_options(gapp PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:-Zc:preprocessor>")
+
+if(GAPP_DETERMINISM)
+    target_compile_options(gapp PUBLIC 
+        "$<$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>:-fp:precise>"
+        "$<$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},GNU>:-ffp-contract=off>"
+        "$<$<AND:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,$<CXX_COMPILER_ID:Clang>>:-clang:-ffp-contract=off>")
+endif()
 
 
 # Install

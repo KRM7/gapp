@@ -173,6 +173,13 @@ headers will be slightly different, ie. you will need to do `#include <gapp.hpp>
 
 ## CMake project options
 
+- `GAPP_DETERMINISM` - When this option is `ON`, additional interface compiler flags will be added to
+    the library target which are required for reproducible runtime results across debug and release
+    builds. This only includes compiler flags which are not typically on by default, and does not
+    prevent the use of other compiler flags which might cause non-reproducible results, such as the
+    fast-math flags. It is recommended to avoid the use of these flags when this option is ON.
+    The default value is `ON`.
+
 - `BUILD_SHARED_LIBS` - When this option is `ON`, the library will be built as a shared library instead
     of a static one. Note that you have to choose between the static and shared versions of the library
     when installing it, you can't install both. The default value is `OFF`.
