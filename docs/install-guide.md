@@ -31,12 +31,6 @@ As the only real requirement for using the library is a compiler with C++20 supp
 and the library doesn't include any platform or compiler specific code, other platforms
 and compilers would probably also work, but only the ones listed above are tested.
 
-Note that the standard library used also needs to support C++20 features, which means
-that using libc\+\+ is not possible at this point. This is generally not a problem,
-but on macOS the default standard library used by clang is libc\+\+ instead of libstdc\+\+,
-which will cause build errors. In this case, the standard library should be manually
-specified to be libstdc\+\+ instead.
-
 
 ## Install with CMake
 

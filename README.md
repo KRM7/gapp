@@ -10,12 +10,21 @@
 
 ## Overview
 
-gapp is a library of genetic algorithm implementations in C++ for solving single-
-and multi-objective optimization problems. The algorithms are highly customizable,
-with all of their parts possibly defined by the user, but the library also includes
-GAs for several commonly used encoding types, frequently used crossover and mutation
-methods for each of these encodings, several stop conditions, and other utilities that
-can be used.
+gapp is a C++ library for solving single- and multi-objective optimization problems
+using genetic algorithms. The main features of the library include:
+
+ - Simple usage with predefined genetic operators, encoding types, and algorithms
+ - Includes implementations of several commonly used encoding types (binary, real, permutation,
+   integer), with support for mixed and custom encoding types
+ - Includes implementations of commonly used crossover and mutation methods for each builtin encoding
+   type, with support for custom genetic operators
+ - Support for both single- and multi-objective problems, constrained optimization problems,
+   and support for both fixed and variable length solution encodings
+ - Builtin support for metrics to observe the evolution process, including implementations
+   of common metrics like mean, minimum, and maximum fitness values in each generation
+ - Reproducible results across platforms, including with multithreaded execution
+ - Efficient, multithreaded execution with minimal overhead for the GAs, while also minimizing
+   the number of objective function evaluations
 
 
 ## Usage example
