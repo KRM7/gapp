@@ -47,13 +47,13 @@ if(MSVC) # MSVC style compiler interface
     set(GAPP_OPT_FLAGS "-O2 -Oi -Gy -Gw")
 
     if(GAPP_DISABLE_EXCEPTIONS)
-        set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -D_HAS_EXCEPTIONS=0")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_HAS_EXCEPTIONS=0")
     else()
-        set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -EHsc")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -EHsc")
     endif()
 
     if(GAPP_DISABLE_RTTI)
-        set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -GR-")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -GR-")
     endif()
 
     if(GAPP_USE_MARCH_NATIVE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -62,7 +62,7 @@ if(MSVC) # MSVC style compiler interface
 
     # msvc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -Zc:throwingNew")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Zc:throwingNew")
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -external:anglebrackets")
     endif()
 
@@ -71,7 +71,7 @@ if(MSVC) # MSVC style compiler interface
         set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS}")
     endif()
 
-    set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} -Z7 -diagnostics:caret ${GAPP_WARN_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Z7 -diagnostics:caret ${GAPP_WARN_FLAGS}")
     set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG -RTC1 -Od")
     set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG ${GAPP_OPT_FLAGS}")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${GAPP_OPT_FLAGS}")
@@ -92,11 +92,11 @@ else() # GNU style compiler interface
     endif()
 
     if(GAPP_DISABLE_EXCEPTIONS)
-        set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -fno-exceptions")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
     endif()
 
     if(GAPP_DISABLE_RTTI)
-        set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -fno-rtti")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
     endif()
 
     # gcc specific options
@@ -110,11 +110,10 @@ else() # GNU style compiler interface
 
     # clang specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(GAPP_OPT_FLAGS "${GAPP_OPT_FLAGS}")
-        set(GAPP_CXX_FLAGS "${GAPP_CXX_FLAGS} -fsized-deallocation")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsized-deallocation")
     endif()
 
-    set(CMAKE_CXX_FLAGS "${GAPP_CXX_FLAGS} ${GAPP_WARN_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAPP_WARN_FLAGS}")
     set(CMAKE_CXX_FLAGS_DEBUG "-Og -D_GLIBCXX_ASSERTIONS")
     set(CMAKE_CXX_FLAGS_RELEASE "-g -DNDEBUG ${GAPP_OPT_FLAGS}")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g ${GAPP_OPT_FLAGS}")
