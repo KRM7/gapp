@@ -13,6 +13,8 @@
 
 namespace gapp::crossover::binary
 {
+    using namespace gapp::crossover::impl;
+
     auto SinglePoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
     {
         GAPP_ASSERT(parent1.chromosome.size() == parent2.chromosome.size(), "Mismatching parent chromosome lengths.");
@@ -20,7 +22,7 @@ namespace gapp::crossover::binary
         const size_t chrom_len = parent1.chromosome.size();
         const size_t crossover_point = rng::randomInt(0_sz, chrom_len);
 
-        return dtl::singlePointCrossoverImpl(parent1, parent2, crossover_point);
+        return singlePointCrossoverImpl(parent1, parent2, crossover_point);
     }
 
     auto TwoPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -31,7 +33,7 @@ namespace gapp::crossover::binary
         const size_t crossover_point1 = rng::randomInt(0_sz, chrom_len);
         const size_t crossover_point2 = rng::randomInt(0_sz, chrom_len);
 
-        return dtl::twoPointCrossoverImpl(parent1, parent2, { crossover_point1, crossover_point2 });
+        return twoPointCrossoverImpl(parent1, parent2, { crossover_point1, crossover_point2 });
     }
 
     auto NPoint::crossover(const GaInfo&, const Candidate<GeneType>& parent1, const Candidate<GeneType>& parent2) const -> CandidatePair<GeneType>
@@ -43,7 +45,7 @@ namespace gapp::crossover::binary
 
         auto crossover_points = rng::sampleUnique(0_sz, chrom_len, num_crossover_points);
 
-        return dtl::nPointCrossoverImpl(parent1, parent2, std::move(crossover_points));
+        return nPointCrossoverImpl(parent1, parent2, std::move(crossover_points));
     }
 
     void Uniform::initialize(const GaInfo& ga)
