@@ -6,6 +6,8 @@
 #include "crossover_base.decl.hpp"
 #include "../core/candidate.hpp"
 #include "../encoding/gene_types.hpp"
+#include <span>
+#include <cstddef>
 
 /** Predefined crossover operators for the permutation encoded %GA. */
 namespace gapp::crossover::perm
@@ -117,5 +119,16 @@ namespace gapp::crossover::perm
     };
 
 } // namespace gapp::crossover::perm
+
+namespace gapp::crossover::impl
+{
+    Candidate<PermutationGene> order1CrossoverImpl(const Candidate<PermutationGene>& parent1, const Candidate<PermutationGene>& parent2, size_t first, size_t last);
+    Candidate<PermutationGene> order2CrossoverImpl(const Candidate<PermutationGene>& parent1, const Candidate<PermutationGene>& parent2, size_t first, size_t last);
+    Candidate<PermutationGene> positionCrossoverImpl(const Candidate<PermutationGene>& parent1, const Candidate<PermutationGene>& parent2, std::span<const size_t> indices);
+    CandidatePair<PermutationGene> cycleCrossoverImpl(const Candidate<PermutationGene>& parent1, const Candidate<PermutationGene>& parent2);
+    Candidate<PermutationGene> edgeCrossoverImpl(const Candidate<PermutationGene>& parent1, const Candidate<PermutationGene>& parent2);
+    Candidate<PermutationGene> pmxCrossoverImpl(const Candidate<PermutationGene>& parent1, const Candidate<PermutationGene>& parent2, size_t first, size_t last);
+
+} // namespace gapp::crossover::impl
 
 #endif // !GAPP_CROSSOVER_PERMUTATION_HPP

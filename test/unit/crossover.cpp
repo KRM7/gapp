@@ -10,7 +10,7 @@
 
 using namespace gapp;
 using namespace gapp::crossover;
-using namespace gapp::crossover::dtl;
+using namespace gapp::crossover::impl;
 
 TEST_CASE("single_point_crossover", "[crossover]")
 {
@@ -133,48 +133,48 @@ TEST_CASE("npoint_crossover", "[crossover]")
 }
 
 
-TEMPLATE_TEST_CASE("order1_crossover", "[crossover]", int, unsigned)
+TEST_CASE("order1_crossover", "[crossover]")
 {
-    const Candidate<TestType> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
-    const Candidate<TestType> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
+    const Candidate<PermutationGene> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+    const Candidate<PermutationGene> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
 
     const auto child1 = order1CrossoverImpl(parent1, parent2, 4, 8);
     const auto child2 = order1CrossoverImpl(parent2, parent1, 4, 8);
 
-    REQUIRE(child1.chromosome == Chromosome<TestType>{ { 1, 2, 8, 3, 4, 5, 6, 7, 9, 0 } });
-    REQUIRE(child2.chromosome == Chromosome<TestType>{ { 4, 5, 6, 7, 1, 2, 8, 3, 9, 0 } });
+    REQUIRE(child1.chromosome == Chromosome<PermutationGene>{ { 1, 2, 8, 3, 4, 5, 6, 7, 9, 0 } });
+    REQUIRE(child2.chromosome == Chromosome<PermutationGene>{ { 4, 5, 6, 7, 1, 2, 8, 3, 9, 0 } });
 
     const auto child3 = order1CrossoverImpl(parent1, parent1, 4, 8);
 
     REQUIRE(child3.chromosome == parent1.chromosome);
 }
 
-TEMPLATE_TEST_CASE("order2_crossover", "[crossover]", int, unsigned)
+TEST_CASE("order2_crossover", "[crossover]")
 {
-    const Candidate<TestType> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
-    const Candidate<TestType> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
+    const Candidate<PermutationGene> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+    const Candidate<PermutationGene> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
 
     const auto child1 = order2CrossoverImpl(parent1, parent2, 4, 8);
     const auto child2 = order2CrossoverImpl(parent2, parent1, 4, 8);
 
-    REQUIRE(child1.chromosome == Chromosome<TestType>{ { 0, 1, 2, 8, 4, 5, 6, 7, 3, 9 } });
-    REQUIRE(child2.chromosome == Chromosome<TestType>{ { 0, 4, 5, 6, 1, 2, 8, 3, 7, 9 } });
+    REQUIRE(child1.chromosome == Chromosome<PermutationGene>{ { 0, 1, 2, 8, 4, 5, 6, 7, 3, 9 } });
+    REQUIRE(child2.chromosome == Chromosome<PermutationGene>{ { 0, 4, 5, 6, 1, 2, 8, 3, 7, 9 } });
 
     const auto child3 = order2CrossoverImpl(parent1, parent1, 4, 8);
 
     REQUIRE(child3.chromosome == parent1.chromosome);
 }
 
-TEMPLATE_TEST_CASE("position_crossover", "[crossover]", int, unsigned)
+TEST_CASE("position_crossover", "[crossover]")
 {
-    const Candidate<TestType> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
-    const Candidate<TestType> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
+    const Candidate<PermutationGene> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+    const Candidate<PermutationGene> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
 
     const auto child1 = positionCrossoverImpl(parent1, parent2, { { 0, 3, 4, 7 } });
     const auto child2 = positionCrossoverImpl(parent2, parent1, { { 0, 3, 4, 7 } });
 
-    REQUIRE(child1.chromosome == Chromosome<TestType>{ { 0, 5, 6, 3, 4, 1, 2, 7, 8, 9 } });
-    REQUIRE(child2.chromosome == Chromosome<TestType>{ { 4, 0, 2, 6, 1, 5, 7, 3, 8, 9 } });
+    REQUIRE(child1.chromosome == Chromosome<PermutationGene>{ { 0, 5, 6, 3, 4, 1, 2, 7, 8, 9 } });
+    REQUIRE(child2.chromosome == Chromosome<PermutationGene>{ { 4, 0, 2, 6, 1, 5, 7, 3, 8, 9 } });
 
     auto child3 = positionCrossoverImpl(parent1, parent1, { { 0, 3, 4, 7 } });
 
@@ -183,15 +183,15 @@ TEMPLATE_TEST_CASE("position_crossover", "[crossover]", int, unsigned)
 
 TEST_CASE("cycle_crossover", "[crossover]")
 {
-    const Candidate<int> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
-    const Candidate<int> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
+    const Candidate<PermutationGene> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+    const Candidate<PermutationGene> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
 
     // cycle0 : 0 - 4 - 1 - 5 - 2 , cycle1 : 3 - 6 - 8 - 9 - 7
 
     auto [child1, child2] = cycleCrossoverImpl(parent1, parent2);
 
-    REQUIRE(child1.chromosome == Chromosome<int>{ { 0, 1, 2, 6, 4, 5, 8, 3, 9, 7 } });
-    REQUIRE(child2.chromosome == Chromosome<int>{ { 4, 5, 0, 3, 1, 2, 6, 7, 8, 9 } });
+    REQUIRE(child1.chromosome == Chromosome<PermutationGene>{ { 0, 1, 2, 6, 4, 5, 8, 3, 9, 7 } });
+    REQUIRE(child2.chromosome == Chromosome<PermutationGene>{ { 4, 5, 0, 3, 1, 2, 6, 7, 8, 9 } });
 
     auto [child3, child4] = cycleCrossoverImpl(parent1, parent1);
 
@@ -199,32 +199,32 @@ TEST_CASE("cycle_crossover", "[crossover]")
     REQUIRE(child4.chromosome == parent1.chromosome);
 }
 
-TEMPLATE_TEST_CASE("edge_crossover", "[crossover]", int, unsigned)
+TEST_CASE("edge_crossover", "[crossover]")
 {
-    const Candidate<TestType> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
-    const Candidate<TestType> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
+    const Candidate<PermutationGene> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+    const Candidate<PermutationGene> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
 
     auto child1 = edgeCrossoverImpl(parent1, parent2);
     auto child2 = edgeCrossoverImpl(parent2, parent1);
 
-    REQUIRE(child1.chromosome == Chromosome<TestType>{ { 0, 5, 4, 1, 6, 7, 9, 8, 3, 2 } });
-    REQUIRE(child2.chromosome == Chromosome<TestType>{ { 4, 5, 0, 6, 1, 2, 3, 9, 8, 7 } });
+    REQUIRE(child1.chromosome == Chromosome<PermutationGene>{ { 0, 5, 4, 1, 6, 7, 9, 8, 3, 2 } });
+    REQUIRE(child2.chromosome == Chromosome<PermutationGene>{ { 4, 5, 0, 6, 1, 2, 3, 9, 8, 7 } });
 
     auto child3 = edgeCrossoverImpl(parent1, parent1);
 
     REQUIRE(child3.chromosome == parent1.chromosome);
 }
 
-TEMPLATE_TEST_CASE("pmx_crossover", "[crossover]", int, unsigned)
+TEST_CASE("pmx_crossover", "[crossover]")
 {
-    const Candidate<TestType> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
-    const Candidate<TestType> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
+    const Candidate<PermutationGene> parent1{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
+    const Candidate<PermutationGene> parent2{ { 4, 5, 0, 6, 1, 2, 8, 3, 9, 7 } };
 
     auto child1 = pmxCrossoverImpl(parent1, parent2, 4, 8);
     auto child2 = pmxCrossoverImpl(parent2, parent1, 4, 8);
 
-    REQUIRE(child1.chromosome == Chromosome<TestType>{ { 1, 2, 0, 8, 4, 5, 6, 7, 9, 3 } });
-    REQUIRE(child2.chromosome == Chromosome<TestType>{ { 0, 4, 5, 7, 1, 2, 8, 3, 6, 9 } });
+    REQUIRE(child1.chromosome == Chromosome<PermutationGene>{ { 1, 2, 0, 8, 4, 5, 6, 7, 9, 3 } });
+    REQUIRE(child2.chromosome == Chromosome<PermutationGene>{ { 0, 4, 5, 7, 1, 2, 8, 3, 6, 9 } });
 
     auto child3 = pmxCrossoverImpl(parent1, parent1, 4, 8);
 
