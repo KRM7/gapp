@@ -17,14 +17,14 @@
 
 namespace gapp::crossover::impl
 {
-    static bool isValidIntegerPermutation(const Chromosome<PermutationGene>& chrom)
+    [[maybe_unused]] static bool isValidIntegerPermutation(const Chromosome<PermutationGene>& chrom)
     {
         if (chrom.empty()) return true;
 
         if (*std::min_element(chrom.begin(), chrom.end()) != 0) return false;
         if (*std::max_element(chrom.begin(), chrom.end()) != chrom.size() - 1) return false;
 
-        detail::dynamic_bitset present(chrom.size());
+        dynamic_bitset present(chrom.size());
         for (const PermutationGene& val : chrom)
         {
             if (present[val]) return false;
@@ -44,7 +44,7 @@ namespace gapp::crossover::impl
         GAPP_ASSERT(isValidIntegerPermutation(parent1.chromosome));
         GAPP_ASSERT(isValidIntegerPermutation(parent2.chromosome));
 
-        detail::dynamic_bitset is_direct(chrom_len);
+        dynamic_bitset is_direct(chrom_len);
         for (size_t idx = first; idx != last; idx++)
         {
             is_direct[parent1.chromosome[idx]] = true;
@@ -77,7 +77,7 @@ namespace gapp::crossover::impl
         GAPP_ASSERT(isValidIntegerPermutation(parent1.chromosome));
         GAPP_ASSERT(isValidIntegerPermutation(parent2.chromosome));
 
-        detail::dynamic_bitset is_direct(chrom_len);
+        dynamic_bitset is_direct(chrom_len);
         for (size_t idx = first; idx != last; idx++)
         {
             is_direct[parent1.chromosome[idx]] = true;
@@ -106,7 +106,7 @@ namespace gapp::crossover::impl
         GAPP_ASSERT(isValidIntegerPermutation(parent1.chromosome));
         GAPP_ASSERT(isValidIntegerPermutation(parent2.chromosome));
 
-        detail::dynamic_bitset is_direct(chrom_len);
+        dynamic_bitset is_direct(chrom_len);
         for (size_t idx : indices)
         {
             is_direct[parent1.chromosome[idx]] = true;
@@ -146,7 +146,7 @@ namespace gapp::crossover::impl
         std::vector<size_t> odd_indices;
         odd_indices.reserve(chrom_len / 2);
 
-        detail::dynamic_bitset deleted(chrom_len);
+        dynamic_bitset deleted(chrom_len);
         size_t num_deleted = 0;
 
         std::vector index_lookup(chrom_len, 0_sz);
@@ -210,7 +210,7 @@ namespace gapp::crossover::impl
         Candidate<PermutationGene> child({ parent1.chromosome[0] });
         child.chromosome.reserve(chrom_len);
 
-        detail::dynamic_bitset is_used(chrom_len);
+        dynamic_bitset is_used(chrom_len);
         is_used[parent1.chromosome[0]] = true;
 
         while (child.chromosome.size() != chrom_len)
@@ -248,7 +248,7 @@ namespace gapp::crossover::impl
 
         Candidate child = parent2;
 
-        detail::dynamic_bitset is_direct(chrom_len);
+        dynamic_bitset is_direct(chrom_len);
         for (size_t i = first; i < last; i++)
         {
             child.chromosome[i] = parent1.chromosome[i];

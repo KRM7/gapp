@@ -467,7 +467,7 @@ namespace gapp::rng
 
         small_vector<IntType> numbers(count);
 
-        thread_local detail::dynamic_bitset is_selected;
+        thread_local dynamic_bitset is_selected;
         is_selected.resize(range_len);
         is_selected.fill(select_many);
 
