@@ -4,29 +4,25 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
-        build-type: [ Release, RelWithDebInfo ]
+        build-type: [ Release, RelWithDebInfo, Debug ]
         compiler: [
-            { cxx: g++-11, pkgs: gcc@11, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
-            { cxx: g++-12, pkgs: gcc@12, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
-            { cxx: g++-13, pkgs: gcc@13, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
-            { cxx: g++-14, pkgs: gcc@14, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
-            {
-              cxx: $(brew --prefix llvm@15)/bin/clang++,
-              pkgs: llvm@15 gcc@11,
-              extra-flags: "-femulated-tls -stdlib=libstdc++ -stdlib++-isystem $(brew --prefix gcc@11)/include/c++/11 -cxx-isystem $(brew --prefix gcc@11)/include/c++/11/aarch64-apple-darwin23",
-              linker-flags: "-L$(brew --prefix gcc@11)/lib/gcc/11"
-            }
+            { name: clang++19, cxx: $(brew --prefix llvm@19)/bin/clang++, pkgs: llvm@19, extra-flags: -fexperimental-library },
+            { name: clang++20, cxx: $(brew --prefix llvm@20)/bin/clang++, pkgs: llvm@20 },
+            { name: g++-11, cxx: g++-11, pkgs: gcc@11, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
+            { name: g++-12, cxx: g++-12, pkgs: gcc@12, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
+            { name: g++-13, cxx: g++-13, pkgs: gcc@13, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
+            { name: g++-14, cxx: g++-14, pkgs: gcc@14, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
         ]
 
     defaults:
       run:
         working-directory: ${{ github.workspace }}/build
 
-    name: ${{ matrix.compiler.pkgs }}, ${{ matrix.build-type }}
+    name: ${{ matrix.compiler.name }}, ${{ matrix.build-type }}
 
     steps:
     - name: checkout-repo
@@ -36,10 +32,10 @@ jobs:
       run: brew update && brew install ${{ matrix.compiler.pkgs }}
 
     - name: setup-catch
-      run: sudo bash ../tools/install_catch.sh ${{ matrix.build-type }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}"
+      run: sudo bash ../tools/install_catch.sh ${{ matrix.build-type }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}"
 
     - name: setup-build
-      run: cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.compiler.linker-flags }}" -DGAPP_USE_WERROR=ON
+      run: cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_CXX_FLAGS="${{ matrix.compiler.extra-flags }}" -DGAPP_USE_WERROR=ON
 
     - name: build
       run: cmake --build . --parallel 8

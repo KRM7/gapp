@@ -607,7 +607,7 @@ namespace gapp::rng
                 }
 
                 const double v2 = std::log(v * btrs_.alpha / (btrs_.a / (us * us) + btrs_.b));
-                const double t = btrs_.h - log_factorial(k) - log_factorial(n_ - k) + (k - btrs_.m) * btrs_.lpq;
+                const double t = btrs_.h - log_factorial(k) - log_factorial(n_ - k) + (k - double(btrs_.m)) * btrs_.lpq;
 
                 if (v2 <= t)
                 {
