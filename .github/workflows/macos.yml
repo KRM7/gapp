@@ -4,12 +4,13 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
         build-type: [ Release, RelWithDebInfo ]
         compiler: [
+            { cxx: clang++ },
             { cxx: g++-11, pkgs: gcc@11, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
             { cxx: g++-12, pkgs: gcc@12, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
             { cxx: g++-13, pkgs: gcc@13, extra-flags: "-undefined dynamic_lookup -Wno-psabi -Wno-nonnull" },
@@ -17,7 +18,7 @@ jobs:
             {
               cxx: $(brew --prefix llvm@15)/bin/clang++,
               pkgs: llvm@15 gcc@11,
-              extra-flags: "-femulated-tls -stdlib=libstdc++ -stdlib++-isystem $(brew --prefix gcc@11)/include/c++/11 -cxx-isystem $(brew --prefix gcc@11)/include/c++/11/aarch64-apple-darwin23",
+              extra-flags: "-femulated-tls -stdlib=libstdc++ -stdlib++-isystem $(brew --prefix gcc@11)/include/c++/11 -cxx-isystem $(brew --prefix gcc@11)/include/c++/11/aarch64-apple-darwin24",
               linker-flags: "-L$(brew --prefix gcc@11)/lib/gcc/11"
             }
         ]

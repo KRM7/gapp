@@ -37,7 +37,8 @@ namespace gapp
 
     size_t GaInfo::num_fitness_evals() const noexcept
     {
-        return std::atomic_ref{ num_fitness_evals_ }.load(std::memory_order_acquire);
+        // https://cplusplus.github.io/LWG/issue3508
+        return std::atomic_ref{ (size_t&)num_fitness_evals_ }.load(std::memory_order_acquire); // NOLINT
     }
 
     void GaInfo::algorithm(std::unique_ptr<algorithm::Algorithm> f)
