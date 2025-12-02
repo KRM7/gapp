@@ -20,3 +20,5 @@ refs/
 
 # Test results
 tools/mo_results/*.txt
+
+.cache/

@@ -59,7 +59,7 @@ The maximum of sin(x) in [0.0, 3.14] is at x = 1.57079
 
 The following are needed for building and using the library:
 
-- C++20 compiler (gcc 11, clang 15, msvc 14.30 or later)
+- C++20 compiler (gcc 11, clang 15, msvc 14.30, apple-clang 19 or later)
 - CMake 3.21 or later
 - Catch2 3.3 or later (optional, only needed for the tests)
 

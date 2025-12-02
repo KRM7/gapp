@@ -102,7 +102,7 @@ TEST_CASE("symmetric_binomial_distribution, n = 100", "[benchmark]")
     BENCHMARK("std::binomial_distribution, p = 0.5") { return dist3(rng::prng); };
 
 #if __has_include(<boost/random.hpp>)
-    boost::binomial_distribution<uint64_t> dist4(100, 0.5);
+    boost::binomial_distribution<int64_t> dist4(100, 0.5);
     BENCHMARK("boost::binomial_distribution") { return dist4(rng::prng); };
 #endif
 }
@@ -118,7 +118,7 @@ TEST_CASE("symmetric_binomial_distribution, n = 500", "[benchmark]")
     BENCHMARK("std::binomial_distribution, p = 0.5") { return dist3(rng::prng); };
 
 #if __has_include(<boost/random.hpp>)
-    boost::binomial_distribution<uint64_t> dist4(500, 0.5);
+    boost::binomial_distribution<int64_t> dist4(500, 0.5);
     BENCHMARK("boost::binomial_distribution") { return dist4(rng::prng); };
 #endif
 }
@@ -132,7 +132,7 @@ TEST_CASE("binomial_distribution, mean=1.0", "[benchmark]")
     BENCHMARK("std::binomial_distribution") { return dist2(rng::prng); };
 
 #if __has_include(<boost/random.hpp>)
-    boost::binomial_distribution<uint64_t> dist3(100, 0.01);
+    boost::binomial_distribution<int64_t> dist3(100, 0.01);
     BENCHMARK("boost::binomial_distribution") { return dist3(rng::prng); };
 #endif
 }
@@ -146,7 +146,7 @@ TEST_CASE("binomial_distribution, mean=5.0", "[benchmark]")
     BENCHMARK("std::binomial_distribution") { return dist2(rng::prng); };
 
 #if __has_include(<boost/random.hpp>)
-    boost::binomial_distribution<uint64_t> dist3(100, 0.05);
+    boost::binomial_distribution<int64_t> dist3(100, 0.05);
     BENCHMARK("boost::binomial_distribution") { return dist3(rng::prng); };
 #endif
 }
@@ -160,7 +160,7 @@ TEST_CASE("binomial_distribution, mean=10.0", "[benchmark]")
     BENCHMARK("std::binomial_distribution") { return dist2(rng::prng); };
 
 #if __has_include(<boost/random.hpp>)
-    boost::binomial_distribution<uint64_t> dist3(100, 0.1);
+    boost::binomial_distribution<int64_t> dist3(100, 0.1);
     BENCHMARK("boost::binomial_distribution") { return dist3(rng::prng); };
 #endif
 }
@@ -174,7 +174,7 @@ TEST_CASE("binomial_distribution, mean=20.0", "[benchmark]")
     BENCHMARK("std::binomial_distribution") { return dist2(rng::prng); };
 
 #if __has_include(<boost/random.hpp>)
-    boost::binomial_distribution<uint64_t> dist3(100, 0.2);
+    boost::binomial_distribution<int64_t> dist3(100, 0.2);
     BENCHMARK("boost::binomial_distribution") { return dist3(rng::prng); };
 #endif
 }
@@ -188,7 +188,7 @@ TEST_CASE("binomial_distribution, mean=50.0", "[benchmark]")
     BENCHMARK("std::binomial_distribution") { return dist2(rng::prng); };
 
 #if __has_include(<boost/random.hpp>)
-    boost::binomial_distribution<uint64_t> dist3(1000, 0.05);
+    boost::binomial_distribution<int64_t> dist3(1000, 0.05);
     BENCHMARK("boost::binomial_distribution") { return dist3(rng::prng); };
 #endif
 }

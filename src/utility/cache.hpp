@@ -33,9 +33,7 @@ namespace gapp::detail
         //            CONSTRUCTORS           //
         //-----------------------------------//
 
-        constexpr fifo_cache() noexcept = default;
-
-        constexpr fifo_cache(size_type capacity) :
+        constexpr fifo_cache(size_type capacity = 0) :
             cache_(capacity + 1),
             order_(capacity)
         {}

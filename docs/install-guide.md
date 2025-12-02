@@ -16,7 +16,7 @@ is needed to build the tests.
 
 The full list of requirements are:
 
-- C++20 compiler (gcc 11, clang 15, msvc 14.30 or later)
+- C++20 compiler (gcc 11, clang 15, msvc 14.30, apple-clang 19 or later)
 - CMake 3.21 or later
 - Catch2 3.3 or later (optional, only needed for the tests)
 
@@ -25,11 +25,10 @@ each of these platforms are:
 
 - gcc and clang on Linux
 - msvc and clang-cl on Windows
-- gcc and clang (not AppleClang) on macOS
+- gcc and apple-clang on macOS
 
-As the only real requirement for using the library is a compiler with C++20 support,
-and the library doesn't include any platform or compiler specific code, other platforms
-and compilers would probably also work, but only the ones listed above are tested.
+As the only requirement for using the library is a compiler with C++20 support, other
+platforms and compilers could also work, but only the ones listed above are tested.
 
 
 ## Install with CMake

@@ -62,7 +62,7 @@ if(MSVC) # MSVC style compiler interface
 
     # msvc specific options
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Zc:throwingNew")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Zc:throwingNew -Zc:__cplusplus -Zc:templateScope -Zc:inline -Zc:checkGwOdr")
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -external:anglebrackets")
     endif()
 
