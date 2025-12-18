@@ -233,21 +233,19 @@ namespace gapp::detail
         function_ref() = default;
         function_ref(std::nullptr_t) noexcept {}
 
-        template<typename Callable>
-        requires(!std::is_same_v<std::remove_const_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
-        function_ref(Callable& f) noexcept :
-            callable_(reinterpret_cast<void*>(std::addressof(f))),
-            invoke_(invoke_fn<Callable>)
+        template<typename F>
+        requires(std::is_function_v<F> && std::is_invocable_r_v<Ret, F, Args...>)
+        function_ref(F* f) noexcept :
+            callable_((void*)f),
+            invoke_(invoke_fn<F>)
         {}
 
         template<typename Callable>
-        requires(!std::is_same_v<std::remove_const_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
-        function_ref& operator=(Callable& f) noexcept
-        {
-            callable_ = reinterpret_cast<void*>(std::addressof(f));
-            invoke_ = invoke_fn<Callable>;
-            return *this;
-        }
+        requires(!std::is_same_v<std::remove_cvref_t<Callable>, function_ref> && std::is_invocable_r_v<Ret, Callable&, Args...>)
+        function_ref(Callable& f) noexcept :
+            callable_((void*)std::addressof(f)),
+            invoke_(invoke_fn<Callable>)
+        {}
 
         Ret operator()(Args... args)
         {
@@ -282,13 +280,13 @@ namespace gapp::detail
         move_only_function(std::nullptr_t) noexcept {}
 
         template<typename F>
-        requires(!std::is_same_v<std::remove_reference_t<F>, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
+        requires(!std::is_same_v<std::remove_cvref_t<F>, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
         move_only_function(F&& f) :
             fptr_(std::make_unique<Impl<std::decay_t<F>>>(std::forward<F>(f)))
         {}
 
         template<typename F>
-        requires(!std::is_same_v<std::remove_reference_t<F>, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
+        requires(!std::is_same_v<std::remove_cvref_t<F>, move_only_function> && std::is_invocable_r_v<Ret, F&, Args...>)
         move_only_function& operator=(F&& f)
         {
             fptr_ = std::make_unique<Impl<std::decay_t<F>>>(std::forward<F>(f));
@@ -335,7 +333,7 @@ namespace gapp::detail
 
         std::unique_ptr<ImplBase> fptr_ = nullptr;
     };
-    
+
 } // namespace gapp::detail
 
 #endif // !GAPP_UTILITY_FUNCTIONAL_HPP

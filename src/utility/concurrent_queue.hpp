@@ -18,9 +18,12 @@ namespace gapp::detail
         template<typename... Args>
         [[nodiscard]] bool emplace(Args&&... args)
         {
-            std::scoped_lock lock{ queue_lock_ };
-            if (is_closed_) return false;
-            queue_.emplace_back(std::forward<Args>(args)...);
+            {
+                std::scoped_lock lock{ queue_lock_ };
+                if (is_closed_) return false;
+                queue_.emplace_back(std::forward<Args>(args)...);
+            }
+
             queue_cv_.notify_one();
             return true;
         }

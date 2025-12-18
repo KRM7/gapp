@@ -4,21 +4,20 @@
 #define GAPP_UTILITY_THREAD_POOL_HPP
 
 #include "concurrent_queue.hpp"
+#include "small_vector.hpp"
 #include "algorithm.hpp"
 #include "functional.hpp"
-#include "iterators.hpp"
 #include "latch.hpp"
 #include "utility.hpp"
 #include <algorithm>
-#include <type_traits>
 #include <concepts>
+#include <memory>
 #include <thread>
 #include <atomic>
-#include <future>
 #include <functional>
 #include <iterator>
 #include <exception>
-#include <stdexcept>
+#include <type_traits>
 #include <utility>
 #include <cstddef>
 #include <cstdint>
@@ -47,27 +46,27 @@ namespace gapp::detail
             [[maybe_unused]] thread_guard guard;
 
             const size_t iterations  = std::distance(first, last);
-            const size_t block_count = iterations / block_size + bool(iterations % block_size);
+            const size_t block_count = (iterations + block_size - 1) / block_size;
             const size_t task_count  = detail::min(thread_count(), iterations, block_count);
             const size_t step_size   = iterations / task_count;
             const size_t remainder   = iterations % task_count;
+
+            using current_task_t = loop_task_t<std::remove_reference_t<F>, Iter>;
+
+            small_vector<current_task_t, 16> tasks;
+            tasks.reserve(task_count - 1);
 
             detail::latch remaining_tasks(task_count - 1);
 
             for (size_t i = 0; i < task_count - 1; i++)
             {
-                Iter block_last  = std::next(first, step_size + (i < remainder));
-                Iter block_first = std::exchange(first, block_last);
+                const Iter block_last  = std::next(first, step_size + (i < remainder));
+                const Iter block_first = std::exchange(first, block_last);
 
-                auto task = [&, block_first, block_last]() mutable noexcept
-                {
-                    GAPP_TRY { std::for_each(block_first, block_last, unary_op); }
-                    GAPP_CATCH (...) { guard(); }
-                    remaining_tasks.count_down();
-                };
+                const auto& task = tasks.emplace_back_unchecked(block_first, block_last, std::addressof(unary_op), &remaining_tasks, &guard);
 
-                [[maybe_unused]] const bool success = scheduled_worker_queue().emplace(std::move(task));
-                GAPP_ASSERT(success, "Attempting to submit a task to a stopped thread pool.");
+                [[maybe_unused]] const bool success = workers_[i].task_queue.emplace(task);
+                GAPP_ASSERT(success, "Attempted to submit a task to a stopped thread pool.");
             }
 
             GAPP_TRY { std::for_each(first, last, unary_op); }
@@ -77,22 +76,16 @@ namespace gapp::detail
             guard.rethrow_exception();
         }
 
-        void reset_scheduler()
-        {
-            turn_.store(0, std::memory_order_relaxed);
-        }
-
         void thread_count(size_t count)
         {
             GAPP_ASSERT(count);
 
-            reset_scheduler();
             stop();
             workers_.clear();
             workers_.reserve(count - 1);
 
-            for (size_t id = 2; id < count + 1; id++)
-                workers_.emplace_back(id);
+            for (size_t thread_id = 2; thread_id < count + 1; thread_id++)
+                workers_.emplace_back(thread_id);
         }
 
         size_t thread_count() const noexcept
@@ -103,7 +96,7 @@ namespace gapp::detail
         thread_pool()
         {
             this_thread_id().store(1, std::memory_order_release);
-            thread_count(std::max(std::thread::hardware_concurrency(), 1u)); 
+            thread_count(std::max(std::thread::hardware_concurrency() / 2u, 1u));
         }
 
         ~thread_pool() noexcept { stop(); }
@@ -115,9 +108,9 @@ namespace gapp::detail
         thread_pool& operator=(thread_pool&&)      = delete;
 
     private:
-        using task_t = detail::move_only_function<void()>;
+        using task_t = detail::function_ref<void()>;
 
-        struct alignas(128) worker_t
+        struct alignas(64) worker_t
         {
             static void worker_main(std::uint64_t thread_id, concurrent_queue<task_t>& task_queue) noexcept
             {
@@ -127,7 +120,7 @@ namespace gapp::detail
                 {
                     auto task = task_queue.take();
                     if (!task.has_value()) return;
-                    std::invoke(std::move(*task));
+                    std::invoke(*task);
                 }
             }
 
@@ -157,15 +150,27 @@ namespace gapp::detail
             std::atomic_bool has_exception;
         };
 
-        auto scheduled_worker_queue() noexcept -> concurrent_queue<task_t>&
+        template<typename F, typename Iter>
+        struct loop_task_t
         {
-            GAPP_ASSERT(!workers_.empty());
+            loop_task_t(Iter first, Iter last, F* f, latch* task_counter, thread_guard* guard) :
+                range_first(first), range_last(last),
+                unary_op(f), task_counter(task_counter), guard(guard)
+            {}
 
-            const size_t current_turn   = turn_.fetch_add(1, std::memory_order_relaxed);
-            const size_t current_worker = current_turn % workers_.size();
+            void operator()() const noexcept
+            {
+                GAPP_TRY { std::for_each(range_first, range_last, *unary_op); }
+                GAPP_CATCH (...) { std::invoke(*guard); }
+                task_counter->count_down();
+            }
 
-            return workers_[current_worker].task_queue;
-         }
+            Iter range_first;
+            Iter range_last;
+            F* unary_op;
+            detail::latch* task_counter;
+            thread_guard* guard;
+        };
 
         void stop() noexcept
         {
@@ -176,7 +181,6 @@ namespace gapp::detail
         static thread_local std::atomic<std::uint64_t> this_thread_id_;
 
         std::vector<worker_t> workers_;
-        std::atomic<size_t> turn_;
     };
 
     struct execution_context
@@ -190,14 +194,14 @@ namespace gapp::detail
 
 
     template<typename F, typename Iter>
-    requires std::invocable<F, std::iter_reference_t<Iter>>
+    requires std::invocable<F, std::iter_reference_t<Iter>> && std::forward_iterator<Iter>
     void parallel_for(Iter first, Iter last, F&& f)
     {
         execution_context::global_thread_pool().execute_loop(first, last, 1, std::forward<F>(f));
     }
 
     template<typename F, typename Iter>
-    requires std::invocable<F, std::iter_reference_t<Iter>>
+    requires std::invocable<F, std::iter_reference_t<Iter>> && std::forward_iterator<Iter>
     void parallel_for(Iter first, Iter last, size_t block_size, F&& f)
     {
         execution_context::global_thread_pool().execute_loop(first, last, block_size, std::forward<F>(f));
@@ -209,13 +213,13 @@ namespace gapp
 {
     /**
     * Set the number of threads that will be used by the library to run the genetic algorithms.
-    * 
+    *
     * The value should be between 1 and the number of hardware threads. The default number of threads
     * used will be the value returned by std::thread::hardware_concurrency.
-    * 
+    *
     * @note This function is not thread-safe and shouldn't be called while a genetic algorithm
     *   is running.
-    * 
+    *
     * @param count The desired number of threads. Must be at least 1.
     */
     inline void execution_threads(size_t count)

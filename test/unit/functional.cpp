@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iterator>
 #include <type_traits>
+#include <utility>
 
 
 template<typename T>
@@ -174,6 +175,13 @@ TEST_CASE("function_ref", "[functional]")
 
     function_ref f2 = f0;
 
+    const auto fc = [] { return 0; };
+    function_ref<int()> f3 = fc;
+    REQUIRE(f3);
+
+    function_ref<int(int)> f4 = &increment<int>;
+    REQUIRE(f4);
+
     // assignment, invoke
     f0 = square<int>;
     REQUIRE(f0);
@@ -189,6 +197,8 @@ TEST_CASE("function_ref", "[functional]")
     f2 = f0;
     REQUIRE(f2(2) == 3);
     REQUIRE(f0(2) == 3);
+
+    f0 = &square<int>;
 }
 
 TEST_CASE("move_only_function", "[functional]")
@@ -206,6 +216,13 @@ TEST_CASE("move_only_function", "[functional]")
 
     move_only_function<int(int)> f3 = square<int>;
     REQUIRE(f3);
+
+    const auto fc = [] { return 0; };
+    move_only_function<int()> f4 = fc;
+    REQUIRE(f4);
+
+    move_only_function<int(int)> f5 = &square<int>;
+    REQUIRE(f5);
 
     // assignment, invoke
     f0 = square<int>;
