@@ -79,7 +79,7 @@ if(MSVC) # MSVC style compiler interface
     link_libraries("-DEBUG:FULL" "-pdbaltpath:%_PDB%" "-OPT:REF" "-OPT:ICF" "-OPT:LBR")
 
 else() # GNU style compiler interface
-    set(GAPP_WARN_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
+    set(GAPP_WARN_FLAGS "-Wall -Wextra -Wpedantic")
     if(GAPP_USE_WERROR)
         set(GAPP_WARN_FLAGS "${GAPP_WARN_FLAGS} -Werror -pedantic-errors")
     endif()

@@ -763,6 +763,7 @@ namespace gapp
         template<typename... Args>
         constexpr reference emplace_back_unchecked(Args&&... args) noexcept(std::is_nothrow_constructible_v<T, Args...>)
         {
+            GAPP_ASSERT(last_ != last_alloc_);
             detail::construct(alloc_, last_, std::forward<Args>(args)...);
             return *last_++;
         }

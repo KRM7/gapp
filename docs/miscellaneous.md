@@ -90,8 +90,8 @@ this means that `seed()` sholdn't be called while a GA is running.
 ## Execution
 
 By default, the library will use multiple threads for running the
-genetic algorithms, with the number of threads being the number of
-hardware threads available as indicated by `std::thread::hardware_concurrency`.
+genetic algorithms, with the number of threads being half the number
+of hardware threads available as indicated by `std::thread::hardware_concurrency`.
 
 This can be changed using the `execution_threads` function. The number of threads
 used will be the value specified as the argument to this function.

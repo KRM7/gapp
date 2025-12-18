@@ -20,11 +20,11 @@ using namespace gapp::problems;
 template<typename F, typename... Args>
 auto invoke_timed(F&& f, Args&&... args)
 {
-    const auto tbegin = std::chrono::high_resolution_clock::now();
+    const auto tbegin = std::chrono::steady_clock::now();
     std::atomic_signal_fence(std::memory_order::seq_cst);
     auto result = std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
     std::atomic_signal_fence(std::memory_order::seq_cst);
-    const auto tend = std::chrono::high_resolution_clock::now();
+    const auto tend = std::chrono::steady_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(tend - tbegin).count();
     double time_spent = duration / 1000.0;
