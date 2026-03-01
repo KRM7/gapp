@@ -1,5 +1,5 @@
 project = "gapp"
-release = "1.0.0"
+release = "1.0.1"
 author = "Krisztián Rugási"
 copyright = "2025, Krisztián Rugási"
 

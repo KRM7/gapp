@@ -37,7 +37,7 @@ The library uses CMake as its build system, which can also be used to install it
 
 ```shell
 # Clone the repository
-git clone https://github.com/KRM7/gapp.git --branch v1.0.0
+git clone https://github.com/KRM7/gapp.git --branch v1.0.1
 # Go to the library's build directory
 cd gapp/build
 # Configure cmake with the relevant options
@@ -52,7 +52,7 @@ Alternatively, there is a utility script provided that can be used to
 install the library in fewer steps:
 
 ```shell
-git clone https://github.com/KRM7/gapp.git --branch v1.0.0
+git clone https://github.com/KRM7/gapp.git --branch v1.0.1
 sudo bash gapp/tools/install.sh
 ```
 
@@ -152,7 +152,7 @@ Include(FetchContent)
 FetchContent_Declare(
     gapp
     GIT_REPOSITORY https://github.com/KRM7/gapp.git
-    GIT_TAG        v1.0.0
+    GIT_TAG        v1.0.1
 )
 FetchContent_MakeAvailable(gapp)
 
