@@ -4,6 +4,7 @@
 #define GAPP_UTILITY_SMALL_VECTOR_HPP
 
 #include "scope_exit.hpp"
+#include "type_traits.hpp"
 #include "utility.hpp"
 #include <vector>
 #include <algorithm>
@@ -195,8 +196,10 @@ namespace gapp::detail
     noexcept(noexcept(detail::construct(allocator, first, *src_first)))
     {
         using R = std::iter_reference_t<Iter>;
+        using V = std::iter_value_t<Iter>;
 
-        if constexpr (std::contiguous_iterator<Iter> && std::is_trivially_constructible_v<T, R> && has_trivial_construct_v<A&, T, R>)
+        if constexpr (std::contiguous_iterator<Iter> && std::is_trivially_constructible_v<T, R> &&
+                      is_bitwise_convertible_v<V, T> && has_trivial_construct_v<A&, T, R>)
         {
             if (!std::is_constant_evaluated())
             {

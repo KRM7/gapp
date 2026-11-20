@@ -226,7 +226,36 @@ namespace gapp::detail
     using remove_rvalue_ref_t = typename remove_rvalue_ref<T>::type;
 
 
-    
+
+    template<typename T>
+    struct remove_referent_cvref : std::type_identity<T> {};
+
+    template<typename T>
+    struct remove_referent_cvref<T*> : std::type_identity<std::remove_cvref_t<T>*> {};
+
+    template<typename T>
+    struct remove_referent_cvref<T&> : std::type_identity<std::remove_cvref_t<T>&> {};
+
+    template<typename T>
+    struct remove_referent_cvref<T&&> : std::type_identity<std::remove_cvref_t<T>&&> {};
+
+    template<typename T>
+    using remove_referent_cvref_t = typename remove_referent_cvref<T>::type;
+
+
+
+    template<typename T>
+    struct remove_signed_qual : std::type_identity<T> {};
+
+    template<typename T>
+    requires std::is_integral_v<T> && std::is_signed_v<T>
+    struct remove_signed_qual<T> : std::make_unsigned<T> {};
+
+    template<typename T>
+    using remove_signed_qual_t = typename remove_signed_qual<T>::type;
+
+
+
     template<typename From, typename To>
     using copy_const_t = std::conditional_t<std::is_const_v<std::remove_reference_t<From>>, const To, To>;
 
@@ -251,6 +280,18 @@ namespace gapp::detail
 
     template<typename T>
     inline constexpr bool is_nothrow_dereferenceable_v = is_nothrow_dereferenceable<T>::value;
+
+
+
+    template<typename From, typename To>
+    struct is_bitwise_convertible :
+        std::is_same<remove_signed_qual_t<remove_referent_cvref_t<std::remove_cvref_t<From>>>,
+                     remove_signed_qual_t<remove_referent_cvref_t<std::remove_cvref_t<To>>>>
+    {};
+
+    template<typename From, typename To>
+    inline constexpr bool is_bitwise_convertible_v = is_bitwise_convertible<From, To>::value;
+
 
 } // namespace gapp::detail
 
