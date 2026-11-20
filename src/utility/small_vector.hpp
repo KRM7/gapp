@@ -798,11 +798,14 @@ namespace gapp
             return reallocate_emplace(next_capacity(), pos, std::forward<Args>(args)...);
         }
 
-        constexpr iterator insert(const_iterator pos, size_type count, const T& value)
+        constexpr iterator insert(const_iterator const_pos, size_type count, const T& value)
         {
             if (last_alloc_ - last_ >= count)
             {
-                const difference_type offset = std::distance(cbegin(), pos);
+                const auto pos = iterator(const_pos);
+                if (count == 0) return pos;
+
+                const difference_type offset = std::distance(cbegin(), const_pos);
                 const difference_type src_size = difference_type(count);
 
                 const auto middle = first_ + std::max(ssize() - src_size, offset);
@@ -815,22 +818,27 @@ namespace gapp
                 last_ = new_middle;
                 detail::relocate_range_weak(alloc_, middle, old_last, new_middle);
                 last_ = new_last;
-                detail::assign_range(middle, old_last, value);
 
-                return first_ + offset;
+                std::move_backward(pos, middle, old_last);
+                detail::assign_range(pos, pos + moved_size, value);
+
+                return pos;
             }
 
-            return reallocate_insert(next_capacity(count), pos, count, value);
+            return reallocate_insert(next_capacity(count), const_pos, count, value);
         }
 
         template<std::forward_iterator Iter>
-        constexpr iterator insert(const_iterator pos, Iter src_first, Iter src_last)
+        constexpr iterator insert(const_iterator const_pos, Iter src_first, Iter src_last)
         {
             const difference_type src_size = std::distance(src_first, src_last);
 
             if (last_alloc_ - last_ >= src_size)
             {
-                const difference_type offset = std::distance(cbegin(), pos);
+                const auto pos = iterator(const_pos);
+                if (src_size == 0) return pos;
+
+                const difference_type offset = std::distance(cbegin(), const_pos);
 
                 const auto middle = first_ + std::max(ssize() - src_size, offset);
                 const auto moved_size = last_ - middle;
@@ -842,12 +850,14 @@ namespace gapp
                 last_ = new_middle;
                 detail::relocate_range_weak(alloc_, middle, old_last, new_middle);
                 last_ = new_last;
-                detail::assign_range(middle, old_last, src_first);
 
-                return first_ + offset;
+                std::move_backward(pos, middle, old_last);
+                detail::assign_range(pos, pos + moved_size, src_first);
+
+                return pos;
             }
 
-            return reallocate_insert(next_capacity(size_type(src_size)), pos, src_first, src_last);
+            return reallocate_insert(next_capacity(size_type(src_size)), const_pos, src_first, src_last);
         }
 
         template<std::input_iterator Iter>

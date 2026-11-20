@@ -808,10 +808,15 @@ TEMPLATE_TEST_CASE("insert(pos, count, const T&)", "[modifiers]", TrivialType, N
     }
     SECTION("nothing")
     {
-        auto it = dest.insert(dest.end(), 0, TestType{ 4 });
+        auto it1 = dest.insert(dest.end(), 0, TestType{ 4 });
 
         REQUIRE(dest == small_vector{ TestType{ 0 }, TestType{ 1 } });
-        REQUIRE(it == dest.end());
+        REQUIRE(it1 == dest.end());
+
+        auto it2 = dest.insert(dest.begin(), 0, TestType{ 4 });
+
+        REQUIRE(dest == small_vector{ TestType{ 0 }, TestType{ 1 } });
+        REQUIRE(it2 == dest.begin());
     }
     SECTION("many")
     {
@@ -820,6 +825,14 @@ TEMPLATE_TEST_CASE("insert(pos, count, const T&)", "[modifiers]", TrivialType, N
         REQUIRE(dest.size() == 302);
         REQUIRE(dest.front() == TestType{ 4 });
         REQUIRE(dest.back() == TestType{ 1 });
+    }
+    SECTION("insert_fewer_than_trailing")
+    {
+        dest.reserve(10);
+        auto it = dest.insert(dest.begin(), 1, TestType{ 7 });
+
+        REQUIRE(dest == small_vector{ TestType{ 7 }, TestType{ 0 }, TestType{ 1 } });
+        REQUIRE(it == dest.begin());
     }
 }
 
@@ -851,10 +864,15 @@ TEMPLATE_TEST_CASE("insert(pos, FwdIter, FwdIter)", "[modifiers]", TrivialType, 
     }
     SECTION("empty")
     {
-        auto it = dest.insert(dest.end(), src.begin(), src.begin());
+        auto it1 = dest.insert(dest.end(), src.begin(), src.begin());
 
         REQUIRE(dest == small_vector{ TestType{ 0 }, TestType{ 1 } });
-        REQUIRE(it == dest.end());
+        REQUIRE(it1 == dest.end());
+
+        auto it = dest.insert(dest.begin(), src.begin(), src.begin());
+
+        REQUIRE(dest == small_vector{ TestType{ 0 }, TestType{ 1 } });
+        REQUIRE(it == dest.begin());
     }
     SECTION("many")
     {
@@ -863,6 +881,14 @@ TEMPLATE_TEST_CASE("insert(pos, FwdIter, FwdIter)", "[modifiers]", TrivialType, 
         REQUIRE(dest.size() == 100 * src.size() + 2);
         REQUIRE(dest.front() == TestType{ 2 });
         REQUIRE(dest.back() == TestType{ 1 });
+    }
+    SECTION("insert_fewer_than_trailing")
+    {
+        dest.reserve(10);
+        auto it = dest.insert(dest.begin(), src.begin(), src.begin() + 1);
+
+        REQUIRE(dest == small_vector{ TestType{ 2 }, TestType{ 0 }, TestType{ 1 } });
+        REQUIRE(it == dest.begin());
     }
 }
 
