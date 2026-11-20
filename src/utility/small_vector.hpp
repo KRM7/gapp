@@ -557,7 +557,7 @@ namespace gapp
         {
             if (std::addressof(other) == this) [[unlikely]] return *this;
 
-            if (!this->is_small() && !other.is_small())
+            if (!this->is_small() && !other.is_small() && (detail::steal_pointers_v<A> || alloc_ == other.alloc_))
             {
                 using std::swap;
 
