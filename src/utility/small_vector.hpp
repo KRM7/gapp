@@ -164,7 +164,8 @@ namespace gapp::detail
     constexpr void construct_range(A& allocator, T* first, T* last)
     noexcept(std::is_nothrow_default_constructible_v<T> && has_trivial_construct_v<A&, T>)
     {
-        if constexpr (std::is_trivially_default_constructible_v<T> && has_trivial_construct_v<A&, T>)
+        if constexpr (std::is_trivially_default_constructible_v<T> && detail::is_zero_value_initialized_v<T> &&
+                      has_trivial_construct_v<A&, T>)
         {
             if (!std::is_constant_evaluated())
             {

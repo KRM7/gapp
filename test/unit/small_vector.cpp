@@ -5,6 +5,7 @@
 #include <catch2/generators/catch_generators.hpp>
 #include "utility/small_vector.hpp"
 #include <algorithm>
+#include <utility/utility.hpp>
 #include <vector>
 #include <iterator>
 #include <memory>
@@ -138,6 +139,19 @@ TEMPLATE_TEST_CASE("small_vector(size_t)", "[constructor]", TrivialType, MoveOnl
     REQUIRE(vec.size() == size);
     REQUIRE(vec.capacity() >= size);
 }
+
+#ifndef GAPP_MSVC_COMPILER // msvc compiler bug
+TEST_CASE("small_vector(size_t) pointer-to-member", "[constructor]")
+{
+    const size_t size = GENERATE(SMALL_SIZE, LARGE_SIZE);
+
+    small_vector<int NonTrivialType::*> vec(size);
+
+    REQUIRE(vec.size() == size);
+    REQUIRE(vec.front() == nullptr);
+    REQUIRE(vec.back() == nullptr);
+}
+#endif
 
 TEMPLATE_TEST_CASE("small_vector(size_t, Alloc)", "[constructor]", TrivialType, MoveOnlyType, ImmovableType, NonTrivialType)
 {

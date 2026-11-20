@@ -4,6 +4,8 @@
 #include "utility/type_traits.hpp"
 #include <vector>
 #include <list>
+#include <array>
+#include <utility>
 
 using namespace gapp::detail;
 
@@ -175,4 +177,13 @@ TEST_CASE("is_bitwise_convertible", "[type_traits]")
     STATIC_REQUIRE(!is_bitwise_convertible_v<int, float>);
     STATIC_REQUIRE(!is_bitwise_convertible_v<int*, unsigned*>);
     STATIC_REQUIRE(!is_bitwise_convertible_v<int**, const int* const*>);
+}
+
+TEST_CASE("is_zero_value_initialized", "[type_traits]")
+{
+    STATIC_REQUIRE(is_zero_value_initialized_v<int>);
+    STATIC_REQUIRE(is_zero_value_initialized_v<std::array<int, 2>>);
+
+    STATIC_REQUIRE(!is_zero_value_initialized_v<int std::pair<int, int>::*>);
+    STATIC_REQUIRE(!is_zero_value_initialized_v<std::vector<int>>);
 }
