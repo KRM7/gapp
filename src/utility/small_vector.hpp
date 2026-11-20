@@ -814,13 +814,15 @@ namespace gapp
                 const auto new_last   = last_ + src_size;
                 const auto new_middle = middle + src_size;
 
+                const detail::allocator_managed<T, A> tmp(alloc_, value);
+
                 detail::construct_range(alloc_, last_, new_middle, value);
                 last_ = new_middle;
                 detail::relocate_range_weak(alloc_, middle, old_last, new_middle);
                 last_ = new_last;
 
                 std::move_backward(pos, middle, old_last);
-                detail::assign_range(pos, pos + moved_size, value);
+                detail::assign_range(pos, pos + moved_size, *tmp);
 
                 return pos;
             }
@@ -978,10 +980,10 @@ namespace gapp
 
             detail::alloc_result_t<A> alloc_result = detail::allocate<T>(alloc_, new_capacity);
             detail::scope_exit guard1{ [&] { detail::deallocate(alloc_, alloc_result.data, alloc_result.size); } };
-            detail::relocate_range_weak(alloc_, first_, first_ + offset, alloc_result.data);
-            detail::scope_exit guard2{ [&] { detail::destroy_range(alloc_, alloc_result.data, alloc_result.data + offset); } };
             detail::construct_range(alloc_, alloc_result.data + offset, alloc_result.data + offset + src_size, value);
-            detail::scope_exit guard3{ [&] { detail::destroy_range(alloc_, alloc_result.data + offset, alloc_result.data + offset + src_size); } };
+            detail::scope_exit guard2{ [&] { detail::destroy_range(alloc_, alloc_result.data + offset, alloc_result.data + offset + src_size); } };
+            detail::relocate_range_weak(alloc_, first_, first_ + offset, alloc_result.data);
+            detail::scope_exit guard3{ [&] { detail::destroy_range(alloc_, alloc_result.data, alloc_result.data + offset); } };
             detail::relocate_range_weak(alloc_, first_ + offset, last_, alloc_result.data + offset + src_size);
             { guard1.release(); guard2.release(); guard3.release(); }
             detail::destroy_range(alloc_, first_, last_);
@@ -1025,13 +1027,24 @@ namespace gapp
             {
                 detail::destroy_range(alloc_, first_ + count, last_);
                 last_ = first_ + count;
+                return;
             }
-            else
+
+            if constexpr (sizeof...(Args) == 1 && (std::is_same_v<std::remove_cvref_t<Args>, T> && ...))
             {
-                reserve(count);
-                detail::construct_range(alloc_, last_, first_ + count, std::forward<Args>(args)...);
-                last_ = first_ + count;
+                if (count > capacity())
+                {
+                    const detail::allocator_managed<T, A> value(alloc_, std::forward<Args>(args)...);
+                    reserve(count);
+                    detail::construct_range(alloc_, last_, first_ + count, *value);
+                    last_ = first_ + count;
+                    return;
+                }
             }
+
+            reserve(count);
+            detail::construct_range(alloc_, last_, first_ + count, std::forward<Args>(args)...);
+            last_ = first_ + count;
         }
 
         constexpr void set_storage(pointer first, pointer last, pointer last_alloc) noexcept
