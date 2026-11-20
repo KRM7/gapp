@@ -5,6 +5,8 @@
 
 #include <type_traits>
 #include <tuple>
+#include <array>
+#include <bit>
 #include <optional>
 #include <iterator>
 #include <cstddef>
@@ -292,6 +294,27 @@ namespace gapp::detail
     template<typename From, typename To>
     inline constexpr bool is_bitwise_convertible_v = is_bitwise_convertible<From, To>::value;
 
+
+
+    template<typename T>
+    requires std::is_trivially_copyable_v<T> && std::is_trivially_constructible_v<T>
+    consteval bool is_zero_value_initialized_impl()
+    {
+        for (unsigned char byte : std::bit_cast<std::array<unsigned char, sizeof(T)>>(T()))
+            if (byte) return false;
+
+        return true;
+    }
+
+    template<typename T>
+    struct is_zero_value_initialized : std::false_type {};
+
+    template<typename T>
+    requires requires { typename std::bool_constant<is_zero_value_initialized_impl<T>()>; }
+    struct is_zero_value_initialized<T> : std::bool_constant<is_zero_value_initialized_impl<T>()> {};
+
+    template<typename T>
+    inline constexpr bool is_zero_value_initialized_v = is_zero_value_initialized<T>::value;
 
 } // namespace gapp::detail
 
