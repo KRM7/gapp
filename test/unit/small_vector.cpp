@@ -645,6 +645,15 @@ TEMPLATE_TEST_CASE("resize(n, value)", "[modifiers]", TrivialType, NonTrivialTyp
     REQUIRE(vec.empty());
 }
 
+/* TEMPLATE_TEST_CASE("resize(n, value) self-insert", "[modifiers]", TrivialType, NonTrivialType, NonDefaultConstructibleType)
+{
+    small_vector vec(LARGE_SIZE, TestType{ 1 });
+
+    vec.resize(5 * LARGE_SIZE, vec[0]);
+    REQUIRE(vec.size() == 5 * LARGE_SIZE);
+    REQUIRE(vec.back() == TestType{ 1 });
+} */
+
 TEMPLATE_TEST_CASE("erase(pos)", "[modifiers]", TrivialType, NonTrivialType, MoveOnlyType)
 {
     const size_t size = GENERATE(SMALL_SIZE, LARGE_SIZE);
@@ -834,6 +843,24 @@ TEMPLATE_TEST_CASE("insert(pos, count, const T&)", "[modifiers]", TrivialType, N
         REQUIRE(dest == small_vector{ TestType{ 7 }, TestType{ 0 }, TestType{ 1 } });
         REQUIRE(it == dest.begin());
     }
+    SECTION("self_inplace")
+    {
+        dest.reserve(10);
+        auto it = dest.insert(dest.begin(), 1, dest[1]);
+
+        REQUIRE(dest == small_vector{ TestType{ 1 }, TestType{ 0 }, TestType{ 1 } });
+        REQUIRE(it == dest.begin());
+    }
+}
+
+TEST_CASE("insert(pos, count, const T&) self-insert realloc", "[modifiers]")
+{
+    small_vector<std::shared_ptr<int>, 2> vec{ std::make_shared<int>(0), std::make_shared<int>(1) };
+    vec.insert(vec.end(), 2, vec[0]);
+
+    REQUIRE(vec.size() == 4);
+    REQUIRE(vec[2] == vec[0]);
+    REQUIRE(vec[3] == vec[0]);
 }
 
 TEMPLATE_TEST_CASE("insert(pos, FwdIter, FwdIter)", "[modifiers]", TrivialType, NonTrivialType)
