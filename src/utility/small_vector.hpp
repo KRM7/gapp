@@ -768,7 +768,7 @@ namespace gapp
             return *last_++;
         }
 
-        constexpr void pop_back() noexcept { GAPP_ASSERT(!empty()); detail::destroy(alloc_, last_--); }
+        constexpr void pop_back() noexcept { GAPP_ASSERT(!empty()); detail::destroy(alloc_, --last_); }
 
         constexpr void resize(size_type count) { resize_impl(count); }
         constexpr void resize(size_type count, const T& value) { resize_impl(count, value); }

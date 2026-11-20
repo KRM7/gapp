@@ -599,6 +599,26 @@ TEMPLATE_TEST_CASE("pop_back()", "[modifiers]", TrivialType, NonTrivialType, Mov
     REQUIRE(vec.size() == (size - 2));
 }
 
+TEST_CASE("pop_back() non-trivial dtor", "[modifiers]")
+{
+    struct PopBackTest {
+        bool* destroyed;
+        PopBackTest(bool &destroyed) : destroyed(&destroyed) {}
+        ~PopBackTest() { *destroyed = true; }
+    };
+
+    bool destroyed = false;
+    PopBackTest test_struct(destroyed);
+
+    small_vector<PopBackTest> vec;
+
+    vec.push_back(test_struct);
+    REQUIRE(!destroyed);
+
+    vec.pop_back();
+    REQUIRE(destroyed);
+}
+
 TEMPLATE_TEST_CASE("resize(n)", "[modifiers]", TrivialType, NonTrivialType, MoveOnlyType)
 {
     const size_t size = GENERATE(SMALL_SIZE, LARGE_SIZE);
