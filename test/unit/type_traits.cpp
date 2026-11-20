@@ -115,6 +115,28 @@ TEST_CASE("remove_rvalue_ref", "[type_traits]")
     STATIC_REQUIRE(std::is_same_v<remove_rvalue_ref_t<int*>,  int*>);
 }
 
+TEST_CASE("remove_referent_cvref", "[type_traits]")
+{
+    STATIC_REQUIRE(std::is_same_v<remove_referent_cvref_t<const int>, const int>);
+    STATIC_REQUIRE(std::is_same_v<remove_referent_cvref_t<const int* const>, const int* const>);
+
+    STATIC_REQUIRE(std::is_same_v<remove_referent_cvref_t<const volatile int*>, int*>);
+    STATIC_REQUIRE(std::is_same_v<remove_referent_cvref_t<const int&>, int&>);
+    STATIC_REQUIRE(std::is_same_v<remove_referent_cvref_t<const int&&>, int&&>);
+
+    STATIC_REQUIRE(std::is_same_v<remove_referent_cvref_t<const int* const*>, const int**>);
+}
+
+TEST_CASE("remove_signed_qual", "[type_traits]")
+{
+    STATIC_REQUIRE(std::is_same_v<remove_signed_qual_t<int>, unsigned>);
+    STATIC_REQUIRE(std::is_same_v<remove_signed_qual_t<const long>, const unsigned long>);
+
+    STATIC_REQUIRE(std::is_same_v<remove_signed_qual_t<unsigned>, unsigned>);
+    STATIC_REQUIRE(std::is_same_v<remove_signed_qual_t<float>, float>);
+    STATIC_REQUIRE(std::is_same_v<remove_signed_qual_t<bool>, bool>);
+}
+
 TEST_CASE("copy_const_t", "[type_traits]")
 {
     STATIC_REQUIRE(std::is_same_v<copy_const_t<const int, double>, const double>);
@@ -140,4 +162,17 @@ TEST_CASE("copy_cv_t", "[type_traits]")
     STATIC_REQUIRE(std::is_same_v<copy_cv_t<volatile int, const double>, const volatile double>);
     STATIC_REQUIRE(std::is_same_v<copy_cv_t<const int, const double>, const double>);
     STATIC_REQUIRE(std::is_same_v<copy_cv_t<const volatile int, const volatile double>, const volatile double>);
+}
+
+TEST_CASE("is_bitwise_convertible", "[type_traits]")
+{
+    STATIC_REQUIRE(is_bitwise_convertible_v<int, int>);
+    STATIC_REQUIRE(is_bitwise_convertible_v<const int, int>);
+    STATIC_REQUIRE(is_bitwise_convertible_v<int, unsigned>);
+    STATIC_REQUIRE(is_bitwise_convertible_v<int*, const int*>);
+
+    STATIC_REQUIRE(!is_bitwise_convertible_v<long, long long>);
+    STATIC_REQUIRE(!is_bitwise_convertible_v<int, float>);
+    STATIC_REQUIRE(!is_bitwise_convertible_v<int*, unsigned*>);
+    STATIC_REQUIRE(!is_bitwise_convertible_v<int**, const int* const*>);
 }

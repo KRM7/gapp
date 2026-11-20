@@ -195,6 +195,16 @@ TEMPLATE_TEST_CASE("small_vector(FwdIter, FwdIter, Alloc)", "[constructor]", Tri
     REQUIRE(vec.capacity() >= source.size());
 }
 
+TEST_CASE("small_vector(Iter, Iter) trivial conversion", "[constructor]")
+{
+    const size_t size = GENERATE(SMALL_SIZE, LARGE_SIZE);
+
+    const small_vector<int32_t> src(size, 2);
+    small_vector<double> dst(src.begin(), src.end());
+
+    REQUIRE(dst == small_vector<double>(size, 2.0));
+}
+
 TEST_CASE("small_vector(InputIter, InputIter)", "[constructor]")
 {
     const size_t size = GENERATE(EMPTY, SMALL_SIZE, LARGE_SIZE);
