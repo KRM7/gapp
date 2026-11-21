@@ -2,6 +2,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include "utility/iterators.hpp"
+#include <array>
 #include <vector>
 #include <algorithm>
 #include <iterator>
@@ -184,6 +185,38 @@ TEST_CASE("iota_iterator", "[iterators]")
     }
 }
 
+TEST_CASE("base_iterator", "[iterators]")
+{
+    struct Base { size_t n; };
+
+    std::vector<Base> vec(10);
+
+    for (size_t i = 0; i < vec.size(); i++)
+        vec[i].n = i;
+
+    auto it1 = base_begin<Base>(vec);
+    REQUIRE(it1->n == 0);
+
+    it1 += 1;
+    REQUIRE(it1->n == 1);
+
+    it1 -= 1;
+    REQUIRE(it1->n == 0);
+
+    ++it1;
+    REQUIRE(it1->n == 1);
+
+    --it1;
+    REQUIRE(it1->n == 0);
+
+
+    auto it2 = base_begin<Base>(vec) + 2;
+    REQUIRE(it2->n == 2);
+
+    REQUIRE(it2 - it1 == 2);
+    REQUIRE(it1 - it2 == -2);
+}
+
 TEST_CASE("base_iterator_single", "[iterators]")
 {
     struct Base { int n = 1; };
@@ -239,4 +272,16 @@ TEST_CASE("base_iterator_virtual", "[iterators]")
     REQUIRE(
         std::all_of(base_begin<Base>(vec), base_end<Base>(vec), [](const Base& b) { return b.n == 3; })
     );
+}
+
+TEST_CASE("base_view", "[iterators]")
+{
+    struct Base { size_t n = 0; };
+    struct Derived : Base { size_t m = 2; };
+
+    STATIC_REQUIRE([] {
+        std::array<Derived, 0> arr{};
+        base_view<Base> view2(arr);
+        return view2.size() == 0;
+    }());
 }
