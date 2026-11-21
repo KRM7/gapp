@@ -360,7 +360,7 @@ namespace gapp::detail
         using ValueType = std::remove_cvref_t<std::iter_reference_t<Iter>>;
 
         small_vector<ValueType> result;
-        result.reserve(last - first);
+        result.reserve(std::distance(first, last));
 
         for (; first != last; ++first)
         {

@@ -53,7 +53,7 @@ namespace gapp::detail
             alloc_(std::move(alloc))
         {}
 
-        template<std::forward_iterator Iter>
+        template<std::bidirectional_iterator Iter>
         constexpr circular_buffer(size_type capacity, Iter first, Iter last, A alloc = A()) :
             capacity_(capacity),
             alloc_(std::move(alloc))
@@ -370,7 +370,7 @@ namespace gapp::detail
         lhs.swap(rhs);
     }
 
-    template<std::forward_iterator Iter, typename Alloc = std::allocator<std::iter_value_t<Iter>>>
+    template<std::bidirectional_iterator Iter, typename Alloc = std::allocator<std::iter_value_t<Iter>>>
     circular_buffer(Iter, Iter, Alloc = Alloc()) -> circular_buffer<std::iter_value_t<Iter>, Alloc>;
 
 } // namespace gapp::detail

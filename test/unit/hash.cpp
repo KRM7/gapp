@@ -3,6 +3,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include "utility/hash.hpp"
 #include <vector>
+#include <forward_list>
 #include <tuple>
 #include <string>
 
@@ -17,7 +18,7 @@ TEST_CASE("hashable", "[hash]")
 {
     STATIC_REQUIRE(detail::hashable<int>);
     STATIC_REQUIRE(detail::hashable<std::string>);
-    
+
     STATIC_REQUIRE(!detail::hashable<A<double>>);
     STATIC_REQUIRE(!detail::hashable<std::vector<int>>);
 }
@@ -29,4 +30,9 @@ TEST_CASE("hash", "[hash]")
     std::ignore = detail::hash_range(std::vector{ 1, 2, 3 });
 
     SUCCEED();
+}
+
+TEST_CASE("hash_range", "[hash]")
+{
+    REQUIRE(detail::hash_range(std::forward_list{ 1, 2, 3 }) == detail::hash_range(std::vector{ 1, 2, 3 }));
 }

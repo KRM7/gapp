@@ -6,6 +6,7 @@
 #include "circular_buffer.hpp"
 #include "hash.hpp"
 #include "utility.hpp"
+#include <iterator>
 #include <unordered_map>
 #include <type_traits>
 #include <memory>
@@ -126,7 +127,7 @@ namespace gapp::detail
             order_.push_back(it);
         }
 
-        template<std::forward_iterator Iter, std::invocable<std::iter_reference_t<Iter>> F>
+        template<std::bidirectional_iterator Iter, std::invocable<std::iter_reference_t<Iter>> F>
         constexpr void insert(Iter first, Iter last, F&& f)
         {
             GAPP_ASSERT(free_capacity() >= 1);
