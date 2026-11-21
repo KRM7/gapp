@@ -528,8 +528,9 @@ namespace gapp
 
             if (!shift_disp)
             {
-                std::move_backward(blocks.begin(), blocks.end() - block_disp, blocks.begin() + block_disp);
+                std::move_backward(blocks.begin(), blocks.end() - block_disp, blocks.end());
                 std::fill(blocks.begin(), blocks.begin() + block_disp, block_type{ 0 });
+                blocks.back() &= lhs.last_block_mask();
                 return lhs;
             }
 
@@ -541,7 +542,7 @@ namespace gapp
             }
 
             blocks[block_disp] = (blocks[0] << shift_disp);
-            blocks.back() &= lhs.partial_block_mask();
+            blocks.back() &= lhs.last_block_mask();
 
             std::fill(blocks.begin(), blocks.begin() + block_disp, block_type{ 0 });
             return lhs;
@@ -591,6 +592,11 @@ namespace gapp
             GAPP_ASSERT(unused_bits_are_zero());
 
             return partial_block_size() ? blocks_.back() : block_type{0};
+        }
+
+        constexpr block_type last_block_mask() const noexcept
+        {
+            return detail::mask_right_n<block_type>(((size_ - 1) % block_size) + 1);
         }
 
         constexpr bool unused_bits_are_zero() const noexcept

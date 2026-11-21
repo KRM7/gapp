@@ -664,6 +664,20 @@ TEST_CASE("operator<<", "[dynamic_bitset]")
     std::fill(bitset.end() - 100, bitset.end(), false);
 
     REQUIRE((bitset << 300).popcount() == 600);
+
+
+    dynamic_bitset bitset2(200, true);
+
+    std::fill(bitset2.begin(), bitset2.begin() + 10, false);
+
+    REQUIRE((bitset2 << 64).popcount() == 126);
+    REQUIRE((bitset2 << 128).popcount() == 62);
+
+
+    dynamic_bitset ones2(128, true);
+
+    REQUIRE((ones2 << 1).popcount() == 127);
+    REQUIRE((ones2 << 65).popcount() == 63);
 }
 
 TEST_CASE("swap", "[dynamic_bitset]")
