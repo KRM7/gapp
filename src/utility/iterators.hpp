@@ -388,7 +388,7 @@ namespace gapp::detail
         {
             GAPP_ASSERT(data_ != nullptr, "Can't offset value initialized iterator.");
             GAPP_ASSERT(n < 0 ? idx_ >= size_t(-n) : true, "Can't move iterator to before the start of the range.");
-            GAPP_ASSERT(n > 0 ? idx_ <= (data_->size() - n) : true, "Can't move iterator past the end of the range.");
+            GAPP_ASSERT(n > 0 ? size_t(n) <= (data_->size() - idx_) : true, "Can't move iterator past the end of the range.");
 
             idx_ += n;
             return static_cast<Derived&>(*this);
@@ -401,13 +401,11 @@ namespace gapp::detail
             GAPP_ASSERT(lhs.data_->size() >= lhs.idx_, "Invalid lhs iterator.");
             GAPP_ASSERT(rhs.data_->size() >= rhs.idx_, "Invalid rhs iterator.");
 
-            const size_t distance = lhs.idx_ >= rhs.idx_ ?
-                lhs.idx_ - rhs.idx_ :
-                rhs.idx_ - lhs.idx_;
+            const difference_type distance = lhs.idx_ - rhs.idx_;
 
-            GAPP_ASSERT(distance <= size_t(std::numeric_limits<difference_type>::max()), "Can't represent the result of the operation as difference_type.");
+            GAPP_ASSERT((lhs.idx_ >= rhs.idx_) == (distance >= 0), "Can't represent the result of the operation as difference_type.");
 
-            return difference_type(distance);
+            return distance;
         }
 
     protected:
