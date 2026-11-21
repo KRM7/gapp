@@ -118,6 +118,12 @@ TEST_CASE("stable_iterator", "[iterators]")
         REQUIRE(size_t(last - cfirst) == nums.size());
     }
 
+    SECTION("difference")
+    {
+        REQUIRE(last - first == 5);
+        REQUIRE(first - last == -5);
+    }
+
     SECTION("algorithms")
     {
         std::sort(first, last);
