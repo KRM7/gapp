@@ -539,8 +539,8 @@ namespace gapp::detail
 
         constexpr iota_iterator& operator+=(difference_type n)
         {
-            GAPP_ASSERT(n > 0 ? (std::numeric_limits<T>::max() - n) >= value_ : true, "Can't increment iterator past its max value.");
-            GAPP_ASSERT(n < 0 ? size_t(-n) <= (value_ - std::numeric_limits<T>::min()) : true, "Can't decrement iterator past its min value.");
+            GAPP_ASSERT(n > 0 ? value_ <= std::numeric_limits<T>::max() - n : true, "Can't increment iterator past its max value.");
+            GAPP_ASSERT(n < 0 ? value_ >= std::numeric_limits<T>::min() - n : true, "Can't decrement iterator past its min value.");
 
             value_ += n;
             return *this;
