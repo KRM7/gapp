@@ -622,7 +622,7 @@ namespace gapp::detail
         using internal_pointer = detail::copy_cv_t<Base, unsigned char>*;
 
         internal_pointer ptr_ = nullptr;
-        std::size_t step_ = 0;
+        difference_type step_ = 1;
     };
 
 
