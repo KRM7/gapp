@@ -54,7 +54,7 @@ namespace gapp
 
             constexpr const reference& operator=(bool value) const noexcept
             {
-                value ? set() : clear();
+                block_ ^= (block_ ^ detail::block_of<block_type>(value)) & mask_;
                 return *this;
             }
 
@@ -198,22 +198,16 @@ namespace gapp
         {
             if (!partial_block_size()) blocks_.push_back(0);
 
-            (*this)[size_++] = value;
+            blocks_.back() |= block_type(value) << (size_++ % block_size);
         }
 
         constexpr void fill(bool value) noexcept
         {
-            auto first = blocks_.begin();
-            auto last  = blocks_.begin() + full_block_count();
+            std::fill(blocks_.begin(), blocks_.end(), detail::block_of<block_type>(value));
 
-            for ( ; first != last; first++)
+            if (!blocks_.empty())
             {
-                *first = detail::block_of<block_type>(value);
-            }
-
-            if (partial_block_size())
-            {
-                blocks_.back() = detail::block_of<block_type>(value) & partial_block_mask();
+                blocks_.back() &= last_block_mask();
             }
 
             GAPP_ASSERT(unused_bits_are_zero());
@@ -247,6 +241,8 @@ namespace gapp
 
         constexpr bool all_set() const noexcept
         {
+            GAPP_ASSERT(unused_bits_are_zero());
+
             for (size_type i = 0; i < full_block_count(); i++)
             {
                 if (blocks_[i] != detail::ones<block_type>) return false;
@@ -350,19 +346,14 @@ namespace gapp
 
         constexpr dynamic_bitset& flip() noexcept
         {
-            auto first = blocks_.begin();
-            auto last  = blocks_.begin() + full_block_count();
-
-            for ( ; first != last; first++)
+            for (block_type& block : blocks_)
             {
-                *first = ~*first;
+                block = ~block;
             }
 
-            if (partial_block_size())
-            {
-                blocks_.back() = ~blocks_.back() & partial_block_mask();
-            }
+            if (!blocks_.empty()) blocks_.back() &= last_block_mask();
 
+            GAPP_ASSERT(unused_bits_are_zero());
             return *this;
         }
 
@@ -554,20 +545,24 @@ namespace gapp
 
         constexpr size_type find_first_one() const noexcept
         {
+            GAPP_ASSERT(unused_bits_are_zero());
+
             for (size_type i = 0; i < blocks_.size(); i++)
             {
                 if (blocks_[i] == detail::zeros<block_type>) continue;
-                return std::min(size_, i * block_size + std::countr_zero(blocks_[i]));
+                return i * block_size + std::countr_zero(blocks_[i]);
             }
             return size_;
         }
 
         constexpr size_type find_first_zero() const noexcept
         {
+            GAPP_ASSERT(unused_bits_are_zero());
+
             for (size_type i = 0; i < blocks_.size(); i++)
             {
                 if (blocks_[i] == detail::ones<block_type>) continue;
-                return std::min(size_, i * block_size + std::countr_one(blocks_[i]));
+                return i * block_size + std::countr_one(blocks_[i]);
             }
             return size_;
         }
