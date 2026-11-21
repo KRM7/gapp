@@ -262,7 +262,7 @@ namespace gapp::detail
     constexpr void assign_range(T* first, T* last, Iter src_first)
     noexcept(std::is_nothrow_assignable_v<T&, std::iter_reference_t<Iter>>)
     {
-        std::copy(src_first, src_first + std::distance(first, last), first);
+        std::copy_n(src_first, std::distance(first, last), first);
     }
 
     template<typename T>
@@ -499,7 +499,7 @@ namespace gapp
             if (last_alloc_ - first_ >= src_size)
             {
                 detail::assign_range(first_, first_ + com_size, src_first);
-                detail::construct_range(alloc_, first_ + com_size, first_ + src_size, src_first + com_size);
+                detail::construct_range(alloc_, first_ + com_size, first_ + src_size, std::next(src_first, com_size));
                 detail::destroy_range(alloc_, first_ + com_size, last_);
                 last_ = first_ + src_size;
             }

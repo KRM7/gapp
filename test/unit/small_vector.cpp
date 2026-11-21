@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <utility/utility.hpp>
 #include <vector>
+#include <forward_list>
 #include <iterator>
 #include <memory>
 #include <type_traits>
@@ -361,6 +362,17 @@ TEMPLATE_TEST_CASE("assign(FwdIter, FwdIter)", "[assignment]", TrivialType, NonT
 
     REQUIRE(dest.size() == source.size());
     REQUIRE(dest == source);
+}
+
+TEST_CASE("assign(FwdIter, FwdIter) forward-iterator", "[assignment]")
+{
+    const std::forward_list source{ 2, 3, 4 };
+
+    small_vector dest{ 0 };
+    dest.reserve(std::distance(source.begin(), source.end()));
+    dest.assign(source.begin(), source.end());
+
+    REQUIRE(dest == small_vector{ 2, 3, 4 });
 }
 
 TEST_CASE("assign(InputIter, InputIter)", "[assignment]")
@@ -941,6 +953,17 @@ TEMPLATE_TEST_CASE("insert(pos, FwdIter, FwdIter)", "[modifiers]", TrivialType, 
         REQUIRE(dest == small_vector{ TestType{ 2 }, TestType{ 0 }, TestType{ 1 } });
         REQUIRE(it == dest.begin());
     }
+}
+
+TEST_CASE("insert(pos, FwdIter, FwdIter) forward-only iterator", "[modifiers]")
+{
+    const std::forward_list src{ 2, 3, 4 };
+
+    small_vector dest{ 0, 1 };
+    dest.reserve(100);
+    dest.insert(dest.begin(), src.begin(), src.end());
+
+    REQUIRE(dest == small_vector{ 2, 3, 4, 0, 1 });
 }
 
 TEST_CASE("insert(pos, InputIter, InputIter)", "[modifiers]")

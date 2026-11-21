@@ -47,8 +47,6 @@ namespace gapp::detail
     template<std::forward_iterator Iter>
     constexpr std::uint64_t hash_range(std::uint64_t seed, Iter first, Iter last) noexcept
     {
-        GAPP_ASSERT(first <= last);
-
         for (; first != last; ++first) seed = hash_combine(seed, detail::hash(*first));
         return seed;
     }
