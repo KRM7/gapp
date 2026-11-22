@@ -162,8 +162,8 @@ namespace gapp::detail
                 nodes_.push_back(left_child);
                 nodes_.push_back(right_child);
 
-                node.left = nodes_.size() - 2;
-                node.right = nodes_.size() - 1;
+                nodes_[i].left = nodes_.size() - 2;
+                nodes_[i].right = nodes_.size() - 1;
             }
         }
     }

@@ -18,6 +18,12 @@ TEST_CASE("cone_tree constructors", "[cone_tree]")
     ConeTree tree(points);
 
     REQUIRE(tree.size() == points.size());
+
+
+    std::vector<ConeTree::Point> points2(100, { 1.0, 2.0, 3.0 });
+    ConeTree tree2(points2);
+
+    REQUIRE(tree2.size() == points2.size());
 }
 
 TEST_CASE("cone_tree lookup", "[cone_tree]")
