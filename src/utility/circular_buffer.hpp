@@ -202,7 +202,7 @@ namespace gapp::detail
         }
 
         constexpr void push_front(const value_type& value)
-        noexcept(std::is_nothrow_move_constructible_v<T>)
+        noexcept(std::is_nothrow_copy_constructible_v<T>)
         {
             GAPP_ASSERT(capacity() > 0);
             emplace_front(value);
@@ -278,7 +278,7 @@ namespace gapp::detail
             if (new_capacity == capacity()) return;
 
             pointer new_buffer = detail::allocate<T>(alloc_, new_capacity).data;
-            detail::scope_exit guard{ [&] { detail::deallocate(alloc_, buffer_, new_capacity); } };
+            detail::scope_exit guard{ [&] { detail::deallocate(alloc_, new_buffer, new_capacity); } };
             const size_type new_size = std::min<size_type>(new_capacity, size());
             std::uninitialized_copy_n(detail::make_move_iterator_if_noexcept(begin()), new_size, new_buffer);
             destroy();
@@ -299,7 +299,7 @@ namespace gapp::detail
         {
             clear();
             if (new_capacity == capacity_) return;
-            if (buffer_) detail::deallocate(alloc_, buffer_, capacity_);
+            if (buffer_) detail::deallocate(alloc_, std::exchange(buffer_, nullptr), std::exchange(capacity_, 0));
             buffer_ = detail::allocate<T>(alloc_, new_capacity).data;
             capacity_ = new_capacity;
         }
