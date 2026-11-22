@@ -444,8 +444,9 @@ namespace gapp::rng
 
         for (auto number = numbers.begin(); limit < ubound; ++limit, ++number)
         {
-            const auto n = rng::randomInt(lbound, limit);
-            *number = selected.contains(n) ? limit : n;
+            const auto r = rng::randomInt(lbound, limit);
+            const auto n = selected.contains(r) ? limit : r;
+            *number = n;
             selected.insert(n);
         }
 
