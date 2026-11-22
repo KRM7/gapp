@@ -21,7 +21,7 @@ namespace gapp::detail
         GAPP_API static void read_lock() noexcept
         {
             reader.epoch.store(writer_epoch.load(std::memory_order_relaxed), std::memory_order_release);
-            std::ignore = reader.epoch.load(std::memory_order_acquire);
+            std::atomic_thread_fence(std::memory_order_seq_cst);
         }
 
         GAPP_API static void read_unlock() noexcept
@@ -31,11 +31,13 @@ namespace gapp::detail
 
         static void synchronize() noexcept
         {
-            uint64_t current = writer_epoch.load(std::memory_order_acquire);
-            uint64_t target  = current + 1;
-            writer_epoch.compare_exchange_strong(current, target, std::memory_order_release);
+            std::atomic_thread_fence(std::memory_order_seq_cst);
 
-            std::shared_lock _{ tls_readers()->lock};
+            uint64_t current = writer_epoch.load(std::memory_order_relaxed);
+            uint64_t target  = current + 1;
+            writer_epoch.compare_exchange_strong(current, target, std::memory_order_relaxed);
+
+            std::shared_lock _{ tls_readers()->lock };
 
             for (const registered_reader* tls_reader : tls_readers()->list)
             {
