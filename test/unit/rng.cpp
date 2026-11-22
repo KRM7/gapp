@@ -100,8 +100,8 @@ TEST_CASE("random_element_cdf", "[rng]")
 
 TEST_CASE("sample_unique", "[rng]")
 {
-    auto [lbound, ubound] = GENERATE(std::pair{ -60, -10 }, std::pair{ -20, 30 }, std::pair{ 10, 60 });
-    constexpr size_t count = 25;
+    auto [lbound, ubound] = GENERATE(std::pair{ -60, -10 }, std::pair{ -20, 30 }, std::pair{ 10, 60 }, std::pair{ -50'000, 50'000 });
+    size_t count = (ubound - lbound) / 2;
 
     for (size_t i = 0; i < 100; i++)
     {
